@@ -1,0 +1,38 @@
+{
+  "$schema": "./schema.json",
+  "schema_version": 1,
+  "host": "codex",
+  "instructions": {
+    "source": "surfaces/core.md",
+    "target": "{CODEX_HOME}/AGENTS.md",
+    "strategy": "manual-merge"
+  },
+  "skills": {
+    "source": "skills",
+    "selection": "registry:admitted",
+    "install_root": "{SHARED_SKILLS_HOME}",
+    "discovery": {"kind": "native", "value": "{SHARED_SKILLS_HOME}"}
+  },
+  "routing": {
+    "status": "automatic-selection-active-workflow",
+    "catalog_schema": "skills/openai-delegation-route-research/references/gpt-route-catalog.schema.json",
+    "task_schema": "skills/openai-delegation-route-research/references/route-task.schema.json",
+    "selection_contract": "skills/openai-delegation-route-research/references/selection-contract.md",
+    "aux_schema": "skills/openai-delegation-route-research/references/aux-models.schema.json",
+    "aux_assignments": "skills/openai-delegation-route-research/references/current-aux-models.json",
+    "selector": "skills/openai-delegation-route-research/scripts/route_selector.py",
+    "receipt_schema": "skills/openai-delegation-route-research/references/route-decision.schema.json",
+    "surfaces": [
+      {
+        "target_surface": "codex-workflow",
+        "required_fields": ["provider", "model", "reasoning_effort", "decision_receipt"],
+        "pinning": "The definitive DAG state selects once at initialization; resume and retries reuse the exact receipt.",
+        "native_owner": "skills/dynamic-workflows plus Codex native worker handles",
+        "enforcement": "live-skill-adapter",
+        "current_support": "Codex atomically claims each routed node before spawn, passes the parent-selected exact model and reasoning effort to the native worker, binds completion to the active handle and claim token, and closes the handle before terminal state. Current JSONL evidence does not independently echo the child resolved route.",
+        "smallest_path": "Keep the plugin skill as a thin adapter to skills/dynamic-workflows; do not duplicate the state machine."
+      }
+    ],
+    "unsupported_surfaces": []
+  }
+}

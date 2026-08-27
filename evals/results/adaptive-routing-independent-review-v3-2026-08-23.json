@@ -1,0 +1,60 @@
+{
+  "verdict": "ship-staged-artifact",
+  "blocking_findings": [],
+  "nonblocking_risks": [
+    {
+      "risk": "The current Hermes ephemeral-child lifecycle is not compatible with the staged DAG runner on this host/runtime.",
+      "impact": "The full 30-test workflow-runner batch remains red (23 passed, 6 failed, 1 error), so the DAG adapter must not be launched or promoted as native Hermes support.",
+      "evidence": "The rerun reproduced exactly 23 passed, 6 failed, and 1 error; the failures are lifecycle/installed-Hermes compatibility cases. The surface matrix, adapter, README, and routing decision interface label DAG/delegate/Kanban mappings staged and non-launchable.",
+      "disposition": "Documented host-native gap; retain fail-closed/no-promotion boundary and repair the native lifecycle before launch."
+    },
+    {
+      "risk": "The current candidate evidence is callable-only/expired, under-sampled, missing p95 and expected-total-cost evidence, and was measured on Hermes 0.20.0 rather than current 0.20.5.",
+      "impact": "No adaptive route can be selected for live use.",
+      "evidence": "The current v3 selector receipt is schema-version 2 fail_closed with both candidates excluded for evidence_state, evidence_expired, required_runtime, min_sample_size, p95_seconds, and max_expected_total_cost_usd; the matching v3 run pin is blocked.",
+      "disposition": "Correct staged behavior; collect current representative per-surface evidence before any promotion."
+    }
+  ],
+  "checks_run": [
+    {
+      "check": "Selector and adapter regression suites",
+      "result": "22 passed",
+      "evidence": "PYTHONDONTWRITEBYTECODE=1 python -m pytest -p no:cacheprovider tests/test_route_selector.py tests/test_route_adapter.py"
+    },
+    {
+      "check": "Receipt-specific DAG runner tests",
+      "result": "4 passed",
+      "evidence": "Pinned exact receipt, exact tuple mismatch, fixed-route policy bypass, and tier-routing tests passed."
+    },
+    {
+      "check": "Current DAG runner receipt contract",
+      "result": "pass",
+      "evidence": "workflow_runner.py requires selected schema_version 2 and pin_status new, object evidence receipts, exact route tuple, constraints_applied bindings for target_surface/task_class/objective/failure_cost/verifier_plan, requirement hash, runtime transport/hash, and decision hash. The latest constraints-rebinding regression is also reported passing by the current live runner state."
+    },
+    {
+      "check": "Materialized evidence",
+      "result": "pass",
+      "evidence": "Selector CLI with --evidence-root verified suite and receipt bytes before producing the current fail_closed decision; the dedicated tamper test passed."
+    },
+    {
+      "check": "Selector/adapter hash binding",
+      "result": "pass",
+      "evidence": "Policy, requirement, runtime, decision, and persisted run-pin receipt hashes are bound; tampered constraints/route/runtime cases are rejected by the regression suite."
+    },
+    {
+      "check": "Immutable pin/resume, prompt rehash, and lock cleanup",
+      "result": "pass",
+      "evidence": "Adapter tests passed for identical receipt reuse, changed-route conflict, altered-prompt rejection, fail-closed blocked pin, and removal of the pin lock."
+    },
+    {
+      "check": "Schema parity and current artifact integrity",
+      "result": "pass",
+      "evidence": "Current policy, requirements, v3 decision, surface matrix, and Hermes adapter manifest validate against their JSON schemas; the v3 run pin embeds the exact v3 decision and its receipt hash."
+    },
+    {
+      "check": "Surface truthfulness and reference labeling",
+      "result": "pass",
+      "evidence": "contracts/surface-matrix.json marks Hermes routing partial; docs and adapters distinguish native task-thread/auxiliary mappings from staged non-launchable delegate/DAG/Kanban mappings; v3 references are current while v1/v2 receipts are explicitly historical/superseded."
+    }
+  ]
+}

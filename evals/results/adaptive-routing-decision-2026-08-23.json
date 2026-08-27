@@ -1,0 +1,39 @@
+{
+  "decision_id": "78b939c394785904a62862f3d816a0d9b3de5245fbaa93c1a47f59cc6abf5a47",
+  "evidence_receipt": null,
+  "excluded": {
+    "luna-high-hermes-0200": [
+      "evidence_state",
+      "evidence_expired",
+      "required_runtime",
+      "min_sample_size",
+      "p95_seconds",
+      "max_expected_total_cost_usd"
+    ],
+    "sol-low-hermes-0200": [
+      "evidence_state",
+      "evidence_expired",
+      "required_runtime",
+      "min_sample_size",
+      "p95_seconds",
+      "max_expected_total_cost_usd"
+    ]
+  },
+  "failure_cost": "low",
+  "fallback_candidates": [],
+  "metrics": {},
+  "objective": "speed",
+  "outcome": "fail_closed",
+  "pareto_frontier": [],
+  "pin_status": "denied",
+  "policy_sha256": "8d916f858f06d932d688b72a09db03f054ac56018a1cd5cc8729ece9a2c2e491",
+  "policy_version": "evidence-inventory-2026-08-23",
+  "requirement_sha256": "f93c21b58e4a7a64b9c496d5633f4d691e3a7aad39f11fe46eec3dd43cf3e49a",
+  "route": null,
+  "schema_version": 2,
+  "target_surface": "hermes-delegate",
+  "task_class": "mechanical-bounded",
+  "verifier_plan": {
+    "kind": "none"
+  }
+}

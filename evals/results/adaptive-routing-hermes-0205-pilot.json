@@ -1,0 +1,166 @@
+{
+  "artifact_type": "hermes-adaptive-routing-local-evidence",
+  "batch_wall_seconds": 120.028,
+  "cleanup": {
+    "all_cli_processes_reaped": true,
+    "all_sessions_deleted": true,
+    "scratch_removed": true
+  },
+  "concurrency": 1,
+  "cost_note": "OpenAI Codex OAuth reported zero marginal billing. Nominal token-equivalent cost uses the refreshed live catalog rates and includes harness retries plus zero-cost deterministic verification. No automatic recovery route was exercised; candidates with task failures remain ineligible.",
+  "eligibility": {
+    "gpt-5.4-mini-medium-hermes-0205": {
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    }
+  },
+  "evidence_state": "profiled",
+  "harness_sha256": "f305301d2521b1e3336e4f6951435600ce5aad20e7b292316292e9c96f90e63a",
+  "host": {
+    "account_class": "codex-oauth",
+    "codex_version": "0.149.0-alpha.4.1",
+    "name": "hermes",
+    "omp_version": "17.2.13",
+    "openai_sdk": "2.24.0",
+    "provider": "openai-codex",
+    "release": "2026.8.19",
+    "transport": "hermes-task-thread",
+    "upstream_revision": "d5281f59",
+    "version": "0.20.5"
+  },
+  "limitations": [
+    "Eight samples per task class support only a rough p95 (nearest-rank maximum); uncertainty remains high.",
+    "The one-shot Hermes host exercises file and terminal tools but is not proof of native per-child receipt wiring.",
+    "Provider-internal retry counts and queue delay are not exposed by the Hermes usage receipt.",
+    "Synthetic local research evidence tests synthesis and lineage handling without live-web variability."
+  ],
+  "max_retries": 0,
+  "observed_at": "2026-08-23T13:30:40.363129Z",
+  "repeats": 1,
+  "route_manifest_sha256": "ea1a6184527f1b69ca85f70b024d9dbe2762f3cc29f0c85f3ad7e109db9f4756",
+  "routes": [
+    {
+      "id": "gpt-5.4-mini-medium-hermes-0205",
+      "model": "gpt-5.4-mini",
+      "pricing_usd_per_million": {
+        "cache_read": 0.075,
+        "cache_write": 0,
+        "input": 0.75,
+        "output": 4.5
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "challenger"
+    }
+  ],
+  "schema_version": 2,
+  "suite_id": "adaptive-routing-hermes-0205-v1",
+  "suite_sha256": "91554aa596fa117f3629b920e413cd3eca68eae46751752d8a39b3a351637a2e",
+  "summaries": [
+    {
+      "id": "gpt-5.4-mini-medium-hermes-0205",
+      "model": "gpt-5.4-mini",
+      "pricing_usd_per_million": {
+        "cache_read": 0.075,
+        "cache_write": 0,
+        "input": 0.75,
+        "output": 4.5
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "challenger",
+      "task_classes": {
+        "mechanical-bounded": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 1,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.02,
+          "p95_seconds": 120.02,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 0.0,
+        "cleanup_passed": true,
+        "concurrency": 1,
+        "empty_outputs": 1,
+        "failures": 1,
+        "p50_seconds": 120.02,
+        "p95_seconds": 120.02,
+        "retries": 0,
+        "sample_size": 1
+      }
+    }
+  ],
+  "transport": "hermes-oneshot/openai-codex",
+  "trials": [
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.02,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.4-mini-medium-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    }
+  ]
+}

@@ -1,0 +1,779 @@
+{
+  "artifact_type": "hermes-adaptive-routing-local-evidence",
+  "batch_wall_seconds": 213.474,
+  "cleanup": {
+    "all_cli_processes_reaped": true,
+    "all_sessions_deleted": true,
+    "scratch_removed": true
+  },
+  "concurrency": 2,
+  "cost_note": "OpenAI Codex OAuth reported zero marginal billing. Nominal token-equivalent cost uses the refreshed live catalog rates and includes harness retries plus zero-cost deterministic verification. No automatic recovery route was exercised; candidates with task failures remain ineligible.",
+  "eligibility": {
+    "gpt-5.4-mini-medium-hermes-0205": {
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "max_p95_seconds"
+        ]
+      }
+    },
+    "gpt-5.6-luna-high-hermes-0205": {
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    },
+    "gpt-5.6-sol-high-hermes-0205": {
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    },
+    "gpt-5.6-sol-medium-hermes-0205": {
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    },
+    "gpt-5.6-terra-max-hermes-0205": {
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    }
+  },
+  "evidence_state": "profiled",
+  "harness_sha256": "e8effc998e5c0208cede7f2c87573bee8f94cccaa4424e1f76bc86059f329bbc",
+  "host": {
+    "account_class": "codex-oauth",
+    "codex_version": "0.149.0-alpha.4.1",
+    "name": "hermes",
+    "omp_version": "17.2.13",
+    "openai_sdk": "2.24.0",
+    "provider": "openai-codex",
+    "release": "2026.8.19",
+    "transport": "hermes-task-thread",
+    "upstream_revision": "d5281f59",
+    "version": "0.20.5"
+  },
+  "limitations": [
+    "Eight samples per task class support only a rough p95 (nearest-rank maximum); uncertainty remains high.",
+    "The one-shot Hermes host exercises file and terminal tools but is not proof of native per-child receipt wiring.",
+    "Provider-internal retry counts and queue delay are not exposed by the Hermes usage receipt.",
+    "Synthetic local research evidence tests synthesis and lineage handling without live-web variability."
+  ],
+  "max_retries": 0,
+  "observed_at": "2026-08-23T13:42:00.559197Z",
+  "repeats": 1,
+  "route_manifest_sha256": "ea1a6184527f1b69ca85f70b024d9dbe2762f3cc29f0c85f3ad7e109db9f4756",
+  "routes": [
+    {
+      "id": "gpt-5.4-mini-medium-hermes-0205",
+      "model": "gpt-5.4-mini",
+      "pricing_usd_per_million": {
+        "cache_read": 0.075,
+        "cache_write": 0,
+        "input": 0.75,
+        "output": 4.5
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "challenger"
+    },
+    {
+      "id": "gpt-5.6-luna-high-hermes-0205",
+      "model": "gpt-5.6-luna",
+      "pricing_usd_per_million": {
+        "cache_read": 0.02,
+        "cache_write": 0.25,
+        "input": 0.2,
+        "output": 1.2
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "role": "incumbent-low"
+    },
+    {
+      "id": "gpt-5.6-sol-medium-hermes-0205",
+      "model": "gpt-5.6-sol",
+      "pricing_usd_per_million": {
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+        "input": 5,
+        "output": 30
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "incumbent-medium"
+    },
+    {
+      "id": "gpt-5.6-sol-high-hermes-0205",
+      "model": "gpt-5.6-sol",
+      "pricing_usd_per_million": {
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+        "input": 5,
+        "output": 30
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "role": "incumbent-high"
+    },
+    {
+      "id": "gpt-5.6-terra-max-hermes-0205",
+      "model": "gpt-5.6-terra",
+      "pricing_usd_per_million": {
+        "cache_read": 0.2,
+        "cache_write": 2.5,
+        "input": 2,
+        "output": 12
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "max",
+      "role": "challenger"
+    }
+  ],
+  "schema_version": 2,
+  "suite_id": "adaptive-routing-hermes-0205-v1",
+  "suite_sha256": "3b271499e895b22f54c1723f811c16743de1b7573f676c552054611d4d799c41",
+  "summaries": [
+    {
+      "id": "gpt-5.4-mini-medium-hermes-0205",
+      "model": "gpt-5.4-mini",
+      "pricing_usd_per_million": {
+        "cache_read": 0.075,
+        "cache_write": 0,
+        "input": 0.75,
+        "output": 4.5
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "challenger",
+      "task_classes": {
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0274752,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.0274752,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 125.832,
+          "p95_seconds": 125.832,
+          "pass_rate": 1.0,
+          "passed": 1,
+          "required_tools_verified": [
+            "file"
+          ],
+          "sample_size": 1,
+          "verifier_passed": true
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 1.0,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 0,
+        "failures": 0,
+        "p50_seconds": 125.832,
+        "p95_seconds": 125.832,
+        "retries": 0,
+        "sample_size": 1
+      }
+    },
+    {
+      "id": "gpt-5.6-luna-high-hermes-0205",
+      "model": "gpt-5.6-luna",
+      "pricing_usd_per_million": {
+        "cache_read": 0.02,
+        "cache_write": 0.25,
+        "input": 0.2,
+        "output": 1.2
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "role": "incumbent-low",
+      "task_classes": {
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.00388608,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.00388608,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 86.006,
+          "p95_seconds": 86.006,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 1.0,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 0,
+        "failures": 0,
+        "p50_seconds": 86.006,
+        "p95_seconds": 86.006,
+        "retries": 0,
+        "sample_size": 1
+      }
+    },
+    {
+      "id": "gpt-5.6-sol-medium-hermes-0205",
+      "model": "gpt-5.6-sol",
+      "pricing_usd_per_million": {
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+        "input": 5,
+        "output": 30
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "incumbent-medium",
+      "task_classes": {
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.042065,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.042065,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 31.463,
+          "p95_seconds": 31.463,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 1.0,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 0,
+        "failures": 0,
+        "p50_seconds": 31.463,
+        "p95_seconds": 31.463,
+        "retries": 0,
+        "sample_size": 1
+      }
+    },
+    {
+      "id": "gpt-5.6-sol-high-hermes-0205",
+      "model": "gpt-5.6-sol",
+      "pricing_usd_per_million": {
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+        "input": 5,
+        "output": 30
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "role": "incumbent-high",
+      "task_classes": {
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.059992,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.059992,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 27.198,
+          "p95_seconds": 27.198,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 1.0,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 0,
+        "failures": 0,
+        "p50_seconds": 27.198,
+        "p95_seconds": 27.198,
+        "retries": 0,
+        "sample_size": 1
+      }
+    },
+    {
+      "id": "gpt-5.6-terra-max-hermes-0205",
+      "model": "gpt-5.6-terra",
+      "pricing_usd_per_million": {
+        "cache_read": 0.2,
+        "cache_write": 2.5,
+        "input": 2,
+        "output": 12
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "max",
+      "role": "challenger",
+      "task_classes": {
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0204244,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.0204244,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 87.631,
+          "p95_seconds": 87.631,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 1.0,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 0,
+        "failures": 0,
+        "p50_seconds": 87.631,
+        "p95_seconds": 87.631,
+        "retries": 0,
+        "sample_size": 1
+      }
+    }
+  ],
+  "transport": "hermes-oneshot/openai-codex",
+  "trials": [
+    {
+      "acceptance": {
+        "actual": {
+          "records": [
+            {
+              "id": "a",
+              "score": 5
+            },
+            {
+              "id": "b",
+              "score": 7
+            },
+            {
+              "id": "c",
+              "score": 2
+            }
+          ],
+          "total_score": 14
+        },
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_match": true,
+        "passed": true
+      },
+      "attempt_nominal_cost_usd": 0.0274752,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.0274752,
+          "observed_descendant_count": 114,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "fc66cbd5dbc1cda911387b7ffcc59c89d56d27bedfb7a6205ea6c545b7ca9421",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 8,
+            "cache_read_tokens": 60416,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 21376,
+            "model": "gpt-5.4-mini",
+            "output_tokens": 1536,
+            "provider": "openai-codex",
+            "reasoning_tokens": 904,
+            "service_tier": null,
+            "session_id_sha256": "d5fa6524c739c5184a46f6e5eccea7bd00f16740b0d2e80c1cef47cc21930eb6",
+            "total_tokens": 83328
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 125.832,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": {
+        "status": "done"
+      },
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0274752,
+      "passed": true,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [
+        "file"
+      ],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.4-mini-medium-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": true
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.00388608,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.00388608,
+          "observed_descendant_count": 57,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "b7d2d78b2b1f207dd1e9faae5f0b14d34d12dac3cabd9c83dd67380ea3b47561",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 7,
+            "cache_read_tokens": 41984,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 11746,
+            "model": "gpt-5.6-luna",
+            "output_tokens": 581,
+            "provider": "openai-codex",
+            "reasoning_tokens": 274,
+            "service_tier": null,
+            "session_id_sha256": "00472a054b74051ba932b2e4a442db793c94c8b4dd9a7eaa21fdcfb7e796bfd0",
+            "total_tokens": 54311
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 86.006,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.00388608,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-luna-high-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.042065,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.042065,
+          "observed_descendant_count": 45,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "1cbf675dc73aa15af295970e900fe5e43b06d74e12ba7102d91e32f469bbf8f8",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 3,
+            "cache_read_tokens": 12800,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 5891,
+            "model": "gpt-5.6-sol",
+            "output_tokens": 207,
+            "provider": "openai-codex",
+            "reasoning_tokens": 137,
+            "service_tier": null,
+            "session_id_sha256": "49632d8b6c1d65867823227d2bdf1615bdd4e238e05a485e20a859c4d674075a",
+            "total_tokens": 18898
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 31.463,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.042065,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-sol-medium-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.059992,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.059992,
+          "observed_descendant_count": 39,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "1cbf675dc73aa15af295970e900fe5e43b06d74e12ba7102d91e32f469bbf8f8",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 3,
+            "cache_read_tokens": 8704,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 9994,
+            "model": "gpt-5.6-sol",
+            "output_tokens": 189,
+            "provider": "openai-codex",
+            "reasoning_tokens": 119,
+            "service_tier": null,
+            "session_id_sha256": "76096af2483e25daba80b78851f91608f151676837f09aba506c5f9a94987f3e",
+            "total_tokens": 18887
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 27.198,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.059992,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-sol-high-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0204244,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.0204244,
+          "observed_descendant_count": 45,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "1cbf675dc73aa15af295970e900fe5e43b06d74e12ba7102d91e32f469bbf8f8",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 4,
+            "cache_read_tokens": 18432,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 6809,
+            "model": "gpt-5.6-terra",
+            "output_tokens": 260,
+            "provider": "openai-codex",
+            "reasoning_tokens": 112,
+            "service_tier": null,
+            "session_id_sha256": "d153a2393a9b2cbee6b6c0592856484d33a9b07d05e3f3ab5b53906429b038ff",
+            "total_tokens": 25501
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 87.631,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0204244,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-terra-max-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    }
+  ]
+}

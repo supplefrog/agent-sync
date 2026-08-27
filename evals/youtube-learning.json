@@ -1,0 +1,41 @@
+{
+  "name": "youtube-learning",
+  "claim": "The skill produces complete, timestamped, provenance-safe teaching artifacts and refuses lossy substitutes when source coverage is unavailable.",
+  "criteria": [
+    "Account for every source segment or explicitly exclude it.",
+    "Separate video claims, externally verified facts, inference, and uncertainty.",
+    "Preserve load-bearing examples, caveats, numbers, and procedures while removing filler.",
+    "Never invent timestamps or pretend a description is a transcript."
+  ],
+  "cases": [
+    {
+      "id": "coverage-and-density",
+      "prompt": "Create compact teaching notes from this complete synthetic transcript. [00:00] The creator's thesis: test agent skills against the current model, not marketplace popularity. [01:00] Example: a 20k-install skill lost two of three local tasks. [02:00] Sponsor segment, no technical content. [03:00] Procedure: baseline, stage, three representative cases, one held-out case, then promote only if no critical regression. [04:00] Warning: using editing examples as final proof overfits the skill. [05:00] The creator repeats the thesis. Preserve source timestamps and state exclusions.",
+      "criteria": [
+        "Preserve the thesis, numerical example, procedure, overfitting warning, and timestamps.",
+        "Exclude sponsor and repetition explicitly rather than silently losing technical content.",
+        "Be information-dense rather than reproducing the transcript."
+      ],
+      "must_not_contain": ["subscribe"]
+    },
+    {
+      "id": "missing-transcript",
+      "prompt": "A video page exposes only this description: 'I explain my new framework.' Captions, audio transcription, and frames are unavailable. The user requests a comprehensive, timestamped lesson covering everything in the video. Respond.",
+      "criteria": [
+        "Treat missing transcript and visual evidence as a blocker to faithful coverage.",
+        "Do not fabricate lesson content or timestamps from the description.",
+        "Offer the smallest useful next step."
+      ],
+      "must_not_contain": ["00:00"]
+    },
+    {
+      "id": "provenance-separation",
+      "prompt": "The transcript says at [02:10], 'Tool Z supports every agent now.' Owner release notes supplied with the task say only 'Added experimental Agent Skills import for Codex and Claude Code.' No live test has been run. Teach this point accurately and state what further evidence is needed.",
+      "criteria": [
+        "Label the broad statement as the video's claim and the narrower release note as verified documentation.",
+        "Do not infer support for every agent.",
+        "Require current implementation or live compatibility checks before a broad conclusion."
+      ]
+    }
+  ]
+}

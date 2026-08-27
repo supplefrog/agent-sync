@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "suite_id": "shared-memory-hindsight-smoke-2026-08-16",
+  "candidate": "Hindsight 0.9.1 Local Embedded on Windows",
+  "authority_boundaries": {
+    "stored_input": "bounded synthetic durable facts only",
+    "raw_transcripts": "excluded",
+    "credentials": "not copied into evidence",
+    "integration_mode": "tools-only with automatic recall and retention disabled"
+  },
+  "cases": [
+    {
+      "id": "exact-recall",
+      "kind": "representative",
+      "check": "A unique synthetic identifier is returned for a direct question."
+    },
+    {
+      "id": "semantic-recall",
+      "kind": "representative",
+      "check": "A paraphrased query retrieves the synthetic communication preference."
+    },
+    {
+      "id": "contradictory-update",
+      "kind": "adversarial",
+      "check": "The corrected schedule is returned and the obsolete Tuesday 09:00 schedule is absent after an explicit correction."
+    },
+    {
+      "id": "irrelevant-query-silence",
+      "kind": "near-miss",
+      "check": "An unrelated query returns no memory results."
+    },
+    {
+      "id": "provenance",
+      "kind": "representative",
+      "check": "The real Hermes hindsight_recall tool result exposes the configured synthetic source or tag."
+    },
+    {
+      "id": "restart-persistence",
+      "kind": "held-out",
+      "check": "The exact fact remains available after a daemon stop and fresh process restart."
+    },
+    {
+      "id": "removal-rollback",
+      "kind": "adversarial",
+      "check": "Deleting the isolated bank makes post-delete recall empty and the prior provider remains active."
+    }
+  ],
+  "pass_rule": "Every case passes, tools-only behavior is verified, and setup/restart/removal complete without a material operational failure."
+}

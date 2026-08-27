@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-signal/surface-matrix.schema.json",
+  "type": "object",
+  "required": ["schema_version", "knowledge_ledger", "hosts", "staleness", "modalities"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "knowledge_ledger": {"type": "string", "minLength": 1},
+    "hosts": {
+      "type": "object",
+      "required": ["hermes", "codex"],
+      "additionalProperties": {
+        "type": "object",
+        "required": ["cli_version", "source_revision", "sources"],
+        "properties": {
+          "cli_version": {"type": "string", "minLength": 1},
+          "source_revision": {"type": "string", "minLength": 7},
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "format": "uri"}
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "staleness": {
+      "type": "object",
+      "required": ["max_age_days", "triggers"],
+      "properties": {
+        "max_age_days": {"type": "integer", "minimum": 1},
+        "triggers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": false
+    },
+    "modalities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "contract", "status", "portable_artifacts", "hosts", "intentional_deltas", "evidence"],
+        "properties": {
+          "id": {
+            "enum": [
+              "instructions-style",
+              "skills-procedures",
+              "tools-mcp",
+              "routing-delegation",
+              "memory-context",
+              "policy-security",
+              "planning-automation",
+              "lifecycle-update"
+            ]
+          },
+          "contract": {"type": "string", "minLength": 1},
+          "status": {"enum": ["unassessed", "staged", "confirmed", "partial", "stale"]},
+          "portable_artifacts": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
+          "hosts": {
+            "type": "object",
+            "required": ["hermes", "codex"],
+            "additionalProperties": {
+              "type": "object",
+              "required": ["owner", "mechanism", "support", "parity"],
+              "properties": {
+                "owner": {"type": "string", "minLength": 1},
+                "mechanism": {"type": "string", "minLength": 1},
+                "support": {"enum": ["native", "adapter", "partial", "unsupported"]},
+                "parity": {"enum": ["unassessed", "candidate", "confirmed", "intentional-delta", "stale"]}
+              },
+              "additionalProperties": false
+            }
+          },
+          "intentional_deltas": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
+          "evidence": {
+            "type": "object",
+            "required": ["suites", "summaries"],
+            "properties": {
+              "suites": {
+                "type": "array",
+                "items": {"type": "string", "minLength": 1}
+              },
+              "summaries": {
+                "type": "array",
+                "items": {"type": "string", "minLength": 1}
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

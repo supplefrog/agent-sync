@@ -1,0 +1,34 @@
+{
+  "$schema": "schema.json",
+  "name": "presentation-design",
+  "claim": "The presentation workflow improves narrative and slide-specific decisions without forcing deck mechanics onto unrelated work.",
+  "cases": [
+    {
+      "id": "live-talk-spine",
+      "prompt": "Outline an eight-slide live talk for senior engineers arguing that agent bottlenecks have shifted from code generation to judgment. Include the narrative spine and the exact closing slide. Keep slide copy sparse.",
+      "criteria": [
+        "Builds a clear tension-to-resolution story rather than a topic list.",
+        "Takes a debatable position and names stakes.",
+        "Provides sparse slide-specific headlines and an exact closing slide."
+      ]
+    },
+    {
+      "id": "investor-pitch-route",
+      "prompt": "Create a 10-slide seed pitch outline for a developer-tool startup. The deck will be emailed without a presenter. Include an explicit ask and make every headline understandable without speaker context.",
+      "criteria": [
+        "Uses standalone claims rather than sparse live-talk labels.",
+        "Includes the core investor sequence and an explicit amount/use-of-funds ask.",
+        "Does not rely on speaker notes to make the argument intelligible."
+      ]
+    },
+    {
+      "id": "non-trigger-document",
+      "prompt": "Rewrite this two-paragraph engineering incident summary for clarity. It is an email, not a presentation. State whether a slide workflow is needed.",
+      "criteria": [
+        "Does not invoke or impose a slide-deck workflow.",
+        "Recognizes that the output is an email/prose task.",
+        "Keeps the answer scoped."
+      ]
+    }
+  ]
+}

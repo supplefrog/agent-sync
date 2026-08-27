@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "evidence_state": "callable-smoke",
+  "target_surface": "cc-dynamic-workflow",
+  "run_id": "evidence-route-cc-smoke-20260816-013751-ebb072",
+  "trials": [
+    {
+      "route_id": "luna-high",
+      "model": "gpt-5.6-luna",
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "passed": true,
+      "duration_seconds": 32.0,
+      "receipt_persisted_before_launch": true,
+      "parsed": {
+        "unique_sorted": [
+          2,
+          4,
+          7,
+          9
+        ],
+        "sum_unique": 22
+      }
+    },
+    {
+      "route_id": "sol-low",
+      "model": "gpt-5.6-sol",
+      "provider": "openai-codex",
+      "reasoning_effort": "low",
+      "passed": true,
+      "duration_seconds": 29.0,
+      "receipt_persisted_before_launch": true,
+      "parsed": {
+        "unique_sorted": [
+          2,
+          4,
+          7,
+          9
+        ],
+        "sum_unique": 22
+      }
+    }
+  ],
+  "cleanup": {
+    "passed": true,
+    "method": "controller identity scrubbed; generated Hermes session ids deleted with hermes sessions delete --yes and absence verified with hermes sessions list",
+    "deleted_session_ids": [
+      "20260816_070755_51498d",
+      "20260816_070755_f98469"
+    ]
+  },
+  "limitations": [
+    "One deterministic task per route proves callable exact-route and receipt persistence only.",
+    "The installed Hermes CLI does not yet accept the runner ephemeral-session registration flags, so this smoke used explicit supported session deletion; the failed registration attempts remain contradictory evidence.",
+    "No task-class route is promoted from this small smoke sample."
+  ]
+}

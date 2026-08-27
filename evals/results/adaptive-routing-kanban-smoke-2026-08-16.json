@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "evidence_state": "integration-smoke",
+  "target_surface": "kanban-worker",
+  "passed": true,
+  "duration_seconds": 0.314,
+  "claimed_run_metadata": {
+    "acceptance": "passed",
+    "dispatch_route": {
+      "model": "gpt-5.6-sol",
+      "provider": "openai-codex",
+      "reasoning_effort": "low"
+    },
+    "route_decision_receipt": {
+      "evidence_receipt": "self:smoke-only",
+      "excluded": {},
+      "failure_cost": "low",
+      "metrics": {},
+      "objective": "speed",
+      "pareto_frontier": [
+        "sol-low"
+      ],
+      "policy_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "policy_version": "smoke-only-unpromoted-2026-08-16",
+      "requirement_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "route": {
+        "id": "sol-low",
+        "model": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "reasoning_effort": "low",
+        "runtime": {
+          "source": "candidate-worktree",
+          "transport": "kanban-worker"
+        }
+      },
+      "schema_version": 1,
+      "target_surface": "kanban-worker",
+      "task_class": "mechanical-bounded"
+    }
+  },
+  "stale_receipt_invalidation_passed": true,
+  "cleanup_passed": true,
+  "limitations": [
+    "Temporary SQLite integration proves exact-route claim/completion persistence and stale-receipt invalidation.",
+    "It does not launch a model worker and is not task-quality evidence for route promotion."
+  ]
+}

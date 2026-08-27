@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../skills/openai-delegation-route-research/references/route-requirements.schema.json",
+  "target_surface": "hermes-delegate",
+  "task_class": "mechanical-bounded",
+  "decision_time": "2026-08-23T17:33:51+05:30",
+  "objective": "speed",
+  "min_pass_rate": 0.9,
+  "min_sample_size": 8,
+  "max_p95_seconds": 30,
+  "dependency_deadline_seconds": 30,
+  "max_expected_total_cost_usd": 0.5,
+  "max_critical_failures": 0,
+  "failure_cost": "low",
+  "required_tools": [],
+  "required_capabilities": ["text"],
+  "required_context_tokens": 0,
+  "required_concurrency": 1,
+  "allowed_providers": ["openai-codex"],
+  "allowed_models": [],
+  "required_runtime": {
+    "host": "hermes",
+    "host_version": "0.20.5",
+    "transport": "hermes-delegate"
+  },
+  "max_retries": 1,
+  "verifier_required": false,
+  "verifier_plan": {"kind": "none"},
+  "pass_rate_tolerance": 0.02,
+  "p95_tolerance_seconds": 2
+}

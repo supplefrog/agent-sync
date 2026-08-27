@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "decision": "no-promotion",
+  "generated_at": "2026-08-16T01:43:49Z",
+  "incumbent": "skills/openai-delegation-route-research/references/current-route-policy.json",
+  "incumbent_state": "incumbent-unmeasured",
+  "candidate_routes": [
+    {"id": "luna-high", "provider": "openai-codex", "model": "gpt-5.6-luna", "reasoning_effort": "high"},
+    {"id": "sol-low", "provider": "openai-codex", "model": "gpt-5.6-sol", "reasoning_effort": "low"}
+  ],
+  "evidence": [
+    "evals/results/adaptive-routing-smoke-2026-08-15-clean.json",
+    "evals/results/adaptive-routing-surface-smoke-2026-08-16.json",
+    "evals/results/adaptive-routing-cc-workflow-smoke-2026-08-16.json",
+    "evals/results/adaptive-routing-hermes-delegate-smoke-2026-08-16.json",
+    "evals/results/adaptive-routing-kanban-smoke-2026-08-16.json"
+  ],
+  "verified_interface_results": {
+    "selector_constraints_and_pareto_logic": "passed",
+    "codex_workflow_callable": true,
+    "omp_workflow_callable": true,
+    "cc_dynamic_workflow_callable": true,
+    "hermes_delegate_callable": true,
+    "kanban_receipt_persistence_and_invalidation": true
+  },
+  "promotion_failures": [
+    "Per-task-class and per-surface sample floors are not met.",
+    "Most real surface smokes have one sample per route, so p95 and variance are not established.",
+    "Expected total cost, including retries and verification, is not measured consistently across surfaces.",
+    "The Kanban integration smoke validates persistence and invalidation but does not launch a model worker.",
+    "The current installed Hermes CLI rejects cc-dynamic-workflow ephemeral-session registration flags; explicit session deletion was required for cleanup.",
+    "The one-shot six-case profile is a prefilter and is not transport-equivalent to delegated, Kanban, Codex, OMP, or workflow surfaces."
+  ],
+  "conclusion": "The shared decision interface and exact-route adapters are viable staged candidates, but neither Luna-high nor Sol-low has enough current task-and-surface evidence for a schema-v2 admitted policy. Keep the incumbent unchanged and fail closed for evidence-selected routing until the missing samples, p95, cost, and lifecycle evidence exist.",
+  "live_route_changed": false,
+  "rollback": "Remove the staged adapter bundle and Hermes worktree; the incumbent policy and existing persisted runs are unchanged."
+}

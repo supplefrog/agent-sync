@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "suite": "capability-admission",
+  "host": "hermes",
+  "host_version": "Hermes Agent v0.19.0; upstream 1161cc0b; local 5be99b6f",
+  "judge_host": "codex",
+  "judge_version": "codex-cli 0.146.0-alpha.3.1",
+  "status": "stale-after-adaptation",
+  "artifacts": {
+    "candidate_sha256": "445d20a207961887e6185dd420088fe905e4536f8ededd820bf06575d40ec432",
+    "suite_sha256": "076790202c4f89cfa121fd81f13d98836222e43390e7dd9c8e12eaa949638513",
+    "harness_sha256": "94f14e516025c5d28d11ff88ddfc0538e89829488c2fe8c97859221f3e14713e"
+  },
+  "result": {
+    "passed": false,
+    "candidate_wins": 3,
+    "candidate_losses": 1,
+    "ties": 1,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0
+  },
+  "cases": {
+    "popular-skill": "win",
+    "redundant-style": "loss",
+    "upstream-trace": "tie",
+    "held-out-regression": "win",
+    "portable-architecture": "win"
+  },
+  "contradiction": "The candidate improved most cases but was judged worse on redundant-style because it recited source, license, and maintenance gates after overlap already settled the decision.",
+  "decision": "Keep staged. The stopping rule was adapted to remove irrelevant downstream gates; re-run the full suite with fresh held-out proof.",
+  "raw_report_committed": false
+}

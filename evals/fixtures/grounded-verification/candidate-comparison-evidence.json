@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "artifact_type": "grounded-verification-decision-evidence",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "scope_id": "S-ADOPTION",
+  "decision_type": "candidate-comparison",
+  "evidence_lanes": [
+    "baseline",
+    "candidate-trial",
+    "cost",
+    "maintenance",
+    "portability",
+    "host-neutrality",
+    "rollback"
+  ],
+  "result": "pass",
+  "basis": {
+    "baseline": "The unchanged owner misses preserved ownership, freeze, isolation, oracle, and lifecycle blockers.",
+    "candidate-trial": "The adapted owner detects all 16 preserved blockers and one non-regression with zero observed false positives or negatives.",
+    "cost": "Deterministic execution uses no model tokens or API cost; isolated test design remains separately measured.",
+    "maintenance": "The additive schema, validator, fixtures, and tests require an estimated 30 minutes per contract.",
+    "portability": "The focused and full suites execute on Windows using Python and JSON only.",
+    "host-neutrality": "The contract uses host-neutral artifacts and reports host-native isolation limitations rather than hiding them.",
+    "rollback": "Deleting the additive grounded-verification artifacts restores the unchanged evaluation owner without state migration."
+  },
+  "selected_option": "adapt-current-owner",
+  "options": [
+    {
+      "option": "retain-no-change",
+      "defect_detection": "misses known ownership, isolation, oracle, freeze-root, and board-lifecycle blockers",
+      "net_value": "negative",
+      "selected": false
+    },
+    {
+      "option": "adapt-current-owner",
+      "defect_detection": "16/16 preserved blockers, 0 observed false positives, 0 observed false negatives",
+      "runtime_seconds": 1.656,
+      "model_cost_usd": 0.0,
+      "context_tokens": 0,
+      "maintenance_minutes": 30.0,
+      "windows_portability": "pass",
+      "host_neutrality": "pass",
+      "rollback": "delete additive grounded-verification artifacts",
+      "net_value": "positive",
+      "selected": true
+    },
+    {
+      "option": "replace-with-external-framework",
+      "defect_detection": "not independently reproduced locally",
+      "infrastructure_burden": "new framework owner and integration surface",
+      "net_value": "unproven",
+      "selected": false
+    }
+  ]
+}

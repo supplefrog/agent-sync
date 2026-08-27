@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "artifact_type": "grounded-verification-decision-evidence",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "scope_id": "S-ULTIMATE-AGENT",
+  "decision_type": "architecture",
+  "evidence_lanes": [
+    "legacy-classification",
+    "convergence-revalidation",
+    "prime-persistence",
+    "prime-lifecycle",
+    "prime-safety",
+    "fleet-omission",
+    "kanban-authority",
+    "rollback",
+    "no-downstream-pass-claim"
+  ],
+  "result": "pass",
+  "scope_boundary": "This evidence proves that the gate requires and validates the declared lanes. It does not claim that downstream Hermes, Codex, OMP, or Prime Agent outcomes pass.",
+  "downstream_outcome_status": "not-evaluated",
+  "basis": {
+    "legacy-classification": "Done status is rejected without one of verified, provisionally valid, superseded, or failed evidence classifications.",
+    "convergence-revalidation": "Ultimate-agent convergence requires fresh cross-host evidence rather than inherited done receipts.",
+    "prime-persistence": "Any optional Prime decision requires persistent RLM workspace and daemon-continuity evidence.",
+    "prime-lifecycle": "Any optional Prime decision requires child lifecycle and family-messaging evidence.",
+    "prime-safety": "Self-approved refinement, unsandboxed execution, and unproven Windows quality are explicit blockers; bounded autonomy and rollbackable supplemental refinement are required.",
+    "fleet-omission": "The third-reminder fleet omission is frozen as a deterministic held-out blocker.",
+    "kanban-authority": "Kanban remains authoritative for durable task and promotion state.",
+    "rollback": "Prime remains optional and supplemental; no external framework or live capability is promoted by this contract.",
+    "no-downstream-pass-claim": "The verified result is limited to gate coverage and explicitly leaves downstream outcomes not evaluated."
+  }
+}

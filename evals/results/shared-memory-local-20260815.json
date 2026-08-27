@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-15T02:58:08Z",
+  "decision": "defer-cross-host-shared-memory",
+  "claim_tested": "A locally runnable shared-memory provider should replace the current tools-only Honcho path only if it is available and materially improves representative recall without duplicating transcript, repository, skill, or Kanban authority.",
+  "privacy": {
+    "transcript_bodies_copied": false,
+    "credentials_copied": false,
+    "stored_evidence": "counts, readiness state, retrieval verdicts, and public-safe source references only"
+  },
+  "hermes_baseline": {
+    "provider": "honcho",
+    "recall_mode": "tools",
+    "service": {
+      "api": "healthy",
+      "database": "healthy",
+      "gateway": "healthy",
+      "redis": "healthy",
+      "deriver": "running"
+    },
+    "queue": {
+      "pending": 0,
+      "processed_without_error": {
+        "reconciler": 112,
+        "representation": 4,
+        "summary": 1,
+        "webhook": 5
+      }
+    },
+    "backfill": {
+      "stored_messages": 794,
+      "stored_sessions": 105,
+      "dry_run_candidate_sessions": 103,
+      "exact_source_ids_loaded": 1056,
+      "messages_already_present": 553,
+      "messages_missing": 0,
+      "errors": 0
+    },
+    "representative_retrieval": {
+      "cases": 3,
+      "honcho_search_exact_fact_hits": 0,
+      "session_search_exact_fact_hits": 3,
+      "profile_card_stale_cases": 1,
+      "verdict": "Honcho is operational but does not replace transcript-grounded session_search for recent exact facts. Keep it as an on-demand semantic/profile supplement only."
+    }
+  },
+  "hindsight_candidate": {
+    "hermes_plugin_available": true,
+    "client_installed": false,
+    "profile_config_present": false,
+    "local_health_endpoint_reachable": false,
+    "local_version_endpoint_reachable": false,
+    "representative_retrieval_runnable": false,
+    "verdict": "Inconclusive candidate, not an admitted winner. Installing or configuring a new backend solely to create a comparison would mutate the live capability surface before baseline evidence justifies it."
+  },
+  "host_disposition": {
+    "hermes": "retain session_search for raw transcript evidence, built-in compact memory for current explicit facts, and Honcho in tools-only mode for semantic/profile recall",
+    "codex": "defer; live MCP inventory has no Honcho or Hindsight server and Codex runtime session state remains native",
+    "omp": "defer; native memory backend is off, although the runtime supports Hindsight, local summaries, and Mnemopi"
+  },
+  "authority_boundaries": {
+    "raw_transcripts": "native session stores and session_search",
+    "procedures": "skills",
+    "project_truth": "repositories",
+    "task_truth": "Hermes Kanban",
+    "durable_facts_preferences_decisions": "compact explicit memory plus the admitted semantic provider, currently tools-only Honcho"
+  },
+  "rollback": "No live provider or host configuration changed. Remove this evidence record and decision document to roll back the documentation-only result.",
+  "reopen_when": [
+    "A local Hindsight endpoint and isolated test bank are available without changing the live provider.",
+    "The same provenance-scoped suite can run against both providers with equivalent source data.",
+    "A candidate materially beats session_search plus tools-only Honcho on representative and held-out cases without broad per-turn injection or duplicate authority."
+  ]
+}

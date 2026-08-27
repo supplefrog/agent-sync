@@ -1,0 +1,2209 @@
+{
+  "artifact_type": "hermes-adaptive-routing-local-evidence",
+  "batch_wall_seconds": 969.164,
+  "cleanup": {
+    "all_cli_processes_reaped": true,
+    "all_sessions_deleted": true,
+    "scratch_removed": true
+  },
+  "concurrency": 2,
+  "cost_note": "OpenAI Codex OAuth reported zero marginal billing. Nominal token-equivalent cost uses the refreshed live catalog rates and includes harness retries plus zero-cost deterministic verification. No automatic recovery route was exercised; candidates with task failures remain ineligible.",
+  "eligibility": {
+    "gpt-5.4-mini-medium-hermes-0205": {
+      "implementation-debugging": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "research-synthesis": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "verification-refutation": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    },
+    "gpt-5.6-luna-high-hermes-0205": {
+      "implementation-debugging": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "research-synthesis": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "verification-refutation": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    },
+    "gpt-5.6-sol-high-hermes-0205": {
+      "implementation-debugging": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "research-synthesis": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "verification-refutation": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    },
+    "gpt-5.6-sol-medium-hermes-0205": {
+      "implementation-debugging": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "research-synthesis": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "verification-refutation": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    },
+    "gpt-5.6-terra-max-hermes-0205": {
+      "implementation-debugging": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "mechanical-bounded": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "research-synthesis": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "max_p95_seconds",
+          "verifier_required",
+          "required_tools"
+        ]
+      },
+      "verification-refutation": {
+        "eligible": false,
+        "reasons": [
+          "min_sample_size",
+          "min_pass_rate",
+          "max_critical_failures",
+          "verifier_required",
+          "required_tools"
+        ]
+      }
+    }
+  },
+  "evidence_state": "profiled",
+  "harness_sha256": "95704e3b28600d78fc9909f96bb6d4caaf0106b35f3bd1665f05074bb664de41",
+  "host": {
+    "account_class": "codex-oauth",
+    "codex_version": "0.149.0-alpha.4.1",
+    "name": "hermes",
+    "omp_version": "17.2.13",
+    "openai_sdk": "2.24.0",
+    "provider": "openai-codex",
+    "release": "2026.8.19",
+    "transport": "hermes-task-thread",
+    "upstream_revision": "d5281f59",
+    "version": "0.20.5"
+  },
+  "limitations": [
+    "Eight samples per task class support only a rough p95 (nearest-rank maximum); uncertainty remains high.",
+    "The one-shot Hermes host exercises file and terminal tools but is not proof of native per-child receipt wiring.",
+    "Provider-internal retry counts and queue delay are not exposed by the Hermes usage receipt.",
+    "Synthetic local research evidence tests synthesis and lineage handling without live-web variability."
+  ],
+  "max_retries": 1,
+  "observed_at": "2026-08-23T14:20:24.122510Z",
+  "repeats": 1,
+  "route_manifest_sha256": "ea1a6184527f1b69ca85f70b024d9dbe2762f3cc29f0c85f3ad7e109db9f4756",
+  "routes": [
+    {
+      "id": "gpt-5.4-mini-medium-hermes-0205",
+      "model": "gpt-5.4-mini",
+      "pricing_usd_per_million": {
+        "cache_read": 0.075,
+        "cache_write": 0,
+        "input": 0.75,
+        "output": 4.5
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "challenger"
+    },
+    {
+      "id": "gpt-5.6-luna-high-hermes-0205",
+      "model": "gpt-5.6-luna",
+      "pricing_usd_per_million": {
+        "cache_read": 0.02,
+        "cache_write": 0.25,
+        "input": 0.2,
+        "output": 1.2
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "role": "incumbent-low"
+    },
+    {
+      "id": "gpt-5.6-sol-medium-hermes-0205",
+      "model": "gpt-5.6-sol",
+      "pricing_usd_per_million": {
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+        "input": 5,
+        "output": 30
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "incumbent-medium"
+    },
+    {
+      "id": "gpt-5.6-sol-high-hermes-0205",
+      "model": "gpt-5.6-sol",
+      "pricing_usd_per_million": {
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+        "input": 5,
+        "output": 30
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "role": "incumbent-high"
+    },
+    {
+      "id": "gpt-5.6-terra-max-hermes-0205",
+      "model": "gpt-5.6-terra",
+      "pricing_usd_per_million": {
+        "cache_read": 0.2,
+        "cache_write": 2.5,
+        "input": 2,
+        "output": 12
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "max",
+      "role": "challenger"
+    }
+  ],
+  "schema_version": 2,
+  "suite_id": "adaptive-routing-hermes-0205-v1",
+  "suite_sha256": "3b271499e895b22f54c1723f811c16743de1b7573f676c552054611d4d799c41",
+  "summaries": [
+    {
+      "id": "gpt-5.4-mini-medium-hermes-0205",
+      "model": "gpt-5.4-mini",
+      "pricing_usd_per_million": {
+        "cache_read": 0.075,
+        "cache_write": 0,
+        "input": 0.75,
+        "output": 4.5
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "challenger",
+      "task_classes": {
+        "implementation-debugging": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.501,
+          "p95_seconds": 120.501,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "mechanical-bounded": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.225,
+          "p95_seconds": 120.225,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "research-synthesis": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.269,
+          "p95_seconds": 120.269,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "verification-refutation": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.505,
+          "p95_seconds": 120.505,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 0.0,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 4,
+        "failures": 4,
+        "p50_seconds": 120.385,
+        "p95_seconds": 120.505,
+        "retries": 4,
+        "sample_size": 4
+      }
+    },
+    {
+      "id": "gpt-5.6-luna-high-hermes-0205",
+      "model": "gpt-5.6-luna",
+      "pricing_usd_per_million": {
+        "cache_read": 0.02,
+        "cache_write": 0.25,
+        "input": 0.2,
+        "output": 1.2
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "role": "incumbent-low",
+      "task_classes": {
+        "implementation-debugging": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.339,
+          "p95_seconds": 120.339,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.00241552,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.00241552,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 26.852,
+          "p95_seconds": 26.852,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "research-synthesis": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.107,
+          "p95_seconds": 120.107,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "verification-refutation": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.106,
+          "p95_seconds": 120.106,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 0.25,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 3,
+        "failures": 3,
+        "p50_seconds": 120.106,
+        "p95_seconds": 120.339,
+        "retries": 3,
+        "sample_size": 4
+      }
+    },
+    {
+      "id": "gpt-5.6-sol-medium-hermes-0205",
+      "model": "gpt-5.6-sol",
+      "pricing_usd_per_million": {
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+        "input": 5,
+        "output": 30
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "role": "incumbent-medium",
+      "task_classes": {
+        "implementation-debugging": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.104,
+          "p95_seconds": 120.104,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.074443,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.074443,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 40.894,
+          "p95_seconds": 40.894,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "research-synthesis": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.095,
+          "p95_seconds": 120.095,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "verification-refutation": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.051773,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.051773,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 44.618,
+          "p95_seconds": 44.618,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 0.5,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 2,
+        "failures": 2,
+        "p50_seconds": 82.356,
+        "p95_seconds": 120.104,
+        "retries": 2,
+        "sample_size": 4
+      }
+    },
+    {
+      "id": "gpt-5.6-sol-high-hermes-0205",
+      "model": "gpt-5.6-sol",
+      "pricing_usd_per_million": {
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+        "input": 5,
+        "output": 30
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "high",
+      "role": "incumbent-high",
+      "task_classes": {
+        "implementation-debugging": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.111,
+          "p95_seconds": 120.111,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.030849,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.030849,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 30.881,
+          "p95_seconds": 30.881,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "research-synthesis": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.124,
+          "p95_seconds": 120.124,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "verification-refutation": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.100913,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.100913,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 39.851,
+          "p95_seconds": 39.851,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 0.5,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 2,
+        "failures": 2,
+        "p50_seconds": 79.981,
+        "p95_seconds": 120.124,
+        "retries": 2,
+        "sample_size": 4
+      }
+    },
+    {
+      "id": "gpt-5.6-terra-max-hermes-0205",
+      "model": "gpt-5.6-terra",
+      "pricing_usd_per_million": {
+        "cache_read": 0.2,
+        "cache_write": 2.5,
+        "input": 2,
+        "output": 12
+      },
+      "provider": "openai-codex",
+      "reasoning_effort": "max",
+      "role": "challenger",
+      "task_classes": {
+        "implementation-debugging": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.243,
+          "p95_seconds": 120.243,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "mechanical-bounded": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0061108,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 0,
+          "expected_retries": 0.0,
+          "expected_total_cost_usd": 0.0061108,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 0,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 14.753,
+          "p95_seconds": 14.753,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "research-synthesis": {
+          "attempt_success_rate": 0.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 120.696,
+          "p95_seconds": 120.696,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        },
+        "verification-refutation": {
+          "attempt_success_rate": 1.0,
+          "capabilities_verified": [
+            "text",
+            "tool-use"
+          ],
+          "cleanup_passed": true,
+          "concurrency_verified": 2,
+          "cost_components": {
+            "attempts_usd": 0.0,
+            "recovery_usd": 0.0,
+            "retries_usd": 0.0140472,
+            "verification_usd": 0.0
+          },
+          "critical_failures": 1,
+          "expected_retries": 1.0,
+          "expected_total_cost_usd": 0.0140472,
+          "marginal_oauth_cost_usd": 0.0,
+          "max_retries_observed": 1,
+          "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+          "p50_seconds": 89.187,
+          "p95_seconds": 89.187,
+          "pass_rate": 0.0,
+          "passed": 0,
+          "required_tools_verified": [],
+          "sample_size": 1,
+          "verifier_passed": false
+        }
+      },
+      "transport": {
+        "attempt_success_rate": 0.5,
+        "cleanup_passed": true,
+        "concurrency": 2,
+        "empty_outputs": 2,
+        "failures": 2,
+        "p50_seconds": 104.715,
+        "p95_seconds": 120.696,
+        "retries": 3,
+        "sample_size": 4
+      }
+    }
+  ],
+  "timeout_seconds": 60,
+  "transport": "hermes-oneshot/openai-codex",
+  "trials": [
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 71,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 73,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.225,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.4-mini-medium-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 68,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 68,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "research-synthesize-lineages",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.269,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.4-mini-medium-hermes-0205",
+      "task_class": "research-synthesis",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 95,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 80,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "implementation-fix-clamp",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.501,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.4-mini-medium-hermes-0205",
+      "task_class": "implementation-debugging",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 84,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 65,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "verification-refute-dominance",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.505,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.4-mini-medium-hermes-0205",
+      "task_class": "verification-refutation",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.00241552,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.00241552,
+          "observed_descendant_count": 38,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "6bb20a2475e80c498b167cbe156b6dfe83f36cb3642310f813457c53d7083788",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 4,
+            "cache_read_tokens": 16896,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 8912,
+            "model": "gpt-5.6-luna",
+            "output_tokens": 246,
+            "provider": "openai-codex",
+            "reasoning_tokens": 144,
+            "service_tier": null,
+            "session_id_sha256": "c56add78cf98ea37d056dda3a78d5c93fcc16b8b98c5966f47d0b70885387ebb",
+            "total_tokens": 26054
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 26.852,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.00241552,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-luna-high-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 39,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 61,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "research-synthesize-lineages",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.107,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-luna-high-hermes-0205",
+      "task_class": "research-synthesis",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 78,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 30,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "implementation-fix-clamp",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.339,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-luna-high-hermes-0205",
+      "task_class": "implementation-debugging",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 33,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 23,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "verification-refute-dominance",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.106,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-luna-high-hermes-0205",
+      "task_class": "verification-refutation",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.074443,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.074443,
+          "observed_descendant_count": 42,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "1cbf675dc73aa15af295970e900fe5e43b06d74e12ba7102d91e32f469bbf8f8",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 4,
+            "cache_read_tokens": 14336,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 11061,
+            "model": "gpt-5.6-sol",
+            "output_tokens": 399,
+            "provider": "openai-codex",
+            "reasoning_tokens": 280,
+            "service_tier": null,
+            "session_id_sha256": "f3dea927bf3a76ddf3dcb7e3bd4167354041655a4eb0dc24968bff10fa1ba3d0",
+            "total_tokens": 25796
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 40.894,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.074443,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-sol-medium-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 73,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 42,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "research-synthesize-lineages",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.095,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-sol-medium-hermes-0205",
+      "task_class": "research-synthesis",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 54,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 28,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "implementation-fix-clamp",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.104,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-sol-medium-hermes-0205",
+      "task_class": "implementation-debugging",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.051773,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.051773,
+          "observed_descendant_count": 50,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "9ec16769c4bc34d1a162521e9969f9a082d948e0c5c8efa3d4ac61a5bf6a64c9",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 4,
+            "cache_read_tokens": 24576,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 5083,
+            "model": "gpt-5.6-sol",
+            "output_tokens": 469,
+            "provider": "openai-codex",
+            "reasoning_tokens": 294,
+            "service_tier": null,
+            "session_id_sha256": "ffd12e8c70adf615b0074876ee89bcf7a0981e64b06e3639143209f08453fca8",
+            "total_tokens": 30128
+          }
+        }
+      ],
+      "case_id": "verification-refute-dominance",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 44.618,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": {
+        "reason": "claim.txt and metrics.json are not present in the current directory",
+        "status": "blocked"
+      },
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.051773,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-sol-medium-hermes-0205",
+      "task_class": "verification-refutation",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.030849,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.030849,
+          "observed_descendant_count": 32,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "bf77917f505d8a738fbee19160be19c845e8710e0a46e8c2a4077b5bfb320073",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 4,
+            "cache_read_tokens": 22528,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 2615,
+            "model": "gpt-5.6-sol",
+            "output_tokens": 217,
+            "provider": "openai-codex",
+            "reasoning_tokens": 103,
+            "service_tier": null,
+            "session_id_sha256": "2ba5b29da61a7cb0654cc2d5de35b3baff12478afe06e0e985132ee01b84aa6c",
+            "total_tokens": 25360
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 30.881,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": {
+        "error": "records.json not found in current directory",
+        "status": "error"
+      },
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.030849,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-sol-high-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 43,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 34,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "research-synthesize-lineages",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.124,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-sol-high-hermes-0205",
+      "task_class": "research-synthesis",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 67,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 66,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "implementation-fix-clamp",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.111,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-sol-high-hermes-0205",
+      "task_class": "implementation-debugging",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.100913,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.100913,
+          "observed_descendant_count": 67,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "c28de6d64721c9ec2f49b76ae388cb7a3b08376fb27e3934af76df9a9ac6ce70",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 4,
+            "cache_read_tokens": 14336,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 15515,
+            "model": "gpt-5.6-sol",
+            "output_tokens": 539,
+            "provider": "openai-codex",
+            "reasoning_tokens": 370,
+            "service_tier": null,
+            "session_id_sha256": "d048c8a39cc251522c86c112e37ef8ea27942c4ef15c04273b4f9b371e0ef062",
+            "total_tokens": 30390
+          }
+        }
+      ],
+      "case_id": "verification-refute-dominance",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 39.851,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.100913,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-sol-high-hermes-0205",
+      "task_class": "verification-refutation",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0061108,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.0061108,
+          "observed_descendant_count": 24,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "53ac8a72454c2e766e955e7208992c263b2e8f9e892e3be65bc5869a728ee7ca",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 2,
+            "cache_read_tokens": 11264,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 1089,
+            "model": "gpt-5.6-terra",
+            "output_tokens": 140,
+            "provider": "openai-codex",
+            "reasoning_tokens": 97,
+            "service_tier": null,
+            "session_id_sha256": "313c4bef5d9c55f57a188182a25a337bde54b5b6bfa491b005cdd5527318d18b",
+            "total_tokens": 12493
+          }
+        }
+      ],
+      "case_id": "mechanical-normalize-records",
+      "cleanup_passed": true,
+      "critical_failure": false,
+      "duration_seconds": 14.753,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": {
+        "message": "records.json not found in the current directory",
+        "status": "error"
+      },
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0061108,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 0,
+      "retry_nominal_cost_usd": 0,
+      "route_id": "gpt-5.6-terra-max-hermes-0205",
+      "task_class": "mechanical-bounded",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 35,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 30,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "research-synthesize-lineages",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.696,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-terra-max-hermes-0205",
+      "task_class": "research-synthesis",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 76,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 70,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        }
+      ],
+      "case_id": "implementation-fix-clamp",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 120.243,
+      "empty_output": true,
+      "error": "timeout",
+      "exit_code": 124,
+      "final_object": null,
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0,
+      "route_id": "gpt-5.6-terra-max-hermes-0205",
+      "task_class": "implementation-debugging",
+      "transport_success": false,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    },
+    {
+      "acceptance": {
+        "command_exit_code": null,
+        "command_stderr_sha256": null,
+        "command_stdout_sha256": null,
+        "json_error": "FileNotFoundError",
+        "json_match": false,
+        "passed": false
+      },
+      "attempt_nominal_cost_usd": 0.0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "exit_code": 124,
+          "nominal_cost_usd": 0.0,
+          "observed_descendant_count": 55,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": true,
+          "transport_success": false,
+          "usage": {}
+        },
+        {
+          "attempt": 2,
+          "exit_code": 0,
+          "nominal_cost_usd": 0.0140472,
+          "observed_descendant_count": 52,
+          "process_cleanup_passed": true,
+          "session_cleanup_passed": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "fc66cbd5dbc1cda911387b7ffcc59c89d56d27bedfb7a6205ea6c545b7ca9421",
+          "timed_out": false,
+          "transport_success": true,
+          "usage": {
+            "api_calls": 3,
+            "cache_read_tokens": 16896,
+            "cache_write_tokens": 0,
+            "completed": true,
+            "cost_source": "none",
+            "cost_status": "included",
+            "estimated_cost_usd": 0.0,
+            "failed": false,
+            "input_tokens": 3012,
+            "model": "gpt-5.6-terra",
+            "output_tokens": 387,
+            "provider": "openai-codex",
+            "reasoning_tokens": 222,
+            "service_tier": null,
+            "session_id_sha256": "0255afa8df67c5e78c1bb06c8aa7d4212ce4b166eb2b88b2fc427a1499ccc291",
+            "total_tokens": 20295
+          }
+        }
+      ],
+      "case_id": "verification-refute-dominance",
+      "cleanup_passed": true,
+      "critical_failure": true,
+      "duration_seconds": 89.187,
+      "empty_output": false,
+      "error": null,
+      "exit_code": 0,
+      "final_object": {
+        "status": "done"
+      },
+      "marginal_oauth_cost_usd": 0.0,
+      "nominal_cost_usd": 0.0140472,
+      "passed": false,
+      "recovery_cost_usd": 0.0,
+      "repeat": 0,
+      "required_tools_verified": [],
+      "retries": 1,
+      "retry_nominal_cost_usd": 0.0140472,
+      "route_id": "gpt-5.6-terra-max-hermes-0205",
+      "task_class": "verification-refutation",
+      "transport_success": true,
+      "verification_cost_usd": 0.0,
+      "verifier_passed": false
+    }
+  ]
+}

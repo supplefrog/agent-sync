@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {
+      "name": "capability-curator",
+      "status": "staged",
+      "license": "MIT",
+      "source": "original"
+    },
+    {
+      "name": "primary-source-research",
+      "status": "staged",
+      "license": "MIT",
+      "source": "original"
+    },
+    {
+      "name": "learn-from-youtube",
+      "status": "staged",
+      "license": "MIT",
+      "source": "original-port"
+    },
+    {
+      "name": "surface-convergence",
+      "status": "staged",
+      "license": "MIT",
+      "source": "original"
+    },
+    {
+      "name": "outcome-first-workflow-design",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "original"
+    },
+    {
+      "name": "openai-delegation-route-research",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "original"
+    },
+    {
+      "name": "dynamic-workflows",
+      "status": "admitted",
+      "license": "UNLICENSED",
+      "source": "local-converged-port"
+    },
+    {
+      "name": "fleet-sync",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "original"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "claim": "The instruction admission/retirement harness enforces matched bounded evaluation and retires only directly receipted Hermes evaluator sessions after durable evidence capture.",
+  "verification": {
+    "focused": "15 passed",
+    "full_suite": "72 passed, 17 subtests passed",
+    "skill_validation": "6/6",
+    "audit": "pass",
+    "public_check": "pass"
+  },
+  "smoke": {
+    "report": "evals/reports/raw/instruction-gate-smoke-hermes-fixed.json",
+    "agent": "hermes",
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "low",
+    "case": "short-comparison",
+    "seed": 1408,
+    "trials": 1,
+    "agent_runs": 4,
+    "status": "complete",
+    "decision": "inconclusive",
+    "interpretation": "Expected bounded A/A smoke outcome: both identical artifacts hard-passed, judges produced no errors, and the run made no admission or retirement claim.",
+    "harness_sha256": "64a407a51dbb939e8b5f70f42a6730fcf0b3af8ea91bd4f2bc776cad3fdc0238",
+    "candidate_sha256": "e1768afe2d3685400b76be8d2535eb61be85b32a2bbc80d5c52ad63ffaa27290",
+    "baseline_candidate_sha256": "e1768afe2d3685400b76be8d2535eb61be85b32a2bbc80d5c52ad63ffaa27290",
+    "suite_sha256": "8251c02a0f962ea958d385a4e2df0c4fd4eb79036f70bc8fba1d025821e08a9d"
+  },
+  "session_lifecycle": {
+    "authority": "runtime-issued session_id from each exact child stderr",
+    "created": 4,
+    "deleted": 4,
+    "remaining_in_report": 0,
+    "post_run_source_readback": 0,
+    "errors": 0,
+    "parent_session_preserved": true,
+    "retain_override": "--retain-eval-sessions"
+  },
+  "coverage": [
+    "representative, near-miss, adversarial, and held-out suite validation",
+    "matched baseline/candidate trials with order-swapped blind judging",
+    "deterministic must-contain and must-not-contain checks",
+    "bounded anytime-valid decision rule with explicit alpha, margin, trial, and run caps",
+    "normalized model, provider, reasoning, prompt assembly, context, and tool policy receipts",
+    "required-host no-regression aggregation and fail-closed missing-host behavior",
+    "success, nonzero failure, timeout, interruption, evidence-retention override, and report-before-cleanup lifecycle paths",
+    "exact-stack/unit/suite/harness retirement receipt caching",
+    "provenance hashes and explicit rollback"
+  ],
+  "rollback": "Restore the prior tools/eval.py and tests/test_eval_gate.py, preserve the raw report, and do not promote any instruction mutation until the focused and live smoke gates pass again."
+}

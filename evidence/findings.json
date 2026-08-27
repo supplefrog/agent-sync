@@ -1,0 +1,276 @@
+{
+  "$schema": "./findings.schema.json",
+  "schema_version": 1,
+  "records": [
+    {
+      "id": "portable-agent-skills",
+      "topic": "skills-procedures",
+      "claim": "Agent Skills directories are the strongest current portable procedure format shared by Hermes and Codex.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "primary-source",
+          "reference": "https://agentskills.io/specification",
+          "supports": true
+        },
+        {
+          "kind": "primary-source",
+          "reference": "https://developers.openai.com/codex/skills",
+          "supports": true
+        },
+        {
+          "kind": "primary-source",
+          "reference": "https://hermes-agent.nousresearch.com/docs/user-guide/features/skills",
+          "supports": true
+        }
+      ],
+      "implication": "Keep one canonical Agent Skills tree and use host adapters only for discovery and lifecycle integration.",
+      "observed_at": "2026-07-25T23:57:31Z"
+    },
+    {
+      "id": "universal-hook-contract",
+      "topic": "policy-security",
+      "claim": "One universal hook schema can be the portable enforcement surface for Hermes and Codex.",
+      "status": "contradicted",
+      "evidence": [
+        {
+          "kind": "primary-source",
+          "reference": "https://hermes-agent.nousresearch.com/docs/user-guide/configuration",
+          "supports": false
+        },
+        {
+          "kind": "primary-source",
+          "reference": "https://github.com/openai/codex/blob/20dafe201d91d4405eef05ecd1db0257f13a9ac8/docs/config.md",
+          "supports": false
+        }
+      ],
+      "implication": "Specify safety outcomes portably and implement only the smallest necessary host-native policy adapters.",
+      "observed_at": "2026-07-25T23:57:31Z"
+    },
+    {
+      "id": "capability-curator-cross-host-result",
+      "topic": "lifecycle-update",
+      "claim": "The staged capability-curator currently improves admission behavior consistently across both target hosts.",
+      "status": "unresolved",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/capability-admission-codex.json",
+          "supports": true
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/capability-admission-hermes.json",
+          "supports": false
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/capability-admission-hermes-redundant-v2.json",
+          "supports": true
+        }
+      ],
+      "implication": "The original Hermes run exposed over-elaboration after a settled redundancy decision. A narrow adaptation won that targeted case; keep staged until full current development and fresh held-out suites pass on both hosts.",
+      "observed_at": "2026-07-26T00:10:04Z"
+    },
+    {
+      "id": "surface-convergence-cross-host-result",
+      "topic": "instructions-style",
+      "claim": "The staged surface-convergence skill currently improves semantic host mapping across all required Codex and Hermes cases.",
+      "status": "unresolved",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/surface-convergence-codex.json",
+          "supports": true
+        }
+      ],
+      "implication": "Codex development cases passed 5-0. Keep staged until current held-out Codex and development plus held-out Hermes evidence exists on the same candidate hash.",
+      "observed_at": "2026-07-26T00:12:55Z"
+    },
+    {
+      "id": "openai-routing-selection-evidence",
+      "topic": "routing-delegation",
+      "claim": "Aggregate leaderboards and token throughput are insufficient to select delegation routes; current task-class workflow evidence must gate speed- or intelligence-constrained routes.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "primary-source",
+          "reference": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+          "supports": true
+        },
+        {
+          "kind": "primary-source",
+          "reference": "https://artificialanalysis.ai/api-reference",
+          "supports": true
+        },
+        {
+          "kind": "live-profile",
+          "reference": "skills/openai-delegation-route-research/references/current-baseline-2026-08-12.md",
+          "supports": true
+        }
+      ],
+      "implication": "Use external data to prefilter model-effort candidates, then select each task route by verified pass probability under hard p95 latency and expected-cost constraints.",
+      "observed_at": "2026-08-12T19:50:13Z"
+    },
+    {
+      "id": "openai-rss-monitor-boundary",
+      "topic": "planning-automation",
+      "claim": "OpenAI news RSS can provide a cheap release-change signal but contains case studies and unrelated model mentions, so a scheduled run must verify release semantics and callability before evaluation.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "primary-source",
+          "reference": "https://openai.com/news/rss.xml",
+          "supports": true
+        },
+        {
+          "kind": "runtime",
+          "reference": "skills/openai-delegation-route-research/scripts/openai_release_signal.py",
+          "supports": true
+        }
+      ],
+      "implication": "Use a deterministic monitor for suppression, then let the agent verify official release/update evidence and local availability; never auto-promote from the detector.",
+      "observed_at": "2026-08-12T19:50:13Z"
+    },
+    {
+      "id": "shared-memory-local-admission",
+      "topic": "memory-context",
+      "claim": "The current local evidence admits either Honcho or Hindsight as one canonical shared-memory provider across Hermes, Codex, and OMP.",
+      "status": "contradicted",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/shared-memory-local-20260815.json",
+          "supports": false
+        },
+        {
+          "kind": "local-verification",
+          "reference": "docs/shared-memory-decision.md",
+          "supports": false
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/shared-memory-hindsight-trial-20260816.json",
+          "supports": false
+        }
+      ],
+      "implication": "No comparative provider winner exists. Preserve the current tools-only Honcho plus session_search stack by no-change policy, not because Honcho beat Hindsight. Through the real Hermes recall tool with production observation-only defaults, Hindsight 0.9.1 passed exact/semantic/strict contradiction/restart/removal synthetic checks but failed irrelevant-query silence, tool-visible provenance, and clean Windows lifecycle; no matched Honcho-versus-Hindsight suite or Codex/OMP adapter comparison ran.",
+      "observed_at": "2026-08-16T02:19:39Z"
+    },
+    {
+      "id": "honcho-backfill-health",
+      "topic": "memory-context",
+      "claim": "The current local Honcho backfill is complete and its processing queue is healthy for the evaluated Hermes history window.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/shared-memory-local-20260815.json",
+          "supports": true
+        }
+      ],
+      "implication": "Treat recent Honcho retrieval misses as retrieval/profile quality evidence rather than an ingestion backlog, while retaining exact transcript lookup through session_search.",
+      "observed_at": "2026-08-15T02:58:08Z"
+    },
+    {
+      "id": "adaptive-routing-cross-surface-20260816",
+      "topic": "routing-delegation",
+      "claim": "Current Luna-high and Sol-low evidence is sufficient to promote an evidence-selected route across Hermes delegation, cc-dynamic-workflows, Kanban, Codex, and OMP.",
+      "status": "contradicted",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/adaptive-routing-decision-2026-08-16.json",
+          "supports": false
+        },
+        {
+          "kind": "integration",
+          "reference": "evals/results/adaptive-routing-surface-smoke-2026-08-16.json",
+          "supports": true
+        },
+        {
+          "kind": "integration",
+          "reference": "evals/results/adaptive-routing-cc-workflow-smoke-2026-08-16.json",
+          "supports": true
+        }
+      ],
+      "implication": "Keep exact-route selectors and receipts staged, leave the incumbent unchanged, and collect task-class sample floors, per-surface p95, consistent total cost, model-launching Kanban evidence, and native workflow cleanup before promotion.",
+      "observed_at": "2026-08-16T01:43:49Z"
+    },
+    {
+      "id": "grounded-independent-verification-pilot-20260816",
+      "topic": "lifecycle-update",
+      "claim": "The current self-authored evaluation owner alone prevents a design or implementation principal from certifying material work and detects the preserved human-off orchestration blockers.",
+      "status": "contradicted",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/grounded-verification-pilot-20260816.json",
+          "supports": false
+        },
+        {
+          "kind": "local-verification",
+          "reference": "tests/test_grounded_gate.py",
+          "supports": false
+        }
+      ],
+      "implication": "Retain the existing eval runners but require the grounded contract for material work: verifier-supplied immutable freeze and test-author roots, complete amendment chains, evolving multi-turn intent lineage, summary non-authority, research-first cross-host resume, proactive no-reminder status, evidence-based legacy done classification, criterion-to-decision-scope mappings, complete digest-bound evidence lanes, distinct principals, sealed access boundaries, negative controls, property/metamorphic and teeth evidence, world-state oracles, and an independently bounded verdict. Narrow receipts cannot inflate into broader comparison, architecture, or promotion authority. The pilot detected all 16 preserved blockers with no observed false positives or false negatives, while explicitly leaving downstream Hermes/Codex/OMP/Prime outcomes not evaluated; external framework adoption remains unproven.",
+      "observed_at": "2026-08-16T17:20:32Z"
+    },
+    {
+      "id": "github-follow-up-replacement-learning-20260816",
+      "topic": "lifecycle-update",
+      "claim": "The GitHub follow-up extension improves identification and reusable learning from merged replacements without regressing unrelated, preference-only, or already-owned cases.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/github-follow-up-replacement-learning-hermes.json",
+          "supports": true
+        },
+        {
+          "kind": "local-verification",
+          "reference": "tests/test_github_follow_up_gate.py",
+          "supports": true
+        }
+      ],
+      "implication": "Track terminal authored PR outcomes, verify actual replacements against both implementations and current base, and change an owning rule only for a novel evidence-backed lesson. The first held-out run exposed duplicate retention of an already-owned production-seam lesson; the corrected candidate explicitly makes that case a no-edit confirmation and then won a fresh held-out owner-update case.",
+      "observed_at": "2026-08-16T02:22:30Z"
+    },
+    {
+      "id": "adaptive-routing-current-runtime-20260823",
+      "topic": "routing-delegation",
+      "claim": "The latest preserved Luna-high and Sol-low smokes qualify as current verified routes for Hermes 0.20.5 delegation.",
+      "status": "contradicted",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/adaptive-routing-decision-v3-2026-08-23.json",
+          "supports": false
+        },
+        {
+          "kind": "run-pin",
+          "reference": "evals/results/adaptive-routing-run-pin-v3-2026-08-23.json",
+          "supports": true
+        },
+        {
+          "kind": "verification",
+          "reference": "evals/results/adaptive-routing-verification-v3-2026-08-23.json",
+          "supports": true
+        },
+        {
+          "kind": "independent-review",
+          "reference": "evals/results/adaptive-routing-independent-review-v3-2026-08-23.json",
+          "supports": true
+        },
+        {
+          "kind": "implementation",
+          "reference": "tools/route_adapter.py",
+          "supports": true
+        }
+      ],
+      "implication": "Keep the incumbent unchanged. The shared selector and immutable run pin are working staged artifacts, but current routes must remain fail-closed until Hermes 0.20.5 task-and-surface samples establish p95, total expected cost components, cleanup, and required native integration seams. The cc-dynamic-workflows receipt tests pass, but its full current lifecycle batch is red and must be repaired before DAG launch.",
+      "observed_at": "2026-08-23T17:33:51+05:30"
+    }
+  ]
+}

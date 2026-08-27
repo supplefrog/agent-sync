@@ -1,0 +1,83 @@
+{
+  "name": "code-audit",
+  "description": "Parallel code audit with adversarial consolidation.",
+  "max_workers": 3,
+  "tasks": [
+    {
+      "id": "scope-map",
+      "role": "discover",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "prompt": "Map {{var:TARGET}}: entry points, ownership boundaries, tests, risky state transitions, and likely regression surfaces.",
+      "acceptance": [
+        "Returns a scoped map with concrete evidence paths, causal dependencies, and named unknowns."
+      ]
+    },
+    {
+      "id": "correctness",
+      "role": "reviewer",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "depends_on": [
+        "scope-map"
+      ],
+      "include_outputs": [
+        "scope-map"
+      ],
+      "prompt": "Audit {{var:TARGET}} for concrete correctness and regression defects. Provide file and line evidence and a reproducer where possible.\n{{output:scope-map}}",
+      "acceptance": [
+        "Returns only evidence-backed findings with exact source locations and concrete impact."
+      ]
+    },
+    {
+      "id": "security",
+      "role": "reviewer",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "depends_on": [
+        "scope-map"
+      ],
+      "include_outputs": [
+        "scope-map"
+      ],
+      "prompt": "Audit {{var:TARGET}} for trust-boundary, authorization, data-loss, injection, and unsafe-side-effect defects.\n{{output:scope-map}}",
+      "acceptance": [
+        "Returns only evidence-backed findings with exact source locations and concrete impact."
+      ]
+    },
+    {
+      "id": "refute",
+      "role": "refuter",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "depends_on": [
+        "correctness",
+        "security"
+      ],
+      "include_outputs": [
+        "correctness",
+        "security"
+      ],
+      "prompt": "Try to disprove every proposed finding against the actual code and tests. Retain only reproducible defects.\n{{output:correctness}}\n{{output:security}}",
+      "acceptance": [
+        "Rechecks every candidate claim and retains only reproducible, source-supported findings."
+      ]
+    },
+    {
+      "id": "report",
+      "role": "synthesizer",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "depends_on": [
+        "refute"
+      ],
+      "include_outputs": [
+        "refute"
+      ],
+      "prompt": "Produce a severity-ordered audit of {{var:TARGET}} with concise evidence, impact, and missing tests.\n{{output:refute}}",
+      "acceptance": [
+        "Produces the requested decision-ready output while preserving evidence, uncertainty, and material disagreement."
+      ]
+    }
+  ]
+}

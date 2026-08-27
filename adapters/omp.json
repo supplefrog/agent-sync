@@ -1,0 +1,38 @@
+{
+  "$schema": "./schema.json",
+  "schema_version": 1,
+  "host": "omp",
+  "instructions": {
+    "source": "surfaces/core.md",
+    "target": "{CODEX_HOME}/AGENTS.md",
+    "strategy": "inherit-codex"
+  },
+  "skills": {
+    "source": "skills",
+    "selection": "registry:admitted",
+    "install_root": "{SHARED_SKILLS_HOME}",
+    "discovery": {"kind": "native", "value": "{SHARED_SKILLS_HOME}"}
+  },
+  "routing": {
+    "status": "automatic-selection-active-workflow",
+    "catalog_schema": "skills/openai-delegation-route-research/references/gpt-route-catalog.schema.json",
+    "task_schema": "skills/openai-delegation-route-research/references/route-task.schema.json",
+    "selection_contract": "skills/openai-delegation-route-research/references/selection-contract.md",
+    "aux_schema": "skills/openai-delegation-route-research/references/aux-models.schema.json",
+    "aux_assignments": "skills/openai-delegation-route-research/references/current-aux-models.json",
+    "selector": "skills/openai-delegation-route-research/scripts/route_selector.py",
+    "receipt_schema": "skills/openai-delegation-route-research/references/route-decision.schema.json",
+    "surfaces": [
+      {
+        "target_surface": "omp-workflow",
+        "required_fields": ["provider", "model", "reasoning_effort", "decision_receipt"],
+        "pinning": "The definitive DAG state selects once at initialization; resume and retries reuse the exact receipt.",
+        "native_owner": "skills/dynamic-workflows plus OMP route-<route-id> named agents",
+        "enforcement": "live-native-skill-and-agent-adapter",
+        "current_support": "OMP atomically claims each routed node before dispatch; named agents pin exact openai-codex model and thinkingLevel, completion is bound to the active handle and claim token, and resolvedModel verification rejects fallback.",
+        "smallest_path": "Keep one thin OMP skill plus generated exact-route agents; do not fork the state machine or mutate global role mappings."
+      }
+    ],
+    "unsupported_surfaces": []
+  }
+}

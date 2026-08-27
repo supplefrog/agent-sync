@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "artifact_type": "adaptive-routing-staged-verification",
+  "generated_at": "2026-08-23T18:34:47+05:30",
+  "status": "staged-verified-no-promotion",
+  "decision": {
+    "path": "evals/results/adaptive-routing-decision-v3-2026-08-23.json",
+    "raw_sha256": "5115a8ea784be4baf271b3f7c944b07bb30f06bb3638fb8165e32a8196014709",
+    "decision_id": "43fd3a9fff2c985ed32300f07fb9e3d0db66838069dec44e3aff89db40348895",
+    "outcome": "fail_closed",
+    "selector_exit_code": 2,
+    "selector_command": "python skills/openai-delegation-route-research/scripts/route_selector.py select --policy evals/fixtures/adaptive-routing/candidate-policy-2026-08-23.json --requirements evals/fixtures/adaptive-routing/current-hermes-delegate-requirements-2026-08-23.json --evidence-root . --out evals/results/adaptive-routing-decision-v3-2026-08-23.json"
+  },
+  "run_pin": {
+    "path": "evals/results/adaptive-routing-run-pin-v3-2026-08-23.json",
+    "raw_sha256": "fb8154cd356d154bc74890b4b375a7d8b03c6211407f077cd147a34dff9f3568",
+    "run_id": "evidence-check-v3-2026-08-23",
+    "status": "blocked",
+    "pin_status_on_readback": "reused",
+    "receipt_sha256": "8abea2a812bf3d7f9ecac93e612bb297f2e773df4b11650b5bd990471c3924f9",
+    "adapter_exit_code": 2
+  },
+  "semantic_hashes": {
+    "policy_sha256": "65c567455cbe82a753fce4321dd8151a4e985fa277318dfeefbf0fedf14a23a7",
+    "requirement_sha256": "f93c21b58e4a7a64b9c496d5633f4d691e3a7aad39f11fe46eec3dd43cf3e49a",
+    "suite_sha256": "85872d388441ae1a5c4de661532ea5145210613913cef79faf44ea72c09f94aa"
+  },
+  "artifact_hashes": {
+    "skills/openai-delegation-route-research/scripts/route_selector.py": "8a1f6d69baa6caac4a19f8660404a85daa287a0d89f972e81ccf1c6bd323010a",
+    "tools/route_adapter.py": "d340ac13bd4a4ef820498dd695baa359515d63f68b7b989dc75857b211286792",
+    "integrations/hermes/cc-dynamic-workflows/scripts/workflow_runner.py": "db99d48d6f3745c79d860aa6198971f179a7d67da8a5e140e08731529dbe6dcd",
+    "skills/openai-delegation-route-research/references/adaptive-route-policy.schema.json": "fa5c69c128e972ff9b78a296e92227211097a8b8213b6d9dca1fe34878bc3b7e",
+    "skills/openai-delegation-route-research/references/route-requirements.schema.json": "aca34044cc02e08e1d85f91552224937d3c95563547655126994768b4a247fef",
+    "skills/openai-delegation-route-research/references/route-decision.schema.json": "08de619fe393663f7fb23aa22a98add345962e2e24a652ef80aee1774bbabaf7",
+    "evals/fixtures/adaptive-routing/candidate-policy-2026-08-23.json": "925e9bf0e329ac09446e0b5af058f326f1644b35689e50ae021dfda83ecd213b",
+    "evals/fixtures/adaptive-routing/current-hermes-delegate-requirements-2026-08-23.json": "362b0549cf29a7acbcafd8d18a9eb78a27915b6cda66a8bdefdd9878d8e7ec45",
+    "evals/suites/adaptive-routing-smoke.json": "85872d388441ae1a5c4de661532ea5145210613913cef79faf44ea72c09f94aa",
+    "evals/results/adaptive-routing-hermes-delegate-smoke-2026-08-16.json": "981bc9366739ff43c2cc01d7fbd59b1e12ed6df8be0eb3d9908777e8377325b0",
+    "evals/results/adaptive-routing-independent-review-v3-2026-08-23.json": "fcbe24b3d2f25afb24b6df26c8c277a163c649f8e2cf486879d9fc2524b94b1d"
+  },
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_route_selector.py tests/test_route_adapter.py tests/test_tools.py tests/test_eval_gate.py -q",
+      "result": "48 passed in 0.59s",
+      "exit_code": 0
+    },
+    {
+      "command": "python integrations/hermes/cc-dynamic-workflows/scripts/workflow_runner_tests.py WorkflowRunnerTests.test_evidence_receipt_pins_exact_route_outside_legacy_tiers WorkflowRunnerTests.test_receipt_route_must_match_exact_task_route WorkflowRunnerTests.test_receipt_constraints_cannot_be_rebound_to_another_task_class WorkflowRunnerTests.test_resume_keeps_the_original_pinned_model_policy WorkflowRunnerTests.test_resume_refuses_while_recorded_child_pid_is_alive",
+      "result": "Ran 5 tests in 5.371s; OK",
+      "exit_code": 0
+    },
+    {
+      "command": "python -m pytest tests/test_eval_gate.py -q",
+      "result": "12 passed in 0.05s",
+      "exit_code": 0
+    },
+    {
+      "command": "python tools/validate.py",
+      "result": "6/6 skills valid",
+      "exit_code": 0
+    },
+    {
+      "command": "python -m compileall -q skills/openai-delegation-route-research/scripts/route_selector.py tools/route_adapter.py integrations/hermes/cc-dynamic-workflows/scripts/workflow_runner.py integrations/hermes/cc-dynamic-workflows/scripts/workflow_runner_tests.py",
+      "result": "pass",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "result": "pass; line-ending warnings only",
+      "exit_code": 0
+    }
+  ],
+  "independent_review": {
+    "path": "evals/results/adaptive-routing-independent-review-v3-2026-08-23.json",
+    "verdict": "ship-staged-artifact",
+    "blocking_findings": 0
+  },
+  "known_nonpromotion_gaps": [
+    "The full repository suite has four failures in the separate grounded-verification fixture/interpreter area: 4 failed, 170 passed, 46 subtests passed.",
+    "The full 30-test compatibility-runner batch remains red at 23 passed, 6 failed, 1 error because current Hermes ephemeral-session lifecycle integration is incompatible.",
+    "The two host-lifecycle cleanup probes remain red: 2 failures in 12.906s; the reported child PID was no longer running when checked afterward.",
+    "Current route evidence is expired, under-sampled, lacks p95 and expected-total-cost data, and targets Hermes 0.20.0 rather than current 0.20.5, so the real decision correctly remains fail_closed."
+  ],
+  "history": "Unversioned and v2 decision/run-pin files remain preserved as historical receipts; v3 is the current staged authority."
+}

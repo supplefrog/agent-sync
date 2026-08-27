@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "capability": "fleet-distribution",
+  "claim": "Agent Signal can render and reconcile admitted portable skills without overwriting unmanaged or locally modified host state.",
+  "entrypoint": "skills/fleet-sync/SKILL.md",
+  "cases": [
+    {
+      "id": "representative-add-update-retire",
+      "class": "representative",
+      "checks": ["add absent admitted skill", "update clean managed skill", "remove clean retired skill"]
+    },
+    {
+      "id": "near-miss-unmanaged-preservation",
+      "class": "near-miss",
+      "checks": ["preserve unrelated skill", "adopt exact same-name content", "reject different same-name content"]
+    },
+    {
+      "id": "adversarial-state-and-partial-failure",
+      "class": "adversarial",
+      "checks": ["reject traversal name in state", "roll back skill mutations when state commit fails", "reject managed drift before writes"]
+    },
+    {
+      "id": "adversarial-path-and-junction-containment",
+      "class": "adversarial",
+      "checks": ["reject admitted source junction", "reject junction in render output path", "reject snapshot root escape", "reject junction as exact legacy copy", "preflight all roots before first write"]
+    },
+    {
+      "id": "held-out-windows-junction-retirement",
+      "class": "held-out",
+      "checks": ["materialize an adopted Windows junction", "retire it without deleting its source"]
+    },
+    {
+      "id": "host-discovery",
+      "class": "integration",
+      "checks": ["Hermes lists managed skills", "Codex prompt input contains managed skills", "OMP fresh process enumerates managed skills"]
+    }
+  ]
+}

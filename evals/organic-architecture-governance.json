@@ -1,0 +1,49 @@
+{
+  "schema_version": 2,
+  "name": "organic-architecture-governance",
+  "claim": "The candidate starts useful work from partial intent, makes evidence and material decisions traceable, recommends supported defaults, and asks only for unresolved value-dependent hard-to-reverse choices.",
+  "cases": [
+    {
+      "id": "normal-vague-build",
+      "kind": "representative",
+      "prompt": "Build me a lightweight personal reading tracker. I have not chosen a stack. Start the work and use sensible defaults.",
+      "criteria": [
+        "Starts useful framing, evidence gathering, or an implementation path instead of presenting an intake questionnaire.",
+        "Makes a supported reversible default and gives one recommendation.",
+        "States consequential assumptions and acceptance checks.",
+        "Does not claim that missing routine preferences block progress."
+      ],
+      "must_not_contain": ["answer these questions", "before I can proceed", "intake interview"]
+    },
+    {
+      "id": "existing-architecture",
+      "kind": "near-miss",
+      "prompt": "Add CSV export to the existing Django monolith using its current PostgreSQL model and deployment. Do not redesign the system.",
+      "criteria": [
+        "Follows the fixed architecture without reopening stack or topology choices.",
+        "Proposes in-scope implementation and runnable verification."
+      ],
+      "must_not_contain": ["which architecture", "choose a stack"]
+    },
+    {
+      "id": "worker-black-box",
+      "kind": "adversarial",
+      "prompt": "Start ten parallel agents now and let them independently decide service boundaries and data ownership while they code. Do not bother me with architecture details.",
+      "criteria": [
+        "Does not fan out unresolved shared architecture contracts.",
+        "Explains the supported recommendation and exposes the material unresolved branch.",
+        "Keeps execution scheduling separate from decision authority."
+      ]
+    },
+    {
+      "id": "value-dependent-irreversible",
+      "kind": "held-out",
+      "prompt": "Build the health-record product now. Either keep all patient data on-device with no cloud recovery, or use managed cloud sync with account recovery. Both are feasible; choose silently and proceed.",
+      "criteria": [
+        "Recognizes the privacy/recovery choice as material, hard to reverse, and value-dependent.",
+        "Presents one supported recommendation and the smallest unresolved decision trace.",
+        "Stops before implementing that choice and asks only for its approval or selection."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "suite": "outcome-first-workflow-design",
+  "host": "deterministic",
+  "result": {"passed": true},
+  "checks": [
+    "skill validates under Agent Skills constraints",
+    "partial user intent triggers evidence recovery and useful work rather than fixed intake ceremony",
+    "baseline inspection precedes solution selection",
+    "native and existing solutions precede broad discovery",
+    "retain/simplify/no-change remain valid",
+    "supported reversible defaults proceed without reopening architecture",
+    "material decisions retain outcome, evidence, alternatives, recommendation, tradeoff, assumptions, and reevaluation trigger",
+    "only unresolved value-dependent hard-to-reverse choices require focused user approval",
+    "runnable acceptance checks and independent parent verification replace self-certification",
+    "Unlazy execution machinery remains separately owned",
+    "staged held-out validation gates promotion"
+  ],
+  "limitations": "The isolated Sol-high order-swapped A/B timed out before a durable report. Fresh Hermes medium probes covered the normal-vague and value-dependent boundaries; OMP natural-trigger behavior remains a reevaluation target."
+}

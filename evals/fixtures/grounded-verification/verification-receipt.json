@@ -1,0 +1,296 @@
+{
+  "contract_id": "grounded-verification-human-off-pilot",
+  "evidence_assertions": [
+    {
+      "basis_sha256": "5e3eae5b54851f983cec01343de060c5a347f77eaa933b0592668a39a1d8cf82",
+      "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+      "lane_id": "baseline",
+      "result": "pass",
+      "scope_id": "S-ADOPTION",
+      "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+    },
+    {
+      "basis_sha256": "2b2b31195968d4d9ee02fbb4c5eff1fd11270e3fcaa33efd9fecf60a738f988e",
+      "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+      "lane_id": "candidate-trial",
+      "result": "pass",
+      "scope_id": "S-ADOPTION",
+      "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+    },
+    {
+      "basis_sha256": "29c81f2cb0e8cdf681f6b2125c93d2bcfe2d742ad93e30c6f8f58fee40045483",
+      "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+      "lane_id": "cost",
+      "result": "pass",
+      "scope_id": "S-ADOPTION",
+      "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+    },
+    {
+      "basis_sha256": "9c8434e186ab789244d24a08785c11021eefdc2d28bc90e4649d1af23a261eb2",
+      "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+      "lane_id": "host-neutrality",
+      "result": "pass",
+      "scope_id": "S-ADOPTION",
+      "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+    },
+    {
+      "basis_sha256": "5b5eb22d40942937cb38c659e484be674e56bd1a99037f8cc74763d7ee07ccfc",
+      "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+      "lane_id": "maintenance",
+      "result": "pass",
+      "scope_id": "S-ADOPTION",
+      "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+    },
+    {
+      "basis_sha256": "f4c8a7da7cfdae40c53518e5e5ae90768852b0bdb08cb60d235dd34e21233978",
+      "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+      "lane_id": "portability",
+      "result": "pass",
+      "scope_id": "S-ADOPTION",
+      "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+    },
+    {
+      "basis_sha256": "522da8d61aaed0112293ec25858ee8bb12b2876234e66cb9f91dd66f38b3e522",
+      "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+      "lane_id": "rollback",
+      "result": "pass",
+      "scope_id": "S-ADOPTION",
+      "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+    },
+    {
+      "basis_sha256": "8d56f7a7aa5dc1d7d95a079f32f7a40322b79f948da0867e4a261a8f7ecd9d98",
+      "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+      "lane_id": "multi-turn-lineage",
+      "result": "pass",
+      "scope_id": "S-INTENT-LINEAGE",
+      "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+    },
+    {
+      "basis_sha256": "4b52a9de9c9ed508444b877dc21c8f8cbd860d943c0ddca7347de83f55b192c7",
+      "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+      "lane_id": "proactive-status",
+      "result": "pass",
+      "scope_id": "S-INTENT-LINEAGE",
+      "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+    },
+    {
+      "basis_sha256": "731cfae7be1d42488cf25af7befb7aacb57a176829587c3559e52226739b9553",
+      "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+      "lane_id": "research-first-resume",
+      "result": "pass",
+      "scope_id": "S-INTENT-LINEAGE",
+      "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+    },
+    {
+      "basis_sha256": "3f4e71ac6fbb36f39f9802e902403ae1e461bdf953e8ec9749a6cb891dac1f79",
+      "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+      "lane_id": "summarizer-reminder",
+      "result": "pass",
+      "scope_id": "S-INTENT-LINEAGE",
+      "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+    },
+    {
+      "basis_sha256": "2e7eb02a34b9a0be2aa911fc27127fc430a5c5ea56224c4fa382a48a6e2b6590",
+      "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+      "lane_id": "summary-authority",
+      "result": "pass",
+      "scope_id": "S-INTENT-LINEAGE",
+      "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+    },
+    {
+      "basis_sha256": "3e5a1f2e95d3ce7061adfda5482a0f09b319f3461433969b2b6eeeb6061bb507",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "convergence-revalidation",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "4d16fb07ea492a40721b7b9a7ccb58d8b778db435040445a91d98fccad594b5e",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "fleet-omission",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "19d883f5cf6c5bdbe02612be84f87dbf97642d1d211e32b45499e28792b9c9dc",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "kanban-authority",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "afe01abdaabc00bd581f646e1abbcc574e3e7115d28ae3a962931163bec9ca1e",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "legacy-classification",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "e26a2a0dab1ef278b1090d750498adfaaa001501f5999381e2ee6bbb12617883",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "no-downstream-pass-claim",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "1478697ff1df665792538f2789fac58393fab73cf7d2120023078b4dac4c3bd1",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "prime-lifecycle",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "a46c7704e0d6b03089383d093d6be176dd3565f6c3f57f6120766eada0f7fd69",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "prime-persistence",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "fc35a0dfc01719ad5c9762937741cbe7217ad241306465e8763a596c595e9bf4",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "prime-safety",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "c711eb04cc67f532e851e1de59e7208307779ace8dadf814b007a0f7523e7a5c",
+      "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+      "lane_id": "rollback",
+      "result": "pass",
+      "scope_id": "S-ULTIMATE-AGENT",
+      "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+    },
+    {
+      "basis_sha256": "b34383077a760d78492bccaf6e6e23e314425e24c3b84feac0a996ab045184b6",
+      "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+      "lane_id": "contract",
+      "result": "pass",
+      "scope_id": "S-VERIFICATION",
+      "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+    },
+    {
+      "basis_sha256": "c2c5883fe8cc2f792f6dec3f4165783e50c0c0f010ce0fab06dff7d9fa86ed43",
+      "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+      "lane_id": "isolation",
+      "result": "pass",
+      "scope_id": "S-VERIFICATION",
+      "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+    },
+    {
+      "basis_sha256": "c9fd89b81be6656a4b5f87281a9bbe63e6ac471ca712aa4dddbab2aac6f71766",
+      "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+      "lane_id": "material-path",
+      "result": "pass",
+      "scope_id": "S-VERIFICATION",
+      "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+    },
+    {
+      "basis_sha256": "7b8d7efef31bc392a0e5f4e6b3e50b3e3ee6e933e4a4a9694ab1e5d4ce2d6457",
+      "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+      "lane_id": "negative-controls",
+      "result": "pass",
+      "scope_id": "S-VERIFICATION",
+      "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+    },
+    {
+      "basis_sha256": "2162ebf9402080da5cb87a82b916c79305c50332d73dbf4e5f4ac24f627fb3d8",
+      "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+      "lane_id": "non-goals",
+      "result": "pass",
+      "scope_id": "S-VERIFICATION",
+      "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+    },
+    {
+      "basis_sha256": "98cc3bf55961e1d3baf49ef7ccd1eb12156db7d9aad4da86e1af0e78b86cfbb1",
+      "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+      "lane_id": "pilot",
+      "result": "pass",
+      "scope_id": "S-VERIFICATION",
+      "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+    },
+    {
+      "basis_sha256": "325104110c04884ed9c0ee8523a49a2f59d0b4da0982f855f0898b9a648207a6",
+      "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+      "lane_id": "portability",
+      "result": "pass",
+      "scope_id": "S-VERIFICATION",
+      "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+    },
+    {
+      "basis_sha256": "76bc21d348871b3419303db5d55405e74ecd2a4bf30739c999cb996f75a7531b",
+      "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+      "lane_id": "test-author",
+      "result": "pass",
+      "scope_id": "S-VERIFICATION",
+      "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+    }
+  ],
+  "gate_assertions": [
+    {
+      "evidence_path": "tests/test_grounded_gate.py",
+      "evidence_sha256": "daf960a3ac6c48255ae0faaa9d2dba6204420f9e28cda3edab49ad798df7658f",
+      "gate_id": "G-CONTRACT",
+      "negative_control": {
+        "expected": "reject",
+        "fault": "reuse implementer principal as verdict owner",
+        "observed": "reject",
+        "passed": true
+      },
+      "result": "pass",
+      "trusted": true
+    },
+    {
+      "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+      "evidence_sha256": "1b40423bf0eadfbcd2ad51d04cdd150093e0ba0e0a3e4567d7fbfb7459d36f87",
+      "gate_id": "G-PILOT",
+      "negative_control": {
+        "expected": "reject",
+        "fault": "remove one required surface receipt while claiming promotion-ready",
+        "observed": "reject",
+        "passed": true
+      },
+      "result": "pass",
+      "trusted": true
+    },
+    {
+      "evidence_path": "tests/test_grounded_gate.py",
+      "evidence_sha256": "daf960a3ac6c48255ae0faaa9d2dba6204420f9e28cda3edab49ad798df7658f",
+      "gate_id": "G-PROPERTY",
+      "negative_control": {
+        "expected": "reject",
+        "fault": "collide two role principals",
+        "observed": "reject",
+        "passed": true
+      },
+      "result": "pass",
+      "trusted": true
+    },
+    {
+      "evidence_path": "tests/test_grounded_gate.py",
+      "evidence_sha256": "daf960a3ac6c48255ae0faaa9d2dba6204420f9e28cda3edab49ad798df7658f",
+      "gate_id": "G-TEETH",
+      "negative_control": {
+        "expected": "reject",
+        "fault": "mark a negative control as passing without observed rejection",
+        "observed": "reject",
+        "passed": true
+      },
+      "result": "pass",
+      "trusted": true
+    }
+  ],
+  "manifest_sha256": "e8a662df9149a0a762aab86cb79019c476b836c5ddd517c4aa27b46d3f41e9b5",
+  "receipt_type": "grounded-verification-verdict-manifest",
+  "schema_version": 1,
+  "verifier_context_id": "c_66666666",
+  "verifier_principal_id": "p_66666666"
+}

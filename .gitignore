@@ -1,0 +1,32 @@
+# Generated evaluation runs
+.evals/
+evals/reports/raw/
+render/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.pytest-cache/
+
+# Local staging and secrets
+.staging/
+.env
+*.local
+.hermes/
+.kanban-*.json
+.worktrees/
+
+# Local context-integrity validation state
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Local third-party skills are available to agents but are not republished
+skills/gsd-*/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

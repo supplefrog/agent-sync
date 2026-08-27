@@ -1,0 +1,842 @@
+{
+  "$schema": "../../../contracts/grounded-verification.schema.json",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "criteria_freeze": {
+    "criteria": [
+      {
+        "category": "capability",
+        "id": "AC-001",
+        "oracle": "human-intent",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Define distinct intent/specification, test-design, implementation, oracle, and verdict owners so no design or implementation principal can solely certify material work."
+      },
+      {
+        "category": "correctness",
+        "id": "AC-002",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Freeze every user-sourced acceptance criterion before implementation and require an explicit logged intent-owner decision event for every amendment."
+      },
+      {
+        "category": "correctness",
+        "id": "AC-003",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Give independent test authors only the frozen intent/specification and deny implementers read or edit access to held-out tests, oracle logic, rubrics, and gate recipes."
+      },
+      {
+        "category": "correctness",
+        "id": "AC-004",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Require independent verifiers to re-execute deterministic checks, author falsification probes, and report actual isolation strength without labeling a shared visible proxy as full independence."
+      },
+      {
+        "category": "correctness",
+        "id": "AC-005",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Require a demonstrated negative control for every trusted gate and property or metamorphic plus mutation or equivalent-teeth evidence for material code paths where supported."
+      },
+      {
+        "category": "correctness",
+        "id": "AC-006",
+        "oracle": "world-state",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Use out-of-band world-state evidence for open-ended outcomes and deterministic state contracts wherever ground truth is machine-checkable."
+      },
+      {
+        "category": "capability",
+        "id": "AC-007",
+        "oracle": "world-state",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Detect every known staged human-off structural blocker, including proactive status omission and phantom-assignee handling, while measuring false positives and false negatives."
+      },
+      {
+        "category": "cost",
+        "id": "AC-008",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Select the smallest reversible positive-net-value option using defect detection, execution and context cost, maintenance burden, Windows portability, host neutrality, and infrastructure cost; external frameworks require superior local evidence."
+      },
+      {
+        "category": "infrastructure_burden",
+        "id": "AC-009",
+        "oracle": "world-state",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Do not install or make an external verification framework authoritative without passing the full net-value evaluation."
+      },
+      {
+        "category": "non_goal",
+        "id": "AC-010",
+        "oracle": "world-state",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Do not modify, repair, or promote the staged human-off routing implementation beyond verification role separation and gate configuration."
+      },
+      {
+        "category": "non_goal",
+        "id": "AC-011",
+        "oracle": "human-intent",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Do not alter the staged human-off source intent or specification to fit the verification mechanism."
+      },
+      {
+        "category": "portability",
+        "id": "AC-012",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Keep the contract and validator Windows-portable and host-neutral, recording any host-native isolation limitations."
+      },
+      {
+        "category": "rollback",
+        "id": "AC-013",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Permit rollback by deleting the additive grounded-verification artifacts without live-state migration or changing the existing evaluation owner."
+      },
+      {
+        "category": "correctness",
+        "id": "AC-014",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Treat each material card as one evolving authoritative conversation that preserves later corrections, rationale, rejected or superseded approaches, evidence gaps, commitments, and open questions; generated summaries are lossy views and cannot overwrite that lineage."
+      },
+      {
+        "category": "capability",
+        "id": "AC-015",
+        "oracle": "world-state",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Default material work to brainstorm, research existing evidence, decide, execute, and independent verification, preserving the sequence and authoritative lineage across supported-host resume."
+      },
+      {
+        "category": "correctness",
+        "id": "AC-016",
+        "oracle": "world-state",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Surface material omissions proactively without user reminders and preserve the held-out second-reminder summarizer or intake omission regression."
+      },
+      {
+        "category": "correctness",
+        "id": "AC-017",
+        "oracle": "deterministic",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Risk-classify legacy done work as verified, provisionally valid, superseded, or failed from evidence; never accept done status alone as verification."
+      },
+      {
+        "category": "capability",
+        "id": "AC-018",
+        "oracle": "world-state",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Require revalidated cross-host evidence for ultimate-agent convergence and complete evidence lanes before any optional Prime Agent decision, including persistent RLM workspace, daemon continuity, child lifecycle and family messaging, bounded autonomy, rollbackable supplemental refinement, Kanban authority, sandboxing, and Windows quality."
+      },
+      {
+        "category": "non_goal",
+        "id": "AC-019",
+        "oracle": "world-state",
+        "source_reference": "kanban:t_1e0d8e90",
+        "statement": "Do not claim downstream convergence or Prime outcomes, allow self-approved refinement or unsandboxed execution, promote unproven Windows quality, or require ordinary users to provide evaluation templates."
+      }
+    ],
+    "criteria_sha256": "619f5cb6e723a204ccbec4332dbaaa1855ccd1b9eb0aa2efb52a5e5d07d5caa2",
+    "decision_events": [
+      {
+        "after_sha256": "0089a98b00acd07701e89ab58d75337e5a58309a4bb1192cf191c486d48b6207",
+        "before_sha256": "d2fd547b330d8450a9a70478b48f8552f340fe0050b29582336162446dd452c4",
+        "decided_at": "2026-08-16T03:00:37Z",
+        "decided_by": "p_11111111",
+        "id": "DEC-001",
+        "reason": "User added a held-out board regression requiring proactive review-blocked visibility and autonomous reconciliation or escalation of a ready card with a nonexistent assignee."
+      },
+      {
+        "after_sha256": "ad9753a40900d1b68c695005e2d90b0947575cc735448eaebb7bcd79c5a6866f",
+        "before_sha256": "0089a98b00acd07701e89ab58d75337e5a58309a4bb1192cf191c486d48b6207",
+        "decided_at": "2026-08-16T12:08:07Z",
+        "decided_by": "p_11111111",
+        "id": "DEC-002",
+        "reason": "User required rejecting scope inflation: a passing candidate trial cannot satisfy broader comparison, architecture, or promotion criteria unless the immutable contract declares that scope and every required evidence lane is present."
+      },
+      {
+        "after_sha256": "dc4539091b0fd8b0ca5db90f3ae01536b10fdc297459d87445cb01b3aef09e7e",
+        "before_sha256": "ad9753a40900d1b68c695005e2d90b0947575cc735448eaebb7bcd79c5a6866f",
+        "decided_at": "2026-08-16T12:13:51Z",
+        "decided_by": "p_11111111",
+        "id": "DEC-003",
+        "reason": "User required evolving multi-turn intent lineage, summary non-authority, research-first cross-host resume, proactive no-reminder status, and the second-reminder summarizer and intake regression."
+      },
+      {
+        "after_sha256": "619f5cb6e723a204ccbec4332dbaaa1855ccd1b9eb0aa2efb52a5e5d07d5caa2",
+        "before_sha256": "dc4539091b0fd8b0ca5db90f3ae01536b10fdc297459d87445cb01b3aef09e7e",
+        "decided_at": "2026-08-16T12:20:39Z",
+        "decided_by": "p_11111111",
+        "id": "DEC-004",
+        "reason": "User required evidence-based legacy done classification, ultimate-agent convergence revalidation, bounded optional Prime Agent evidence, Kanban authority, safe rollback, and the third-reminder fleet omission regression without claiming downstream outcomes passed."
+      }
+    ],
+    "decision_scopes": [
+      {
+        "criterion_ids": [
+          "AC-001",
+          "AC-002",
+          "AC-003",
+          "AC-004",
+          "AC-005",
+          "AC-006",
+          "AC-007",
+          "AC-009",
+          "AC-010",
+          "AC-011",
+          "AC-012",
+          "AC-013"
+        ],
+        "decision_type": "verification",
+        "id": "S-VERIFICATION",
+        "required_evidence_lanes": [
+          "contract",
+          "isolation",
+          "test-author",
+          "negative-controls",
+          "material-path",
+          "pilot",
+          "portability",
+          "non-goals"
+        ],
+        "required_gate_ids": [
+          "G-CONTRACT",
+          "G-PROPERTY",
+          "G-TEETH",
+          "G-PILOT"
+        ]
+      },
+      {
+        "criterion_ids": [
+          "AC-008"
+        ],
+        "decision_type": "candidate-comparison",
+        "id": "S-ADOPTION",
+        "required_evidence_lanes": [
+          "baseline",
+          "candidate-trial",
+          "cost",
+          "maintenance",
+          "portability",
+          "host-neutrality",
+          "rollback"
+        ],
+        "required_gate_ids": [
+          "G-CONTRACT",
+          "G-PILOT"
+        ]
+      },
+      {
+        "criterion_ids": [
+          "AC-014",
+          "AC-015",
+          "AC-016"
+        ],
+        "decision_type": "verification",
+        "id": "S-INTENT-LINEAGE",
+        "required_evidence_lanes": [
+          "multi-turn-lineage",
+          "summary-authority",
+          "research-first-resume",
+          "proactive-status",
+          "summarizer-reminder"
+        ],
+        "required_gate_ids": [
+          "G-CONTRACT",
+          "G-PILOT"
+        ]
+      },
+      {
+        "criterion_ids": [
+          "AC-017",
+          "AC-018",
+          "AC-019"
+        ],
+        "decision_type": "architecture",
+        "id": "S-ULTIMATE-AGENT",
+        "required_evidence_lanes": [
+          "legacy-classification",
+          "convergence-revalidation",
+          "prime-persistence",
+          "prime-lifecycle",
+          "prime-safety",
+          "fleet-omission",
+          "kanban-authority",
+          "rollback",
+          "no-downstream-pass-claim"
+        ],
+        "required_gate_ids": [
+          "G-CONTRACT",
+          "G-PILOT"
+        ]
+      }
+    ],
+    "freeze_receipt": "sha256:3868a5160cea5766b95b0dc7d0ce767405851bfd85915b45c0d72799d8a6c4c5",
+    "freeze_receipt_path": "evals/fixtures/grounded-verification/criteria-freeze-receipt.json",
+    "frozen_at": "2026-08-16T02:46:49Z",
+    "implementation_started_at": "2026-08-16T02:58:22Z",
+    "pilot_manifest": {
+      "expected_blocker_ids": [
+        "stale-route-receipt",
+        "missing-real-per-surface-evidence",
+        "declarative-only-cross-surface-enforcement",
+        "unreconciled-delivery-worktree-state",
+        "native-cc-lifecycle-suite-6-fail-1-error",
+        "review-blocked-status-not-proactively-surfaced",
+        "phantom-assignee-not-reconciled-or-escalated",
+        "evolving-multi-turn-lineage-lost",
+        "summary-overwrites-authoritative-lineage",
+        "research-first-cross-host-resume-omitted",
+        "material-status-required-user-reminder",
+        "summarizer-intake-required-second-reminder",
+        "legacy-done-status-treated-as-evidence",
+        "ultimate-agent-convergence-claim-unrevalidated",
+        "prime-boundaries-not-evidence-bound",
+        "fleet-omission-required-third-reminder"
+      ],
+      "expected_non_regression_ids": [
+        "routing-specific-receipt-invalidation-fix"
+      ]
+    }
+  },
+  "decision_evidence": [
+    {
+      "lanes": [
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+          "lane_id": "contract",
+          "result": "pass",
+          "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+          "lane_id": "isolation",
+          "result": "pass",
+          "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+          "lane_id": "test-author",
+          "result": "pass",
+          "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+          "lane_id": "negative-controls",
+          "result": "pass",
+          "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+          "lane_id": "material-path",
+          "result": "pass",
+          "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+          "lane_id": "pilot",
+          "result": "pass",
+          "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+          "lane_id": "portability",
+          "result": "pass",
+          "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/contract-verification-evidence.json",
+          "lane_id": "non-goals",
+          "result": "pass",
+          "sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445"
+        }
+      ],
+      "scope_id": "S-VERIFICATION"
+    },
+    {
+      "lanes": [
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+          "lane_id": "baseline",
+          "result": "pass",
+          "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+          "lane_id": "candidate-trial",
+          "result": "pass",
+          "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+          "lane_id": "cost",
+          "result": "pass",
+          "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+          "lane_id": "maintenance",
+          "result": "pass",
+          "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+          "lane_id": "portability",
+          "result": "pass",
+          "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+          "lane_id": "host-neutrality",
+          "result": "pass",
+          "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/candidate-comparison-evidence.json",
+          "lane_id": "rollback",
+          "result": "pass",
+          "sha256": "15711ec7a8893c3f4794405b8b71a0242d20f8b771c813f507007e367f673051"
+        }
+      ],
+      "scope_id": "S-ADOPTION"
+    },
+    {
+      "lanes": [
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+          "lane_id": "multi-turn-lineage",
+          "result": "pass",
+          "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+          "lane_id": "summary-authority",
+          "result": "pass",
+          "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+          "lane_id": "research-first-resume",
+          "result": "pass",
+          "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+          "lane_id": "proactive-status",
+          "result": "pass",
+          "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/intent-lineage-evidence.json",
+          "lane_id": "summarizer-reminder",
+          "result": "pass",
+          "sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18"
+        }
+      ],
+      "scope_id": "S-INTENT-LINEAGE"
+    },
+    {
+      "lanes": [
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "legacy-classification",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "convergence-revalidation",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "prime-persistence",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "prime-lifecycle",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "prime-safety",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "fleet-omission",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "kanban-authority",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "rollback",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        },
+        {
+          "evidence_path": "evals/fixtures/grounded-verification/ultimate-agent-evidence.json",
+          "lane_id": "no-downstream-pass-claim",
+          "result": "pass",
+          "sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+        }
+      ],
+      "scope_id": "S-ULTIMATE-AGENT"
+    }
+  ],
+  "gates": [
+    {
+      "check_kind": "deterministic",
+      "command_or_probe": "python tools/grounded_gate.py evals/fixtures/grounded-verification/valid.json --trusted-freeze-receipt sha256:3868a5160cea5766b95b0dc7d0ce767405851bfd85915b45c0d72799d8a6c4c5 --trusted-test-author-receipt sha256:29eb735dac530fd486a25234879c6b8b090f3cc602299b0b0838ca39b92caa53",
+      "evidence_path": "tests/test_grounded_gate.py",
+      "id": "G-CONTRACT",
+      "negative_control": {
+        "expected": "reject",
+        "fault": "reuse implementer principal as verdict owner",
+        "observed": "reject",
+        "passed": true
+      },
+      "open_ended": false,
+      "oracle": "deterministic",
+      "result": "pass",
+      "trusted": true
+    },
+    {
+      "check_kind": "property",
+      "command_or_probe": "all permutations of distinct role records preserve validity; any duplicate principal or context is rejected",
+      "evidence_path": "tests/test_grounded_gate.py",
+      "id": "G-PROPERTY",
+      "negative_control": {
+        "expected": "reject",
+        "fault": "collide two role principals",
+        "observed": "reject",
+        "passed": true
+      },
+      "open_ended": false,
+      "oracle": "deterministic",
+      "result": "pass",
+      "trusted": true
+    },
+    {
+      "check_kind": "equivalent-teeth",
+      "command_or_probe": "mutate each load-bearing invariant and require the validator to reject the contract",
+      "evidence_path": "tests/test_grounded_gate.py",
+      "id": "G-TEETH",
+      "negative_control": {
+        "expected": "reject",
+        "fault": "mark a negative control as passing without observed rejection",
+        "observed": "reject",
+        "passed": true
+      },
+      "open_ended": false,
+      "oracle": "deterministic",
+      "result": "pass",
+      "trusted": true
+    },
+    {
+      "check_kind": "world-state",
+      "command_or_probe": "python tools/grounded_gate.py --pilot-evidence evals/fixtures/grounded-verification/pilot-evidence.json",
+      "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+      "id": "G-PILOT",
+      "negative_control": {
+        "expected": "reject",
+        "fault": "remove one required surface receipt while claiming promotion-ready",
+        "observed": "reject",
+        "passed": true
+      },
+      "open_ended": true,
+      "oracle": "world-state",
+      "result": "pass",
+      "trusted": true
+    }
+  ],
+  "isolation": [
+    {
+      "denied_scopes": [
+        "implementation"
+      ],
+      "enforcement": "separate-workspace",
+      "readable_scopes": [
+        "frozen_intent_spec"
+      ],
+      "receipt": "sha256:0877fc4a0c6ddeb4e37f39a89ce25eff76a734a3401e489d915475a26528a98e",
+      "receipt_path": "evals/fixtures/grounded-verification/isolation-receipts.json",
+      "subject_role": "test_author"
+    },
+    {
+      "denied_scopes": [
+        "held_out_tests",
+        "oracle_logic",
+        "rubrics",
+        "gate_recipes"
+      ],
+      "enforcement": "separate-workspace",
+      "readable_scopes": [
+        "frozen_intent_spec",
+        "implementation"
+      ],
+      "receipt": "sha256:0877fc4a0c6ddeb4e37f39a89ce25eff76a734a3401e489d915475a26528a98e",
+      "receipt_path": "evals/fixtures/grounded-verification/isolation-receipts.json",
+      "subject_role": "implementer"
+    },
+    {
+      "denied_scopes": [
+        "implementation_write"
+      ],
+      "enforcement": "process-boundary",
+      "readable_scopes": [
+        "sealed_implementation",
+        "verification_receipts"
+      ],
+      "receipt": "sha256:0877fc4a0c6ddeb4e37f39a89ce25eff76a734a3401e489d915475a26528a98e",
+      "receipt_path": "evals/fixtures/grounded-verification/isolation-receipts.json",
+      "subject_role": "verdict_owner"
+    }
+  ],
+  "material_code_paths": [
+    {
+      "path": "tools/grounded_gate.py",
+      "property_or_metamorphic_gate": "G-PROPERTY",
+      "teeth_gate": "G-TEETH",
+      "teeth_supported": true
+    }
+  ],
+  "pilot": {
+    "context_tokens": 0,
+    "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+    "false_negatives": 0,
+    "false_positives": 0,
+    "host_neutrality": "pass",
+    "known_blockers": [
+      {
+        "classification": "routing-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "stale-route-receipt"
+      },
+      {
+        "classification": "promotion-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "missing-real-per-surface-evidence"
+      },
+      {
+        "classification": "promotion-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "declarative-only-cross-surface-enforcement"
+      },
+      {
+        "classification": "delivery-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "unreconciled-delivery-worktree-state"
+      },
+      {
+        "classification": "pre-existing-native-lifecycle-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "native-cc-lifecycle-suite-6-fail-1-error"
+      },
+      {
+        "classification": "routing-non-regression",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "non-regression",
+        "id": "routing-specific-receipt-invalidation-fix"
+      },
+      {
+        "classification": "status-visibility-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "review-blocked-status-not-proactively-surfaced"
+      },
+      {
+        "classification": "dispatch-authority-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "phantom-assignee-not-reconciled-or-escalated"
+      },
+      {
+        "classification": "intent-lineage-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "evolving-multi-turn-lineage-lost"
+      },
+      {
+        "classification": "summary-authority-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "summary-overwrites-authoritative-lineage"
+      },
+      {
+        "classification": "workflow-resume-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "research-first-cross-host-resume-omitted"
+      },
+      {
+        "classification": "status-visibility-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "material-status-required-user-reminder"
+      },
+      {
+        "classification": "intent-intake-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "summarizer-intake-required-second-reminder"
+      },
+      {
+        "classification": "legacy-evidence-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "legacy-done-status-treated-as-evidence"
+      },
+      {
+        "classification": "architecture-evidence-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "ultimate-agent-convergence-claim-unrevalidated"
+      },
+      {
+        "classification": "optional-surface-evidence-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "prime-boundaries-not-evidence-bound"
+      },
+      {
+        "classification": "fleet-status-blocker",
+        "detected": true,
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+        "expected": "blocker",
+        "id": "fleet-omission-required-third-reminder"
+      }
+    ],
+    "maintenance_minutes": 30.0,
+    "model_cost_usd": 0.0,
+    "runtime_seconds": 1.656,
+    "subject": "kanban:t_67bb4407 preserved human-off routing candidate",
+    "windows_portability": "pass"
+  },
+  "roles": {
+    "implementer": {
+      "context_id": "c_44444444",
+      "principal_id": "p_44444444"
+    },
+    "intent_owner": {
+      "context_id": "c_11111111",
+      "principal_id": "p_11111111"
+    },
+    "oracle_owner": {
+      "context_id": "c_55555555",
+      "principal_id": "p_55555555"
+    },
+    "specification_owner": {
+      "context_id": "c_22222222",
+      "principal_id": "p_22222222"
+    },
+    "test_author": {
+      "context_id": "c_33333333",
+      "principal_id": "p_33333333"
+    },
+    "verdict_owner": {
+      "context_id": "c_66666666",
+      "principal_id": "p_66666666"
+    }
+  },
+  "rollback": "Remove grounded-verification schema, validator, fixtures, tests, report, and documentation; tools/eval.py and tools/eval_gate.py remain the unchanged evaluation owner.",
+  "schema_version": 1,
+  "source_intent": {
+    "authority": "user",
+    "captured_at": "2026-08-16T02:43:08Z",
+    "reference": "kanban:t_1e0d8e90",
+    "statement": "Create an agent-agnostic independent verification contract that separates intent validation from implementation verification, freezes user-sourced acceptance before implementation, and proves positive net value by catching the staged human-off pilot's known lifecycle blockers without self-certification."
+  },
+  "state": "verified",
+  "test_author_receipt": {
+    "artifact_path": "evals/fixtures/grounded-verification/independent-test-author.json",
+    "artifact_sha256": "1dcf726f5ae4ac7de57056fcda03f9807250e763971606c57e9ab422c1f11518",
+    "receipt": "sha256:29eb735dac530fd486a25234879c6b8b090f3cc602299b0b0838ca39b92caa53",
+    "receipt_path": "evals/fixtures/grounded-verification/independent-test-author-receipt.json"
+  },
+  "verdict": {
+    "basis_gate_ids": [
+      "G-CONTRACT",
+      "G-PROPERTY",
+      "G-TEETH",
+      "G-PILOT"
+    ],
+    "claimed_scope_ids": [
+      "S-VERIFICATION",
+      "S-ADOPTION",
+      "S-INTENT-LINEAGE",
+      "S-ULTIMATE-AGENT"
+    ],
+    "decision": "pass",
+    "principal_id": "p_66666666"
+  },
+  "verification_receipt": {
+    "receipt": "sha256:82a2b44eb0b0085ab2538426dfedab37b50e4a8f8dd76b43b3367c9be2b98608",
+    "receipt_path": "evals/fixtures/grounded-verification/verification-receipt.json"
+  },
+  "verifier": {
+    "context_id": "c_66666666",
+    "falsification_probes": [
+      "duplicate implementer and verdict principals",
+      "move freeze timestamp after implementation start",
+      "remove one implementer denial",
+      "claim full independence with a shared visible proxy",
+      "hide a known pilot blocker",
+      "hide the review-blocked state from proactive event evidence",
+      "leave a ready card assigned to a nonexistent principal without reconciliation or escalation",
+      "present a terminal passing child receipt as complete comparison or promotion evidence",
+      "replace authoritative multi-turn lineage with a lossy generated summary",
+      "omit research-first cross-host resume evidence",
+      "require a second reminder for accepted summarizer or intake requirements",
+      "treat legacy done status as verification evidence",
+      "claim ultimate-agent convergence without revalidating cross-host evidence",
+      "claim optional Prime readiness without persistence, lifecycle, safety, Kanban, rollback, and Windows evidence",
+      "require a third reminder to surface a fleet-wide omission"
+    ],
+    "isolation_strength": "context-only",
+    "limitations": [
+      "The pilot uses preserved public-safe task receipts rather than reopening the sealed implementation workspace.",
+      "A separate context sharing the same visible source proxy is reported as context-only, not full independence."
+    ],
+    "principal_id": "p_66666666",
+    "reexecuted_gate_ids": [
+      "G-CONTRACT",
+      "G-PROPERTY",
+      "G-TEETH"
+    ],
+    "shared_visible_proxy": true
+  }
+}

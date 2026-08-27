@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "artifact_type": "independent-test-author-checks",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "test_author_principal_id": "p_33333333",
+  "test_author_context_id": "c_33333333",
+  "frozen_input": {
+    "source_intent_reference": "kanban:t_1e0d8e90",
+    "frozen_at": "2026-08-16T02:46:49Z",
+    "trusted_original_criteria_sha256": "d2fd547b330d8450a9a70478b48f8552f340fe0050b29582336162446dd452c4",
+    "final_criteria_sha256": "619f5cb6e723a204ccbec4332dbaaa1855ccd1b9eb0aa2efb52a5e5d07d5caa2",
+    "criterion_ids": [
+      "AC-001", "AC-002", "AC-003", "AC-004", "AC-005", "AC-006", "AC-007", "AC-008", "AC-009", "AC-010",
+      "AC-011", "AC-012", "AC-013", "AC-014", "AC-015", "AC-016", "AC-017", "AC-018", "AC-019"
+    ]
+  },
+  "source": {
+    "authority": "kanban:t_1e0d8e90 frozen intent/specification only",
+    "model": "gpt-5.4-mini",
+    "provider": "openai-codex",
+    "reasoning": "low",
+    "session_id": "20260816_223254_f6cbc7",
+    "workspace": "sealed-temporary-workspace",
+    "tool_policy": "todo-only",
+    "implementation_access": false,
+    "input_tokens": 5403,
+    "output_tokens": 3526,
+    "api_calls": 1
+  },
+  "acceptance_checks": [
+    {
+      "id": "ACC-001",
+      "criterion_ids": ["AC-001", "AC-010"],
+      "input_condition": "The same actor is presented as intent owner, test designer, implementation owner, oracle owner, and verdict owner, or those roles collapse into one approval path.",
+      "expected_outcome": "Reject unless roles are explicitly separated and no repair or promotion is claimed beyond verification-role separation and gate configuration.",
+      "oracle_type": "human-intent"
+    },
+    {
+      "id": "ACC-002",
+      "criterion_ids": ["AC-002", "AC-011", "AC-014"],
+      "input_condition": "A user acceptance change appears after freeze without an explicit intent-owner before/after hash-chain event, or intent is rewritten to match a gate outcome.",
+      "expected_outcome": "Reject the amendment, preserve the original frozen acceptance and evolving lineage, and reject intent retrofitting.",
+      "oracle_type": "deterministic"
+    },
+    {
+      "id": "ACC-003",
+      "criterion_ids": ["AC-003", "AC-004", "AC-012"],
+      "input_condition": "An implementer can influence held-out tests, oracle logic, rubrics, or gate recipes, or the verifier cannot report actual Windows-host isolation boundaries.",
+      "expected_outcome": "Fail unless held-out surfaces remain inaccessible and actual host isolation limits are reported.",
+      "oracle_type": "deterministic"
+    },
+    {
+      "id": "ACC-004",
+      "criterion_ids": ["AC-004", "AC-005", "AC-009"],
+      "input_condition": "A trusted gate is exercised with its paired negative control and independently reexecuted deterministic check.",
+      "expected_outcome": "Require deterministic reproduction, negative-control rejection, falsification probes, and no unproven external authority.",
+      "oracle_type": "deterministic"
+    },
+    {
+      "id": "ACC-005",
+      "criterion_ids": ["AC-006", "AC-009"],
+      "input_condition": "An open-ended outcome lacks world-state evidence or deterministic ground truth is not machine checked.",
+      "expected_outcome": "Reject the oracle mismatch and require the appropriate evidence path.",
+      "oracle_type": "world-state"
+    },
+    {
+      "id": "ACC-006",
+      "criterion_ids": ["AC-007", "AC-015", "AC-016"],
+      "input_condition": "The stream contains a proactive status omission, phantom assignee, second-reminder summarizer or intake omission, or third-reminder fleet omission.",
+      "expected_outcome": "Detect each blocker, preserve research-first cross-host lineage, and report false-positive and false-negative metrics without silently dropping the reminder regression.",
+      "oracle_type": "world-state"
+    },
+    {
+      "id": "ACC-007",
+      "criterion_ids": ["AC-008", "AC-009", "AC-012"],
+      "input_condition": "Candidate choices trade defect detection against total cost, Windows portability, host neutrality, and external infrastructure burden.",
+      "expected_outcome": "Select only the smallest reversible positive-net-value option supported by superior local evidence.",
+      "oracle_type": "deterministic"
+    },
+    {
+      "id": "ACC-008",
+      "criterion_ids": ["AC-001", "AC-013"],
+      "input_condition": "Rollback is requested for additive artifacts with no live migration permitted.",
+      "expected_outcome": "Delete additive artifacts only, preserve the current evaluation owner, and avoid live migration or role collapse.",
+      "oracle_type": "deterministic"
+    },
+    {
+      "id": "ACC-009",
+      "criterion_ids": ["AC-014", "AC-015", "AC-017"],
+      "input_condition": "A lossy summary conflicts with later corrections or a legacy item is labeled done without evidence.",
+      "expected_outcome": "Preserve the authoritative evolving conversation and classify legacy work by evidence rather than done status.",
+      "oracle_type": "human-intent"
+    },
+    {
+      "id": "ACC-010",
+      "criterion_ids": ["AC-010", "AC-011", "AC-018", "AC-019"],
+      "input_condition": "A result claims downstream convergence or Prime success, permits self-approved refinement or unsandboxed execution, asserts Windows quality without fresh evidence, or requires ordinary-user evaluation templates.",
+      "expected_outcome": "Reject unless every declared cross-host and optional Prime lane is independently evidenced; reject unsafe execution, false downstream pass claims, and user template burden.",
+      "oracle_type": "world-state"
+    }
+  ],
+  "falsification_probes": [
+    "Collapse all ownership roles into one self-certifying principal.",
+    "Introduce a silent post-freeze amendment or rewrite intent to match the gate output.",
+    "Expose held-out tests or oracle logic to the implementer and conceal the isolation breach.",
+    "Run a trusted gate without its negative control and cite an external framework as authority.",
+    "Use an open-ended outcome without world-state evidence or skip machine checking deterministic truth.",
+    "Hide proactive status, phantom-assignee, second-reminder summarizer or intake, or third-reminder fleet omissions.",
+    "Promote an external framework with weaker local evidence or unproven Windows portability.",
+    "Perform rollback through live migration or by changing the evaluation owner.",
+    "Overwrite authoritative conversation lineage with a lossy summary and treat done as verified.",
+    "Claim downstream Prime or convergence success without fresh lanes, allow self-approved or unsandboxed refinement, or burden ordinary users with templates."
+  ]
+}

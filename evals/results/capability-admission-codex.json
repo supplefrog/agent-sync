@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "suite": "capability-admission",
+  "host": "codex",
+  "host_version": "codex-cli 0.146.0-alpha.3.1",
+  "run_timestamp_utc": "2026-07-25T23:38:30.341006+00:00",
+  "status": "stale-after-adaptation",
+  "artifacts": {
+    "candidate_sha256": "445d20a207961887e6185dd420088fe905e4536f8ededd820bf06575d40ec432",
+    "suite_sha256": "076790202c4f89cfa121fd81f13d98836222e43390e7dd9c8e12eaa949638513",
+    "harness_sha256": "94f14e516025c5d28d11ff88ddfc0538e89829488c2fe8c97859221f3e14713e"
+  },
+  "result": {
+    "passed": true,
+    "candidate_wins": 3,
+    "candidate_losses": 0,
+    "ties": 2,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0
+  },
+  "cases": {
+    "popular-skill": "win",
+    "redundant-style": "tie",
+    "upstream-trace": "win",
+    "held-out-regression": "tie",
+    "portable-architecture": "win"
+  },
+  "decision": "The evaluated candidate passed on Codex, but its instructions were subsequently adapted. Re-run before admission.",
+  "raw_report_committed": false
+}

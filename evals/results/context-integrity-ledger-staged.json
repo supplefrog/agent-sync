@@ -1,0 +1,107 @@
+{
+  "schema_version": 2,
+  "artifact": "tools/context_ledger.py",
+  "status": "staged-read-only-slice-admitted",
+  "observed_at": "2026-08-12T22:01:37Z",
+  "claim": "A local SQLite metadata ledger can ingest append-only JSONL provenance without storing transcript payloads, while preserving stable source identity and versioned derivations.",
+  "scope": {
+    "providers": [
+      "synthetic-codex-jsonl",
+      "synthetic-omp-jsonl",
+      "synthetic-hermes-metadata"
+    ],
+    "live_provider_ingestion": false,
+    "provider_mutation": false,
+    "promotion": false
+  },
+  "verification": {
+    "focused_tests": {
+      "command": "python -m unittest discover -s tests -p 'test_context_ledger.py' -v",
+      "result": "pass",
+      "tests": 26
+    },
+    "repository_tests": {
+      "command": "python -m unittest discover -s tests -v",
+      "result": "pass",
+      "tests": 47
+    },
+    "syntax": {
+      "command": "python -m py_compile tools/context_ledger.py tests/test_context_ledger.py",
+      "result": "pass"
+    },
+    "public_safety": {
+      "command": "python tools/public_check.py",
+      "result": "pass"
+    },
+    "audit": {
+      "command": "python tools/audit.py check --repo .",
+      "result": "pass"
+    },
+    "skill_validation": {
+      "command": "python tools/validate.py",
+      "result": "pass",
+      "skills": 6
+    },
+    "independent_review": {
+      "prior_result": "fail",
+      "prior_evidence": "private delegation summary for deleg_eae988e1 (retained outside this repository)",
+      "corrected_findings": [
+        "arbitrary event_time_field payload persistence",
+        "source-event provenance version loss",
+        "out-of-order execution observation bounds",
+        "provider-version omission from cursor identity",
+        "timezone-offset observation comparison",
+        "partial migration restart collision",
+        "free-form direct metadata API bypass",
+        "non-canonical or reversed-range file locator acceptance",
+        "naive or date-only provider event timestamp acceptance",
+        "unknown-legacy cursor sentinel replay",
+        "numeric provider event timestamp acceptance",
+        "configured event-time extraction on scalar or missing-field records",
+        "encoded-control, backslash, and dot-segment locator acceptance",
+        "legacy migration intermediate-state collision or silent evidence loss",
+        "public writable SQLite connection bypass",
+        "read-only main database connection could attach and mutate an external SQLite database"
+      ],
+      "review_history": [
+        {
+          "review": "deleg_bd38a174",
+          "result": "fail",
+          "artifact": "3799510e875f9359da5f060a6fb53ac7808bda1a161e24ce428d887950d66d69"
+        },
+        {
+          "review": "deleg_0f799c33",
+          "result": "fail",
+          "artifact": "609c81571200b0935e4d7f078419c23feb8cc9d5a7c890e5bcd202fcef182755"
+        },
+        {
+          "review": "deleg_e0ff2c8a",
+          "result": "fail",
+          "artifact": "2f911a5161f065c47cddd7e78c480069095d95a238e94b28d722729ebcb15fb9"
+        },
+        {
+          "review": "deleg_072ec8fd",
+          "result": "pass",
+          "artifact": "24bdd026d6151e4956422ee4fa789c91dabe36a9123f475eeaee26cac07fe45e",
+          "focused_tests": 26,
+          "repository_tests": 47
+        }
+      ],
+      "fresh_review": "deleg_072ec8fd exact-hash review",
+      "fresh_review_result": "pass"
+    }
+  },
+  "artifact_hashes": {
+    "tools/context_ledger.py": "24bdd026d6151e4956422ee4fa789c91dabe36a9123f475eeaee26cac07fe45e",
+    "tests/test_context_ledger.py": "ca016f07cbeae66b0d69d76cffa4b85eaf934ccfaaaa74b97c013118adfe20f4",
+    "docs/context-integrity-ledger.md": "a1ec801c066c8cebdc071d80babcbba277d2a606a7f31e9f8cd391eff52f54c2"
+  },
+  "limits": [
+    "No live Hermes, Codex, or OMP provider adapter has been connected.",
+    "No live provider mutation has been attempted.",
+    "The repository has no committed baseline and contains unrelated untracked files.",
+    "Admission applies only to this staged read-only metadata slice; live-provider integration, task authority, mutation, and cleanup remain unpromoted.",
+    "Live-provider fixture and adversarial validation are required before any importer or orchestrator promotion."
+  ],
+  "rollback": "Delete the untracked ledger tool, focused tests, documentation, and this evidence file; no provider state was changed."
+}

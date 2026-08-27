@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "capability": "fleet-distribution",
+  "timestamp": "2026-08-28T01:21:22+05:30",
+  "status": "live-local-windows",
+  "machine": "local-windows",
+  "managed_root": "<SHARED_SKILLS_HOME>",
+  "managed_skills": [
+    "dynamic-workflows",
+    "fleet-sync",
+    "openai-delegation-route-research",
+    "outcome-first-workflow-design"
+  ],
+  "verification": {
+    "targeted_tests": "36 passed",
+    "skill_validation": "8/8 valid",
+    "fleet_verify": "PASS snapshot and managed state match",
+    "legacy_installer_doctor": "4 admitted skills PASS; Codex manual-merge markers intentionally SKIP",
+    "hermes_discovery": "all four managed skills listed enabled/local",
+    "codex_discovery": "fleet-sync and the other managed skill names present in fresh debug prompt-input",
+    "omp_discovery": "all four managed skill names enumerated in a fresh no-session process",
+    "fleet_sync_positive_probe": "status-only prompt selected render, diff, verify and explicitly rejected apply",
+    "fleet_sync_near_miss_probe": "skill-edit prompt routed to capability-curator rather than fleet-sync",
+    "temporary_artifacts": "no .fleet-stage-* or .fleet-old-* entries remain",
+    "independent_review": "six blocking findings reproduced and fixed: source/output junction escape, snapshot path escape, cross-root conflict preflight, exact-tree comparison, and render pytest collection",
+    "pytest_render_exclusion": "pytest excludes generated render, .worktrees, and .evals trees"
+  },
+  "full_suite": {
+    "result": "260 passed, 52 subtests passed",
+    "failures": []
+  },
+  "hashes": {
+    "tools/fleet.py": "05d3acd31ce79f370b5bc814e9949b6b7962a01872fd580500d30139f38362ce",
+    "tools/install.py": "fc7166c4b90fc11bbac92b41f5c042b9f5f6d6d0c69e530eea9b620275348f3b",
+    "tests/test_fleet.py": "e7bd316543cb47ecd9ebca527b7a74538a64ec1501befe2f581d1cd902c31de4",
+    "tests/test_tools.py": "d2b707bb612b880668c88aa84f0d6bf52f9e3d27b416f4f283c320f2e03b7fcd",
+    "contracts/fleet.schema.json": "693e5f1868e0f0710dc45cd4cd60c24317a9a192973d008ba847313a947b58e3",
+    "docs/fleet.md": "195e4348d5d6191b1f8b35f66b2e94bdfe4c7eb7c63566cce1c4cf6de50d1ef5",
+    "pytest.ini": "cb2ae300b5f3b5aae8f54a32c8b143f3b71e734b91dffa99f9afab4e52231f5d",
+    "skills/fleet-sync/SKILL.md": "f96a93fca491a4ee11254c3f17b21544dcbcb4327b4e20ba94b1295867f1513a",
+    "fleet.json": "e6717dbe06250030d9f99f8a70307b2ad974bb18e7df6e3b090f1ae0acf87f27",
+    "render/fleet/manifest.json": "691d0c1e818db63044b904c97e42e69c0834ebb53b1a3c6a010f235237349a54",
+    "live_state": "c3b63b202c90026b408584fbb61bbe020fd939f3e11d106f875e5b32ef099808"
+  },
+  "scope_boundary": "Host-specific instruction and runtime adapters remain unmanaged. Remote transport is deferred until another machine is declared."
+}

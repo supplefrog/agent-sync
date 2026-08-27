@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "receipt_type": "grounded-verification-test-author-input-output",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "test_author_principal_id": "p_33333333",
+  "test_author_context_id": "c_33333333",
+  "frozen_at": "2026-08-16T02:46:49Z",
+  "trusted_original_criteria_sha256": "d2fd547b330d8450a9a70478b48f8552f340fe0050b29582336162446dd452c4",
+  "final_criteria_sha256": "619f5cb6e723a204ccbec4332dbaaa1855ccd1b9eb0aa2efb52a5e5d07d5caa2",
+  "artifact_path": "evals/fixtures/grounded-verification/independent-test-author.json",
+  "artifact_sha256": "1dcf726f5ae4ac7de57056fcda03f9807250e763971606c57e9ab422c1f11518",
+  "input_scope": "frozen_intent_spec",
+  "output_type": "independent-test-author-checks",
+  "implementation_access": false,
+  "session_id": "20260816_223254_f6cbc7",
+  "tool_policy": "todo-only"
+}

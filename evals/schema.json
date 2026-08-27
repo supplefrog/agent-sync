@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["name", "claim", "cases"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "name": {"type": "string"},
+    "claim": {"type": "string"},
+    "criteria": {"type": "array", "items": {"type": "string"}},
+    "cases": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["id", "prompt"],
+        "properties": {
+          "id": {"type": "string"},
+          "kind": {"enum": ["representative", "near-miss", "adversarial", "held-out"]},
+          "prompt": {"type": "string"},
+          "criteria": {"type": "array", "items": {"type": "string"}},
+          "must_contain": {"type": "array", "items": {"type": "string"}},
+          "must_not_contain": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

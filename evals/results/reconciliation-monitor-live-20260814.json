@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "suite": "reconciliation-monitor-live-validation",
+  "host": "hermes-windows",
+  "host_version": "Hermes Agent v0.20.0 (2026.8.3)",
+  "observed_at": "2026-08-14T15:15:35+05:30",
+  "status": "passed-with-known-ledger-residue",
+  "decision": "retain",
+  "decision_detail": "Retain the existing metadata-only monitor and its explicit reconciliation-card workflow. Do not restore the deleted experimental reconciliation cron: the gateway dispatcher already owns Kanban execution, and the historical removal report documents why that cron was contained. Projects remain workspace/session-grouping metadata, not a task authority.",
+  "authority": {
+    "sole_task_authority": "Hermes Kanban",
+    "monitor_mutates_kanban": false,
+    "projects_are_task_authority": false,
+    "session_stores_are_task_authority": false
+  },
+  "live_monitor_run": {
+    "exit_code": 0,
+    "status": "pending",
+    "pending_events": 3,
+    "pending_attempts": [3, 2, 1],
+    "change_count": 172,
+    "providers": {
+      "hermes": 38,
+      "kanban": 134
+    },
+    "metadata_only_audit": "passed",
+    "forbidden_payload_keys_found": [],
+    "discovered_boards": ["agent-orchestration", "default"],
+    "filesystem_boards": ["agent-orchestration", "default"]
+  },
+  "runtime_inventory": {
+    "gateway_running": true,
+    "cron_scheduler_running": true,
+    "scheduled_job_count": 1,
+    "reconciliation_cron_present": false,
+    "kanban_auto_decompose": false,
+    "kanban_gateway_dispatch": true,
+    "kanban_max_in_progress_per_profile": 1,
+    "board_task_counts": {
+      "default": 0,
+      "agent-orchestration": 20
+    },
+    "project_count": 7,
+    "project_board_binding_count": 0,
+    "kanban_task_project_id_count": 0
+  },
+  "cron_disposition": {
+    "decision": "intentionally-absent",
+    "evidence": "%LOCALAPPDATA%\\hermes\\reconciliation\\reports\\c5dceaa6847bd43a72fc.md",
+    "known_residue": "The removed experimental job retains one direct execution row in claimed state although its recorded PID is absent. The job is absent from the scheduler, so the row is historical ledger residue; no unsupported SQLite mutation was applied."
+  },
+  "artifacts": {
+    "live_output": "%TEMP%\\reconciliation-monitor-live-t_6c89092c.json",
+    "live_state": "%LOCALAPPDATA%\\hermes\\reconciliation\\monitor-state.json",
+    "authority_contract": "docs/reconciliation-authority.md",
+    "monitor_source": "tools/reconciliation_monitor.py",
+    "monitor_tests": "tests/test_reconciliation_monitor.py"
+  },
+  "hashes": {
+    "monitor_source_sha256": "b7b2407efa116954033ac7c1847ca4d278116c15161ba8c7bc6a6236bf010554",
+    "monitor_tests_sha256": "bb46396594d353dc61a3ccbbd2c74f160651ea2c78f980fc51a4591febd3cb52",
+    "live_state_sha256": "b24e0e6c2d344bcb3580ef771aafb7fad0b77b8baa95e9d32a50b829918e7916",
+    "live_output_sha256": "0033b5e7859f97bb4686e313540c546d1f659d8a96f765d5bba89bf391670de2"
+  },
+  "verification": [
+    {
+      "command": "python tools/reconciliation_monitor.py > %TEMP%\\reconciliation-monitor-live-t_6c89092c.json",
+      "result": "exit 0; status pending"
+    },
+    {
+      "command": "python -m pytest tests/test_reconciliation_monitor.py -q -o 'addopts='",
+      "result": "9 passed"
+    },
+    {
+      "command": "python -m pytest tests/test_reconciliation_monitor.py tests/test_context_ledger.py -q -o 'addopts='",
+      "result": "35 passed, 17 subtests passed"
+    },
+    {
+      "command": "python -m pytest tests -q -o 'addopts='",
+      "result": "60 passed, 17 subtests passed"
+    },
+    {
+      "command": "python tools/validate.py",
+      "result": "6/6 skills valid"
+    },
+    {
+      "command": "python tools/public_check.py",
+      "result": "PASS public-safety scan"
+    },
+    {
+      "command": "hermes gateway status; hermes cron status",
+      "result": "gateway and cron scheduler running"
+    }
+  ],
+  "limitations": [
+    "Pending reconciliation events still require an authorized reconciliation run to produce matching reports and receipts.",
+    "The historical removed cron execution remains non-terminal in the cron execution ledger even though its PID is absent."
+  ]
+}

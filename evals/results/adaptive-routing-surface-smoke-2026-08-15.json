@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "evidence_state": "callable-smoke",
+  "suite_id": "adaptive-routing-smoke-2026-08-15",
+  "suite_sha256": "fb5fd471e99158af09f5a49f2b7dc07874a9e434f795ae2921a4dfa4910c6dff",
+  "case_id": "mechanical-bounded",
+  "routes": [
+    {
+      "id": "luna-high",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "high"
+    },
+    {
+      "id": "sol-low",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low"
+    }
+  ],
+  "summaries": [
+    {
+      "target_surface": "codex-workflow",
+      "sample_size": 2,
+      "passed": 2,
+      "p50_seconds": 8.168,
+      "max_seconds": 8.344,
+      "cleanup_passed": true,
+      "receipts_persisted_before_launch": true
+    },
+    {
+      "target_surface": "omp-workflow",
+      "sample_size": 2,
+      "passed": 2,
+      "p50_seconds": 7.298,
+      "max_seconds": 7.425,
+      "cleanup_passed": true,
+      "receipts_persisted_before_launch": true
+    }
+  ],
+  "trials": [
+    {
+      "surface": "codex-workflow",
+      "route_id": "luna-high",
+      "route": {
+        "id": "luna-high",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "high"
+      },
+      "case_id": "mechanical-bounded",
+      "passed": true,
+      "exit_code": 0,
+      "duration_seconds": 7.992,
+      "parsed": {
+        "unique_sorted": [
+          2,
+          4,
+          7,
+          9
+        ],
+        "sum_unique": 22
+      },
+      "error": null,
+      "receipt_persisted_before_launch": true,
+      "cleanup_passed": true
+    },
+    {
+      "surface": "codex-workflow",
+      "route_id": "sol-low",
+      "route": {
+        "id": "sol-low",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "low"
+      },
+      "case_id": "mechanical-bounded",
+      "passed": true,
+      "exit_code": 0,
+      "duration_seconds": 8.344,
+      "parsed": {
+        "unique_sorted": [
+          2,
+          4,
+          7,
+          9
+        ],
+        "sum_unique": 22
+      },
+      "error": null,
+      "receipt_persisted_before_launch": true,
+      "cleanup_passed": true
+    },
+    {
+      "surface": "omp-workflow",
+      "route_id": "luna-high",
+      "route": {
+        "id": "luna-high",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "high"
+      },
+      "case_id": "mechanical-bounded",
+      "passed": true,
+      "exit_code": 0,
+      "duration_seconds": 7.172,
+      "parsed": {
+        "unique_sorted": [
+          2,
+          4,
+          7,
+          9
+        ],
+        "sum_unique": 22
+      },
+      "error": null,
+      "receipt_persisted_before_launch": true,
+      "cleanup_passed": true
+    },
+    {
+      "surface": "omp-workflow",
+      "route_id": "sol-low",
+      "route": {
+        "id": "sol-low",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "low"
+      },
+      "case_id": "mechanical-bounded",
+      "passed": true,
+      "exit_code": 0,
+      "duration_seconds": 7.425,
+      "parsed": {
+        "unique_sorted": [
+          2,
+          4,
+          7,
+          9
+        ],
+        "sum_unique": 22
+      },
+      "error": null,
+      "receipt_persisted_before_launch": true,
+      "cleanup_passed": true
+    }
+  ],
+  "limitations": [
+    "One deterministic task per route/surface proves callable adapter wiring only.",
+    "No task-class route is promoted from this small smoke sample."
+  ]
+}

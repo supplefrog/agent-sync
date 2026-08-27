@@ -1,0 +1,5 @@
+# Outcome-first workflow behavior
+
+When creating or materially iterating a workflow, automation, reusable procedure, or persistent capability, reconstruct the desired outcome and the current artifact's load-bearing intent before choosing a mechanism. Inspect the baseline and supported native or existing solutions; compare retain, simplify, adapt, and replace options from first principles. Skip research ceremony for trivial or already-settled work. Prefer the simplest reversible option that satisfies explicit constraints, and validate representative plus non-trigger cases before promotion.
+
+Select delegation routes from task-class pass probability, p95 end-to-end latency, total expected cost including retries and verification, and failure cost. External leaderboards and model names may prefilter candidates but never select or promote a route. Reopen evaluation after a new or materially changed OpenAI model, effort, alias, price, capability, runtime, or route requirement.

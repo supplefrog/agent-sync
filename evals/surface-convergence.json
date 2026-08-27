@@ -1,0 +1,63 @@
+{
+  "$schema": "./schema.json",
+  "name": "surface-convergence",
+  "claim": "The workflow converts desired behavior into a portable contract, uses each host's best native surface, proves semantic parity, records intentional deltas and contradictions, and avoids lowest-common-denominator design.",
+  "criteria": [
+    "Optimize semantic behavior parity rather than identical files or mechanisms.",
+    "Use portable contracts and thin host adapters while retaining valuable native features.",
+    "Evaluate every required host on its current runtime and preserve contradictions.",
+    "Treat partial or stale evidence honestly and avoid promotion until required hosts pass."
+  ],
+  "cases": [
+    {
+      "id": "shared-instructions",
+      "prompt": "I want the same concise, evidence-first response behavior in Codex and Hermes. Codex uses AGENTS.md and Hermes uses SOUL.md. Should I just copy one file into both places? Give the architecture and verification plan.",
+      "criteria": [
+        "Defines one portable behavior contract rather than assuming file identity proves parity.",
+        "Maps Codex instruction hierarchy and Hermes SOUL/personality behavior through thin adapters.",
+        "Preserves useful native scoping differences.",
+        "Requires fresh behavioral and trigger evaluation on both hosts."
+      ]
+    },
+    {
+      "id": "native-scheduler-delta",
+      "prompt": "Hermes has a durable cron job that researches releases and reports into a gateway channel. I want exact parity in Codex, which does not expose that same integrated scheduler and delivery path. Design the portable solution without reducing Hermes functionality.",
+      "criteria": [
+        "Separates the portable scheduled-work contract from host execution mechanisms.",
+        "Keeps the Hermes-native advantage rather than removing or hiding it.",
+        "Uses a reliable Codex-native or external adapter when justified, or marks the capability partial.",
+        "Does not claim parity without equivalent outcome tests."
+      ]
+    },
+    {
+      "id": "host-version-drift",
+      "prompt": "Our matrix says routing parity was confirmed two months ago. Hermes just changed delegation and Codex changed its model manager, but the prose instructions are unchanged. Can we keep the old evidence? Decide and state exactly what should be rerun or preserved.",
+      "criteria": [
+        "Marks evidence stale because relevant host mechanisms changed.",
+        "Preserves prior findings and contradictions rather than deleting them.",
+        "Re-runs affected host mappings and regression cases on current versions.",
+        "Avoids re-evaluating unrelated modalities without cause."
+      ]
+    },
+    {
+      "id": "new-agent-onboarding",
+      "prompt": "Add Agent Q to the portable product. It supports Agent Skills and MCP but has no hooks, durable memory, or scheduler. Explain the minimum adapter and how the matrix should represent the gaps.",
+      "criteria": [
+        "Maps Agent Q into existing modality contracts before creating adapters.",
+        "Reuses Agent Skills and MCP where they satisfy the portable contract.",
+        "Marks missing mechanisms unsupported, partial, or intentional delta instead of faking them.",
+        "Adds cross-host evaluation without lowering the other agents."
+      ]
+    },
+    {
+      "id": "contradictory-host-results",
+      "prompt": "A candidate behavior wins every Codex case but loses one Hermes case because it adds irrelevant process. The other Hermes cases improve and there are no hard failures. Should we publish it as unified? Explain the next action and what evidence survives.",
+      "criteria": [
+        "Does not claim confirmed cross-host convergence while a required host has a loss.",
+        "Keeps the candidate staged and adapts the identified issue narrowly.",
+        "Preserves both the positive result and the contradiction in compact evidence.",
+        "Requires fresh regression and held-out proof after adaptation."
+      ]
+    }
+  ]
+}

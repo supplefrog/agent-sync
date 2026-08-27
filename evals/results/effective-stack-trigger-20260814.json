@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "claim": "Instruction evidence is reopened by canonical effective active-route changes, while unused catalog additions remain research-only.",
+  "date": "2026-08-14",
+  "baseline": {
+    "focused_test_result": "8 failed, 8 passed, 13 subtests passed",
+    "observed_gaps": [
+      "release monitor accepted no active route policy and emitted no effective-stack fingerprint",
+      "planner had no explicit cross-host equivalence receipt key",
+      "generic instruction units did not reopen on effective-stack-changed"
+    ]
+  },
+  "candidate": {
+    "monitor": [
+      "first observation baselines active stack without queuing",
+      "catalog-candidate and effective-stack-changed are separate durable event kinds",
+      "same-ID model/provider revisions and every represented load-bearing stack dimension alter the fingerprint",
+      "HERMES_HOME is honored for isolated verification"
+    ],
+    "planner": [
+      "exact receipts are host/effective-stack scoped",
+      "cross-host reuse requires an explicit equivalence_hash receipt with raw evidence path",
+      "trial/seed design, decision margin, evaluator identity, unit, suite, harness, and evaluation policy are cache identity",
+      "effective-stack-changed selects at most two model-sensitive suite batches"
+    ],
+    "safety": [
+      "report-before-receipt retry protocol remains unchanged",
+      "monitor and planner do not mutate routes or instruction surfaces",
+      "promotion and retirement remain separate reversible review steps"
+    ]
+  },
+  "verification": {
+    "focused": "19 passed, 24 subtests passed",
+    "full_suite": "82 passed, 41 subtests passed",
+    "skill_validation": "6/6",
+    "audit": "pass",
+    "public_check": "pass",
+    "python_compile": "pass",
+    "temporary_hermes_home": "baseline state created with active fingerprint; policy bytes unchanged",
+    "planner_smoke": "effective-stack-changed selected one suite and three units with max-batches=2",
+    "live_cron_inspection": "one enabled 360-minute monitored job; prompt distinguishes both event kinds and preserves no-mutation/report-before-receipt boundaries; no research run fired",
+    "live_release_state_after_config_update": "no active fingerprint and zero pending events, confirming the monitor was not executed"
+  },
+  "file_sha256": {
+    "skills/openai-delegation-route-research/scripts/hermes_release_monitor.py": "43ec9f4985642de50230d9e78352bf97c64ce6d42ae08758bb4c86e7d4e085cf",
+    "tools/instruction_retirement.py": "688c63745548bd864db6ce0510c06aebd4cf698af374466c941ee39815d36d66",
+    "tests/test_openai_release_signal.py": "46903a1a970ddf2653a2009ef95732c61c9c2a7bed8a056623529259e188b2ad",
+    "tests/test_instruction_retirement.py": "47b8104731dc50913e12939e40c54ee1b5f81ceb9bfe5ddf91cba20f08dc69fe",
+    "contracts/instruction-units.json": "56b0ba07a38e5971926ec385ea037555b292bd1e346c22188504df9f031dac8c"
+  },
+  "limitations": [
+    "provider-side alias movement is detectable only when the active policy or provider catalog exposes a changed snapshot or system fingerprint",
+    "no model research or instruction evaluation run was fired; this change governs triggering and cache identity only"
+  ]
+}

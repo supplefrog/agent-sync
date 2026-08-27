@@ -1,0 +1,474 @@
+{
+  "schema_version": 1,
+  "suite_id": "adaptive-routing-smoke-2026-08-15",
+  "suite_sha256": "fb5fd471e99158af09f5a49f2b7dc07874a9e434f795ae2921a4dfa4910c6dff",
+  "transport": "hermes-oneshot/openai-codex",
+  "repeats": 1,
+  "routes": [
+    {
+      "id": "luna-high",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "high"
+    },
+    {
+      "id": "sol-low",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low"
+    }
+  ],
+  "summaries": [
+    {
+      "id": "luna-high",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "high",
+      "sample_size": 6,
+      "passed": 6,
+      "pass_rate": 1.0,
+      "critical_failures": 0,
+      "p50_seconds": 14.078,
+      "p95_seconds": 26.175,
+      "cleanup_passed": true
+    },
+    {
+      "id": "sol-low",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "sample_size": 6,
+      "passed": 6,
+      "pass_rate": 1.0,
+      "critical_failures": 0,
+      "p50_seconds": 29.666,
+      "p95_seconds": 42.166,
+      "cleanup_passed": true
+    }
+  ],
+  "trials": [
+    {
+      "route_id": "luna-high",
+      "case_id": "mechanical-bounded",
+      "task_class": "mechanical-bounded",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 13.642,
+      "exit_code": 0,
+      "parsed": {
+        "unique_sorted": [
+          2,
+          4,
+          7,
+          9
+        ],
+        "sum_unique": 22
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 1647,
+        "output_tokens": 109,
+        "cache_read_tokens": 44032,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 14,
+        "total_tokens": 45788,
+        "api_calls": 2,
+        "model": "gpt-5.6-luna",
+        "provider": "openai-codex",
+        "session_id": "20260815_190505_512557",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "luna-high",
+      "case_id": "research-synthesis",
+      "task_class": "research-synthesis",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 8.042,
+      "exit_code": 0,
+      "parsed": {
+        "independent_lineages": 2,
+        "strongest_cost_claim": "18% lower cost",
+        "quality_conclusion": "no measurable difference"
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 22804,
+        "output_tokens": 68,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 36,
+        "total_tokens": 22872,
+        "api_calls": 1,
+        "model": "gpt-5.6-luna",
+        "provider": "openai-codex",
+        "session_id": "20260815_190505_3192cd",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "luna-high",
+      "case_id": "implementation-debugging",
+      "task_class": "implementation-debugging",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 12.775,
+      "exit_code": 0,
+      "parsed": {
+        "actual_result": 0,
+        "expected_result": 5,
+        "corrected_expression": "min(high,max(low,x))"
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 23741,
+        "output_tokens": 131,
+        "cache_read_tokens": 22016,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 42,
+        "total_tokens": 45888,
+        "api_calls": 2,
+        "model": "gpt-5.6-luna",
+        "provider": "openai-codex",
+        "session_id": "20260815_190505_dd67ef",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "luna-high",
+      "case_id": "verification-refutation",
+      "task_class": "verification-refutation",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 14.514,
+      "exit_code": 0,
+      "parsed": {
+        "claim_valid": false,
+        "dominator": "B"
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 23884,
+        "output_tokens": 274,
+        "cache_read_tokens": 22016,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 41,
+        "total_tokens": 46174,
+        "api_calls": 2,
+        "model": "gpt-5.6-luna",
+        "provider": "openai-codex",
+        "session_id": "20260815_190505_8c4d4f",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "luna-high",
+      "case_id": "high-risk-routing",
+      "task_class": "high-risk-architecture-provider",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 16.21,
+      "exit_code": 0,
+      "parsed": {
+        "decision": "fail_closed",
+        "eligible_count": 0
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 22804,
+        "output_tokens": 35,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 18,
+        "total_tokens": 22839,
+        "api_calls": 1,
+        "model": "gpt-5.6-luna",
+        "provider": "openai-codex",
+        "session_id": "20260815_190514_0d68fe",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "luna-high",
+      "case_id": "long-horizon-dependency",
+      "task_class": "long-horizon-multi-step",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 26.175,
+      "exit_code": 0,
+      "parsed": {
+        "critical_path": [
+          "A",
+          "C",
+          "D"
+        ],
+        "makespan": 12
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 1812,
+        "output_tokens": 208,
+        "cache_read_tokens": 44032,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 40,
+        "total_tokens": 46052,
+        "api_calls": 2,
+        "model": "gpt-5.6-luna",
+        "provider": "openai-codex",
+        "session_id": "20260815_190519_fbb0e4",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "sol-low",
+      "case_id": "mechanical-bounded",
+      "task_class": "mechanical-bounded",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 27.203,
+      "exit_code": 0,
+      "parsed": {
+        "unique_sorted": [
+          2,
+          4,
+          7,
+          9
+        ],
+        "sum_unique": 22
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 23635,
+        "output_tokens": 93,
+        "cache_read_tokens": 22016,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 0,
+        "total_tokens": 45744,
+        "api_calls": 2,
+        "model": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "session_id": "20260815_190520_c8e46b",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "sol-low",
+      "case_id": "research-synthesis",
+      "task_class": "research-synthesis",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 24.409,
+      "exit_code": 0,
+      "parsed": {
+        "independent_lineages": 2,
+        "strongest_cost_claim": "18% lower cost",
+        "quality_conclusion": "no measurable difference"
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 22803,
+        "output_tokens": 30,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 0,
+        "total_tokens": 22833,
+        "api_calls": 1,
+        "model": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "session_id": "20260815_190521_ea8172",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "sol-low",
+      "case_id": "implementation-debugging",
+      "task_class": "implementation-debugging",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 25.287,
+      "exit_code": 0,
+      "parsed": {
+        "actual_result": 0,
+        "expected_result": 5,
+        "corrected_expression": "min(high,max(low,x))"
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 22766,
+        "output_tokens": 26,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 0,
+        "total_tokens": 22792,
+        "api_calls": 1,
+        "model": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "session_id": "20260815_190522_88eaf9",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "sol-low",
+      "case_id": "verification-refutation",
+      "task_class": "verification-refutation",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 32.129,
+      "exit_code": 0,
+      "parsed": {
+        "claim_valid": false,
+        "dominator": "B"
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 22774,
+        "output_tokens": 15,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 0,
+        "total_tokens": 22789,
+        "api_calls": 1,
+        "model": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "session_id": "20260815_190530_349eb3",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "sol-low",
+      "case_id": "high-risk-routing",
+      "task_class": "high-risk-architecture-provider",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 33.316,
+      "exit_code": 0,
+      "parsed": {
+        "decision": "fail_closed",
+        "eligible_count": 0
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 22803,
+        "output_tokens": 15,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 0,
+        "total_tokens": 22818,
+        "api_calls": 1,
+        "model": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "session_id": "20260815_190531_0bdd27",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    },
+    {
+      "route_id": "sol-low",
+      "case_id": "long-horizon-dependency",
+      "task_class": "long-horizon-multi-step",
+      "repeat": 0,
+      "passed": true,
+      "duration_seconds": 42.166,
+      "exit_code": 0,
+      "parsed": {
+        "critical_path": [
+          "A",
+          "C",
+          "D"
+        ],
+        "makespan": 12
+      },
+      "error": null,
+      "usage": {
+        "estimated_cost_usd": 0.0,
+        "cost_status": "included",
+        "cost_source": "none",
+        "input_tokens": 23718,
+        "output_tokens": 174,
+        "cache_read_tokens": 22016,
+        "cache_write_tokens": 0,
+        "reasoning_tokens": 16,
+        "total_tokens": 45908,
+        "api_calls": 2,
+        "model": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "session_id": "20260815_190532_8262cd",
+        "completed": true,
+        "failed": false,
+        "service_tier": null
+      },
+      "cleanup_passed": true
+    }
+  ],
+  "evidence_state": "profiled",
+  "limitations": [
+    "Small deterministic smoke suite; not sufficient alone for production promotion.",
+    "Hermes one-shot prompt assembly is not assumed equivalent to delegate, Kanban, Codex, or OMP surfaces."
+  ]
+}

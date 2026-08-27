@@ -1,0 +1,93 @@
+{
+  "$schema": "./aux-models.schema.json",
+  "schema_version": 1,
+  "status": "active",
+  "version": "aux-auto-review-2026-08-25",
+  "observed_at": "2026-08-25",
+  "assignments": [
+    {
+      "purpose": "web_extract",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "medium",
+      "intelligence_tier": "routine",
+      "latency_sensitive": true,
+      "selector_route_id": "luna-medium",
+      "timeout_seconds": 360,
+      "decision": "automatic-selected",
+      "why": "Routine blocking utility path; this is the fastest and cheapest reviewed route meeting the routine intelligence floor."
+    },
+    {
+      "purpose": "compression",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "medium",
+      "intelligence_tier": "routine",
+      "latency_sensitive": true,
+      "selector_route_id": "luna-medium",
+      "timeout_seconds": 120,
+      "decision": "automatic-selected",
+      "why": "Routine blocking session path; Luna medium improves the reviewed intelligence floor while remaining the fastest qualifying route."
+    },
+    {
+      "purpose": "approval",
+      "provider": "openai-codex",
+      "model": "codex-auto-review",
+      "timeout_seconds": 30,
+      "decision": "retain-incumbent",
+      "why": "Purpose-built low-latency reviewer; the general delegation catalogue does not evaluate this task."
+    },
+    {
+      "purpose": "mcp",
+      "provider": "nous",
+      "model": "stepfun/step-3.7-flash:free",
+      "timeout_seconds": 30,
+      "decision": "retain-incumbent",
+      "why": "Fallback for MCP sampling requests, where an MCP server asks Hermes to run an LLM on its behalf. Separate from DAG task routing and unused unless a configured server requests sampling."
+    },
+    {
+      "purpose": "title_generation",
+      "provider": "nous",
+      "model": "stepfun/step-3.7-flash:free",
+      "timeout_seconds": 30,
+      "decision": "retain-incumbent",
+      "why": "Low-impact bounded generation; cost dominates and this specialized free route remains outside the Codex selector."
+    },
+    {
+      "purpose": "triage_specifier",
+      "provider": "nous",
+      "model": "stepfun/step-3.7-flash:free",
+      "timeout_seconds": 120,
+      "decision": "retain-incumbent",
+      "why": "Separate auxiliary task; preserve the incumbent until task-specific verification shows a product regression."
+    },
+    {
+      "purpose": "kanban_decomposer",
+      "provider": "nous",
+      "model": "stepfun/step-3.7-flash:free",
+      "timeout_seconds": 180,
+      "decision": "retain-incumbent",
+      "why": "Separate auxiliary task; preserve the incumbent until task-specific verification supports a change."
+    },
+    {
+      "purpose": "profile_describer",
+      "provider": "nous",
+      "model": "stepfun/step-3.7-flash:free",
+      "timeout_seconds": 60,
+      "decision": "retain-incumbent",
+      "why": "Nonblocking low-cost summarization; current route remains outside the Codex selector."
+    },
+    {
+      "purpose": "curator",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "selector_route_id": "sol-medium",
+      "timeout_seconds": 600,
+      "decision": "automatic-selected",
+      "why": "Demanding nonblocking maintenance; this is the lowest-cost reviewed route meeting the demanding intelligence floor."
+    }
+  ]
+}

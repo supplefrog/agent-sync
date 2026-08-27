@@ -1,0 +1,316 @@
+{
+  "$schema": "./surface-matrix.schema.json",
+  "schema_version": 1,
+  "knowledge_ledger": "../evidence/findings.json",
+  "hosts": {
+    "hermes": {
+      "cli_version": "0.20.5",
+      "source_revision": "933c209e96630a6026b0a18ecf6a86e65110f5b8",
+      "sources": [
+        "https://hermes-agent.nousresearch.com/docs/",
+        "https://github.com/NousResearch/hermes-agent"
+      ]
+    },
+    "codex": {
+      "cli_version": "0.149.0-alpha.4.1",
+      "source_revision": "20dafe201d91d4405eef05ecd1db0257f13a9ac8",
+      "sources": [
+        "https://developers.openai.com/codex/",
+        "https://github.com/openai/codex/tree/20dafe201d91d4405eef05ecd1db0257f13a9ac8"
+      ]
+    }
+  },
+  "staleness": {
+    "max_age_days": 90,
+    "triggers": [
+      "active model or tool policy changes materially",
+      "a host version or source revision changes",
+      "an admitted artifact changes",
+      "an upstream dependency or source version changes",
+      "a regression or contradiction is observed"
+    ]
+  },
+  "modalities": [
+    {
+      "id": "instructions-style",
+      "contract": "One portable intent surface governs judgment and communication; host adapters preserve native scoping and personality controls without duplicating policy.",
+      "status": "staged",
+      "portable_artifacts": ["surfaces/core.md"],
+      "hosts": {
+        "hermes": {
+          "owner": "SOUL.md and session prompt builder",
+          "mechanism": "link the shared surface into SOUL.md; keep Hermes-only personality and prompt-freezing behavior native",
+          "support": "adapter",
+          "parity": "candidate"
+        },
+        "codex": {
+          "owner": "AGENTS.md instruction hierarchy",
+          "mechanism": "link the shared global surface into AGENTS.md; preserve repository and tree-scoped overrides",
+          "support": "adapter",
+          "parity": "candidate"
+        }
+      },
+      "intentional_deltas": [
+        "Codex keeps hierarchical repository instruction scoping.",
+        "Hermes keeps personality selection and its frozen per-session prompt behavior."
+      ],
+      "evidence": {
+        "suites": [
+          "evals/surface-convergence.json",
+          "evals/surface-convergence-held-out.json"
+        ],
+        "summaries": [
+          "evals/results/surface-convergence-codex.json",
+          "evals/results/surface-convergence-held-out-codex.json"
+        ]
+      }
+    },
+    {
+      "id": "skills-procedures",
+      "contract": "Portable procedures use the Agent Skills directory format from one canonical tree; each host retains native discovery, triggering, and lifecycle UX.",
+      "status": "partial",
+      "portable_artifacts": ["skills/", "registry.json"],
+      "hosts": {
+        "hermes": {
+          "owner": "skills loader and skills.external_dirs",
+          "mechanism": "register the canonical skills directory as an external source",
+          "support": "native",
+          "parity": "candidate"
+        },
+        "codex": {
+          "owner": "$HOME/.agents/skills discovery",
+          "mechanism": "link admitted skill directories individually into the standard user scope",
+          "support": "native",
+          "parity": "candidate"
+        },
+        "omp": {
+          "owner": "$HOME/.omp/agent/skills discovery",
+          "mechanism": "use thin discovery adapters that load the canonical portable owner when OMP does not enumerate Windows directory junctions",
+          "support": "adapter",
+          "parity": "candidate"
+        }
+      },
+      "intentional_deltas": [
+        "Hermes retains hub install, explicit preload, and curator lifecycle features.",
+        "Codex retains its native discovery scopes and plugin-bundled skills.",
+        "OMP uses a thin real-directory discovery adapter for the canonical outcome-first owner because its /skills enumeration omitted the Windows junction; direct invocation succeeded."
+      ],
+      "evidence": {
+        "suites": [
+          "evals/surface-convergence.json",
+          "evals/surface-convergence-held-out.json",
+          "evals/organic-architecture-governance.json"
+        ],
+        "summaries": [
+          "evals/results/surface-convergence-codex.json",
+          "evals/results/surface-convergence-held-out-codex.json",
+          "evals/results/organic-architecture-governance-2026-08-25.json"
+        ]
+      }
+    },
+    {
+      "id": "tools-mcp",
+      "contract": "Tool intent and acceptance tests are portable; MCP is preferred for shared external tools, while high-value host-native tools remain native.",
+      "status": "unassessed",
+      "portable_artifacts": [],
+      "hosts": {
+        "hermes": {
+          "owner": "toolsets, plugins, and MCP client",
+          "mechanism": "map shared tools to MCP or plugins; retain service-gated core tools",
+          "support": "native",
+          "parity": "unassessed"
+        },
+        "codex": {
+          "owner": "built-in tools and mcp_servers configuration",
+          "mechanism": "map shared tools to MCP; retain Codex-native execution and app-server tools",
+          "support": "native",
+          "parity": "unassessed"
+        }
+      },
+      "intentional_deltas": [
+        "Core tool schemas and approval UX are host-owned and need not be identical."
+      ],
+      "evidence": {"suites": [], "summaries": []}
+    },
+    {
+      "id": "routing-delegation",
+      "contract": "Observable task-class reliability, p95 latency, total expected cost, and failure cost determine speed- or intelligence-constrained routes; release research is portable while provider names, model IDs, effort controls, and orchestration primitives remain host-native.",
+      "status": "partial",
+      "portable_artifacts": [
+        "surfaces/core.md",
+        "skills/openai-delegation-route-research/",
+        "skills/dynamic-workflows/",
+        "tools/route_adapter.py",
+        "integrations/hermes/routed-delegation/",
+        "adapters/hermes.json",
+        "evals/suites/adaptive-routing-smoke.json",
+        "docs/routing-decision-interface.md"
+      ],
+      "hosts": {
+        "hermes": {
+          "owner": "routed-delegation plugin plus native child builder/finalizer",
+          "mechanism": "the live user plugin selects and pins exact per-child routes through a version-guarded native seam; catalogue refresh remains manual and built-in delegate_task remains the homogeneous rollback path",
+          "support": "adapter",
+          "parity": "candidate"
+        },
+        "codex": {
+          "owner": "skills/dynamic-workflows state contract plus native worker handles",
+          "mechanism": "initialize one exact selector receipt per DAG node, pass model and reasoning effort directly to the native worker, verify the effective route, and close the handle before terminal state",
+          "support": "adapter",
+          "parity": "candidate"
+        },
+        "omp": {
+          "owner": "skills/dynamic-workflows state contract plus exact route named agents",
+          "mechanism": "initialize the same receipt, dispatch route-<route-id> agents that pin exact openai-codex model and thinkingLevel, and reject resolved-model fallback",
+          "support": "adapter",
+          "parity": "candidate"
+        }
+      },
+      "intentional_deltas": [
+        "Hosts may expose different subagent, fallback, and reasoning controls.",
+        "Catalogue refresh is manual; no host polls releases or Artificial Analysis at runtime.",
+        "A fixed weak route is never used for substantive judgment merely to force mechanism parity.",
+        "Workflow retries reuse one receipt; failed tasks do not climb the reasoning-effort ladder automatically."
+      ],
+      "evidence": {
+        "suites": ["evals/suites/adaptive-routing-smoke.json"],
+        "summaries": [
+          "evals/results/adaptive-routing-smoke-2026-08-15.json",
+          "evals/results/adaptive-routing-surface-smoke-2026-08-16.json",
+          "evals/results/adaptive-routing-cc-workflow-smoke-2026-08-16.json",
+          "evals/results/adaptive-routing-hermes-delegate-smoke-2026-08-16.json",
+          "evals/results/adaptive-routing-kanban-smoke-2026-08-16.json",
+          "evals/results/adaptive-routing-decision-2026-08-16.json",
+          "evals/results/adaptive-routing-decision-v3-2026-08-23.json",
+          "evals/results/adaptive-routing-run-pin-v3-2026-08-23.json",
+          "evals/results/adaptive-routing-verification-v3-2026-08-23.json",
+          "evals/results/adaptive-routing-independent-review-v3-2026-08-23.json",
+          "evals/results/routed-dag-cross-host-smoke-2026-08-26.json"
+        ]
+      }
+    },
+    {
+      "id": "memory-context",
+      "contract": "Agents query prior context on demand from its authoritative source, return a small provenance-scoped result, and share only admitted durable facts, preferences, and decisions without copying transcript bodies or duplicating repository, skill, or Kanban authority.",
+      "status": "partial",
+      "portable_artifacts": [
+        "evidence/findings.json",
+        "docs/shared-memory-decision.md",
+        "evals/results/shared-memory-local-20260815.json"
+      ],
+      "hosts": {
+        "hermes": {
+          "owner": "session_search, compact built-in memory, tools-only Honcho, and the native session store",
+          "mechanism": "use session_search for transcript evidence and invoke Honcho only for semantic/profile recall; keep broad automatic injection disabled",
+          "support": "native",
+          "parity": "intentional-delta"
+        },
+        "codex": {
+          "owner": "thread memory and session persistence",
+          "mechanism": "keep thread state native and defer a shared provider until one passes the cross-host admission suite",
+          "support": "partial",
+          "parity": "intentional-delta"
+        },
+        "omp": {
+          "owner": "native memory backend and session persistence",
+          "mechanism": "keep memory.backend off; defer local, Hindsight, or Mnemopi activation until a canonical shared provider is admitted",
+          "support": "partial",
+          "parity": "intentional-delta"
+        }
+      },
+      "intentional_deltas": [
+        "Raw memories, user profiles, and transcripts remain private and host-local.",
+        "Hermes retains the current tools-only Honcho plus session_search stack by no-change policy; this is not a comparative Honcho win.",
+        "Codex and OMP remain unintegrated because Hindsight 0.9.1 failed candidate-only irrelevant-query silence, tool-visible provenance, and Windows lifecycle checks through the real Hermes recall path; no matched provider comparison ran."
+      ],
+      "evidence": {
+        "suites": ["evals/suites/shared-memory-hindsight-smoke.json"],
+        "summaries": [
+          "evals/results/shared-memory-local-20260815.json",
+          "evals/results/shared-memory-hindsight-trial-20260816.json"
+        ]
+      }
+    },
+    {
+      "id": "policy-security",
+      "contract": "Shared safety outcomes are tested across hosts; sandbox, approvals, hooks, redaction, and policy enforcement use each host's native mechanisms.",
+      "status": "unassessed",
+      "portable_artifacts": [],
+      "hosts": {
+        "hermes": {
+          "owner": "approvals, hooks, safe mode, redaction, and allowlists",
+          "mechanism": "thin Hermes policy adapter only where instructions cannot enforce the contract",
+          "support": "native",
+          "parity": "unassessed"
+        },
+        "codex": {
+          "owner": "sandbox, approval policy, exec policy, and managed hooks",
+          "mechanism": "thin Codex policy adapter only where instructions cannot enforce the contract",
+          "support": "native",
+          "parity": "unassessed"
+        }
+      },
+      "intentional_deltas": [
+        "Hook schemas, trust models, and sandbox guarantees remain host-specific."
+      ],
+      "evidence": {"suites": [], "summaries": []}
+    },
+    {
+      "id": "planning-automation",
+      "contract": "Plans express outcomes, dependencies, and acceptance checks portably; durable execution maps to each host's native task, background, scheduling, or external automation mechanism.",
+      "status": "unassessed",
+      "portable_artifacts": [],
+      "hosts": {
+        "hermes": {
+          "owner": "todo, background work, cron, goals, and worktrees",
+          "mechanism": "map portable plan intent to the smallest native durable primitive",
+          "support": "native",
+          "parity": "unassessed"
+        },
+        "codex": {
+          "owner": "plans, non-interactive exec, collaboration modes, and external automation",
+          "mechanism": "map portable plan intent to Codex plan/exec or an external scheduler",
+          "support": "partial",
+          "parity": "unassessed"
+        }
+      },
+      "intentional_deltas": [
+        "Hermes cron and gateway delivery need not be emulated inside Codex.",
+        "Codex-native plan streaming need not be emulated inside Hermes."
+      ],
+      "evidence": {"suites": [], "summaries": []}
+    },
+    {
+      "id": "lifecycle-update",
+      "contract": "Admission, installation, drift detection, reevaluation, rollback, and pruning are reproducible while host self-update and marketplace lifecycle remain native.",
+      "status": "unassessed",
+      "portable_artifacts": [
+        "registry.json",
+        "tools/install.py",
+        "tools/validate.py",
+        "tools/eval.py",
+        "tools/audit.py",
+        "adapters/codex.json",
+        "adapters/hermes.json"
+      ],
+      "hosts": {
+        "hermes": {
+          "owner": "doctor, update, config migration, skills lifecycle, and curator",
+          "mechanism": "use repository evidence for admission and Hermes curator for post-admission lifecycle",
+          "support": "native",
+          "parity": "unassessed"
+        },
+        "codex": {
+          "owner": "installer, config reload, plugin lifecycle, and skill refresh",
+          "mechanism": "use repository evidence for admission and Codex-native refresh/update behavior",
+          "support": "native",
+          "parity": "unassessed"
+        }
+      },
+      "intentional_deltas": [
+        "Host installers, release channels, and lifecycle UIs remain native."
+      ],
+      "evidence": {"suites": [], "summaries": []}
+    }
+  ]
+}

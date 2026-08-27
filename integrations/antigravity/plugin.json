@@ -1,0 +1,5 @@
+{
+  "name": "agent-signal",
+  "version": "0.1.0",
+  "description": "Outcome-first workflow design and evidence-gated agent routing."
+}

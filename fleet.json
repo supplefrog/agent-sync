@@ -1,0 +1,13 @@
+{
+  "$schema": "contracts/fleet.schema.json",
+  "schema_version": 1,
+  "snapshot_root": "render/fleet",
+  "machines": {
+    "local-windows": {
+      "role": "command-center",
+      "platform": "windows",
+      "skill_roots": ["{SHARED_SKILLS_HOME}"],
+      "hosts": ["hermes", "codex", "omp"]
+    }
+  }
+}

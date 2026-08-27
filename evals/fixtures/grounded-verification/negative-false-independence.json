@@ -1,0 +1,384 @@
+{
+  "$schema": "../../../contracts/grounded-verification.schema.json",
+  "schema_version": 1,
+  "contract_id": "grounded-verification-human-off-pilot",
+  "state": "verified",
+  "source_intent": {
+    "authority": "user",
+    "reference": "kanban:t_1e0d8e90",
+    "captured_at": "2026-08-16T02:43:08Z",
+    "statement": "Create an agent-agnostic independent verification contract that separates intent validation from implementation verification, freezes user-sourced acceptance before implementation, and proves positive net value by catching the staged human-off pilot's known lifecycle blockers without self-certification."
+  },
+  "criteria_freeze": {
+    "frozen_at": "2026-08-16T02:46:49Z",
+    "implementation_started_at": "2026-08-16T02:58:22Z",
+    "criteria_sha256": "0089a98b00acd07701e89ab58d75337e5a58309a4bb1192cf191c486d48b6207",
+    "freeze_receipt_path": "evals/fixtures/grounded-verification/criteria-freeze-receipt.json",
+    "freeze_receipt": "sha256:be86f0b14579ae0efaa3a8655e763ce2d36c1fc03f1e39cdc02fb6edc79d3d44",
+    "criteria": [
+      {
+        "id": "AC-001",
+        "category": "capability",
+        "statement": "Define distinct intent/specification, test-design, implementation, oracle, and verdict owners so no design or implementation principal can solely certify material work.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "human-intent"
+      },
+      {
+        "id": "AC-002",
+        "category": "correctness",
+        "statement": "Freeze every user-sourced acceptance criterion before implementation and require an explicit logged intent-owner decision event for every amendment.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "deterministic"
+      },
+      {
+        "id": "AC-003",
+        "category": "correctness",
+        "statement": "Give independent test authors only the frozen intent/specification and deny implementers read or edit access to held-out tests, oracle logic, rubrics, and gate recipes.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "deterministic"
+      },
+      {
+        "id": "AC-004",
+        "category": "correctness",
+        "statement": "Require independent verifiers to re-execute deterministic checks, author falsification probes, and report actual isolation strength without labeling a shared visible proxy as full independence.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "deterministic"
+      },
+      {
+        "id": "AC-005",
+        "category": "correctness",
+        "statement": "Require a demonstrated negative control for every trusted gate and property or metamorphic plus mutation or equivalent-teeth evidence for material code paths where supported.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "deterministic"
+      },
+      {
+        "id": "AC-006",
+        "category": "correctness",
+        "statement": "Use out-of-band world-state evidence for open-ended outcomes and deterministic state contracts wherever ground truth is machine-checkable.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "world-state"
+      },
+      {
+        "id": "AC-007",
+        "category": "capability",
+        "statement": "Detect every known staged human-off structural blocker, including proactive status omission and phantom-assignee handling, while measuring false positives and false negatives.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "world-state"
+      },
+      {
+        "id": "AC-008",
+        "category": "cost",
+        "statement": "Select the smallest reversible positive-net-value option using defect detection, execution and context cost, maintenance burden, Windows portability, host neutrality, and infrastructure cost; external frameworks require superior local evidence.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "deterministic"
+      },
+      {
+        "id": "AC-009",
+        "category": "infrastructure_burden",
+        "statement": "Do not install or make an external verification framework authoritative without passing the full net-value evaluation.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "world-state"
+      },
+      {
+        "id": "AC-010",
+        "category": "non_goal",
+        "statement": "Do not modify, repair, or promote the staged human-off routing implementation beyond verification role separation and gate configuration.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "world-state"
+      },
+      {
+        "id": "AC-011",
+        "category": "non_goal",
+        "statement": "Do not alter the staged human-off source intent or specification to fit the verification mechanism.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "human-intent"
+      },
+      {
+        "id": "AC-012",
+        "category": "portability",
+        "statement": "Keep the contract and validator Windows-portable and host-neutral, recording any host-native isolation limitations.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "deterministic"
+      },
+      {
+        "id": "AC-013",
+        "category": "rollback",
+        "statement": "Permit rollback by deleting the additive grounded-verification artifacts without live-state migration or changing the existing evaluation owner.",
+        "source_reference": "kanban:t_1e0d8e90",
+        "oracle": "deterministic"
+      }
+    ],
+    "pilot_manifest": {
+      "expected_blocker_ids": [
+        "stale-route-receipt",
+        "missing-real-per-surface-evidence",
+        "declarative-only-cross-surface-enforcement",
+        "unreconciled-delivery-worktree-state",
+        "native-cc-lifecycle-suite-6-fail-1-error",
+        "review-blocked-status-not-proactively-surfaced",
+        "phantom-assignee-not-reconciled-or-escalated"
+      ],
+      "expected_non_regression_ids": [
+        "routing-specific-receipt-invalidation-fix"
+      ]
+    },
+    "decision_events": [
+      {
+        "id": "DEC-001",
+        "decided_at": "2026-08-16T03:00:37Z",
+        "decided_by": "p_11111111",
+        "reason": "User added a held-out board regression requiring proactive review-blocked visibility and autonomous reconciliation or escalation of a ready card with a nonexistent assignee.",
+        "before_sha256": "d2fd547b330d8450a9a70478b48f8552f340fe0050b29582336162446dd452c4",
+        "after_sha256": "0089a98b00acd07701e89ab58d75337e5a58309a4bb1192cf191c486d48b6207"
+      }
+    ]
+  },
+  "roles": {
+    "intent_owner": {
+      "principal_id": "p_11111111",
+      "context_id": "c_11111111"
+    },
+    "specification_owner": {
+      "principal_id": "p_22222222",
+      "context_id": "c_22222222"
+    },
+    "test_author": {
+      "principal_id": "p_33333333",
+      "context_id": "c_33333333"
+    },
+    "implementer": {
+      "principal_id": "p_44444444",
+      "context_id": "c_44444444"
+    },
+    "oracle_owner": {
+      "principal_id": "p_55555555",
+      "context_id": "c_55555555"
+    },
+    "verdict_owner": {
+      "principal_id": "p_66666666",
+      "context_id": "c_66666666"
+    }
+  },
+  "isolation": [
+    {
+      "subject_role": "test_author",
+      "readable_scopes": [
+        "frozen_intent_spec"
+      ],
+      "denied_scopes": [
+        "implementation"
+      ],
+      "enforcement": "separate-workspace",
+      "receipt_path": "evals/fixtures/grounded-verification/isolation-receipts.json",
+      "receipt": "sha256:0877fc4a0c6ddeb4e37f39a89ce25eff76a734a3401e489d915475a26528a98e"
+    },
+    {
+      "subject_role": "implementer",
+      "readable_scopes": [
+        "frozen_intent_spec",
+        "implementation"
+      ],
+      "denied_scopes": [
+        "held_out_tests",
+        "oracle_logic",
+        "rubrics",
+        "gate_recipes"
+      ],
+      "enforcement": "separate-workspace",
+      "receipt_path": "evals/fixtures/grounded-verification/isolation-receipts.json",
+      "receipt": "sha256:0877fc4a0c6ddeb4e37f39a89ce25eff76a734a3401e489d915475a26528a98e"
+    },
+    {
+      "subject_role": "verdict_owner",
+      "readable_scopes": [
+        "sealed_implementation",
+        "verification_receipts"
+      ],
+      "denied_scopes": [
+        "implementation_write"
+      ],
+      "enforcement": "process-boundary",
+      "receipt_path": "evals/fixtures/grounded-verification/isolation-receipts.json",
+      "receipt": "sha256:0877fc4a0c6ddeb4e37f39a89ce25eff76a734a3401e489d915475a26528a98e"
+    }
+  ],
+  "gates": [
+    {
+      "id": "G-CONTRACT",
+      "trusted": true,
+      "check_kind": "deterministic",
+      "oracle": "deterministic",
+      "open_ended": false,
+      "command_or_probe": "python tools/grounded_gate.py evals/fixtures/grounded-verification/valid.json",
+      "evidence_path": "tests/test_grounded_gate.py",
+      "result": "pass",
+      "negative_control": {
+        "fault": "reuse implementer principal as verdict owner",
+        "expected": "reject",
+        "observed": "reject",
+        "passed": true
+      }
+    },
+    {
+      "id": "G-PROPERTY",
+      "trusted": true,
+      "check_kind": "property",
+      "oracle": "deterministic",
+      "open_ended": false,
+      "command_or_probe": "all permutations of distinct role records preserve validity; any duplicate principal or context is rejected",
+      "evidence_path": "tests/test_grounded_gate.py",
+      "result": "pass",
+      "negative_control": {
+        "fault": "collide two role principals",
+        "expected": "reject",
+        "observed": "reject",
+        "passed": true
+      }
+    },
+    {
+      "id": "G-TEETH",
+      "trusted": true,
+      "check_kind": "equivalent-teeth",
+      "oracle": "deterministic",
+      "open_ended": false,
+      "command_or_probe": "mutate each load-bearing invariant and require the validator to reject the contract",
+      "evidence_path": "tests/test_grounded_gate.py",
+      "result": "pass",
+      "negative_control": {
+        "fault": "mark a negative control as passing without observed rejection",
+        "expected": "reject",
+        "observed": "reject",
+        "passed": true
+      }
+    },
+    {
+      "id": "G-PILOT",
+      "trusted": true,
+      "check_kind": "world-state",
+      "oracle": "world-state",
+      "open_ended": true,
+      "command_or_probe": "python tools/grounded_gate.py --pilot-evidence evals/fixtures/grounded-verification/pilot-evidence.json",
+      "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+      "result": "pass",
+      "negative_control": {
+        "fault": "remove one required surface receipt while claiming promotion-ready",
+        "expected": "reject",
+        "observed": "reject",
+        "passed": true
+      }
+    }
+  ],
+  "material_code_paths": [
+    {
+      "path": "tools/grounded_gate.py",
+      "property_or_metamorphic_gate": "G-PROPERTY",
+      "teeth_gate": "G-TEETH",
+      "teeth_supported": true
+    }
+  ],
+  "verifier": {
+    "principal_id": "p_66666666",
+    "context_id": "c_66666666",
+    "isolation_strength": "principal-and-workspace-isolated",
+    "shared_visible_proxy": true,
+    "reexecuted_gate_ids": [
+      "G-CONTRACT",
+      "G-PROPERTY",
+      "G-TEETH"
+    ],
+    "falsification_probes": [
+      "duplicate implementer and verdict principals",
+      "move freeze timestamp after implementation start",
+      "remove one implementer denial",
+      "claim full independence with a shared visible proxy",
+      "hide a known pilot blocker",
+      "hide the review-blocked state from proactive event evidence",
+      "leave a ready card assigned to a nonexistent principal without reconciliation or escalation"
+    ],
+    "limitations": [
+      "The pilot uses preserved public-safe task receipts rather than reopening the sealed implementation workspace.",
+      "A separate context sharing the same visible source proxy is reported as context-only, not full independence."
+    ]
+  },
+  "verdict": {
+    "principal_id": "p_66666666",
+    "decision": "pass",
+    "basis_gate_ids": [
+      "G-CONTRACT",
+      "G-PROPERTY",
+      "G-TEETH",
+      "G-PILOT"
+    ]
+  },
+  "pilot": {
+    "subject": "kanban:t_67bb4407 preserved human-off routing candidate",
+    "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json",
+    "known_blockers": [
+      {
+        "id": "stale-route-receipt",
+        "expected": "blocker",
+        "detected": true,
+        "classification": "routing-blocker",
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json"
+      },
+      {
+        "id": "missing-real-per-surface-evidence",
+        "expected": "blocker",
+        "detected": true,
+        "classification": "promotion-blocker",
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json"
+      },
+      {
+        "id": "declarative-only-cross-surface-enforcement",
+        "expected": "blocker",
+        "detected": true,
+        "classification": "promotion-blocker",
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json"
+      },
+      {
+        "id": "unreconciled-delivery-worktree-state",
+        "expected": "blocker",
+        "detected": true,
+        "classification": "delivery-blocker",
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json"
+      },
+      {
+        "id": "native-cc-lifecycle-suite-6-fail-1-error",
+        "expected": "blocker",
+        "detected": true,
+        "classification": "pre-existing-native-lifecycle-blocker",
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json"
+      },
+      {
+        "id": "routing-specific-receipt-invalidation-fix",
+        "expected": "non-regression",
+        "detected": true,
+        "classification": "routing-non-regression",
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json"
+      },
+      {
+        "id": "review-blocked-status-not-proactively-surfaced",
+        "expected": "blocker",
+        "detected": true,
+        "classification": "status-visibility-blocker",
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json"
+      },
+      {
+        "id": "phantom-assignee-not-reconciled-or-escalated",
+        "expected": "blocker",
+        "detected": true,
+        "classification": "dispatch-authority-blocker",
+        "evidence_path": "evals/fixtures/grounded-verification/pilot-evidence.json"
+      }
+    ],
+    "false_positives": 0,
+    "false_negatives": 0,
+    "runtime_seconds": 1.656,
+    "model_cost_usd": 0.0,
+    "context_tokens": 0,
+    "maintenance_minutes": 30.0,
+    "windows_portability": "pass",
+    "host_neutrality": "pass"
+  },
+  "rollback": "Remove grounded-verification schema, validator, fixtures, tests, report, and documentation; tools/eval.py and tools/eval_gate.py remain the unchanged evaluation owner."
+}

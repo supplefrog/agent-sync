@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "suite": "organic-architecture-governance",
+  "candidate_hashes": {
+    "outcome_first_sha256": "b09e05f70bef84365295246ad73ea3b3122e49f5759b0e99a156c3a321f58b1b",
+    "advise_project_sha256": "511f3081f3a6a98d09d234f5785befe44c9742903d8ad382b2fa715b89a7d026"
+  },
+  "environment": {
+    "hermes": "0.20.5",
+    "codex": "0.149.0-alpha.4.1",
+    "omp": "17.2.13",
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex"
+  },
+  "checks": [
+    {
+      "id": "structural-validation",
+      "status": "passed",
+      "evidence": "tools/validate.py passed the staged portable owner, host adapter, and OMP discovery adapter."
+    },
+    {
+      "id": "normal-vague-build",
+      "status": "passed-with-harness-limit",
+      "evidence": "A fresh Hermes Sol-medium candidate probe immediately selected a reversible local-first implementation and began building rather than asking an intake questionnaire. The synthetic run exceeded 300 seconds while implementing; all generated files and its session were removed."
+    },
+    {
+      "id": "value-dependent-hard-to-reverse",
+      "status": "passed",
+      "evidence": "A fresh Hermes Sol-medium probe recommended on-device storage, exposed the privacy/recovery tradeoff, and asked only for that hard-to-reverse selection before implementation."
+    },
+    {
+      "id": "sol-high-isolated-ab",
+      "status": "inconclusive",
+      "evidence": "The isolated order-swapped A/B exceeded the 420-second terminal ceiling before producing a durable report. This is a harness timeout, not candidate evidence. Created evaluation sessions were deleted."
+    },
+    {
+      "id": "fresh-host-discovery",
+      "status": "passed-partial",
+      "evidence": "Hermes fresh prompt-size and Codex debug prompt-input both contained outcome-first-workflow-design and advise-project-approach. OMP fresh direct /skill invocation loaded outcome-first-workflow-design and /skills listed advise-project-approach; natural-trigger behavior was not separately sampled."
+    },
+    {
+      "id": "execution-owner-separation",
+      "status": "passed",
+      "evidence": "Static inspection confirms the portable owner explicitly reuses existing task decomposition, scheduling, acceptance-gate, and worker-lifecycle owners and does not copy Unlazy tree, depth, checker, lease, or scheduler mechanics."
+    }
+  ],
+  "decision": "promoted-with-stated-eval-limit",
+  "rollback": {
+    "outcome_first_previous_sha256": "503580b7e5d27af3121901ebcdf038318d03f63b1a551ee69186b928f9617199",
+    "advise_project_previous_sha256": "aa65114b878ab9afcc698b69eb40dc4006886f66b9b57799cf4555288e430ab1",
+    "source": "restore the shared owner from repository history and reinstall advise-project-approach from SOURCE.json commit 17c0bd7c821aefb230e4e33fcf809df5eefc83ff, then reapply only the documented local adapter sentence if still needed"
+  },
+  "reevaluate_when": [
+    "a normal build request triggers an intake questionnaire",
+    "an agent silently commits an unresolved value-dependent hard-to-reverse architecture choice",
+    "an agent reopens a clear existing architecture without evidence",
+    "OMP natural triggering fails in real use",
+    "a bounded Sol-high A/B harness becomes available"
+  ]
+}

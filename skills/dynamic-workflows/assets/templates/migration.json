@@ -1,0 +1,79 @@
+{
+  "name": "migration",
+  "description": "Discover, partition, migrate, and integrate disjoint ownership slices.",
+  "max_workers": 2,
+  "tasks": [
+    {
+      "id": "migration-plan",
+      "role": "discover",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "prompt": "Map the migration goal {{var:GOAL}}. Derive objectively verifiable acceptance items, define contracts, source-grounded paths or symbols, compatibility constraints, exact verification commands, rollback evidence, and disjoint ownership slices. Map every acceptance item and recorded decision to a slice and the integration review; require a thin end-to-end tracer first when the integration design is unproven.",
+      "acceptance": [
+        "Returns a scoped map with concrete evidence paths, causal dependencies, and named unknowns."
+      ]
+    },
+    {
+      "id": "slice-a",
+      "role": "worker",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "risk": "write",
+      "depends_on": [
+        "migration-plan"
+      ],
+      "include_outputs": [
+        "migration-plan"
+      ],
+      "ownership": [
+        "replace-with-slice-a-paths"
+      ],
+      "attempts": 2,
+      "prompt": "Implement only ownership slice A and its assigned acceptance items for {{var:GOAL}}. Run its exact narrow checks and report observed acceptance coverage.\n{{output:migration-plan}}",
+      "acceptance": [
+        "Completes only the owned scope and reports exact verification commands and observed results."
+      ]
+    },
+    {
+      "id": "slice-b",
+      "role": "worker",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "risk": "write",
+      "depends_on": [
+        "migration-plan"
+      ],
+      "include_outputs": [
+        "migration-plan"
+      ],
+      "ownership": [
+        "replace-with-slice-b-paths"
+      ],
+      "attempts": 2,
+      "prompt": "Implement only ownership slice B and its assigned acceptance items for {{var:GOAL}}. Run its exact narrow checks and report observed acceptance coverage.\n{{output:migration-plan}}",
+      "acceptance": [
+        "Completes only the owned scope and reports exact verification commands and observed results."
+      ]
+    },
+    {
+      "id": "integration-review",
+      "role": "verifier",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "depends_on": [
+        "migration-plan",
+        "slice-a",
+        "slice-b"
+      ],
+      "include_outputs": [
+        "migration-plan",
+        "slice-a",
+        "slice-b"
+      ],
+      "prompt": "Inspect the integrated target for {{var:GOAL}}. Run the exact cross-slice checks and verify every acceptance item and recorded decision from the migration plan, plus every compatibility constraint and rollback assumption, against observed evidence. Do not infer success from worker completion; return a coverage matrix and a bounded repair plan for every gap.\nMigration acceptance map:\n{{output:migration-plan}}\nSlice A evidence:\n{{output:slice-a}}\nSlice B evidence:\n{{output:slice-b}}",
+      "acceptance": [
+        "Returns explicit pass, revise, or blocked coverage for every declared upstream criterion."
+      ]
+    }
+  ]
+}

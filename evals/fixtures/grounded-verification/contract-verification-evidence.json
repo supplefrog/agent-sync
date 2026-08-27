@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "artifact_type": "grounded-verification-decision-evidence",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "scope_id": "S-VERIFICATION",
+  "decision_type": "verification",
+  "evidence_lanes": [
+    "contract",
+    "isolation",
+    "test-author",
+    "negative-controls",
+    "material-path",
+    "pilot",
+    "portability",
+    "non-goals"
+  ],
+  "result": "pass",
+  "basis": {
+    "contract": "JSON Schema plus fail-closed semantic validator",
+    "isolation": "typed role-bound isolation receipts",
+    "test-author": "externally rooted test-author input/output receipt",
+    "negative-controls": "trusted gates reject injected faults",
+    "material-path": "property/metamorphic and equivalent-teeth coverage",
+    "pilot": "16 known blockers detected with zero observed false positives or false negatives, including the amended lineage, reminder, legacy, convergence, Prime-boundary, and fleet omissions",
+    "portability": "Windows focused and full suite execution passed",
+    "non-goals": "live routing and external framework state remained unchanged"
+  }
+}

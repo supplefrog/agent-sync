@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "pilot": "independent-grounded-gate-human-off-routing",
+  "generated_at": "2026-08-16T17:09:11Z",
+  "source_intent": "kanban:t_1e0d8e90",
+  "pilot_subject": "kanban:t_67bb4407",
+  "frozen_contract": "evals/fixtures/grounded-verification/valid.json",
+  "decision": "adapt-current-owner",
+  "live_capability_changed": false,
+  "external_framework_installed": false,
+  "criteria_freeze": {
+    "frozen_at": "2026-08-16T02:46:49Z",
+    "implementation_started_at": "2026-08-16T02:58:22Z",
+    "decision_events": 4,
+    "criterion_count": 19,
+    "canonical_criteria_sha256": "619f5cb6e723a204ccbec4332dbaaa1855ccd1b9eb0aa2efb52a5e5d07d5caa2",
+    "original_criteria_sha256": "d2fd547b330d8450a9a70478b48f8552f340fe0050b29582336162446dd452c4",
+    "trusted_freeze_receipt": "sha256:3868a5160cea5766b95b0dc7d0ce767405851bfd85915b45c0d72799d8a6c4c5",
+    "trust_root_authority": "verifier-supplied input outside the mutable contract",
+    "decision_chain": ["DEC-001", "DEC-002", "DEC-003", "DEC-004"]
+  },
+  "independent_test_author": {
+    "receipt": "evals/fixtures/grounded-verification/independent-test-author-receipt.json",
+    "receipt_sha256": "29eb735dac530fd486a25234879c6b8b090f3cc602299b0b0838ca39b92caa53",
+    "artifact": "evals/fixtures/grounded-verification/independent-test-author.json",
+    "artifact_sha256": "1dcf726f5ae4ac7de57056fcda03f9807250e763971606c57e9ab422c1f11518",
+    "session_id": "20260816_223254_f6cbc7",
+    "workspace": "separate temporary workspace",
+    "tool_policy": "todo-only",
+    "implementation_access": false,
+    "model": "gpt-5.4-mini",
+    "provider": "openai-codex",
+    "input_tokens": 5403,
+    "output_tokens": 3526,
+    "api_calls": 1,
+    "model_cost_usd": 0.0,
+    "limitations": [
+      "The test author had no file, terminal, web, implementation, rules, or repository access.",
+      "This establishes context and workspace isolation for test design, not managerial or financial independence.",
+      "The temporary test-author session was deleted after its public-safe output, usage receipt, artifact digest, and external trust root were preserved."
+    ]
+  },
+  "known_blocker_results": [
+    "stale-route-receipt",
+    "missing-real-per-surface-evidence",
+    "declarative-only-cross-surface-enforcement",
+    "unreconciled-delivery-worktree-state",
+    "native-cc-lifecycle-suite-6-fail-1-error",
+    "review-blocked-status-not-proactively-surfaced",
+    "phantom-assignee-not-reconciled-or-escalated",
+    "evolving-multi-turn-lineage-lost",
+    "summary-overwrites-authoritative-lineage",
+    "research-first-cross-host-resume-omitted",
+    "material-status-required-user-reminder",
+    "summarizer-intake-required-second-reminder",
+    "legacy-done-status-treated-as-evidence",
+    "ultimate-agent-convergence-claim-unrevalidated",
+    "prime-boundaries-not-evidence-bound",
+    "fleet-omission-required-third-reminder"
+  ],
+  "non_regression": "routing-specific-receipt-invalidation-fix",
+  "metrics": {
+    "known_blockers": 16,
+    "detected_blockers": 16,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "targeted_tests": "26 passed, 5 subtests passed in 7.84s",
+    "full_tests": "162 passed, 46 subtests passed in 11.65s",
+    "test_author_total_tokens": 8929,
+    "deterministic_context_tokens": 0,
+    "model_cost_usd": 0.0,
+    "estimated_maintenance_minutes_per_contract": 30,
+    "windows_portability": "pass",
+    "host_neutrality": "pass"
+  },
+  "negative_controls": {
+    "static_fixtures": 5,
+    "all_rejected": true,
+    "covered_faults": [
+      "role collision",
+      "late freeze",
+      "access boundary breach",
+      "false independence",
+      "toothless gate",
+      "missing external trust roots",
+      "coordinated receipt rewrite",
+      "stale test-author substitution",
+      "scope inflation",
+      "incomplete amendment chain",
+      "summary authority distortion",
+      "legacy done-as-evidence",
+      "false downstream Prime or convergence pass",
+      "second and third reminder omissions"
+    ]
+  },
+  "decision_scope_evidence": {
+    "S-VERIFICATION": {"criteria": 12, "required_lanes": 8, "complete_lanes": 8},
+    "S-ADOPTION": {"criteria": 1, "required_lanes": 7, "complete_lanes": 7},
+    "S-INTENT-LINEAGE": {"criteria": 3, "required_lanes": 5, "complete_lanes": 5},
+    "S-ULTIMATE-AGENT": {
+      "criteria": 3,
+      "required_lanes": 9,
+      "complete_lanes": 9,
+      "scope_boundary": "gate coverage only; downstream Hermes, Codex, OMP, and Prime outcomes remain not evaluated"
+    }
+  },
+  "candidate_comparison": [
+    {"option": "retain-no-change", "net_value": "negative", "selected": false},
+    {"option": "adapt-current-owner", "defect_detection": "16/16", "net_value": "positive", "selected": true},
+    {"option": "replace-with-external-framework", "net_value": "unproven", "selected": false}
+  ],
+  "independent_verdict": {
+    "decision": "pass",
+    "verifier_context": "deleg_7f5c91c8",
+    "isolation_strength": "context-only",
+    "focused_reexecution": "26 passed, 5 subtests passed in 7.94s",
+    "full_reexecution": "162 passed, 46 subtests passed in 11.42s",
+    "criteria_scopes_lanes": "19/19 criteria; 4/4 scopes; 29/29 lanes",
+    "pilot_detection": "16/16 blockers plus 1 non-regression",
+    "artifact_hashes": "13/13 match",
+    "blocking_findings": []
+  },
+  "artifacts": {
+    "schema_sha256": "788074dab2b4962d4e6199be1b42cc2f0ec86046af995a01b03ee0376fe0ddca",
+    "validator_sha256": "8b0b11c3167d5a1aeb720fc850aef019273a35966732fa5a25ae0e309ae30a7b",
+    "contract_sha256": "0c95c36da8fb4a43e8954e3c41038ba3142a7175f7a4b7babb9738cea487579f",
+    "tests_sha256": "814eb3e86ff3385f045b874b9e1c5b8cdd5dc55c67ae601ae4dcbdd54e3debab",
+    "pilot_evidence_sha256": "1b40423bf0eadfbcd2ad51d04cdd150093e0ba0e0a3e4567d7fbfb7459d36f87",
+    "isolation_receipts_sha256": "0877fc4a0c6ddeb4e37f39a89ce25eff76a734a3401e489d915475a26528a98e",
+    "criteria_freeze_receipt_sha256": "3868a5160cea5766b95b0dc7d0ce767405851bfd85915b45c0d72799d8a6c4c5",
+    "independent_test_author_sha256": "1dcf726f5ae4ac7de57056fcda03f9807250e763971606c57e9ab422c1f11518",
+    "independent_test_author_receipt_sha256": "29eb735dac530fd486a25234879c6b8b090f3cc602299b0b0838ca39b92caa53",
+    "contract_verification_evidence_sha256": "d1ece4b3753b75329f6690b9851ebf6ce2188c79e815d1fb4fc3dfafea989445",
+    "candidate_comparison_evidence_sha256": "c62a3c2829bf2382225dcb73990113a67ccf149cf2ef66eae8970445a9c8f5cb",
+    "intent_lineage_evidence_sha256": "3aee2738e322767d911a1c35e5d044be5f512e8ee8cf8b3cfeb1b86917c20b18",
+    "ultimate_agent_evidence_sha256": "333782ef21041bf3346e1a85723cebc85ec0db501cc4d5bee9eae56410d08456"
+  },
+  "recommendation": "Adapt the current eval owner with the grounded gate for material work; keep ordinary interaction template-free and do not install external frameworks.",
+  "rollback": "Delete additive grounded-verification artifacts; no live route, plugin, skill, service, or external package changed."
+}

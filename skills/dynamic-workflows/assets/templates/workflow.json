@@ -1,0 +1,58 @@
+{
+  "name": "bounded-workflow",
+  "description": "A minimal discover, execute, verify workflow.",
+  "max_workers": 2,
+  "tasks": [
+    {
+      "id": "discover",
+      "role": "discover",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "risk": "read",
+      "prompt": "Map the target for {{var:GOAL}}. Derive objectively verifiable acceptance items and return their task coverage, concrete source-grounded paths or symbols, constraints, dependencies, ownership conflicts, exact verification commands, unknowns, and whether an end-to-end tracer must precede parallel work.",
+      "acceptance": [
+        "Returns a scoped map with concrete evidence paths, causal dependencies, and named unknowns."
+      ]
+    },
+    {
+      "id": "execute",
+      "role": "worker",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "risk": "write",
+      "depends_on": [
+        "discover"
+      ],
+      "include_outputs": [
+        "discover"
+      ],
+      "ownership": [
+        "replace-with-owned-paths"
+      ],
+      "attempts": 2,
+      "prompt": "Complete only the bounded work and acceptance items assigned to this task for {{var:GOAL}}. Preserve recorded decisions and report exact verification evidence using this map:\n{{output:discover}}",
+      "acceptance": [
+        "Completes only the owned scope and reports exact verification commands and observed results."
+      ]
+    },
+    {
+      "id": "verify",
+      "role": "verifier",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "risk": "read",
+      "depends_on": [
+        "discover",
+        "execute"
+      ],
+      "include_outputs": [
+        "discover",
+        "execute"
+      ],
+      "prompt": "Inspect the integrated target for {{var:GOAL}}. Check every acceptance item and recorded decision from the discovery map against observed behavior and exact verification evidence; do not infer success from task completion. Return an explicit coverage matrix and a bounded repair plan for every gap.\nDiscovery and acceptance map:\n{{output:discover}}\nProducer evidence:\n{{output:execute}}",
+      "acceptance": [
+        "Returns explicit pass, revise, or blocked coverage for every declared upstream criterion."
+      ]
+    }
+  ]
+}

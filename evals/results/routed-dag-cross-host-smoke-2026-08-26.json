@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "evidence_state": "cross-host-native-route-smoke",
+  "observed_at": "2026-08-26",
+  "decision": "Promote skills/dynamic-workflows as the definitive portable DAG state owner with thin Codex and OMP adapters.",
+  "comparison": {
+    "codex_state_suite": "33/33 passed after convergence",
+    "hermes_compatibility_runner_baseline": "27/34 passed; 6 failures and 1 error in current lifecycle/process integration",
+    "decisive_tradeoff": "Codex state semantics are currently green and host-portable; Hermes retains only its executor-specific adapter until its lifecycle suite is repaired."
+  },
+  "deterministic_verification": [
+    "python skills/dynamic-workflows/scripts/test_workflow_state.py: 33 tests passed",
+    "python -m unittest tests.test_route_selector tests.test_route_adapter: 11 tests passed",
+    "python tools/validate.py: 7/7 skills valid",
+    "python -m compileall -q skills/dynamic-workflows skills/openai-delegation-route-research tests tools: passed",
+    "python skills/dynamic-workflows/scripts/install_omp_route_agents.py --check: nine exact-route agents match the catalogue",
+    "git diff --check: passed with line-ending warnings only"
+  ],
+  "fresh_discovery": {
+    "codex": "agent-ops plugin 0.2.0+codex.20260826004049 enabled; fresh debug prompt exposed agent-ops:dynamic-workflows and native spawn_agent tools",
+    "omp": "fresh process loaded skill://dynamic-workflows and discovered all nine route-<route-id> named agents"
+  },
+  "native_override_smoke": {
+    "parent_route": "openai-codex/gpt-5.6-luna:medium",
+    "task_requirement": {"intelligence_tier": "demanding", "latency_sensitive": false},
+    "selected_child_route": "openai-codex/gpt-5.6-sol:medium",
+    "codex": {
+      "status": "succeeded",
+      "attempts": 1,
+      "output": "ROUTED_DAG_OVERRIDE_OK",
+      "lifecycle": ["spawn_agent", "wait", "close_agent", "finish --handle-closed"],
+      "receipt_runtime": {"host": "codex", "transport": "codex-workflow"},
+      "limitation": "Codex JSONL records the native lifecycle and the parent-selected exact launch route but does not echo independent child resolved-model metadata."
+    },
+    "omp": {
+      "status": "succeeded",
+      "attempts": 1,
+      "output": "ROUTED_DAG_OVERRIDE_OK",
+      "agent": "route-sol-medium",
+      "resolvedModel": "gpt-5.6-sol",
+      "thinkingLevel": "medium",
+      "receipt_runtime": {"host": "omp", "transport": "omp-workflow"}
+    }
+  },
+  "policy": {
+    "retry": "Reuse the same immutable receipt.",
+    "automatic_effort_escalation": false,
+    "failure_path": "Return unresolved work to the parent/human or create a separately authorized new task."
+  }
+}

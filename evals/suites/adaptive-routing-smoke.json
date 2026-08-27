@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "suite_id": "adaptive-routing-smoke-2026-08-15",
+  "cases": [
+    {
+      "id": "mechanical-bounded",
+      "task_class": "mechanical-bounded",
+      "prompt": "Return one JSON object and no prose. From [7,2,7,4,2,9], produce keys unique_sorted (ascending unique integers) and sum_unique.",
+      "expected": {"unique_sorted": [2, 4, 7, 9], "sum_unique": 22}
+    },
+    {
+      "id": "research-synthesis",
+      "task_class": "research-synthesis",
+      "prompt": "Return one JSON object and no prose. Evidence: Study A (n=20) reports 8% faster completion but no confidence interval. Study B (n=400) reports no measurable quality difference and 18% lower cost. Study C is a vendor blog repeating Study A. Produce keys independent_lineages (integer), strongest_cost_claim (string exactly '18% lower cost'), and quality_conclusion (string exactly 'no measurable difference'). Count repeated coverage of one study as one lineage.",
+      "expected": {"independent_lineages": 2, "strongest_cost_claim": "18% lower cost", "quality_conclusion": "no measurable difference"}
+    },
+    {
+      "id": "implementation-debugging",
+      "task_class": "implementation-debugging",
+      "prompt": "Return one JSON object and no prose. Python bug: def clamp(x, low, high): return min(low, max(high, x)). For clamp(5,0,10), identify actual_result, expected_result, and corrected_expression (string with no spaces, exactly 'min(high,max(low,x))').",
+      "expected": {"actual_result": 0, "expected_result": 5, "corrected_expression": "min(high,max(low,x))"}
+    },
+    {
+      "id": "verification-refutation",
+      "task_class": "verification-refutation",
+      "prompt": "Return one JSON object and no prose. Claimed: route A dominates B. Metrics (higher pass is better; lower p95 and cost are better): A pass=.90,p95=30,cost=.03; B pass=.90,p95=20,cost=.02. Produce keys claim_valid (boolean) and dominator (string).",
+      "expected": {"claim_valid": false, "dominator": "B"}
+    },
+    {
+      "id": "high-risk-routing",
+      "task_class": "high-risk-architecture-provider",
+      "prompt": "Return one JSON object and no prose. A production auth migration requires pass_rate>=.98, p95<=60, zero critical failures. Candidate X: pass=.99,p95=70,critical=0. Candidate Y: pass=.97,p95=40,critical=0. Candidate Z: pass=.99,p95=50,critical=1. Produce keys decision (string exactly 'fail_closed') and eligible_count (integer). Do not silently choose a least-bad route.",
+      "expected": {"decision": "fail_closed", "eligible_count": 0}
+    },
+    {
+      "id": "long-horizon-dependency",
+      "task_class": "long-horizon-multi-step",
+      "prompt": "Return one JSON object and no prose. DAG durations: A=3, B=2 after A, C=5 after A, D=4 after B and C, E=1 after C. Unlimited workers. Produce keys critical_path (array of task ids) and makespan (integer).",
+      "expected": {"critical_path": ["A", "C", "D"], "makespan": 12}
+    }
+  ]
+}

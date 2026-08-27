@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "name",
+    "principle",
+    "outcomes",
+    "decision_classes",
+    "enforcement_boundary",
+    "hosts",
+    "non_equivalent_guarantees",
+    "rollback"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "name": {"const": "portable-safety-outcomes"},
+    "principle": {"type": "string", "minLength": 1},
+    "outcomes": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["id", "requirement", "failure_response"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+          "requirement": {"type": "string", "minLength": 1},
+          "failure_response": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "decision_classes": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["id", "meaning"],
+        "properties": {
+          "id": {"enum": ["allow", "require-approval", "deny"]},
+          "meaning": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "enforcement_boundary": {
+      "type": "object",
+      "required": ["instructions", "native_controls", "hooks"],
+      "properties": {
+        "instructions": {"type": "string", "minLength": 1},
+        "native_controls": {"type": "string", "minLength": 1},
+        "hooks": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "hosts": {
+      "type": "object",
+      "required": ["codex", "hermes"],
+      "additionalProperties": {
+        "type": "object",
+        "required": ["native_controls", "mapping"],
+        "properties": {
+          "native_controls": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "mapping": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "non_equivalent_guarantees": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["capability", "classification", "reason"],
+        "properties": {
+          "capability": {"type": "string", "minLength": 1},
+          "classification": {
+            "enum": [
+              "unsupported-common-mechanism",
+              "codex-native-advantage",
+              "hermes-native-advantage"
+            ]
+          },
+          "reason": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "rollback": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "evidence_state": "callable-smoke",
+  "target_surface": "hermes-delegate",
+  "duration_seconds": 9.329,
+  "delegation_id": null,
+  "durable_state": "completed-inline",
+  "entry": {
+    "status": "completed",
+    "summary": "{\"value\":42}",
+    "model": "gpt-5.6-luna",
+    "provider": "openai-codex",
+    "reasoning_effort": "high",
+    "route_decision_receipt": {
+      "schema_version": 1,
+      "policy_version": "smoke-only-unpromoted-2026-08-15",
+      "policy_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "requirement_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "target_surface": "hermes-delegate",
+      "task_class": "mechanical-bounded",
+      "objective": "speed",
+      "failure_cost": "low",
+      "route": {
+        "id": "luna-high",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "high",
+        "runtime": {
+          "transport": "hermes-delegate",
+          "source": "candidate-worktree"
+        }
+      },
+      "metrics": {},
+      "evidence_receipt": "self:smoke-only",
+      "pareto_frontier": [
+        "luna-high"
+      ],
+      "excluded": {}
+    }
+  },
+  "passed": true,
+  "limitations": [
+    "One bounded smoke proves staged delegate route/receipt propagation only.",
+    "It is not sufficient task-quality evidence for route promotion."
+  ]
+}

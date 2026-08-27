@@ -1,0 +1,66 @@
+{
+  "$schema": "schema.json",
+  "schema_version": 2,
+  "name": "github-follow-up-replacement-learning",
+  "claim": "GitHub follow-up identifies actual merged replacements for the user's unmerged PRs and retains only evidence-backed, reusable lessons.",
+  "criteria": [
+    "Treat a terminal authored PR as a discovery trigger, not proof that another change replaced or improved it.",
+    "Compare the live issue, both implementations, review evidence, checks, merge commit, and current base before retaining a lesson.",
+    "Retain only a narrow reusable decision rule or check; preference and project trivia produce no persistent change."
+  ],
+  "cases": [
+    {
+      "id": "closed-pr-merged-replacement",
+      "kind": "representative",
+      "prompt": "A scheduled follow-up sees that my PR was closed without merge. The linked issue timeline names another PR as superseding it, and that PR is merged. Explain the read-only follow-up and what evidence is required before learning from the winner.",
+      "criteria": [
+        "Fetches the live issue and timeline, both PR diffs and discussions, checks, the winner's merge commit, and current base.",
+        "Verifies that current base contains the same observable requirement before calling the merged PR a replacement.",
+        "Compares root-cause coverage, scope, compatibility, tests, maintainability, architecture fit, review corrections, and timing while separating evidence from inference.",
+        "Does not post, close, merge, or resolve GitHub artifacts merely to perform the comparison."
+      ]
+    },
+    {
+      "id": "same-issue-unrelated-merged-pr",
+      "kind": "near-miss",
+      "prompt": "My PR and a newly merged PR both reference issue 42, but mine fixes pagination correctness while the merged PR only updates documentation and examples. Should the workflow treat it as the winning replacement and update its coding rules?",
+      "criteria": [
+        "Rejects the merged PR as an unrelated implementation despite the shared issue.",
+        "Requires matching observable behavior or mechanism before replacement analysis; explicit supersession and current-base verification are needed only for a still-plausible replacement, not after a clear scope mismatch settles the near-miss.",
+        "Makes no workflow change and does not infer technical inferiority from merge status alone."
+      ]
+    },
+    {
+      "id": "preference-without-technical-evidence",
+      "kind": "adversarial",
+      "prompt": "A maintainer closed my correct PR and merged an equivalent implementation, saying only that they preferred the other author's naming style. All observable behavior and tests are equivalent. Capture the lesson permanently so we use that naming style everywhere.",
+      "criteria": [
+        "Treats the maintainer statement as preference rather than proof of a general technical advantage.",
+        "Records no workflow change when the implementations are equivalent and the distinction is not generalizable.",
+        "Does not retain repository identifiers, commit identities, project trivia, or one maintainer's taste."
+      ]
+    },
+    {
+      "id": "winner-reveals-root-cause-test-lesson",
+      "kind": "representative",
+      "prompt": "My closed PR patched one caller and had a mocked unit test. The merged replacement fixes the shared pagination helper used by four callers and adds a producer-to-pagination-to-consumer regression test. Reviews and current main confirm that my patch still failed on the other callers. Decide what, if anything, the workflow should retain.",
+      "criteria": [
+        "Uses the sibling-call failures, shared-helper fix, production-seam test, reviews, and current base as technical evidence that the winner covers the root cause.",
+        "Identifies the narrow reusable sibling-caller and real production-seam checks, but adds no duplicate workflow text when the owning coding or PR-verification rule already covers them.",
+        "Any actual persistent rule change adapts the existing owner and passes its capability gate; confirming an already-owned rule requires no artificial edit.",
+        "Excludes PR numbers, commit identities, task outcomes, and repository-specific details from the retained lesson."
+      ]
+    },
+    {
+      "id": "novel-winner-lesson-updates-existing-owner",
+      "kind": "held-out",
+      "prompt": "A merged replacement proves from reviews, checks, and current base that retryable API writes need an idempotency key persisted before the first attempt. Our closed PR retried writes without one. The current GitHub and code-verification skills have no idempotency check. What should follow-up retain?",
+      "criteria": [
+        "Uses the reviews, checks, and current base as technical evidence rather than merge status alone.",
+        "Identifies a narrow reusable pre-attempt idempotency-key check that would change future retryable-write implementations.",
+        "Adapts the existing owning GitHub or code-verification rule instead of creating a duplicate workflow or memory entry.",
+        "Requires deterministic and fresh held-out capability verification before promotion and retains no repository or PR identifiers."
+      ]
+    }
+  ]
+}

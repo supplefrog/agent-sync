@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "receipt_type": "grounded-verification-criteria-freeze",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "source_intent_reference": "kanban:t_1e0d8e90",
+  "frozen_at": "2026-08-16T02:46:49Z",
+  "original_criteria_sha256": "d2fd547b330d8450a9a70478b48f8552f340fe0050b29582336162446dd452c4",
+  "decision_chain_event_ids": ["DEC-001", "DEC-002", "DEC-003", "DEC-004"],
+  "final_criteria_sha256": "619f5cb6e723a204ccbec4332dbaaa1855ccd1b9eb0aa2efb52a5e5d07d5caa2",
+  "scope": "Original freeze plus the complete verifier-rooted amendment chain through the later multi-turn intent, legacy reclassification, convergence, Prime-boundary, and fleet-omission decisions."
+}

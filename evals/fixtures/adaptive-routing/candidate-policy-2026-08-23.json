@@ -1,0 +1,131 @@
+{
+  "$schema": "../../../skills/openai-delegation-route-research/references/adaptive-route-policy.schema.json",
+  "schema_version": 2,
+  "policy_version": "evidence-inventory-2026-08-23",
+  "status": "candidate",
+  "generated_at": "2026-08-23T17:33:51+05:30",
+  "source": "Validated inventory of the latest preserved cross-surface route smokes. No route is admitted.",
+  "evidence": {
+    "state": "verified",
+    "suite_locator": "evals/suites/adaptive-routing-smoke.json",
+    "suite_hash": "85872d388441ae1a5c4de661532ea5145210613913cef79faf44ea72c09f94aa",
+    "runtime_versions": {
+      "evaluated_hermes": "0.20.0",
+      "current_hermes": "0.20.5",
+      "current_codex": "0.149.0-alpha.4.1",
+      "current_omp": "17.2.13"
+    },
+    "limitations": [
+      "The preserved Hermes delegate smoke has one sample per route and no measured total cost.",
+      "Hermes changed from the evaluated 0.20.0 stack to current 0.20.5, which reopens evaluation.",
+      "Task-thread and auxiliary routes have source/CLI support evidence but no representative exact-route task samples.",
+      "Kanban has persistence-only evidence and did not launch a model worker."
+    ],
+    "sources": [
+      {
+        "locator": "evals/results/adaptive-routing-decision-2026-08-16.json",
+        "claim": "no-promotion"
+      }
+    ]
+  },
+  "routes": [
+    {
+      "id": "luna-high-hermes-0200",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "high",
+      "runtime": {
+        "host": "hermes",
+        "host_version": "0.20.0",
+        "transport": "hermes-delegate",
+        "harness_version": "candidate-worktree-2026-08-16",
+        "stack_receipt_sha256": "981bc9366739ff43c2cc01d7fbd59b1e12ed6df8be0eb3d9908777e8377325b0",
+        "concurrency": 1,
+        "service_tier": "default",
+        "account_class": "codex-oauth"
+      },
+      "evaluations": [
+        {
+          "task_class": "mechanical-bounded",
+          "target_surface": "hermes-delegate",
+          "evidence_state": "callable",
+          "observed_at": "2026-08-16T01:43:49Z",
+          "valid_until": "2026-08-19T00:00:00Z",
+          "pass_rate": 1.0,
+          "sample_size": 1,
+          "critical_failures": 0,
+          "p50_seconds": 9.329,
+          "p95_seconds": null,
+          "expected_total_cost_usd": null,
+          "cost_components": null,
+          "attempt_success_rate": 1.0,
+          "expected_retries": 0.0,
+          "max_retries_observed": 0,
+          "required_tools_verified": [],
+          "capabilities_verified": ["text"],
+          "context_tokens_verified": null,
+          "concurrency_verified": 1,
+          "verifier_passed": null,
+          "cleanup_passed": true,
+          "evidence_receipt": {
+            "locator": "evals/results/adaptive-routing-hermes-delegate-smoke-2026-08-16.json",
+            "sha256": "981bc9366739ff43c2cc01d7fbd59b1e12ed6df8be0eb3d9908777e8377325b0"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sol-low-hermes-0200",
+      "provider": "openai-codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "runtime": {
+        "host": "hermes",
+        "host_version": "0.20.0",
+        "transport": "hermes-delegate",
+        "harness_version": "candidate-worktree-2026-08-16",
+        "stack_receipt_sha256": "981bc9366739ff43c2cc01d7fbd59b1e12ed6df8be0eb3d9908777e8377325b0",
+        "concurrency": 1,
+        "service_tier": "default",
+        "account_class": "codex-oauth"
+      },
+      "evaluations": [
+        {
+          "task_class": "mechanical-bounded",
+          "target_surface": "hermes-delegate",
+          "evidence_state": "callable",
+          "observed_at": "2026-08-16T01:43:49Z",
+          "valid_until": "2026-08-19T00:00:00Z",
+          "pass_rate": 1.0,
+          "sample_size": 1,
+          "critical_failures": 0,
+          "p50_seconds": 9.329,
+          "p95_seconds": null,
+          "expected_total_cost_usd": null,
+          "cost_components": null,
+          "attempt_success_rate": 1.0,
+          "expected_retries": 0.0,
+          "max_retries_observed": 0,
+          "required_tools_verified": [],
+          "capabilities_verified": ["text"],
+          "context_tokens_verified": null,
+          "concurrency_verified": 1,
+          "verifier_passed": null,
+          "cleanup_passed": true,
+          "evidence_receipt": {
+            "locator": "evals/results/adaptive-routing-hermes-delegate-smoke-2026-08-16.json",
+            "sha256": "981bc9366739ff43c2cc01d7fbd59b1e12ed6df8be0eb3d9908777e8377325b0"
+          }
+        }
+      ]
+    }
+  ],
+  "rollback": {
+    "action": "Keep the incumbent unchanged; this candidate cannot promote live routing."
+  },
+  "reevaluation_triggers": [
+    "complete representative per-surface samples on Hermes 0.20.5 or newer",
+    "measure p95 and expected total cost including retries and verification",
+    "exercise model-launching Kanban and native cleanup paths"
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "name": "deep-research",
+  "description": "Independent evidence collection, adversarial checking, and synthesis.",
+  "max_workers": 3,
+  "tasks": [
+    {
+      "id": "source-map",
+      "role": "discover",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "prompt": "Define the research questions, decision criteria, source hierarchy, and important unknowns for {{var:QUESTION}}.",
+      "acceptance": [
+        "Returns a scoped map with concrete evidence paths, causal dependencies, and named unknowns."
+      ]
+    },
+    {
+      "id": "primary-evidence",
+      "role": "researcher",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "risk": "external",
+      "depends_on": [
+        "source-map"
+      ],
+      "include_outputs": [
+        "source-map"
+      ],
+      "prompt": "Collect authoritative primary evidence for {{var:QUESTION}}. Preserve citations and distinguish observation from inference.\n{{output:source-map}}",
+      "acceptance": [
+        "Returns source-grounded evidence with citations and separates observation from inference."
+      ]
+    },
+    {
+      "id": "independent-evidence",
+      "role": "researcher",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "risk": "external",
+      "depends_on": [
+        "source-map"
+      ],
+      "include_outputs": [
+        "source-map"
+      ],
+      "prompt": "Find independent corroboration, practical reports, and credible disagreements about {{var:QUESTION}}.\n{{output:source-map}}",
+      "acceptance": [
+        "Returns source-grounded evidence with citations and separates observation from inference."
+      ]
+    },
+    {
+      "id": "skeptical-case",
+      "role": "refuter",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "risk": "external",
+      "depends_on": [
+        "source-map"
+      ],
+      "include_outputs": [
+        "source-map"
+      ],
+      "prompt": "Develop the strongest evidence-backed case against the likely conclusions for {{var:QUESTION}}.\n{{output:source-map}}",
+      "acceptance": [
+        "Rechecks every candidate claim and retains only reproducible, source-supported findings."
+      ]
+    },
+    {
+      "id": "verify",
+      "role": "verifier",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "depends_on": [
+        "primary-evidence",
+        "independent-evidence",
+        "skeptical-case"
+      ],
+      "include_outputs": [
+        "primary-evidence",
+        "independent-evidence",
+        "skeptical-case"
+      ],
+      "prompt": "Cross-check material claims, flag unsupported statements, and produce a claim-evidence ledger.\n{{output:primary-evidence}}\n{{output:independent-evidence}}\n{{output:skeptical-case}}",
+      "acceptance": [
+        "Returns explicit pass, revise, or blocked coverage for every declared upstream criterion."
+      ]
+    },
+    {
+      "id": "synthesis",
+      "role": "synthesizer",
+      "intelligence_tier": "demanding",
+      "latency_sensitive": false,
+      "depends_on": [
+        "verify"
+      ],
+      "include_outputs": [
+        "verify"
+      ],
+      "prompt": "Answer {{var:QUESTION}} for decision-making. Preserve uncertainty, disagreements, novelty, and practical consequences.\n{{output:verify}}",
+      "acceptance": [
+        "Produces the requested decision-ready output while preserving evidence, uncertainty, and material disagreement."
+      ]
+    }
+  ]
+}

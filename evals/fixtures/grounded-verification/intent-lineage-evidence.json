@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "artifact_type": "grounded-verification-decision-evidence",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "scope_id": "S-INTENT-LINEAGE",
+  "decision_type": "verification",
+  "evidence_lanes": [
+    "multi-turn-lineage",
+    "summary-authority",
+    "research-first-resume",
+    "proactive-status",
+    "summarizer-reminder"
+  ],
+  "result": "pass",
+  "basis": {
+    "multi-turn-lineage": "The immutable criteria and decision chain require preservation of corrections, rationale, rejected or superseded approaches, evidence gaps, commitments, and open questions.",
+    "summary-authority": "The contract treats generated summaries as lossy views and the durable event lineage as authoritative.",
+    "research-first-resume": "The frozen criterion requires brainstorm, research existing evidence, decide, execute, and independent verification with cross-host resume continuity.",
+    "proactive-status": "Deterministic pilot evidence derives a blocker when material omissions are not surfaced without reminders.",
+    "summarizer-reminder": "The held-out second-reminder summarizer and intake omission is frozen and deterministically detected."
+  }
+}

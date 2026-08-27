@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "host", "instructions", "skills"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "host": {"type": "string"},
+    "instructions": {
+      "type": "object",
+      "required": ["source", "target", "strategy"],
+      "properties": {
+        "source": {"type": "string"},
+        "target": {"type": "string"},
+        "strategy": {"enum": ["link-or-copy", "manual-merge", "inherit-codex"]},
+        "required_markers": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1}
+      },
+      "additionalProperties": false
+    },
+    "skills": {
+      "type": "object",
+      "required": ["source", "selection", "install_root", "discovery"],
+      "properties": {
+        "source": {"type": "string"},
+        "selection": {"const": "registry:admitted"},
+        "install_root": {"type": "string"},
+        "discovery": {
+          "type": "object",
+          "required": ["kind"],
+          "properties": {
+            "kind": {"enum": ["native", "config-list", "plugin"]},
+            "key": {"type": "string"},
+            "value": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "manifest": {
+      "type": "object",
+      "required": ["source", "target"],
+      "properties": {"source": {"type": "string"}, "target": {"type": "string"}},
+      "additionalProperties": false
+    },
+    "routing": {
+      "type": "object",
+      "required": ["catalog_schema", "task_schema", "selection_contract", "aux_schema", "aux_assignments", "selector", "receipt_schema", "surfaces"],
+      "properties": {
+        "status": {"type": "string", "minLength": 1},
+        "catalog_schema": {"type": "string", "minLength": 1},
+        "task_schema": {"type": "string", "minLength": 1},
+        "selection_contract": {"type": "string", "minLength": 1},
+        "aux_schema": {"type": "string", "minLength": 1},
+        "aux_assignments": {"type": "string", "minLength": 1},
+        "selector": {"type": "string", "minLength": 1},
+        "receipt_schema": {"type": "string", "minLength": 1},
+        "executable_adapter": {"type": "string", "minLength": 1},
+        "surfaces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["target_surface", "native_owner", "required_fields", "pinning"],
+            "properties": {
+              "target_surface": {"type": "string", "minLength": 1},
+              "native_owner": {"type": "string", "minLength": 1},
+              "required_fields": {
+                "type": "array",
+                "minItems": 4,
+                "uniqueItems": true,
+                "items": {"enum": ["provider", "model", "reasoning_effort", "decision_receipt"]}
+              },
+              "pinning": {"type": "string", "minLength": 1},
+              "enforcement": {"type": "string"},
+              "current_support": {"type": "string"},
+              "smallest_path": {"type": "string"},
+              "unsupported_mappings": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": false
+          }
+        },
+        "unsupported_surfaces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["target_surface", "reason"],
+            "properties": {
+              "target_surface": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

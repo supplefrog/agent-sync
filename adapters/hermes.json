@@ -1,0 +1,93 @@
+{
+  "$schema": "./schema.json",
+  "schema_version": 1,
+  "host": "hermes",
+  "instructions": {
+    "source": "surfaces/core.md",
+    "target": "{HERMES_HOME}/SOUL.md",
+    "strategy": "manual-merge",
+    "required_markers": [
+      "[WORKFLOW-DESIGN]",
+      "outcome-first-workflow-design"
+    ]
+  },
+  "skills": {
+    "source": "skills",
+    "selection": "registry:admitted",
+    "install_root": "{SHARED_SKILLS_HOME}",
+    "discovery": {
+      "kind": "config-list",
+      "key": "skills.external_dirs",
+      "value": "{SHARED_SKILLS_HOME}"
+    }
+  },
+  "routing": {
+    "catalog_schema": "skills/openai-delegation-route-research/references/gpt-route-catalog.schema.json",
+    "task_schema": "skills/openai-delegation-route-research/references/route-task.schema.json",
+    "selection_contract": "skills/openai-delegation-route-research/references/selection-contract.md",
+    "aux_schema": "skills/openai-delegation-route-research/references/aux-models.schema.json",
+    "aux_assignments": "skills/openai-delegation-route-research/references/current-aux-models.json",
+    "selector": "skills/openai-delegation-route-research/scripts/route_selector.py",
+    "receipt_schema": "skills/openai-delegation-route-research/references/route-decision.schema.json",
+    "executable_adapter": "tools/route_adapter.py",
+    "status": "automatic-selection-active-surface-limited",
+    "surfaces": [
+      {
+        "target_surface": "hermes-delegate",
+        "required_fields": [
+          "provider",
+          "model",
+          "reasoning_effort",
+          "decision_receipt"
+        ],
+        "pinning": "Pin the complete receipt before launch; identical resumes reuse it and conflicting rewrites fail.",
+        "native_owner": "routed-delegation user plugin plus Hermes native child builder/finalizer",
+        "enforcement": "live-version-guarded-user-plugin",
+        "current_support": "The live routed_delegate_task plugin selects and pins exact per-child routes, disables route fallback, and reuses identical parent-session/task pins. Built-in delegate_task remains globally routed.",
+        "smallest_path": "Keep the plugin as the reversible live adapter. Upstream provider and reasoning fields into the public SubagentLaunchRequest before replacing the private version-guarded seam."
+      },
+      {
+        "target_surface": "hermes-task-thread",
+        "required_fields": [
+          "provider",
+          "model",
+          "reasoning_effort",
+          "decision_receipt"
+        ],
+        "pinning": "Pin the complete receipt before launch; identical resumes reuse it and conflicting rewrites fail.",
+        "native_owner": "hermes chat new one-shot/session process",
+        "enforcement": "native-cli-external-pin",
+        "current_support": "Hermes 0.20.5 supports --model, --provider, --reasoning, --source, and --query-file per process.",
+        "smallest_path": "Pin the receipt in adapter run state, then launch a new Hermes process with the exact native flags. Keep the receipt external until session metadata accepts it natively."
+      },
+      {
+        "target_surface": "cc-dynamic-workflow",
+        "required_fields": [
+          "provider",
+          "model",
+          "reasoning_effort",
+          "decision_receipt"
+        ],
+        "pinning": "Pin the complete receipt before launch; identical resumes reuse it and conflicting rewrites fail.",
+        "native_owner": "cc-dynamic-workflows state.json task attempt",
+        "enforcement": "staged-repository-integration",
+        "current_support": "The checked-in compatibility runner validates schema-version-2 receipts with object evidence receipts plus constraint/runtime/decision hash bindings, persists exact task routes, and reuses them on resume. Contract/pin/resume tests pass, but the current full runner batch is red because its Hermes ephemeral-session lifecycle path is stale.",
+        "smallest_path": "Retain the runner as the staged integration seam, repair its current native child lifecycle, then feed each node a selector receipt; do not use legacy tiers for new routed nodes."
+      },
+      {
+        "target_surface": "kanban-worker",
+        "required_fields": [
+          "provider",
+          "model",
+          "reasoning_effort",
+          "decision_receipt"
+        ],
+        "pinning": "Pin the complete receipt before launch; identical resumes reuse it and conflicting rewrites fail.",
+        "native_owner": "Hermes Kanban task/task_runs and dispatcher spawn",
+        "enforcement": "staged-source-integration",
+        "current_support": "Hermes 0.20.5 exposes model/provider overrides, but the live create surface lacks exact reasoning and decision-receipt inputs.",
+        "smallest_path": "Extend existing task/run fields with reasoning and the full receipt, copy them atomically at claim, and pass exact worker flags. Do not create a second queue."
+      }
+    ]
+  }
+}

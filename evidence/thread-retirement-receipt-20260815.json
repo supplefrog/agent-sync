@@ -1,0 +1,71 @@
+{
+  "schema": "agent-signal-thread-retirement-receipt-v1",
+  "observed_at_utc": "2026-08-15T03:23:31Z",
+  "authority_task": "t_195d532c",
+  "authority_board": "agent-orchestration",
+  "basis": {
+    "reconciliation_report": "C:\\Users\\E\\AppData\\Local\\hermes\\reconciliation\\reports\\cross-thread-claims-20260814T015851Z.md",
+    "live_board_rechecked": true,
+    "native_host_state_rechecked": true
+  },
+  "retired": [
+    {
+      "host": "codex",
+      "session_id": "019fffe6-e288-7822-84cb-e665cdfceb37",
+      "kind": "subagent",
+      "disposition": "deleted",
+      "reason": "The terminal subagent performed one bounded authorization review for a completed stale-file cleanup. Its parent integrated the result, completed the deletion, and is archived; no lateral or unresolved work depends on this child.",
+      "supported_control": "codex delete <uuid> --force",
+      "verification": {
+        "cli_result": "Deleted session 019fffe6-e288-7822-84cb-e665cdfceb37.",
+        "remaining_filename_matches": 0,
+        "parent_preserved": "C:\\Users\\E\\.codex\\archived_sessions\\rollout-2026-08-14T16-21-15-019fffe5-c22a-7ba3-8b6e-da0b0e7f11e4.jsonl"
+      }
+    }
+  ],
+  "released_or_already_closed": {
+    "omp": {
+      "nested_worker_threads": 12,
+      "terminal_dispose_normal": 12,
+      "nonterminal": 0,
+      "disposition": "already closed/released",
+      "reason": "OMP records each nested worker with a terminal session_exit reason=dispose kind=normal. OMP exposes no narrower supported delete for these nested records; the supported lifecycle state is already terminal. The referenced parent threads remain preserved."
+    },
+    "hermes": {
+      "delegated_children_observed": 98,
+      "terminal_agent_close": 86,
+      "nonterminal": 10,
+      "pinned_or_titled": 11,
+      "kanban_worker_receipt_references": 13,
+      "deleted": 0,
+      "disposition": "retained",
+      "reason": "The live store does not expose a durable ownership/integration acknowledgement for these historical rows. Ten are nonterminal, eleven are pinned or titled, and current Kanban/Desktop activity is live. Deleting by source, title, parent, or timestamps would violate the ownership gate; terminal agent_close rows are left for runtime-owned lifecycle cleanup."
+    }
+  },
+  "explicit_retention": [
+    {
+      "host": "codex",
+      "session_id": "019ffa9d-5fe6-7300-9ab9-65bc16a97fda",
+      "reason": "Teams web-login task remains unresolved and lacks authorization for account sign-out."
+    },
+    {
+      "host": "codex",
+      "session_id": "019ff096-8a28-7e01-ba5f-3f1f8860192b",
+      "reason": "Referenced capability-convergence evidence; broader goal remains active."
+    },
+    {
+      "host": "omp",
+      "session_path": "C:\\Users\\E\\.omp\\agent\\sessions\\-tmp\\2026-08-09T11-15-53-557Z_019fe63c-8455-7000-bd0e-e676e1486438.jsonl",
+      "reason": "Referenced capability and cleanup-rule evidence; broader capability-convergence work remains active."
+    },
+    {
+      "host": "hermes",
+      "reason": "Active orchestration/Desktop lineages, Kanban worker receipts, and historical rows without deletion authority are preserved."
+    }
+  ],
+  "totals": {
+    "deleted": 1,
+    "already_closed_or_released": 12,
+    "unsafe_or_unproven_deletions_attempted": 0
+  }
+}

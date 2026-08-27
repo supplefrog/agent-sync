@@ -1,0 +1,167 @@
+{
+  "$schema": "./gpt-route-catalog.schema.json",
+  "schema_version": 2,
+  "status": "active",
+  "catalog_version": "gpt-5.6-aa-2026-08-24-auto1",
+  "provider": "openai-codex",
+  "source": {
+    "name": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/models",
+    "observed_at": "2026-08-24",
+    "metrics": {
+      "intelligence": "Artificial Analysis Intelligence Index",
+      "time": "Time per Intelligence Index Task (minutes)",
+      "cost": "Cost per Intelligence Index Task (USD)",
+      "hallucination": "AA-Omniscience Hallucination Rate (%)"
+    }
+  },
+  "intelligence_tiers": {
+    "routine": {
+      "minimum_intelligence_index": 39,
+      "description": "Bounded, routine work with cheap retries or direct verification."
+    },
+    "standard": {
+      "minimum_intelligence_index": 47,
+      "description": "Normal professional work requiring reliable judgment."
+    },
+    "strong": {
+      "minimum_intelligence_index": 51,
+      "description": "Substantial judgment, ambiguity, or synthesis."
+    },
+    "demanding": {
+      "minimum_intelligence_index": 56,
+      "description": "Hard reasoning where a weaker route materially risks rework."
+    },
+    "maximum": {
+      "minimum_intelligence_index": 61,
+      "description": "Quality-ceiling work where the strongest measured route is justified."
+    }
+  },
+  "delegation_candidates": [
+    {
+      "id": "luna-medium",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "medium",
+      "artificial_analysis": {
+        "intelligence_index": 39,
+        "time_per_task_minutes": 0.48,
+        "cost_per_task_usd": 0.01,
+        "hallucination_rate_percent": 90.87
+      }
+    },
+    {
+      "id": "luna-high",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "high",
+      "artificial_analysis": {
+        "intelligence_index": 47,
+        "time_per_task_minutes": 1.04,
+        "cost_per_task_usd": 0.02,
+        "hallucination_rate_percent": 92.38
+      }
+    },
+    {
+      "id": "luna-xhigh",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "xhigh",
+      "artificial_analysis": {
+        "intelligence_index": 50,
+        "time_per_task_minutes": 1.65,
+        "cost_per_task_usd": 0.03,
+        "hallucination_rate_percent": 92.47
+      }
+    },
+    {
+      "id": "luna-max",
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "max",
+      "artificial_analysis": {
+        "intelligence_index": 52,
+        "time_per_task_minutes": 2.53,
+        "cost_per_task_usd": 0.05,
+        "hallucination_rate_percent": 92.58
+      }
+    },
+    {
+      "id": "sol-low",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "artificial_analysis": {
+        "intelligence_index": 51,
+        "time_per_task_minutes": 0.68,
+        "cost_per_task_usd": 0.23,
+        "hallucination_rate_percent": 89.42
+      }
+    },
+    {
+      "id": "sol-medium",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "artificial_analysis": {
+        "intelligence_index": 56,
+        "time_per_task_minutes": 1.13,
+        "cost_per_task_usd": 0.37,
+        "hallucination_rate_percent": 90.77
+      }
+    },
+    {
+      "id": "sol-high",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "artificial_analysis": {
+        "intelligence_index": 57,
+        "time_per_task_minutes": 1.81,
+        "cost_per_task_usd": 0.55,
+        "hallucination_rate_percent": 91.2
+      }
+    },
+    {
+      "id": "sol-xhigh",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "xhigh",
+      "artificial_analysis": {
+        "intelligence_index": 59,
+        "time_per_task_minutes": 2.71,
+        "cost_per_task_usd": 0.81,
+        "hallucination_rate_percent": 91.87
+      }
+    },
+    {
+      "id": "sol-max",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "max",
+      "artificial_analysis": {
+        "intelligence_index": 61,
+        "time_per_task_minutes": 3.8,
+        "cost_per_task_usd": 1.23,
+        "hallucination_rate_percent": 92.2
+      }
+    }
+  ],
+  "recommendations": [
+    {
+      "name": "foreground-general",
+      "route_id": "sol-low",
+      "use_when": "User-facing or blocking delegation where responsiveness is part of the product outcome.",
+      "why": "Nearly Luna-max intelligence, much lower task time, and a lower measured hallucination rate; its higher cost buys better UX."
+    },
+    {
+      "name": "background-nonblocking",
+      "route_id": "luna-max",
+      "use_when": "Work can finish slowly without delaying the user or another foreground dependency.",
+      "why": "Similar intelligence to Sol low at much lower task cost; latency is acceptable only when it is genuinely nonblocking."
+    },
+    {
+      "name": "demanding-bounded",
+      "route_id": "sol-high",
+      "use_when": "The task needs materially more intelligence than the general foreground route but maximum effort is not justified.",
+      "why": "Strong intelligence with substantially less time and cost than Sol max."
+    },
+    {
+      "name": "maximum-quality",
+      "route_id": "sol-max",
+      "use_when": "The quality ceiling is decisive and the extra time and cost are acceptable.",
+      "why": "Highest measured Intelligence Index in the current callable family."
+    }
+  ]
+}

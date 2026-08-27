@@ -1,0 +1,39 @@
+{
+  "name": "primary-source-research",
+  "claim": "The workflow traces derivative claims to canonical artifacts, distinguishes evidence states, and stops once decision-changing gaps are resolved.",
+  "criteria": [
+    "Prefer source, specifications, owner docs, releases, tests, and papers over derivative commentary.",
+    "Distinguish documented, implemented, verified, and inferred claims.",
+    "Do not count many derivatives of one source as independent corroboration.",
+    "Use current live evidence when versions or models changed."
+  ],
+  "cases": [
+    {
+      "id": "docs-source-mismatch",
+      "prompt": "We must decide whether Tool A supports automatic retry. Its current owner documentation says retries are automatic. The current release source shows retry_count defaults to 0, and tests enable retries only when retry_count is set above 0. A popular tutorial repeats the documentation. Give the finding and action.",
+      "criteria": [
+        "State that automatic retry is documented but the current implementation is opt-in.",
+        "Give current source and tests more weight than the derivative tutorial.",
+        "Recommend a live version-specific check or explicit configuration."
+      ]
+    },
+    {
+      "id": "derivative-consensus",
+      "prompt": "Ten newsletters and three YouTube videos say Library B is 40% faster. Every one links to the same vendor release post, which reports one benchmark on an undisclosed dataset and no code. Assess confidence and the next research step.",
+      "criteria": [
+        "Treat all derivative sources as one evidence lineage, not thirteen independent confirmations.",
+        "Flag missing benchmark method, dataset, code, and independent reproduction.",
+        "Do not accept the 40% number for the user's workload without a relevant live benchmark."
+      ]
+    },
+    {
+      "id": "stale-model-benchmark",
+      "prompt": "An official 2025 benchmark says Skill C improves Model M1. We now use Model M3 with different native tools, and the skill has not changed. Decide whether to install it and define the minimum evidence needed.",
+      "criteria": [
+        "Use the old official benchmark as provenance or a lead, not current fitness proof.",
+        "Require baseline-versus-skill evaluation on Model M3 and its active tools.",
+        "Allow no install if the M3 baseline already meets the outcome."
+      ]
+    }
+  ]
+}

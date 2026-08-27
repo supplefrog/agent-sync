@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "suite": "surface-convergence",
+  "host": "codex",
+  "host_version": "codex-cli 0.146.0-alpha.3.1",
+  "judge_host": "codex",
+  "judge_version": "codex-cli 0.146.0-alpha.3.1",
+  "run_timestamp_utc": "2026-07-26T00:12:55.630902+00:00",
+  "status": "development-pass-held-out-passed",
+  "artifacts": {
+    "candidate_sha256": "5af1a9ebfc7de8324552c3fff849028ca157e9e00004437fea9e64b1f4b44ca6",
+    "suite_sha256": "b83a0ee4895f8e0c2487a882f3c2a6d24814cb070552fd319f8a9293a721a633",
+    "harness_sha256": "9ceed176e2431477c9151d0c2da15e0dc4300eee71e1e0b003d71da3911dd5a4"
+  },
+  "result": {
+    "passed": true,
+    "candidate_wins": 5,
+    "candidate_losses": 0,
+    "ties": 0,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0
+  },
+  "cases": {
+    "shared-instructions": "candidate",
+    "native-scheduler-delta": "candidate",
+    "host-version-drift": "candidate",
+    "new-agent-onboarding": "candidate",
+    "contradictory-host-results": "candidate"
+  },
+  "decision": "Codex development and held-out suites passed on one candidate hash; Hermes is still required before admission.",
+  "raw_report_committed": false
+}

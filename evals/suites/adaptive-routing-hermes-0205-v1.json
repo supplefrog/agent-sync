@@ -1,0 +1,137 @@
+{
+  "schema_version": 2,
+  "suite_id": "adaptive-routing-hermes-0205-v1",
+  "frozen_at": "2026-08-23T19:09:26+05:30",
+  "target_surface": "hermes-task-thread",
+  "transport": "hermes-oneshot/openai-codex",
+  "repeats_per_task_class": 8,
+  "hard_constraints": {
+    "mechanical-bounded": {
+      "objective": "speed",
+      "min_sample_size": 8,
+      "min_pass_rate": 0.9,
+      "max_critical_failures": 0,
+      "max_p95_seconds": 45,
+      "max_expected_total_cost_usd": 0.5,
+      "max_retries": 1,
+      "verifier_required": true,
+      "required_tools": ["file"]
+    },
+    "research-synthesis": {
+      "objective": "intelligence",
+      "min_sample_size": 8,
+      "min_pass_rate": 0.9,
+      "max_critical_failures": 0,
+      "max_p95_seconds": 75,
+      "max_expected_total_cost_usd": 0.5,
+      "max_retries": 1,
+      "verifier_required": true,
+      "required_tools": ["file"]
+    },
+    "implementation-debugging": {
+      "objective": "intelligence",
+      "min_sample_size": 8,
+      "min_pass_rate": 0.9,
+      "max_critical_failures": 0,
+      "max_p95_seconds": 120,
+      "max_expected_total_cost_usd": 0.75,
+      "max_retries": 1,
+      "verifier_required": true,
+      "required_tools": ["file", "terminal"]
+    },
+    "verification-refutation": {
+      "objective": "intelligence",
+      "min_sample_size": 8,
+      "min_pass_rate": 1.0,
+      "max_critical_failures": 0,
+      "max_p95_seconds": 90,
+      "max_expected_total_cost_usd": 0.75,
+      "max_retries": 1,
+      "verifier_required": true,
+      "required_tools": ["file"]
+    }
+  },
+  "cases": [
+    {
+      "id": "mechanical-normalize-records",
+      "task_class": "mechanical-bounded",
+      "required_tools": ["file"],
+      "toolsets": ["file", "terminal"],
+      "prompt": "Work only in the current directory. Read records.json. Deduplicate by id, keeping the highest score for each id, sort by id ascending, and write result.json exactly as an object with keys records and total_score. Do not use the network. When the file is correct, return only {\"status\":\"done\"}.",
+      "fixtures": {
+        "records.json": "[{\"id\":\"b\",\"score\":4},{\"id\":\"a\",\"score\":3},{\"id\":\"b\",\"score\":7},{\"id\":\"c\",\"score\":2},{\"id\":\"a\",\"score\":5}]\n"
+      },
+      "acceptance": {
+        "json_file": "result.json",
+        "expected": {
+          "records": [
+            {"id": "a", "score": 5},
+            {"id": "b", "score": 7},
+            {"id": "c", "score": 2}
+          ],
+          "total_score": 14
+        }
+      }
+    },
+    {
+      "id": "research-synthesize-lineages",
+      "task_class": "research-synthesis",
+      "required_tools": ["file"],
+      "toolsets": ["file", "terminal"],
+      "prompt": "Work only in the current directory. Read every JSON file under sources. Treat repeated coverage of one study as one evidence lineage. Write result.json with exactly: independent_lineages, strongest_cost_claim, quality_conclusion, and limitation. Copy the exact supported claim and limitation strings from the source files. Do not use the network. Then return only {\"status\":\"done\"}.",
+      "fixtures": {
+        "sources/study-a.json": "{\"lineage\":\"study-a\",\"n\":20,\"speed_claim\":\"8% faster completion\",\"confidence_interval\":null,\"limitation\":\"Study A has no confidence interval\"}\n",
+        "sources/study-b.json": "{\"lineage\":\"study-b\",\"n\":400,\"quality_conclusion\":\"no measurable quality difference\",\"cost_claim\":\"18% lower cost\"}\n",
+        "sources/vendor-repost.json": "{\"lineage\":\"study-a\",\"kind\":\"vendor repost\",\"repeats\":\"8% faster completion\"}\n"
+      },
+      "acceptance": {
+        "json_file": "result.json",
+        "expected": {
+          "independent_lineages": 2,
+          "strongest_cost_claim": "18% lower cost",
+          "quality_conclusion": "no measurable quality difference",
+          "limitation": "Study A has no confidence interval"
+        }
+      }
+    },
+    {
+      "id": "implementation-fix-clamp",
+      "task_class": "implementation-debugging",
+      "required_tools": ["file", "terminal"],
+      "toolsets": ["file", "terminal"],
+      "critical_failure_on_fail": true,
+      "prompt": "Work only in the current directory. Inspect clamp.py and test_clamp.py. Fix the implementation, run the tests, and write result.json exactly as {\"tests\":\"passed\",\"bug\":\"bounds reversed\"}. Do not change test_clamp.py and do not use the network. Then return only {\"status\":\"done\"}.",
+      "fixtures": {
+        "clamp.py": "def clamp(x, low, high):\n    return min(low, max(high, x))\n",
+        "test_clamp.py": "import unittest\nfrom clamp import clamp\n\nclass ClampTests(unittest.TestCase):\n    def test_inside(self):\n        self.assertEqual(clamp(5, 0, 10), 5)\n\n    def test_low(self):\n        self.assertEqual(clamp(-2, 0, 10), 0)\n\n    def test_high(self):\n        self.assertEqual(clamp(12, 0, 10), 10)\n\nif __name__ == '__main__':\n    unittest.main()\n"
+      },
+      "acceptance": {
+        "json_file": "result.json",
+        "expected": {"tests": "passed", "bug": "bounds reversed"},
+        "command": ["python", "-m", "unittest", "-q"],
+        "command_exit": 0,
+        "timeout_seconds": 30
+      }
+    },
+    {
+      "id": "verification-refute-dominance",
+      "task_class": "verification-refutation",
+      "required_tools": ["file"],
+      "toolsets": ["file", "terminal"],
+      "critical_failure_on_fail": true,
+      "prompt": "Work only in the current directory. Read claim.txt and metrics.json. Higher pass rate is better; lower p95 and cost are better. A route dominates another only if it is no worse on every metric and strictly better on at least one. Write result.json exactly with keys claim_valid, dominator, and reason; if B dominates A, use reason string exactly \"B matches A on pass rate and is better on p95 and cost\". Do not use the network. Then return only {\"status\":\"done\"}.",
+      "fixtures": {
+        "claim.txt": "Claim: route A dominates route B.\n",
+        "metrics.json": "{\"A\":{\"pass_rate\":0.9,\"p95_seconds\":30,\"cost_usd\":0.03},\"B\":{\"pass_rate\":0.9,\"p95_seconds\":20,\"cost_usd\":0.02},\"C\":{\"pass_rate\":0.89,\"p95_seconds\":15,\"cost_usd\":0.01}}\n"
+      },
+      "acceptance": {
+        "json_file": "result.json",
+        "expected": {
+          "claim_valid": false,
+          "dominator": "B",
+          "reason": "B matches A on pass rate and is better on p95 and cost"
+        }
+      }
+    }
+  ]
+}

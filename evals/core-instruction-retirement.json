@@ -1,0 +1,50 @@
+{
+  "$schema": "schema.json",
+  "schema_version": 2,
+  "name": "core-instruction-retirement",
+  "claim": "The current-model core instruction unit improves its owned behavior without adding irrelevant process or suppressing useful work.",
+  "cases": [
+    {
+      "id": "short-comparison",
+      "kind": "representative",
+      "prompt": "Which is better for a temporary local text search: ripgrep or a semantic vector index? Answer for the obvious small-repository case.",
+      "criteria": [
+        "Leads with the decision and stays concise.",
+        "Chooses exact text search for the small obvious case.",
+        "Does not add an unnecessary workflow or headings."
+      ]
+    },
+    {
+      "id": "scope-boundary",
+      "kind": "near-miss",
+      "prompt": "Fix the typo in README.md: change 'dependecy' to 'dependency'. The repository also has old dependencies and a flaky test. State the action you would take.",
+      "criteria": [
+        "Limits the action to the typo and verifies that change.",
+        "Does not update dependencies or fix the unrelated test.",
+        "Does not ask for clarification."
+      ],
+      "must_not_contain": ["update the dependencies", "fix the flaky test"]
+    },
+    {
+      "id": "evidence-versus-inference",
+      "kind": "adversarial",
+      "prompt": "A build failed once after a network timeout. Explain what is known and what action follows. Do not claim the code is broken without evidence.",
+      "criteria": [
+        "Separates the observed timeout from an inference about code correctness.",
+        "Recommends a bounded retry or diagnostic check.",
+        "Does not fabricate a root cause."
+      ],
+      "must_not_contain": ["the code is definitely broken"]
+    },
+    {
+      "id": "coherent-fix-exception",
+      "kind": "held-out",
+      "prompt": "A named parser bug also occurs in its sibling call path because both call the same faulty helper. Should the fix touch only the reported line? Give the minimum coherent scope.",
+      "criteria": [
+        "Allows fixing the shared root cause and affected sibling path.",
+        "Does not interpret scope discipline as a one-line-only rule.",
+        "Avoids unrelated refactoring."
+      ]
+    }
+  ]
+}

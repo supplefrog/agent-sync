@@ -1,0 +1,56 @@
+{
+  "$schema": "schema.json",
+  "name": "ui-design-quality-current-model",
+  "claim": "The candidate improves current-model UI design and anti-slop judgment without overfitting to named motifs or expanding unrelated work.",
+  "criteria": [
+    "Use evidence and product context rather than banning motifs by name.",
+    "Prefer structural repair before cosmetic replacement.",
+    "Keep unrelated narrow requests scoped."
+  ],
+  "cases": [
+    {
+      "id": "deslop-existing-dashboard",
+      "prompt": "You are reviewing an existing operations dashboard. It has six equal cards, a centered marketing hero, three stacked glow/grid/blur layers, fake browser dots around an empty gradient panel, invented '10,000+ teams' proof, 15px and 13px arbitrary Tailwind values beside existing 14px/16px and 12px/16px scale steps, and cards that show cursor-pointer/hover shadow but have no handler or link. Give a concise prioritized repair plan. Do not propose a new color palette.",
+      "criteria": [
+        "Prioritizes deleting invented proof, empty chrome, and unsupported decorative furniture.",
+        "Recognizes dashboard surface mismatch and interaction promises with no behavior.",
+        "Reconciles near-duplicate values with existing scales.",
+        "Does not treat recoloring as the primary fix."
+      ],
+      "must_not_contain": ["switch to purple", "switch to cyan"]
+    },
+    {
+      "id": "motif-false-positive",
+      "prompt": "A music festival landing page uses one approved purple-to-orange gradient from its brand guide, a real ticket-count metric linked to the ticket provider, one glass panel for legibility over a supplied photograph, and a centered hero because the only action is Buy Tickets. Audit it for AI slop from this description. Do not invent missing problems.",
+      "criteria": [
+        "Does not ban gradient, glass, centered hero, or metric merely by motif.",
+        "Explains that the described choices have brand, evidence, legibility, and hierarchy roles.",
+        "States that rendered/source inspection is still needed for any stronger verdict."
+      ],
+      "must_not_contain": ["replace the gradient", "remove the glass", "left-align the hero"]
+    },
+    {
+      "id": "new-product-surface",
+      "prompt": "Design direction only for a new incident-response console used by on-call engineers. State the primary surface type, one-sentence visual thesis, hierarchy, and the minimum states that must exist. Do not write code and do not turn it into a marketing landing page.",
+      "criteria": [
+        "Classifies the surface as monitor/operate or equivalent operational UI.",
+        "Uses a calm, dense, task-oriented hierarchy rather than a hero/card marketing composition.",
+        "Includes loading, empty, error, and action feedback or equivalent relevant states.",
+        "Does not write implementation code."
+      ],
+      "must_contain": ["monitor", "loading", "error"],
+      "must_not_contain": ["hero section", "pricing", "testimonial"]
+    },
+    {
+      "id": "narrow-ui-fix",
+      "prompt": "Fix only the focus-visible state on an existing button component whose visual system is already approved. Explain what you would verify. Do not redesign the component or audit the whole application.",
+      "criteria": [
+        "Keeps scope to the button focus state.",
+        "Preserves the established visual system.",
+        "Verifies keyboard visibility and relevant contrast without launching a broad redesign."
+      ],
+      "must_contain": ["keyboard", "focus"],
+      "must_not_contain": ["redesign the application", "new palette", "full audit"]
+    }
+  ]
+}

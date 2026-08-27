@@ -1,0 +1,14 @@
+{
+  "suite": "dynamic-workflows",
+  "host": "portable-core-deterministic",
+  "result": {
+    "passed": true
+  },
+  "checks": [
+    "47 portable workflow-state tests passed",
+    "260 repository tests and 52 subtests passed",
+    "canonical dynamic-workflows skill validates",
+    "fleet render, apply, and verify pass for the managed portable skill"
+  ],
+  "limitations": "The legacy Hermes cc-dynamic-workflows adapter is host-specific and unmanaged by fleet sync; its separate integration script currently reports 27 passes, 6 failures, and 1 error against the live Hermes runtime."
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dynamic Workflows"
+  short_description: "Run durable bounded multi-agent workflows"
+  default_prompt: "Use $dynamic-workflows to plan and run this task as a persisted, bounded multi-agent workflow."

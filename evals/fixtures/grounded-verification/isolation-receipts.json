@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "receipt_type": "grounded-verification-isolation",
+  "contract_id": "grounded-verification-human-off-pilot",
+  "boundaries": {
+    "test_author": {
+      "readable_scopes": [
+        "frozen_intent_spec"
+      ],
+      "denied_scopes": [
+        "implementation"
+      ],
+      "enforcement": "separate-workspace",
+      "session_id": "20260816_084211_36c8b7",
+      "tool_policy": "none",
+      "implementation_sealed_before_output_import": true
+    },
+    "implementer": {
+      "readable_scopes": [
+        "frozen_intent_spec",
+        "implementation"
+      ],
+      "denied_scopes": [
+        "held_out_tests",
+        "oracle_logic",
+        "rubrics",
+        "gate_recipes"
+      ],
+      "enforcement": "separate-workspace",
+      "held_out_material_created_after_implementation_seal": true,
+      "held_out_material_not_used_to_adapt_implementation": true
+    },
+    "verdict_owner": {
+      "readable_scopes": [
+        "sealed_implementation",
+        "verification_receipts"
+      ],
+      "denied_scopes": [
+        "implementation_write"
+      ],
+      "enforcement": "process-boundary",
+      "session_id": "20260816_085919_94cd6f",
+      "workspace_access": "read-only instruction; same sealed workspace",
+      "isolation_strength": "context-only"
+    }
+  },
+  "limitations": [
+    "Receipts establish process/context boundaries, not OS-level ACLs or NASA managerial/financial independence.",
+    "The verifier shares the sealed source workspace and is therefore context-only independent."
+  ]
+}

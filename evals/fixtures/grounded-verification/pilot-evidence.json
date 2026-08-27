@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "source": "kanban:t_1e0d8e90 frozen contract; kanban:t_67bb4407 pilot subject; public-safe deterministic board/event observations",
+  "initial_independent_review": {
+    "task_reasoning": "high",
+    "receipt_reasoning": "medium",
+    "required_surfaces": [
+      "hermes-delegate",
+      "cc-dynamic-workflow",
+      "kanban",
+      "codex",
+      "omp"
+    ],
+    "surfaces_with_real_evidence": [],
+    "cross_surface_enforcement": "declarative-only",
+    "delivery_state": {
+      "root_staged": false,
+      "hermes_staged": false,
+      "superseded_worktree_removed": false
+    }
+  },
+  "later_independent_review": {
+    "routing_specific_checks_passed": true,
+    "baseline_cc_lifecycle": {
+      "total": 30,
+      "passed": 23,
+      "failed": 6,
+      "errors": 1
+    },
+    "candidate_cc_lifecycle": {
+      "total": 30,
+      "passed": 23,
+      "failed": 6,
+      "errors": 1
+    },
+    "receipt_invalidation_fix_passed": true,
+    "live_route_changed": false
+  },
+  "held_out_board_event_regression": {
+    "evidence_kind": "deterministic-board-event-state",
+    "review_blocked_card": {
+      "status": "review-blocked",
+      "promotion_allowed": false,
+      "proactively_surfaced_by_event": false,
+      "reported_as_running": false
+    },
+    "phantom_assignee_card": {
+      "status": "ready",
+      "assignee_exists": false,
+      "reconciliation_or_escalation_event": false,
+      "reported_as_running": false
+    },
+    "baseline_observation": "Both conditions required user status inquiry or intervention instead of proactive surfacing and reconciliation."
+  },
+  "held_out_intent_lineage_regression": {
+    "evidence_kind": "deterministic-card-lineage-state",
+    "evolving_card": {
+      "authoritative_lineage_preserved": false,
+      "generated_summary_overwrote_lineage": true,
+      "research_first_sequence_preserved": false,
+      "cross_host_resume_preserved": false,
+      "lost_fields": [
+        "later-corrections",
+        "rationale",
+        "rejected-and-superseded-approaches",
+        "evidence-gaps",
+        "commitments",
+        "open-questions"
+      ]
+    },
+    "proactive_status": {
+      "material_omission_proactively_surfaced": false,
+      "accepted_summarizer_intake_omitted": true,
+      "reminders_required": 2
+    },
+    "baseline_observation": "A second user reminder was required to restore accepted intake and summarizer lineage requirements."
+  },
+  "held_out_legacy_convergence_regression": {
+    "evidence_kind": "deterministic-promotion-scope-state",
+    "legacy_done": {
+      "status": "done",
+      "evidence_classification": "missing"
+    },
+    "ultimate_agent_outcome": {
+      "convergence_claimed": true,
+      "cross_host_evidence_revalidated": false,
+      "surfaces": ["hermes", "codex", "omp"]
+    },
+    "prime_agent": {
+      "evaluation_requested": true,
+      "required_evidence_lanes": [
+        "persistent-rlm-workspace",
+        "daemon-continuity",
+        "child-lifecycle-family-messaging",
+        "bounded-autonomy",
+        "rollbackable-supplemental-refinement",
+        "kanban-authority",
+        "sandboxing",
+        "windows-quality"
+      ],
+      "observed_evidence_lanes": [],
+      "self_approved_refinement": true,
+      "unsandboxed_execution": true,
+      "windows_quality_proven": false
+    },
+    "fleet_omission": {
+      "proactively_surfaced": false,
+      "reminders_required": 3
+    },
+    "downstream_outcome_claimed_pass": false,
+    "baseline_observation": "Done status and narrow child receipts were treated as sufficient until a third reminder exposed omitted fleet-wide evidence."
+  }
+}

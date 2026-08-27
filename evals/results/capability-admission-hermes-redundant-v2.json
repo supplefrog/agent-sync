@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "suite": "capability-admission",
+  "host": "hermes",
+  "host_version": "Hermes Agent v0.19.0 (2026.7.20) · upstream 1161cc0b · local 5be99b6f (+111 carried commits)\nInstall directory: C:\\Users\\E\\AppData\\Local\\hermes\\hermes-agent\nInstall method: git\nPython: 3.11.15\nOpenAI SDK: 2.24.0",
+  "judge_host": "codex",
+  "judge_version": "codex-cli 0.146.0-alpha.3.1",
+  "run_timestamp_utc": "2026-07-26T00:10:04.413040+00:00",
+  "status": "targeted-pass-full-rerun-pending",
+  "artifacts": {
+    "candidate_sha256": "297b8f28c1ea71699222b94a7caaf36ca5e0f0cc7ca15c78edef9f3476d6a26f",
+    "suite_sha256": "076790202c4f89cfa121fd81f13d98836222e43390e7dd9c8e12eaa949638513",
+    "harness_sha256": "9ceed176e2431477c9151d0c2da15e0dc4300eee71e1e0b003d71da3911dd5a4"
+  },
+  "result": {
+    "passed": true,
+    "candidate_wins": 1,
+    "candidate_losses": 0,
+    "ties": 0,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0
+  },
+  "cases": {
+    "redundant-style": "candidate"
+  },
+  "decision": "The adapted stopping rule won the previously failing Hermes redundancy case; full development and fresh held-out suites remain required.",
+  "raw_report_committed": false
+}

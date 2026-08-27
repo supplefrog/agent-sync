@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-16T02:19:39Z",
+  "decision": "no-comparative-winner-no-change",
+  "decision_trace": {
+    "comparison_kind": "candidate_only_gate",
+    "hindsight": "Evaluated on four bounded synthetic facts through the real Hermes hindsight_recall tool with production observation-only defaults; failed irrelevant-query silence, tool-visible provenance, and clean Windows lifecycle.",
+    "honcho": "Current service/backfill health and earlier authorized transcript probes were observed; Honcho was not run on the Hindsight synthetic suite.",
+    "session_search": "Earlier matched transcript probes found 3/3 facts and remains the authoritative transcript-evidence path.",
+    "not_run": "No head-to-head Honcho-versus-Hindsight run used the same inputs and acceptance criteria.",
+    "conclusion": "Hindsight failed its own admission gate, so the current stack remains unchanged by default; no provider won a comparative evaluation."
+  },
+  "candidate": {
+    "provider": "hindsight",
+    "version": "0.9.1",
+    "mode": "local_embedded",
+    "platform": "Windows native",
+    "llm_auth": "OpenAI Codex OAuth; no API key copied",
+    "llm_model": "gpt-5.4-mini",
+    "memory_mode": "tools",
+    "auto_recall": false,
+    "auto_retain": false,
+    "recall_budget": "low",
+    "recall_max_tokens": 1024,
+    "recall_types": ["observation"],
+    "input_scope": "four bounded synthetic facts in an isolated bank"
+  },
+  "service": {
+    "startup_readback": true,
+    "api_url_scope": "loopback dynamic port",
+    "api_version_readback": "0.9.1",
+    "database": "embedded PostgreSQL",
+    "restart_exercised": true,
+    "restart_persistence": true,
+    "cold_version_probe_ms": 41902.2,
+    "fresh_process_startup_ms": 13.7,
+    "lifecycle_findings": [
+      "The supported daemon stop command succeeded and status reported stopped on the corrected rerun.",
+      "Each provider shutdown still emitted unclosed aiohttp session or connector warnings.",
+      "The embedded PostgreSQL process and isolated database directory outlived profile deletion and required bounded manual termination and removal."
+    ]
+  },
+  "production_tool_path": {
+    "entry_point": "HindsightMemoryProvider.handle_tool_call(hindsight_recall)",
+    "configured_defaults_verified": true,
+    "private_arecall_acceptance_path_used": false,
+    "tool_output_includes_provenance": false,
+    "strict_contradiction_rule": "Corrected Thursday 14:00 value must be present and obsolete Tuesday 09:00 schedule must be absent."
+  },
+  "checks": {
+    "exact_recall": true,
+    "semantic_recall": true,
+    "contradictory_update": true,
+    "irrelevant_query_silence": false,
+    "provenance": false,
+    "restart_persistence": true,
+    "removal_rollback": true
+  },
+  "latency_ms": {
+    "retains": [2603.7, 2162.1, 2952.9, 3245.8],
+    "first_exact_after_restart": 1706.3,
+    "warm_semantic": 510.5,
+    "warm_contradiction": 503.0,
+    "warm_irrelevant": 495.6,
+    "bank_delete": 39947.2,
+    "post_delete_recall": 123.7
+  },
+  "retrieval_counts": {
+    "exact": 3,
+    "semantic": 3,
+    "contradiction": 3,
+    "irrelevant": 3,
+    "post_delete": 0
+  },
+  "contradiction_readback": {
+    "corrected_value_present": true,
+    "obsolete_tuesday_0900_schedule_present": false
+  },
+  "baseline_comparison": {
+    "session_search_recorded_exact_hits": "3/3 on authorized transcript facts",
+    "honcho_recorded_exact_hits": "0/3 on the same transcript facts",
+    "hindsight_trial_exact_hit": "passed on bounded synthetic data",
+    "comparability_limit": "The Hindsight trial did not ingest transcript bodies, so its synthetic exact-recall pass does not establish superiority over session_search or a matched win over Honcho."
+  },
+  "verdict": "No comparative winner was established. Through the real Hermes tool path with production observation-only recall, Hindsight returned three results for the irrelevant query and exposed no provenance in tool output. Windows shutdown also leaked client resources and left embedded PostgreSQL state requiring bounded manual cleanup. The current stack remains unchanged; no Codex or OMP adapter was promoted.",
+  "rollback": {
+    "isolated_bank_deleted": true,
+    "post_delete_recall_empty": true,
+    "daemon_stop_succeeded": true,
+    "daemon_profile_deleted": true,
+    "embedded_database_removed": true,
+    "candidate_config_removed": true,
+    "candidate_packages_removed": true,
+    "active_provider": "honcho",
+    "active_provider_status": "available",
+    "cross_agent_configs_changed": false
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "units": [
+    {
+      "id": "core.communication",
+      "path": "surfaces/core.md",
+      "selector": {"kind": "heading", "value": "# Communication"},
+      "class": "generic-steering",
+      "suite": "evals/core-instruction-retirement.json",
+      "hosts": ["codex", "hermes", "omp"],
+      "retest_on": ["effective-stack-changed", "model-release", "source-change"],
+      "priority": 80
+    },
+    {
+      "id": "core.judgment",
+      "path": "surfaces/core.md",
+      "selector": {"kind": "heading", "value": "# Judgment"},
+      "class": "generic-steering",
+      "suite": "evals/core-instruction-retirement.json",
+      "hosts": ["codex", "hermes", "omp"],
+      "retest_on": ["effective-stack-changed", "model-release", "source-change"],
+      "priority": 70
+    },
+    {
+      "id": "core.scope",
+      "path": "surfaces/core.md",
+      "selector": {"kind": "heading", "value": "# Scope"},
+      "class": "generic-steering",
+      "suite": "evals/core-instruction-retirement.json",
+      "hosts": ["codex", "hermes", "omp"],
+      "retest_on": ["effective-stack-changed", "model-release", "source-change"],
+      "priority": 90
+    },
+    {
+      "id": "core.capability-admission",
+      "path": "surfaces/core.md",
+      "selector": {"kind": "heading", "value": "# Capability admission"},
+      "class": "safety-governance",
+      "suite": "evals/capability-admission.json",
+      "hosts": ["codex", "hermes", "omp"],
+      "retest_on": ["owner-change", "source-change"],
+      "priority": 20
+    },
+    {
+      "id": "core.outcome-first-workflow",
+      "path": "surfaces/core.md",
+      "selector": {"kind": "heading", "value": "# Outcome-first workflow design"},
+      "class": "task-procedure",
+      "suite": "evals/outcome-first-workflow-design-deterministic.json",
+      "hosts": ["codex", "hermes", "omp"],
+      "retest_on": ["owner-change", "source-change"],
+      "priority": 30
+    },
+    {
+      "id": "core.cross-agent-convergence",
+      "path": "surfaces/core.md",
+      "selector": {"kind": "heading", "value": "# Cross-agent convergence"},
+      "class": "task-procedure",
+      "suite": "evals/surface-convergence.json",
+      "hosts": ["codex", "hermes", "omp"],
+      "retest_on": ["owner-change", "source-change", "host-change"],
+      "priority": 30
+    },
+    {
+      "id": "core.delegation-routing",
+      "path": "surfaces/core.md",
+      "selector": {"kind": "heading", "value": "# Delegation routing"},
+      "class": "environment-policy",
+      "suite": "evals/openai-delegation-route-research-deterministic.json",
+      "hosts": ["codex", "hermes", "omp"],
+      "retest_on": ["route-change", "source-change"],
+      "priority": 40
+    }
+  ]
+}

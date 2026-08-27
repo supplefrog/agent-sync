@@ -1,0 +1,4 @@
+name: routed-delegation
+version: "0.3.1"
+description: "Automatic exact-route Hermes delegation with persistent receipts."
+author: local

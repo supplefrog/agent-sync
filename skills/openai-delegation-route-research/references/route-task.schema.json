@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "route-task.schema.json",
+  "title": "Automatic GPT route selection request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["target_surface", "intelligence_tier", "latency_sensitive"],
+  "properties": {
+    "target_surface": {
+      "enum": ["hermes-delegate", "hermes-task-thread", "cc-dynamic-workflow", "codex-workflow", "omp-workflow", "kanban-worker", "hermes-auxiliary"]
+    },
+    "intelligence_tier": {
+      "enum": ["routine", "standard", "strong", "demanding", "maximum"]
+    },
+    "latency_sensitive": {"type": "boolean"},
+    "selected_route_id": {"type": "string", "minLength": 1},
+    "selection_reason": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "task_class": {"type": "string", "minLength": 1},
+    "failure_cost": {"enum": ["low", "medium", "high"], "default": "medium"},
+    "attempt_number": {"type": "integer", "minimum": 1},
+    "verifier_plan": {"type": "object"}
+  },
+  "dependentRequired": {
+    "selected_route_id": ["selection_reason"],
+    "selection_reason": ["selected_route_id"]
+  }
+}
