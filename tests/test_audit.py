@@ -36,7 +36,11 @@ class AuditTests(unittest.TestCase):
         (repo / "tools").mkdir(parents=True)
         (repo / "surfaces" / "core.md").write_text("core surface", encoding="utf-8")
         (repo / "tools" / "eval.py").write_text("print('eval')", encoding="utf-8")
-        for host, target in (("codex", "{CODEX_HOME}/AGENTS.md"), ("hermes", "{HERMES_HOME}/SOUL.md")):
+        for host, target in (
+            ("codex", "{CODEX_HOME}/AGENTS.md"),
+            ("hermes", "{HERMES_HOME}/SOUL.md"),
+            ("omp", "{CODEX_HOME}/AGENTS.md"),
+        ):
             (repo / "adapters" / f"{host}.json").write_text(
                 json.dumps(
                     {
@@ -73,6 +77,7 @@ class AuditTests(unittest.TestCase):
                     "hosts": {
                         "hermes": {"cli_version": "0.19.0"},
                         "codex": {"cli_version": "0.146.0-alpha.3.1"},
+                        "omp": {"cli_version": "17.2.13"},
                     },
                     "modalitys": [],
                     "modalities": [
@@ -87,6 +92,44 @@ class AuditTests(unittest.TestCase):
                     ],
                 }
             ),
+            encoding="utf-8",
+        )
+        (repo / "contracts" / "ownership.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "supported_hosts": ["codex", "hermes", "omp"],
+                    "capabilities": [
+                        {
+                            "id": "capability-curator",
+                            "owner": "skills/capability-curator",
+                            "status": "staged",
+                            "selection_state": "unresolved",
+                            "selection_evidence": [],
+                            "selection_reason": "staged",
+                        },
+                        {
+                            "id": "surface-convergence",
+                            "owner": "skills/surface-convergence",
+                            "status": "admitted" if admitted else "staged",
+                            "selection_state": "selected" if admitted else "unresolved",
+                            "selection_evidence": ["evals/results/surface-convergence-run.json"] if admitted else [],
+                            "selection_reason": "fixture decision",
+                        },
+                    ],
+                    "retired_artifacts": [
+                        {
+                            "path": "integrations/hermes/cc-dynamic-workflows",
+                            "replacement": "skills/surface-convergence",
+                            "reason": "duplicate owner",
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        (repo / "contracts" / "ownership.schema.json").write_text(
+            (REPO / "contracts" / "ownership.schema.json").read_text(encoding="utf-8"),
             encoding="utf-8",
         )
         (repo / "evidence" / "findings.json").write_text(
@@ -105,7 +148,9 @@ class AuditTests(unittest.TestCase):
         )
         (repo / "skills" / "capability-curator" / "SKILL.md").write_text("---\nname: capability-curator\n---\n", encoding="utf-8")
         (repo / "skills" / "surface-convergence" / "SKILL.md").write_text("---\nname: surface-convergence\n---\n", encoding="utf-8")
-        (repo / "evals" / "results" / "surface-convergence-run.json").write_text("{}", encoding="utf-8")
+        (repo / "evals" / "results" / "surface-convergence-run.json").write_text(
+            json.dumps({"suite": "surface-convergence"}), encoding="utf-8"
+        )
         return repo
 
     def test_valid_check(self):
@@ -115,6 +160,7 @@ class AuditTests(unittest.TestCase):
                 run.side_effect = [
                     subprocess.CompletedProcess(["hermes", "--version"], 0, stdout="hermes 0.19.0\n", stderr=""),
                     subprocess.CompletedProcess(["codex", "--version"], 0, stdout="codex 0.146.0-alpha.3.1\n", stderr=""),
+                    subprocess.CompletedProcess(["omp", "--version"], 0, stdout="omp/17.2.13\n", stderr=""),
                 ]
                 rc = self.audit.main(["check", "--repo", str(repo), "--live"])
             self.assertEqual(rc, 0)
@@ -142,6 +188,7 @@ class AuditTests(unittest.TestCase):
                 run.side_effect = [
                     subprocess.CompletedProcess(["hermes", "--version"], 0, stdout="hermes 0.19.0\n", stderr=""),
                     subprocess.CompletedProcess(["codex", "--version"], 0, stdout="codex 0.146.0-alpha.3.1\n", stderr=""),
+                    subprocess.CompletedProcess(["omp", "--version"], 0, stdout="omp/17.2.13\n", stderr=""),
                 ]
                 out = repo / "snap.json"
                 rc = self.audit.main(["snapshot", "--repo", str(repo), "--out", str(out)])
@@ -152,6 +199,114 @@ class AuditTests(unittest.TestCase):
             self.assertEqual(snap["hashes"]["surfaces/core.md"], self.audit.sha256_file(repo / "surfaces" / "core.md"))
             self.assertEqual(snap["hashes"]["contracts/surface-matrix.json"], self.audit.sha256_file(repo / "contracts" / "surface-matrix.json"))
             self.assertIn("capability-curator", snap["skill_hashes"])
+
+    def test_unregistered_portable_skill_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            extra = repo / "skills" / "shadow-owner"
+            extra.mkdir()
+            (extra / "SKILL.md").write_text("---\nname: shadow-owner\n---\n", encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("unregistered portable skill: shadow-owner", errors)
+
+    def test_skill_entrypoint_under_integration_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            integration = repo / "integrations" / "hermes" / "duplicate"
+            integration.mkdir(parents=True)
+            (integration / "SKILL.md").write_text("---\nname: duplicate\n---\n", encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertTrue(any(error.startswith("skill entrypoint outside canonical skills tree:") for error in errors))
+
+    def test_unsupported_adapter_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            (repo / "adapters" / "obsolete.json").write_text("{}", encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("adapter set differs from supported hosts: obsolete", errors)
+
+    def test_retired_artifact_cannot_reappear(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            retired = repo / "integrations" / "hermes" / "cc-dynamic-workflows"
+            retired.mkdir(parents=True)
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("retired artifact reappeared: integrations/hermes/cc-dynamic-workflows", errors)
+
+    def test_admitted_owner_requires_selected_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp), admitted=True)
+            ownership_path = repo / "contracts" / "ownership.json"
+            ownership = json.loads(ownership_path.read_text(encoding="utf-8"))
+            ownership["capabilities"][1]["selection_state"] = "unresolved"
+            ownership["capabilities"][1]["selection_evidence"] = []
+            ownership_path.write_text(json.dumps(ownership), encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("admitted capability lacks selected evidence: surface-convergence", errors)
+
+    def test_duplicate_capability_owner_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            ownership_path = repo / "contracts" / "ownership.json"
+            ownership = json.loads(ownership_path.read_text(encoding="utf-8"))
+            ownership["capabilities"].append(dict(ownership["capabilities"][0]))
+            ownership_path.write_text(json.dumps(ownership), encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("duplicate ownership capabilities: capability-curator", errors)
+
+    def test_ownership_schema_is_enforced(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            ownership_path = repo / "contracts" / "ownership.json"
+            ownership = json.loads(ownership_path.read_text(encoding="utf-8"))
+            ownership["capabilities"][0]["unexpected"] = True
+            ownership_path.write_text(json.dumps(ownership), encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertTrue(any(error.startswith("ownership schema:") for error in errors))
+
+    def test_selection_evidence_cannot_escape_results(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp), admitted=True)
+            ownership_path = repo / "contracts" / "ownership.json"
+            ownership = json.loads(ownership_path.read_text(encoding="utf-8"))
+            ownership["capabilities"][1]["selection_evidence"] = [
+                "evals/results/../../evidence/findings.json"
+            ]
+            ownership_path.write_text(json.dumps(ownership), encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("invalid selection evidence for capability: surface-convergence", errors)
+
+    def test_selection_evidence_must_bind_to_capability(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp), admitted=True)
+            unrelated = repo / "evals" / "results" / "unrelated.json"
+            unrelated.write_text(json.dumps({"suite": "different-capability"}), encoding="utf-8")
+            ownership_path = repo / "contracts" / "ownership.json"
+            ownership = json.loads(ownership_path.read_text(encoding="utf-8"))
+            ownership["capabilities"][1]["selection_evidence"] = [
+                "evals/results/unrelated.json"
+            ]
+            ownership_path.write_text(json.dumps(ownership), encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("selection evidence is not bound to capability: surface-convergence", errors)
 
 
 if __name__ == "__main__":

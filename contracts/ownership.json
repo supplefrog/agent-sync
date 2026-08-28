@@ -1,0 +1,130 @@
+{
+  "$schema": "./ownership.schema.json",
+  "schema_version": 1,
+  "supported_hosts": [
+    "codex",
+    "hermes",
+    "omp"
+  ],
+  "capabilities": [
+    {
+      "id": "capability-curator",
+      "owner": "skills/capability-curator",
+      "status": "staged",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+    },
+    {
+      "id": "primary-source-research",
+      "owner": "skills/primary-source-research",
+      "status": "staged",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+    },
+    {
+      "id": "learn-from-youtube",
+      "owner": "skills/learn-from-youtube",
+      "status": "staged",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+    },
+    {
+      "id": "surface-convergence",
+      "owner": "skills/surface-convergence",
+      "status": "staged",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+    },
+    {
+      "id": "outcome-first-workflow-design",
+      "owner": "skills/outcome-first-workflow-design",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/organic-architecture-governance-2026-08-25.json"
+      ],
+      "selection_reason": "Admitted after held-out workflow-design evaluation and live cross-host usage."
+    },
+    {
+      "id": "openai-delegation-route-research",
+      "owner": "skills/openai-delegation-route-research",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/openai-delegation-route-research-deterministic.json"
+      ],
+      "selection_reason": "Admitted as the current portable research/selection owner after deterministic selector, schema, and live-adapter boundary verification; retired compatibility surfaces are excluded."
+    },
+    {
+      "id": "dynamic-workflows",
+      "owner": "skills/dynamic-workflows",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/routed-dag-cross-host-smoke-2026-08-26.json",
+        "evals/results/dynamic-workflows-deterministic.json"
+      ],
+      "selection_reason": "Selected over the Hermes cc compatibility runner because the portable state machine passed deterministic and cross-host Codex/OMP lifecycle checks while the duplicate runner was red and host-specific."
+    },
+    {
+      "id": "fleet-sync",
+      "owner": "skills/fleet-sync",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/fleet-sync-deterministic.json",
+        "evals/results/fleet-distribution-2026-08-28.json"
+      ],
+      "selection_reason": "Admitted after deterministic render, transactional apply, drift, rollback, and live verification evidence."
+    },
+    {
+      "id": "github-follow-up",
+      "owner": "skills/github-follow-up",
+      "status": "staged",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+    }
+  ],
+  "retired_artifacts": [
+    {
+      "path": "integrations/hermes/cc-dynamic-workflows",
+      "replacement": "skills/dynamic-workflows",
+      "reason": "The portable routed DAG is the definitive state owner; the red Hermes compatibility runner duplicated it."
+    },
+    {
+      "path": "integrations/hermes/kanban-caretaker",
+      "replacement": "host-native planning and lifecycle primitives",
+      "reason": "A caretaker-generated card graph is not the conversational task authority."
+    },
+    {
+      "path": "tools/reconciliation_monitor.py",
+      "replacement": "source-native status plus explicit reconciliation when requested",
+      "reason": "The monitor encoded the retired assumption that Hermes Kanban was the sole cross-agent task authority."
+    },
+    {
+      "path": "docs/reconciliation-authority.md",
+      "replacement": "contracts/surface-matrix.json#planning-automation",
+      "reason": "No single host task board is authoritative for every conversation and runtime."
+    },
+    {
+      "path": "adapters/antigravity.json",
+      "replacement": "none",
+      "reason": "Antigravity is outside the supported Hermes, Codex, and OMP roster."
+    },
+    {
+      "path": "integrations/antigravity",
+      "replacement": "none",
+      "reason": "Antigravity is outside the supported Hermes, Codex, and OMP roster."
+    },
+    {
+      "path": "tools/run_kanban_route_smoke.py",
+      "replacement": "skills/dynamic-workflows plus host-native routed delegation",
+      "reason": "The smoke exercised the retired kanban-worker target surface and could falsely suggest current support."
+    }
+  ]
+}

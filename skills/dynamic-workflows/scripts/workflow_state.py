@@ -34,11 +34,10 @@ ROLES = {"discover", "researcher", "explorer", "worker", "reviewer", "verifier",
 RISKS = {"read", "write", "external"}
 INTELLIGENCE_TIERS = {"routine", "standard", "strong", "demanding", "maximum"}
 FAILURE_COSTS = {"low", "medium", "high"}
-WORKFLOW_SURFACES = {"codex-workflow", "omp-workflow", "cc-dynamic-workflow"}
+WORKFLOW_SURFACES = {"codex-workflow", "omp-workflow"}
 SURFACE_HOSTS = {
     "codex-workflow": "codex",
     "omp-workflow": "omp",
-    "cc-dynamic-workflow": "hermes",
 }
 DEFAULT_DIFFICULTIES = {
     "low": {"provider": "openai-codex", "model": "gpt-5.6-luna", "reasoning_effort": "high"},

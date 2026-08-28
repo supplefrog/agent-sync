@@ -1,7 +1,7 @@
 ---
 name: dynamic-workflows
-description: Run persisted routed DAGs across Codex, OMP, or Hermes adapters. Use for broad parallel work, durable multi-agent workflows, or explicit DAG requests; not ordinary one-agent tasks or a small one-shot batch.
-version: 2.1.0
+description: Run persisted routed DAGs across Codex and OMP. Use for broad parallel work, durable multi-agent workflows, or explicit DAG requests; not ordinary one-agent tasks or a small one-shot batch.
+version: 2.2.0
 author: Local User
 license: UNLICENSED
 ---
@@ -67,7 +67,7 @@ The deterministic selector chooses the least-cost qualifying route, or the faste
 
 ```text
 python scripts/workflow_state.py validate <plan.json>
-python scripts/workflow_state.py init <plan.json> --root <run-root> --target-surface <codex-workflow|omp-workflow|cc-dynamic-workflow> --var NAME=value
+python scripts/workflow_state.py init <plan.json> --root <run-root> --target-surface <codex-workflow|omp-workflow> --var NAME=value
 python scripts/workflow_state.py ready <run-dir>
 python scripts/workflow_state.py model <run-dir> <task-id>
 python scripts/workflow_state.py render <run-dir> <task-id>
@@ -115,9 +115,9 @@ For each ready node:
 
 OMP's task wire does not accept an exact provider/model directly; the named agent is the host adapter. Do not use generic `task`, `effort`, or mutable global role mappings for routed DAG nodes.
 
-### Hermes
+### Hermes boundary
 
-Hermes may consume this plan/state contract, but its current compatibility process runner is not the definitive state owner. Use the separately verified `routed_delegate_task` for ordinary routed delegation. Promote a Hermes DAG executor only after its lifecycle/process suite is green against the current Hermes runtime.
+Hermes has no admitted DAG adapter. Use the separately verified `routed_delegate_task` for ordinary routed delegation. Add a Hermes DAG executor only if it consumes this exact state contract through a thin native adapter and its lifecycle/process suite is green against the current runtime; never fork a second workflow owner.
 
 ## Scheduling and verification
 

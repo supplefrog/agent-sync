@@ -50,13 +50,15 @@ Primary sources:
 
 ## Pilot
 
+> **Historical fixture boundary:** This pilot freezes an August 2026 Kanban-sourced acceptance contract so the gate's tamper and scope controls remain reproducible. It is test evidence, not the current Agent Signal architecture or task authority. The `cc-dynamic-workflow` compatibility surface and Kanban-as-global-authority direction are retired in `contracts/ownership.json`; do not use this fixture to reintroduce them.
+
 The source acceptance contract is `kanban:t_1e0d8e90`; `kanban:t_67bb4407` is only the preserved routing pilot subject. The verifier-rooted receipt preserves the original freeze and binds the complete amendment chain. `DEC-001` adds the board regression, `DEC-002` rejects scope inflation, `DEC-003` adds evolving intent/summary/research-first/no-reminder requirements, and `DEC-004` adds legacy reclassification, ultimate-agent/Prime evidence boundaries, and the fleet omission. The gate detects:
 
 1. a stale route receipt after supported mutation;
 2. absent real per-surface evidence;
 3. declarative-only cross-surface enforcement;
 4. unreconciled delivery/worktree state; and
-5. the native cc lifecycle boundary (23 pass, 6 fail, 1 error);
+5. the now-retired native cc lifecycle boundary (23 pass, 6 fail, 1 error);
 6. failure to proactively surface review-blocked/no-promotion state; and
 7. failure to reconcile or escalate ready work assigned to a nonexistent principal;
 8. loss of evolving multi-turn intent lineage;
@@ -73,7 +75,7 @@ It separately records the later route receipt-invalidation fix as a non-regressi
 
 Public-safe fixtures are under `evals/fixtures/grounded-verification/`. The amended frozen black-box test-author prompt ran in a separate temporary workspace with only the `todo` tool; it had no implementation, file, terminal, web, rules, or repository access. `independent-test-author-receipt.json` binds the JSON output to the contract ID, test-author principal/context, exact `frozen_at`, trusted original criteria hash, final decision-chain hash, complete criterion IDs, artifact path/digest, input scope, output type, and denied implementation access. The contract separately digest-binds both receipt and output; stale or mismatched substitutions fail validation. The implementer-authored validator cannot certify itself: the verdict requires a separate verifier context to rerun the deterministic suite and falsification probes.
 
-`S-VERIFICATION` covers implementation/specification verification. `S-ADOPTION` covers the broader candidate comparison and requires baseline, candidate-trial, cost, maintenance, portability, host-neutrality, and rollback lanes. `S-INTENT-LINEAGE` requires multi-turn lineage, summary non-authority, research-first resume, proactive status, and second-reminder evidence. `S-ULTIMATE-AGENT` requires evidence-based legacy classification, convergence revalidation, Prime persistence/lifecycle/safety, fleet omission, Kanban authority, rollback, and an explicit no-downstream-pass-claim lane. The latter verifies gate coverage only; downstream Hermes/Codex/OMP/Prime outcomes remain not evaluated. A terminal child or candidate-trial receipt remains valid only for its narrow lane; omitting any broader lane or `G-PILOT` rejects the claimed scope.
+`S-VERIFICATION` covers implementation/specification verification. `S-ADOPTION` covers the broader candidate comparison and requires baseline, candidate-trial, cost, maintenance, portability, host-neutrality, and rollback lanes. `S-INTENT-LINEAGE` requires multi-turn lineage, summary non-authority, research-first resume, proactive status, and second-reminder evidence. In this frozen historical fixture, `S-ULTIMATE-AGENT` also tests the former Kanban-authority criterion. That lane verifies the old gate's coverage only; it grants no current authority and does not evaluate downstream Hermes/Codex/OMP/Prime outcomes. A terminal child or candidate-trial receipt remains valid only for its narrow lane; omitting any broader lane or `G-PILOT` rejects the claimed scope.
 
 ## Run
 

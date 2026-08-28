@@ -1,15 +1,13 @@
 {
   "suite": "openai-delegation-route-research",
-  "host": "deterministic-and-live-transport",
+  "host": "portable-selector-and-current-adapters",
   "result": {"passed": true},
   "checks": [
-    "release signal is stable for unchanged RSS and catalog inputs",
-    "customer-story noise is excluded by fixture",
-    "callable model-effort catalog is normalized deterministically",
-    "unsafe DTD/entity RSS input is rejected",
-    "selection contract uses task pass probability, p95 wall time, and total expected cost",
-    "three-call live OpenAI Codex transport profile completed for four candidate routes",
-    "route promotion remains gated on a representative local quality suite"
+    "33 route selector/adapter tests and 10 subtests passed",
+    "route task and decision schemas expose only current Hermes delegation/task-thread plus Codex/OMP workflow and Hermes auxiliary surfaces",
+    "Hermes adapter exposes only routed delegation and task-thread execution",
+    "retired cc-dynamic-workflow and kanban-worker surfaces are rejected",
+    "public-safety and repository audit checks pass"
   ],
-  "limitations": "Current transport sample is too small for stable p95 estimates and does not establish task quality; live routes remain unchanged."
+  "limitations": "Route admission remains fail-closed and catalogue refresh remains manual. This result does not promote a new model route or a Hermes DAG executor."
 }

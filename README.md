@@ -30,7 +30,11 @@ The repository also contains a staged, read-only context-integrity ledger valida
 
 The current local shared-memory decision keeps Hermes on tools-only Honcho, leaves Codex and OMP unmodified, and keeps `session_search` as the transcript-evidence path because no canonical provider passed admission. See `docs/shared-memory-decision.md`.
 
-The event-driven Kanban caretaker lives in `integrations/hermes/kanban-caretaker/`. It uses native task lifecycle hooks for immediate blocked-task reconciliation and a script-only cron recovery scan, so a healthy board consumes no monitoring-model tokens. See `docs/kanban-caretaker.md`.
+## Canonical ownership
+
+`contracts/ownership.json` names one portable owner for every registered capability and the exact supported host roster: Hermes, Codex, and OMP. Host integrations may adapt a canonical capability, but may not publish a competing `SKILL.md` or own portable workflow state. The repository audit fails on unregistered skills, duplicate integration entrypoints, unsupported adapters, ownership/registry drift, or the reappearance of a retired artifact.
+
+`skills/dynamic-workflows/` is the definitive routed-DAG owner. Codex and OMP use thin native adapters; Hermes may execute ordinary routed children but does not maintain a second compatibility DAG.
 
 ## Fleet render and sync
 

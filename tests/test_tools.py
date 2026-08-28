@@ -170,7 +170,7 @@ hello world this works
                 installer.expose_skill(source, target, False)
 
     def test_adapters_are_declarative_and_repo_sources_exist(self):
-        for host in ("codex", "hermes", "omp", "antigravity"):
+        for host in ("codex", "hermes", "omp"):
             adapter = json.loads((REPO / "adapters" / f"{host}.json").read_text(encoding="utf-8"))
             self.assertEqual(adapter["host"], host)
             self.assertEqual(adapter["skills"]["selection"], "registry:admitted")

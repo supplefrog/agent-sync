@@ -1,6 +1,0 @@
-name: kanban-caretaker
-version: 1.0.0
-description: Event-driven, zero-idle-token caretaker trigger for Hermes Kanban
-provides_hooks:
-  - kanban_task_blocked
-  - pre_llm_call

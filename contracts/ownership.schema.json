@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-signal/ownership.schema.json",
+  "type": "object",
+  "required": ["schema_version", "supported_hosts", "capabilities", "retired_artifacts"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "supported_hosts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"enum": ["codex", "hermes", "omp"]}
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "owner", "status", "selection_state", "selection_evidence", "selection_reason"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+          "owner": {"type": "string", "pattern": "^skills/[a-z0-9]+(?:-[a-z0-9]+)*$"},
+          "status": {"enum": ["staged", "admitted", "blocked", "retired", "rejected"]},
+          "selection_state": {"enum": ["unresolved", "selected"]},
+          "selection_evidence": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^evals/results/.+\\.json$"}
+          },
+          "selection_reason": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "retired_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "replacement", "reason"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "replacement": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

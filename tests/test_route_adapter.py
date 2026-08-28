@@ -163,7 +163,7 @@ def test_receipt_runtime_transport_must_match_surface():
 def test_receipt_target_must_match_surface():
     adapter = load_adapter()
     with pytest.raises(adapter.RouteAdapterError, match="target_surface"):
-        adapter.native_mapping(receipt("hermes-delegate"), "kanban-worker")
+        adapter.native_mapping(receipt("hermes-delegate"), "hermes-task-thread")
 
 
 def test_all_required_surfaces_have_truthful_smallest_paths(tmp_path):
@@ -171,8 +171,6 @@ def test_all_required_surfaces_have_truthful_smallest_paths(tmp_path):
     expected = {
         "hermes-delegate": "staged-source-integration",
         "hermes-task-thread": "native-cli-external-pin",
-        "cc-dynamic-workflow": "staged-repository-integration",
-        "kanban-worker": "staged-source-integration",
     }
     assert set(adapter.SURFACE_CONTRACTS) == set(expected)
     for surface, enforcement in expected.items():

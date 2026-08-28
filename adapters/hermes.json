@@ -30,7 +30,7 @@
     "selector": "skills/openai-delegation-route-research/scripts/route_selector.py",
     "receipt_schema": "skills/openai-delegation-route-research/references/route-decision.schema.json",
     "executable_adapter": "tools/route_adapter.py",
-    "status": "automatic-selection-active-surface-limited",
+    "status": "automatic-selection-active-for-routed-delegation-and-task-thread",
     "surfaces": [
       {
         "target_surface": "hermes-delegate",
@@ -59,34 +59,6 @@
         "enforcement": "native-cli-external-pin",
         "current_support": "Hermes 0.20.5 supports --model, --provider, --reasoning, --source, and --query-file per process.",
         "smallest_path": "Pin the receipt in adapter run state, then launch a new Hermes process with the exact native flags. Keep the receipt external until session metadata accepts it natively."
-      },
-      {
-        "target_surface": "cc-dynamic-workflow",
-        "required_fields": [
-          "provider",
-          "model",
-          "reasoning_effort",
-          "decision_receipt"
-        ],
-        "pinning": "Pin the complete receipt before launch; identical resumes reuse it and conflicting rewrites fail.",
-        "native_owner": "cc-dynamic-workflows state.json task attempt",
-        "enforcement": "staged-repository-integration",
-        "current_support": "The checked-in compatibility runner validates schema-version-2 receipts with object evidence receipts plus constraint/runtime/decision hash bindings, persists exact task routes, and reuses them on resume. Contract/pin/resume tests pass, but the current full runner batch is red because its Hermes ephemeral-session lifecycle path is stale.",
-        "smallest_path": "Retain the runner as the staged integration seam, repair its current native child lifecycle, then feed each node a selector receipt; do not use legacy tiers for new routed nodes."
-      },
-      {
-        "target_surface": "kanban-worker",
-        "required_fields": [
-          "provider",
-          "model",
-          "reasoning_effort",
-          "decision_receipt"
-        ],
-        "pinning": "Pin the complete receipt before launch; identical resumes reuse it and conflicting rewrites fail.",
-        "native_owner": "Hermes Kanban task/task_runs and dispatcher spawn",
-        "enforcement": "staged-source-integration",
-        "current_support": "Hermes 0.20.5 exposes model/provider overrides, but the live create surface lacks exact reasoning and decision-receipt inputs.",
-        "smallest_path": "Extend existing task/run fields with reasoning and the full receipt, copy them atomically at claim, and pass exact worker flags. Do not create a second queue."
       }
     ]
   }

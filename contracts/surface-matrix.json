@@ -18,6 +18,14 @@
         "https://developers.openai.com/codex/",
         "https://github.com/openai/codex/tree/20dafe201d91d4405eef05ecd1db0257f13a9ac8"
       ]
+    },
+    "omp": {
+      "cli_version": "17.2.13",
+      "source_revision": "v17.2.13",
+      "sources": [
+        "https://github.com/can1357/oh-my-pi",
+        "https://github.com/can1357/oh-my-pi/releases/tag/v17.2.13"
+      ]
     }
   },
   "staleness": {
@@ -35,7 +43,9 @@
       "id": "instructions-style",
       "contract": "One portable intent surface governs judgment and communication; host adapters preserve native scoping and personality controls without duplicating policy.",
       "status": "staged",
-      "portable_artifacts": ["surfaces/core.md"],
+      "portable_artifacts": [
+        "surfaces/core.md"
+      ],
       "hosts": {
         "hermes": {
           "owner": "SOUL.md and session prompt builder",
@@ -48,6 +58,12 @@
           "mechanism": "link the shared global surface into AGENTS.md; preserve repository and tree-scoped overrides",
           "support": "adapter",
           "parity": "candidate"
+        },
+        "omp": {
+          "owner": "AGENTS.md/RULES.md discovery and extension prompt hooks",
+          "mechanism": "load the shared intent surface while preserving project rules and extension-owned behavior",
+          "support": "adapter",
+          "parity": "unassessed"
         }
       },
       "intentional_deltas": [
@@ -69,7 +85,10 @@
       "id": "skills-procedures",
       "contract": "Portable procedures use the Agent Skills directory format from one canonical tree; each host retains native discovery, triggering, and lifecycle UX.",
       "status": "partial",
-      "portable_artifacts": ["skills/", "registry.json"],
+      "portable_artifacts": [
+        "skills/",
+        "registry.json"
+      ],
       "hosts": {
         "hermes": {
           "owner": "skills loader and skills.external_dirs",
@@ -125,12 +144,21 @@
           "mechanism": "map shared tools to MCP; retain Codex-native execution and app-server tools",
           "support": "native",
           "parity": "unassessed"
+        },
+        "omp": {
+          "owner": "built-in tools, extensions, and MCP configuration",
+          "mechanism": "map shared tools to MCP or extensions while retaining OMP-native execution and IDE tooling",
+          "support": "native",
+          "parity": "unassessed"
         }
       },
       "intentional_deltas": [
         "Core tool schemas and approval UX are host-owned and need not be identical."
       ],
-      "evidence": {"suites": [], "summaries": []}
+      "evidence": {
+        "suites": [],
+        "summaries": []
+      }
     },
     {
       "id": "routing-delegation",
@@ -173,25 +201,19 @@
         "Workflow retries reuse one receipt; failed tasks do not climb the reasoning-effort ladder automatically."
       ],
       "evidence": {
-        "suites": ["evals/suites/adaptive-routing-smoke.json"],
+        "suites": [
+          "evals/suites/adaptive-routing-smoke.json"
+        ],
         "summaries": [
-          "evals/results/adaptive-routing-smoke-2026-08-15.json",
-          "evals/results/adaptive-routing-surface-smoke-2026-08-16.json",
-          "evals/results/adaptive-routing-cc-workflow-smoke-2026-08-16.json",
-          "evals/results/adaptive-routing-hermes-delegate-smoke-2026-08-16.json",
-          "evals/results/adaptive-routing-kanban-smoke-2026-08-16.json",
-          "evals/results/adaptive-routing-decision-2026-08-16.json",
-          "evals/results/adaptive-routing-decision-v3-2026-08-23.json",
-          "evals/results/adaptive-routing-run-pin-v3-2026-08-23.json",
-          "evals/results/adaptive-routing-verification-v3-2026-08-23.json",
-          "evals/results/adaptive-routing-independent-review-v3-2026-08-23.json",
-          "evals/results/routed-dag-cross-host-smoke-2026-08-26.json"
+          "evals/results/openai-delegation-route-research-deterministic.json",
+          "evals/results/routed-dag-cross-host-smoke-2026-08-26.json",
+          "evals/results/dynamic-workflows-deterministic.json"
         ]
       }
     },
     {
       "id": "memory-context",
-      "contract": "Agents query prior context on demand from its authoritative source, return a small provenance-scoped result, and share only admitted durable facts, preferences, and decisions without copying transcript bodies or duplicating repository, skill, or Kanban authority.",
+      "contract": "Agents query prior context on demand from its authoritative source, return a small provenance-scoped result, and share only admitted durable facts, preferences, and decisions without copying transcript bodies or duplicating repository, skill, or task-system authority.",
       "status": "partial",
       "portable_artifacts": [
         "evidence/findings.json",
@@ -224,7 +246,9 @@
         "Codex and OMP remain unintegrated because Hindsight 0.9.1 failed candidate-only irrelevant-query silence, tool-visible provenance, and Windows lifecycle checks through the real Hermes recall path; no matched provider comparison ran."
       ],
       "evidence": {
-        "suites": ["evals/suites/shared-memory-hindsight-smoke.json"],
+        "suites": [
+          "evals/suites/shared-memory-hindsight-smoke.json"
+        ],
         "summaries": [
           "evals/results/shared-memory-local-20260815.json",
           "evals/results/shared-memory-hindsight-trial-20260816.json"
@@ -248,12 +272,21 @@
           "mechanism": "thin Codex policy adapter only where instructions cannot enforce the contract",
           "support": "native",
           "parity": "unassessed"
+        },
+        "omp": {
+          "owner": "approval modes, hooks, tool controls, and configuration",
+          "mechanism": "use OMP-native approval and extension boundaries; add adapters only for portable checks",
+          "support": "native",
+          "parity": "unassessed"
         }
       },
       "intentional_deltas": [
         "Hook schemas, trust models, and sandbox guarantees remain host-specific."
       ],
-      "evidence": {"suites": [], "summaries": []}
+      "evidence": {
+        "suites": [],
+        "summaries": []
+      }
     },
     {
       "id": "planning-automation",
@@ -272,13 +305,22 @@
           "mechanism": "map portable plan intent to Codex plan/exec or an external scheduler",
           "support": "partial",
           "parity": "unassessed"
+        },
+        "omp": {
+          "owner": "todo, task agents, sessions, extensions, and external automation",
+          "mechanism": "map portable plan intent to OMP todo/task agents or an external scheduler",
+          "support": "partial",
+          "parity": "unassessed"
         }
       },
       "intentional_deltas": [
         "Hermes cron and gateway delivery need not be emulated inside Codex.",
         "Codex-native plan streaming need not be emulated inside Hermes."
       ],
-      "evidence": {"suites": [], "summaries": []}
+      "evidence": {
+        "suites": [],
+        "summaries": []
+      }
     },
     {
       "id": "lifecycle-update",
@@ -291,7 +333,8 @@
         "tools/eval.py",
         "tools/audit.py",
         "adapters/codex.json",
-        "adapters/hermes.json"
+        "adapters/hermes.json",
+        "adapters/omp.json"
       ],
       "hosts": {
         "hermes": {
@@ -305,12 +348,21 @@
           "mechanism": "use repository evidence for admission and Codex-native refresh/update behavior",
           "support": "native",
           "parity": "unassessed"
+        },
+        "omp": {
+          "owner": "plugin lifecycle, update command, rules, and skill discovery",
+          "mechanism": "use repository evidence for admission and OMP-native plugin/update behavior",
+          "support": "native",
+          "parity": "unassessed"
         }
       },
       "intentional_deltas": [
         "Host installers, release channels, and lifecycle UIs remain native."
       ],
-      "evidence": {"suites": [], "summaries": []}
+      "evidence": {
+        "suites": [],
+        "summaries": []
+      }
     }
   ]
 }

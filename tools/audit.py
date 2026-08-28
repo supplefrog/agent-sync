@@ -11,8 +11,10 @@ import os
 import shutil
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
+
+import jsonschema
 
 REQUIRED_MODALITY_IDS = {
     "instructions-style",
@@ -27,6 +29,7 @@ REQUIRED_MODALITY_IDS = {
 
 ALLOWED_REGISTRY_STATUSES = {"staged", "admitted", "blocked", "retired", "rejected"}
 ALLOWED_MODALITY_STATUSES = {"unassessed", "staged", "confirmed", "partial", "stale"}
+CURRENT_HOSTS = {"codex", "hermes", "omp"}
 
 
 def load_json(path: Path) -> Any:
@@ -70,6 +73,19 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
     except Exception as exc:
         errors.append(str(exc))
         return errors
+    try:
+        ownership = load_json(repo / "contracts" / "ownership.json")
+    except Exception as exc:
+        errors.append(str(exc))
+        return errors
+    try:
+        ownership_schema = load_json(repo / "contracts" / "ownership.schema.json")
+        validator = jsonschema.Draft202012Validator(ownership_schema)
+        for error in sorted(validator.iter_errors(ownership), key=lambda item: list(item.path)):
+            location = ".".join(str(part) for part in error.absolute_path) or "<root>"
+            errors.append(f"ownership schema: {location}: {error.message}")
+    except Exception as exc:
+        errors.append(f"ownership schema: {exc}")
 
     if registry.get("schema_version") != 1:
         errors.append("wrong schema_version in registry.json")
@@ -77,9 +93,24 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
         errors.append("wrong schema_version in contracts/surface-matrix.json")
     if findings.get("schema_version") != 1:
         errors.append("wrong schema_version in evidence/findings.json")
+    if ownership.get("schema_version") != 1:
+        errors.append("wrong schema_version in contracts/ownership.json")
 
     hosts = surface.get("hosts") or {}
-    for host in ("hermes", "codex"):
+    supported_hosts = set(ownership.get("supported_hosts") or [])
+    if supported_hosts != CURRENT_HOSTS:
+        errors.append("supported host set must be exactly: codex, hermes, omp")
+    if set(hosts) != supported_hosts:
+        errors.append("surface host set differs from supported hosts")
+    adapter_hosts = {
+        path.stem
+        for path in (repo / "adapters").glob("*.json")
+        if path.name != "schema.json"
+    }
+    adapter_delta = sorted(adapter_hosts ^ supported_hosts)
+    if adapter_delta:
+        errors.append("adapter set differs from supported hosts: " + ", ".join(adapter_delta))
+    for host in sorted(supported_hosts):
         if host not in hosts:
             errors.append(f"missing {host} host record")
         adapter_path = repo / "adapters" / f"{host}.json"
@@ -168,7 +199,18 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
                     if not ref.startswith("evals/results/") or not p.exists():
                         errors.append(f"missing local evaluation reference in ledger: {ref}")
 
+    registry_names: list[str] = []
     if isinstance(registry.get("skills"), list):
+        registry_names = [str(skill.get("name")) for skill in registry["skills"]]
+        duplicate_skills = sorted({name for name in registry_names if registry_names.count(name) > 1})
+        if duplicate_skills:
+            errors.append("duplicate registry skills: " + ", ".join(duplicate_skills))
+        actual_skills = {
+            path.parent.name
+            for path in (repo / "skills").glob("*/SKILL.md")
+        }
+        for name in sorted(actual_skills - set(registry_names)):
+            errors.append(f"unregistered portable skill: {name}")
         for skill in registry["skills"]:
             name = skill.get("name")
             if skill.get("status") not in ALLOWED_REGISTRY_STATUSES:
@@ -201,6 +243,110 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
     else:
         errors.append("missing registry skills")
 
+    integration_root = repo / "integrations"
+    if integration_root.is_dir():
+        for skill_path in sorted(integration_root.rglob("SKILL.md")):
+            errors.append(
+                "skill entrypoint outside canonical skills tree: "
+                + skill_path.relative_to(repo).as_posix()
+            )
+
+    capability_records = ownership.get("capabilities")
+    if not isinstance(capability_records, list):
+        errors.append("missing ownership capabilities")
+        capability_records = []
+    capability_ids = [str(item.get("id")) for item in capability_records]
+    duplicate_capabilities = sorted(
+        {name for name in capability_ids if capability_ids.count(name) > 1}
+    )
+    if duplicate_capabilities:
+        errors.append("duplicate ownership capabilities: " + ", ".join(duplicate_capabilities))
+    if set(capability_ids) != set(registry_names):
+        errors.append("ownership capabilities differ from registry skills")
+    for item in capability_records:
+        capability_id = str(item.get("id"))
+        expected_owner = f"skills/{capability_id}"
+        if item.get("owner") != expected_owner or not (repo / expected_owner / "SKILL.md").is_file():
+            errors.append(f"invalid canonical owner for capability: {capability_id}")
+        registry_status = next(
+            (
+                skill.get("status")
+                for skill in registry.get("skills", [])
+                if str(skill.get("name")) == capability_id
+            ),
+            None,
+        )
+        if item.get("status") != registry_status:
+            errors.append(f"ownership status differs from registry: {capability_id}")
+        selection_state = item.get("selection_state")
+        selection_evidence = item.get("selection_evidence")
+        if not isinstance(item.get("selection_reason"), str) or not item["selection_reason"].strip():
+            errors.append(f"missing selection reason for capability: {capability_id}")
+        if registry_status == "admitted":
+            if selection_state != "selected" or not isinstance(selection_evidence, list) or not selection_evidence:
+                errors.append(f"admitted capability lacks selected evidence: {capability_id}")
+            else:
+                for reference in selection_evidence:
+                    if not isinstance(reference, str):
+                        errors.append(f"invalid selection evidence for capability: {capability_id}")
+                        continue
+                    rel = PurePosixPath(reference)
+                    if (
+                        rel.is_absolute()
+                        or ".." in rel.parts
+                        or rel.parts[:2] != ("evals", "results")
+                        or rel.suffix != ".json"
+                    ):
+                        errors.append(f"invalid selection evidence for capability: {capability_id}")
+                        continue
+                    evidence_path = (repo / Path(*rel.parts)).resolve()
+                    results_root = (repo / "evals" / "results").resolve()
+                    try:
+                        evidence_path.relative_to(results_root)
+                    except ValueError:
+                        errors.append(f"invalid selection evidence for capability: {capability_id}")
+                        continue
+                    if not evidence_path.is_file():
+                        errors.append(f"invalid selection evidence for capability: {capability_id}")
+                        continue
+                    try:
+                        evidence_record = load_json(evidence_path)
+                    except Exception:
+                        errors.append(f"invalid selection evidence for capability: {capability_id}")
+                        continue
+                    bindings = {
+                        evidence_record.get("suite"),
+                        evidence_record.get("capability"),
+                        evidence_record.get("owner_capability"),
+                    }
+                    if capability_id not in bindings:
+                        errors.append(
+                            f"selection evidence is not bound to capability: {capability_id}"
+                        )
+        elif selection_state != "unresolved" or selection_evidence != []:
+            errors.append(f"non-admitted capability must remain unresolved: {capability_id}")
+
+    retired_records = ownership.get("retired_artifacts")
+    if not isinstance(retired_records, list):
+        errors.append("missing retired artifact records")
+        retired_records = []
+    for item in retired_records:
+        rel = item.get("path")
+        replacement = item.get("replacement")
+        reason = item.get("reason")
+        if (
+            not isinstance(rel, str)
+            or not rel
+            or not isinstance(replacement, str)
+            or not replacement
+            or not isinstance(reason, str)
+            or not reason.strip()
+        ):
+            errors.append("invalid retired artifact record")
+            continue
+        if (repo / rel).exists():
+            errors.append(f"retired artifact reappeared: {rel}")
+
     if live:
         for host, rec in hosts.items():
             configured = str(rec.get("cli_version", ""))
@@ -224,8 +370,10 @@ def snapshot_repo(repo: Path) -> dict[str, Any]:
         "registry.json": sha256_file(repo / "registry.json"),
         "surfaces/core.md": sha256_file(repo / "surfaces" / "core.md"),
         "contracts/surface-matrix.json": sha256_file(repo / "contracts" / "surface-matrix.json"),
+        "contracts/ownership.json": sha256_file(repo / "contracts" / "ownership.json"),
         "adapters/codex.json": sha256_file(repo / "adapters" / "codex.json"),
         "adapters/hermes.json": sha256_file(repo / "adapters" / "hermes.json"),
+        "adapters/omp.json": sha256_file(repo / "adapters" / "omp.json"),
     }
     skill_hashes: dict[str, str] = {}
     for skill in registry.get("skills", []):

@@ -9,7 +9,7 @@
     "knowledge_ledger": {"type": "string", "minLength": 1},
     "hosts": {
       "type": "object",
-      "required": ["hermes", "codex"],
+      "required": ["hermes", "codex", "omp"],
       "additionalProperties": {
         "type": "object",
         "required": ["cli_version", "source_revision", "sources"],
@@ -65,7 +65,7 @@
           },
           "hosts": {
             "type": "object",
-            "required": ["hermes", "codex"],
+            "required": ["hermes", "codex", "omp"],
             "additionalProperties": {
               "type": "object",
               "required": ["owner", "mechanism", "support", "parity"],

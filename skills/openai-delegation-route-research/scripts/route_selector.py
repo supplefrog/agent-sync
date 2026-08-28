@@ -16,19 +16,15 @@ REASONING_LEVELS = ("none", "minimal", "low", "medium", "high", "xhigh", "max")
 SURFACES = (
     "hermes-delegate",
     "hermes-task-thread",
-    "cc-dynamic-workflow",
     "codex-workflow",
     "omp-workflow",
-    "kanban-worker",
     "hermes-auxiliary",
 )
 SURFACE_HOSTS = {
     "hermes-delegate": "hermes",
     "hermes-task-thread": "hermes",
-    "cc-dynamic-workflow": "hermes",
     "codex-workflow": "codex",
     "omp-workflow": "omp",
-    "kanban-worker": "hermes",
     "hermes-auxiliary": "hermes",
 }
 FAILURE_COSTS = ("low", "medium", "high")

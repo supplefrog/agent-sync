@@ -53,5 +53,7 @@
     "One deterministic task per route proves callable exact-route and receipt persistence only.",
     "The installed Hermes CLI does not yet accept the runner ephemeral-session registration flags, so this smoke used explicit supported session deletion; the failed registration attempts remain contradictory evidence.",
     "No task-class route is promoted from this small smoke sample."
-  ]
+  ],
+  "status": "historical-superseded",
+  "current_disposition": "The cc-dynamic-workflow compatibility target is retired; preserve this result only as an observation of the rejected candidate."
 }

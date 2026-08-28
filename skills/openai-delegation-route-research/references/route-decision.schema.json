@@ -30,7 +30,7 @@
     "policy_version": {"type": "string", "minLength": 1},
     "policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "requirement_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "target_surface": {"enum": ["hermes-delegate", "hermes-task-thread", "cc-dynamic-workflow", "codex-workflow", "omp-workflow", "kanban-worker", "hermes-auxiliary"]},
+    "target_surface": {"enum": ["hermes-delegate", "hermes-task-thread", "codex-workflow", "omp-workflow", "hermes-auxiliary"]},
     "task_class": {"type": "string", "minLength": 1},
     "objective": {"const": "user-outcome"},
     "failure_cost": {"enum": ["low", "medium", "high"]},
@@ -52,7 +52,7 @@
               "required": ["host", "transport"],
               "properties": {
                 "host": {"type": "string", "minLength": 1},
-                "transport": {"enum": ["hermes-delegate", "hermes-task-thread", "cc-dynamic-workflow", "codex-workflow", "omp-workflow", "kanban-worker", "hermes-auxiliary"]}
+                "transport": {"enum": ["hermes-delegate", "hermes-task-thread", "codex-workflow", "omp-workflow", "hermes-auxiliary"]}
               },
               "minProperties": 2
             },

@@ -56,5 +56,6 @@
     "an agent reopens a clear existing architecture without evidence",
     "OMP natural triggering fails in real use",
     "a bounded Sol-high A/B harness becomes available"
-  ]
+  ],
+  "owner_capability": "outcome-first-workflow-design"
 }

@@ -6,8 +6,8 @@
   },
   "checks": [
     "36 targeted fleet and installer tests passed",
-    "260 repository tests and 52 subtests passed",
-    "8/8 canonical skills validate",
+    "229 repository tests and 51 subtests passed",
+    "9/9 canonical skills validate",
     "render, apply, and verify pass against the live shared skill root",
     "public-safety scan passes",
     "generated caches are excluded from snapshots and exact-tree comparison"

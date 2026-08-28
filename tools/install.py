@@ -45,10 +45,6 @@ def omp_home() -> Path:
     return Path.home() / ".omp" / "agent"
 
 
-def antigravity_home() -> Path:
-    return Path.home() / ".gemini" / "config"
-
-
 def adapter_variables() -> dict[str, str]:
     return {
         "HOME": str(Path.home()),
@@ -56,7 +52,6 @@ def adapter_variables() -> dict[str, str]:
         "HERMES_HOME": str(hermes_home()),
         "SHARED_SKILLS_HOME": str(shared_skills_home()),
         "OMP_HOME": str(omp_home()),
-        "ANTIGRAVITY_HOME": str(antigravity_home()),
     }
 
 
@@ -255,7 +250,7 @@ def configure_hermes(skills_root: Path, key: str = "skills.external_dirs") -> st
 def doctor(repo: Path, hosts: set[str] | None = None) -> int:
     failures = 0
     statuses = registry_statuses(repo)
-    hosts = hosts or {"codex", "hermes", "omp", "antigravity"}
+    hosts = hosts or {"codex", "hermes", "omp"}
     adapters = {host: load_adapter(repo, host) for host in hosts}
     roots = {
         host: adapter_path(adapter["skills"]["install_root"]).resolve()
@@ -328,12 +323,6 @@ def doctor(repo: Path, hosts: set[str] | None = None) -> int:
     elif "hermes" in adapters:
         print("SKIP Hermes shared skills directory (Hermes not installed)")
 
-    if "antigravity" in adapters and adapters["antigravity"]["skills"]["discovery"]["kind"] == "plugin":
-        discovery = adapters["antigravity"]["skills"]["discovery"]
-        plugin_root = adapter_path(discovery["value"])
-        ok = (plugin_root / "plugin.json").is_file()
-        print(("PASS" if ok else "FAIL"), "Antigravity agent-signal plugin")
-        failures += not ok
 
     validate = run([sys.executable, str(repo / "tools" / "validate.py")])
     print(validate.stdout, end="")
@@ -347,11 +336,11 @@ def main() -> int:
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--copy-surfaces", action="store_true")
-    parser.add_argument("--agents", default="codex,hermes,omp,antigravity")
+    parser.add_argument("--agents", default="codex,hermes,omp")
     args = parser.parse_args()
     repo = args.repo.resolve()
     agents = {item.strip() for item in args.agents.split(",") if item.strip()}
-    supported = {"codex", "hermes", "omp", "antigravity"}
+    supported = {"codex", "hermes", "omp"}
     unknown = agents - supported
     if unknown:
         raise RuntimeError("unsupported agent(s): " + ", ".join(sorted(unknown)))
@@ -363,7 +352,7 @@ def main() -> int:
     statuses = registry_statuses(repo)
     admitted = {name for name, status in statuses.items() if status == "admitted"}
     if any(
-        host != "antigravity" and adapter["instructions"]["strategy"] == "link-or-copy"
+        adapter["instructions"]["strategy"] == "link-or-copy"
         for host, adapter in adapters.items()
     ):
         required_surface_skills = {"capability-curator", "surface-convergence"}
@@ -382,7 +371,7 @@ def main() -> int:
                 args.force,
                 target_skills,
                 admitted,
-                copy_mode=host == "antigravity",
+                copy_mode=False,
             ):
                 print(f"skill {name}:", status)
             exposed_roots.add(target_skills.resolve())

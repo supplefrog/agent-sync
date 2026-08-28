@@ -28,18 +28,7 @@ SURFACE_CONTRACTS = {
         "launch_allowed": True,
         "gap": "The CLI pins model/provider/reasoning per process; this adapter owns the external immutable receipt.",
     },
-    "cc-dynamic-workflow": {
-        "owner": "integrations/hermes/cc-dynamic-workflows task attempt",
-        "enforcement": "staged-repository-integration",
-        "launch_allowed": False,
-        "gap": "The checked-in compatibility runner consumes exact receipts, but it is not native Hermes DAG support or live-promoted behavior.",
-    },
-    "kanban-worker": {
-        "owner": "Hermes Kanban task/task_runs and dispatcher spawn",
-        "enforcement": "staged-source-integration",
-        "launch_allowed": False,
-        "gap": "Hermes 0.20.5 exposes model/provider overrides, but exact reasoning and decision-receipt propagation remain staged source work.",
-    },
+
 }
 SUPPORTED_SURFACES = set(SURFACE_CONTRACTS)
 SUPPORTED_REASONING_EFFORTS = {
@@ -241,29 +230,7 @@ def native_mapping(
             "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
             "_prompt_payload": prompt,
         }
-    if surface == "cc-dynamic-workflow":
-        return {
-            **common,
-            "kind": "task-fields",
-            "fields": {
-                "provider": route["provider"],
-                "model": route["model"],
-                "reasoning_effort": route["reasoning_effort"],
-                "decision_receipt": receipt,
-            },
-            "adapter_path": "integrations/hermes/cc-dynamic-workflows/scripts/workflow_runner.py",
-        }
-    if surface == "kanban-worker":
-        return {
-            **common,
-            "kind": "task-and-run-fields",
-            "fields": {
-                "provider_override": route["provider"],
-                "model_override": route["model"],
-                "reasoning_effort": route["reasoning_effort"],
-                "route_receipt": receipt,
-            },
-        }
+
     return {
         **common,
         "kind": "child-construction-fields",

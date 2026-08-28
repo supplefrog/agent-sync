@@ -48,6 +48,12 @@
       "status": "admitted",
       "license": "MIT",
       "source": "original"
+    },
+    {
+      "name": "github-follow-up",
+      "status": "staged",
+      "license": "MIT",
+      "source": "original"
     }
   ]
 }

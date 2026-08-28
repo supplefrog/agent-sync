@@ -4,9 +4,9 @@
   "host": "hermes-windows",
   "host_version": "Hermes Agent v0.20.0 (2026.8.3)",
   "observed_at": "2026-08-14T15:15:35+05:30",
-  "status": "passed-with-known-ledger-residue",
-  "decision": "retain",
-  "decision_detail": "Retain the existing metadata-only monitor and its explicit reconciliation-card workflow. Do not restore the deleted experimental reconciliation cron: the gateway dispatcher already owns Kanban execution, and the historical removal report documents why that cron was contained. Projects remain workspace/session-grouping metadata, not a task authority.",
+  "status": "historical-superseded",
+  "decision": "retired",
+  "decision_detail": "Historical result only. The metadata monitor and Hermes-Kanban-as-sole-authority direction were retired by contracts/ownership.json; this file preserves the old observation and must not be used as current architecture or promotion evidence.",
   "authority": {
     "sole_task_authority": "Hermes Kanban",
     "monitor_mutates_kanban": false,

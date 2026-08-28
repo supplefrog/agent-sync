@@ -184,7 +184,6 @@ class AutomaticFrontierRouteTests(unittest.TestCase):
 
     def test_workflow_surfaces_bind_receipts_to_the_executing_host(self):
         expected_hosts = {
-            "cc-dynamic-workflow": "hermes",
             "codex-workflow": "codex",
             "omp-workflow": "omp",
         }

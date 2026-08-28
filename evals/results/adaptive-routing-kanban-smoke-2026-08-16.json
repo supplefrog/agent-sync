@@ -43,5 +43,7 @@
   "limitations": [
     "Temporary SQLite integration proves exact-route claim/completion persistence and stale-receipt invalidation.",
     "It does not launch a model worker and is not task-quality evidence for route promotion."
-  ]
+  ],
+  "status": "historical-superseded",
+  "current_disposition": "The kanban-worker target surface is retired; preserve this result only as an observation of the rejected candidate."
 }

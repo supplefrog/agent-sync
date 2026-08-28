@@ -194,7 +194,7 @@
           "supports": true
         }
       ],
-      "implication": "Keep exact-route selectors and receipts staged, leave the incumbent unchanged, and collect task-class sample floors, per-surface p95, consistent total cost, model-launching Kanban evidence, and native workflow cleanup before promotion.",
+      "implication": "Treat the cc-dynamic-workflow and Kanban samples as historical negative evidence only. The portable owner is skills/dynamic-workflows; unsupported compatibility surfaces are retired rather than repaired or promoted.",
       "observed_at": "2026-08-16T01:43:49Z"
     },
     {
@@ -269,7 +269,7 @@
           "supports": true
         }
       ],
-      "implication": "Keep the incumbent unchanged. The shared selector and immutable run pin are working staged artifacts, but current routes must remain fail-closed until Hermes 0.20.5 task-and-surface samples establish p95, total expected cost components, cleanup, and required native integration seams. The cc-dynamic-workflows receipt tests pass, but its full current lifecycle batch is red and must be repaired before DAG launch.",
+      "implication": "Keep the incumbent unchanged. The shared selector and immutable run pin are working staged artifacts, but routes remain fail-closed until current task-and-surface samples establish p95, total expected cost, cleanup, and the required native integration seams. The failed Hermes compatibility DAG is retired; it is not a repair or promotion candidate.",
       "observed_at": "2026-08-23T17:33:51+05:30"
     }
   ]
