@@ -21,6 +21,8 @@ The target is semantic parity with useful native differences—not identical fil
 - `surfaces/core.md` — shared global behavior for supported agents.
 - `adapters/` — thin declarative host installation and discovery mappings.
 - `contracts/` — canonical modality contracts, host mappings, and intentional deltas.
+- `profiles/` — model/provider/runtime-qualified standing-instruction profiles and context budgets.
+- `recovery/` — reviewed public-safe declarative state snapshots; never raw agent homes.
 - `evidence/` — public-safe findings and contradiction records.
 - `tools/` — validation, evaluation, installation, and drift checks.
 - `evals/` — reusable suites and compact result summaries; raw runs are ignored.
@@ -58,6 +60,29 @@ still match the previous fleet state. Generated snapshots live under
 `render/fleet/` and are not committed.
 
 See `docs/fleet.md` for the state and failure contract.
+
+## Public-safe recovery
+
+Agent Signal also restores the current allowlisted Hermes, Codex, and OMP settings,
+global instruction files, user-authored Codex hooks, and admitted portable skills.
+It excludes credentials, auth, memories, sessions, logs, caches, volatile runtime
+environments, and generated artifacts.
+
+```bash
+python tools/recovery.py verify
+python tools/recovery.py bootstrap          # dry-run
+python tools/recovery.py bootstrap --apply  # restore + full postflight
+```
+
+Config restore merges only explicit allowlisted paths and preserves unknown or
+sensitive fields already present. Differing text artifacts fail closed unless the
+operator explicitly supplies `--force-text`. See `docs/recovery.md`.
+
+The current `gpt-5.6-sol` / `openai-codex` user-owned instruction overlay is
+identified by host, runtime, reasoning level, artifact hash, effective unit, and
+standing byte budget in `profiles/gpt-5.6-sol-openai-codex.json`. Provider-hidden
+and runtime-native system instructions are inventoried as external dependencies,
+not copied or guessed. See `docs/instruction-profiles.md`.
 
 ## Legacy installer
 

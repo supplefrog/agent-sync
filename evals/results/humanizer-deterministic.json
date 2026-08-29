@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "suite": "humanizer",
+  "capability": "humanizer",
+  "status": "pass",
+  "claim": "humanizer is the single portable owner for natural public-facing prose and is not a standing prompt layer.",
+  "candidate_sha256": "915558cfa8192c0561e9f4d4fc3b9bbed251339b79be7fcb7b6fa35638432774",
+  "selection": {
+    "source": "active Hermes skill derived from the MIT-licensed Humanizer",
+    "adjacent_owners": ["conversational-communication", "skill-creator"],
+    "boundary": "Own public artifacts and explicit humanization; do not own routine chat, code, strict schemas, or model-facing instructions."
+  },
+  "verification": {
+    "skill_validation": "pass",
+    "positive_trigger": "issues, PRs, release notes, email, Slack, posts, or explicit humanization",
+    "near_miss": "routine chat routes to conversational-communication; model instructions route to skill-creator",
+    "context_loading": "on-demand",
+    "public_safe": true
+  },
+  "result": {
+    "passed": true,
+    "selection_reason": "The existing v3 skill is reader-first, channel-native, and explicitly scoped; making it standing would add irrelevant context and was rejected."
+  }
+}

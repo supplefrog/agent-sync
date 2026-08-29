@@ -12,11 +12,11 @@
       ]
     },
     "codex": {
-      "cli_version": "0.149.0-alpha.4.1",
-      "source_revision": "20dafe201d91d4405eef05ecd1db0257f13a9ac8",
+      "cli_version": "0.150.0-alpha.12.2",
+      "source_revision": "a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3",
       "sources": [
         "https://developers.openai.com/codex/",
-        "https://github.com/openai/codex/tree/20dafe201d91d4405eef05ecd1db0257f13a9ac8"
+        "https://github.com/openai/codex/tree/a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3"
       ]
     },
     "omp": {
@@ -41,41 +41,50 @@
   "modalities": [
     {
       "id": "instructions-style",
-      "contract": "One portable intent surface governs judgment and communication; host adapters preserve native scoping and personality controls without duplicating policy.",
-      "status": "staged",
+      "contract": "One model-qualified user-owned instruction profile binds exact host artifacts and context budgets; provider/runtime-native layers remain identified external owners and project-local instructions retain native precedence.",
+      "status": "partial",
       "portable_artifacts": [
-        "surfaces/core.md"
+        "surfaces/core.md",
+        "contracts/instruction-surfaces.json",
+        "contracts/instruction-units.json",
+        "profiles/gpt-5.6-sol-openai-codex.json",
+        "recovery/current/hosts/hermes/SOUL.md",
+        "recovery/current/hosts/codex/AGENTS.md"
       ],
       "hosts": {
         "hermes": {
-          "owner": "SOUL.md and session prompt builder",
-          "mechanism": "link the shared surface into SOUL.md; keep Hermes-only personality and prompt-freezing behavior native",
+          "owner": "recovery/current/hosts/hermes/SOUL.md plus Hermes native prompt builder",
+          "mechanism": "restore the hash-bound user-global SOUL overlay; keep runtime-native system assembly and project context external/native",
           "support": "adapter",
           "parity": "candidate"
         },
         "codex": {
-          "owner": "AGENTS.md instruction hierarchy",
-          "mechanism": "link the shared global surface into AGENTS.md; preserve repository and tree-scoped overrides",
+          "owner": "recovery/current/hosts/codex/AGENTS.md plus native AGENTS hierarchy",
+          "mechanism": "restore the hash-bound global AGENTS overlay while preserving project and tree-scoped overrides",
           "support": "adapter",
           "parity": "candidate"
         },
         "omp": {
-          "owner": "AGENTS.md/RULES.md discovery and extension prompt hooks",
-          "mechanism": "load the shared intent surface while preserving project rules and extension-owned behavior",
+          "owner": "Codex AGENTS inheritance plus OMP native prompt builder",
+          "mechanism": "inherit the hash-bound current Codex global overlay; the duplicate OMP RULES delta is retired",
           "support": "adapter",
-          "parity": "unassessed"
+          "parity": "intentional-delta"
         }
       },
       "intentional_deltas": [
         "Codex keeps hierarchical repository instruction scoping.",
-        "Hermes keeps personality selection and its frozen per-session prompt behavior."
+        "Hermes keeps personality selection and frozen per-session prompt behavior.",
+        "OMP inherits the Codex global overlay instead of maintaining a duplicate RULES file.",
+        "Provider-hidden and runtime-native system instructions are version-qualified external dependencies, not copied artifacts."
       ],
       "evidence": {
         "suites": [
+          "evals/core-instruction-retirement.json",
           "evals/surface-convergence.json",
           "evals/surface-convergence-held-out.json"
         ],
         "summaries": [
+          "evals/results/current-model-instruction-profile-deterministic.json",
           "evals/results/surface-convergence-codex.json",
           "evals/results/surface-convergence-held-out-codex.json"
         ]

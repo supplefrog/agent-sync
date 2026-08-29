@@ -1,0 +1,671 @@
+{
+  "_config_version": 38,
+  "agent": {
+    "api_max_retries": 3,
+    "clarify_timeout": 600,
+    "disabled_toolsets": [],
+    "environment_probe": true,
+    "gateway_auto_continue_freshness": 3600,
+    "gateway_notify_interval": 180,
+    "gateway_timeout": 1800,
+    "gateway_timeout_warning": 900,
+    "image_input_mode": "auto",
+    "max_turns": 500,
+    "parallel_tool_call_guidance": true,
+    "reasoning_effort": "medium",
+    "restart_drain_timeout": 60,
+    "service_tier": "normal",
+    "task_completion_guidance": true,
+    "tool_use_enforcement": "auto",
+    "verbose": false,
+    "verify_on_stop": false
+  },
+  "approvals": {
+    "cron_mode": "deny",
+    "destructive_slash_confirm": true,
+    "mcp_reload_confirm": true,
+    "mode": "smart",
+    "timeout": 60
+  },
+  "auxiliary": {
+    "approval": {
+      "model": "codex-auto-review",
+      "provider": "openai-codex",
+      "timeout": 30
+    },
+    "background_review": {
+      "model": "",
+      "provider": "auto",
+      "timeout": 120
+    },
+    "compression": {
+      "model": "gpt-5.6-luna",
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "timeout": 120
+    },
+    "curator": {
+      "model": "gpt-5.6-sol",
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "timeout": 600
+    },
+    "mcp": {
+      "model": "stepfun/step-3.7-flash:free",
+      "provider": "nous",
+      "timeout": 30
+    },
+    "monitor": {
+      "model": "",
+      "provider": "auto",
+      "timeout": 60
+    },
+    "profile_describer": {
+      "model": "stepfun/step-3.7-flash:free",
+      "provider": "nous",
+      "timeout": 60
+    },
+    "session_search": {
+      "max_concurrency": 3,
+      "model": "",
+      "provider": "auto",
+      "timeout": 30
+    },
+    "skills_hub": {
+      "model": "stepfun/step-3.7-flash:free",
+      "provider": "nous",
+      "timeout": 30
+    },
+    "title_generation": {
+      "language": "",
+      "model": "stepfun/step-3.7-flash:free",
+      "provider": "nous",
+      "timeout": 30
+    },
+    "triage_specifier": {
+      "model": "stepfun/step-3.7-flash:free",
+      "provider": "nous",
+      "timeout": 120
+    },
+    "tts_audio_tags": {
+      "model": "",
+      "provider": "auto",
+      "timeout": 30
+    },
+    "vision": {
+      "download_timeout": 30,
+      "model": "",
+      "provider": "auto",
+      "timeout": 120
+    },
+    "web_extract": {
+      "model": "gpt-5.6-luna",
+      "provider": "openai-codex",
+      "reasoning_effort": "medium",
+      "timeout": 360
+    }
+  },
+  "browser": {
+    "allow_private_urls": false,
+    "auto_local_for_private_urls": true,
+    "camofox": {
+      "adopt_existing_tab": false,
+      "loopback_host_alias": "host.docker.internal",
+      "managed_persistence": false,
+      "rewrite_loopback_urls": false
+    },
+    "cloud_provider": "local",
+    "command_timeout": 30,
+    "dialog_policy": "must_respond",
+    "dialog_timeout_s": 300,
+    "engine": "auto",
+    "inactivity_timeout": 120,
+    "record_sessions": false,
+    "use_gateway": false
+  },
+  "checkpoints": {
+    "auto_prune": false,
+    "delete_orphans": true,
+    "enabled": true,
+    "max_file_size_mb": 10,
+    "max_snapshots": 50,
+    "max_total_size_mb": 500,
+    "min_interval_hours": 24,
+    "retention_days": 7
+  },
+  "code_execution": {
+    "max_tool_calls": 50,
+    "mode": "project",
+    "timeout": 300
+  },
+  "command_allowlist": [],
+  "compression": {
+    "abort_on_summary_failure": false,
+    "codex_gpt55_autoraise": true,
+    "enabled": true,
+    "hygiene_hard_message_limit": 400,
+    "in_place": false,
+    "protect_first_n": 3,
+    "protect_last_n": 20,
+    "target_ratio": 0.2,
+    "threshold": 0.5
+  },
+  "computer_use": {
+    "cua_telemetry": false
+  },
+  "context": {
+    "engine": "compressor"
+  },
+  "context_file_max_chars": 20000,
+  "cron": {
+    "mirror_delivery": false,
+    "output_retention": 50,
+    "provider": "",
+    "wrap_response": true
+  },
+  "curator": {
+    "archive_after_days": 90,
+    "backup": {
+      "enabled": true,
+      "keep": 5
+    },
+    "consolidate": true,
+    "enabled": true,
+    "interval_hours": 168,
+    "min_idle_hours": 2,
+    "prune_builtins": true,
+    "stale_after_days": 30
+  },
+  "delegation": {
+    "api_mode": "",
+    "child_timeout_seconds": 1800,
+    "inherit_mcp_toolsets": true,
+    "max_concurrent_children": 4,
+    "max_iterations": 40,
+    "max_spawn_depth": 1,
+    "model": "gpt-5.6-luna",
+    "orchestrator_enabled": true,
+    "provider": "openai-codex",
+    "reasoning_effort": "high",
+    "subagent_auto_approve": false
+  },
+  "display": {
+    "background_process_notifications": "concise",
+    "bell_on_complete": true,
+    "busy_input_mode": "interrupt",
+    "cli_refresh_interval": 1,
+    "compact": false,
+    "copy_shortcut": "auto",
+    "credits_notices": true,
+    "ephemeral_system_ttl": 0,
+    "file_mutation_verifier": true,
+    "final_response_markdown": "strip",
+    "inline_diffs": true,
+    "interface": "cli",
+    "interim_assistant_messages": true,
+    "language": "en",
+    "memory_notifications": "on",
+    "persist_prompts": true,
+    "persistent_output": true,
+    "persistent_output_max_lines": 200,
+    "personality": "none",
+    "pet": {
+      "enabled": false,
+      "render_mode": "auto",
+      "scale": 0.33,
+      "slug": "",
+      "unicode_cols": 0
+    },
+    "platforms": {
+      "discord": {
+        "streaming": false
+      },
+      "telegram": {
+        "streaming": true
+      }
+    },
+    "reasoning_full": false,
+    "reasoning_style": "code",
+    "resume_display": "full",
+    "resume_exchanges": 10,
+    "resume_max_assistant_chars": 200,
+    "resume_max_assistant_lines": 3,
+    "resume_max_user_chars": 300,
+    "resume_skip_tool_only": true,
+    "runtime_footer": {
+      "enabled": false,
+      "fields": [
+        "model",
+        "context_pct",
+        "cwd"
+      ]
+    },
+    "sections": {
+      "thinking": "expanded"
+    },
+    "show_cost": false,
+    "show_reasoning": true,
+    "skin": "default",
+    "streaming": true,
+    "timestamps": false,
+    "tool_preview_length": 0,
+    "tool_progress": "all",
+    "tool_progress_command": false,
+    "tool_progress_grouping": "accumulate",
+    "tui_agents_nudge": true,
+    "tui_auto_resume_recent": false,
+    "tui_status_indicator": "kaomoji",
+    "turn_completion_explainer": true,
+    "user_message_preview": {
+      "first_lines": 2,
+      "last_lines": 2
+    }
+  },
+  "fallback_providers": [],
+  "file_read_max_chars": 100000,
+  "gateway": {
+    "api_server": {
+      "max_concurrent_runs": 10
+    },
+    "max_inbound_media_bytes": 134217728,
+    "message_timestamps": {
+      "enabled": false
+    },
+    "scale_to_zero": {
+      "idle_timeout_minutes": 5
+    },
+    "strict": false,
+    "trust_recent_files": true,
+    "trust_recent_files_seconds": 600
+  },
+  "goals": {
+    "max_turns": 20
+  },
+  "group_sessions_per_user": true,
+  "hooks_auto_accept": false,
+  "human_delay": {
+    "max_ms": 2500,
+    "min_ms": 800,
+    "mode": "off"
+  },
+  "image_gen": {
+    "model": "gpt-image-2-medium",
+    "provider": "openai-codex",
+    "use_gateway": false
+  },
+  "lsp": {
+    "enabled": true,
+    "install_strategy": "auto",
+    "wait_mode": "document",
+    "wait_timeout": 5
+  },
+  "max_live_sessions": 16,
+  "mcp_discovery_timeout": 1.5,
+  "mcp_servers": {
+    "chrome-devtools": {
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--autoConnect",
+        "--no-usage-statistics",
+        "--no-performance-crux",
+        "--screenshot-format=webp",
+        "--screenshot-max-width=1600",
+        "--screenshot-max-height=1200"
+      ],
+      "command": "cmd.exe",
+      "connect_timeout": 20,
+      "enabled": true
+    },
+    "claude-context": {
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "{{agent-signal:HOME}}\\AppData\\Local\\ClaudeContext\\claude-context-mcp.ps1"
+      ],
+      "command": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "connect_timeout": 45,
+      "enabled": true
+    },
+    "parallel": {
+      "enabled": true,
+      "url": "https://search.parallel.ai/mcp"
+    },
+    "tavily": {
+      "enabled": true,
+      "url": "https://mcp.tavily.com/mcp"
+    }
+  },
+  "memory": {
+    "flush_min_turns": 6,
+    "memory_char_limit": 2200,
+    "memory_enabled": true,
+    "nudge_interval": 10,
+    "provider": "honcho",
+    "user_char_limit": 1375,
+    "user_profile_enabled": true,
+    "write_approval": false
+  },
+  "model": {
+    "default": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "request_overrides": {
+      "extra_body": {
+        "text": {
+          "verbosity": "low"
+        }
+      }
+    }
+  },
+  "model_catalog": {
+    "enabled": true,
+    "ttl_hours": 1,
+    "url": "https://hermes-agent.nousresearch.com/docs/api/model-catalog.json"
+  },
+  "network": {
+    "force_ipv4": false
+  },
+  "openrouter": {
+    "min_coding_score": 0.65,
+    "response_cache": true,
+    "response_cache_ttl": 300
+  },
+  "paste_collapse_char_threshold": 2000,
+  "paste_collapse_threshold": 5,
+  "paste_collapse_threshold_fallback": 0,
+  "platform_toolsets": {
+    "cli": [
+      "browser",
+      "clarify",
+      "code_execution",
+      "computer_use",
+      "cronjob",
+      "delegation",
+      "file",
+      "image_gen",
+      "kanban",
+      "memory",
+      "session_search",
+      "skills",
+      "terminal",
+      "todo",
+      "vision",
+      "web"
+    ]
+  },
+  "plugins": {
+    "disabled": [
+      "browser/browser_use",
+      "image_gen/fal",
+      "video_gen/fal"
+    ],
+    "enabled": [
+      "disk-cleanup",
+      "image_gen/openai-codex",
+      "routed-delegation",
+      "security-guidance"
+    ],
+    "entries": {
+      "routed-delegation": {
+        "allow_tool_override": false
+      }
+    }
+  },
+  "privacy": {
+    "redact_pii": false
+  },
+  "prompt_caching": {
+    "cache_ttl": "5m"
+  },
+  "security": {
+    "allow_lazy_installs": true,
+    "allow_private_urls": false,
+    "redact_secrets": true,
+    "tirith_enabled": true,
+    "tirith_fail_open": true,
+    "tirith_path": "tirith",
+    "tirith_timeout": 5,
+    "website_blocklist": {
+      "domains": [],
+      "enabled": false,
+      "shared_files": []
+    }
+  },
+  "session_reset": {
+    "at_hour": 4,
+    "idle_minutes": 1440,
+    "mode": "both"
+  },
+  "sessions": {
+    "auto_prune": false,
+    "min_interval_hours": 24,
+    "retention_days": 90,
+    "vacuum_after_prune": true,
+    "write_json_snapshots": false
+  },
+  "skills": {
+    "creation_nudge_interval": 15,
+    "disabled": [
+      "airtable",
+      "antigravity-cli",
+      "apple-ecosystem-automation",
+      "architecture-diagram",
+      "ascii-art",
+      "ascii-video",
+      "audiocraft-audio-generation",
+      "axolotl",
+      "baoyu-article-illustrator",
+      "baoyu-comic",
+      "baoyu-infographic",
+      "box",
+      "claude-code",
+      "claude-design",
+      "comfyui",
+      "competitor-news-monitor",
+      "dspy",
+      "email-inbox-triage",
+      "evaluating-llms-harness",
+      "excalidraw",
+      "fine-tuning-with-trl",
+      "gif-search",
+      "godmode",
+      "google-workspace",
+      "heartmula",
+      "hermes-s6-container-supervision",
+      "hermes-themes",
+      "himalaya",
+      "huggingface-hub",
+      "hyperframes",
+      "linear",
+      "llama-cpp",
+      "llm-wiki",
+      "manim-video",
+      "maps",
+      "minecraft-modpack-server",
+      "nano-pdf",
+      "obliteratus",
+      "one-three-one-rule",
+      "openhue",
+      "outlines",
+      "petdex",
+      "pixel-art",
+      "pokemon-player",
+      "polymarket",
+      "powerpoint",
+      "product-price-monitor",
+      "segment-anything-model",
+      "serving-llms-vllm",
+      "sketch",
+      "songsee",
+      "songwriting-and-ai-music",
+      "spotify",
+      "teams-meeting-pipeline",
+      "touchdesigner-mcp",
+      "tui-widgets",
+      "unsloth",
+      "weights-and-biases",
+      "xurl",
+      "yuanbao"
+    ],
+    "external_dirs": [
+      "{{agent-signal:HOME}}\\.agents\\skills"
+    ],
+    "guard_agent_created": false,
+    "inline_shell": false,
+    "inline_shell_timeout": 10,
+    "template_vars": true,
+    "write_approval": false
+  },
+  "streaming": {
+    "buffer_threshold": 24,
+    "cursor": " ▉",
+    "edit_interval": 0.8,
+    "enabled": false,
+    "fresh_final_after_seconds": 60,
+    "transport": "auto"
+  },
+  "stt": {
+    "elevenlabs": {
+      "diarize": false,
+      "language_code": "",
+      "model_id": "scribe_v2",
+      "tag_audio_events": false
+    },
+    "enabled": true,
+    "local": {
+      "language": "en",
+      "model": "base"
+    },
+    "mistral": {
+      "model": "voxtral-mini-latest"
+    },
+    "openai": {
+      "model": "whisper-1"
+    },
+    "provider": "local"
+  },
+  "terminal": {
+    "auto_source_bashrc": true,
+    "backend": "local",
+    "container_cpu": 1,
+    "container_disk": 51200,
+    "container_memory": 5120,
+    "container_persistent": true,
+    "cwd": ".",
+    "daemon_term_grace_seconds": 2,
+    "daytona_image": "nikolaik/python-nodejs:python3.11-nodejs20",
+    "docker_extra_args": [],
+    "docker_forward_env": [],
+    "docker_image": "nikolaik/python-nodejs:python3.11-nodejs20",
+    "docker_mount_cwd_to_workspace": false,
+    "docker_run_as_host_user": false,
+    "docker_volumes": [],
+    "env_passthrough": [],
+    "home_mode": "auto",
+    "lifetime_seconds": 300,
+    "modal_image": "nikolaik/python-nodejs:python3.11-nodejs20",
+    "modal_mode": "auto",
+    "persistent_shell": true,
+    "shell_init_files": [],
+    "singularity_image": "docker://nikolaik/python-nodejs:python3.11-nodejs20",
+    "timeout": 180,
+    "vercel_runtime": "node24"
+  },
+  "tool_loop_guardrails": {
+    "hard_stop_after": {
+      "exact_failure": 5,
+      "idempotent_no_progress": 5,
+      "same_tool_failure": 8
+    },
+    "hard_stop_enabled": false,
+    "warn_after": {
+      "exact_failure": 2,
+      "idempotent_no_progress": 2,
+      "same_tool_failure": 3
+    },
+    "warnings_enabled": true
+  },
+  "tool_output": {
+    "max_bytes": 50000,
+    "max_line_length": 2000,
+    "max_lines": 2000
+  },
+  "tools": {
+    "tool_search": {
+      "enabled": "auto",
+      "max_search_limit": 20,
+      "search_default_limit": 5,
+      "threshold_pct": 10
+    }
+  },
+  "toolsets": [
+    "hermes-cli"
+  ],
+  "tts": {
+    "edge": {
+      "voice": "en-US-AriaNeural"
+    },
+    "elevenlabs": {
+      "model_id": "eleven_multilingual_v2",
+      "voice_id": "pNInz6obpgDQGcFmaJgB"
+    },
+    "gemini": {
+      "audio_tags": false,
+      "model": "gemini-2.5-flash-preview-tts",
+      "persona_prompt_file": "",
+      "voice": "Kore"
+    },
+    "mistral": {
+      "model": "voxtral-mini-tts-2603",
+      "voice_id": "c69964a6-ab8b-4f8a-9465-ec0925096ec8"
+    },
+    "neutts": {
+      "device": "cpu",
+      "model": "neuphonic/neutts-air-q4-gguf",
+      "ref_audio": "",
+      "ref_text": ""
+    },
+    "openai": {
+      "model": "gpt-4o-mini-tts",
+      "voice": "alloy"
+    },
+    "piper": {
+      "voice": "en_US-lessac-medium"
+    },
+    "provider": "edge",
+    "xai": {
+      "bit_rate": 128000,
+      "language": "en",
+      "sample_rate": 24000,
+      "voice_id": "eve"
+    }
+  },
+  "updates": {
+    "backup_keep": 5,
+    "non_interactive_local_changes": "stash",
+    "pre_update_backup": false
+  },
+  "voice": {
+    "auto_tts": false,
+    "beep_enabled": true,
+    "max_recording_seconds": 120,
+    "record_key": "ctrl+b",
+    "silence_duration": 3,
+    "silence_threshold": 200
+  },
+  "web": {
+    "backend": "",
+    "extract_backend": "",
+    "search_backend": ""
+  },
+  "x_search": {
+    "model": "grok-4.20-reasoning",
+    "retries": 2,
+    "timeout_seconds": 180
+  }
+}

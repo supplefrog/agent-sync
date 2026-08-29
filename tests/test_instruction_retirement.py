@@ -53,6 +53,15 @@ class InstructionRetirementTests(unittest.TestCase):
         self.assertNotIn("## A1", without)
         self.assertEqual(without, "# B\n\nb\n")
 
+    def test_tagged_line_extraction_and_removal_preserve_neighbors(self):
+        text = "[OUTPUT] concise result\n[EVIDENCE] verify claims\n"
+        selector = {"kind": "tagged-line", "value": "[OUTPUT]"}
+        self.assertEqual(self.tool.selected_text(text, selector), "[OUTPUT] concise result\n")
+        self.assertEqual(
+            self.tool.without_selector(text, selector),
+            "[EVIDENCE] verify claims\n",
+        )
+
     def test_model_release_selects_only_bounded_model_sensitive_suites(self):
         manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
         stack = self.stack()

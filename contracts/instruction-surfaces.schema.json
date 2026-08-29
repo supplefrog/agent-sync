@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://supplefrog.github.io/agent-signal/contracts/instruction-surfaces.schema.json",
+  "title": "Agent Signal instruction-surface inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "precedence_rule", "exclusions", "surfaces"],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "schema_version": {"const": 1},
+    "precedence_rule": {"type": "string", "minLength": 1},
+    "exclusions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "hosts", "kind", "scope", "status", "owner", "precedence", "model_sensitive", "backup"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$"},
+          "hosts": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"enum": ["codex", "hermes", "omp", "provider"]}
+          },
+          "kind": {"enum": ["runtime-native", "user-global", "project-dynamic", "hook-injection", "portable-reference", "inherited", "provider-native"]},
+          "scope": {"enum": ["runtime", "user-global", "project", "session", "provider"]},
+          "status": {"enum": ["active", "dynamic", "external", "reference", "disabled", "retired"]},
+          "owner": {"type": "string", "minLength": 1},
+          "artifact": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"},
+          "target": {"type": "string", "minLength": 1},
+          "patterns": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "precedence": {"type": "integer", "minimum": 0},
+          "model_sensitive": {"type": "boolean"},
+          "backup": {"enum": ["captured", "reinstall-runtime", "project-owned", "not-effective", "retired"]},
+          "replacement": {"type": "string", "minLength": 1},
+          "note": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

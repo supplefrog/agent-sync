@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -178,25 +179,41 @@ hello world this works
             self.assertTrue((REPO / adapter["skills"]["source"]).is_dir())
             self.assertIn("{", adapter["instructions"]["target"])
 
-    def test_manual_merge_surface_does_not_require_unrelated_staged_skills(self):
-        result = subprocess.run(
-            [sys.executable, str(REPO / "tools" / "install.py"), "--repo", str(REPO), "--agents", "codex"],
-            cwd=REPO,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+    def test_manual_merge_surface_checks_current_profile_without_installing_staged_skills(self):
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp) / "home"
+            codex_home = home / ".codex"
+            codex_home.mkdir(parents=True)
+            (codex_home / "AGENTS.md").write_bytes(
+                (REPO / "recovery" / "current" / "hosts" / "codex" / "AGENTS.md").read_bytes()
+            )
+            env = os.environ.copy()
+            env.update(
+                {
+                    "HOME": str(home),
+                    "USERPROFILE": str(home),
+                    "CODEX_HOME": str(codex_home),
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, str(REPO / "tools" / "install.py"), "--repo", str(REPO), "--agents", "codex"],
+                cwd=REPO,
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("codex surface: manual-merge", result.stdout)
-        self.assertIn("SKIP codex manual-merge markers not declared", result.stdout)
-        self.assertNotIn("PASS codex manual-merge markers", result.stdout)
+        self.assertIn("PASS codex manual-merge markers", result.stdout)
+        self.assertNotIn("PASS admitted skill capability-curator", result.stdout)
 
     def test_hermes_manual_merge_declares_verifiable_markers(self):
         adapter = json.loads((REPO / "adapters" / "hermes.json").read_text(encoding="utf-8"))
         self.assertEqual(adapter["instructions"]["strategy"], "manual-merge")
         self.assertEqual(
             adapter["instructions"]["required_markers"],
-            ["[WORKFLOW-DESIGN]", "outcome-first-workflow-design"],
+            ["# Identity", "# Style", "# Judgment", "# Defaults"],
         )
 
     def test_routing_adapters_share_contract_and_declare_supported_surfaces(self):
@@ -255,6 +272,15 @@ hello world this works
             (root / "routing.md").write_text("high-risk-architecture-provider", encoding="utf-8")
             findings = public_check.scan(root)
         self.assertEqual([(str(path), rule) for path, _, rule in findings], [("private.md", "windows-user-path")])
+
+    def test_public_check_distinguishes_a_posix_home_path_from_regex_source(self):
+        public_check = load("public_check_posix", REPO / "tools" / "public_check.py")
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "actual.md").write_text("source /" + "home/alice/", encoding="utf-8")
+            (root / "guard.py").write_text(r'pattern = r"/home/[^/\\s]+/"', encoding="utf-8")
+            findings = public_check.scan(root)
+        self.assertEqual([(str(path), rule) for path, _, rule in findings], [("actual.md", "posix-user-path")])
 
     def test_eval_summary_rejects_stale_artifact_hashes(self):
         summarizer = load("summarize_eval", REPO / "tools" / "summarize_eval.py")

@@ -22,7 +22,9 @@ EXCLUDED_DIRS = {
 TEXT_SUFFIXES = {"", ".md", ".json", ".py", ".toml", ".yaml", ".yml", ".txt"}
 RULES = {
     "windows-user-path": re.compile(r"(?i)[a-z]:[\\/](?:users|documents and settings)[\\/]"),
-    "posix-user-path": re.compile(r"/" + r"home/[^/\s]+/"),
+    "posix-user-path": re.compile(
+        r"(?<![A-Za-z0-9_])/(?:home/[A-Za-z0-9._-]+|root)(?:/[A-Za-z0-9._~+-]*)?"
+    ),
     "credential-assignment": re.compile(
         r"(?i)(?:api[_-]?key|access[_-]?token|password|client[_-]?secret)\s*[:=]\s*['\"][^{}<>\s'\"]{8,}"
     ),

@@ -54,6 +54,30 @@
       "status": "staged",
       "license": "MIT",
       "source": "original"
+    },
+    {
+      "name": "skill-creator",
+      "status": "admitted",
+      "license": "MIT",
+      "eval": "evals/results/skill-creator-deterministic.json"
+    },
+    {
+      "name": "humanizer",
+      "status": "admitted",
+      "license": "MIT",
+      "eval": "evals/results/humanizer-deterministic.json"
+    },
+    {
+      "name": "conversational-communication",
+      "status": "admitted",
+      "license": "MIT",
+      "eval": "evals/results/conversational-communication-deterministic.json"
+    },
+    {
+      "name": "hermes-self-engineering",
+      "status": "admitted",
+      "license": "MIT",
+      "eval": "evals/results/hermes-self-engineering-deterministic.json"
     }
   ]
 }

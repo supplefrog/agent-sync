@@ -3,9 +3,16 @@
   "schema_version": 1,
   "host": "omp",
   "instructions": {
-    "source": "surfaces/core.md",
+    "source": "recovery/current/hosts/codex/AGENTS.md",
     "target": "{CODEX_HOME}/AGENTS.md",
-    "strategy": "inherit-codex"
+    "strategy": "inherit-codex",
+    "required_markers": [
+      "[OUTPUT]",
+      "[INSTRUCTION-AUTHORING]",
+      "[SCOPE]",
+      "[EVIDENCE]",
+      "[RESEARCH]"
+    ]
   },
   "skills": {
     "source": "skills",

@@ -3,9 +3,16 @@
   "schema_version": 1,
   "host": "codex",
   "instructions": {
-    "source": "surfaces/core.md",
+    "source": "recovery/current/hosts/codex/AGENTS.md",
     "target": "{CODEX_HOME}/AGENTS.md",
-    "strategy": "manual-merge"
+    "strategy": "manual-merge",
+    "required_markers": [
+      "[OUTPUT]",
+      "[INSTRUCTION-AUTHORING]",
+      "[SCOPE]",
+      "[EVIDENCE]",
+      "[RESEARCH]"
+    ]
   },
   "skills": {
     "source": "skills",

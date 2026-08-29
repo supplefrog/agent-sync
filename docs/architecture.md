@@ -31,7 +31,13 @@ The convergence target is equivalent useful behavior. Mechanisms may differ, and
 
 ## Staged context-integrity validation
 
-Cross-provider orchestration uses native Hermes, Codex, and OMP stores as transcript authorities and Hermes Kanban as the sole task authority. The staged `tools/context_ledger.py` prototype adds only provider-scoped execution identities, source locators/digests, versioned lineage and assertion evidence, and future receipt boundaries. It does not copy transcript payloads or enable provider mutations. See `docs/context-integrity-ledger.md` for the executable invariants and remaining admission gates.
+Cross-provider orchestration keeps transcript and task state in the native Hermes, Codex, and OMP owners; no single host board is the authority for every conversation or runtime. The staged `tools/context_ledger.py` prototype adds only provider-scoped execution identities, source locators/digests, versioned lineage and assertion evidence, and future receipt boundaries. It does not copy transcript payloads or enable provider mutations. See `docs/context-integrity-ledger.md` for the executable invariants and remaining admission gate.
+
+## Recovery and instruction profiles
+
+`recovery.json` allowlists public-safe declarative state and `tools/recovery.py` snapshots, diffs, merges, restores, and verifies it. Admitted skills remain owned by the fleet; `bootstrap --apply` composes both paths and requires a clean postflight. Credentials, memories, sessions, logs, caches, and runtime-generated environments remain outside the repository.
+
+`contracts/instruction-surfaces.json` inventories provider/runtime, global, project, inherited, hook-injected, disabled, and retired instruction surfaces. `contracts/instruction-units.json` makes effective generic steering independently retireable. A model profile binds the current model/provider/runtime/reasoning stack to exact user-owned artifacts and standing-byte budgets without pretending to copy provider-hidden system prompts.
 
 ## Retained native strengths
 
@@ -91,10 +97,10 @@ Partial support is a valid staged result. It must remain explicit and cannot be 
 ## Version anchors for the current comparison
 
 - Agent Skills specification: <https://agentskills.io/specification>
-- Codex source/docs revision: `20dafe201d91d4405eef05ecd1db0257f13a9ac8`; local CLI `0.146.0-alpha.3.1`
-- Hermes upstream revision: `1161cc0b`; local CLI `0.19.0`
-- Codex instruction docs: <https://github.com/openai/codex/blob/20dafe201d91d4405eef05ecd1db0257f13a9ac8/docs/agents_md.md>
-- Codex skill docs: <https://github.com/openai/codex/blob/20dafe201d91d4405eef05ecd1db0257f13a9ac8/docs/skills.md>
+- Codex source/docs revision: `a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3`; local CLI `0.150.0-alpha.12.2`
+- Hermes upstream revision: `933c209e96630a6026b0a18ecf6a86e65110f5b8`; local CLI `0.20.5`
+- Codex instruction docs: <https://github.com/openai/codex/blob/a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3/docs/agents_md.md>
+- Codex skill docs: <https://github.com/openai/codex/blob/a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3/docs/skills.md>
 - Hermes configuration docs: <https://hermes-agent.nousresearch.com/docs/user-guide/configuration>
 - Hermes skills docs: <https://hermes-agent.nousresearch.com/docs/user-guide/features/skills>
 

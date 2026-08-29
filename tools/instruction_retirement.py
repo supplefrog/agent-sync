@@ -56,16 +56,45 @@ def without_section(text: str, heading: str) -> str:
     return (text[:start].rstrip() + "\n\n" + text[end:].lstrip()).strip() + "\n"
 
 
-def unit_text(repo: Path, unit: dict[str, Any]) -> str:
-    path = repo / unit["path"]
-    text = path.read_text(encoding="utf-8")
-    selector = unit.get("selector", {"kind": "whole-file"})
+def tagged_line(text: str, tag: str) -> str:
+    matches = [line for line in text.splitlines(keepends=True) if line.startswith(f"{tag} ") or line.rstrip("\r\n") == tag]
+    if len(matches) != 1:
+        raise ValueError(f"tagged line must match exactly once: {tag}")
+    return matches[0].rstrip("\r\n") + "\n"
+
+
+def selected_text(text: str, selector: dict[str, Any]) -> str:
     kind = selector.get("kind")
     if kind == "whole-file":
         return text
     if kind == "heading":
         return section(text, selector["value"])
-    raise ValueError(f"unsupported selector kind for {unit['id']}: {kind}")
+    if kind == "tagged-line":
+        return tagged_line(text, selector["value"])
+    raise ValueError(f"unsupported selector kind: {kind}")
+
+
+def without_selector(text: str, selector: dict[str, Any]) -> str:
+    kind = selector.get("kind")
+    if kind == "whole-file":
+        return "# No additional candidate instructions\n"
+    if kind == "heading":
+        return without_section(text, selector["value"])
+    if kind == "tagged-line":
+        selected = tagged_line(text, selector["value"])
+        remaining = text.replace(selected, "", 1)
+        return remaining.strip() + "\n" if remaining.strip() else "# No additional candidate instructions\n"
+    raise ValueError(f"unsupported selector kind: {kind}")
+
+
+def unit_text(repo: Path, unit: dict[str, Any]) -> str:
+    path = repo / unit["path"]
+    text = path.read_text(encoding="utf-8")
+    selector = unit.get("selector", {"kind": "whole-file"})
+    try:
+        return selected_text(text, selector)
+    except ValueError as exc:
+        raise ValueError(f"{exc} for {unit['id']}") from exc
 
 
 def receipt_key(stack: dict[str, Any], unit_hash: str, suite_hash: str, harness_hash: str) -> str:
@@ -320,10 +349,7 @@ def main(argv: list[str] | None = None) -> int:
             target = materialize_root / unit_id
             target.mkdir(parents=True, exist_ok=True)
             selector = unit.get("selector", {"kind": "whole-file"})
-            if selector["kind"] == "whole-file":
-                minus = "# No additional candidate instructions\n"
-            else:
-                minus = without_section(source.read_text(encoding="utf-8"), selector["value"])
+            minus = without_selector(source.read_text(encoding="utf-8"), selector)
             minus_path = target / "minus.md"
             minus_path.write_text(minus, encoding="utf-8")
             rows[unit_id]["baseline_candidate_path"] = str(source)

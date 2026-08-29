@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "suite": "skill-creator",
+  "capability": "skill-creator",
+  "status": "pass",
+  "claim": "skill-creator is the single portable owner for model-facing instruction and skill authoring; public prose remains owned by humanizer.",
+  "candidate_sha256": "e48d2dd1005122be41727c3ec6b97ef6aade1e0f4d986c1fc92ca1c6ecd7e7c1",
+  "selection": {
+    "source": "active Hermes skill, imported byte-for-byte before the reviewed plain-language ownership clarification",
+    "adjacent_owners": ["humanizer", "hermes-self-engineering", "capability-curator"],
+    "boundary": "Author concise model-facing content after placement is known; do not own public prose, placement, or admission policy."
+  },
+  "verification": {
+    "skill_validation": "pass",
+    "positive_trigger": "creating or revising durable agent instructions",
+    "near_miss": "public prose routes to humanizer; stable facts route to memory",
+    "linked_files": "none",
+    "public_safe": true
+  },
+  "result": {
+    "passed": true,
+    "selection_reason": "Existing active owner is mature, structurally valid, narrowly bounded, and now states the human-readable model-instruction boundary without loading humanizer."
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "approvals_reviewer": "guardian_subagent",
+  "computer_use": {
+    "windows": {
+      "always_allowed_app_ids": {
+        "Chrome": true,
+        "Chrome._crx_cmkncekebbplodngbpllndjkfo": true
+      }
+    }
+  },
+  "desktop": {
+    "appearanceTheme": "system",
+    "conversationDetailMode": "STEPS_COMMANDS",
+    "enabled-reasoning-efforts": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "ultra",
+      "max"
+    ],
+    "followUpQueueMode": "queue",
+    "keepRemoteControlAwakeWhilePluggedIn": true,
+    "open-in-target-preferences": {
+      "global": "systemDefault"
+    },
+    "open-link-in-target-preference": "in-app-browser",
+    "selected-avatar-id": "null-signal"
+  },
+  "features": {
+    "goals": true,
+    "hooks": true,
+    "js_repl": false,
+    "memories": true,
+    "prevent_idle_sleep": true,
+    "terminal_resize_reflow": true
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "& \"{{agent-signal:HOME}}/AppData/Local/Programs/Python/Launcher/py.exe\" -3 \"{{agent-signal:CODEX_HOME}}/hooks/windows_destructive_commands.py\"",
+            "statusMessage": "Checking catastrophic Windows commands",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "^Bash$"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "& \"C:/Program Files/PowerShell/7/pwsh.exe\" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"{{agent-signal:CODEX_HOME}}/hooks/run-gsd-check-update.ps1\"",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "mcp_servers": {
+    "claude-context": {
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "{{agent-signal:HOME}}\\AppData\\Local\\ClaudeContext\\claude-context-mcp.ps1"
+      ],
+      "command": "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+    },
+    "parallel": {
+      "bearer_token_env_var": "PARALLEL_API_KEY",
+      "url": "https://search.parallel.ai/mcp"
+    },
+    "tavily": {
+      "bearer_token_env_var": "TAVILY_API_KEY",
+      "url": "https://mcp.tavily.com/mcp"
+    }
+  },
+  "model": "gpt-5.6-sol",
+  "model_reasoning_effort": "medium",
+  "notify": [
+    "{{agent-signal:HOME}}\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\e4d75eceaa042f20\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
+    "turn-ended"
+  ],
+  "personality": "pragmatic",
+  "service_tier": "default",
+  "windows": {
+    "sandbox": "unelevated"
+  }
+}

@@ -88,6 +88,46 @@
       "selection_state": "unresolved",
       "selection_evidence": [],
       "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+    },
+    {
+      "id": "skill-creator",
+      "owner": "skills/skill-creator",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/skill-creator-deterministic.json"
+      ],
+      "selection_reason": "Selected as the established model-facing instruction author; public prose, placement, and admission remain separate owners."
+    },
+    {
+      "id": "humanizer",
+      "owner": "skills/humanizer",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/humanizer-deterministic.json"
+      ],
+      "selection_reason": "Selected as the established reader-first public prose owner and kept on-demand to avoid standing prompt weight."
+    },
+    {
+      "id": "conversational-communication",
+      "owner": "skills/conversational-communication",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/conversational-communication-deterministic.json"
+      ],
+      "selection_reason": "Selected as the user-confirmed short conversational reply owner; public artifacts remain with humanizer."
+    },
+    {
+      "id": "hermes-self-engineering",
+      "owner": "skills/hermes-self-engineering",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/hermes-self-engineering-deterministic.json"
+      ],
+      "selection_reason": "Selected as the narrow Hermes behavior-surface placement owner with explicit negative-steering checks."
     }
   ],
   "retired_artifacts": [
@@ -125,6 +165,11 @@
       "path": "tools/run_kanban_route_smoke.py",
       "replacement": "skills/dynamic-workflows plus host-native routed delegation",
       "reason": "The smoke exercised the retired kanban-worker target surface and could falsely suggest current support."
+    },
+    {
+      "path": "recovery/current/hosts/omp/RULES.md",
+      "replacement": "recovery/current/hosts/codex/AGENTS.md",
+      "reason": "OMP already inherits the Codex output rule; the native delta duplicated standing context without adding behavior."
     }
   ]
 }

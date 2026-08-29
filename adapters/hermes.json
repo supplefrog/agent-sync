@@ -3,12 +3,14 @@
   "schema_version": 1,
   "host": "hermes",
   "instructions": {
-    "source": "surfaces/core.md",
+    "source": "recovery/current/hosts/hermes/SOUL.md",
     "target": "{HERMES_HOME}/SOUL.md",
     "strategy": "manual-merge",
     "required_markers": [
-      "[WORKFLOW-DESIGN]",
-      "outcome-first-workflow-design"
+      "# Identity",
+      "# Style",
+      "# Judgment",
+      "# Defaults"
     ]
   },
   "skills": {

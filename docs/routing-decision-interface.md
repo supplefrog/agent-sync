@@ -1,6 +1,6 @@
 # GPT routing decision interface
 
-Status: automatic selection is live for `routed_delegate_task`, exact task-thread routes, and the definitive routed DAG state contract used by Codex and OMP adapters. Built-in Hermes `delegate_task` remains one global route; the Hermes compatibility DAG executor remains staged.
+Status: automatic selection is live for `routed_delegate_task`, exact task-thread routes, and the definitive portable routed DAG state contract used by Codex and OMP adapters. Built-in Hermes `delegate_task` remains one global route; Hermes has no second compatibility DAG executor.
 
 ## Ownership
 

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://supplefrog.github.io/agent-signal/contracts/instruction-units.schema.json",
+  "title": "Agent Signal instruction units",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "units"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "units": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "selector", "class", "status", "hosts", "suite", "retest_on", "priority"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$"},
+          "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"},
+          "selector": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind"],
+            "properties": {
+              "kind": {"enum": ["whole-file", "heading", "tagged-line"]},
+              "value": {"type": "string", "minLength": 1}
+            },
+            "allOf": [
+              {
+                "if": {"properties": {"kind": {"enum": ["heading", "tagged-line"]}}},
+                "then": {"required": ["value"]}
+              }
+            ]
+          },
+          "class": {"enum": ["generic-steering", "workflow-routing", "safety-governance"]},
+          "status": {"enum": ["active", "effective", "reference", "retired"]},
+          "hosts": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"enum": ["codex", "hermes", "omp"]}
+          },
+          "owner": {"type": "string", "minLength": 1},
+          "suite": {"type": "string", "pattern": "^evals/.+\\.json$"},
+          "retest_on": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "priority": {"type": "integer", "minimum": 0, "maximum": 100}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "suite": "current-model-instruction-profile",
+  "profile": "gpt-5.6-sol-openai-codex",
+  "status": "pass",
+  "claim": "The current user-owned instruction overlays are identified, hash-bound, restorable, host-qualified, and below the standing context budget for gpt-5.6-sol on openai-codex.",
+  "target": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": {
+      "hermes": "medium",
+      "codex": "medium",
+      "omp": "high"
+    }
+  },
+  "hosts": {
+    "hermes": {
+      "runtime": "Hermes Agent 0.20.5",
+      "standing_bytes": 1211,
+      "budget": 2048,
+      "artifact_sha256": "71fbaa38ac3781d9724c23aa6f747325dd9ea9d1c9eba6720948eab33492deac",
+      "live_hash_match": true
+    },
+    "codex": {
+      "runtime": "codex-cli 0.150.0-alpha.12.2",
+      "standing_bytes": 1475,
+      "budget": 2048,
+      "artifact_sha256": "be24176936008554359673a47cb708e7a348b89a0d770c0b02bd963a7ebf319d",
+      "live_hash_match": true
+    },
+    "omp": {
+      "runtime": "omp 17.2.13",
+      "standing_bytes": 1475,
+      "budget": 2048,
+      "inherits": "codex.user-global",
+      "codex_discovery_provider_enabled": true,
+      "native_agents_file_absent": true,
+      "duplicate_rules_delta": "retired",
+      "live_rules_file_absent": true
+    }
+  },
+  "verification": {
+    "recovery_snapshot": "pass",
+    "instruction_profile": "pass",
+    "live_runtime_and_state": "pass",
+    "instruction_profile_tests": "11 passed",
+    "instruction_retirement_tests": "9 passed, 13 subtests passed",
+    "recovery_tests": "18 passed, 1 skipped, 32 subtests passed",
+    "repository_tests": "260 passed, 1 skipped, 83 subtests passed",
+    "writing_routes": "routine chat, public prose, model-facing instructions, and surface placement each have one on-demand owner",
+    "recovery_loaded_into_prompt": false
+  },
+  "result": {
+    "passed": true,
+    "decision": "current-observed",
+    "limitation": "This is the definitive current user-owned overlay and inventory, not a claim to reproduce provider-hidden system instructions or to prove every line globally optimal. The observed Codex INSTRUCTION-AUTHORING line still references the disabled local agent-surface-curator; its protected-file replacement awaits explicit user approval. Model, provider, runtime, prompt assembly, tool schema, context policy, or instruction changes reopen retirement evaluation."
+  }
+}

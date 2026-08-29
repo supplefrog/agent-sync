@@ -243,6 +243,34 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
     else:
         errors.append("missing registry skills")
 
+    if "fleet-sync" in registry_names:
+        tools_dir = str(Path(__file__).resolve().parent)
+        if tools_dir not in sys.path:
+            sys.path.insert(0, tools_dir)
+        try:
+            import recovery as recovery_tool
+
+            recovery_tool.verify_snapshot(repo / "recovery.json", repo / "recovery" / "current")
+        except Exception as exc:
+            errors.append(f"recovery contract: {exc}")
+        try:
+            import instruction_profile as profile_tool
+
+            profile_paths = sorted((repo / "profiles").glob("*.json"))
+            if not profile_paths:
+                errors.append("instruction profiles: no model-qualified profiles")
+            current_profiles = 0
+            for profile_path in profile_paths:
+                report = profile_tool.verify_profile(repo, profile_path, live=False)
+                if report.get("status") == "current-observed":
+                    current_profiles += 1
+            if current_profiles != 1:
+                errors.append(
+                    f"instruction profiles: expected exactly one current-observed profile, got {current_profiles}"
+                )
+        except Exception as exc:
+            errors.append(f"instruction profiles: {exc}")
+
     integration_root = repo / "integrations"
     if integration_root.is_dir():
         for skill_path in sorted(integration_root.rglob("SKILL.md")):

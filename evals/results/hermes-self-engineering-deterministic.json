@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "suite": "hermes-self-engineering",
+  "capability": "hermes-self-engineering",
+  "status": "pass",
+  "claim": "hermes-self-engineering is the single portable owner for selecting and validating Hermes behavior surfaces before instruction authoring.",
+  "candidate_sha256": "c1c4e6a5b92e36cd9a163d466e69f9b952e95692d0c1670b8608cf1a01fe3945",
+  "selection": {
+    "source": "active Hermes skill",
+    "adjacent_owners": ["skill-creator", "capability-curator", "surface-convergence"],
+    "boundary": "Choose the narrowest Hermes behavior surface and verification path; do not own instruction wording, capability admission, or cross-host convergence."
+  },
+  "verification": {
+    "skill_validation": "pass",
+    "positive_trigger": "Hermes SOUL, config, personality, routing, memory, tools, skills, or source changes",
+    "near_miss": "ordinary project code and already-placed instruction wording stay with their owners",
+    "negative_steering_check": "explicitly prefers delete, merge, narrow, or no change over generic prompt growth",
+    "public_safe": true
+  },
+  "result": {
+    "passed": true,
+    "selection_reason": "The existing v2 skill is the narrow placement owner and contains the required current-model negative-steering and context-budget checks."
+  }
+}

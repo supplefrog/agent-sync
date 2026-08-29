@@ -4,7 +4,7 @@
 
 This is a read-only validation slice for cross-provider identity and provenance. It is not a transcript store, task manager, cleanup worker, or production orchestrator.
 
-Native Hermes, Codex, and OMP stores remain authoritative. Hermes Kanban remains the sole task-status owner. The ledger may retain only:
+Native Hermes, Codex, and OMP stores remain authoritative for their own conversations, task/thread state, and lifecycle records; no Hermes board is the global task-status owner. The ledger may retain only:
 
 - provider-native execution identities and observed versions;
 - source locators, byte ranges, digests, and versioned provider/extractor derivations;

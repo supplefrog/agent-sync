@@ -1,0 +1,123 @@
+{
+  "$schema": "../contracts/model-profile.schema.json",
+  "schema_version": 1,
+  "id": "gpt-5.6-sol-openai-codex",
+  "status": "current-observed",
+  "claim": "Definitive user-owned standing instruction overlay for the named model/provider stack; provider-hidden and runtime-native system instructions remain externally owned and are identified rather than copied.",
+  "target": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "host-specific"
+  },
+  "contracts": {
+    "surfaces": "contracts/instruction-surfaces.json",
+    "units": "contracts/instruction-units.json",
+    "recovery_manifest": "recovery/current/manifest.json"
+  },
+  "hosts": {
+    "hermes": {
+      "runtime": "Hermes Agent 0.20.5",
+      "reasoning": "medium",
+      "effective_surfaces": [
+        "provider.native-system",
+        "hermes.runtime-native",
+        "hermes.user-global",
+        "hermes.project-context"
+      ],
+      "effective_units": [
+        "hermes.identity",
+        "hermes.style",
+        "hermes.judgment",
+        "hermes.defaults"
+      ],
+      "artifact_sha256": [
+        "71fbaa38ac3781d9724c23aa6f747325dd9ea9d1c9eba6720948eab33492deac"
+      ]
+    },
+    "codex": {
+      "runtime": "codex-cli 0.150.0-alpha.12.2",
+      "reasoning": "medium",
+      "effective_surfaces": [
+        "provider.native-system",
+        "codex.runtime-native",
+        "codex.user-global",
+        "codex.session-start-hook",
+        "codex.project-context"
+      ],
+      "effective_units": [
+        "codex.output",
+        "codex.instruction-authoring",
+        "codex.scope",
+        "codex.evidence",
+        "codex.research"
+      ],
+      "artifact_sha256": [
+        "be24176936008554359673a47cb708e7a348b89a0d770c0b02bd963a7ebf319d"
+      ]
+    },
+    "omp": {
+      "runtime": "omp 17.2.13",
+      "reasoning": "high",
+      "effective_surfaces": [
+        "provider.native-system",
+        "omp.runtime-native",
+        "omp.codex-inherited",
+        "omp.project-context"
+      ],
+      "effective_units": [
+        "codex.output",
+        "codex.instruction-authoring",
+        "codex.scope",
+        "codex.evidence",
+        "codex.research"
+      ],
+      "artifact_sha256": [
+        "be24176936008554359673a47cb708e7a348b89a0d770c0b02bd963a7ebf319d"
+      ]
+    }
+  },
+  "writing_routes": {
+    "routine-chat": {
+      "owner": "skills/conversational-communication",
+      "loading": "on-demand",
+      "scope": "Short user-facing chat, status, decisions, and completion replies."
+    },
+    "public-prose": {
+      "owner": "skills/humanizer",
+      "loading": "on-demand",
+      "scope": "Issues, PRs, release notes, email, Slack, posts, and explicit humanization."
+    },
+    "model-facing-instructions": {
+      "owner": "skills/skill-creator",
+      "loading": "on-demand",
+      "scope": "Dense model-facing rules, skills, triggers, references, and proportional behavior evaluation."
+    },
+    "surface-placement": {
+      "owner": "skills/hermes-self-engineering",
+      "loading": "on-demand",
+      "scope": "Select the narrowest persistent Hermes behavior surface before instruction authoring."
+    }
+  },
+  "context_policy": {
+    "recovery_loaded_into_prompt": false,
+    "skills": "on-demand",
+    "tools": "host-native-on-demand",
+    "max_standing_bytes": {
+      "hermes": 2048,
+      "codex": 2048,
+      "omp": 2048
+    }
+  },
+  "retest_on": [
+    "model-release",
+    "provider-changed",
+    "runtime-changed",
+    "prompt-assembly-changed",
+    "tool-schema-changed",
+    "context-policy-changed",
+    "instruction-changed"
+  ],
+  "evidence": [
+    "evals/results/current-model-instruction-profile-deterministic.json"
+  ]
+}

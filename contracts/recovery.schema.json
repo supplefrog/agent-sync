@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://supplefrog.github.io/agent-signal/contracts/recovery.schema.json",
+  "title": "Agent Signal public-safe recovery policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "machine", "public_safe", "hosts"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "machine": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "public_safe": {"const": true},
+    "hosts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hermes", "codex", "omp"],
+      "properties": {
+        "hermes": {"$ref": "#/$defs/host"},
+        "codex": {"$ref": "#/$defs/host"},
+        "omp": {"$ref": "#/$defs/host"}
+      }
+    }
+  },
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?:[^/]+/)*[^/]+$"
+    },
+    "configPath": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_@:-]+(?:\\.[A-Za-z0-9_@:-]+)*$"
+    },
+    "configArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "source", "snapshot", "format", "strategy", "include"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "kind": {"const": "config"},
+        "source": {"$ref": "#/$defs/relativePath"},
+        "snapshot": {"$ref": "#/$defs/relativePath"},
+        "format": {"enum": ["json", "yaml", "toml"]},
+        "strategy": {"const": "merge"},
+        "include": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/configPath"}
+        }
+      }
+    },
+    "textArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "source", "snapshot", "format", "strategy"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "kind": {"const": "text"},
+        "source": {"$ref": "#/$defs/relativePath"},
+        "snapshot": {"$ref": "#/$defs/relativePath"},
+        "format": {"const": "text"},
+        "strategy": {"const": "replace-if-absent"},
+        "portable_paths": {"type": "boolean"}
+      }
+    },
+    "artifact": {
+      "oneOf": [
+        {"$ref": "#/$defs/configArtifact"},
+        {"$ref": "#/$defs/textArtifact"}
+      ]
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifacts"],
+      "properties": {
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/artifact"}
+        }
+      }
+    }
+  }
+}

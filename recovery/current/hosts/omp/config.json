@@ -1,0 +1,30 @@
+{
+  "colorBlindMode": false,
+  "defaultThinkingLevel": "high",
+  "dev": {
+    "autoqaConsent": "granted"
+  },
+  "memory": {
+    "backend": "off"
+  },
+  "modelRoles": {
+    "default": "openai-codex/gpt-5.6-sol"
+  },
+  "prewalk": {
+    "enabled": true
+  },
+  "providers": {
+    "webSearchOrder": [
+      "parallel",
+      "tavily"
+    ]
+  },
+  "setupVersion": 1,
+  "shellPath": "C:\\Program Files\\Git\\bin\\bash.exe",
+  "symbolPreset": "nerd",
+  "textVerbosity": "low",
+  "theme": {
+    "dark": "titanium",
+    "light": "light"
+  }
+}
