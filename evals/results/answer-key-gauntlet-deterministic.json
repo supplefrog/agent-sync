@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "suite": "answer-key-gauntlet",
+  "capability": "answer-key-gauntlet",
+  "status": "pass",
+  "claim": "One portable gauntlet owner preserves the durable Wayfinder map, frozen answer key, dependency-aware task graph, judge-only critic loop, bounded retries, and final evidence gate.",
+  "candidate_sha256": "07e4ff518529feb76c932ce7ce5a3cf3599f54ba6bb4322d37f0416509192784",
+  "artifacts": {
+    "artifact_contract_sha256": "a348d9b6dbda8585d7d4307e8488e6b725d7bb87090cde131944653a45f4dfbf"
+  },
+  "selection": {
+    "portable_behavior_migrated": [
+      "long-context continuity through map.md and answer-key.md",
+      "immutable requirement and pass-rule fields after implementation starts",
+      "traceability from outcomes/decisions to observable checks",
+      "serialized foundations and disjoint parallel ownership",
+      "judge-only fresh critics with parent verification",
+      "three-cycle stop rule and explicit blocked status"
+    ],
+    "native_behavior_retained": [
+      "each host uses its own task/delegation and task-tracker mechanisms"
+    ],
+    "discarded": [
+      "duplicate Hermes and Codex copies",
+      "retired agent-surface-bridge ownership metadata"
+    ]
+  },
+  "verification": {
+    "normalized_identity": "Hermes, Codex, and prior bridge SKILL/contract content were semantically identical",
+    "linked_contract": "artifact-contract.md exists and is referenced",
+    "canonical_owner": "Agent Signal",
+    "public_safe": true
+  },
+  "limits": "Fresh shared deployment and host discovery are required before source copies are removed.",
+  "result": {
+    "passed": true
+  }
+}

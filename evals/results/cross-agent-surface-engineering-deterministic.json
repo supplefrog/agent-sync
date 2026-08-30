@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "suite": "cross-agent-surface-engineering-deterministic",
+  "capability": "cross-agent-surface-engineering",
+  "status": "pass",
+  "claim": "Cross-agent persistent-surface work has one shared portable owner across Hermes, Codex, and OMP, synthesized behavior by behavior rather than selected as one whole legacy variant.",
+  "candidate_sha256": "a30b60e6ba23e3d033631cef61782dc780c3a95811ee344b23140216b8e95b63",
+  "selection": {
+    "source": "current Agent Signal operator plus reviewed Codex/OMP legacy variants",
+    "portable_owner": "skills/cross-agent-surface-engineering",
+    "managed_root": "<SHARED_SKILLS_HOME>",
+    "behavior_accounting": {
+      "migrated": [
+        "Agent Signal recovery, instruction-profile, fleet, ownership, and surface-contract inspection",
+        "exact host, profile, working-directory, discovery-root, and precedence inspection",
+        "behavior-level decomposition with compatible winner synthesis",
+        "staging, provenance, admission, rollback, and effective-stack verification gates",
+        "Codex local-marketplace refresh and fresh prompt-input verification",
+        "parsed Hermes external skill-directory verification",
+        "OMP shared Agent Skills discovery and fresh no-session verification"
+      ],
+      "retained_native": [
+        "host runtime discovery and precedence",
+        "host command and configuration formats",
+        "irreducible native tool and lifecycle protocols"
+      ],
+      "discarded": [
+        "agent-surface-bridge as canonical authority",
+        "generated absolute-path inventory with sensitive-presence metadata",
+        "retired Antigravity-specific discovery and junction rules",
+        "editing generated plugin caches",
+        "whole-skill or version-number winner selection"
+      ]
+    }
+  },
+  "verification": {
+    "skill_validation": "14/14 skills valid",
+    "fleet_render": "9 admitted skills rendered",
+    "fleet_verify": "PASS snapshot and managed state match",
+    "hermes_discovery": "fresh skill load resolved cross-agent-surface-engineering from <SHARED_SKILLS_HOME>",
+    "codex_discovery": "fresh debug prompt-input contained the shared source and no loose Codex source",
+    "omp_discovery": "fresh no-session process reported the shared source",
+    "native_duplicate_cleanup": "Hermes, Codex, and OMP policy-copy directories removed after shared discovery preflight"
+  },
+  "limits": "This admits the operator and cleanup procedure, not the separately staged capability-curator or surface-convergence skills. Material future behavior changes still require their owning evidence gates.",
+  "result": {
+    "passed": true
+  }
+}

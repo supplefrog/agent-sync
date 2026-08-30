@@ -119,6 +119,13 @@ OMP's task wire does not accept an exact provider/model directly; the named agen
 
 Hermes has no admitted DAG adapter. Use the separately verified `routed_delegate_task` for ordinary routed delegation. Add a Hermes DAG executor only if it consumes this exact state contract through a thin native adapter and its lifecycle/process suite is green against the current runtime; never fork a second workflow owner.
 
+Retired `cc-dynamic-workflows` behaviors are accounted for explicitly:
+
+- Automatic verifier rejection, feedback-history mutation, and targeted builder reruns are not migrated. Express verification as an explicit DAG node or use `answer-key-gauntlet`; the parent decides whether a separately authorized revision task is needed.
+- `model_tier`, Mini → Low → Medium → High retry escalation, and pre-receipt state compatibility are discarded. They conflict with immutable route receipts, and no active consumer remains.
+- Per-task Hermes `toolsets`, `skills`, `max_turns`, timeout, worktree, subprocess-tree, and ephemeral-session controls are not portable plan fields. Native Hermes delegation owns those controls. A future Hermes DAG adapter must re-prove timeout, process reaping, session isolation, cancellation, and cleanup before admission.
+- Native progress UI, token accounting, reboot supervision, and integrated approval preview remain unsupported rather than implied.
+
 ## Scheduling and verification
 
 1. Validate the whole plan before spawning.

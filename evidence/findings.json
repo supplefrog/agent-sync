@@ -238,6 +238,31 @@
       "observed_at": "2026-08-16T02:22:30Z"
     },
     {
+      "id": "github-follow-up-cross-project-learning-20260830",
+      "topic": "lifecycle-update",
+      "claim": "GitHub follow-up now treats outcomes as candidate engineering evidence and promotes a general rule only after deterministic matched evaluation on unrelated held-out code.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/github-follow-up-cross-project-learning-legacy-hermes.json",
+          "supports": true
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/github-follow-up-cross-project-learning-hermes.json",
+          "supports": true
+        },
+        {
+          "kind": "local-verification",
+          "reference": "tests/test_github_follow_up_gate.py",
+          "supports": true
+        }
+      ],
+      "implication": "Use real PR/review/CI/replacement evidence to propose narrow lessons, keep project conventions local, inspect the existing owner first, and make no persistent rule edit on a tie, loss, missing/inconclusive gate, or already-owned lesson. GitHub-only procedure fixes stay on their direct-test path.",
+      "observed_at": "2026-08-30T05:03:19+05:30"
+    },
+    {
       "id": "adaptive-routing-current-runtime-20260823",
       "topic": "routing-delegation",
       "claim": "The latest preserved Luna-high and Sol-low smokes qualify as current verified routes for Hermes 0.20.5 delegation.",
@@ -271,6 +296,31 @@
       ],
       "implication": "Keep the incumbent unchanged. The shared selector and immutable run pin are working staged artifacts, but routes remain fail-closed until current task-and-surface samples establish p95, total expected cost, cleanup, and the required native integration seams. The failed Hermes compatibility DAG is retired; it is not a repair or promotion candidate.",
       "observed_at": "2026-08-23T17:33:51+05:30"
+    },
+    {
+      "id": "hermes-context-uplift-20260830",
+      "topic": "context-continuity",
+      "claim": "Hermes in-place Responses-native compaction on the base GPT-5.6 Sol route materially outperforms the rotating local-compressor baseline without requiring the 900K alias or a third-party context engine.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/context-uplift-2026-08-30.json",
+          "supports": true
+        },
+        {
+          "kind": "primary-source",
+          "reference": "https://developers.openai.com/api/docs/guides/compaction",
+          "supports": true
+        },
+        {
+          "kind": "candidate-evaluation",
+          "reference": "https://github.com/stephenschoettler/hermes-lcm@10cbb78347ec86f3004153b24767324ded9e37b4",
+          "supports": false
+        }
+      ],
+      "implication": "Keep gpt-5.6-sol and the built-in compressor, enable in-place and Codex Responses-native compaction, keep the 900K alias opt-in, and do not install hermes-lcm on the current Windows host until its externalized-storage/recovery boundary passes intact.",
+      "observed_at": "2026-08-30T10:06:30+05:30"
     }
   ]
 }

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "suite": "learn-from-youtube",
+  "capability": "learn-from-youtube",
+  "status": "pass",
+  "claim": "One portable Learn From YouTube owner preserves complete-source teaching, explicit provenance, a focused public AI LABS workflow-extraction mode, tested caption normalization, and Codex UI metadata.",
+  "candidate_sha256": "e9b675969e7f277369ec3486fb197e61ff9929d7e4ae1adb174496ebf36fb6cb",
+  "artifacts": {
+    "output_contract_sha256": "52b5937476e6c17dda966014a2914705d10a32057b2a46e0928288f32048ad54",
+    "ai_labs_mode_sha256": "9223bb536583033d93b0d6a64ce204ab4db39b3951981c094517ea73c55044c7",
+    "clean_vtt_sha256": "535e3ee5d98acd8ec8cd370fe010ac20ad3aad58e60bb7ff4c3dac8b66d75956",
+    "codex_ui_sha256": "5084b6f6be4b3b1597c020860a73e018939e1072f5d9a6dd259f1f76fab3f4a9"
+  },
+  "selection": {
+    "portable_behavior_migrated": [
+      "complete transcript and visual-source coverage ledger",
+      "statement-local Video/Verified/Inference/Uncertain provenance",
+      "primary-source verification and source-bounded inference",
+      "AI LABS public workflow extraction without paywall bypass",
+      "simple-summary routing to youtube-content",
+      "retrieval answers and non-circular jargon teaching",
+      "Codex display metadata"
+    ],
+    "native_behavior_retained": [
+      "Codex renders agents/openai.yaml as native UI metadata",
+      "each host keeps its own transcript/frame acquisition tools"
+    ],
+    "discarded": [
+      "older copied SKILL.md and output-contract variants",
+      "functionally equivalent compressed cleaner copies",
+      "generated __pycache__ artifacts",
+      "unlabeled inference and recursive summary compression"
+    ]
+  },
+  "verification": {
+    "caption_parser": "1 targeted production parser test passed",
+    "registry_and_links": "14/14 canonical skills valid before admission state update",
+    "public_safe": true
+  },
+  "limits": "Structural convergence of behaviors already active on at least one host. Fresh shared deployment and host discovery are required before native copies are removed.",
+  "result": {
+    "passed": true
+  }
+}

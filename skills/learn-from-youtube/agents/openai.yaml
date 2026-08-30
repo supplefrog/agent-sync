@@ -1,0 +1,4 @@
+interface:
+  display_name: "Learn from YouTube"
+  short_description: "Turn videos into complete, dense lessons"
+  default_prompt: "Use $learn-from-youtube to extract and teach me everything important from this YouTube video."

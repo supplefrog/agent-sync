@@ -23,14 +23,14 @@
     },
     "codex": {
       "runtime": "codex-cli 0.150.0-alpha.12.2",
-      "standing_bytes": 1475,
+      "standing_bytes": 1663,
       "budget": 2048,
-      "artifact_sha256": "be24176936008554359673a47cb708e7a348b89a0d770c0b02bd963a7ebf319d",
+      "artifact_sha256": "234558236c6c9dc945e1679135dfcc81b30722cbc4a254908e0a2435228ddd3f",
       "live_hash_match": true
     },
     "omp": {
       "runtime": "omp 17.2.13",
-      "standing_bytes": 1475,
+      "standing_bytes": 1663,
       "budget": 2048,
       "inherits": "codex.user-global",
       "codex_discovery_provider_enabled": true,
@@ -53,6 +53,6 @@
   "result": {
     "passed": true,
     "decision": "current-observed",
-    "limitation": "This is the definitive current user-owned overlay and inventory, not a claim to reproduce provider-hidden system instructions or to prove every line globally optimal. The observed Codex INSTRUCTION-AUTHORING line still references the disabled local agent-surface-curator; its protected-file replacement awaits explicit user approval. Model, provider, runtime, prompt assembly, tool schema, context policy, or instruction changes reopen retirement evaluation."
+    "limitation": "This is the definitive current user-owned overlay and inventory, not a claim to reproduce provider-hidden system instructions or to prove every line globally optimal. Model, provider, runtime, prompt assembly, tool schema, context policy, or instruction changes reopen retirement evaluation."
   }
 }

@@ -9,7 +9,7 @@
 5. **Decision framework** — when to use each approach, preconditions, feedback signal, cost, risks, and stop condition.
 6. **Corrections and extensions** — label external verification, disputed claims, missing nuance, and prerequisites.
 7. **Application playbook** — next steps, smallest safe experiment, and evidence of success or failure.
-8. **Retention layer** — concise memory anchors plus 3–7 retrieval or teach-back questions.
+8. **Retention layer** — concise memory anchors plus 3–7 retrieval or teach-back questions; include answers separately when useful.
 9. **Coverage note** — exclusions such as sponsor segments and any source gaps.
 
 Adapt headings when needed, but preserve their functions.
@@ -29,7 +29,7 @@ Use plain labels where ambiguity is possible:
 - Prefer a decision table over repeated prose.
 - Keep examples only when they prove, clarify, or operationalize a concept.
 - Remove introductions, applause, subscription requests, repeated claims, and sponsor material unless analytically relevant.
-- Define jargon at first use.
+- Define jargon at first use; do not replace one unexplained term with another.
 - Prefer specific conditions and mechanisms over motivational language.
 
 ## Coverage ledger template

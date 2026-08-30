@@ -67,6 +67,8 @@ A workflow task cannot widen parent authorization, filesystem roots, network acc
 - **OMP:** dispatch the immutable `route-<route-id>` named agent whose frontmatter pins exact model and `thinkingLevel`. Verify `resolvedModel`; reject fallback/mismatch.
 - **Hermes:** a compatible executor may consume the state contract, but must pass current Hermes lifecycle/process tests before promotion. Ordinary routing remains owned by `routed_delegate_task`.
 
+The retired Hermes compatibility runner is not an available executor. Its automatic verifier-feedback loop, reasoning-tier escalation, and `model_tier` compatibility were deliberately rejected; explicit verifier nodes or `answer-key-gauntlet` preserve the verification outcome without mutating the immutable plan. Its per-task host controls and subprocess/session cleanup belong only in a future thin Hermes adapter after current-runtime lifecycle tests pass.
+
 ## Context contract
 
 - Workers receive task-local context, not the whole conversation.

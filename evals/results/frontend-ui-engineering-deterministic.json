@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-ui-engineering",
+  "capability": "frontend-ui-engineering",
+  "status": "pass",
+  "claim": "One portable frontend owner preserves production engineering, accessibility, responsive behavior, subject-grounded visual direction, conservative resource intake, and real-browser verification.",
+  "candidate_sha256": "3fa08c7f8af5c5ad329e2a6213108370968efd6e55b8f1b781d5255d8f5eb74f",
+  "artifacts": {
+    "source_receipt_sha256": "4e2b6dee6c9b11fd97a3e83b7c200e6e0253650ca705f1019ad1ccecda434192",
+    "license_sha256": "6f202f8bd568cd730dbb2b0d1f8e243bc74c2fa1f64dbce9b2c7ea08bd5c9fd7",
+    "provenance_sha256": "daee45bbea6668e5f2d7dfe6f13d5014e320597c0bc09afa7f2ed08e4b748911",
+    "workflow_sha256": "b342cfef3873f41903976610a0c79dc72275a6413d8f761c58774c9fcfedee88",
+    "resource_catalog_sha256": "483ddf1a7d3cc3059441c390892b0d2055fdf8983d3535fa8722ccc6d46dfa14",
+    "accessibility_sha256": "61c759d94d52296231f5f310b92b401f56c44e4430dc3cc95ebac5d7b1d5ffac"
+  },
+  "selection": {
+    "portable_behavior_migrated": [
+      "production component/state/responsive/accessibility baseline",
+      "subject-specific visual thesis and one coherent design lineage",
+      "resource classification and license/dependency/accessibility boundaries",
+      "DESIGN.md routing without mandatory artifact creation",
+      "rendered desktop/mobile refinement and delivery checks"
+    ],
+    "native_behavior_retained": [
+      "each project retains its frontend framework, browser, components, tokens, and test tools"
+    ],
+    "discarded": [
+      "byte-identical loose Codex copy",
+      "wholesale third-party frontend-skill installation",
+      "gallery cloning and animation/tool mandates"
+    ]
+  },
+  "verification": {
+    "source_identity": "shared and Codex live bundles were byte-identical before metadata/provenance binding",
+    "support_files": "all referenced workflow, catalog, provenance, and accessibility files exist",
+    "license": "pinned primary upstream MIT notice preserved",
+    "public_safe": true
+  },
+  "limits": "Metadata/provenance changed; behavior text is unchanged. Fresh fleet verification and host discovery are required before deleting the loose Codex copy.",
+  "result": {
+    "passed": true
+  }
+}

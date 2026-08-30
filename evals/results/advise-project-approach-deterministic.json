@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "suite": "advise-project-approach",
+  "capability": "advise-project-approach",
+  "status": "pass",
+  "claim": "One portable project-approach owner preserves project-stage evidence, comparables, cost/vendor reality, a ranked recommendation, failure conditions, and next actions with self-contained cross-host fallbacks and optional host-native accelerators.",
+  "candidate_sha256": "5fd0078b7226a7ec3263043f025f17684c0d8921bb1e9be072f4aaa987f8f8a3",
+  "artifacts": {
+    "source_receipt_sha256": "a9d3730a4bcfa08d425b5e868f4ebf79b9a1d33a603a172669b5a5b1711bb4e6",
+    "license_sha256": "93956918cc6a9f62076bbf112d63e04b4e13fb494d7eac6d47f780ce9359d3b9",
+    "codex_ui_sha256": "5953ba626074226db2bf2ba121d15b507e187ae0b881603549694076fc670444"
+  },
+  "selection": {
+    "portable_behavior_migrated": [
+      "pre-build, mid-build, and post-build project modes",
+      "decision-relevant repository inspection",
+      "transferable versus non-transferable comparable analysis",
+      "official pricing/limits and prototype-launch-growth cost framing",
+      "two-to-four viable paths with one recommendation and strongest alternative",
+      "failure/reopening condition and ordered implementation path"
+    ],
+    "routed_to_existing_owners": [
+      "intent reconstruction and material decision trace to outcome-first-workflow-design",
+      "genuinely new architecture prior art to neuroarxiv",
+      "difficult discovery may use iterative-blind-research when present, with a self-contained fallback on other hosts",
+      "implemented-change review uses each host and repository's native tests/build/review path; Hermes may use code-change-verification",
+      "domain decisions to their domain owners"
+    ],
+    "discarded": [
+      "duplicated generic safety and permission prose",
+      "duplicated research-query mechanics",
+      "duplicated repository review checklists",
+      "large fixed report templates and repeated conclusions",
+      "byte-identical host copies"
+    ]
+  },
+  "verification": {
+    "candidate_invariants": "all project modes, comparables, cost, one recommendation, failure condition, next actions, and owner routes present",
+    "source_bundles": "Hermes, Codex, and OMP bundles were byte-identical before synthesis",
+    "public_safe": true
+  },
+  "limits": "Fresh shared deployment and host discovery are required before source copies are removed.",
+  "result": {
+    "passed": true
+  }
+}

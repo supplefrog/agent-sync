@@ -1,0 +1,395 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-30T10:06:30+05:30",
+  "inventory_count": 18,
+  "method": "Compare user-visible behavior and mechanisms against maintained primary sources; stage intact runtimes outside live discovery roots; no change wins absent matched evidence.",
+  "sources": {
+    "agent_skills": "https://agentskills.io/specification",
+    "skills_directory": "https://www.skills.sh/",
+    "parallel_research": "https://docs.parallel.ai/task-api/examples/task-deep-research",
+    "tavily": "https://www.tavily.com/use-cases",
+    "prime_agent": "https://github.com/PrimeIntellect-ai/prime-agent",
+    "prime_agent_architecture": "https://www.primeintellect.ai/blog/prime-agent",
+    "openai_agents_sessions": "https://openai.github.io/openai-agents-python/sessions/",
+    "langgraph_durable_execution": "https://docs.langchain.com/oss/python/langgraph/durable-execution",
+    "letta_context_repositories": "https://www.letta.com/blog/context-repositories",
+    "browser_use": "https://github.com/browser-use/browser-use",
+    "playwright_mcp": "https://github.com/microsoft/playwright-mcp",
+    "chrome_devtools_mcp": "https://developer.chrome.com/blog/chrome-devtools-mcp",
+    "hermes_lcm": "https://github.com/stephenschoettler/hermes-lcm",
+    "openai_compaction": "https://developers.openai.com/api/docs/guides/compaction"
+  },
+  "lane_decisions": [
+    {
+      "lane": "context-continuity",
+      "decision": "adopted",
+      "winner": "Hermes in-place plus OpenAI Responses-native compaction on gpt-5.6-sol",
+      "alternatives": [
+        "gpt-5.6-sol-900k",
+        "hermes-lcm",
+        "Letta context repositories"
+      ],
+      "reason": "Matched 236K-token evaluation: incumbent 5/8, native base 8/8, 900K 8/8. Base native used a replayable compaction item; 900K gave no recall gain and replayed the full prompt. Intact hermes-lcm failed Windows externalized-storage/recovery tests."
+    },
+    {
+      "lane": "durable-orchestration",
+      "decision": "pilot",
+      "winner": null,
+      "alternatives": [
+        "Prime Agent",
+        "LangGraph durable execution",
+        "OpenAI Agents SDK sessions"
+      ],
+      "reason": "Prime Agent is the strongest coupled-runtime candidate for persistent REPL/RLM, recursive workers, daemon continuity, and long-running work. It must be evaluated intact behind Hermes before mechanism extraction."
+    },
+    {
+      "lane": "research-retrieval",
+      "decision": "pilot",
+      "winner": null,
+      "alternatives": [
+        "Parallel Task API deep research",
+        "Tavily"
+      ],
+      "reason": "Parallel remains the preferred first research route and Tavily the fallback, but primary-source-research is still staged and lacks a matched completeness/citation/latency comparison."
+    },
+    {
+      "lane": "browser-computer-use",
+      "decision": "pilot",
+      "winner": null,
+      "alternatives": [
+        "Browser Use",
+        "Microsoft Playwright MCP",
+        "Chrome DevTools MCP"
+      ],
+      "reason": "These mechanisms optimize different outcomes: agentic navigation, deterministic accessibility automation, and debugging/performance evidence. Compare representative tasks rather than replacing UI skills."
+    },
+    {
+      "lane": "portable-skill-lifecycle",
+      "decision": "no-change",
+      "winner": "Agent Skills plus Agent Signal admission/fleet controls",
+      "alternatives": [
+        "skills.sh directory"
+      ],
+      "reason": "The directory is useful for discovery but popularity and audits are candidate signals, not matched local admission evidence."
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "capability-curator",
+      "lane": "portable-skill-lifecycle",
+      "candidate": "skills.sh directory/audits",
+      "disposition": "keep-staged",
+      "reason": "Useful candidate feed; no evidence that registry metadata replaces fail-closed local admission.",
+      "current_owner": "skills/capability-curator",
+      "evidence": {
+        "registry_status": "staged",
+        "eval": null
+      },
+      "gap": "Useful candidate feed; no evidence that registry metadata replaces fail-closed local admission.",
+      "candidates": [
+        "skills.sh directory/audits"
+      ],
+      "decision": "defer"
+    },
+    {
+      "name": "primary-source-research",
+      "lane": "research-retrieval",
+      "candidate": "Parallel Task API deep research",
+      "disposition": "next-pilot",
+      "reason": "Directly comparable on completeness, primary-source rate, citation validity, latency, and cost.",
+      "current_owner": "skills/primary-source-research",
+      "evidence": {
+        "registry_status": "staged",
+        "eval": null
+      },
+      "gap": "Directly comparable on completeness, primary-source rate, citation validity, latency, and cost.",
+      "candidates": [
+        "Parallel Task API deep research"
+      ],
+      "decision": "defer"
+    },
+    {
+      "name": "learn-from-youtube",
+      "lane": "research-retrieval",
+      "candidate": "none stronger found",
+      "disposition": "no-change",
+      "reason": "Current capability already combines transcript provenance, parser fallback, extraction, and host routing; catalogs offer variants but no matched gain.",
+      "current_owner": "skills/learn-from-youtube",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/learn-from-youtube-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [],
+      "decision": "retain"
+    },
+    {
+      "name": "neuroarxiv",
+      "lane": "research-retrieval",
+      "candidate": "native arXiv APIs and general deep-research routes",
+      "disposition": "no-change",
+      "reason": "Domain workflow and source-pinned provenance remain more specific than general research agents.",
+      "current_owner": "skills/neuroarxiv",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/neuroarxiv-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "native arXiv APIs and general deep-research routes"
+      ],
+      "decision": "retain"
+    },
+    {
+      "name": "advise-project-approach",
+      "lane": "planning-verification",
+      "candidate": "Prime Agent research/coding runtime",
+      "disposition": "no-change",
+      "reason": "Prime may improve execution substrate, not the portable judgment contract; evaluate intact runtime separately.",
+      "current_owner": "skills/advise-project-approach",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/advise-project-approach-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "Prime Agent research/coding runtime"
+      ],
+      "decision": "retain"
+    },
+    {
+      "name": "answer-key-gauntlet",
+      "lane": "planning-verification",
+      "candidate": "LangGraph durable execution and OpenAI Agents sessions",
+      "disposition": "mechanism-watch",
+      "reason": "Checkpointing can execute a gauntlet durably but does not replace immutable acceptance keys and independent verdict boundaries.",
+      "current_owner": "skills/answer-key-gauntlet",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/answer-key-gauntlet-deterministic.json"
+      },
+      "gap": "Checkpointing can execute a gauntlet durably but does not replace immutable acceptance keys and independent verdict boundaries.",
+      "candidates": [
+        "LangGraph durable execution and OpenAI Agents sessions"
+      ],
+      "decision": "defer"
+    },
+    {
+      "name": "frontend-ui-engineering",
+      "lane": "browser-computer-use",
+      "candidate": "Playwright MCP plus Chrome DevTools MCP",
+      "disposition": "no-change",
+      "reason": "Automation/debugging tools complement rather than replace the design and accessibility procedure.",
+      "current_owner": "skills/frontend-ui-engineering",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/frontend-ui-engineering-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "Playwright MCP plus Chrome DevTools MCP"
+      ],
+      "decision": "retain"
+    },
+    {
+      "name": "surface-convergence",
+      "lane": "portable-skill-lifecycle",
+      "candidate": "Agent Skills standard plus skills.sh discovery",
+      "disposition": "keep-staged",
+      "reason": "The standard supplies format, not cross-host semantic reconciliation or collision safety.",
+      "current_owner": "skills/surface-convergence",
+      "evidence": {
+        "registry_status": "staged",
+        "eval": null
+      },
+      "gap": "The standard supplies format, not cross-host semantic reconciliation or collision safety.",
+      "candidates": [
+        "Agent Skills standard plus skills.sh discovery"
+      ],
+      "decision": "defer"
+    },
+    {
+      "name": "cross-agent-surface-engineering",
+      "lane": "portable-skill-lifecycle",
+      "candidate": "Agent Skills standard",
+      "disposition": "no-change",
+      "reason": "Current owner adds behavior-level synthesis, host adapters, recovery, and fresh discovery beyond the format spec.",
+      "current_owner": "skills/cross-agent-surface-engineering",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/cross-agent-surface-engineering-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "Agent Skills standard"
+      ],
+      "decision": "retain"
+    },
+    {
+      "name": "outcome-first-workflow-design",
+      "lane": "planning-verification",
+      "candidate": "Prime continual harness",
+      "disposition": "mechanism-watch",
+      "reason": "Self-refinement is promising but must not let a trajectory certify its own durable policy changes.",
+      "current_owner": "skills/outcome-first-workflow-design",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": null
+      },
+      "gap": "Self-refinement is promising but must not let a trajectory certify its own durable policy changes.",
+      "candidates": [
+        "Prime continual harness"
+      ],
+      "decision": "defer"
+    },
+    {
+      "name": "openai-delegation-route-research",
+      "lane": "durable-orchestration",
+      "candidate": "OpenAI Agents SDK",
+      "disposition": "no-change",
+      "reason": "The SDK offers sessions/handoffs but not current task-class route economics and matched local selection evidence.",
+      "current_owner": "skills/openai-delegation-route-research",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": null
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "OpenAI Agents SDK"
+      ],
+      "decision": "retain"
+    },
+    {
+      "name": "dynamic-workflows",
+      "lane": "durable-orchestration",
+      "candidate": "Prime Agent intact runtime",
+      "disposition": "next-pilot",
+      "reason": "Strongest candidate for persistent RLM state, recursive workers, steering, and long-running continuity; current portable DAG remains owner until it wins.",
+      "current_owner": "skills/dynamic-workflows",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": null
+      },
+      "gap": "Strongest candidate for persistent RLM state, recursive workers, steering, and long-running continuity; current portable DAG remains owner until it wins.",
+      "candidates": [
+        "Prime Agent intact runtime"
+      ],
+      "decision": "defer"
+    },
+    {
+      "name": "fleet-sync",
+      "lane": "portable-skill-lifecycle",
+      "candidate": "Agent Skills directories and skills.sh CLI",
+      "disposition": "no-change",
+      "reason": "External tools do not provide current transactional three-host render/apply/drift/rollback guarantees.",
+      "current_owner": "skills/fleet-sync",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": null
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "Agent Skills directories and skills.sh CLI"
+      ],
+      "decision": "retain"
+    },
+    {
+      "name": "github-follow-up",
+      "lane": "lifecycle-update",
+      "candidate": "GitHub native Actions/gh workflows",
+      "disposition": "no-change",
+      "reason": "Current owner adds evidence-based replacement learning and held-out promotion gates rather than generic issue/PR automation.",
+      "current_owner": "skills/github-follow-up",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/github-follow-up-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "GitHub native Actions/gh workflows"
+      ],
+      "decision": "retain"
+    },
+    {
+      "name": "skill-creator",
+      "lane": "portable-skill-lifecycle",
+      "candidate": "Agent Skills specification",
+      "disposition": "no-change",
+      "reason": "The specification is already the packaging target; it does not author or validate local procedural quality.",
+      "current_owner": "skills/skill-creator",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/skill-creator-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "Agent Skills specification"
+      ],
+      "decision": "retain"
+    },
+    {
+      "name": "humanizer",
+      "lane": "communication",
+      "candidate": "none with matched reader outcomes",
+      "disposition": "no-change",
+      "reason": "No maintained online package supplied evidence strong enough to replace the existing on-demand prose owner.",
+      "current_owner": "skills/humanizer",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/humanizer-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [],
+      "decision": "retain"
+    },
+    {
+      "name": "conversational-communication",
+      "lane": "communication",
+      "candidate": "none with matched user preference evidence",
+      "disposition": "no-change",
+      "reason": "This is a user-confirmed local interaction preference, not a marketplace capability.",
+      "current_owner": "skills/conversational-communication",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/conversational-communication-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [],
+      "decision": "retain"
+    },
+    {
+      "name": "hermes-self-engineering",
+      "lane": "lifecycle-update",
+      "candidate": "Hermes official docs/source",
+      "disposition": "no-change",
+      "reason": "Official Hermes documentation is already the authoritative dependency; an external skill would add stale indirection.",
+      "current_owner": "skills/hermes-self-engineering",
+      "evidence": {
+        "registry_status": "admitted",
+        "eval": "evals/results/hermes-self-engineering-deterministic.json"
+      },
+      "gap": "No evidence-backed replacement gap.",
+      "candidates": [
+        "Hermes official docs/source"
+      ],
+      "decision": "retain"
+    }
+  ],
+  "next_pilots": [
+    {
+      "priority": 1,
+      "name": "Prime Agent intact optional executor",
+      "scope": "one disposable project, isolated state, one Codex OAuth route, persistent state, steering/recovery assertion, shutdown cleanup; no second user-facing composer"
+    },
+    {
+      "priority": 2,
+      "name": "Primary-source research route comparison",
+      "scope": "Parallel versus Tavily on a frozen multi-source suite; citation validity, completeness, latency, and cost"
+    },
+    {
+      "priority": 3,
+      "name": "Browser execution comparison",
+      "scope": "Browser Use versus Playwright MCP versus Chrome DevTools MCP on login-free deterministic tasks, tracing, recovery, and cleanup"
+    }
+  ]
+}

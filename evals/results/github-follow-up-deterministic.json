@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "suite": "github-follow-up-deterministic",
+  "capability": "github-follow-up",
+  "status": "pass",
+  "claim": "The promoted GitHub follow-up artifact preserves ordinary manual follow-up while gating cross-project engineering lessons behind deterministic matched evaluation on unrelated held-out code.",
+  "candidate_sha256": "a8a177bd5b3bb0469ea71af2e9606533dbada641f8a9a8f1199c6d8dfaac52fc",
+  "evidence": {
+    "behavior_evaluations": [
+      "evals/results/github-follow-up-cross-project-learning-legacy-hermes.json",
+      "evals/results/github-follow-up-cross-project-learning-hermes.json"
+    ],
+    "behavior_result": "6 candidate wins, 0 losses, 3 ties, and 0 hard failures across 9 representative, near-miss, adversarial, held-out, and legacy cases; one judge-order disagreement resolved to a hard-pass tie",
+    "targeted_repeat": "4 candidate wins, 0 losses, and 0 hard failures on the difficult owner-state, held-out, automatic-patch, and direct-test cases",
+    "statistical_limit": "The one-trial confidence sequence remained inconclusive; admission uses the bounded compatibility gate and does not claim statistical proof",
+    "hash_binding": "tools.artifact_hash.candidate_hash equals the evaluated candidate_sha256 for canonical source and the live fleet deployment; suite sha256 is 3b0010ab22040ee5a6d2040a3117e3fe5d24fdf5b0193d6505886e7e5ede1875",
+    "deterministic_tests": "python -m pytest -q tests/test_github_follow_up_gate.py -> 12 passed; python -m pytest -q -> 269 passed, 1 skipped, 83 subtests passed",
+    "isolated_audit": "python tools/audit.py check --repo . -> pass in a detached clean worktree containing only this change; the main dirty worktree still has a pre-existing foreground-context-router ownership mismatch",
+    "fleet_identity": "Agent Signal source and the live fleet deployment are byte-identical (raw sha256 bbf3b73e0e688b3fa092a15356e277462bee068472e7f20c96d8db1da4eacf24)",
+    "fresh_discovery": "Hermes skill_view loaded the new gate; fresh OMP --no-session and Codex --ephemeral runs both returned Decision: no edit without unrelated held-out baseline-versus-candidate evaluation",
+    "public_safe": true
+  },
+  "selection": {
+    "portable_behavior_migrated": [
+      "GitHub outcomes are engineering evidence rather than a merge-count target",
+      "live-source reconstruction with explicit hypothetical-evidence boundaries",
+      "existing-owner inspection and no edit for an already-owned lesson",
+      "deterministic matched baseline-versus-candidate evaluation on unrelated held-out code",
+      "predeclared engineering outcomes with no promotion on tie, loss, missing cases, or inconclusive evidence",
+      "separate direct-test path for GitHub-only procedure corrections and bounded automatic self-edits"
+    ],
+    "discarded": [
+      "scheduled PR campaign and unused gate state",
+      "merge chasing and cadence-only comments",
+      "project trivia, PR identifiers, and maintainer taste as global rules",
+      "unvalidated direct edits to general coding owners"
+    ]
+  },
+  "result": {
+    "passed": true
+  }
+}

@@ -28,20 +28,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "d35c6490141995ce70944ea0d408775ea2a749fa5a29cb6a76b89ddf561a0106",
+      "sha256": "ab91a10aa151630088cac397911d3c9ffd38f021eb945ec9cffd7be0249ec34e",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
     },
     {
-      "bytes": 1475,
+      "bytes": 1663,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "be24176936008554359673a47cb708e7a348b89a0d770c0b02bd963a7ebf319d",
+      "sha256": "234558236c6c9dc945e1679135dfcc81b30722cbc4a254908e0a2435228ddd3f",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -112,7 +112,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 15624,
+      "bytes": 15785,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -305,7 +305,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "522950bce816f3514c17b068dde7d4d28fa70fff0ceca48532b1197e58e22f47",
+      "sha256": "3a54b35c60f075a2773b14a139eff8e125dc93acb4340771813fe0f313387571",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"

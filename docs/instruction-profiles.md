@@ -9,8 +9,8 @@ Agent Signal treats the user-owned instruction overlay as a versioned, testable 
 | Host | Runtime | Reasoning | Standing user-owned bytes | Budget |
 |---|---|---:|---:|---:|
 | Hermes | Hermes Agent 0.20.5 | medium | 1,211 | 2,048 |
-| Codex | codex-cli 0.150.0-alpha.12.2 | medium | 1,475 | 2,048 |
-| OMP | omp 17.2.13 | high | 1,475 inherited from Codex | 2,048 |
+| Codex | codex-cli 0.150.0-alpha.12.2 | medium | 1,663 | 2,048 |
+| OMP | omp 17.2.13 | high | 1,663 inherited from Codex | 2,048 |
 
 `current-observed` means the exact user-owned files, current model selectors, runtime versions, hashes, composition, and context budgets were read back and verified. It does **not** claim that Agent Signal can copy provider-hidden or runtime-native system instructions, or that every line is globally optimal forever.
 
@@ -44,7 +44,7 @@ The second command is used only when a model/provider/runtime/instruction trigge
 
 OMP v17.2.13 explicitly discovers `~/.codex/AGENTS.md` through its `codex` discovery provider at user scope. The current OMP native `AGENTS.md` is absent, so the higher-priority native provider does not shadow the Codex file. This inheritance is therefore a verified host mechanism, not an assumed file convention; see the version-pinned OMP `docs/context-files.md` source recorded in the surface contract.
 
-The earlier local Codex `agent-surface-curator` plugin was a host-local pre-edit/inventory gate, not a complete current cross-host evaluator. It is disabled and superseded by the repository's `capability-curator`, machine-readable surface inventory, recovery manifest, and model-profile verifier. The current Codex `AGENTS.md` snapshot still contains the old route because the protected-file update was not approved; the surface inventory records that drift instead of silently changing it. `agent-surface-bridge` remains prior evidence, not a second canonical control plane.
+The earlier local Codex `agent-surface-curator` plugin was a host-local pre-edit/inventory gate, not a complete current cross-host evaluator. It is disabled and superseded by the repository's `capability-curator`, machine-readable surface inventory, recovery manifest, and model-profile verifier. The user-approved Codex `AGENTS.md` route now distinguishes the Agent Signal `skill-creator` for durable/shared instructions from Codex's bundled `.system/skill-creator` for Codex-only scaffolding, UI metadata, and validation; placement and cross-host convergence route to their active owners. `agent-surface-bridge` remains prior evidence, not a second canonical control plane.
 
 ## Writing ownership
 

@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "suite": "evals/context-uplift-suite.json",
+  "suite_sha256": "106e0c3c64d94934299a92ca6da52bff40e9a5bbee01eea4c1b5740b09a660bc",
+  "harness_sha256": "79f69eb9d178fa3196e823d5de00f0e01210151c3c92bc6e1f74111192f12a8f",
+  "fixture": {
+    "synthetic": true,
+    "messages": 1362,
+    "estimated_tokens": 236832,
+    "raw_transcript_committed": false
+  },
+  "runtime": {
+    "hermes_version": "0.20.6",
+    "hermes_revision": "89b38ed734ab2d5c3d263bc24fbdb8c74e931af4",
+    "provider": "openai-codex",
+    "answer_model": "gpt-5.6-sol"
+  },
+  "arms": [
+    {
+      "strategy": "baseline-current-rotating-compressor",
+      "score": 0.625,
+      "passed": 5,
+      "total": 8,
+      "critical_failures": ["middle-correction", "middle-procedure"],
+      "other_failures": ["middle-preference"],
+      "session_identity_stable": false,
+      "restart_recovery": true,
+      "extra_visible_sessions": 1,
+      "median_latency_ms": 13687.602899968624,
+      "resource_rank": 0
+    },
+    {
+      "strategy": "native-in-place",
+      "score": 1.0,
+      "passed": 8,
+      "total": 8,
+      "critical_failures": [],
+      "session_identity_stable": true,
+      "restart_recovery": true,
+      "extra_visible_sessions": 0,
+      "median_latency_ms": 8354.816100094467,
+      "resource_rank": 1,
+      "native_checkpoint_items": 1,
+      "replay_mode": "opaque-compaction-item"
+    },
+    {
+      "strategy": "native-900k",
+      "score": 1.0,
+      "passed": 8,
+      "total": 8,
+      "critical_failures": [],
+      "session_identity_stable": true,
+      "restart_recovery": true,
+      "extra_visible_sessions": 0,
+      "median_latency_ms": 5945.307600079104,
+      "resource_rank": 2,
+      "native_checkpoint_items": 0,
+      "replay_mode": "full-236k-transcript"
+    },
+    {
+      "strategy": "hermes-lcm-intact",
+      "score": null,
+      "critical_failures": ["windows-directory-fsync-breaks-externalized-storage-and-recovery"],
+      "source_revision": "10cbb78347ec86f3004153b24767324ded9e37b4",
+      "version": "0.21.0-rc2",
+      "license": "MIT",
+      "full_suite": {"passed":2572,"failed":219,"skipped":4,"xfailed":12},
+      "focused_core": {"passed":103,"failed":0},
+      "disposition": "not-promotable-on-current-Windows-host"
+    }
+  ],
+  "decision": {
+    "winner": "native-in-place",
+    "material_improvement": true,
+    "reason": "Perfect recall and same-thread checkpoint replay with no visible-session fan-out; 900K added no recall and retained the full prompt; LCM failed an intact Windows recovery boundary."
+  },
+  "promotion": {
+    "model_changed": false,
+    "context_engine": "compressor",
+    "compression.in_place": true,
+    "compression.codex_responses_native": true,
+    "compression.codex_responses_compact_threshold": 200000,
+    "effective_base_threshold": 127808,
+    "session_count_before": 395,
+    "session_count_after": 395,
+    "fresh_process_readback": true,
+    "recovery_diff_clean": true
+  },
+  "verification": {
+    "agent_signal_targeted_tests": "12 passed",
+    "hermes_native_transport_tests": "52 passed",
+    "hermes_upstream_windows_cleanup_observation": "90 passed; 10 failed after assertions because upstream tests left SQLite handles open during TemporaryDirectory cleanup",
+    "config_check": "pass",
+    "doctor": "pass with one unrelated existing state.db size advisory"
+  },
+  "rollback": [
+    "hermes config set compression.in_place false",
+    "hermes config set compression.codex_responses_native false",
+    "hermes config set compression.codex_responses_compact_threshold 200000",
+    "restart the affected runtime and verify the three values plus unchanged session count"
+  ]
+}

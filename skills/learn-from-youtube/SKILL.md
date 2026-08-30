@@ -5,12 +5,17 @@ license: MIT
 compatibility: Requires transcript access; visual material may require frame inspection.
 metadata:
   author: supplefrog
-  version: "1.0.0"
+  version: "1.1.0"
+  hermes:
+    tags: [youtube, learning, research, transcripts]
+    related_skills: [youtube-content]
 ---
 
 # Learn From YouTube
 
-Use when the user wants to learn from a YouTube source without watching the full video: comprehensive knowledge extraction, timestamped study notes, concept teaching, claim checking, prerequisites, or an information-dense lesson. Do not use for media downloads, simple translation, or a deliberately brief summary.
+Use when the user wants to learn from a YouTube source without watching the full video: comprehensive knowledge extraction, timestamped study notes, concept teaching, claim checking, prerequisites, or an information-dense lesson. Use `youtube-content` for simple transcript extraction, brief summaries, chapters, threads, blogs, or quotes. Do not use for media downloads or simple translation.
+
+**AI LABS exception:** when the channel is AI LABS and the user wants a workflow, automation, prompt pattern, or paywalled resource reconstructed from public material, read [references/ai-labs-workflow-extraction.md](references/ai-labs-workflow-extraction.md). That focused mode replaces the normal teaching artifact and full-coverage requirement.
 
 Produce a faithful teaching artifact, not a lossy recap. Prove transcript coverage before compressing.
 

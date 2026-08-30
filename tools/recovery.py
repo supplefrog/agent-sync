@@ -41,6 +41,7 @@ _SECRET_PATH_PART = re.compile(
     re.IGNORECASE,
 )
 _SAFE_SECRET_NAMED_PATHS = {
+    "compression.proactive_prune_tokens",
     "security.redact_secrets",
     "features.memories",
     "memory.backend",
@@ -57,6 +58,9 @@ _SAFE_SECRET_NAMED_PATHS = {
     "sessions.retention_days",
     "sessions.vacuum_after_prune",
     "sessions.write_json_snapshots",
+}
+_SAFE_NONNEGATIVE_INTEGER_PATHS = {
+    "compression.proactive_prune_tokens",
 }
 _SENSITIVE_CONFIG_PARTS = {
     "memory",
@@ -299,6 +303,12 @@ def _set_dotted(value: dict[str, Any], dotted: str, selected: Any) -> None:
 
 
 def _assert_no_secret_paths(value: Any, prefix: str) -> None:
+    if prefix in _SAFE_NONNEGATIVE_INTEGER_PATHS:
+        if type(value) is not int or value < 0:
+            raise RecoveryError(
+                f"safe token-budget config path must be a non-negative integer: {prefix}"
+            )
+        return
     if isinstance(value, Mapping):
         for key, child in value.items():
             dotted = f"{prefix}.{key}" if prefix else str(key)

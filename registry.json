@@ -15,15 +15,51 @@
     },
     {
       "name": "learn-from-youtube",
-      "status": "staged",
+      "status": "admitted",
       "license": "MIT",
-      "source": "original-port"
+      "source": "local-converged-port",
+      "eval": "evals/results/learn-from-youtube-deterministic.json"
+    },
+    {
+      "name": "neuroarxiv",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "https://github.com/UditAkhourii/neuroarxiv@b5d20efa12dd1ba177ce890d56809d2e027f8055",
+      "eval": "evals/results/neuroarxiv-deterministic.json"
+    },
+    {
+      "name": "advise-project-approach",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "local-converged-port",
+      "eval": "evals/results/advise-project-approach-deterministic.json"
+    },
+    {
+      "name": "answer-key-gauntlet",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "local-converged-port",
+      "eval": "evals/results/answer-key-gauntlet-deterministic.json"
+    },
+    {
+      "name": "frontend-ui-engineering",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "local-converged-port",
+      "eval": "evals/results/frontend-ui-engineering-deterministic.json"
     },
     {
       "name": "surface-convergence",
       "status": "staged",
       "license": "MIT",
       "source": "original"
+    },
+    {
+      "name": "cross-agent-surface-engineering",
+      "status": "admitted",
+      "license": "UNLICENSED",
+      "source": "local-converged-port",
+      "eval": "evals/results/cross-agent-surface-engineering-deterministic.json"
     },
     {
       "name": "outcome-first-workflow-design",
@@ -51,9 +87,10 @@
     },
     {
       "name": "github-follow-up",
-      "status": "staged",
+      "status": "admitted",
       "license": "MIT",
-      "source": "original"
+      "source": "original",
+      "eval": "evals/results/github-follow-up-deterministic.json"
     },
     {
       "name": "skill-creator",

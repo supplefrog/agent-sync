@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "suite": "github-follow-up-replacement-learning",
+  "host": "hermes",
+  "host_version": "Hermes Agent v0.20.5 (2026.8.19) · upstream 7e67f64f\nInstall directory: C:\\Users\\E\\AppData\\Local\\hermes\\hermes-agent\nInstall method: git\nPython: 3.11.15\nOpenAI SDK: 2.24.0\nUpdate available: 298 commits behind — run 'hermes update'",
+  "judge_host": "hermes",
+  "judge_version": "Hermes Agent v0.20.5 (2026.8.19) · upstream 7e67f64f\nInstall directory: C:\\Users\\E\\AppData\\Local\\hermes\\hermes-agent\nInstall method: git\nPython: 3.11.15\nOpenAI SDK: 2.24.0\nUpdate available: 298 commits behind — run 'hermes update'",
+  "run_timestamp_utc": "2026-08-29T23:20:20.702132+00:00",
+  "status": "pass",
+  "artifacts": {
+    "candidate_sha256": "a8a177bd5b3bb0469ea71af2e9606533dbada641f8a9a8f1199c6d8dfaac52fc",
+    "baseline_candidate_sha256": "b054a61acddc925af6379997adcb6bbf4cac5e61ad041a279f15c5ec1387a3fe",
+    "suite_sha256": "3b0010ab22040ee5a6d2040a3117e3fe5d24fdf5b0193d6505886e7e5ede1875",
+    "harness_sha256": "64a407a51dbb939e8b5f70f42a6730fcf0b3af8ea91bd4f2bc776cad3fdc0238"
+  },
+  "effective_stack": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "low",
+    "judge_model": "gpt-5.6-sol",
+    "judge_provider": "openai-codex",
+    "tool_policy": "safe",
+    "prompt_assembly": "isolated-explicit-artifact-v2",
+    "context_policy": "fresh-session-per-output",
+    "equivalence_group": "hermes-openai-codex-gpt-5.6-sol-cli-safe-2026-08-30",
+    "irreducible_differences": []
+  },
+  "decision_rule": {
+    "alpha": 0.05,
+    "margin": 0.1,
+    "min_trials": 1,
+    "max_trials": 1,
+    "max_agent_runs": 20,
+    "score_range": [
+      -1,
+      1
+    ]
+  },
+  "seeds": [
+    0
+  ],
+  "run_count": 20,
+  "rollback": "Keep the current live skill and discard the staged candidate.",
+  "session_lifecycle": {
+    "policy": "delete-after-durable-report",
+    "created": [
+      "20260830_045022_e5807d",
+      "20260830_045048_d2975b",
+      "20260830_045118_9bf618",
+      "20260830_045147_f5794f",
+      "20260830_045216_fb2650",
+      "20260830_045232_a58a03",
+      "20260830_045252_6ace7c",
+      "20260830_045313_2c77f5",
+      "20260830_045334_274116",
+      "20260830_045351_c69242",
+      "20260830_045413_7a0697",
+      "20260830_045432_c0758e",
+      "20260830_045451_3c9bab",
+      "20260830_045513_9ca655",
+      "20260830_045545_bf34ee",
+      "20260830_045614_eca5a4",
+      "20260830_045638_bb3194",
+      "20260830_045706_98bcc5",
+      "20260830_045730_1dcd59",
+      "20260830_045749_65be57"
+    ],
+    "protected": [],
+    "deleted": [
+      "20260830_045022_e5807d",
+      "20260830_045048_d2975b",
+      "20260830_045118_9bf618",
+      "20260830_045147_f5794f",
+      "20260830_045216_fb2650",
+      "20260830_045232_a58a03",
+      "20260830_045252_6ace7c",
+      "20260830_045313_2c77f5",
+      "20260830_045334_274116",
+      "20260830_045351_c69242",
+      "20260830_045413_7a0697",
+      "20260830_045432_c0758e",
+      "20260830_045451_3c9bab",
+      "20260830_045513_9ca655",
+      "20260830_045545_bf34ee",
+      "20260830_045614_eca5a4",
+      "20260830_045638_bb3194",
+      "20260830_045706_98bcc5",
+      "20260830_045730_1dcd59",
+      "20260830_045749_65be57"
+    ],
+    "remaining": [],
+    "errors": []
+  },
+  "result": {
+    "candidate_wins": 3,
+    "candidate_losses": 0,
+    "ties": 2,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0,
+    "judge_disagreements": 0,
+    "trial_scores": [
+      0.6
+    ]
+  },
+  "cases": [
+    {
+      "id": "closed-pr-merged-replacement",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "same-issue-unrelated-merged-pr",
+      "kind": "near-miss",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "preference-without-technical-evidence",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "winner-reveals-root-cause-test-lesson",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "novel-winner-lesson-updates-existing-owner",
+      "kind": "held-out",
+      "trial": 0,
+      "winner": "candidate"
+    }
+  ],
+  "decision": "Admit under the bounded compatibility gate: 3 candidate wins, 2 ties, 0 losses, and 0 hard failures. The one-trial confidence sequence remained inconclusive and is not claimed as statistical proof.",
+  "raw_report_committed": false
+}

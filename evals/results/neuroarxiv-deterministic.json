@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "suite": "neuroarxiv",
+  "capability": "neuroarxiv",
+  "status": "pass",
+  "claim": "One portable NeuroArxiv owner preserves strict novelty gates, real arXiv fetching, per-paper evidence isolation, and a single cited architecture recommendation across Hermes, Codex, and OMP.",
+  "candidate_sha256": "58df358a9734dd43833c7c3914e648decdd065e12309bb3134fc814b0e9c8e11",
+  "artifacts": {
+    "source_receipt_sha256": "fc174f65b2ee138f2a125d35e75db83276e94847530e93e1f544d221b956720a",
+    "license_sha256": "5af04fab6a09d66983b2d876bb3b6aaa4d056c21c8819ec6640421359b1497a4",
+    "upstream_commit": "b5d20efa12dd1ba177ce890d56809d2e027f8055"
+  },
+  "selection": {
+    "portable_behavior_migrated": [
+      "existing-solution and genuinely-new-architecture preflight gates",
+      "sequential arXiv export API fetching with thin-result handling",
+      "one isolated worker per paper with cross-paper contamination rejection",
+      "single actionable convergence path with cited risks and alternates",
+      "OMP task batch adapter alongside Codex task and Hermes delegate_task"
+    ],
+    "native_behavior_retained": [
+      "Codex and OMP use their native task tools",
+      "Hermes uses delegate_task",
+      "each host uses its native raw URL reader"
+    ],
+    "discarded": [
+      "the second byte-identical live copy",
+      "the upstream companion CLI, Claude Agent SDK, hooks, plugins, and package scripts",
+      "unsupported claims that arXiv abstracts are final authority"
+    ]
+  },
+  "verification": {
+    "arxiv_api": "live export API returned an id, title, full abstract, authors, date, and links",
+    "portable_invariants": "task/delegate routing and fail-closed isolation assertions passed",
+    "omp_task_source": "https://github.com/can1357/oh-my-pi/blob/main/docs/tools/task.md",
+    "omp_runtime": "17.2.13",
+    "public_safe": true
+  },
+  "limits": "The full 12-20-paper fan-out was not rerun for structural consolidation. OMP task semantics are official-source verified; the skill stops rather than simulating isolation when a runtime does not expose isolated workers.",
+  "result": {
+    "passed": true
+  }
+}

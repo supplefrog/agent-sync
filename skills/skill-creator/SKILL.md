@@ -45,8 +45,9 @@ When writing durable instructions:
 3. Remove narrative, transitions, duplicated rules/conclusions, generic rationale, and examples that do not disambiguate.
 4. State a reason only when omission could change implementation or hide a boundary.
 5. Keep each rule in one owner; use a short routing trigger elsewhere when discovery needs help.
-6. Preserve safety, governance, authorization boundaries, and capability; brevity never overrides them.
-7. Do not turn one failure, model quirk, temporary route, or local incident into a universal rule.
+6. Preserve user intent, scope, safety, governance, authorization boundaries, and capability; approval for one task does not authorize adjacent external action; brevity never overrides these.
+7. For retrying or externally mutating workflows, encode a stopping condition proportional to risk.
+8. Do not turn one failure, model quirk, temporary route, or local incident into a universal rule.
 
 ## Skill structure
 

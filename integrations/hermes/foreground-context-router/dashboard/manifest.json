@@ -1,0 +1,9 @@
+{
+  "name": "foreground-context-router",
+  "label": "Foreground Context Router",
+  "description": "Classifies Desktop prompts for normal or extended-context foreground conversations",
+  "version": "0.1.0",
+  "slots": [],
+  "entry": "dist/index.js",
+  "api": "plugin_api.py"
+}

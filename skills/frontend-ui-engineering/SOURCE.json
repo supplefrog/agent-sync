@@ -1,0 +1,12 @@
+{
+  "primary_upstream": "https://github.com/addyosmani/agent-skills",
+  "commit": "7829ffd90d973b6325f5f12f1b1226dcace74443",
+  "license": "MIT",
+  "adaptations": [
+    "Merge production engineering and accessibility with subject-grounded visual direction.",
+    "Add conservative resource classification, source boundaries, rendered refinement, and DESIGN.md routing.",
+    "Preserve conceptual contributions from reviewed sources without installing duplicate frontend owners."
+  ],
+  "additional_sources": "references/provenance.md",
+  "targets": ["Hermes Agent 0.20.5", "Codex 0.150.0-alpha.12.2", "OMP 17.2.13"]
+}

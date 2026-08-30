@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "suite_id": "agent-signal-context-uplift-v1",
+  "description": "Synthetic, public-safe exact-recall suite for matched context strategy evaluation.",
+  "cases": [
+    {
+      "id": "early-codename",
+      "kind": "exact_fact",
+      "critical": true,
+      "position": "early",
+      "statement": "The synthetic launch codename is KESTREL-47.",
+      "question": "What is the synthetic launch codename?",
+      "expected": ["KESTREL-47"],
+      "forbidden": []
+    },
+    {
+      "id": "early-non-action",
+      "kind": "negative",
+      "critical": true,
+      "position": "early",
+      "statement": "Safety boundary: do not rotate credentials during this evaluation.",
+      "question": "State the explicit non-action instruction verbatim.",
+      "expected": ["do not rotate credentials"],
+      "forbidden": ["rotate credentials now"]
+    },
+    {
+      "id": "middle-correction",
+      "kind": "correction",
+      "critical": true,
+      "position": "middle",
+      "setup_statement": "Initial synthetic ship date: 2031-02-11.",
+      "statement": "Correction: the synthetic ship date is 2031-03-04, not 2031-02-11.",
+      "question": "What is the corrected synthetic ship date? Reply with only the current date.",
+      "expected": ["2031-03-04"],
+      "forbidden": ["2031-02-11"]
+    },
+    {
+      "id": "middle-preference",
+      "kind": "preference",
+      "critical": false,
+      "position": "middle",
+      "statement": "Synthetic reporting preference: start with one plain-language conclusion.",
+      "question": "What is the synthetic reporting preference?",
+      "expected": ["one plain-language conclusion"],
+      "forbidden": []
+    },
+    {
+      "id": "middle-procedure",
+      "kind": "procedure",
+      "critical": true,
+      "position": "middle",
+      "statement": "The synthetic release sequence is SNAPSHOT-VERIFY-PUBLISH.",
+      "question": "What is the exact synthetic release sequence?",
+      "expected": ["SNAPSHOT-VERIFY-PUBLISH"],
+      "forbidden": ["PUBLISH-VERIFY-SNAPSHOT"]
+    },
+    {
+      "id": "late-receipt",
+      "kind": "identifier",
+      "critical": true,
+      "position": "late",
+      "statement": "The immutable synthetic receipt ID is rcpt-7f3a9c21.",
+      "question": "What is the immutable synthetic receipt ID?",
+      "expected": ["rcpt-7f3a9c21"],
+      "forbidden": []
+    },
+    {
+      "id": "late-evidence-path",
+      "kind": "identifier",
+      "critical": false,
+      "position": "late",
+      "statement": "The public synthetic evidence path is evidence/context-uplift/decision.json.",
+      "question": "What is the public synthetic evidence path?",
+      "expected": ["evidence/context-uplift/decision.json"],
+      "forbidden": []
+    },
+    {
+      "id": "late-host-scope",
+      "kind": "exact_fact",
+      "critical": true,
+      "position": "late",
+      "statement": "The supported synthetic host set is codex, hermes, omp.",
+      "question": "What is the supported synthetic host set?",
+      "expected": ["codex", "hermes", "omp"],
+      "forbidden": ["opencode", "antigravity"]
+    }
+  ]
+}

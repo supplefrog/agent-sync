@@ -96,7 +96,7 @@
       "precedence": 200,
       "model_sensitive": true,
       "backup": "captured",
-      "note": "Current observed drift: the INSTRUCTION-AUTHORING line still names the disabled local agent-surface-curator. Replacing that protected AGENTS.md line requires explicit user approval; the profile preserves and reports the current bytes rather than silently rewriting them."
+      "note": "The user-approved INSTRUCTION-AUTHORING line routes durable/shared instruction content to the Agent Signal skill-creator, Codex-only scaffolding/UI metadata/validation to Codex's bundled .system/skill-creator, placement ambiguity to hermes-self-engineering, and cross-host convergence to cross-agent-surface-engineering."
     },
     {
       "id": "codex.session-start-hook",

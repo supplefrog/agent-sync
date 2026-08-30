@@ -11,5 +11,13 @@
     "9/9 canonical skills validate",
     "fleet render, apply, and verify pass for the managed portable skill"
   ],
+  "retired_hermes_behavior_decisions": {
+    "adaptive_verifier_feedback": "discarded as automatic plan mutation; use an explicit verifier node or answer-key-gauntlet and create a separately authorized revision task",
+    "reasoning_tier_escalation": "discarded because retries reuse one immutable route receipt",
+    "legacy_model_tier_state": "discarded after active-consumer inventory found none",
+    "per_task_host_controls": "not portable; native Hermes delegation owns them and no Hermes DAG adapter is admitted",
+    "process_and_session_lifecycle": "not claimed; any future Hermes DAG adapter must re-prove timeout, process reaping, session isolation, cancellation, and cleanup",
+    "progress_supervisor_token_ui": "unsupported"
+  },
   "limitations": "Hermes has no admitted DAG adapter. Ordinary Hermes routed delegation remains owned by the routed-delegation plugin; future Hermes DAG support must be a thin consumer of this portable state contract."
 }

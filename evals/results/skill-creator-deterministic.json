@@ -4,11 +4,13 @@
   "capability": "skill-creator",
   "status": "pass",
   "claim": "skill-creator is the single portable owner for model-facing instruction and skill authoring; public prose remains owned by humanizer.",
-  "candidate_sha256": "e48d2dd1005122be41727c3ec6b97ef6aade1e0f4d986c1fc92ca1c6ecd7e7c1",
+  "candidate_sha256": "f96de87da914947648d41877a791c2c2b5f5a7df2c66a133f46fbe2d1bc80e7b",
   "selection": {
-    "source": "active Hermes skill, imported byte-for-byte before the reviewed plain-language ownership clarification",
+    "source": "active portable skill plus a behavior-level review of Codex's bundled system skill",
     "adjacent_owners": ["humanizer", "hermes-self-engineering", "capability-curator"],
-    "boundary": "Author concise model-facing content after placement is known; do not own public prose, placement, or admission policy."
+    "boundary": "Author concise model-facing content after placement is known; do not own public prose, placement, admission policy, or Codex-native scaffolding/UI metadata/validation.",
+    "portable_behavior_migrated": "Preserve user scope and authorization; externally mutating retry workflows require a risk-proportional stopping condition.",
+    "native_behavior_retained": "Codex .system/skill-creator keeps its initializer, openai.yaml/UI metadata, bundled validator, and Codex installation defaults."
   },
   "verification": {
     "skill_validation": "pass",
@@ -19,6 +21,6 @@
   },
   "result": {
     "passed": true,
-    "selection_reason": "Existing active owner is mature, structurally valid, narrowly bounded, and now states the human-readable model-instruction boundary without loading humanizer."
+    "selection_reason": "The portable owner stays narrow while absorbing the useful general scope safeguards; Codex-only packaging behavior remains in the bundled native owner and is explicitly disambiguated."
   }
 }

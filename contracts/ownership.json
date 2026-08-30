@@ -26,10 +26,52 @@
     {
       "id": "learn-from-youtube",
       "owner": "skills/learn-from-youtube",
-      "status": "staged",
-      "selection_state": "unresolved",
-      "selection_evidence": [],
-      "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/learn-from-youtube-deterministic.json"
+      ],
+      "selection_reason": "Selected as a behavior-level synthesis: Agent Signal provenance and parser, Hermes AI LABS extraction, OMP routing, and Codex UI metadata; inferior copied policy and generated caches are excluded."
+    },
+    {
+      "id": "neuroarxiv",
+      "owner": "skills/neuroarxiv",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/neuroarxiv-deterministic.json"
+      ],
+      "selection_reason": "The Hermes and Codex variants were byte-identical; Agent Signal preserves all behavior and provenance, adds the source-verified OMP task adapter, and remains fail-closed when isolated workers are unavailable."
+    },
+    {
+      "id": "advise-project-approach",
+      "owner": "skills/advise-project-approach",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/advise-project-approach-deterministic.json"
+      ],
+      "selection_reason": "A behavior-level synthesis preserves project-stage strategy, comparables, cost/vendor reality, one ranked recommendation, failure conditions, and next actions; portable routes remain shared while Hermes-only research/verification owners are optional accelerators with self-contained Codex/OMP fallbacks."
+    },
+    {
+      "id": "answer-key-gauntlet",
+      "owner": "skills/answer-key-gauntlet",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/answer-key-gauntlet-deterministic.json"
+      ],
+      "selection_reason": "The Hermes, Codex, and retired bridge variants were semantically identical; Agent Signal preserves the workflow and contract while replacing stale bridge ownership."
+    },
+    {
+      "id": "frontend-ui-engineering",
+      "owner": "skills/frontend-ui-engineering",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/frontend-ui-engineering-deterministic.json"
+      ],
+      "selection_reason": "The shared and Codex bundles were byte-identical; Agent Signal preserves all behavior and support references while binding upstream MIT provenance and fleet management."
     },
     {
       "id": "surface-convergence",
@@ -38,6 +80,16 @@
       "selection_state": "unresolved",
       "selection_evidence": [],
       "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+    },
+    {
+      "id": "cross-agent-surface-engineering",
+      "owner": "skills/cross-agent-surface-engineering",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/cross-agent-surface-engineering-deterministic.json"
+      ],
+      "selection_reason": "Selected as a behavior-level synthesis of the current Agent Signal operator, useful host-discovery checks, and one shared Agent Skills deployment; stale bridge ownership and retired-host rules were rejected."
     },
     {
       "id": "outcome-first-workflow-design",
@@ -68,7 +120,7 @@
         "evals/results/routed-dag-cross-host-smoke-2026-08-26.json",
         "evals/results/dynamic-workflows-deterministic.json"
       ],
-      "selection_reason": "Selected over the Hermes cc compatibility runner because the portable state machine passed deterministic and cross-host Codex/OMP lifecycle checks while the duplicate runner was red and host-specific."
+      "selection_reason": "Selected over the red Hermes cc compatibility runner after behavior-level accounting: explicit verifier nodes/answer-key-gauntlet preserve verification outcomes; automatic verifier-driven reruns, tier escalation, legacy model_tier state, and the unadmitted Hermes subprocess/session executor are deliberately rejected. Codex/OMP adapters passed lifecycle checks; Hermes DAG execution remains unavailable."
     },
     {
       "id": "fleet-sync",
@@ -84,10 +136,12 @@
     {
       "id": "github-follow-up",
       "owner": "skills/github-follow-up",
-      "status": "staged",
-      "selection_state": "unresolved",
-      "selection_evidence": [],
-      "selection_reason": "Staged owner only; no best-candidate admission decision has been made."
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/github-follow-up-deterministic.json"
+      ],
+      "selection_reason": "The current candidate hash exactly matches the five-case promoted evaluation, the deterministic gate passes 10 tests, and the live Hermes bundle is byte-identical; generated bytecode is excluded."
     },
     {
       "id": "skill-creator",

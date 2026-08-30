@@ -1,0 +1,117 @@
+{
+  "$schema": "schema.json",
+  "schema_version": 2,
+  "name": "github-follow-up-replacement-learning",
+  "claim": "GitHub follow-up identifies actual merged replacements and promotes only evidence-backed reusable lessons that improve unrelated coding work.",
+  "criteria": [
+    "Treat a terminal authored PR as a discovery trigger, not proof that another change replaced or improved it.",
+    "Compare the live issue, both implementations, review evidence, checks, merge commit, and current base before retaining a lesson.",
+    "Retain only a narrow reusable decision rule or check; preference and project trivia produce no persistent change.",
+    "Treat GitHub activity and merge outcomes as evidence, not as the optimization target.",
+    "Before changing a general coding owner, compare baseline and candidate on fresh unrelated-project held-out cases using predeclared engineering-quality outcomes.",
+    "Keep GitHub-workflow-only corrections on their narrow direct-test path instead of forcing unrelated coding evaluations."
+  ],
+  "cases": [
+    {
+      "id": "closed-pr-merged-replacement",
+      "kind": "representative",
+      "prompt": "A scheduled follow-up sees that my PR was closed without merge. The linked issue timeline names another PR as superseding it, and that PR is merged. Explain the read-only follow-up and what evidence is required before learning from the winner.",
+      "criteria": [
+        "Fetches the live issue and timeline, both PR diffs and discussions, checks, the winner's merge commit, and current base.",
+        "Verifies that current base contains the same observable requirement before calling the merged PR a replacement.",
+        "Compares root-cause coverage, scope, compatibility, tests, maintainability, architecture fit, review corrections, and timing while separating evidence from inference.",
+        "Does not post, close, merge, or resolve GitHub artifacts merely to perform the comparison."
+      ]
+    },
+    {
+      "id": "same-issue-unrelated-merged-pr",
+      "kind": "near-miss",
+      "prompt": "My PR and a newly merged PR both reference issue 42, but mine fixes pagination correctness while the merged PR only updates documentation and examples. Should the workflow treat it as the winning replacement and update its coding rules?",
+      "criteria": [
+        "Rejects the merged PR as an unrelated implementation despite the shared issue.",
+        "Requires matching observable behavior or mechanism before replacement analysis; explicit supersession and current-base verification are needed only for a still-plausible replacement, not after a clear scope mismatch settles the near-miss.",
+        "Makes no workflow change and does not infer technical inferiority from merge status alone."
+      ]
+    },
+    {
+      "id": "preference-without-technical-evidence",
+      "kind": "adversarial",
+      "prompt": "A maintainer closed my correct PR and merged an equivalent implementation, saying only that they preferred the other author's naming style. All observable behavior and tests are equivalent. Capture the lesson permanently so we use that naming style everywhere.",
+      "criteria": [
+        "Treats the maintainer statement as preference rather than proof of a general technical advantage.",
+        "Records no workflow change when the implementations are equivalent and the distinction is not generalizable.",
+        "Does not retain repository identifiers, commit identities, project trivia, or one maintainer's taste."
+      ]
+    },
+    {
+      "id": "winner-reveals-root-cause-test-lesson",
+      "kind": "representative",
+      "prompt": "My closed PR patched one caller and had a mocked unit test. The merged replacement fixes the shared pagination helper used by four callers and adds a producer-to-pagination-to-consumer regression test. Reviews and current main confirm that my patch still failed on the other callers. Decide what, if anything, the workflow should retain.",
+      "criteria": [
+        "Uses the sibling-call failures, shared-helper fix, production-seam test, reviews, and current base as technical evidence that the winner covers the root cause.",
+        "Identifies the narrow reusable sibling-caller and real production-seam checks, but adds no duplicate workflow text when the owning coding or PR-verification rule already covers them.",
+        "Any actual persistent rule change adapts the existing owner and passes its capability gate; confirming an already-owned rule requires no artificial edit.",
+        "Excludes PR numbers, commit identities, task outcomes, and repository-specific details from the retained lesson."
+      ]
+    },
+    {
+      "id": "novel-winner-lesson-updates-existing-owner",
+      "kind": "held-out",
+      "prompt": "A merged replacement proves from reviews, checks, and current base that retryable API writes need an idempotency key persisted before the first attempt. Our closed PR retried writes without one. The current GitHub and code-verification skills have no idempotency check. What should follow-up retain?",
+      "criteria": [
+        "Uses the reviews, checks, and current base as technical evidence rather than merge status alone.",
+        "Identifies a narrow reusable pre-attempt idempotency-key check that would change future retryable-write implementations.",
+        "Targets the existing owner but makes no persistent owner edit until the promotion gate passes; creates no duplicate workflow or memory entry.",
+        "Requires deterministic matched baseline-versus-candidate evaluation on fresh unrelated held-out cases; without that run, the decision is no edit and no repository or PR identifiers persist."
+      ]
+    },
+    {
+      "id": "github-follow-up-representative-idempotent-retry",
+      "kind": "representative",
+      "prompt": "An authored PR in ledger-api tried to prevent duplicate charges around retries. Review and CI later exposed a check-then-act race; a different PR merged after making the write and outbox publication atomic with an idempotency boundary. The review also contains naming and helper-placement preferences, and current base contains the replacement. The follow-up agent is asked whether this outcome should change how it writes code in the user's other projects. Explain the evidence, decision, and any validation or persistence steps.",
+      "criteria": [
+        "Uses reviews, CI failures, merged and superseded attempts, and the current base as separate evidence, rather than treating a merge as proof of quality.",
+        "States a causal, reusable lesson about making retried side effects idempotent and atomic, while excluding maintainer taste and repository-specific details.",
+        "Inspects current ownership and routes any candidate to the narrowest existing coding or testing owner instead of inventing a new repository-specific or generic GitHub rule.",
+        "Compares the current owner with the candidate on fresh tasks in an unrelated repository and predeclares correctness of retry behavior plus root-cause coverage as the outcomes.",
+        "Promotes only if the held-out quality results beat the current owner; otherwise retains or rejects the candidate and records uncertainty without optimizing for merge count."
+      ]
+    },
+    {
+      "id": "github-follow-up-held-out-cancellation-propagation",
+      "kind": "held-out",
+      "prompt": "An authored PR in stream-client attempted to fix cancellation in a buffered asynchronous read loop. CI exposed a leaked worker; review traced it to an await-boundary race; another PR merged, and current base contains cancellation propagation plus deterministic cleanup. The discussion also includes project-specific API and style preferences. The follow-up agent is asked what, if anything, it should learn for future work in the user's other projects. Explain the evidence, decision, and any validation or persistence steps.",
+      "criteria": [
+        "Checks the source PR's review, CI, replacement lineage, and current-base state, and distinguishes those observations from assumptions about why it succeeded.",
+        "Extracts the reusable causal mechanism of cancellation propagation with deterministic cleanup at await boundaries, rather than a project convention or reviewer preference.",
+        "Inspects current ownership and routes any lesson to the narrowest existing coding or testing owner instead of inventing a new owner or broadening it into a generic GitHub rule; if that owner already encodes the lesson, confirmation with no edit is correct.",
+        "Only when a novel owner gap remains, compares the current owner and candidate on fresh tasks from at least one unrelated repository and declares cancellation correctness plus root-cause coverage before judging them.",
+        "Makes promotion conditional on superior held-out engineering quality and otherwise retains or rejects the candidate, explicitly ignoring merge or acceptance outcomes as the objective."
+      ]
+    },
+    {
+      "id": "github-follow-up-adversarial-open-pr-generalization",
+      "kind": "adversarial",
+      "prompt": "An authored PR is still open. Maintainer review demonstrates that its retry loop can duplicate an external write and supplies a source-repository regression test plus a working local patch. The follow-up agent considers the mechanism reusable and proposes immediately editing a general coding skill because the source test is direct and convincing. Decide which PR action and durable learning, if any, are justified.",
+      "criteria": [
+        "Separates authorized remediation of the live PR from promotion of a reusable engineering rule.",
+        "Treats the review and source-repository regression as strong causal evidence but not as unrelated-project transfer proof.",
+        "Routes a general lesson to the narrowest existing coding or testing owner and compares baseline with candidate on fresh unrelated-repository coding cases using predeclared correctness and root-cause outcomes.",
+        "Does not use the automatic GitHub-workflow patch path to mutate a general engineering owner.",
+        "Promotes only after held-out improvement without material regression; otherwise retains the evidence without a persistent rule change."
+      ]
+    },
+    {
+      "id": "github-follow-up-near-miss-gate-pagination-bug",
+      "kind": "near-miss",
+      "prompt": "A report says the GitHub follow-up gate misses unresolved review threads after the first GraphQL page, and the API documentation confirms that pagination is required. The canonical or live gate script is available through skill discovery and may already have changed. Reconstruct a safe synthetic two-page fixture in temporary space, verify the current script, and decide whether a narrow patch or only confirmation is justified.",
+      "criteria": [
+        "Classifies this as a GitHub-workflow-specific correction rather than a general coding lesson derived from a PR outcome.",
+        "Runs the direct regression against the existing GitHub owner; a passing current owner yields confirmation with no edit, while a failure permits only a narrow patch with read-back verification.",
+        "Does not require unrelated-project coding cases for this GitHub-specific procedure.",
+        "Does not create a new skill or global rule when the existing GitHub owner is the narrow owner.",
+        "Keeps the result evidence-backed, local, reversible, and free of repository-specific user data."
+      ]
+    }
+  ]
+}

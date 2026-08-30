@@ -1,0 +1,16 @@
+{
+  "upstream": "https://github.com/UditAkhourii/neuroarxiv",
+  "commit": "b5d20efa12dd1ba177ce890d56809d2e027f8055",
+  "source_path": "skills/neuroarxiv",
+  "upstream_version": "0.1.0",
+  "license": "MIT",
+  "adaptations": [
+    "Map static URL fetches to Codex or OMP read in raw mode and Hermes web_extract or a direct raw API fetch.",
+    "Map isolated paper reads to Codex or OMP task batches and Hermes delegate_task.",
+    "Narrow automatic routing to open, non-trivial, costly-to-redo technical mechanisms.",
+    "Remove companion CLI installation instructions and unsupported arXiv authority claim.",
+    "Return bounded prior-art evidence to advise-project-approach when that parent workflow invoked it."
+  ],
+  "scope": "Portable SKILL.md only; companion CLI, Claude Agent SDK, package scripts, hooks, and plugins are excluded.",
+  "targets": ["Codex 0.150.0-alpha.12.2", "Hermes Agent 0.20.5", "OMP 17.2.13"]
+}

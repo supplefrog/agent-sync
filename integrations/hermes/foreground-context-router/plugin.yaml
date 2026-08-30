@@ -1,0 +1,8 @@
+name: foreground-context-router
+version: "0.1.0"
+manifest_version: 2
+api_version: 1
+description: Route context-heavy Desktop prompts into visible fixed-budget conversations.
+author: Local User
+license: MIT
+tags: [desktop, routing, context]

@@ -302,6 +302,31 @@ class RecoveryTests(unittest.TestCase):
             recovery.snapshot(self.policy, self.snapshot, self.roots)
         self.assertFalse(self.snapshot.exists())
 
+    def test_snapshot_allows_numeric_compression_token_budget(self) -> None:
+        payload = json.loads(self.policy.read_text("utf-8"))
+        payload["hosts"]["hermes"]["artifacts"][0]["include"].append("compression")
+        self.policy.write_text(json.dumps(payload), encoding="utf-8")
+        config = yaml.safe_load((self.hermes / "config.yaml").read_text("utf-8"))
+        config["compression"] = {"proactive_prune_tokens": 48000}
+        (self.hermes / "config.yaml").write_text(yaml.safe_dump(config), encoding="utf-8")
+
+        recovery.snapshot(self.policy, self.snapshot, self.roots)
+
+        fragment = json.loads((self.snapshot / "hosts/hermes/config.json").read_text("utf-8"))
+        self.assertEqual(48000, fragment["compression"]["proactive_prune_tokens"])
+
+    def test_snapshot_rejects_non_numeric_compression_token_budget(self) -> None:
+        payload = json.loads(self.policy.read_text("utf-8"))
+        payload["hosts"]["hermes"]["artifacts"][0]["include"].append("compression")
+        self.policy.write_text(json.dumps(payload), encoding="utf-8")
+        config = yaml.safe_load((self.hermes / "config.yaml").read_text("utf-8"))
+        config["compression"] = {"proactive_prune_tokens": "not-an-integer"}
+        (self.hermes / "config.yaml").write_text(yaml.safe_dump(config), encoding="utf-8")
+
+        with self.assertRaisesRegex(recovery.RecoveryError, "token-budget config path"):
+            recovery.snapshot(self.policy, self.snapshot, self.roots)
+        self.assertFalse(self.snapshot.exists())
+
     def test_policy_rejects_plural_sensitive_source_names(self) -> None:
         original = json.loads(self.policy.read_text("utf-8"))
         for source in (

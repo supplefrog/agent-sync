@@ -1,0 +1,125 @@
+{
+  "schema_version": 2,
+  "suite": "github-follow-up-replacement-learning",
+  "host": "hermes",
+  "host_version": "Hermes Agent v0.20.5 (2026.8.19) · upstream 7e67f64f\nInstall directory: C:\\Users\\E\\AppData\\Local\\hermes\\hermes-agent\nInstall method: git\nPython: 3.11.15\nOpenAI SDK: 2.24.0\nUpdate available: 298 commits behind — run 'hermes update'",
+  "judge_host": "hermes",
+  "judge_version": "Hermes Agent v0.20.5 (2026.8.19) · upstream 7e67f64f\nInstall directory: C:\\Users\\E\\AppData\\Local\\hermes\\hermes-agent\nInstall method: git\nPython: 3.11.15\nOpenAI SDK: 2.24.0\nUpdate available: 298 commits behind — run 'hermes update'",
+  "run_timestamp_utc": "2026-08-29T23:20:20.702132+00:00",
+  "status": "pass",
+  "artifacts": {
+    "candidate_sha256": "a8a177bd5b3bb0469ea71af2e9606533dbada641f8a9a8f1199c6d8dfaac52fc",
+    "baseline_candidate_sha256": "b054a61acddc925af6379997adcb6bbf4cac5e61ad041a279f15c5ec1387a3fe",
+    "suite_sha256": "3b0010ab22040ee5a6d2040a3117e3fe5d24fdf5b0193d6505886e7e5ede1875",
+    "harness_sha256": "64a407a51dbb939e8b5f70f42a6730fcf0b3af8ea91bd4f2bc776cad3fdc0238"
+  },
+  "effective_stack": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "low",
+    "judge_model": "gpt-5.6-sol",
+    "judge_provider": "openai-codex",
+    "tool_policy": "safe",
+    "prompt_assembly": "isolated-explicit-artifact-v2",
+    "context_policy": "fresh-session-per-output",
+    "equivalence_group": "hermes-openai-codex-gpt-5.6-sol-cli-safe-2026-08-30",
+    "irreducible_differences": []
+  },
+  "decision_rule": {
+    "alpha": 0.05,
+    "margin": 0.1,
+    "min_trials": 1,
+    "max_trials": 1,
+    "max_agent_runs": 16,
+    "score_range": [
+      -1,
+      1
+    ]
+  },
+  "seeds": [
+    0
+  ],
+  "run_count": 16,
+  "rollback": "Keep the current live skill and discard the staged candidate.",
+  "session_lifecycle": {
+    "policy": "delete-after-durable-report",
+    "created": [
+      "20260830_045022_68c809",
+      "20260830_045050_ca664e",
+      "20260830_045121_49cba9",
+      "20260830_045146_e2af02",
+      "20260830_045212_f4c6b6",
+      "20260830_045242_d01a51",
+      "20260830_045325_8c5749",
+      "20260830_045403_577e65",
+      "20260830_045427_745f5f",
+      "20260830_045452_e8a18a",
+      "20260830_045517_a6b47a",
+      "20260830_045539_8db113",
+      "20260830_045600_3bbb75",
+      "20260830_045706_df5b53",
+      "20260830_045832_9e82fb",
+      "20260830_045904_2b4af4"
+    ],
+    "protected": [],
+    "deleted": [
+      "20260830_045022_68c809",
+      "20260830_045050_ca664e",
+      "20260830_045121_49cba9",
+      "20260830_045146_e2af02",
+      "20260830_045212_f4c6b6",
+      "20260830_045242_d01a51",
+      "20260830_045325_8c5749",
+      "20260830_045403_577e65",
+      "20260830_045427_745f5f",
+      "20260830_045452_e8a18a",
+      "20260830_045517_a6b47a",
+      "20260830_045539_8db113",
+      "20260830_045600_3bbb75",
+      "20260830_045706_df5b53",
+      "20260830_045832_9e82fb",
+      "20260830_045904_2b4af4"
+    ],
+    "remaining": [],
+    "errors": []
+  },
+  "result": {
+    "candidate_wins": 3,
+    "candidate_losses": 0,
+    "ties": 1,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0,
+    "judge_disagreements": 1,
+    "trial_scores": [
+      0.75
+    ]
+  },
+  "cases": [
+    {
+      "id": "github-follow-up-representative-idempotent-retry",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "github-follow-up-held-out-cancellation-propagation",
+      "kind": "held-out",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "github-follow-up-adversarial-open-pr-generalization",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "github-follow-up-near-miss-gate-pagination-bug",
+      "kind": "near-miss",
+      "trial": 0,
+      "winner": "tie"
+    }
+  ],
+  "decision": "Admit under the bounded compatibility gate: 3 candidate wins, 1 tie, 0 losses, and 0 hard failures; the targeted repeat also produced 4 candidate wins. The one-trial confidence sequence remained inconclusive and is not claimed as statistical proof.",
+  "raw_report_committed": false
+}

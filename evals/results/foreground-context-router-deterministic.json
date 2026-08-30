@@ -1,0 +1,51 @@
+{
+  "capability": "foreground-context-router",
+  "status": "live_operational_failure",
+  "date": "2026-08-30",
+  "canonical_owner": "integrations/hermes/foreground-context-router",
+  "deterministic": {
+    "backend_tests": 5,
+    "desktop_tests": 9,
+    "python_compile": "pass",
+    "javascript_syntax": "pass",
+    "plugin_doctor": "pass",
+    "canonical_live_hash_match": "pass"
+  },
+  "live_classifier": [
+    {
+      "case": "broad repository audit",
+      "expected": "extended",
+      "actual": "extended",
+      "confidence": 0.99
+    },
+    {
+      "case": "focused proof explanation",
+      "expected": "normal",
+      "actual": "normal",
+      "confidence": 0.99
+    },
+    {
+      "case": "unrelated weather request from extended work",
+      "expected": "normal/new",
+      "actual": "normal/new",
+      "confidence": 0.99
+    }
+  ],
+  "independent_review": {
+    "initial_verdict": "fix_then_ship",
+    "blocking_findings_fixed": [
+      "mount lazy destination before submit and retry open after persistence",
+      "consume ambiguous submit transport failures instead of duplicating in origin"
+    ],
+    "post_fix_parent_verification": "pass"
+  },
+  "live_post_restart": {
+    "backend_plugin_enabled": "pass",
+    "desktop_runtime_plugin_enabled": "pass after explicit Settings -> Plugins activation",
+    "destination_model": "gpt-5.6-sol-900k",
+    "submit_once": "The destination accepted one prompt, but the broad audit prompt caused an unacceptable visible fan-out into multiple audit sessions.",
+    "foreground_navigation": "observed, but not admissible because the validation workload polluted the user's live session list",
+    "cleanup": "Router disabled; 18 generated audit sessions deleted and verified absent after restart."
+  },
+  "remaining_gate": "Do not rerun without explicit user approval. Design a bounded, non-delegating live probe that proves routing and foreground navigation without creating additional worker sessions or repository work."
+}

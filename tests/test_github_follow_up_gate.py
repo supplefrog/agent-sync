@@ -12,8 +12,10 @@ from unittest import mock
 
 
 REPO = Path(__file__).resolve().parents[1]
+SKILL = REPO / "skills" / "github-follow-up" / "SKILL.md"
 SCRIPT = REPO / "skills" / "github-follow-up" / "scripts" / "github-follow-up-gate.py"
 REPLACEMENT_SUITE = REPO / "evals" / "github-follow-up-replacement-learning.json"
+CROSS_PROJECT_SUITE = REPO / "evals" / "github-follow-up-cross-project-learning.json"
 
 
 def load_module():
@@ -234,6 +236,36 @@ class GithubFollowUpGateTests(unittest.TestCase):
         self.assertTrue(any("no workflow change" in criterion for criterion in cases["preference-without-technical-evidence"]["criteria"]))
         self.assertTrue(any("reusable" in criterion for criterion in cases["winner-reveals-root-cause-test-lesson"]["criteria"]))
         self.assertTrue(any("fresh held-out" in criterion for criterion in cases["novel-winner-lesson-updates-existing-owner"]["criteria"]))
+
+    def test_cross_project_learning_suite_covers_transfer_and_bypass_boundaries(self):
+        suite = json.loads(CROSS_PROJECT_SUITE.read_text(encoding="utf-8"))
+        cases = {case["id"]: case for case in suite["cases"]}
+        expected_new = {
+            "github-follow-up-representative-idempotent-retry",
+            "github-follow-up-held-out-cancellation-propagation",
+            "github-follow-up-adversarial-open-pr-generalization",
+            "github-follow-up-near-miss-gate-pagination-bug",
+        }
+        self.assertEqual(len(cases), 9)
+        self.assertTrue(expected_new.issubset(cases))
+        self.assertEqual(
+            {case["kind"] for case in cases.values()},
+            {"representative", "near-miss", "adversarial", "held-out"},
+        )
+        contract = " ".join(suite["criteria"] + [criterion for case in cases.values() for criterion in case["criteria"]]).lower()
+        for needle in ("unrelated", "baseline-versus-candidate", "root-cause", "acceptance", "no persistent"):
+            self.assertIn(needle, contract)
+
+    def test_skill_has_auditable_cross_project_promotion_gate(self):
+        text = SKILL.read_text(encoding="utf-8")
+        for phrase in (
+            "Cross-project promotion gate",
+            "matched baseline-versus-candidate evaluation",
+            "hypothetical or evaluation prompt",
+            "automatic-patch path",
+            "A prewritten fixture file is unnecessary",
+        ):
+            self.assertIn(phrase, text)
 
 
 if __name__ == "__main__":
