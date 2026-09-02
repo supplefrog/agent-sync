@@ -50,4 +50,4 @@ Brevity never removes required safety, exact identifiers, material uncertainty, 
 - `humanizer` owns public-facing artifacts such as issues, PRs, email, and posts.
 - This skill owns the final conversational reply to the user.
 
-Read [the August 2026 correction note](references/2026-08-24-user-style-correction.md) when calibrating or testing this user's preferred style.
+Read [the user style correction note](references/2026-08-24-user-style-correction.md) when calibrating or testing this user's preferred style.

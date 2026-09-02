@@ -4,7 +4,7 @@
   "capability": "conversational-communication",
   "status": "pass",
   "claim": "conversational-communication is the single portable owner for short natural user-facing chat replies.",
-  "candidate_sha256": "68621e196c12d2df5579d05a4504da0a56f4084b1b7e49059c21a9152af85a97",
+  "candidate_sha256": "18b4a86dd0abb2b0f273f7da1759a333980b1970f6f3f56364ef307c4eb02de8",
   "selection": {
     "source": "active Hermes skill with an explicit user-confirmed correction reference",
     "adjacent_owners": ["humanizer"],
@@ -14,7 +14,7 @@
     "skill_validation": "pass",
     "positive_trigger": "short conversational answer or status",
     "near_miss": "public issue, PR, email, or post routes to humanizer",
-    "user_correction_sha256": "44b32813ecfa0a781d72b500b9373e04c487a93196b04b7f553b5cab5d4233c8",
+    "user_correction_sha256": "2641f4ce34656ca423df3775f5caa52a8f0277d50e5235e2e5c45855e4fc16ca",
     "proactive_continuation_sha256": "8a025fbaafc3877ffecd485b14b66dd45ffb21a8378fb5fb93b0fc2393d4c23b",
     "public_safe": true
   },

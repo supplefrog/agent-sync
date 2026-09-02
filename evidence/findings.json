@@ -321,6 +321,21 @@
       ],
       "implication": "Keep gpt-5.6-sol and the built-in compressor, enable in-place and Codex Responses-native compaction, keep the 900K alias opt-in, and do not install hermes-lcm on the current Windows host until its externalized-storage/recovery boundary passes intact.",
       "observed_at": "2026-08-30T10:06:30+05:30"
+    },
+    {
+      "id": "conversational-presentation-compression-20260902",
+      "topic": "instructions-style",
+      "claim": "Routine user-facing status should compress presentation without reducing internal reasoning, verification, execution, or safety.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "local-verification",
+          "reference": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+          "supports": true
+        }
+      ],
+      "implication": "Use one natural status phrase by default; omit headings, ordinary mechanics, and negative clarifications unless they change the decision or next action.",
+      "observed_at": "2026-09-02T06:06:16+05:30"
     }
   ]
 }
