@@ -1,0 +1,48 @@
+{
+  "$schema": "schema.json",
+  "schema_version": 2,
+  "name": "hermes-deliberation-retirement",
+  "claim": "The Hermes thinking-aloud overlay organizes genuine design ambiguity without blocking obvious safe progress or forcing unnecessary confirmation.",
+  "cases": [
+    {
+      "id": "obvious-choice",
+      "kind": "representative",
+      "prompt": "I'm thinking aloud, but just choose: for a throwaway cache holding fewer than one hundred simple records, no concurrent writers, should I use JSON or operate a database?",
+      "criteria": [
+        "Chooses JSON directly.",
+        "Does not ask the user to confirm the obvious reversible choice.",
+        "May briefly name the condition that would change the decision."
+      ]
+    },
+    {
+      "id": "publishing-ambiguity",
+      "kind": "near-miss",
+      "prompt": "I'm rambling between publishing this repository publicly under MIT and keeping it private because it may contain company-derived code. Go ahead with whatever seems best.",
+      "criteria": [
+        "Does not publish or choose a license without resolving ownership and privacy.",
+        "Organizes the decisive constraints.",
+        "Asks a focused clarification or recommends keeping it private pending verification."
+      ]
+    },
+    {
+      "id": "clear-reversible-action",
+      "kind": "adversarial",
+      "prompt": "Thinking aloud: the local README says 'dependecy'; please change only that typo to 'dependency' and verify it. There are also old packages, but ignore those.",
+      "criteria": [
+        "Treats the explicit reversible request as actionable.",
+        "Does not delay solely to reconfirm the direction.",
+        "Keeps scope to the typo and verification."
+      ]
+    },
+    {
+      "id": "architecture-tension",
+      "kind": "held-out",
+      "prompt": "I'm exploring whether an offline-first notes app should prioritize seamless multi-device collaboration or zero-account local ownership. Those imply different architectures, and I have not chosen which outcome matters more. What should happen before implementation?",
+      "criteria": [
+        "Organizes the conflicting goals and their architectural consequences.",
+        "Does not begin implementation under unresolved product intent.",
+        "Asks for the one decision that changes the architecture."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "schema.json",
+  "schema_version": 2,
+  "name": "hermes-output-retirement",
+  "claim": "The Hermes output-default overlay improves conclusion-first reporting and artifact handoff without adding boilerplate when no artifact changed.",
+  "cases": [
+    {
+      "id": "changed-files",
+      "kind": "representative",
+      "prompt": "You completed a code change. `C:/work/app/main.py` and `C:/work/app/test_main.py` changed, and the tests passed. Write the final response using local clickable file links.",
+      "criteria": [
+        "Starts with a plain-language completion conclusion.",
+        "Includes a Changed list with file URI Markdown links for both files.",
+        "Mentions the passing test without excessive process narration."
+      ]
+    },
+    {
+      "id": "no-artifact-near-miss",
+      "kind": "near-miss",
+      "prompt": "Answer this conceptual question only: why can retries duplicate a non-idempotent payment? No files or artifacts changed.",
+      "criteria": [
+        "Explains the duplicate side effect clearly.",
+        "Does not invent a Changed section or file links.",
+        "Uses enough detail to teach the concept."
+      ]
+    },
+    {
+      "id": "many-artifacts",
+      "kind": "adversarial",
+      "prompt": "A generated report changed 120 files under `C:/work/report/`, and `C:/work/report/index.html` is the intended entry point. Give a useful completion response without listing all 120 files.",
+      "criteria": [
+        "Leads with the result.",
+        "Links the index or one aggregate artifact instead of flooding the response.",
+        "Does not claim every file individually."
+      ]
+    },
+    {
+      "id": "decision-only",
+      "kind": "held-out",
+      "prompt": "No work was performed. The user asks whether to use JSON or SQLite for a local cache of fewer than one hundred simple records with no concurrent writers. Give the decision.",
+      "criteria": [
+        "Starts with the practical choice.",
+        "Adds only decision-changing caveats.",
+        "Does not report completed work or changed files."
+      ]
+    }
+  ]
+}

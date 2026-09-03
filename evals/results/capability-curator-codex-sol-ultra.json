@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "suite": "capability-curator-current",
+  "host": "codex",
+  "host_version": "codex-cli 0.152.0",
+  "judge_host": "codex",
+  "judge_version": "codex-cli 0.152.0",
+  "run_timestamp_utc": "2026-09-02T14:17:56.215066+00:00",
+  "status": "complete",
+  "artifacts": {
+    "candidate_sha256": "bc6d3b7041dbbbb96d304859af21eeec50f75935afcc61954abb960e232be855",
+    "baseline_candidate_sha256": "23002006cc7c77a5e1a6ee43b59927e4df40b5abafe9a41b7ad18ae37b9a36b3",
+    "suite_sha256": "7fadc74b0c190757bbd4d92c382eb582ed8d4d6cb3ba9065280d3323e7bb6255",
+    "harness_sha256": "adccba4493b9fc8af5a071cb1047e1ffc66f37ab5c97e455ffb89caa6454f085"
+  },
+  "effective_stack": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "ultra",
+    "judge_model": "gpt-5.6-sol",
+    "judge_provider": "openai-codex",
+    "tool_policy": "none",
+    "prompt_assembly": "isolated-explicit-artifact-v2",
+    "context_policy": "no-memory-no-project-rules",
+    "equivalence_group": "capability-curator-sol-ultra-v1",
+    "irreducible_differences": [
+      "Codex generates and judges with isolated order swaps on gpt-5.6-sol ultra"
+    ],
+    "route_attestation_required": true,
+    "judge_panel": "two-order-swapped"
+  },
+  "decision_rule": {
+    "alpha": 0.05,
+    "margin": 0.1,
+    "min_trials": 3,
+    "max_trials": 3,
+    "max_agent_runs": 90,
+    "transient_retries_per_run": 2,
+    "retry_delay_seconds": 15.0,
+    "score_range": [
+      -1,
+      1
+    ]
+  },
+  "seeds": [
+    0
+  ],
+  "run_count": 24,
+  "rollback": "Keep the owner staged; remove any later fleet install and restore registry/ownership from git",
+  "session_lifecycle": {
+    "policy": "delete-after-durable-report",
+    "created_count": 0,
+    "protected_count": 0,
+    "deleted_count": 0,
+    "remaining_count": 0,
+    "error_count": 0,
+    "clean": true
+  },
+  "result": {
+    "candidate_wins": 4,
+    "candidate_losses": 0,
+    "ties": 2,
+    "candidate_hard_failures": 1,
+    "judge_errors": 0,
+    "judge_disagreements": 1,
+    "raw_judge_disagreements": 1,
+    "criterion_disagreements": 0,
+    "raw_criterion_disagreements": 0,
+    "candidate_receipt_failures": 1,
+    "route_attestation_failures": 1,
+    "trial_scores": [
+      0.6
+    ]
+  },
+  "cases": [
+    {
+      "id": "popular-skill",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "redundant-style",
+      "kind": "near-miss",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "portable-architecture",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "held-out-regression",
+      "kind": "held-out",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "untrusted-mcp-binary",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "stale-model-evidence",
+      "kind": "held-out",
+      "trial": 0,
+      "winner": "candidate"
+    }
+  ],
+  "decision": "harness-failure",
+  "decision_detail": {
+    "decision": "harness-failure",
+    "mean": 0.6,
+    "trials": 1,
+    "observations": 5,
+    "confidence_sequence": {
+      "method": "hoeffding-alpha-spending",
+      "alpha": 0.05,
+      "look_alpha": 0.025,
+      "radius": 1.3239375566353393,
+      "lower": -0.7239375566353393,
+      "upper": 1.0
+    }
+  },
+  "artifact_validation": "recorded-hashes-only",
+  "raw_report_sha256": "c68e2c4be6e75311a2bd6ab72768cdcb51fb4e667bdf0bf9c8f73ddf5cd9228e",
+  "raw_report_committed": false
+}

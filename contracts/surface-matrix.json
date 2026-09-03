@@ -4,19 +4,19 @@
   "knowledge_ledger": "../evidence/findings.json",
   "hosts": {
     "hermes": {
-      "cli_version": "0.20.5",
-      "source_revision": "933c209e96630a6026b0a18ecf6a86e65110f5b8",
+      "cli_version": "0.21.0",
+      "source_revision": "9954445fea2e3c85034d1afc6ebd40abdaa91f71",
       "sources": [
         "https://hermes-agent.nousresearch.com/docs/",
         "https://github.com/NousResearch/hermes-agent"
       ]
     },
     "codex": {
-      "cli_version": "0.150.0-alpha.12.2",
-      "source_revision": "a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3",
+      "cli_version": "0.152.1",
+      "source_revision": "5adb68a49933ae446bf11935662c83dba55a0804",
       "sources": [
         "https://developers.openai.com/codex/",
-        "https://github.com/openai/codex/tree/a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3"
+        "https://github.com/openai/codex/tree/5adb68a49933ae446bf11935662c83dba55a0804"
       ]
     },
     "omp": {
@@ -231,8 +231,8 @@
       ],
       "hosts": {
         "hermes": {
-          "owner": "session_search, compact built-in memory, tools-only Honcho, and the native session store",
-          "mechanism": "use session_search for transcript evidence and invoke Honcho only for semantic/profile recall; keep broad automatic injection disabled",
+          "owner": "session_search, compact built-in memory, skills, authoritative artifacts, and the native session store",
+          "mechanism": "query the authoritative source on demand; keep external providers and broad automatic memory injection disabled unless a concrete repeated miss passes a bounded admission trial",
           "support": "native",
           "parity": "intentional-delta"
         },
@@ -251,7 +251,7 @@
       },
       "intentional_deltas": [
         "Raw memories, user profiles, and transcripts remain private and host-local.",
-        "Hermes retains the current tools-only Honcho plus session_search stack by no-change policy; this is not a comparative Honcho win.",
+        "Hermes retired Honcho and Hindsight after the later real-history utility audit found no repeatable external-only downstream win; this is not a claim that external memory can never help.",
         "Codex and OMP remain unintegrated because Hindsight 0.9.1 failed candidate-only irrelevant-query silence, tool-visible provenance, and Windows lifecycle checks through the real Hermes recall path; no matched provider comparison ran."
       ],
       "evidence": {

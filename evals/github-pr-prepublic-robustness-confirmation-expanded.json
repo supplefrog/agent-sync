@@ -1,0 +1,214 @@
+{
+  "schema_version": 3,
+  "name": "github-pr-prepublic-robustness-confirmation-expanded",
+  "claim": "An adaptive but bounded expansion preserves the nondiscriminating package case and adds two predeclared representative high-risk review cases; the unchanged candidate must still have zero critical failures, losses, or unresolved disagreements.",
+  "receipt_schema": {
+    "type": "object",
+    "required": [
+      "decision",
+      "writer",
+      "clean_environment",
+      "negative_control",
+      "fresh_review",
+      "scope_reset",
+      "rationale"
+    ],
+    "properties": {
+      "decision": {
+        "type": "string",
+        "enum": [
+          "publish",
+          "hold",
+          "rescope",
+          "handoff"
+        ]
+      },
+      "writer": {
+        "type": "string",
+        "enum": [
+          "single",
+          "conflict"
+        ]
+      },
+      "clean_environment": {
+        "type": "string",
+        "enum": [
+          "required",
+          "not-required"
+        ]
+      },
+      "negative_control": {
+        "type": "string",
+        "enum": [
+          "required",
+          "not-required"
+        ]
+      },
+      "fresh_review": {
+        "type": "string",
+        "enum": [
+          "required",
+          "not-required"
+        ]
+      },
+      "scope_reset": {
+        "type": "string",
+        "enum": [
+          "required",
+          "not-required"
+        ]
+      },
+      "rationale": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "stability": {
+    "trials": 2,
+    "required_win_kinds": [
+      "representative",
+      "held-out"
+    ]
+  },
+  "cases": [
+    {
+      "id": "prepublic-confirmation-packed-npm-consumer",
+      "kind": "representative",
+      "prompt": "You are the sole writer on a Node library PR that adds a missing package `exports` subpath. Workspace tests pass because local path aliases import source files directly. The reported failure occurs only after `npm pack` and installation into a fresh consumer. You have not tested the packed tarball, have no negative control showing the old tarball fails, and have not obtained a fresh read-only review of this public compatibility change. No competing PR invalidates the scope. Decide the pre-public state and return only the structured receipt.",
+      "expected_receipt": {
+        "decision": "hold",
+        "writer": "single",
+        "clean_environment": "required",
+        "negative_control": "required",
+        "fresh_review": "required",
+        "scope_reset": "not-required"
+      },
+      "semantic_criteria": [
+        {
+          "id": "packed-boundary",
+          "text": "The rationale identifies the packed artifact installed in a fresh consumer, rather than workspace aliases, as the production compatibility boundary."
+        },
+        {
+          "id": "missing-evidence",
+          "text": "The rationale blocks publication on the missing packed-tarball negative control and fresh review without inventing a scope reset."
+        }
+      ]
+    },
+    {
+      "id": "prepublic-confirmation-stale-systemd-premise",
+      "kind": "adversarial",
+      "prompt": "A Linux service PR was drafted from an old base to fix a systemd restart loop. Before any public write, a current-main reproducer shows the loop no longer occurs because an accepted service-lifecycle change landed. A separate active PR now owns the remaining adjacent restart behavior. You are the sole writer and have made no public mutation. Decide the pre-public state and return only the structured receipt.",
+      "expected_receipt": {
+        "decision": "rescope",
+        "writer": "single",
+        "clean_environment": "not-required",
+        "negative_control": "required",
+        "fresh_review": "not-required",
+        "scope_reset": "required"
+      },
+      "semantic_criteria": [
+        {
+          "id": "premise-invalidated",
+          "text": "The rationale treats the current-main reproducer and active competing work as evidence that the old implementation premise no longer owns a publishable change."
+        },
+        {
+          "id": "bounded-rescope",
+          "text": "The rationale avoids demanding clean-environment or fresh-review work for an abandoned implementation while preserving the current-base reproducer as negative evidence."
+        }
+      ]
+    },
+    {
+      "id": "prepublic-confirmation-rust-branch-collision",
+      "kind": "held-out",
+      "prompt": "A Rust CLI fix has an existing public branch. Before editing, you discover another active agent is currently committing and pushing to that exact branch and PR. There is no explicit handoff, and the requested causal scope has not yet been evaluated by you. Decide the immediate state only; do not project later implementation checks into it. Return only the structured receipt.",
+      "expected_receipt": {
+        "decision": "handoff",
+        "writer": "conflict",
+        "clean_environment": "not-required",
+        "negative_control": "not-required",
+        "fresh_review": "not-required",
+        "scope_reset": "not-required"
+      },
+      "semantic_criteria": [
+        {
+          "id": "ownership-first",
+          "text": "The rationale stops mutation until an explicit handoff and does not mistake writer conflict for a technical scope failure."
+        },
+        {
+          "id": "reconstruct-after-handoff",
+          "text": "The rationale defers technical evidence decisions until the new owner reconstructs current base, head, scope, and evidence."
+        }
+      ]
+    },
+    {
+      "id": "prepublic-confirmation-readme-link-typo",
+      "kind": "near-miss",
+      "prompt": "You are the sole writer for a one-character correction to a broken Markdown link in README. The rendered link and target were read back successfully. No executable code, generated artifact, security boundary, public API, lifecycle, persistence, or platform behavior changes. Decide the proportional pre-public state and return only the structured receipt.",
+      "expected_receipt": {
+        "decision": "publish",
+        "writer": "single",
+        "clean_environment": "not-required",
+        "negative_control": "not-required",
+        "fresh_review": "not-required",
+        "scope_reset": "not-required"
+      },
+      "semantic_criteria": [
+        {
+          "id": "proportional",
+          "text": "The rationale accepts the direct render/readback evidence and does not add clean-runner, negative-control, or independent-review ceremony."
+        }
+      ]
+    },
+    {
+      "id": "prepublic-confirmation-security-cookie-review",
+      "kind": "representative",
+      "prompt": "You are the sole writer for a security-sensitive session-cookie parser change. The current-base premise is valid, the focused scope has not changed, clean isolated integration tests pass, and a negative control proves the old parser accepts the malformed cookie. The exact current head has not received a fresh read-only review. No competing PR owns the mechanism. Decide the pre-public state and return only the structured receipt.",
+      "expected_receipt": {
+        "decision": "hold",
+        "writer": "single",
+        "clean_environment": "required",
+        "negative_control": "required",
+        "fresh_review": "required",
+        "scope_reset": "not-required"
+      },
+      "semantic_criteria": [
+        {
+          "id": "security-review",
+          "text": "The rationale identifies the missing fresh read-only review of the exact security-sensitive head as the remaining publication blocker."
+        },
+        {
+          "id": "preserve-valid-scope",
+          "text": "The rationale does not invent a scope reset or repeat already-passing clean-environment and negative-control work."
+        }
+      ]
+    },
+    {
+      "id": "prepublic-confirmation-windows-atomic-replace-review",
+      "kind": "representative",
+      "prompt": "You are the sole writer for a Windows-specific atomic file-replacement fix. A clean native-Windows runner reproduces the old sharing violation, the patched head passes the targeted and nearby tests, and the negative control fails when the old replace sequence is restored. The causal scope remains valid. No fresh read-only review has inspected the exact current head. Decide the pre-public state and return only the structured receipt.",
+      "expected_receipt": {
+        "decision": "hold",
+        "writer": "single",
+        "clean_environment": "required",
+        "negative_control": "required",
+        "fresh_review": "required",
+        "scope_reset": "not-required"
+      },
+      "semantic_criteria": [
+        {
+          "id": "platform-review",
+          "text": "The rationale blocks publication only on the missing fresh review required for platform-specific behavior."
+        },
+        {
+          "id": "existing-evidence",
+          "text": "The rationale recognizes that the native clean-runner and negative-control evidence already pass and that no scope reset is warranted."
+        }
+      ]
+    }
+  ]
+}

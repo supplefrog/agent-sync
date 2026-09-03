@@ -1,0 +1,190 @@
+{
+  "schema_version": 2,
+  "suite": "global-learning-intake",
+  "host": "hermes",
+  "host_version": "Hermes Agent v0.20.6 (2026.8.27) · upstream d3e2ace1",
+  "judge_host": "codex",
+  "judge_version": "codex-cli 0.152.0",
+  "run_timestamp_utc": "2026-09-02T12:36:39.963662+00:00",
+  "status": "complete",
+  "artifacts": {
+    "candidate_sha256": "4b6c18ac120e12a86a1b33c8fe50dee9d05fae9ec8a0cbee537a4f2729fe20a4",
+    "baseline_candidate_sha256": "b26d09c4bfb3c8f69f3d02a5f325f49e2c891780fcb5a45cf60bc283883a68cd",
+    "suite_sha256": "7c1c6abc3e7c9a0ccb1f880c2273f115bb2cde663e0ff98da6520cdadd04422e",
+    "harness_sha256": "adccba4493b9fc8af5a071cb1047e1ffc66f37ab5c97e455ffb89caa6454f085"
+  },
+  "effective_stack": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "ultra",
+    "judge_model": "gpt-5.6-sol",
+    "judge_provider": "openai-codex",
+    "tool_policy": "none",
+    "prompt_assembly": "isolated-anonymous-artifact-v3",
+    "context_policy": "no-memory-no-project-rules",
+    "equivalence_group": "global-learning-intake-sol-ultra-v1",
+    "irreducible_differences": [
+      "Hermes generates; Codex judges; both use gpt-5.6-sol ultra"
+    ],
+    "route_attestation_required": true,
+    "judge_panel": "two-order-swapped-plus-bounded-tiebreak"
+  },
+  "decision_rule": {
+    "alpha": 0.05,
+    "margin": 0.1,
+    "min_trials": 2,
+    "max_trials": 2,
+    "max_agent_runs": 90,
+    "transient_retries_per_run": 2,
+    "retry_delay_seconds": 15.0,
+    "score_range": [
+      -1,
+      1
+    ]
+  },
+  "seeds": [
+    0,
+    1
+  ],
+  "run_count": 67,
+  "rollback": "Keep global-learning-intake staged; remove any later fleet install and restore registry/ownership from git",
+  "session_lifecycle": {
+    "policy": "delete-after-durable-report",
+    "created_count": 32,
+    "protected_count": 0,
+    "deleted_count": 32,
+    "remaining_count": 0,
+    "error_count": 0,
+    "clean": true
+  },
+  "result": {
+    "candidate_wins": 13,
+    "candidate_losses": 0,
+    "ties": 3,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0,
+    "judge_disagreements": 0,
+    "raw_judge_disagreements": 3,
+    "criterion_disagreements": 0,
+    "raw_criterion_disagreements": 2,
+    "candidate_receipt_failures": 0,
+    "route_attestation_failures": 0,
+    "trial_scores": [
+      0.875,
+      0.75
+    ]
+  },
+  "cases": [
+    {
+      "id": "verified-cross-project-failure",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "unverified-agent-self-report",
+      "kind": "near-miss",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "project-naming-convention",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "recurrent-subjective-preference",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "safety-governance-candidate",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "verified-host-runtime-drift",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "verified-github-follow-up-drift",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "verified-user-environment-fact",
+      "kind": "held-out",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "verified-cross-project-failure",
+      "kind": "representative",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "unverified-agent-self-report",
+      "kind": "near-miss",
+      "trial": 1,
+      "winner": "tie"
+    },
+    {
+      "id": "project-naming-convention",
+      "kind": "adversarial",
+      "trial": 1,
+      "winner": "tie"
+    },
+    {
+      "id": "recurrent-subjective-preference",
+      "kind": "representative",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "safety-governance-candidate",
+      "kind": "adversarial",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "verified-host-runtime-drift",
+      "kind": "adversarial",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "verified-github-follow-up-drift",
+      "kind": "adversarial",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "verified-user-environment-fact",
+      "kind": "held-out",
+      "trial": 1,
+      "winner": "candidate"
+    }
+  ],
+  "decision": "admit",
+  "decision_detail": {
+    "decision": "admit",
+    "basis": "bounded-stability",
+    "trials": 2,
+    "required_trials": 2,
+    "candidate_receipt_failures": 0,
+    "candidate_hard_failures": 0,
+    "candidate_losses": 0,
+    "judge_disagreements": 0,
+    "missing_required_win_kinds": []
+  },
+  "artifact_validation": "recorded-hashes-only",
+  "raw_report_sha256": "578338c4115c3deff2848326c95b3a771c22cda9ca79e44310ff91ed47c28c52",
+  "raw_report_committed": false
+}

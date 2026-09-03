@@ -256,16 +256,14 @@ class GithubFollowUpGateTests(unittest.TestCase):
         for needle in ("unrelated", "baseline-versus-candidate", "root-cause", "acceptance", "no persistent"):
             self.assertIn(needle, contract)
 
-    def test_skill_has_auditable_cross_project_promotion_gate(self):
+    def test_skill_does_not_route_to_unadmitted_global_intake(self):
         text = SKILL.read_text(encoding="utf-8")
-        for phrase in (
-            "Cross-project promotion gate",
-            "matched baseline-versus-candidate evaluation",
-            "hypothetical or evaluation prompt",
-            "automatic-patch path",
-            "A prewritten fixture file is unnecessary",
-        ):
-            self.assertIn(phrase, text)
+        registry = json.loads((REPO / "registry.json").read_text(encoding="utf-8"))
+        intake = next(item for item in registry["skills"] if item["name"] == "global-learning-intake")
+        self.assertEqual(intake["status"], "staged")
+        self.assertIn("Cross-project promotion gate", text)
+        self.assertNotIn("Cross-project learning adapter", text)
+        self.assertNotIn("global-learning-intake", text)
 
 
 if __name__ == "__main__":

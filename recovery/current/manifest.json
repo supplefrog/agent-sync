@@ -28,7 +28,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "ab91a10aa151630088cac397911d3c9ffd38f021eb945ec9cffd7be0249ec34e",
+      "sha256": "d7189169233f99b8a764705a8a962d10fa359e179cdea25688a0404582404225",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
@@ -112,7 +112,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 15785,
+      "bytes": 16061,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -237,6 +237,7 @@
         "hooks_auto_accept",
         "human_delay",
         "image_gen",
+        "lcm.context_threshold",
         "lsp",
         "max_live_sessions",
         "mcp_discovery_timeout",
@@ -305,20 +306,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "3a54b35c60f075a2773b14a139eff8e125dc93acb4340771813fe0f313387571",
+      "sha256": "e3c6c73626de257b1d7da27ee611f6e8f916add1908bffd7bd20c8df59a15073",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
     },
     {
-      "bytes": 1214,
+      "bytes": 1510,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "71fbaa38ac3781d9724c23aa6f747325dd9ea9d1c9eba6720948eab33492deac",
+      "sha256": "7572a82756d88b1c3d1ae0f72cb4658e6395525d5303e057ede1f65acfc02363",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -378,7 +379,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "43cd3b8d37faa07a3aa3daf924c39ba68468ce6dd8696bdb38f3643c23d417b0",
+  "policy_sha256": "e4f3ce12a80246079651052d404b40cadc1c241b5296a1717486fb55296be7e8",
   "public_safe": true,
   "schema_version": 1
 }

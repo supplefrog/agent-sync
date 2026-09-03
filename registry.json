@@ -93,6 +93,12 @@
       "eval": "evals/results/github-follow-up-deterministic.json"
     },
     {
+      "name": "global-learning-intake",
+      "status": "staged",
+      "license": "MIT",
+      "source": "original"
+    },
+    {
       "name": "skill-creator",
       "status": "admitted",
       "license": "MIT",

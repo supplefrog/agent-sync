@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-09-02T14:53:18.224250+00:00",
+  "mode": "admission",
+  "suite": "capability-curator-current",
+  "required_hosts": [
+    "hermes",
+    "codex"
+  ],
+  "host_decisions": {
+    "hermes": "harness-failure",
+    "codex": "harness-failure"
+  },
+  "missing_hosts": [],
+  "regression_hosts": [],
+  "inconclusive_hosts": [
+    "codex",
+    "hermes"
+  ],
+  "equivalence_group": "capability-curator-sol-ultra-v1",
+  "artifact_mismatches": [],
+  "artifacts": {
+    "candidate_sha256": "bc6d3b7041dbbbb96d304859af21eeec50f75935afcc61954abb960e232be855",
+    "baseline_candidate_sha256": "23002006cc7c77a5e1a6ee43b59927e4df40b5abafe9a41b7ad18ae37b9a36b3",
+    "suite_sha256": "7fadc74b0c190757bbd4d92c382eb582ed8d4d6cb3ba9065280d3323e7bb6255",
+    "harness_sha256": "adccba4493b9fc8af5a071cb1047e1ffc66f37ab5c97e455ffb89caa6454f085"
+  },
+  "report_hash_inputs": {
+    "codex": "c68e2c4be6e75311a2bd6ab72768cdcb51fb4e667bdf0bf9c8f73ddf5cd9228e",
+    "hermes": "632162df05352095abc40ea140902463c9e42d1e1c35a7acc6966d3bcc938607"
+  },
+  "rollback": "Keep capability-curator staged; do not install it into the fleet",
+  "decision": "inconclusive"
+}

@@ -84,7 +84,7 @@
   "model": "gpt-5.6-sol",
   "model_reasoning_effort": "medium",
   "notify": [
-    "{{agent-signal:HOME}}\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\426e88130fe66c7e\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
+    "{{agent-signal:HOME}}\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\2c6075088d3180ec\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
     "turn-ended"
   ],
   "personality": "pragmatic",

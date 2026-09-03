@@ -27,7 +27,14 @@ The convergence target is equivalent useful behavior. Mechanisms may differ, and
 | Convergence | `skills/surface-convergence/` | Map admitted behavior across hosts and manage semantic delta |
 | Evaluation | `evals/`, `tools/eval.py`, `tools/eval_gate.py`, `tools/grounded_gate.py`, `tools/instruction_retirement.py` | Reproducible admission, independent grounded verdict contracts, and leave-one-unit-out comparison with artifact hashes and exact-stack receipt caching |
 | Evidence memory | `evidence/findings.json`, `evals/results/` | Public-safe findings, contradictions, decisions, and compact summaries |
+| Drift intake | `tools/capability_intake.py` | Read-only metadata scan across recovery and fleet state; classify owner, route, disposition, and bounded automatic eligibility without exposing file bodies |
 | Drift and release | `tools/audit.py`, `tools/install.py` | Detect stale mappings and expose only admitted artifacts |
+
+## Capability-librarian intake
+
+`python tools/capability_intake.py scan --machine local-windows` composes the existing recovery dry-run and fleet planner. It reports only bounded metadata: surface, target identifier, current owner, route, change class, and review disposition. It has no apply command, does not read capability bodies into its report, and does not route live work through a staged owner.
+
+This is the first vertical slice of the capability librarian, not autonomous promotion. A deterministic, reversible fleet action for an already admitted owner can be marked eligible only after checks. New or unmanaged capabilities, staged owners, content conflicts, retirement, recovery adoption, cross-host changes, safety-sensitive changes, and ambiguous changes remain review-only. Future Hermes or host hooks must remain thin adapters over this classifier and require separate admission evidence.
 
 ## Staged context-integrity validation
 

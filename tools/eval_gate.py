@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +17,7 @@ def aggregate(
     required_hosts: list[str],
     mode: str,
     rollback: str,
+    report_hashes: dict[str, str],
 ) -> dict[str, Any]:
     if not reports:
         raise ValueError("at least one report is required")
@@ -32,6 +35,9 @@ def aggregate(
     groups = {report.get("effective_stack", {}).get("equivalence_group") for report in reports}
     if None in groups or len(groups) != 1:
         mismatches.append("effective_stack.equivalence_group")
+    for host in hosts:
+        if not re.fullmatch(r"[0-9a-f]{64}", str(report_hashes.get(host, ""))):
+            mismatches.append(f"{host}:report_sha256")
 
     host_decisions = {
         str(report["agent"]): str(report.get("decision", {}).get("decision", "harness-failure"))
@@ -39,11 +45,19 @@ def aggregate(
     }
     missing = sorted(set(required_hosts) - set(host_decisions))
     success = {"admit"} if mode == "admission" else {"retire"}
-    regressions = sorted(host for host, decision in host_decisions.items() if decision not in success)
+    explicit_negative = {"reject"} if mode == "admission" else {"retain"}
+    regressions = sorted(host for host, decision in host_decisions.items() if decision in explicit_negative)
+    inconclusive_hosts = sorted(
+        host
+        for host, decision in host_decisions.items()
+        if decision not in success and decision not in explicit_negative
+    )
     if mismatches or missing:
         decision = "inconclusive"
     elif regressions:
         decision = "reject" if mode == "admission" else "retain"
+    elif inconclusive_hosts:
+        decision = "inconclusive"
     else:
         decision = "admit" if mode == "admission" else "retire"
     return {
@@ -55,10 +69,11 @@ def aggregate(
         "host_decisions": host_decisions,
         "missing_hosts": missing,
         "regression_hosts": regressions,
+        "inconclusive_hosts": inconclusive_hosts,
         "equivalence_group": next(iter(groups)) if len(groups) == 1 else None,
         "artifact_mismatches": sorted(set(mismatches)),
         "artifacts": anchor_artifacts,
-        "report_hash_inputs": [str(report.get("timestamp_utc")) for report in reports],
+        "report_hash_inputs": {host: report_hashes.get(host) for host in sorted(hosts)},
         "rollback": rollback,
         "decision": decision,
     }
@@ -72,8 +87,14 @@ def main() -> int:
     parser.add_argument("--rollback", required=True)
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
-    reports = [json.loads(path.read_text(encoding="utf-8")) for path in args.reports]
-    result = aggregate(reports, args.required_hosts, args.mode, args.rollback)
+    reports: list[dict[str, Any]] = []
+    report_hashes: dict[str, str] = {}
+    for path in args.reports:
+        raw = path.read_bytes()
+        report = json.loads(raw.decode("utf-8"))
+        reports.append(report)
+        report_hashes[str(report.get("agent"))] = hashlib.sha256(raw).hexdigest()
+    result = aggregate(reports, args.required_hosts, args.mode, args.rollback, report_hashes)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({"decision": result["decision"], "out": str(args.out.resolve())}, indent=2))

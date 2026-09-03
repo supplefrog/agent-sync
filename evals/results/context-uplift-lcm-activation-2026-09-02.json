@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-02T13:17:14Z",
+  "supersedes_runtime_status_in": "evals/results/context-uplift-2026-08-30.json",
+  "scope": "current Windows activation and durability verification; not a rerun of the prior eight-canary comparative benchmark",
+  "runtime": {
+    "hermes_version": "0.20.6",
+    "context_engine": "lcm",
+    "plugin": "hermes-lcm",
+    "plugin_version": "0.21.0-rc2",
+    "plugin_revision": "b8c5170affa4ef0ca89c20cc1986943b4ad1e85a",
+    "plugin_branch": "fix/windows-directory-durability",
+    "plugin_dirty": false,
+    "context_threshold": 0.95,
+    "native_compaction_enabled": true
+  },
+  "prior_blocker": {
+    "revision": "10cbb78347ec86f3004153b24767324ded9e37b4",
+    "failure": "Windows directory fsync broke externalized storage and recovery",
+    "resolution_commit_in_current_history": "e8b5be2",
+    "resolution": "Skip POSIX directory fsync on unsupported platforms while retaining file durability and parent-directory fsync where supported."
+  },
+  "verification": {
+    "targeted_command": "python -m pytest -q tests/test_ingest_protection.py::test_externalized_payload_write_fsyncs_file_and_parent_directory tests/test_ingest_protection.py::test_directory_fsync_skips_unsupported_platforms tests/test_ingest_protection.py::test_directory_fsync_is_safe_on_windows tests/test_ingest_protection.py::test_first_externalized_payload_fsyncs_new_storage_directory_parent tests/test_windows_portability.py",
+    "targeted_result": "8 passed",
+    "doctor_overall": "warnings",
+    "doctor_passes": [
+      "database_integrity",
+      "ingest_health",
+      "schema_core_tables",
+      "messages_fts_integrity",
+      "nodes_fts_integrity",
+      "sqlite_storage",
+      "payload_storage",
+      "config_validation",
+      "context_pressure"
+    ],
+    "doctor_warning": "Historical lifecycle fragmentation needs inspection; no cleanup was attempted."
+  },
+  "decision": {
+    "status": "active-with-observed-health-warning",
+    "previous_windows_blocker_resolved": true,
+    "prior_comparative_benchmark_rerun": false,
+    "claim_boundary": "Current evidence supports active Windows use and the repaired durability boundary, but does not replace the earlier comparative recall scores."
+  }
+}

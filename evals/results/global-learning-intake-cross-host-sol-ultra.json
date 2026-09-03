@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-09-02T14:20:00.523406+00:00",
+  "mode": "admission",
+  "suite": "global-learning-intake",
+  "required_hosts": [
+    "hermes",
+    "codex"
+  ],
+  "host_decisions": {
+    "hermes": "admit",
+    "codex": "reject"
+  },
+  "missing_hosts": [],
+  "regression_hosts": [
+    "codex"
+  ],
+  "inconclusive_hosts": [],
+  "equivalence_group": "global-learning-intake-sol-ultra-v1",
+  "artifact_mismatches": [],
+  "artifacts": {
+    "candidate_sha256": "4b6c18ac120e12a86a1b33c8fe50dee9d05fae9ec8a0cbee537a4f2729fe20a4",
+    "baseline_candidate_sha256": "b26d09c4bfb3c8f69f3d02a5f325f49e2c891780fcb5a45cf60bc283883a68cd",
+    "suite_sha256": "7c1c6abc3e7c9a0ccb1f880c2273f115bb2cde663e0ff98da6520cdadd04422e",
+    "harness_sha256": "adccba4493b9fc8af5a071cb1047e1ffc66f37ab5c97e455ffb89caa6454f085"
+  },
+  "report_hash_inputs": {
+    "codex": "01d94ba548399cc50f48a598f9bbbfd0b2a5b980298c57e3a386ccc0ca73e5f3",
+    "hermes": "578338c4115c3deff2848326c95b3a771c22cda9ca79e44310ff91ed47c28c52"
+  },
+  "rollback": "Keep global-learning-intake staged; do not install it into the fleet",
+  "decision": "reject"
+}

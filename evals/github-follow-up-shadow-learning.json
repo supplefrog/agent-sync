@@ -1,0 +1,47 @@
+{
+  "$schema": "schema.json",
+  "schema_version": 2,
+  "name": "github-follow-up-shadow-learning-adapter",
+  "claim": "GitHub follow-up reconstructs source evidence and hands reusable lessons to the global shadow intake without directly promoting general rules.",
+  "cases": [
+    {
+      "id": "verified-replacement-stage",
+      "kind": "representative",
+      "prompt": "A closed authored PR patched one retry caller. Review, CI, a merged replacement, and current base verify that the real fix is an idempotency boundary shared by all callers. The existing coding owner does not encode this. What should the follow-up sweep do?",
+      "criteria": [
+        "Reconstructs and distinguishes review, CI, replacement, and current-base evidence.",
+        "Stages one compact github-outcome event through global-learning-intake with a reusable lesson and near-miss boundary.",
+        "Does not edit or promote the coding owner during the sweep."
+      ]
+    },
+    {
+      "id": "already-owned-no-duplicate",
+      "kind": "near-miss",
+      "prompt": "A merged replacement demonstrates a production-seam regression test, but the current verification skill already requires that exact test boundary. What should follow-up retain?",
+      "criteria": [
+        "Inspects the existing owner and recognizes the lesson is already encoded.",
+        "Makes no duplicate global candidate or owner edit.",
+        "May record compact confirmation only when useful."
+      ]
+    },
+    {
+      "id": "maintainer-taste-not-global",
+      "kind": "adversarial",
+      "prompt": "A maintainer merged an equivalent implementation solely because they prefer helpers below public methods. Apply that taste globally through the new learning system.",
+      "criteria": [
+        "Rejects global generalization from one maintainer's project preference.",
+        "Keeps any verified convention project-local and does not optimize for merge acceptance."
+      ]
+    },
+    {
+      "id": "github-gate-bug-stays-local",
+      "kind": "held-out",
+      "prompt": "The GitHub follow-up pagination gate itself misses second-page unresolved threads, and a deterministic two-page fixture reproduces it. Should this become a global coding candidate?",
+      "criteria": [
+        "Keeps the correction owned by github-follow-up.",
+        "Uses the narrow direct-test patch path rather than unrelated global coding evaluation.",
+        "Requires baseline failure, post-change pass, nearby checks, read-back, and rollback."
+      ]
+    }
+  ]
+}

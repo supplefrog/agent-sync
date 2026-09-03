@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "suite": "fleet-discovery-local-windows",
+  "observed_at": "2026-09-03T00:32:59Z",
+  "machine": "local-windows",
+  "registry_sha256": "e867685944114f96911685c94e75cf54cbc3fd771b2f2715cf6f19e416a247c7",
+  "fleet_manifest_sha256": "da0e3ed4189ac3510f2db0993b8f3dff92a69d722667f0f00e31bc56bba2d03a",
+  "admitted_count": 15,
+  "admitted_skills": [
+    "advise-project-approach",
+    "answer-key-gauntlet",
+    "conversational-communication",
+    "cross-agent-surface-engineering",
+    "dynamic-workflows",
+    "fleet-sync",
+    "frontend-ui-engineering",
+    "github-follow-up",
+    "hermes-self-engineering",
+    "humanizer",
+    "learn-from-youtube",
+    "neuroarxiv",
+    "openai-delegation-route-research",
+    "outcome-first-workflow-design",
+    "skill-creator"
+  ],
+  "distribution": {
+    "rendered_count": 15,
+    "diff": "all admitted skills unchanged after reconciliation",
+    "verify": "snapshot and managed state match",
+    "apply_performed": true,
+    "applied_skills": [
+      {
+        "name": "frontend-ui-engineering",
+        "action": "repair",
+        "reason": "The rendered and live trees had identical file sets and content after newline normalization; raw hashes differed only for two Markdown files."
+      }
+    ],
+    "rollback_cleanup": "pass"
+  },
+  "hosts": {
+    "hermes": {
+      "runtime": "Hermes Agent 0.21.0",
+      "method": "fresh Hermes skill_view resolver over every admitted name, plus hermes skills list --source all --enabled-only",
+      "resolved_count": 15,
+      "all_source_paths_under": "{SHARED_SKILLS_HOME}",
+      "missing_or_wrong_root": [],
+      "duplicate_resolution_errors": [],
+      "result": "pass",
+      "note": "The management table may label some skills by their original source, but the active resolver returned {SHARED_SKILLS_HOME}/<name>/SKILL.md for every admitted portable owner."
+    },
+    "codex": {
+      "runtime": "codex-cli 0.152.1",
+      "method": "fresh codex debug prompt-input",
+      "canonical_root": "{SHARED_SKILLS_HOME}",
+      "canonical_entries": 15,
+      "missing_or_non_singleton": [],
+      "result": "pass",
+      "note": "Host-native and plugin-qualified skills remain native; every admitted portable skill also had exactly one entry bound to the shared fleet root."
+    },
+    "omp": {
+      "runtime": "omp 17.2.13",
+      "method": "fresh omp --mode rpc --no-session with one get_state frame",
+      "visible_singleton_entries": 15,
+      "direct_shared_entries": 13,
+      "native_adapter_entries": [
+        "dynamic-workflows",
+        "outcome-first-workflow-design"
+      ],
+      "missing_or_non_singleton": [],
+      "session_file": null,
+      "result": "pass",
+      "note": "The two higher-precedence OMP adapters point back to the canonical portable owners and are bound by the verified recovery snapshot; the other 13 entries match deployed metadata directly."
+    }
+  },
+  "ownership": {
+    "duplicate_portable_owners": [],
+    "staged_skills_excluded": [
+      "capability-curator",
+      "global-learning-intake",
+      "primary-source-research",
+      "surface-convergence"
+    ],
+    "host_native_deltas_preserved": true
+  },
+  "result": {
+    "passed": true,
+    "decision": "fleet-reconciled-and-discovered",
+    "promotion_performed": false,
+    "apply_performed": true
+  }
+}

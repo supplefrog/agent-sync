@@ -2,9 +2,9 @@
 
 ## Decision
 
-No comparative provider winner was established. Do not add a cross-host shared-memory adapter. Leave the current Hermes stack unchanged: tools-only Honcho remains optional semantic/profile recall, while `session_search` remains the transcript-evidence path. Leave Codex and OMP unmodified.
+No external-memory provider is admitted for ordinary use or cross-host sharing. Hermes uses compact built-in `MEMORY.md`/`USER.md`, exact session retrieval, skills, repositories, and authoritative task state. Honcho and Hindsight runtime state have been removed. Codex and OMP remain unmodified.
 
-This is not an admission claim or comparative win for Honcho. A real Hindsight 0.9.1 Local Embedded trial passed exact recall, semantic recall, strict contradictory-update handling, restart persistence, and removal, but failed irrelevant-query silence, tool-visible provenance, and clean Windows lifecycle. Hindsight therefore did not clear its candidate-only promotion gate. The trial did not run Honcho and Hindsight against the same inputs and criteria.
+This supersedes the earlier tools-only-Honcho no-change disposition below. Controlled tests established that Honcho and Hindsight can perform useful memory operations, but the later real-history utility audit found no repeatable external-only downstream win across the user's coding, research, browser/desktop, scheduling, or planning work. Most relevant state had a better authority: repository/docs, task receipts, skills, curated memory, or exact session search.
 
 ## Decision trace
 
@@ -14,7 +14,7 @@ This is not an admission claim or comparative win for Honcho. A real Hindsight 0
 | Hindsight 0.9.1 Local Embedded | Four bounded synthetic facts recalled through the real Hermes `hindsight_recall` tool with production observation-only defaults, covering exact/semantic/strict contradiction/provenance/restart/removal plus irrelevant-query silence and Windows lifecycle. | Candidate-only gate failed on silence, tool-visible provenance, and lifecycle reliability. |
 | Cross-host shared provider | No fresh Hermes/Codex/OMP adapter comparison because Hindsight failed pre-admission. | Not run; no provider admitted. |
 
-The evidence supports **no change**, not “Honcho beat Hindsight.” A matched provider comparison remains unperformed and is unnecessary unless a future concrete memory outcome exposes a material gap in the current stack.
+The current evidence supports **external memory off**, not “memory can never help” and not a comparative provider winner. Reopen only for a repeated material miss that the incumbent authorities cannot recover and that a bounded provider trial demonstrably fixes.
 
 ## Outcome contract
 
@@ -27,7 +27,7 @@ Shared memory may store durable facts, preferences, and decisions. It must not b
 
 Recall must be automatic only at the discovery level: when prior context is relevant, query the appropriate source on demand and return a small provenance-scoped result. Do not inject broad memory every turn.
 
-## Local evidence
+## Historical local evidence (superseded deployment)
 
 The public-safe results are `evals/results/shared-memory-local-20260815.json` and `evals/results/shared-memory-hindsight-trial-20260816.json`. They contain counts and verdicts only; no transcript bodies or credentials.
 
@@ -43,7 +43,7 @@ The public-safe results are `evals/results/shared-memory-local-20260815.json` an
 - Tool-visible provenance failed: the real Hermes recall result exposes numbered memory text but not source or tags.
 - Retains took 2.16–3.25 seconds. Warm recalls took 0.50–0.51 seconds, the first exact recall after restart took 1.71 seconds, and the cold version probe took 41.90 seconds.
 - Windows lifecycle behavior remained unclean: the corrected daemon stop succeeded, but provider shutdown emitted unclosed aiohttp warnings and embedded PostgreSQL plus its database directory outlived profile deletion until bounded manual termination and removal.
-- Removal ultimately passed: the isolated bank was deleted, post-delete recall was empty, the profile/database/config/packages were removed, and Honcho remained active and available.
+- Removal ultimately passed: the isolated bank was deleted, post-delete recall was empty, the profile/database/config/packages were removed, and Honcho remained active and available **at the time of that trial**. Honcho was retired after the later utility audit described in the current decision above.
 
 The smallest supported decision is therefore no promotion and no comparative winner. Hindsight's synthetic exact-recall success is promising but not comparable to the authorized transcript probes, and its silence, provenance, and lifecycle failures block canonical-service and cross-agent adapter promotion.
 
@@ -51,13 +51,13 @@ The smallest supported decision is therefore no promotion and no comparative win
 
 ### Hermes
 
-Retain the current split:
+Retain:
 
 - `session_search` for source-grounded transcript recall;
 - compact built-in memory for explicit current facts and preferences;
-- Honcho in tools-only mode for optional semantic search, peer cards, and synthesis.
+- skills, repositories, documents, and task receipts as their respective authorities.
 
-No provider, injection mode, or startup behavior remains changed after rollback.
+No external provider, automatic injection, provider startup behavior, or provider data store remains active.
 
 ### Codex
 
@@ -69,6 +69,6 @@ Defer integration. OMP 17.2.13 supports native `local`, `hindsight`, and `mnemop
 
 ## Rollback and reopening
 
-Rollback was exercised: delete the isolated bank, verify empty recall, remove the Hindsight profile/database/config/packages, and confirm `hermes memory status` still reports active available Honcho. Codex and OMP were never changed.
+Retirement was exercised: disposable provider profiles, Hindsight runtime/config residue, the Honcho checkout, configuration, containers, network, and data volumes were removed. `hermes memory status` reports provider none and built-in memory enabled. Codex and OMP were never changed.
 
-Reopen only when Hindsight can suppress irrelevant results and expose provenance through the actual Hermes tool path, and its Windows stop/restart/removal lifecycle is reliable. Promotion still requires matched authorized probes against `session_search` plus tools-only Honcho, bounded latency, no broad per-turn injection, and verified fresh-runtime adapters for Hermes, Codex, and OMP.
+Reopen only after a repeated real task failure whose needed context is absent from the active thread and cannot be recovered from repository/docs, task state, curated memory, skills, or exact session search. Test that exact gap against the incumbent. Occasional proven benefit stays on-demand; broad selective integration requires repeated benefit with low contamination. Automatic injection requires separate evidence that its per-turn context and stale-steering risk are worthwhile.

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-09-02T21:06:29Z",
+  "mode": "admission",
+  "suite": "surface-convergence-current",
+  "required_hosts": [
+    "hermes",
+    "codex"
+  ],
+  "host_decisions": {
+    "hermes": "harness-failure",
+    "codex": "not-run"
+  },
+  "missing_hosts": [
+    "codex"
+  ],
+  "regression_hosts": [],
+  "inconclusive_hosts": [
+    "hermes",
+    "codex"
+  ],
+  "equivalence_group": "surface-convergence-sol-ultra-v1",
+  "artifact_mismatches": [
+    "hermes candidate hash differs from sealed plan",
+    "hermes baseline hash differs from sealed plan"
+  ],
+  "artifacts": {
+    "candidate_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70",
+    "baseline_candidate_sha256": "06f73b8f8866e39b9ee155a6be3a5e505b2c001f4a14310a734b0d7e2112f005",
+    "suite_sha256": "01bae0092b4ed33f6a9586734aeaa0dc202595f7b7914acf67aad88d8b69f4ca"
+  },
+  "report_hash_inputs": {
+    "hermes_surviving_raw": "e4274e38ac74b52535d3fb7d5a95b181f3607a4740ef5f7d8e943fabdfba638a"
+  },
+  "unrecoverable_report_hashes": [
+    "hermes_pre_amendment_raw"
+  ],
+  "integrity_failures": [
+    "The pre-amendment evaluator child survived launcher termination and overlapped the rerun.",
+    "The pre-amendment raw report was overwritten before archival, so its raw SHA-256 is unavailable.",
+    "The surviving Hermes report records candidate and baseline hashes that do not match the sealed admission plan.",
+    "The two Hermes reports consumed 63 of 72 physical attempts, leaving 9; a clean run requires 56."
+  ],
+  "behavioral_evidence_admissible": false,
+  "promotion_blocked": true,
+  "rollback": "Keep surface-convergence staged; do not run the Codex lane or install it into the fleet",
+  "decision": "inconclusive"
+}

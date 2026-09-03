@@ -24,7 +24,7 @@ Existing instruction or hook files are never replaced silently. A differing text
 
 The current snapshot contains:
 
-- selected behavior, model, tool, display, safety, routing, and retention settings;
+- selected behavior, model, tool, display, safety, routing, retention, and context/compression settings, including the native LCM threshold;
 - Hermes `SOUL.md` and Codex `AGENTS.md`;
 - user-authored Codex hook scripts and their hook declarations;
 - custom MCP declarations that contain no credential values;

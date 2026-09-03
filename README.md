@@ -30,7 +30,7 @@ The target is semantic parity with useful native differences—not identical fil
 
 The repository also contains a staged, read-only context-integrity ledger validation in `tools/context_ledger.py`. It stores provider-native identities plus source locators and digests—not transcript payloads—and keeps all provider mutations disabled. See `docs/context-integrity-ledger.md`.
 
-The current local shared-memory decision keeps Hermes on tools-only Honcho, leaves Codex and OMP unmodified, and keeps `session_search` as the transcript-evidence path because no canonical provider passed admission. See `docs/shared-memory-decision.md`.
+The current local memory decision keeps Hermes on compact built-in memory, authoritative artifacts, skills, and exact session retrieval; external providers are retired because no repeatable external-only downstream win was observed. Codex and OMP remain unmodified. See `docs/shared-memory-decision.md`.
 
 ## Canonical ownership
 
@@ -77,6 +77,16 @@ python tools/recovery.py bootstrap --apply  # restore + full postflight
 Config restore merges only explicit allowlisted paths and preserves unknown or
 sensitive fields already present. Differing text artifacts fail closed unless the
 operator explicitly supplies `--force-text`. See `docs/recovery.md`.
+
+Classify recovery and fleet drift without mutating either surface:
+
+```bash
+python tools/capability_intake.py scan --machine local-windows
+```
+
+The scanner reports bounded metadata and review routes only. Novel, staged,
+conflicting, cross-host, safety-sensitive, and ambiguous changes are never marked
+for automatic application. See `docs/architecture.md`.
 
 The current `gpt-5.6-sol` / `openai-codex` user-owned instruction overlay is
 identified by host, runtime, reasoning level, artifact hash, effective unit, and

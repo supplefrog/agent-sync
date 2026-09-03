@@ -2,7 +2,7 @@
 
 ## Decision
 
-Hermes now uses the existing `gpt-5.6-sol` route with:
+The 2026-08-30 decision configured the existing `gpt-5.6-sol` route with:
 
 ```yaml
 compression:
@@ -28,7 +28,15 @@ The base native strategy won because 900K produced no recall gain and retained t
 
 See [context-uplift-2026-08-30.json](../evals/results/context-uplift-2026-08-30.json) for the payload-free receipt and [context-uplift-suite.json](../evals/context-uplift-suite.json) for the frozen synthetic cases.
 
-## Safety and rollback
+## 2026-09-02 LCM activation update
+
+The earlier LCM rejection remains valid for revision `10cbb78347ec86f3004153b24767324ded9e37b4`, but no longer describes the live runtime. The active clean Windows branch is `b8c5170affa4ef0ca89c20cc1986943b4ad1e85a` and includes `e8b5be2`, which removes the unsupported POSIX directory-fsync path that caused the blocker.
+
+The repaired durability tests and Windows portability module pass 8/8. Live readback reports `context.engine: lcm`, plugin `0.21.0-rc2`, and `lcm.context_threshold: 0.95`; database, FTS, storage, payload, configuration, and context-pressure doctor checks pass. Doctor still warns about historical lifecycle fragmentation, so no lifecycle cleanup was attempted.
+
+This is activation and repaired-boundary evidence, not a rerun of the prior eight-canary comparison. See [context-uplift-lcm-activation-2026-09-02.json](../evals/results/context-uplift-lcm-activation-2026-09-02.json).
+
+## 2026-08-30 safety and rollback
 
 The failed foreground router was removed from the live plugin directory and remains unadmitted. Promotion created no sessions: count stayed 395 before and after.
 

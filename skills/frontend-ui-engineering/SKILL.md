@@ -1,7 +1,7 @@
 ---
 name: frontend-ui-engineering
 description: Builds production-quality, accessible, responsive user-facing UIs. Use when building or modifying production interfaces and pages, creating components, implementing layouts, meeting accessibility requirements, managing state, or when the output needs production-quality engineering and visual decisions. Do not use for an explicitly throwaway prototype; use the prototype workflow at the fidelity the user requested.
-version: 2.0.0
+version: 2.0.1
 author: Addy Osmani; Agent Signal adaptation
 license: MIT
 compatibility: Requires the project's frontend toolchain and browser rendering for production verification.

@@ -22,12 +22,12 @@
             "additionalProperties": false,
             "required": ["kind"],
             "properties": {
-              "kind": {"enum": ["whole-file", "heading", "tagged-line"]},
+              "kind": {"enum": ["whole-file", "heading", "tagged-line", "paragraph-prefix"]},
               "value": {"type": "string", "minLength": 1}
             },
             "allOf": [
               {
-                "if": {"properties": {"kind": {"enum": ["heading", "tagged-line"]}}},
+                "if": {"properties": {"kind": {"enum": ["heading", "tagged-line", "paragraph-prefix"]}}},
                 "then": {"required": ["value"]}
               }
             ]

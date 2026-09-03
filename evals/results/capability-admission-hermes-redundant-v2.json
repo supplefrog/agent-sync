@@ -2,7 +2,7 @@
   "schema_version": 1,
   "suite": "capability-admission",
   "host": "hermes",
-  "host_version": "Hermes Agent v0.19.0 (2026.7.20) · upstream 1161cc0b · local 5be99b6f (+111 carried commits)\nInstall directory: C:\\Users\\E\\AppData\\Local\\hermes\\hermes-agent\nInstall method: git\nPython: 3.11.15\nOpenAI SDK: 2.24.0",
+  "host_version": "Hermes Agent v0.19.0 (2026.7.20) · upstream 1161cc0b · local 5be99b6f (+111 carried commits)",
   "judge_host": "codex",
   "judge_version": "codex-cli 0.146.0-alpha.3.1",
   "run_timestamp_utc": "2026-07-26T00:10:04.413040+00:00",

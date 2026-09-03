@@ -62,6 +62,18 @@ class InstructionRetirementTests(unittest.TestCase):
             "[EVIDENCE] verify claims\n",
         )
 
+    def test_paragraph_prefix_extraction_and_removal_preserve_neighbors(self):
+        text = "# Defaults\n\nStart with one conclusion. More detail.\n\nWhen thinking aloud, organize first.\n\nRoute durable instructions.\n"
+        selector = {"kind": "paragraph-prefix", "value": "When thinking aloud"}
+        self.assertEqual(
+            self.tool.selected_text(text, selector),
+            "When thinking aloud, organize first.\n",
+        )
+        without = self.tool.without_selector(text, selector)
+        self.assertIn("Start with one conclusion", without)
+        self.assertIn("Route durable instructions", without)
+        self.assertNotIn("When thinking aloud", without)
+
     def test_model_release_selects_only_bounded_model_sensitive_suites(self):
         manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
         stack = self.stack()
@@ -71,9 +83,9 @@ class InstructionRetirementTests(unittest.TestCase):
         self.assertTrue(plan["selected_units"])
         rows = {row["id"]: row for row in plan["units"]}
         self.assertEqual(rows["core.capability-admission"]["action"], "protected-manual")
-        self.assertEqual(rows["core.outcome-first-workflow"]["action"], "skip-trigger")
-        self.assertEqual(rows["core.delegation-routing"]["action"], "skip-trigger")
-        self.assertEqual(rows["core.scope"]["action"], "behavior-ablation")
+        self.assertEqual(rows["core.outcome-first-workflow"]["action"], "reference-source-review")
+        self.assertEqual(rows["core.delegation-routing"]["action"], "reference-source-review")
+        self.assertEqual(rows["core.scope"]["action"], "reference-source-review")
 
     def test_effective_stack_change_reopens_only_model_sensitive_units(self):
         manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
@@ -84,9 +96,48 @@ class InstructionRetirementTests(unittest.TestCase):
         rows = {row["id"]: row for row in plan["units"]}
         self.assertTrue(plan["selected_units"])
         self.assertLessEqual(len(plan["selected_suites"]), 2)
-        self.assertEqual(rows["core.scope"]["action"], "behavior-ablation")
-        self.assertEqual(rows["core.outcome-first-workflow"]["action"], "skip-trigger")
+        self.assertEqual(rows["core.scope"]["action"], "reference-source-review")
+        self.assertEqual(rows["core.outcome-first-workflow"]["action"], "reference-source-review")
         self.assertEqual(rows["core.capability-admission"]["action"], "protected-manual")
+        self.assertEqual(rows["hermes.deliberation"]["action"], "behavior-ablation")
+        self.assertEqual(rows["hermes.instruction-authoring-route"]["action"], "skip-trigger")
+
+    def test_plan_selects_only_live_units_for_the_target_host(self):
+        manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as temp:
+            plan = self.tool.build_plan(
+                REPO, manifest, self.stack(host="hermes"),
+                "effective-stack-changed", Path(temp), 4,
+            )
+        rows = {row["id"]: row for row in plan["units"]}
+        self.assertEqual(rows["codex.output"]["action"], "skip-host")
+        self.assertEqual(rows["codex.scope"]["action"], "skip-host")
+        self.assertNotIn("codex.output", plan["selected_units"])
+        self.assertNotIn("codex.scope", plan["selected_units"])
+        self.assertTrue(all(unit_id.startswith("hermes.") for unit_id in plan["selected_units"]))
+
+    def test_reference_sources_do_not_shadow_identical_effective_units(self):
+        manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as temp:
+            plan = self.tool.build_plan(
+                REPO, manifest, self.stack(host="hermes"),
+                "effective-stack-changed", Path(temp), 4,
+            )
+        rows = {row["id"]: row for row in plan["units"]}
+        self.assertEqual(rows["core.identity"]["action"], "reference-source-review")
+        self.assertEqual(rows["hermes.identity"]["action"], "behavior-ablation")
+        self.assertEqual(rows["core.judgment"]["action"], "reference-source-review")
+        self.assertEqual(rows["hermes.judgment"]["action"], "behavior-ablation")
+
+    def test_live_generic_units_use_complete_owner_specific_suites(self):
+        manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
+        required = {"representative", "near-miss", "adversarial", "held-out"}
+        for unit in manifest["units"]:
+            if unit.get("status") != "effective" or unit["class"] != "generic-steering":
+                continue
+            suite = json.loads((REPO / unit["suite"]).read_text(encoding="utf-8"))
+            self.assertEqual(suite.get("schema_version"), 2, unit["id"])
+            self.assertEqual({case.get("kind") for case in suite["cases"]}, required, unit["id"])
 
     def test_exact_receipt_suppresses_retest(self):
         manifest = {

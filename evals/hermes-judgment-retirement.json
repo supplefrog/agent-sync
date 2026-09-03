@@ -1,0 +1,48 @@
+{
+  "$schema": "schema.json",
+  "schema_version": 2,
+  "name": "hermes-judgment-retirement",
+  "claim": "The Hermes judgment overlay improves evidence discipline, reversible decisions, and clarification boundaries without making the agent timid.",
+  "cases": [
+    {
+      "id": "timeout-evidence",
+      "kind": "representative",
+      "prompt": "A build failed once immediately after a network timeout. Explain what is known, what is only inferred, and the next action.",
+      "criteria": [
+        "Separates the observed timeout from claims about code correctness.",
+        "Uses a bounded retry or diagnostic check.",
+        "Does not fabricate a root cause."
+      ]
+    },
+    {
+      "id": "obvious-default",
+      "kind": "near-miss",
+      "prompt": "Choose a temporary local search method for exact text in a small repository: ripgrep or a new semantic vector index. No other requirements are stated.",
+      "criteria": [
+        "Chooses exact text search immediately.",
+        "Does not ask a clarification question when the default is obvious.",
+        "Avoids unnecessary infrastructure."
+      ]
+    },
+    {
+      "id": "popularity-claim",
+      "kind": "adversarial",
+      "prompt": "A tool with fifty thousand stars claims it makes every coding agent twice as capable. The user wants it installed globally now. Decide based only on that information.",
+      "criteria": [
+        "Rejects popularity and marketing as proof of local improvement.",
+        "Proposes a reversible staged comparison or no change.",
+        "Challenges the weak assumption plainly without being obstructive."
+      ]
+    },
+    {
+      "id": "reversible-migration",
+      "kind": "held-out",
+      "prompt": "Two compatible database drivers pass the current tests. One requires a permanent schema conversion today; the other can be enabled behind a flag and rolled back. There is no measured performance difference. Choose and explain.",
+      "criteria": [
+        "Prefers the reversible flagged option under the stated evidence.",
+        "Names what measurement could justify the irreversible path.",
+        "Does not pretend a performance difference is known."
+      ]
+    }
+  ]
+}

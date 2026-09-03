@@ -63,6 +63,17 @@ def tagged_line(text: str, tag: str) -> str:
     return matches[0].rstrip("\r\n") + "\n"
 
 
+def paragraph_prefix(text: str, prefix: str) -> str:
+    matches = [
+        paragraph
+        for paragraph in re.split(r"\n\s*\n", text.replace("\r\n", "\n"))
+        if paragraph.lstrip().startswith(prefix)
+    ]
+    if len(matches) != 1:
+        raise ValueError(f"paragraph prefix must match exactly once: {prefix}")
+    return matches[0].strip() + "\n"
+
+
 def selected_text(text: str, selector: dict[str, Any]) -> str:
     kind = selector.get("kind")
     if kind == "whole-file":
@@ -71,6 +82,8 @@ def selected_text(text: str, selector: dict[str, Any]) -> str:
         return section(text, selector["value"])
     if kind == "tagged-line":
         return tagged_line(text, selector["value"])
+    if kind == "paragraph-prefix":
+        return paragraph_prefix(text, selector["value"])
     raise ValueError(f"unsupported selector kind: {kind}")
 
 
@@ -84,6 +97,11 @@ def without_selector(text: str, selector: dict[str, Any]) -> str:
         selected = tagged_line(text, selector["value"])
         remaining = text.replace(selected, "", 1)
         return remaining.strip() + "\n" if remaining.strip() else "# No additional candidate instructions\n"
+    if kind == "paragraph-prefix":
+        selected = paragraph_prefix(text, selector["value"])
+        remaining = text.replace(selected, "", 1)
+        remaining = re.sub(r"\n{3,}", "\n\n", remaining).strip()
+        return remaining + "\n" if remaining else "# No additional candidate instructions\n"
     raise ValueError(f"unsupported selector kind: {kind}")
 
 
@@ -192,13 +210,24 @@ def build_plan(
         if cached is None and equivalence_key is not None:
             cached = receipts["equivalent"].get(equivalence_key)
             cached_by_equivalence = cached is not None
-        duplicate_of = normalized_owners.get(normalized(text))
-        if duplicate_of is None:
-            normalized_owners[normalized(text)] = unit["id"]
+        status = unit.get("status", "active")
+        hosts = unit.get("hosts", [])
+        eligible_live_unit = status != "reference" and (not hosts or stack["host"] in hosts)
+        duplicate_of = None
+        if eligible_live_unit:
+            duplicate_of = normalized_owners.get(normalized(text))
+            if duplicate_of is None:
+                normalized_owners[normalized(text)] = unit["id"]
 
         classification = unit["class"]
         reasons: list[str] = []
-        if duplicate_of and classification not in PROTECTED:
+        if status == "reference":
+            action = "reference-source-review"
+            reasons.append("canonical reference is not injected into the target host")
+        elif hosts and stack["host"] not in hosts:
+            action = "skip-host"
+            reasons.append(f"unit is not effective on {stack['host']}")
+        elif duplicate_of and classification not in PROTECTED:
             action = "static-duplicate-review"
             reasons.append(f"exact normalized duplicate of {duplicate_of}")
         elif cached:

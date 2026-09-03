@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://supplefrog.github.io/agent-signal/contracts/learning-candidate.schema.json",
+  "title": "Shadow global-agent learning candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "candidate_id", "fingerprint", "status", "scope", "behavior_class", "owner", "lesson", "promotion_allowed", "promotion_blocked", "promotion_gate", "created_at", "updated_at", "recurrence_count", "evidence"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "candidate_id": {"type": "string", "pattern": "^[a-f0-9]{20}$"},
+    "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "status": {"const": "shadow"},
+    "scope": {"enum": ["global", "cross-project", "project", "user"]},
+    "behavior_class": {"enum": ["generic-judgment", "reusable-procedure", "runtime-mechanic", "github-workflow", "safety-governance", "project-convention", "user-preference", "environment-fact"]},
+    "owner": {"enum": ["shared-instruction", "agent-skill", "host-adapter", "github-follow-up", "manual-control-plane", "project-local", "user-memory"]},
+    "lesson": {"$ref": "#/$defs/lesson"},
+    "promotion_allowed": {"const": false},
+    "promotion_blocked": {"const": true},
+    "promotion_gate": {"enum": ["capability-curator", "explicit-owner-review"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "recurrence_count": {"type": "integer", "minimum": 1},
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event_id", "source_type", "source_ref", "observed_at", "evidence_refs"],
+        "properties": {
+          "event_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "source_type": {"enum": ["user-correction", "verified-task-failure", "successful-comparison", "github-outcome", "model-runtime-change", "external-research"]},
+          "source_ref": {"type": "string", "minLength": 1, "maxLength": 500},
+          "observed_at": {"type": "string", "format": "date-time"},
+          "evidence_refs": {"type": "array", "minItems": 1, "maxItems": 20, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 500}}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "lesson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["problem", "better_behavior", "near_miss"],
+      "properties": {
+        "problem": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "better_behavior": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "near_miss": {"type": "string", "minLength": 1, "maxLength": 1000}
+      }
+    }
+  }
+}

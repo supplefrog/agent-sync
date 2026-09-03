@@ -1,0 +1,119 @@
+{
+  "schema_version": 2,
+  "suite": "hermes-deliberation-retirement",
+  "host": "hermes",
+  "host_version": "Hermes Agent v0.20.6 (2026.8.27) · upstream 6f1733ca",
+  "judge_host": "codex",
+  "judge_version": "codex-cli 0.152.0",
+  "run_timestamp_utc": "2026-09-02T11:14:40.393631+00:00",
+  "status": "complete",
+  "artifacts": {
+    "candidate_sha256": "edee8e531bd616013163fd3408e87ee0dfd36d45571320aa8ba22c74b6275c25",
+    "baseline_candidate_sha256": "06c6ae8dc8873f4643b83628d1c45949c175281da10c74d8a1747d34f21e5426",
+    "suite_sha256": "c6b0360b443d795b16a64383af21e5df805cdfe9c075bc699c3f6abb58f1fbab",
+    "harness_sha256": "be901027c49d83c7e996abc4198a4328d01d66e66ebe9e48e5f54256f9e391b0"
+  },
+  "effective_stack": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "ultra",
+    "judge_model": "gpt-5.6-sol",
+    "judge_provider": "openai-codex",
+    "tool_policy": "none",
+    "prompt_assembly": "isolated-candidate",
+    "context_policy": "no-memory-no-project-rules",
+    "equivalence_group": "hermes-0.20.6-sol-ultra-no-tools",
+    "irreducible_differences": [
+      "Hermes generates and Codex judges; both use gpt-5.6-sol ultra"
+    ],
+    "route_attestation_required": true,
+    "judge_panel": "two-order-swapped"
+  },
+  "decision_rule": {
+    "alpha": 0.05,
+    "margin": 0.1,
+    "min_trials": 2,
+    "max_trials": 2,
+    "max_agent_runs": 48,
+    "transient_retries_per_run": 2,
+    "retry_delay_seconds": 15.0,
+    "score_range": [
+      -1,
+      1
+    ]
+  },
+  "seeds": [
+    0
+  ],
+  "run_count": 16,
+  "rollback": "git restore recovery/current/hosts/hermes/SOUL.md and rerun fleet install",
+  "session_lifecycle": {
+    "policy": "delete-after-durable-report",
+    "created_count": 8,
+    "protected_count": 0,
+    "deleted_count": 8,
+    "remaining_count": 0,
+    "error_count": 0,
+    "clean": true
+  },
+  "result": {
+    "candidate_wins": 1,
+    "candidate_losses": 0,
+    "ties": 3,
+    "candidate_hard_failures": 1,
+    "judge_errors": 0,
+    "judge_disagreements": 1,
+    "raw_judge_disagreements": 1,
+    "criterion_disagreements": 0,
+    "raw_criterion_disagreements": 0,
+    "candidate_receipt_failures": 1,
+    "route_attestation_failures": 0,
+    "trial_scores": [
+      0.3333333333333333
+    ]
+  },
+  "cases": [
+    {
+      "id": "obvious-choice",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "publishing-ambiguity",
+      "kind": "near-miss",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "clear-reversible-action",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "architecture-tension",
+      "kind": "held-out",
+      "trial": 0,
+      "winner": "tie"
+    }
+  ],
+  "decision": "retain",
+  "decision_detail": {
+    "decision": "retain",
+    "mean": 0.3333333333333333,
+    "trials": 1,
+    "observations": 3,
+    "confidence_sequence": {
+      "method": "hoeffding-alpha-spending",
+      "alpha": 0.05,
+      "look_alpha": 0.025,
+      "radius": 1.7091960360890694,
+      "lower": -1.0,
+      "upper": 1.0
+    }
+  },
+  "artifact_validation": "recorded-hashes-only",
+  "raw_report_sha256": "9184365ba9772467885b1c40d6254aed2e4090b51b36f06cef2a49bf6bfbc65f",
+  "raw_report_committed": false
+}

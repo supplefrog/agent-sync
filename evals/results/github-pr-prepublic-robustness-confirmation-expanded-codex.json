@@ -1,0 +1,163 @@
+{
+  "schema_version": 2,
+  "suite": "github-pr-prepublic-robustness-confirmation-expanded",
+  "host": "codex",
+  "host_version": "codex-cli 0.152.0",
+  "judge_host": "codex",
+  "judge_version": "codex-cli 0.152.0",
+  "run_timestamp_utc": "2026-09-02T10:25:03.546044+00:00",
+  "status": "complete",
+  "artifacts": {
+    "candidate_sha256": "a9280dfcd2ab829429af62824ce4b19d030529bbb8a3f60c55cd043849d24839",
+    "baseline_candidate_sha256": "69715c69fe93582a28f22d32c440db3a9fd5d809bd94d3c57ec47e86c0a17d7d",
+    "suite_sha256": "1d8354ac8a2ba0ff61f7394cd8d49d51ce9c309fef2a2bb47556d827a044c471",
+    "harness_sha256": "5fb72efb51ad8ab6d516df444710a0772c8c05cae70e49ad1c41f04bd172eb79"
+  },
+  "effective_stack": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "medium",
+    "judge_model": "gpt-5.6-sol",
+    "judge_provider": "openai-codex",
+    "tool_policy": "none",
+    "prompt_assembly": "isolated-anonymous-artifact-v3",
+    "context_policy": "fresh-session-per-output",
+    "equivalence_group": "codex-gpt56sol-medium-pr-robust-confirmation-expanded-v3",
+    "irreducible_differences": [],
+    "route_attestation_required": true,
+    "judge_panel": "two-order-swapped-plus-bounded-tiebreak"
+  },
+  "decision_rule": {
+    "alpha": 0.05,
+    "margin": 0.1,
+    "min_trials": 2,
+    "max_trials": 2,
+    "max_agent_runs": 60,
+    "transient_retries_per_run": 2,
+    "retry_delay_seconds": 2.0,
+    "score_range": [
+      -1,
+      1
+    ]
+  },
+  "seeds": [
+    0,
+    1
+  ],
+  "run_count": 49,
+  "rollback": "Restore the exact baseline artifact 69715c69fe93582a28f22d32c440db3a9fd5d809bd94d3c57ec47e86c0a17d7d.",
+  "session_lifecycle": {
+    "policy": "delete-after-durable-report",
+    "created_count": 0,
+    "protected_count": 0,
+    "deleted_count": 0,
+    "remaining_count": 0,
+    "error_count": 0,
+    "clean": true
+  },
+  "result": {
+    "candidate_wins": 5,
+    "candidate_losses": 0,
+    "ties": 7,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0,
+    "judge_disagreements": 0,
+    "raw_judge_disagreements": 1,
+    "criterion_disagreements": 0,
+    "raw_criterion_disagreements": 1,
+    "candidate_receipt_failures": 0,
+    "route_attestation_failures": 0,
+    "trial_scores": [
+      0.5,
+      0.3333333333333333
+    ]
+  },
+  "cases": [
+    {
+      "id": "prepublic-confirmation-packed-npm-consumer",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "prepublic-confirmation-stale-systemd-premise",
+      "kind": "adversarial",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-confirmation-rust-branch-collision",
+      "kind": "held-out",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-confirmation-readme-link-typo",
+      "kind": "near-miss",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "prepublic-confirmation-security-cookie-review",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "tie"
+    },
+    {
+      "id": "prepublic-confirmation-windows-atomic-replace-review",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-confirmation-packed-npm-consumer",
+      "kind": "representative",
+      "trial": 1,
+      "winner": "tie"
+    },
+    {
+      "id": "prepublic-confirmation-stale-systemd-premise",
+      "kind": "adversarial",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-confirmation-rust-branch-collision",
+      "kind": "held-out",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-confirmation-readme-link-typo",
+      "kind": "near-miss",
+      "trial": 1,
+      "winner": "tie"
+    },
+    {
+      "id": "prepublic-confirmation-security-cookie-review",
+      "kind": "representative",
+      "trial": 1,
+      "winner": "tie"
+    },
+    {
+      "id": "prepublic-confirmation-windows-atomic-replace-review",
+      "kind": "representative",
+      "trial": 1,
+      "winner": "tie"
+    }
+  ],
+  "decision": "admit",
+  "decision_detail": {
+    "decision": "admit",
+    "basis": "bounded-stability",
+    "trials": 2,
+    "required_trials": 2,
+    "candidate_receipt_failures": 0,
+    "candidate_losses": 0,
+    "judge_disagreements": 0,
+    "missing_required_win_kinds": []
+  },
+  "artifact_validation": "recorded-hashes-only",
+  "raw_report_sha256": "b1cf9cf81a67b140612d54d17fa282133be68661dabee5590d97246258b488b6",
+  "raw_report_committed": false
+}

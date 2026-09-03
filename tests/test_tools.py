@@ -262,13 +262,18 @@ hello world this works
         public_check = load("public_check", REPO / "tools" / "public_check.py")
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
+            private_path = "C:" + "\\" + "Users" + "\\" + "Someone" + "\\" + "notes"
             (root / "README.md").write_text("portable", encoding="utf-8")
-            (root / "private.md").write_text("source C:\\Users\\Someone\\notes", encoding="utf-8")
+            (root / "private.md").write_text("source " + private_path, encoding="utf-8")
             (root / ".evals").mkdir()
             raw_secret = "password=" + "'not-for-public'"
             (root / ".evals" / "raw.txt").write_text(raw_secret, encoding="utf-8")
+            (root / "evals" / "reports" / "raw").mkdir(parents=True)
+            (root / "evals" / "reports" / "raw" / "raw.json").write_text(
+                json.dumps({"path": private_path}), encoding="utf-8"
+            )
             (root / ".worktrees").mkdir()
-            (root / ".worktrees" / "private.md").write_text("C:\\Users\\Someone\\notes", encoding="utf-8")
+            (root / ".worktrees" / "private.md").write_text(private_path, encoding="utf-8")
             (root / "routing.md").write_text("high-risk-architecture-provider", encoding="utf-8")
             findings = public_check.scan(root)
         self.assertEqual([(str(path), rule) for path, _, rule in findings], [("private.md", "windows-user-path")])
@@ -281,6 +286,46 @@ hello world this works
             (root / "guard.py").write_text(r'pattern = r"/home/[^/\\s]+/"', encoding="utf-8")
             findings = public_check.scan(root)
         self.assertEqual([(str(path), rule) for path, _, rule in findings], [("actual.md", "posix-user-path")])
+
+    def test_public_check_rejects_json_escaped_windows_user_path(self):
+        public_check = load("public_check_json_path", REPO / "tools" / "public_check.py")
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            private_path = "C:" + "\\" + "Users" + "\\" + "Someone" + "\\" + "notes"
+            (root / "report.json").write_text(json.dumps({"path": private_path}), encoding="utf-8")
+            findings = public_check.scan(root)
+        self.assertEqual([(str(path), rule) for path, _, rule in findings], [("report.json", "windows-user-path")])
+
+    def test_eval_summary_binds_raw_report_without_session_ids(self):
+        summarizer = load("summarize_eval_compact", REPO / "tools" / "summarize_eval.py")
+        report = {
+            "suite": "x",
+            "agent": "hermes",
+            "agent_version": "Hermes 1\nInstall directory: " + "C:" + "\\" + "Users" + "\\" + "Someone",
+            "judge_agent": "codex",
+            "judge_version": "1",
+            "timestamp_utc": "now",
+            "artifacts": {},
+            "decision": {"decision": "retain", "observations": 3},
+            "summary": {},
+            "results": [],
+            "session_lifecycle": {
+                "policy": "delete-after-durable-report",
+                "created": ["private-session-a"],
+                "protected": [],
+                "deleted": ["private-session-a"],
+                "remaining": [],
+                "errors": [],
+            },
+        }
+        summary = summarizer.compact(report, "verified", "keep staged", "a" * 64)
+        self.assertEqual(summary["host_version"], "Hermes 1")
+        self.assertEqual(summary["raw_report_sha256"], "a" * 64)
+        self.assertEqual(summary["session_lifecycle"]["created_count"], 1)
+        self.assertEqual(summary["session_lifecycle"]["deleted_count"], 1)
+        self.assertTrue(summary["session_lifecycle"]["clean"])
+        self.assertEqual(summary["decision_detail"]["observations"], 3)
+        self.assertNotIn("private-session-a", json.dumps(summary))
 
     def test_eval_summary_rejects_stale_artifact_hashes(self):
         summarizer = load("summarize_eval", REPO / "tools" / "summarize_eval.py")
@@ -325,6 +370,44 @@ hello world this works
             )
         self.assertEqual(rc, 1)
         self.assertFalse(out.exists())
+
+    def test_eval_summary_can_preserve_historical_recorded_hashes_explicitly(self):
+        summarizer = load("summarize_eval_historical", REPO / "tools" / "summarize_eval.py")
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            report = root / "raw.json"
+            out = root / "summary.json"
+            report.write_text(
+                json.dumps(
+                    {
+                        "suite": "historical",
+                        "agent": "hermes",
+                        "agent_version": "1",
+                        "timestamp_utc": "then",
+                        "artifacts": {
+                            "candidate_sha256": "a" * 64,
+                            "suite_sha256": "b" * 64,
+                            "harness_sha256": "c" * 64,
+                        },
+                        "summary": {},
+                        "results": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            rc = summarizer.main(
+                [
+                    str(report),
+                    "--artifact-policy", "recorded",
+                    "--status", "historical",
+                    "--decision", "preserve negative evidence",
+                    "--out", str(out),
+                ]
+            )
+            payload = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {}
+        self.assertEqual(rc, 0)
+        self.assertEqual(payload["artifact_validation"], "recorded-hashes-only")
+        self.assertEqual(payload["artifacts"]["candidate_sha256"], "a" * 64)
 
     def test_candidate_hash_and_prompt_include_linked_references(self):
         artifacts = load("artifact_hash", REPO / "tools" / "artifact_hash.py")

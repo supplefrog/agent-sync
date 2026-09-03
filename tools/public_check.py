@@ -19,9 +19,12 @@ EXCLUDED_DIRS = {
     "__pycache__",
     "render",
 }
+EXCLUDED_PREFIXES = {("evals", "reports", "raw")}
 TEXT_SUFFIXES = {"", ".md", ".json", ".py", ".toml", ".yaml", ".yml", ".txt"}
 RULES = {
-    "windows-user-path": re.compile(r"(?i)[a-z]:[\\/](?:users|documents and settings)[\\/]"),
+    "windows-user-path": re.compile(
+        r"(?i)[a-z]:(?:[\\/]|\\\\)(?:users|documents and settings)(?:[\\/]|\\\\)"
+    ),
     "posix-user-path": re.compile(
         r"(?<![A-Za-z0-9_])/(?:home/[A-Za-z0-9._-]+|root)(?:/[A-Za-z0-9._~+-]*)?"
     ),
@@ -37,7 +40,12 @@ RULES = {
 def scan(repo: Path) -> list[tuple[Path, int, str]]:
     findings: list[tuple[Path, int, str]] = []
     for path in sorted(repo.rglob("*")):
-        if not path.is_file() or any(part in EXCLUDED_DIRS for part in path.relative_to(repo).parts):
+        relative = path.relative_to(repo)
+        if (
+            not path.is_file()
+            or any(part in EXCLUDED_DIRS for part in relative.parts)
+            or any(relative.parts[: len(prefix)] == prefix for prefix in EXCLUDED_PREFIXES)
+        ):
             continue
         if path.name != ".gitignore" and path.suffix.lower() not in TEXT_SUFFIXES:
             continue
@@ -48,7 +56,7 @@ def scan(repo: Path) -> list[tuple[Path, int, str]]:
         for number, line in enumerate(lines, 1):
             for name, pattern in RULES.items():
                 if pattern.search(line):
-                    findings.append((path.relative_to(repo), number, name))
+                    findings.append((relative, number, name))
     return findings
 
 

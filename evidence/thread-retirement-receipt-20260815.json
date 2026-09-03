@@ -4,7 +4,7 @@
   "authority_task": "t_195d532c",
   "authority_board": "agent-orchestration",
   "basis": {
-    "reconciliation_report": "C:\\Users\\E\\AppData\\Local\\hermes\\reconciliation\\reports\\cross-thread-claims-20260814T015851Z.md",
+    "reconciliation_report": "{HERMES_HOME}/reconciliation/reports/cross-thread-claims-20260814T015851Z.md",
     "live_board_rechecked": true,
     "native_host_state_rechecked": true
   },
@@ -19,7 +19,7 @@
       "verification": {
         "cli_result": "Deleted session 019fffe6-e288-7822-84cb-e665cdfceb37.",
         "remaining_filename_matches": 0,
-        "parent_preserved": "C:\\Users\\E\\.codex\\archived_sessions\\rollout-2026-08-14T16-21-15-019fffe5-c22a-7ba3-8b6e-da0b0e7f11e4.jsonl"
+        "parent_preserved": "{CODEX_HOME}/archived_sessions/rollout-2026-08-14T16-21-15-019fffe5-c22a-7ba3-8b6e-da0b0e7f11e4.jsonl"
       }
     }
   ],
@@ -55,7 +55,7 @@
     },
     {
       "host": "omp",
-      "session_path": "C:\\Users\\E\\.omp\\agent\\sessions\\-tmp\\2026-08-09T11-15-53-557Z_019fe63c-8455-7000-bd0e-e676e1486438.jsonl",
+      "session_path": "{OMP_HOME}/agent/sessions/-tmp/2026-08-09T11-15-53-557Z_019fe63c-8455-7000-bd0e-e676e1486438.jsonl",
       "reason": "Referenced capability and cleanup-rule evidence; broader capability-convergence work remains active."
     },
     {

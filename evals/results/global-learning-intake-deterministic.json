@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "suite": "global-learning-intake-deterministic",
+  "status": "development-pass-host-eval-blocked",
+  "observed_at": "2026-09-02T00:18:48+00:00",
+  "claim": "The shadow intake deterministically validates, routes, deduplicates, and records verified learning events without mutating live agent surfaces.",
+  "artifacts": {
+    "skill_sha256": "28ebd592663a059a3a56f0638d939ec645d2e5d6924fca4308ccc6d4f1b08ad0",
+    "script_sha256": "b61cef6ef7d8e69ad00162eb078f367fde9ab6bfdd071c1e545439d54fa1c121",
+    "event_schema_sha256": "c9e64130e47653657bea554eee553be18f786b58e5e25a360c0560f5a9bf8c8c",
+    "candidate_schema_sha256": "c2e5134b0018e3e450f54b13db140ff2d8c8496fa53d6819d28584d4d4b3cef6",
+    "tests_sha256": "df8d8cc79c52e3231b1591a0517a57a823b05a9a945d63699caf7d0220045b3a",
+    "behavior_suite_sha256": "54871ec93dd698645eb040848b2b04a727800e6480d12272e9d83e746b625056"
+  },
+  "verification": {
+    "unit_tests": "10 passed",
+    "focused_integration": "46 passed",
+    "skill_validation": "19/19 valid",
+    "repository_audit": "pass",
+    "covered": [
+      "schema validation",
+      "verified-evidence requirement",
+      "secret and raw-transcript rejection",
+      "idempotent event ingestion",
+      "append-only receipts",
+      "recurrence without promotion",
+      "global, project, and memory routing",
+      "no live-surface mutation",
+      "portable command adapter"
+    ]
+  },
+  "admission": {
+    "passed": false,
+    "decision": "keep-staged",
+    "blocker": "Standalone Hermes is logged out of openai-codex, so the exact gpt-5.6-sol ultra Hermes behavior suite and required-host aggregate cannot run.",
+    "evidence": "evals/results/instruction-retirement-hermes-deliberation-sol-ultra.json"
+  },
+  "rollback": "Remove the staged registry/ownership entry and skills/global-learning-intake; no live fleet artifact was installed."
+}

@@ -97,7 +97,7 @@
       "status": "effective",
       "hosts": ["hermes"],
       "owner": "hermes-user-global",
-      "suite": "evals/core-instruction-retirement.json",
+      "suite": "evals/hermes-identity-retirement.json",
       "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
       "priority": 20
     },
@@ -109,7 +109,7 @@
       "status": "effective",
       "hosts": ["hermes"],
       "owner": "hermes-user-global",
-      "suite": "evals/core-instruction-retirement.json",
+      "suite": "evals/hermes-style-retirement.json",
       "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
       "priority": 40
     },
@@ -121,21 +121,45 @@
       "status": "effective",
       "hosts": ["hermes"],
       "owner": "hermes-user-global",
-      "suite": "evals/core-instruction-retirement.json",
+      "suite": "evals/hermes-judgment-retirement.json",
       "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
       "priority": 60
     },
     {
-      "id": "hermes.defaults",
+      "id": "hermes.output",
       "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "heading", "value": "# Defaults"},
+      "selector": {"kind": "paragraph-prefix", "value": "Start with one plain-language conclusion."},
       "class": "generic-steering",
       "status": "effective",
       "hosts": ["hermes"],
       "owner": "hermes-user-global",
-      "suite": "evals/core-instruction-retirement.json",
+      "suite": "evals/hermes-output-retirement.json",
       "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
       "priority": 70
+    },
+    {
+      "id": "hermes.deliberation",
+      "path": "recovery/current/hosts/hermes/SOUL.md",
+      "selector": {"kind": "paragraph-prefix", "value": "For clear, reversible requests, act immediately"},
+      "class": "generic-steering",
+      "status": "effective",
+      "hosts": ["hermes"],
+      "owner": "hermes-user-global",
+      "suite": "evals/hermes-deliberation-retirement.json",
+      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
+      "priority": 80
+    },
+    {
+      "id": "hermes.instruction-authoring-route",
+      "path": "recovery/current/hosts/hermes/SOUL.md",
+      "selector": {"kind": "paragraph-prefix", "value": "When creating, revising, auditing, or routing durable agent instructions,"},
+      "class": "workflow-routing",
+      "status": "effective",
+      "hosts": ["hermes"],
+      "owner": "hermes-user-global",
+      "suite": "evals/capability-admission.json",
+      "retest_on": ["instruction-owner-changed", "instruction-changed"],
+      "priority": 90
     },
     {
       "id": "codex.output",

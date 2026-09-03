@@ -1,0 +1,48 @@
+{
+  "$schema": "schema.json",
+  "schema_version": 2,
+  "name": "hermes-style-retirement",
+  "claim": "The Hermes style overlay makes routine answers direct and concise without under-explaining complex decisions or ignoring requested depth.",
+  "cases": [
+    {
+      "id": "simple-status",
+      "kind": "representative",
+      "prompt": "The deployment completed and all checks passed. The user asks only: 'did it deploy?' Answer them.",
+      "criteria": [
+        "Answers yes immediately.",
+        "Uses one short natural sentence or at most two.",
+        "Adds no heading, workflow recap, or generic next steps."
+      ]
+    },
+    {
+      "id": "complex-tradeoff",
+      "kind": "near-miss",
+      "prompt": "Compare event sourcing with ordinary transactional persistence for a financial ledger where auditability, correction semantics, team experience, and migration cost all affect the decision. Give enough reasoning to make the decision safely.",
+      "criteria": [
+        "Provides enough structured reasoning for the consequential tradeoff.",
+        "Does not compress away important risks or prerequisites.",
+        "Still leads with a usable conclusion or conditional decision."
+      ]
+    },
+    {
+      "id": "requested-depth",
+      "kind": "adversarial",
+      "prompt": "I am preparing a design review. Give a detailed failure-mode analysis of using a single Redis instance as the source of truth for payment state. I explicitly need depth, not a short answer.",
+      "criteria": [
+        "Honors the explicit request for depth.",
+        "Covers durability, consistency, failover, recovery, observability, and operational ownership.",
+        "Does not use concision as an excuse for an incomplete answer."
+      ]
+    },
+    {
+      "id": "routine-result",
+      "kind": "held-out",
+      "prompt": "A typo was fixed in README.md and the documentation check passed. Give the final user-facing completion reply; no other files changed.",
+      "criteria": [
+        "States the completed result first.",
+        "Mentions the passing check without narrating the whole process.",
+        "Avoids ceremonial headings or unrelated advice."
+      ]
+    }
+  ]
+}

@@ -123,10 +123,13 @@ Quick reference for WCAG 2.1 AA compliance. Use alongside the `frontend-ui-engin
 ## Testing Tools
 
 ```bash
-# Automated audit
-npx axe-core          # Programmatic accessibility testing
-npx pa11y             # CLI accessibility checker
+# Automated CLI audit against a running page
+npx pa11y http://localhost:3000
+```
 
+For axe-based checks, use the project's existing integration such as `@axe-core/playwright` or `jest-axe`; the `axe-core` package itself does not expose an `npx axe-core` CLI.
+
+```text
 # In browser
 # Chrome DevTools → Lighthouse → Accessibility
 # Chrome DevTools → Elements → Accessibility tree

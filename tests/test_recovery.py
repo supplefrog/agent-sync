@@ -520,6 +520,16 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(original_config, (restore_root / "config.yaml").read_text("utf-8"))
         self.assertEqual("local custom instructions\n", (restore_root / "SOUL.md").read_text("utf-8"))
 
+    def test_repository_policy_preserves_native_lcm_threshold(self) -> None:
+        policy = json.loads((ROOT / "recovery.json").read_text(encoding="utf-8"))
+        settings = next(
+            artifact
+            for artifact in policy["hosts"]["hermes"]["artifacts"]
+            if artifact["id"] == "settings"
+        )
+        self.assertIn("context", settings["include"])
+        self.assertIn("lcm.context_threshold", settings["include"])
+
     def test_restore_can_force_explicit_text_replacement(self) -> None:
         recovery.snapshot(self.policy, self.snapshot, self.roots)
         restore_root = self.base / "restore" / "hermes"

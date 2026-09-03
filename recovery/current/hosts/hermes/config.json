@@ -1,5 +1,5 @@
 {
-  "_config_version": 39,
+  "_config_version": 40,
   "agent": {
     "api_max_retries": 3,
     "clarify_timeout": 600,
@@ -147,6 +147,9 @@
     "enabled": true,
     "hygiene_hard_message_limit": 400,
     "in_place": true,
+    "model_thresholds": {
+      "gpt-5.6-sol": 0.95
+    },
     "proactive_prune_tokens": 48000,
     "protect_first_n": 3,
     "protect_last_n": 20,
@@ -157,7 +160,7 @@
     "cua_telemetry": false
   },
   "context": {
-    "engine": "compressor"
+    "engine": "lcm"
   },
   "context_file_max_chars": 20000,
   "cron": {
@@ -296,6 +299,9 @@
     "provider": "openai-codex",
     "use_gateway": false
   },
+  "lcm": {
+    "context_threshold": 0.95
+  },
   "lsp": {
     "enabled": true,
     "install_strategy": "auto",
@@ -349,7 +355,7 @@
     "memory_char_limit": 2200,
     "memory_enabled": true,
     "nudge_interval": 10,
-    "provider": "honcho",
+    "provider": "",
     "user_char_limit": 1375,
     "user_profile_enabled": true,
     "write_approval": false
@@ -367,7 +373,6 @@
   },
   "model_catalog": {
     "enabled": true,
-    "ttl_hours": 1,
     "url": "https://hermes-agent.nousresearch.com/docs/api/model-catalog.json"
   },
   "network": {
@@ -387,12 +392,12 @@
       "clarify",
       "code_execution",
       "computer_use",
-      "cronjob",
       "delegation",
       "file",
       "image_gen",
       "kanban",
       "memory",
+      "routed_delegation",
       "session_search",
       "skills",
       "terminal",
@@ -410,6 +415,7 @@
     ],
     "enabled": [
       "disk-cleanup",
+      "hermes-lcm",
       "image_gen/openai-codex",
       "routed-delegation",
       "security-guidance"
@@ -514,7 +520,13 @@
       "unsloth",
       "weights-and-biases",
       "xurl",
-      "yuanbao"
+      "yuanbao",
+      "jupyter-live-kernel",
+      "osint-investigation",
+      "adversarial-ux-test",
+      "github",
+      "creative-production-workflows",
+      "action-item-extraction"
     ],
     "external_dirs": [
       "{{agent-signal:HOME}}\\.agents\\skills"

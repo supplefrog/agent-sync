@@ -50,7 +50,7 @@
     {
       "id": "capability-curator-cross-host-result",
       "topic": "lifecycle-update",
-      "claim": "The staged capability-curator currently improves admission behavior consistently across both target hosts.",
+      "claim": "Current required-host evidence admits the staged capability-curator across Codex and Hermes.",
       "status": "unresolved",
       "evidence": [
         {
@@ -67,10 +67,25 @@
           "kind": "evaluation",
           "reference": "evals/results/capability-admission-hermes-redundant-v2.json",
           "supports": true
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/capability-curator-hermes-sol-ultra.json",
+          "supports": false
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/capability-curator-codex-sol-ultra.json",
+          "supports": false
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/capability-curator-cross-host-sol-ultra.json",
+          "supports": false
         }
       ],
-      "implication": "The original Hermes run exposed over-elaboration after a settled redundancy decision. A narrow adaptation won that targeted case; keep staged until full current development and fresh held-out suites pass on both hosts.",
-      "observed_at": "2026-07-26T00:10:04Z"
+      "implication": "Historical mixed evidence remains useful, but both current lanes ended in verified harness failures. Their sealed attempt budgets cannot contain a complete rerun, so the cross-host result is inconclusive and the owner stays staged without treating either failure as behavioral rejection.",
+      "observed_at": "2026-09-02T14:53:18Z"
     },
     {
       "id": "surface-convergence-cross-host-result",
@@ -82,10 +97,20 @@
           "kind": "evaluation",
           "reference": "evals/results/surface-convergence-codex.json",
           "supports": true
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/surface-convergence-hermes-sol-ultra.json",
+          "supports": false
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/surface-convergence-cross-host-sol-ultra.json",
+          "supports": false
         }
       ],
-      "implication": "Codex development cases passed 5-0. Keep staged until current held-out Codex and development plus held-out Hermes evidence exists on the same candidate hash.",
-      "observed_at": "2026-07-26T00:12:55Z"
+      "implication": "Historical Codex development evidence remains positive, but the current Hermes episode is inadmissible: a stopped wrapper left its evaluator child running, that child overlapped the rerun, the earlier raw report was overwritten before archival, and the surviving report is bound to candidate and baseline hashes different from the sealed plan. The two reports consumed 63 of 72 attempts, leaving only 9 against a 56-attempt clean minimum. No Codex lane was started; keep the owner staged and treat this as integrity failure, not behavioral rejection.",
+      "observed_at": "2026-09-02T21:06:29Z"
     },
     {
       "id": "openai-routing-selection-evidence",
@@ -154,13 +179,13 @@
           "supports": false
         }
       ],
-      "implication": "No comparative provider winner exists. Preserve the current tools-only Honcho plus session_search stack by no-change policy, not because Honcho beat Hindsight. Through the real Hermes recall tool with production observation-only defaults, Hindsight 0.9.1 passed exact/semantic/strict contradiction/restart/removal synthetic checks but failed irrelevant-query silence, tool-visible provenance, and clean Windows lifecycle; no matched Honcho-versus-Hindsight suite or Codex/OMP adapter comparison ran.",
-      "observed_at": "2026-08-16T02:19:39Z"
+      "implication": "No comparative provider winner exists. A later real-history utility audit found no repeatable external-only downstream win across the user's ordinary workload, so Hermes retired Honcho and Hindsight runtime state and retained built-in curated memory, authoritative artifacts, skills, and exact session retrieval. This does not disprove future bounded semantic recall or person-model use cases; reopen only for a repeated concrete miss that the incumbent cannot recover.",
+      "observed_at": "2026-09-02T21:32:31Z"
     },
     {
       "id": "honcho-backfill-health",
       "topic": "memory-context",
-      "claim": "The current local Honcho backfill is complete and its processing queue is healthy for the evaluated Hermes history window.",
+      "claim": "The historical 2026-08-15 local Honcho backfill was complete and its processing queue was healthy for the evaluated Hermes history window.",
       "status": "confirmed",
       "evidence": [
         {
@@ -169,7 +194,7 @@
           "supports": true
         }
       ],
-      "implication": "Treat recent Honcho retrieval misses as retrieval/profile quality evidence rather than an ingestion backlog, while retaining exact transcript lookup through session_search.",
+      "implication": "Historical only: retrieval misses in that trial were not caused by an ingestion backlog. Honcho has since been retired; exact transcript retrieval remains the incumbent.",
       "observed_at": "2026-08-15T02:58:08Z"
     },
     {
@@ -323,6 +348,26 @@
       "observed_at": "2026-08-30T10:06:30+05:30"
     },
     {
+      "id": "hermes-lcm-windows-activation-20260902",
+      "topic": "context-continuity",
+      "claim": "The active Windows Hermes LCM runtime contains the repair for the prior directory-fsync blocker and currently passes its storage, integrity, configuration, and context-pressure health checks; the earlier comparative recall benchmark has not been rerun.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/context-uplift-lcm-activation-2026-09-02.json",
+          "supports": true
+        },
+        {
+          "kind": "primary-source",
+          "reference": "https://github.com/stephenschoettler/hermes-lcm/commit/e8b5be22d376eb55306fa4b65bf18aa0c5f1e391",
+          "supports": true
+        }
+      ],
+      "implication": "Preserve the active LCM engine and threshold in recovery, keep native compaction enabled, inspect lifecycle-fragmentation warnings without automatic cleanup, and do not claim comparative recall superiority without a new matched rerun.",
+      "observed_at": "2026-09-02T13:17:14Z"
+    },
+    {
       "id": "conversational-presentation-compression-20260902",
       "topic": "instructions-style",
       "claim": "Routine user-facing status should compress presentation without reducing internal reasoning, verification, execution, or safety.",
@@ -336,6 +381,111 @@
       ],
       "implication": "Use one natural status phrase by default; omit headings, ordinary mechanics, and negative clarifications unless they change the decision or next action.",
       "observed_at": "2026-09-02T06:06:16+05:30"
+    },
+    {
+      "id": "github-pr-prepublic-robustness-20260902",
+      "topic": "lifecycle-update",
+      "claim": "A schema-v3 evaluator plus the staged pre-public PR workflow reliably separates critical operational decisions, semantic quality, judge instability, and route mismatch, and the exact candidate improves fresh GitHub PR decision cases without observed regression.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/github-pr-prepublic-robustness-codex.json",
+          "supports": true
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/github-pr-prepublic-robustness-confirmation-expanded-codex.json",
+          "supports": true
+        },
+        {
+          "kind": "negative-control",
+          "reference": "evals/results/github-pr-prepublic-robustness-aa-codex.json",
+          "supports": true
+        },
+        {
+          "kind": "positive-control",
+          "reference": "evals/results/github-pr-prepublic-robustness-positive-control-codex.json",
+          "supports": true
+        },
+        {
+          "kind": "local-verification",
+          "reference": "tests/test_eval_gate.py",
+          "supports": true
+        }
+      ],
+      "implication": "Before a public PR mutation, keep one writer and choose publish, hold, rescope, or handoff from current-base, clean-environment, negative-control, and risk-scaled read-only review evidence. Preserve raw judge variance, resolve it only through the bounded panel, and fail closed on any unresolved disagreement, route mismatch, loss, or critical receipt failure.",
+      "observed_at": "2026-09-02T16:15:12+05:30"
+    },
+    {
+      "id": "global-learning-intake-required-host-20260902",
+      "topic": "lifecycle-update",
+      "claim": "The exact v0.1.3 global-learning-intake candidate is ready for promotion across all required hosts.",
+      "status": "contradicted",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/global-learning-intake-hermes-sol-ultra.json",
+          "supports": true
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/global-learning-intake-codex-sol-ultra.json",
+          "supports": false
+        },
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/global-learning-intake-cross-host-sol-ultra.json",
+          "supports": false
+        }
+      ],
+      "implication": "Keep global-learning-intake staged and out of the fleet. The final bounded cycle admitted on Hermes but lost one valid Codex comparative case; do not weaken the suite, add a fourth adaptation, or leave an admitted GitHub workflow pointing at the unavailable owner.",
+      "observed_at": "2026-09-02T13:36:32Z"
+    },
+    {
+      "id": "fleet-discovery-current-runtime-20260902",
+      "topic": "skills-procedures",
+      "claim": "The unchanged 15-skill admitted fleet is mechanically synchronized and currently discoverable without duplicate portable owners across Hermes 0.21.0, Codex 0.152.0, and OMP 17.2.13.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "integration",
+          "reference": "evals/results/fleet-discovery-local-windows.json",
+          "supports": true
+        },
+        {
+          "kind": "local-verification",
+          "reference": "recovery/current/manifest.json",
+          "supports": true
+        },
+        {
+          "kind": "live-profile",
+          "reference": "evals/results/current-model-instruction-profile-deterministic.json",
+          "supports": true
+        },
+        {
+          "kind": "contract",
+          "reference": "contracts/surface-matrix.json",
+          "supports": true
+        }
+      ],
+      "implication": "No fleet apply is needed. Keep capability-curator, global-learning-intake, primary-source-research, and surface-convergence excluded; after the Hermes runtime change, treat 0.20.6 host-specific behavior evaluations as historical and require a new sealed episode before any future promotion attempt.",
+      "observed_at": "2026-09-02T21:21:21Z"
+    },
+    {
+      "id": "free-tier-router-primary-work-20260903",
+      "topic": "routing-delegation",
+      "claim": "A multi-provider free-tier auto-router is reliable enough to serve as the default execution route for serious, long-running agent work.",
+      "status": "contradicted",
+      "evidence": [
+        {
+          "kind": "primary-source",
+          "reference": "https://github.com/tashfeenahmed/freellmapi/blob/e7b74a563d4e8738e52dfabf8f9945cc8d15fcf5/README.md",
+          "supports": false
+        }
+      ],
+      "implication": "Do not admit FreeLLMAPI or another free-tier auto-router as a default serious-work route without a stable provider. Reconsider only for isolated low-stakes or stateless work with an explicit logical model, same-model provider failover, fail-closed exhaustion, and verification before durable state or external actions.",
+      "observed_at": "2026-09-03T04:36:24+05:30"
     }
   ]
 }

@@ -134,6 +134,7 @@
             "hooks_auto_accept",
             "human_delay",
             "image_gen",
+            "lcm.context_threshold",
             "lsp",
             "max_live_sessions",
             "mcp_discovery_timeout",

@@ -16,7 +16,7 @@
   },
   "hosts": {
     "hermes": {
-      "runtime": "Hermes Agent 0.20.5",
+      "runtime": "Hermes Agent 0.21.0",
       "reasoning": "medium",
       "effective_surfaces": [
         "provider.native-system",
@@ -28,14 +28,16 @@
         "hermes.identity",
         "hermes.style",
         "hermes.judgment",
-        "hermes.defaults"
+        "hermes.output",
+        "hermes.deliberation",
+        "hermes.instruction-authoring-route"
       ],
       "artifact_sha256": [
-        "71fbaa38ac3781d9724c23aa6f747325dd9ea9d1c9eba6720948eab33492deac"
+        "7572a82756d88b1c3d1ae0f72cb4658e6395525d5303e057ede1f65acfc02363"
       ]
     },
     "codex": {
-      "runtime": "codex-cli 0.150.0-alpha.12.2",
+      "runtime": "codex-cli 0.152.1",
       "reasoning": "medium",
       "effective_surfaces": [
         "provider.native-system",

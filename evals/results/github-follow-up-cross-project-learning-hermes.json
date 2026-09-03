@@ -2,9 +2,9 @@
   "schema_version": 2,
   "suite": "github-follow-up-replacement-learning",
   "host": "hermes",
-  "host_version": "Hermes Agent v0.20.5 (2026.8.19) · upstream 7e67f64f\nInstall directory: C:\\Users\\E\\AppData\\Local\\hermes\\hermes-agent\nInstall method: git\nPython: 3.11.15\nOpenAI SDK: 2.24.0\nUpdate available: 298 commits behind — run 'hermes update'",
+  "host_version": "Hermes Agent v0.20.5 (2026.8.19) · upstream 7e67f64f",
   "judge_host": "hermes",
-  "judge_version": "Hermes Agent v0.20.5 (2026.8.19) · upstream 7e67f64f\nInstall directory: C:\\Users\\E\\AppData\\Local\\hermes\\hermes-agent\nInstall method: git\nPython: 3.11.15\nOpenAI SDK: 2.24.0\nUpdate available: 298 commits behind — run 'hermes update'",
+  "judge_version": "Hermes Agent v0.20.5 (2026.8.19) · upstream 7e67f64f",
   "run_timestamp_utc": "2026-08-29T23:20:20.702132+00:00",
   "status": "pass",
   "artifacts": {

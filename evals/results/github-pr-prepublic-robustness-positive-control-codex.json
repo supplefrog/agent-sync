@@ -1,0 +1,127 @@
+{
+  "schema_version": 2,
+  "suite": "github-pr-prepublic-robustness",
+  "host": "codex",
+  "host_version": "codex-cli 0.152.0",
+  "judge_host": "codex",
+  "judge_version": "codex-cli 0.152.0",
+  "run_timestamp_utc": "2026-09-02T09:23:08.775096+00:00",
+  "status": "complete",
+  "artifacts": {
+    "candidate_sha256": "8da9f56ba517583aacf355b39cf4eccb3ad7ddb5af92563b07337bd78a001b6b",
+    "baseline_candidate_sha256": "4f3644234901988d15ffe7751d5b908c99a1fea9e7f9552ec87357f7b97a39c1",
+    "suite_sha256": "18751210a31fda35e42fdec8e3c2ef8137a8eb959658747b075efda73a134d7f",
+    "harness_sha256": "228dcad5051b5a78f24f80f7be2441fb4fdafb0e108e3f3829c464680c36ad30"
+  },
+  "effective_stack": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai-codex",
+    "reasoning": "medium",
+    "judge_model": "gpt-5.6-sol",
+    "judge_provider": "openai-codex",
+    "tool_policy": "none",
+    "prompt_assembly": "isolated-anonymous-artifact-v3",
+    "context_policy": "fresh-session-per-output",
+    "equivalence_group": "codex-gpt56sol-medium-pr-robust-positive-control-v3",
+    "irreducible_differences": [],
+    "route_attestation_required": true,
+    "judge_panel": "two-order-swapped-plus-bounded-tiebreak"
+  },
+  "decision_rule": {
+    "alpha": 0.05,
+    "margin": 0.1,
+    "min_trials": 3,
+    "max_trials": 3,
+    "max_agent_runs": 30,
+    "score_range": [
+      -1,
+      1
+    ]
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "run_count": 26,
+  "rollback": "Positive-control calibration only; no live mutation.",
+  "session_lifecycle": {
+    "policy": "delete-after-durable-report",
+    "created_count": 0,
+    "protected_count": 0,
+    "deleted_count": 0,
+    "remaining_count": 0,
+    "error_count": 0,
+    "clean": true
+  },
+  "result": {
+    "candidate_wins": 6,
+    "candidate_losses": 0,
+    "ties": 0,
+    "candidate_hard_failures": 0,
+    "judge_errors": 0,
+    "judge_disagreements": 0,
+    "raw_judge_disagreements": 2,
+    "criterion_disagreements": 0,
+    "raw_criterion_disagreements": 2,
+    "candidate_receipt_failures": 0,
+    "route_attestation_failures": 0,
+    "trial_scores": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "cases": [
+    {
+      "id": "prepublic-representative-clean-windows-runner",
+      "kind": "representative",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-heldout-fresh-sqlite-bootstrap",
+      "kind": "held-out",
+      "trial": 0,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-representative-clean-windows-runner",
+      "kind": "representative",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-heldout-fresh-sqlite-bootstrap",
+      "kind": "held-out",
+      "trial": 1,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-representative-clean-windows-runner",
+      "kind": "representative",
+      "trial": 2,
+      "winner": "candidate"
+    },
+    {
+      "id": "prepublic-heldout-fresh-sqlite-bootstrap",
+      "kind": "held-out",
+      "trial": 2,
+      "winner": "candidate"
+    }
+  ],
+  "decision": "admit",
+  "decision_detail": {
+    "decision": "admit",
+    "basis": "bounded-stability",
+    "trials": 3,
+    "required_trials": 3,
+    "candidate_receipt_failures": 0,
+    "candidate_losses": 0,
+    "judge_disagreements": 0,
+    "missing_required_win_kinds": []
+  },
+  "artifact_validation": "recorded-hashes-only",
+  "raw_report_sha256": "1ba818108a90c4b55ff6e536d250a845a162cf5e00451a0a25f7823e51c6bde5",
+  "raw_report_committed": false
+}
