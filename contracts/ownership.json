@@ -118,9 +118,10 @@
       "selection_state": "selected",
       "selection_evidence": [
         "evals/results/routed-dag-cross-host-smoke-2026-08-26.json",
-        "evals/results/dynamic-workflows-deterministic.json"
+        "evals/results/dynamic-workflows-deterministic.json",
+        "evals/results/hermes-routed-dag-adapter-2026-09-04.json"
       ],
-      "selection_reason": "Selected over the red Hermes cc compatibility runner after behavior-level accounting: explicit verifier nodes/answer-key-gauntlet preserve verification outcomes; automatic verifier-driven reruns, tier escalation, legacy model_tier state, and the unadmitted Hermes subprocess/session executor are deliberately rejected. Codex/OMP adapters passed lifecycle checks; Hermes DAG execution remains unavailable."
+      "selection_reason": "The portable state owner remains definitive across Codex, Hermes, and OMP. The admitted Hermes routed_workflow adapter delegates only native leaf execution and lifecycle closure; deterministic lifecycle/security tests, exact-route live DAG evidence, and an independent SHIP review replace the retired red compatibility runner without restoring its verifier mutation, effort escalation, or duplicate state machine."
     },
     {
       "id": "fleet-sync",

@@ -1,7 +1,7 @@
 ---
 name: dynamic-workflows
-description: Run persisted routed DAGs across Codex and OMP. Use for broad parallel work, durable multi-agent workflows, or explicit DAG requests; not ordinary one-agent tasks or a small one-shot batch.
-version: 2.2.0
+description: Run persisted routed DAGs across Codex, Hermes, and OMP. Use for broad parallel work, durable multi-agent workflows, or explicit DAG requests; not ordinary one-agent tasks or a small one-shot batch.
+version: 2.3.0
 author: Local User
 license: UNLICENSED
 ---
@@ -67,7 +67,7 @@ The deterministic selector chooses the least-cost qualifying route, or the faste
 
 ```text
 python scripts/workflow_state.py validate <plan.json>
-python scripts/workflow_state.py init <plan.json> --root <run-root> --target-surface <codex-workflow|omp-workflow> --var NAME=value
+python scripts/workflow_state.py init <plan.json> --root <run-root> --target-surface <codex-workflow|hermes-workflow|omp-workflow> --var NAME=value
 python scripts/workflow_state.py ready <run-dir>
 python scripts/workflow_state.py model <run-dir> <task-id>
 python scripts/workflow_state.py render <run-dir> <task-id>
@@ -80,6 +80,7 @@ Lifecycle commands:
 
 ```text
 python scripts/workflow_state.py start <run-dir> <task-id> --handle <native-handle> --launch-token <claim-token>
+python scripts/workflow_state.py abort-launch <run-dir> <task-id> --error <text> --launch-token <claim-token>
 python scripts/workflow_state.py finish <run-dir> <task-id> --status succeeded --output <output.md> --summary <text> --handle <native-handle> --launch-token <claim-token> --handle-closed
 python scripts/workflow_state.py status <run-dir> --json
 python scripts/workflow_state.py resume <run-dir> --retry-failed
@@ -115,15 +116,19 @@ For each ready node:
 
 OMP's task wire does not accept an exact provider/model directly; the named agent is the host adapter. Do not use generic `task`, `effort`, or mutable global role mappings for routed DAG nodes.
 
-### Hermes boundary
+### Hermes
 
-Hermes has no admitted DAG adapter. Use the separately verified `routed_delegate_task` for ordinary routed delegation. Add a Hermes DAG executor only if it consumes this exact state contract through a thin native adapter and its lifecycle/process suite is green against the current runtime; never fork a second workflow owner.
+Use `routed_workflow` for persisted DAGs and keep `routed_delegate_task` for ordinary one-shot routed delegation. `routed_workflow` exposes `init`, `run`, `status`, and `resume`; it consumes this state owner rather than implementing another scheduler or router.
+
+The adapter accepts routed tasks only, requires `workdir: "."`, and launches native Hermes leaf children with the exact receipt provider/model/reasoning tuple and fallback disabled. It binds each run manifest in a separate trusted store under `HERMES_HOME`, serializes run/resume with an execution lock, persists native results and outputs under each task, and records authoritative close witnesses outside the mutable run directory. An explicit reported model mismatch fails the task; a missing model echo is accepted only because the exact launch route was already verified.
+
+`resume --retry-interrupted` is allowed only after the exact run/task/handle/claim close witness exists and the handle is absent from Hermes's active registry. Interruption waits for the bounded native child call to finish and for normal finalization to close the handle; the adapter does not abandon an in-flight child merely to return early.
 
 Retired `cc-dynamic-workflows` behaviors are accounted for explicitly:
 
 - Automatic verifier rejection, feedback-history mutation, and targeted builder reruns are not migrated. Express verification as an explicit DAG node or use `answer-key-gauntlet`; the parent decides whether a separately authorized revision task is needed.
 - `model_tier`, Mini → Low → Medium → High retry escalation, and pre-receipt state compatibility are discarded. They conflict with immutable route receipts, and no active consumer remains.
-- Per-task Hermes `toolsets`, `skills`, `max_turns`, timeout, worktree, subprocess-tree, and ephemeral-session controls are not portable plan fields. Native Hermes delegation owns those controls. A future Hermes DAG adapter must re-prove timeout, process reaping, session isolation, cancellation, and cleanup before admission.
+- Per-task Hermes `toolsets`, `skills`, `max_turns`, timeout, worktree, subprocess-tree, and ephemeral-session controls are not portable plan fields. Native Hermes delegation owns those controls; the thin adapter uses current native lifecycle seams rather than duplicating them.
 - Native progress UI, token accounting, reboot supervision, and integrated approval preview remain unsupported rather than implied.
 
 ## Scheduling and verification
@@ -138,6 +143,6 @@ Retired `cc-dynamic-workflows` behaviors are accounted for explicitly:
 
 ## Durable guarantees and limits
 
-The state helper provides immutable normalized plans, atomic JSON state, bounded context injection, route pinning, retry/resume state, dependency blocking, stop intent, and handle-closure gates. It is not a reboot-surviving supervisor, token-accounting service, or universal permissions layer. Host-native capability and authorization remain authoritative.
+The state helper provides immutable normalized plans, atomic JSON state, bounded context injection, route pinning, retry/resume state, dependency blocking, stop intent, and handle-closure gates. Routed runs pin the catalog and selector snapshots and execute only the exact verified selector bytes. Hermes adds an external manifest binding, run-level execution lock, and exact native close witnesses. This is not a reboot-surviving supervisor, token-accounting service, or universal permissions layer. Host-native capability and authorization remain authoritative.
 
 Read `references/runtime-contract.md` before modifying the state machine. Run `python scripts/test_workflow_state.py` and validate every shipped template before promotion.

@@ -2,7 +2,7 @@
   "$schema": "contracts/recovery-snapshot.schema.json",
   "artifacts": [
     {
-      "bytes": 2578,
+      "bytes": 5281,
       "format": "toml",
       "host": "codex",
       "id": "settings",
@@ -23,25 +23,27 @@
         "model_reasoning_effort",
         "notify",
         "personality",
+        "plugins",
         "service_tier",
+        "skills.config",
         "windows.sandbox"
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "d7189169233f99b8a764705a8a962d10fa359e179cdea25688a0404582404225",
+      "sha256": "a02dbbaa0f3d63beae1be27aa71f89bb6ed4f7b8b74056da3f64657fad591f5a",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
     },
     {
-      "bytes": 1663,
+      "bytes": 2018,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "234558236c6c9dc945e1679135dfcc81b30722cbc4a254908e0a2435228ddd3f",
+      "sha256": "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -112,7 +114,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16061,
+      "bytes": 16444,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -245,10 +247,15 @@
         "mcp_servers.chrome-devtools.command",
         "mcp_servers.chrome-devtools.connect_timeout",
         "mcp_servers.chrome-devtools.enabled",
+        "mcp_servers.chrome-devtools.env",
         "mcp_servers.claude-context.args",
         "mcp_servers.claude-context.command",
         "mcp_servers.claude-context.connect_timeout",
         "mcp_servers.claude-context.enabled",
+        "mcp_servers.context7.enabled",
+        "mcp_servers.context7.url",
+        "mcp_servers.deepwiki.enabled",
+        "mcp_servers.deepwiki.url",
         "mcp_servers.parallel.enabled",
         "mcp_servers.parallel.url",
         "mcp_servers.tavily.enabled",
@@ -306,20 +313,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "e3c6c73626de257b1d7da27ee611f6e8f916add1908bffd7bd20c8df59a15073",
+      "sha256": "68d56bd55013e5dd48228bb831c84909838abe17181808799ae73820d2b223c8",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
     },
     {
-      "bytes": 1510,
+      "bytes": 1887,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "7572a82756d88b1c3d1ae0f72cb4658e6395525d5303e057ede1f65acfc02363",
+      "sha256": "a02c868eb51ef832cf20dbbce6bb6f05c384376b0db53ea2455b36b40bd1812c",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -352,6 +359,21 @@
       "strategy": "merge"
     },
     {
+      "bytes": 193,
+      "format": "json",
+      "host": "omp",
+      "id": "mcp-tools",
+      "include": [
+        "mcpServers"
+      ],
+      "kind": "config",
+      "portable_paths": false,
+      "sha256": "f04a0277d5f25be59fe20800bf09f569767abba00446f013f133b9771eec023b",
+      "snapshot": "hosts/omp/mcp.json",
+      "source": "mcp.json",
+      "strategy": "merge"
+    },
+    {
       "bytes": 1930,
       "format": "text",
       "host": "omp",
@@ -379,7 +401,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "e4f3ce12a80246079651052d404b40cadc1c241b5296a1717486fb55296be7e8",
+  "policy_sha256": "49241e086f784959ec968840b8dccd7497b01266717afc3c479e5ff3bc60e40e",
   "public_safe": true,
   "schema_version": 1
 }

@@ -1,6 +1,6 @@
 # GPT routing decision interface
 
-Status: automatic selection is live for `routed_delegate_task`, exact task-thread routes, and the definitive portable routed DAG state contract used by Codex and OMP adapters. Built-in Hermes `delegate_task` remains one global route; Hermes has no second compatibility DAG executor.
+Status: automatic selection is live for `routed_delegate_task`, exact task-thread routes, and the definitive portable routed DAG state contract used by Codex, Hermes, and OMP adapters. Built-in Hermes `delegate_task` remains one global route; persisted Hermes DAG execution uses the separate thin `routed_workflow` adapter.
 
 ## Ownership
 
@@ -52,13 +52,13 @@ The hashes detect accidental or silent changes. The adapter rejects changed rece
 
 | Surface | Current state |
 |---|---|
-| Hermes `routed_delegate_task` plugin | Live: selects, atomically pins, and launches each child on the exact provider/model/reasoning tuple through the native builder/finalizer. Version-guarded; fails closed. |
+| Hermes `routed_delegate_task` plugin | Live: selects, atomically pins, and launches each ordinary child on the exact provider/model/reasoning tuple through the native builder/finalizer. Version-guarded; fails closed. |
 | Native Hermes `delegate_task` | One configured route for all children; use only for homogeneous work. No shared-config rewrites. |
 | New Hermes task thread | Active: selector receipt pins exact `hermes chat --model --provider --reasoning` flags. |
 | Definitive workflow/DAG state | Live portable owner in `skills/dynamic-workflows`: selects one receipt per node; retry/resume reuse it without effort escalation. |
 | Codex workflow | Live skill adapter: exact model/effort pass-through to native workers with handle-closure gate. |
 | OMP workflow | Live skill + named-agent adapter: `route-<route-id>` pins exact model/effort; resolved-model fallback is rejected. |
-| Hermes compatibility DAG executor | Receipt consumption exists, but promotion remains blocked by the current red lifecycle/process suite. |
+| Hermes `routed_workflow` DAG adapter | Live: consumes the portable state owner, launches native leaf children on exact pinned routes, persists outputs, and gates interrupted retry on trusted manifest and close-witness records. It is not a reboot-surviving worker supervisor. |
 | Hermes Kanban worker | Per-task reasoning and receipt inputs are not live. |
 | Hermes auxiliary call | Purpose-specific static assignment; changes remain explicit config work. |
 | Ordinary Codex/OMP delegation outside the DAG owner | Host-native behavior; automatic receipt routing is not claimed universally. |

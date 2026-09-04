@@ -1,0 +1,40 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "eca2f1919028754e1c063f32851633984574a989ab0fbc402889110a21c384ca",
+      "before_sha256": "1e7a26ea38774ee586fee432660e5f811e5e583cda655764398b4979838ef9ad",
+      "owner": "recovery-state",
+      "source": "live"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "machine": "local-windows",
+  "operation": "capture-recovery",
+  "source": {
+    "host": "live-hosts",
+    "surface": "recovery"
+  },
+  "risk": "low",
+  "disposition": "applied",
+  "owners": [
+    "recovery-state"
+  ],
+  "phases": [
+    {"name": "classify", "status": "completed"},
+    {"name": "preflight", "status": "completed"},
+    {"name": "canonicalize", "status": "completed"},
+    {"name": "render", "status": "skipped"},
+    {"name": "validate", "status": "completed"},
+    {"name": "deploy", "status": "skipped"},
+    {"name": "verify", "status": "completed"},
+    {"name": "receipt", "status": "completed"}
+  ],
+  "phase": "completed",
+  "request_id": "6f0f99b070d4a2cbb71b77e2101c7b69f0491275d2dfb85331ac2344a017f9e1",
+  "result": "applied",
+  "schema_version": 1
+}

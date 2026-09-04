@@ -16,6 +16,7 @@ REASONING_LEVELS = ("none", "minimal", "low", "medium", "high", "xhigh", "max")
 SURFACES = (
     "hermes-delegate",
     "hermes-task-thread",
+    "hermes-workflow",
     "codex-workflow",
     "omp-workflow",
     "hermes-auxiliary",
@@ -23,6 +24,7 @@ SURFACES = (
 SURFACE_HOSTS = {
     "hermes-delegate": "hermes",
     "hermes-task-thread": "hermes",
+    "hermes-workflow": "hermes",
     "codex-workflow": "codex",
     "omp-workflow": "omp",
     "hermes-auxiliary": "hermes",

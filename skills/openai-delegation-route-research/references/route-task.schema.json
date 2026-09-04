@@ -7,7 +7,7 @@
   "required": ["target_surface", "intelligence_tier", "latency_sensitive"],
   "properties": {
     "target_surface": {
-      "enum": ["hermes-delegate", "hermes-task-thread", "codex-workflow", "omp-workflow", "hermes-auxiliary"]
+      "enum": ["hermes-delegate", "hermes-task-thread", "hermes-workflow", "codex-workflow", "omp-workflow", "hermes-auxiliary"]
     },
     "intelligence_tier": {
       "enum": ["routine", "standard", "strong", "demanding", "maximum"]

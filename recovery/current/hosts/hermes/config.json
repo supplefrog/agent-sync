@@ -326,7 +326,12 @@
       ],
       "command": "cmd.exe",
       "connect_timeout": 20,
-      "enabled": true
+      "enabled": true,
+      "env": {
+        "CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS": "1",
+        "PROGRAMFILES": "C:\\Program Files",
+        "SystemRoot": "C:\\Windows"
+      }
     },
     "claude-context": {
       "args": [
@@ -340,6 +345,14 @@
       "command": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
       "connect_timeout": 45,
       "enabled": true
+    },
+    "context7": {
+      "enabled": true,
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "deepwiki": {
+      "enabled": true,
+      "url": "https://mcp.deepwiki.com/mcp"
     },
     "parallel": {
       "enabled": true,
@@ -572,7 +585,7 @@
     "container_disk": 51200,
     "container_memory": 5120,
     "container_persistent": true,
-    "cwd": ".",
+    "cwd": "{{agent-signal:HOME}}\\Documents\\Projects",
     "daemon_term_grace_seconds": 2,
     "daytona_image": "nikolaik/python-nodejs:python3.11-nodejs20",
     "docker_extra_args": [],

@@ -10,7 +10,8 @@
       "# Identity",
       "# Style",
       "# Judgment",
-      "# Defaults"
+      "# Defaults",
+      "reconcile with Agent Signal"
     ]
   },
   "skills": {
@@ -32,7 +33,7 @@
     "selector": "skills/openai-delegation-route-research/scripts/route_selector.py",
     "receipt_schema": "skills/openai-delegation-route-research/references/route-decision.schema.json",
     "executable_adapter": "tools/route_adapter.py",
-    "status": "automatic-selection-active-for-routed-delegation-and-task-thread",
+    "status": "automatic-selection-active-for-routed-delegation-workflow-and-task-thread",
     "surfaces": [
       {
         "target_surface": "hermes-delegate",
@@ -59,8 +60,22 @@
         "pinning": "Pin the complete receipt before launch; identical resumes reuse it and conflicting rewrites fail.",
         "native_owner": "hermes chat new one-shot/session process",
         "enforcement": "native-cli-external-pin",
-        "current_support": "Hermes 0.20.5 supports --model, --provider, --reasoning, --source, and --query-file per process.",
+        "current_support": "Hermes 0.21.0 supports --model, --provider, --reasoning, --source, and --query-file per process.",
         "smallest_path": "Pin the receipt in adapter run state, then launch a new Hermes process with the exact native flags. Keep the receipt external until session metadata accepts it natively."
+      },
+      {
+        "target_surface": "hermes-workflow",
+        "required_fields": [
+          "provider",
+          "model",
+          "reasoning_effort",
+          "decision_receipt"
+        ],
+        "pinning": "The definitive DAG state selects once at initialization; resume and retries reuse the exact receipt.",
+        "native_owner": "skills/dynamic-workflows plus the routed-delegation plugin and Hermes native child lifecycle",
+        "enforcement": "live-version-guarded-user-plugin",
+        "current_support": "The live routed_workflow adapter executes ready DAG waves as native leaf children on exact pinned routes, persists task artifacts, and requires trusted manifest and close-witness bindings for interrupted retry.",
+        "smallest_path": "Keep workflow_state.py authoritative and the Hermes plugin limited to native launch, result, cancellation, and close-witness seams."
       }
     ]
   }

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "host-deltas.schema.json",
+  "title": "Agent Signal public-safe host delta manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "machine", "public_safe", "entries", "exclusions"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "machine": {"type": "string", "minLength": 1},
+    "public_safe": {"const": true},
+    "entries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/entry"}
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/exclusion"}
+    }
+  },
+  "$defs": {
+    "host": {"enum": ["hermes", "codex", "omp"]},
+    "category": {
+      "enum": ["runtime", "settings", "instructions", "hook", "plugin", "mcp-tool", "native-skill", "curator"]
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "host", "category", "owner", "source_identity", "version_or_hash", "enablement", "prerequisites", "desired_state", "required", "restore", "readback", "redaction"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "host": {"$ref": "#/$defs/host"},
+        "category": {"$ref": "#/$defs/category"},
+        "owner": {"type": "string", "minLength": 1},
+        "source_identity": {"type": "string", "minLength": 1},
+        "version_or_hash": {"type": "string", "minLength": 1},
+        "enablement": {"enum": ["installed", "enabled", "disabled", "absent", "inherited", "managed"]},
+        "prerequisites": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "desired_state": {"type": "string", "minLength": 1},
+        "required": {"type": "boolean"},
+        "restore": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "reference"],
+          "properties": {
+            "kind": {"enum": ["recovery-artifact", "fleet", "native-command", "repository", "runtime-managed", "prerequisite", "manual-prerequisite", "excluded"]},
+            "reference": {"type": "string", "minLength": 1}
+          }
+        },
+        "readback": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": {"enum": ["command", "recovery-artifact", "fleet", "file", "none"]},
+            "argv": {
+              "type": "array",
+              "enum": [
+                ["hermes", "--version"],
+                ["codex", "--version"],
+                ["omp", "--version"],
+                ["hermes", "hooks", "list"],
+                ["codex", "plugin", "list", "--json"],
+                ["omp", "plugin", "list"],
+                ["hermes", "curator", "status"]
+              ]
+            },
+            "contains": {"type": "string"},
+            "not_contains": {"type": "string"},
+            "reference": {"type": "string", "minLength": 1},
+            "path": {"type": "string", "minLength": 1}
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {"kind": {"const": "command"}},
+                "required": ["kind"]
+              },
+              "then": {"required": ["argv"]}
+            }
+          ]
+        },
+        "redaction": {"enum": ["metadata-only", "public-artifact"]}
+      }
+    },
+    "exclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "host", "category", "reason"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "host": {"$ref": "#/$defs/host"},
+        "category": {"enum": ["private-state", "runtime-generated", "provider-managed", "unmanaged"]},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

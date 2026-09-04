@@ -5,18 +5,18 @@
   "hosts": {
     "hermes": {
       "cli_version": "0.21.0",
-      "source_revision": "9954445fea2e3c85034d1afc6ebd40abdaa91f71",
+      "source_revision": "63279301bcbdc185c1b07b98a9312eb0c862f26d",
       "sources": [
         "https://hermes-agent.nousresearch.com/docs/",
         "https://github.com/NousResearch/hermes-agent"
       ]
     },
     "codex": {
-      "cli_version": "0.152.1",
-      "source_revision": "5adb68a49933ae446bf11935662c83dba55a0804",
+      "cli_version": "0.153.1",
+      "source_revision": "985641272869835d01d025ed2a218fbbce35fa9f",
       "sources": [
         "https://developers.openai.com/codex/",
-        "https://github.com/openai/codex/tree/5adb68a49933ae446bf11935662c83dba55a0804"
+        "https://github.com/openai/codex/tree/985641272869835d01d025ed2a218fbbce35fa9f"
       ]
     },
     "omp": {
@@ -186,7 +186,7 @@
       "hosts": {
         "hermes": {
           "owner": "routed-delegation plugin plus native child builder/finalizer",
-          "mechanism": "the live user plugin selects and pins exact per-child routes through a version-guarded native seam; catalogue refresh remains manual and built-in delegate_task remains the homogeneous rollback path",
+          "mechanism": "the live user plugin selects and pins exact per-child routes through a version-guarded native seam; routed_workflow consumes the definitive portable DAG state owner and adds trusted manifest and close-witness bindings; catalogue refresh remains manual and built-in delegate_task remains the homogeneous rollback path",
           "support": "adapter",
           "parity": "candidate"
         },
@@ -216,7 +216,8 @@
         "summaries": [
           "evals/results/openai-delegation-route-research-deterministic.json",
           "evals/results/routed-dag-cross-host-smoke-2026-08-26.json",
-          "evals/results/dynamic-workflows-deterministic.json"
+          "evals/results/dynamic-workflows-deterministic.json",
+          "evals/results/hermes-routed-dag-adapter-2026-09-04.json"
         ]
       }
     },

@@ -18,9 +18,9 @@ Treat the named component as the scope unless the user asks for broader changes.
 
 # Capability admission
 
-Before installing, enabling, creating, replacing, retiring, or materially changing an agent capability or persistent behavior surface, use the `capability-curator` skill. Broad mutation requires its checked-in baseline/candidate gate: normalized stack, deterministic hard checks, matched repeated trials under a predeclared bounded confidence rule, representative/near-miss/adversarial/held-out cases, and no required-host regression. Harness failure or missing evidence is inconclusive. No change is a valid result.
+Before installing, enabling, creating, replacing, retiring, or materially changing an agent capability or persistent behavior surface, reconcile it through Agent Signal with `tools/reconcile.py` and the admitted `cross-agent-surface-engineering` owner. Existing admitted owners may be adopted or deployed only when the deterministic checks prove a single-origin, reversible, non-conflicting change. Novel, staged, ambiguous, safety-sensitive, cross-host, or retirement changes remain review-only and require checked-in baseline/candidate evidence. Harness failure or missing evidence is inconclusive. No change is a valid result.
 
-Use the host's built-in curator after admission for staleness, consolidation, and pruning; it is not proof that a capability works.
+The staged `capability-curator` skill is an unevaluated model-facing candidate, not the live authority. Use a host's built-in curator only after admission for local staleness, consolidation, and pruning; it cannot admit, replace, or distribute portable capabilities.
 
 # Outcome-first workflow design
 
@@ -28,7 +28,7 @@ When creating or materially iterating a workflow, automation, reusable procedure
 
 # Cross-agent convergence
 
-When a persistent behavior targets multiple agents, a new host, or a host surface that may have drifted, use `surface-convergence`. Define one portable behavior contract, map it to each host's best reliable native mechanism, test every required host, and preserve intentional deltas and contradictions. Do not force identical files or remove a host advantage merely to claim parity.
+When a persistent behavior targets multiple agents, a new host, or a host surface that may have drifted, use the admitted `cross-agent-surface-engineering` owner and Agent Signal's reconciliation workflow. Define one portable behavior contract, map it to each host's best reliable native mechanism, test every required host, and preserve typed intentional deltas and contradictions. The staged `surface-convergence` skill is advisory only until admitted. Do not force identical files or remove a host advantage merely to claim parity.
 
 # Delegation routing
 

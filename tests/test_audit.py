@@ -308,6 +308,152 @@ class AuditTests(unittest.TestCase):
 
             self.assertIn("selection evidence is not bound to capability: surface-convergence", errors)
 
+    def test_live_system_checks_fail_each_drift_surface_independently(self):
+        labels = [
+            "recovery snapshot",
+            "recovery live diff",
+            "instruction profile",
+            "fleet diff",
+            "fleet managed state",
+            "host deltas",
+            "reconciliation plan",
+        ]
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            (repo / "tools").mkdir()
+            for name in ("recovery.py", "instruction_profile.py", "fleet.py", "host_deltas.py", "reconcile.py"):
+                (repo / "tools" / name).write_text("", encoding="utf-8")
+
+            for failed_index, label in enumerate(labels):
+                with self.subTest(label=label), patch("subprocess.run") as run:
+                    results = []
+                    for index in range(len(labels)):
+                        if index == failed_index:
+                            results.append(subprocess.CompletedProcess(["check"], 1, stdout="", stderr="failed"))
+                        else:
+                            stdout = '{"findings": []}' if index == len(labels) - 1 else "ok"
+                            results.append(subprocess.CompletedProcess(["check"], 0, stdout=stdout, stderr=""))
+                    run.side_effect = results
+                    errors = self.audit.run_live_system_checks(repo)
+                self.assertTrue(any(error.startswith(f"{label}:") for error in errors), errors)
+
+    def test_live_reconciliation_plan_rejects_unresolved_findings(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            (repo / "tools").mkdir()
+            for name in ("recovery.py", "instruction_profile.py", "fleet.py", "host_deltas.py", "reconcile.py"):
+                (repo / "tools" / name).write_text("", encoding="utf-8")
+            results = [
+                subprocess.CompletedProcess(["check"], 0, stdout="ok", stderr="")
+                for _ in range(6)
+            ]
+            results.append(
+                subprocess.CompletedProcess(
+                    ["check"],
+                    0,
+                    stdout=json.dumps({"findings": [{"surface": "recovery"}]}),
+                    stderr="",
+                )
+            )
+            with patch("subprocess.run", side_effect=results):
+                errors = self.audit.run_live_system_checks(repo)
+            self.assertIn("reconciliation plan: unresolved findings", errors)
+
+    def test_checked_in_change_requests_must_match_schema(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            contracts = repo / "contracts"
+            (contracts / "change-request.schema.json").write_text(
+                (REPO / "contracts" / "change-request.schema.json").read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            requests = repo / "reconciliation" / "requests"
+            requests.mkdir(parents=True)
+            (requests / "broken.json").write_text("{}", encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertTrue(any(error.startswith("change request schema:") for error in errors), errors)
+
+    def test_checked_in_change_requests_must_be_public_safe(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            contracts = repo / "contracts"
+            (contracts / "change-request.schema.json").write_text(
+                (REPO / "contracts" / "change-request.schema.json").read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            request_id = "a" * 64
+            request = {
+                "schema_version": 1,
+                "request_id": request_id,
+                "machine": "test",
+                "phase": "completed",
+                "operation": "capture-recovery",
+                "source": {"host": "live-hosts", "surface": "recovery"},
+                "risk": "low",
+                "disposition": "applied",
+                "owners": ["recovery-state"],
+                "artifacts": [],
+                "phases": [{"name": "receipt", "status": "completed"}],
+                "checks": ["C:/" + "Users/private/recovery"],
+                "result": "applied",
+            }
+            requests = repo / "reconciliation" / "requests"
+            requests.mkdir(parents=True)
+            (requests / f"{request_id}.json").write_text(json.dumps(request), encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn(
+                f"change request public safety: {request_id}.json: unsafe content",
+                errors,
+            )
+
+    def test_host_delta_manifest_is_a_required_valid_pair(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            (repo / "contracts" / "host-deltas.schema.json").write_text(
+                (REPO / "contracts" / "host-deltas.schema.json").read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            (repo / "host-deltas.json").write_text("{}", encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("host deltas: manifest is invalid or not public-safe", errors)
+
+    def test_current_evidence_must_match_current_registry(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            current = repo / "evals" / "results" / "fleet-discovery-local-windows.json"
+            current.write_text(
+                json.dumps(
+                    {
+                        "admitted_count": 99,
+                        "admitted_skills": [],
+                        "registry_sha256": "0" * 64,
+                        "result": {"passed": True},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("current evidence: fleet discovery admitted count is stale", errors)
+            self.assertIn("current evidence: fleet discovery registry hash is stale", errors)
+
+    def test_legacy_fleet_evidence_must_be_explicitly_superseded(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp))
+            legacy = repo / "evals" / "results" / "fleet-distribution-2026-08-28.json"
+            legacy.write_text(json.dumps({"status": "live-local-windows"}), encoding="utf-8")
+
+            errors = self.audit.validate_repo(repo)
+
+            self.assertIn("current evidence: legacy fleet report is not superseded", errors)
+
 
 if __name__ == "__main__":
     unittest.main()

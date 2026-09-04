@@ -75,7 +75,7 @@ _SENSITIVE_CONFIG_PARTS = {
 _SECRET_VALUE_PATTERNS = (
     re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     re.compile(r"(?i)\bBearer\s+[A-Za-z0-9._~+/-]{12,}"),
-    re.compile(r"\b(?:sk|ghp|github_pat|xox[baprs]|AKIA)[-_A-Za-z0-9]{12,}\b"),
+    re.compile(r"\b(?:sk-|ghp|github_pat|xox[baprs]|AKIA)[-_A-Za-z0-9]{12,}\b"),
     re.compile(r"(?i)https?://[^\s/@:]+:[^\s/@]+@"),
 )
 _BLOCKED_SOURCE_PARTS = re.compile(
@@ -411,7 +411,7 @@ def _assert_public_safe(data: bytes, *, label: str) -> None:
         raise RecoveryError(f"public-safety violation in {label}: absolute home path")
 
 
-def _atomic_write(path: Path, data: bytes) -> None:
+def _atomic_write_impl(path: Path, data: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
     temp = Path(temp_name)
@@ -424,6 +424,12 @@ def _atomic_write(path: Path, data: bytes) -> None:
     finally:
         if temp.exists():
             temp.unlink()
+
+
+def _atomic_write(path: Path, data: bytes) -> None:
+    """Atomic write seam kept patchable for fault-injection tests."""
+
+    _atomic_write_impl(path, data)
 
 
 def _policy_artifacts(policy: Mapping[str, Any]):
@@ -714,8 +720,24 @@ def restore(
         names = ", ".join(f"{item['host']}:{item['id']}" for item in conflicts)
         raise RecoveryError(f"text conflict prevents restore: {names}")
     if apply:
-        for target, data in writes.items():
-            _atomic_write(target, data)
+        originals = {
+            target: target.read_bytes() if target.is_file() else None
+            for target in writes
+        }
+        applied: list[Path] = []
+        try:
+            for target, data in writes.items():
+                _atomic_write(target, data)
+                applied.append(target)
+        except Exception:
+            for target in reversed(applied):
+                original = originals[target]
+                if original is None:
+                    if target.is_file() and not _is_reparse_point(target):
+                        target.unlink()
+                else:
+                    _atomic_write_impl(target, original)
+            raise
     return plan
 
 
@@ -908,7 +930,15 @@ def bootstrap(
         "fleet_render": fleet_render,
         "fleet_diff": fleet_diff,
     }
+    tools_dir = str(repo / "tools")
+    if tools_dir not in sys.path:
+        sys.path.insert(0, tools_dir)
+    import host_deltas
+
     if not apply:
+        result["state_report"] = host_deltas.verify(
+            repo / "host-deltas.json", repo, roots=roots
+        )
         return result
 
     result["fleet_apply"] = run_fleet("apply")
@@ -931,15 +961,30 @@ def bootstrap(
     )
     if postflight["changes"] or postflight["conflicts"]:
         raise RecoveryError("recovery postflight is not clean")
-    tools_dir = str(repo / "tools")
-    if tools_dir not in sys.path:
-        sys.path.insert(0, tools_dir)
     import instruction_profile as profile_tool
 
     result["profile"] = profile_tool.verify_profile(
         repo, repo / "profiles" / "gpt-5.6-sol-openai-codex.json"
     )
     result["postflight"] = postflight
+    changed_references = {
+        f"{item['host']}:{item['id']}" for item in preflight["changes"]
+    }
+    delta_manifest = host_deltas.load_manifest(repo / "host-deltas.json", repo)
+    restored_ids = {
+        str(item["id"])
+        for item in delta_manifest["entries"]
+        if item["restore"]["kind"] == "recovery-artifact"
+        and str(item["restore"]["reference"]) in changed_references
+    }
+    result["state_report"] = host_deltas.verify(
+        repo / "host-deltas.json",
+        repo,
+        roots=roots,
+        restored_ids=restored_ids,
+    )
+    if not result["state_report"]["passed"]:
+        raise RecoveryError("host-delta postflight is not clean")
     return result
 
 

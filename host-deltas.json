@@ -1,0 +1,666 @@
+{
+  "$schema": "contracts/host-deltas.schema.json",
+  "entries": [
+    {
+      "category": "runtime",
+      "desired_state": "Hermes Agent 0.21.0 installed",
+      "enablement": "installed",
+      "host": "hermes",
+      "id": "hermes-runtime",
+      "owner": "host-runtime",
+      "prerequisites": [
+        "operator installs the declared runtime"
+      ],
+      "readback": {
+        "argv": [
+          "hermes",
+          "--version"
+        ],
+        "contains": "0.21.0",
+        "kind": "command"
+      },
+      "redaction": "metadata-only",
+      "required": true,
+      "restore": {
+        "kind": "prerequisite",
+        "reference": "install the declared Hermes runtime"
+      },
+      "source_identity": "prerequisite:install the declared Hermes runtime",
+      "version_or_hash": "version:0.21.0"
+    },
+    {
+      "category": "runtime",
+      "desired_state": "Codex CLI 0.153.1 installed",
+      "enablement": "installed",
+      "host": "codex",
+      "id": "codex-runtime",
+      "owner": "host-runtime",
+      "prerequisites": [
+        "operator installs the declared runtime"
+      ],
+      "readback": {
+        "argv": [
+          "codex",
+          "--version"
+        ],
+        "contains": "0.153.1",
+        "kind": "command"
+      },
+      "redaction": "metadata-only",
+      "required": true,
+      "restore": {
+        "kind": "prerequisite",
+        "reference": "install the declared Codex runtime"
+      },
+      "source_identity": "prerequisite:install the declared Codex runtime",
+      "version_or_hash": "version:0.153.1"
+    },
+    {
+      "category": "runtime",
+      "desired_state": "OMP 17.2.13 installed",
+      "enablement": "installed",
+      "host": "omp",
+      "id": "omp-runtime",
+      "owner": "host-runtime",
+      "prerequisites": [
+        "operator installs the declared runtime"
+      ],
+      "readback": {
+        "argv": [
+          "omp",
+          "--version"
+        ],
+        "contains": "17.2.13",
+        "kind": "command"
+      },
+      "redaction": "metadata-only",
+      "required": true,
+      "restore": {
+        "kind": "prerequisite",
+        "reference": "install the declared OMP runtime"
+      },
+      "source_identity": "prerequisite:install the declared OMP runtime",
+      "version_or_hash": "version:17.2.13"
+    },
+    {
+      "category": "settings",
+      "desired_state": "allowlisted declarative settings match the recovery snapshot",
+      "enablement": "managed",
+      "host": "hermes",
+      "id": "hermes-settings",
+      "owner": "recovery:hermes:settings",
+      "prerequisites": [
+        "hermes runtime 0.21.0 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:settings"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:settings"
+      },
+      "source_identity": "recovery-artifact:hermes:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "settings",
+      "desired_state": "allowlisted declarative settings and plugin selections match the recovery snapshot",
+      "enablement": "managed",
+      "host": "codex",
+      "id": "codex-settings",
+      "owner": "recovery:codex:settings",
+      "prerequisites": [
+        "codex runtime 0.153.1 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "codex:settings"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "codex:settings"
+      },
+      "source_identity": "recovery-artifact:codex:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "settings",
+      "desired_state": "allowlisted declarative settings match the recovery snapshot",
+      "enablement": "managed",
+      "host": "omp",
+      "id": "omp-settings",
+      "owner": "recovery:omp:settings",
+      "prerequisites": [
+        "omp runtime 17.2.13 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "omp:settings"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "omp:settings"
+      },
+      "source_identity": "recovery-artifact:omp:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "instructions",
+      "desired_state": "Hermes user-global overlay includes the canonical Agent Signal reconciliation route",
+      "enablement": "enabled",
+      "host": "hermes",
+      "id": "hermes-instructions",
+      "owner": "recovery:hermes:standing-instructions",
+      "prerequisites": [
+        "hermes runtime 0.21.0 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:standing-instructions"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:standing-instructions"
+      },
+      "source_identity": "recovery-artifact:hermes:standing-instructions",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "instructions",
+      "desired_state": "Codex user-global overlay includes the canonical Agent Signal reconciliation route",
+      "enablement": "enabled",
+      "host": "codex",
+      "id": "codex-instructions",
+      "owner": "recovery:codex:global-instructions",
+      "prerequisites": [
+        "codex runtime 0.153.1 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "codex:global-instructions"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "codex:global-instructions"
+      },
+      "source_identity": "recovery-artifact:codex:global-instructions",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "instructions",
+      "desired_state": "OMP inherits the captured Codex user-global reconciliation route",
+      "enablement": "inherited",
+      "host": "omp",
+      "id": "omp-instructions",
+      "owner": "codex.user-global",
+      "prerequisites": [
+        "omp runtime 17.2.13 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "codex:global-instructions"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "codex:global-instructions"
+      },
+      "source_identity": "recovery-artifact:codex:global-instructions",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "hook",
+      "desired_state": "no competing global mutation hook; explicit reconciliation uses the shared workflow",
+      "enablement": "absent",
+      "host": "hermes",
+      "id": "hermes-hook-state",
+      "owner": "host-runtime",
+      "prerequisites": [
+        "hermes runtime 0.21.0 is installed"
+      ],
+      "readback": {
+        "argv": [
+          "hermes",
+          "hooks",
+          "list"
+        ],
+        "contains": "No shell hooks",
+        "kind": "command"
+      },
+      "redaction": "metadata-only",
+      "required": true,
+      "restore": {
+        "kind": "runtime-managed",
+        "reference": "Hermes native shell-hook state"
+      },
+      "source_identity": "runtime-managed:Hermes native shell-hook state",
+      "version_or_hash": "runtime-version:0.21.0"
+    },
+    {
+      "category": "hook",
+      "desired_state": "operational session-start and catastrophic-command hooks remain captured",
+      "enablement": "enabled",
+      "host": "codex",
+      "id": "codex-safety-hooks",
+      "owner": "recovery:codex:settings",
+      "prerequisites": [
+        "codex runtime 0.153.1 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "codex:settings"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "codex:settings"
+      },
+      "source_identity": "recovery-artifact:codex:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "hook",
+      "desired_state": "the standalone agent-surface-governance authority is disabled and superseded by Agent Signal reconciliation",
+      "enablement": "absent",
+      "host": "codex",
+      "id": "codex-legacy-governance-absent",
+      "owner": "cross-agent-surface-engineering",
+      "prerequisites": [
+        "Agent Signal repository is present"
+      ],
+      "readback": {
+        "argv": [
+          "codex",
+          "plugin",
+          "list",
+          "--json"
+        ],
+        "kind": "command",
+        "not_contains": "agent-surface-governance@local-agent-skills"
+      },
+      "redaction": "metadata-only",
+      "required": true,
+      "restore": {
+        "kind": "repository",
+        "reference": "canonical Agent Signal reconciliation route"
+      },
+      "source_identity": "repository:tools/reconcile.py",
+      "version_or_hash": "sha256:74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617"
+    },
+    {
+      "category": "hook",
+      "desired_state": "explicit reconciliation routes through the shared Agent Signal workflow without a competing authority",
+      "enablement": "absent",
+      "host": "omp",
+      "id": "omp-hook-state",
+      "owner": "cross-agent-surface-engineering",
+      "prerequisites": [
+        "Agent Signal repository is present"
+      ],
+      "readback": {
+        "kind": "file",
+        "path": "repo:tools/reconcile.py"
+      },
+      "redaction": "metadata-only",
+      "required": true,
+      "restore": {
+        "kind": "repository",
+        "reference": "canonical Agent Signal reconciliation route"
+      },
+      "source_identity": "repository:tools/reconcile.py",
+      "version_or_hash": "sha256:74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617"
+    },
+    {
+      "category": "plugin",
+      "desired_state": "allowlisted plugin enablement and public plugin configuration are captured",
+      "enablement": "enabled",
+      "host": "hermes",
+      "id": "hermes-plugin-selection",
+      "owner": "recovery:hermes:settings",
+      "prerequisites": [
+        "hermes runtime 0.21.0 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:settings"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:settings"
+      },
+      "source_identity": "recovery-artifact:hermes:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "plugin",
+      "desired_state": "public plugin enablement is captured without generated caches or plugin source",
+      "enablement": "enabled",
+      "host": "codex",
+      "id": "codex-plugin-selection",
+      "owner": "recovery:codex:settings",
+      "prerequisites": [
+        "codex runtime 0.153.1 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "codex:settings"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "codex:settings"
+      },
+      "source_identity": "recovery-artifact:codex:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "plugin",
+      "desired_state": "no host-native plugins installed",
+      "enablement": "absent",
+      "host": "omp",
+      "id": "omp-plugin-selection",
+      "owner": "host-runtime",
+      "prerequisites": [
+        "omp runtime 17.2.13 is installed"
+      ],
+      "readback": {
+        "argv": [
+          "omp",
+          "plugin",
+          "list"
+        ],
+        "contains": "No plugins installed",
+        "kind": "command"
+      },
+      "redaction": "metadata-only",
+      "required": true,
+      "restore": {
+        "kind": "runtime-managed",
+        "reference": "OMP native plugin inventory"
+      },
+      "source_identity": "runtime-managed:OMP native plugin inventory",
+      "version_or_hash": "runtime-version:17.2.13"
+    },
+    {
+      "category": "mcp-tool",
+      "desired_state": "credential-free MCP declarations and tool-routing settings are captured",
+      "enablement": "enabled",
+      "host": "hermes",
+      "id": "hermes-mcp-tools",
+      "owner": "recovery:hermes:settings",
+      "prerequisites": [
+        "hermes runtime 0.21.0 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:settings"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:settings"
+      },
+      "source_identity": "recovery-artifact:hermes:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "mcp-tool",
+      "desired_state": "credential-free MCP declarations and environment-variable names are captured",
+      "enablement": "enabled",
+      "host": "codex",
+      "id": "codex-mcp-tools",
+      "owner": "recovery:codex:settings",
+      "prerequisites": [
+        "codex runtime 0.153.1 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "codex:settings"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "codex:settings"
+      },
+      "source_identity": "recovery-artifact:codex:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "mcp-tool",
+      "desired_state": "credential-free OMP MCP declarations are captured",
+      "enablement": "enabled",
+      "host": "omp",
+      "id": "omp-mcp-tools",
+      "owner": "recovery:omp:mcp-tools",
+      "prerequisites": [
+        "omp runtime 17.2.13 is installed"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "omp:mcp-tools"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "omp:mcp-tools"
+      },
+      "source_identity": "recovery-artifact:omp:mcp-tools",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "native-skill",
+      "desired_state": "all and only admitted portable owners are synchronized through the shared skill root",
+      "enablement": "managed",
+      "host": "hermes",
+      "id": "hermes-admitted-skills",
+      "owner": "fleet-sync",
+      "prerequisites": [
+        "hermes runtime 0.21.0 is installed",
+        "Agent Signal repository is present"
+      ],
+      "readback": {
+        "kind": "fleet"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "fleet",
+        "reference": "rendered admitted fleet"
+      },
+      "source_identity": "fleet:rendered admitted fleet",
+      "version_or_hash": "sha256:0d7e1b311346a42b498bd21868352873f027d01b8ceef2d687978bdb678050b0"
+    },
+    {
+      "category": "native-skill",
+      "desired_state": "all and only admitted portable owners are synchronized through the shared skill root",
+      "enablement": "managed",
+      "host": "codex",
+      "id": "codex-admitted-skills",
+      "owner": "fleet-sync",
+      "prerequisites": [
+        "codex runtime 0.153.1 is installed",
+        "Agent Signal repository is present"
+      ],
+      "readback": {
+        "kind": "fleet"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "fleet",
+        "reference": "rendered admitted fleet"
+      },
+      "source_identity": "fleet:rendered admitted fleet",
+      "version_or_hash": "sha256:0d7e1b311346a42b498bd21868352873f027d01b8ceef2d687978bdb678050b0"
+    },
+    {
+      "category": "native-skill",
+      "desired_state": "all admitted portable owners plus captured thin native adapters are available",
+      "enablement": "managed",
+      "host": "omp",
+      "id": "omp-admitted-skills",
+      "owner": "fleet-sync",
+      "prerequisites": [
+        "omp runtime 17.2.13 is installed",
+        "Agent Signal repository is present"
+      ],
+      "readback": {
+        "kind": "fleet"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "fleet",
+        "reference": "rendered admitted fleet and recovery adapters"
+      },
+      "source_identity": "fleet:rendered admitted fleet and recovery adapters",
+      "version_or_hash": "sha256:0d7e1b311346a42b498bd21868352873f027d01b8ceef2d687978bdb678050b0"
+    },
+    {
+      "category": "curator",
+      "desired_state": "Hermes native curator remains a subordinate local lifecycle mechanic and cannot curate the external shared fleet",
+      "enablement": "enabled",
+      "host": "hermes",
+      "id": "hermes-curator-role",
+      "owner": "host-runtime",
+      "prerequisites": [
+        "hermes runtime 0.21.0 is installed"
+      ],
+      "readback": {
+        "argv": [
+          "hermes",
+          "curator",
+          "status"
+        ],
+        "contains": "curator: ENABLED",
+        "kind": "command"
+      },
+      "redaction": "metadata-only",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:settings"
+      },
+      "source_identity": "recovery-artifact:hermes:settings",
+      "version_or_hash": "sha256:686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768"
+    },
+    {
+      "category": "curator",
+      "desired_state": "deterministic Agent Signal ownership, admission, and reconciliation contracts are the effective portable authority",
+      "enablement": "managed",
+      "host": "codex",
+      "id": "codex-canonical-curation",
+      "owner": "cross-agent-surface-engineering",
+      "prerequisites": [
+        "Agent Signal repository is present"
+      ],
+      "readback": {
+        "kind": "file",
+        "path": "repo:tools/reconcile.py"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "repository",
+        "reference": "Agent Signal contracts and reconciler"
+      },
+      "source_identity": "repository:tools/reconcile.py",
+      "version_or_hash": "sha256:74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617"
+    },
+    {
+      "category": "curator",
+      "desired_state": "deterministic Agent Signal ownership, admission, and reconciliation contracts are the effective portable authority",
+      "enablement": "managed",
+      "host": "omp",
+      "id": "omp-canonical-curation",
+      "owner": "cross-agent-surface-engineering",
+      "prerequisites": [
+        "Agent Signal repository is present"
+      ],
+      "readback": {
+        "kind": "file",
+        "path": "repo:tools/reconcile.py"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "repository",
+        "reference": "Agent Signal contracts and reconciler"
+      },
+      "source_identity": "repository:tools/reconcile.py",
+      "version_or_hash": "sha256:74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617"
+    }
+  ],
+  "exclusions": [
+    {
+      "category": "private-state",
+      "host": "hermes",
+      "id": "hermes-private-state",
+      "reason": "credentials, authentication, sessions, memories, transcripts, and logs remain private and must be re-created or restored through private operator procedures"
+    },
+    {
+      "category": "private-state",
+      "host": "codex",
+      "id": "codex-private-state",
+      "reason": "credentials, authentication, sessions, memories, transcripts, and logs remain private and must be re-created or restored through private operator procedures"
+    },
+    {
+      "category": "private-state",
+      "host": "omp",
+      "id": "omp-private-state",
+      "reason": "credentials, authentication, sessions, memories, transcripts, and logs remain private and must be re-created or restored through private operator procedures"
+    },
+    {
+      "category": "runtime-generated",
+      "host": "hermes",
+      "id": "hermes-generated-caches",
+      "reason": "plugin caches, indexes, bytecode, and generated state are recreated by the runtime"
+    },
+    {
+      "category": "runtime-generated",
+      "host": "codex",
+      "id": "codex-generated-caches",
+      "reason": "plugin caches, runtime bundles, trusted hook receipts, and generated state are recreated or re-approved by the runtime"
+    },
+    {
+      "category": "runtime-generated",
+      "host": "omp",
+      "id": "omp-generated-caches",
+      "reason": "generated route agents are rebuilt from the admitted dynamic-workflows owner"
+    },
+    {
+      "category": "provider-managed",
+      "host": "hermes",
+      "id": "provider-hidden-prompts",
+      "reason": "provider-hidden and runtime-native prompt layers are restored by reinstalling the declared runtime"
+    },
+    {
+      "category": "unmanaged",
+      "host": "codex",
+      "id": "unreproducible-plugin-source",
+      "reason": "local plugin source without a public reproducible origin is tracked as a prerequisite rather than copied into public recovery"
+    }
+  ],
+  "machine": "local-windows",
+  "public_safe": true,
+  "schema_version": 1
+}

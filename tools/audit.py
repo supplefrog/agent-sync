@@ -31,6 +31,16 @@ ALLOWED_REGISTRY_STATUSES = {"staged", "admitted", "blocked", "retired", "reject
 ALLOWED_MODALITY_STATUSES = {"unassessed", "staged", "confirmed", "partial", "stale"}
 CURRENT_HOSTS = {"codex", "hermes", "omp"}
 
+LIVE_CHECK_COMMANDS = (
+    ("recovery snapshot", ("tools/recovery.py", "verify")),
+    ("recovery live diff", ("tools/recovery.py", "diff")),
+    ("instruction profile", ("tools/instruction_profile.py",)),
+    ("fleet diff", ("tools/fleet.py", "diff", "--machine", "local-windows")),
+    ("fleet managed state", ("tools/fleet.py", "verify", "--machine", "local-windows")),
+    ("host deltas", ("tools/host_deltas.py", "verify")),
+    ("reconciliation plan", ("tools/reconcile.py", "plan")),
+)
+
 
 def load_json(path: Path) -> Any:
     try:
@@ -55,6 +65,95 @@ def cli_version(name: str) -> str:
     if not output:
         raise RuntimeError(f"{name} --version produced no output")
     return output.splitlines()[0]
+
+
+def run_live_system_checks(repo: Path) -> list[str]:
+    """Exercise every live governed path and return bounded specific failures."""
+
+    errors: list[str] = []
+    for label, relative in LIVE_CHECK_COMMANDS:
+        argv = [sys.executable, str(repo / relative[0]), *relative[1:]]
+        try:
+            completed = subprocess.run(
+                argv,
+                cwd=repo,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=180,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            errors.append(f"{label}: {type(exc).__name__}")
+            continue
+        if completed.returncode != 0:
+            errors.append(f"{label}: command failed ({completed.returncode})")
+            continue
+        if label == "reconciliation plan":
+            try:
+                report = json.loads(completed.stdout)
+            except json.JSONDecodeError:
+                errors.append("reconciliation plan: invalid JSON")
+                continue
+            if report.get("findings"):
+                errors.append("reconciliation plan: unresolved findings")
+    return errors
+
+
+def _validate_current_evidence(repo: Path, registry: dict[str, Any]) -> list[str]:
+    """Reject checked-in current-state reports that no longer bind to live contracts."""
+
+    errors: list[str] = []
+    admitted = sorted(
+        str(item.get("name"))
+        for item in registry.get("skills", [])
+        if isinstance(item, dict) and item.get("status") == "admitted"
+    )
+    discovery_path = repo / "evals" / "results" / "fleet-discovery-local-windows.json"
+    if discovery_path.is_file():
+        try:
+            discovery = load_json(discovery_path)
+            if discovery.get("admitted_count") != len(admitted):
+                errors.append("current evidence: fleet discovery admitted count is stale")
+            if discovery.get("admitted_skills") != admitted:
+                errors.append("current evidence: fleet discovery admitted owners are stale")
+            if discovery.get("registry_sha256") != sha256_file(repo / "registry.json"):
+                errors.append("current evidence: fleet discovery registry hash is stale")
+            manifest = repo / "render" / "fleet" / "manifest.json"
+            if manifest.is_file() and discovery.get("fleet_manifest_sha256") != sha256_file(manifest):
+                errors.append("current evidence: fleet discovery manifest hash is stale")
+            if not (discovery.get("result") or {}).get("passed"):
+                errors.append("current evidence: fleet discovery is not passing")
+        except Exception as exc:
+            errors.append(f"current evidence: fleet discovery is invalid: {exc}")
+
+    legacy_path = repo / "evals" / "results" / "fleet-distribution-2026-08-28.json"
+    if legacy_path.is_file():
+        try:
+            legacy = load_json(legacy_path)
+            if legacy.get("status") != "superseded" or legacy.get("superseded_by") != "evals/results/fleet-discovery-local-windows.json":
+                errors.append("current evidence: legacy fleet report is not superseded")
+        except Exception as exc:
+            errors.append(f"current evidence: legacy fleet report is invalid: {exc}")
+
+    unified_path = repo / "evals" / "results" / "unified-reconciliation-local-windows.json"
+    if unified_path.is_file():
+        try:
+            unified = load_json(unified_path)
+            if unified.get("status") != "pass" or not (unified.get("result") or {}).get("passed"):
+                errors.append("current evidence: unified reconciliation report is not passing")
+            if unified.get("admitted_count") != len(admitted):
+                errors.append("current evidence: unified reconciliation admitted count is stale")
+            bindings = unified.get("bindings")
+            if not isinstance(bindings, dict) or not bindings:
+                errors.append("current evidence: unified reconciliation bindings are missing")
+            else:
+                for relative, expected in sorted(bindings.items()):
+                    target = repo / relative
+                    if not target.is_file() or expected != sha256_file(target):
+                        errors.append(f"current evidence: stale binding: {relative}")
+        except Exception as exc:
+            errors.append(f"current evidence: unified reconciliation report is invalid: {exc}")
+    return errors
 
 
 def validate_repo(repo: Path, live: bool = False) -> list[str]:
@@ -86,6 +185,60 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
             errors.append(f"ownership schema: {location}: {error.message}")
     except Exception as exc:
         errors.append(f"ownership schema: {exc}")
+
+    request_schema_path = repo / "contracts" / "change-request.schema.json"
+    request_root = repo / "reconciliation" / "requests"
+    if request_schema_path.is_file() and request_root.is_dir():
+        try:
+            tools_dir = str(repo / "tools")
+            if tools_dir not in sys.path:
+                sys.path.insert(0, tools_dir)
+            import recovery as recovery_tool
+
+            request_schema = load_json(request_schema_path)
+            request_validator = jsonschema.Draft202012Validator(request_schema)
+            for request_path in sorted(request_root.glob("*.json")):
+                try:
+                    request = load_json(request_path)
+                except Exception as exc:
+                    errors.append(f"change request schema: {request_path.name}: {exc}")
+                    continue
+                request_errors = sorted(
+                    request_validator.iter_errors(request), key=lambda item: list(item.path)
+                )
+                if request_errors:
+                    errors.append(
+                        f"change request schema: {request_path.name}: {request_errors[0].message}"
+                    )
+                elif request_path.stem != request.get("request_id"):
+                    errors.append(f"change request schema: {request_path.name}: filename/id mismatch")
+                else:
+                    try:
+                        recovery_tool._assert_public_safe(
+                            request_path.read_bytes(), label=f"change-request:{request_path.name}"
+                        )
+                    except Exception:
+                        errors.append(
+                            f"change request public safety: {request_path.name}: unsafe content"
+                        )
+        except Exception as exc:
+            errors.append(f"change request schema: {exc}")
+
+    host_delta_path = repo / "host-deltas.json"
+    host_delta_schema = repo / "contracts" / "host-deltas.schema.json"
+    if host_delta_path.is_file() or host_delta_schema.is_file():
+        if not host_delta_path.is_file() or not host_delta_schema.is_file():
+            errors.append("host deltas: manifest/schema pair is incomplete")
+        else:
+            try:
+                tools_dir = str(repo / "tools")
+                if tools_dir not in sys.path:
+                    sys.path.insert(0, tools_dir)
+                import host_deltas as host_delta_tool
+
+                host_delta_tool.load_manifest(host_delta_path, repo)
+            except Exception:
+                errors.append("host deltas: manifest is invalid or not public-safe")
 
     if registry.get("schema_version") != 1:
         errors.append("wrong schema_version in registry.json")
@@ -243,6 +396,8 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
     else:
         errors.append("missing registry skills")
 
+    errors.extend(_validate_current_evidence(repo, registry))
+
     if "fleet-sync" in registry_names:
         tools_dir = str(Path(__file__).resolve().parent)
         if tools_dir not in sys.path:
@@ -388,6 +543,15 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
                 continue
             if configured and configured not in actual:
                 errors.append(f"{host} version mismatch: expected {configured}, got {actual}")
+        required_live_tools = {
+            repo / "tools" / "recovery.py",
+            repo / "tools" / "instruction_profile.py",
+            repo / "tools" / "fleet.py",
+            repo / "tools" / "host_deltas.py",
+            repo / "tools" / "reconcile.py",
+        }
+        if all(path.is_file() for path in required_live_tools):
+            errors.extend(run_live_system_checks(repo))
     return errors
 
 

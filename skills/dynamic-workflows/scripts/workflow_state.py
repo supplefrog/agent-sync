@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Validate and persist Codex-native dynamic workflow state."""
+"""Validate and persist routed dynamic workflow state."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib.util
 import json
 import os
 import re
@@ -13,6 +12,7 @@ import secrets
 import sys
 import tempfile
 import time
+import types
 import unicodedata
 from copy import deepcopy
 from contextlib import contextmanager
@@ -34,9 +34,10 @@ ROLES = {"discover", "researcher", "explorer", "worker", "reviewer", "verifier",
 RISKS = {"read", "write", "external"}
 INTELLIGENCE_TIERS = {"routine", "standard", "strong", "demanding", "maximum"}
 FAILURE_COSTS = {"low", "medium", "high"}
-WORKFLOW_SURFACES = {"codex-workflow", "omp-workflow"}
+WORKFLOW_SURFACES = {"codex-workflow", "hermes-workflow", "omp-workflow"}
 SURFACE_HOSTS = {
     "codex-workflow": "codex",
+    "hermes-workflow": "hermes",
     "omp-workflow": "omp",
 }
 DEFAULT_DIFFICULTIES = {
@@ -100,10 +101,22 @@ def atomic_json(path: Path, value: Any) -> None:
             os.unlink(temp_name)
 
 
+def atomic_bytes(path: Path, value: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(value)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp_name, path)
+    finally:
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
+
+
 @contextmanager
-def state_lock(run_dir: Path):
-    """Serialize every durable state read-modify-write across processes."""
-    lock_path = run_dir / ".state.lock"
+def _exclusive_lock(lock_path: Path, purpose: str):
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     with lock_path.open("a+b") as handle:
         handle.seek(0, os.SEEK_END)
@@ -122,7 +135,9 @@ def state_lock(run_dir: Path):
                     break
                 except OSError as exc:
                     if time.monotonic() >= deadline:
-                        raise PlanError(f"Timed out acquiring workflow state lock: {lock_path}") from exc
+                        raise PlanError(
+                            f"Timed out acquiring workflow {purpose} lock: {lock_path}"
+                        ) from exc
                     time.sleep(0.05)
             try:
                 yield
@@ -137,6 +152,20 @@ def state_lock(run_dir: Path):
                 yield
             finally:
                 fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+@contextmanager
+def state_lock(run_dir: Path):
+    """Serialize every durable state read-modify-write across processes."""
+    with _exclusive_lock(run_dir / ".state.lock", "state"):
+        yield
+
+
+@contextmanager
+def execution_lock(run_dir: Path):
+    """Prevent run finalization and interrupted retry from overlapping."""
+    with _exclusive_lock(run_dir / ".execution.lock", "execution"):
+        yield
 
 
 def load_json(path: Path) -> Any:
@@ -169,22 +198,37 @@ def default_router_paths() -> tuple[Path, Path]:
     return skill / "references" / "current-gpt-catalog.json", skill / "scripts" / "route_selector.py"
 
 
+def load_route_selector_bytes(source: bytes, path: Path):
+    try:
+        text = source.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise PlanError(f"Route selector is not UTF-8: {path}") from exc
+    module = types.ModuleType("dynamic_workflow_route_selector")
+    module.__file__ = str(path)
+    exec(compile(text, str(path), "exec"), module.__dict__)
+    return module
+
+
 def load_route_selector(path: Path):
     if not path.is_file():
         raise PlanError(f"Missing route selector: {path}")
-    spec = importlib.util.spec_from_file_location("dynamic_workflow_route_selector", path)
-    if spec is None or spec.loader is None:
-        raise PlanError(f"Cannot load route selector: {path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    try:
+        source = path.read_bytes()
+    except OSError as exc:
+        raise PlanError(f"Cannot load route selector: {path}") from exc
+    return load_route_selector_bytes(source, path)
 
 
 def select_task_receipt(
     task: dict[str, Any], target_surface: str, catalog_path: Path, selector_path: Path,
     catalog: dict[str, Any] | None = None,
+    selector_source: bytes | None = None,
 ) -> dict[str, Any]:
-    selector = load_route_selector(selector_path)
+    selector = (
+        load_route_selector_bytes(selector_source, selector_path)
+        if selector_source is not None
+        else load_route_selector(selector_path)
+    )
     request = {
         "target_surface": target_surface,
         "intelligence_tier": task["intelligence_tier"],
@@ -423,24 +467,43 @@ def load_manifest(run_dir: Path, state: dict[str, Any]) -> dict[str, Any] | None
             raise PlanError(f"Missing run integrity manifest: {path}")
         return None
     manifest = load_json(path)
+    version = manifest.get("schema_version") if isinstance(manifest, dict) else None
     required = {"schema_version", "plan_sha256", "route_catalog_sha256", "route_catalog_file"}
-    if not isinstance(manifest, dict) or set(manifest) != required or manifest.get("schema_version") != 1:
+    if version == 2:
+        required.update({
+            "route_catalog_locator",
+            "route_selector_sha256",
+            "route_selector_file",
+        })
+    if not isinstance(manifest, dict) or set(manifest) != required or version not in {1, 2}:
         raise PlanError(f"Invalid run integrity manifest: {path}")
-    for field in ("plan_sha256", "route_catalog_sha256", "route_catalog_file"):
+    for field in required - {"schema_version"}:
         if not isinstance(manifest[field], str):
             raise PlanError(f"Invalid run integrity manifest field: {field}")
     return manifest
 
 
-def load_run(run_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+def load_run_snapshot(
+    run_dir: Path, trusted_manifest_sha256: str | None = None
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any] | None]:
     plan = load_json(run_dir / "plan.json")
     state = load_json(run_dir / "state.json")
     manifest = load_manifest(run_dir, state)
+    if trusted_manifest_sha256 is not None:
+        if manifest is None or receipt_digest(manifest) != trusted_manifest_sha256:
+            raise PlanError("Run manifest does not match the trusted host binding")
     expected_plan_hash = manifest["plan_sha256"] if manifest is not None else state.get("plan_hash")
     if expected_plan_hash != plan_hash(plan):
         raise PlanError("Run plan changed after initialization; create a new run instead")
     if state.get("plan_hash") != expected_plan_hash:
         raise PlanError("Run state plan binding changed after initialization")
+    return plan, state, manifest
+
+
+def load_run(
+    run_dir: Path, trusted_manifest_sha256: str | None = None
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    plan, state, _manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
     return plan, state
 
 
@@ -466,6 +529,21 @@ def init_run(
     route_selector = route_selector or default_selector
     has_routed_tasks = any("intelligence_tier" in task for task in plan["tasks"])
     route_catalog_snapshot = load_json(route_catalog) if has_routed_tasks else None
+    route_selector_snapshot = b""
+    if has_routed_tasks:
+        if not route_selector.is_file():
+            raise PlanError(f"Missing route selector: {route_selector}")
+        try:
+            route_selector_snapshot = route_selector.read_bytes()
+            trusted_selector = default_selector.read_bytes()
+        except OSError as exc:
+            raise PlanError(f"Cannot snapshot route selector: {route_selector}") from exc
+        if hashlib.sha256(route_selector_snapshot).digest() != hashlib.sha256(
+            trusted_selector
+        ).digest():
+            raise PlanError(
+                "Routed workflows require the admitted deterministic route selector"
+            )
     required = set(VAR_RE.findall("\n".join(task["prompt"] for task in plan["tasks"])))
     missing = sorted(required - variables.keys())
     if missing:
@@ -473,7 +551,12 @@ def init_run(
     decision_receipts = {
         task["id"]: (
             select_task_receipt(
-                task, target_surface, route_catalog, route_selector, route_catalog_snapshot
+                task,
+                target_surface,
+                route_catalog,
+                route_selector,
+                route_catalog_snapshot,
+                route_selector_snapshot,
             )
             if "intelligence_tier" in task
             else None
@@ -489,17 +572,28 @@ def init_run(
     (run_dir / "tasks").mkdir(parents=True)
     atomic_json(run_dir / "plan.json", plan)
     route_catalog_file = "route_catalog.json" if route_catalog_snapshot is not None else ""
+    route_selector_file = "route_selector.py" if route_catalog_snapshot is not None else ""
     if route_catalog_snapshot is not None:
         atomic_json(run_dir / route_catalog_file, route_catalog_snapshot)
+        atomic_bytes(run_dir / route_selector_file, route_selector_snapshot)
     atomic_json(
         run_dir / "run_manifest.json",
         {
-            "schema_version": 1,
+            "schema_version": 2,
             "plan_sha256": plan_hash(plan),
             "route_catalog_sha256": (
                 receipt_digest(route_catalog_snapshot) if route_catalog_snapshot is not None else ""
             ),
             "route_catalog_file": route_catalog_file,
+            "route_catalog_locator": (
+                str(route_catalog.resolve()) if route_catalog_snapshot is not None else ""
+            ),
+            "route_selector_sha256": (
+                hashlib.sha256(route_selector_snapshot).hexdigest()
+                if route_catalog_snapshot is not None
+                else ""
+            ),
+            "route_selector_file": route_selector_file,
         },
     )
     task_state = {}
@@ -554,8 +648,12 @@ def task_map(plan: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {task["id"]: task for task in plan["tasks"]}
 
 
-def load_route_catalog_snapshot(run_dir: Path, state: dict[str, Any]) -> dict[str, Any]:
-    manifest = load_manifest(run_dir, state)
+def load_route_catalog_snapshot(
+    run_dir: Path,
+    state: dict[str, Any],
+    manifest: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    manifest = manifest if manifest is not None else load_manifest(run_dir, state)
     if manifest is None:
         raise PlanError("Legacy routed run has no pinned route catalog snapshot; create a new run")
     expected_hash = manifest["route_catalog_sha256"]
@@ -568,8 +666,49 @@ def load_route_catalog_snapshot(run_dir: Path, state: dict[str, Any]) -> dict[st
     return catalog
 
 
-def task_model(run_dir: Path, task_id: str) -> dict[str, str]:
-    plan, state = load_run(run_dir)
+def load_route_selector_snapshot(
+    run_dir: Path,
+    state: dict[str, Any],
+    manifest: dict[str, Any] | None = None,
+) -> tuple[bytes, Path, Path]:
+    manifest = manifest if manifest is not None else load_manifest(run_dir, state)
+    if manifest is None or manifest.get("schema_version") != 2:
+        raise PlanError("Legacy routed run has no pinned route selector snapshot; create a new run")
+    filename = manifest["route_selector_file"]
+    expected_hash = manifest["route_selector_sha256"]
+    catalog_locator = manifest["route_catalog_locator"]
+    if (
+        filename != "route_selector.py"
+        or not expected_hash
+        or not catalog_locator
+    ):
+        raise PlanError("Routed run has no valid pinned route selector binding")
+    selector_path = run_dir / filename
+    try:
+        actual_hash = hashlib.sha256(selector_path.read_bytes()).hexdigest()
+    except OSError as exc:
+        raise PlanError(f"Missing pinned route selector snapshot: {selector_path}") from exc
+    if actual_hash != expected_hash:
+        raise PlanError("Pinned route selector changed after initialization")
+    trusted_selector = default_router_paths()[1]
+    try:
+        trusted_source = trusted_selector.read_bytes()
+        trusted_hash = hashlib.sha256(trusted_source).hexdigest()
+    except OSError as exc:
+        raise PlanError(f"Missing admitted deterministic route selector: {trusted_selector}") from exc
+    if trusted_hash != expected_hash:
+        raise PlanError(
+            "Pinned route selector does not match the installed admitted selector; create a new run"
+        )
+    return trusted_source, trusted_selector, Path(catalog_locator)
+
+
+def _task_model_and_receipt(
+    run_dir: Path,
+    task_id: str,
+    trusted_manifest_sha256: str | None = None,
+) -> tuple[dict[str, str], dict[str, Any] | None]:
+    plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
     by_id = task_map(plan)
     if task_id not in by_id:
         raise PlanError(f"Unknown task: {task_id}")
@@ -631,7 +770,7 @@ def task_model(run_dir: Path, task_id: str) -> dict[str, str]:
         for field in ("provider", "model", "reasoning_effort", "id"):
             if not isinstance(route.get(field), str) or not route[field]:
                 raise PlanError(f"Route receipt has invalid {field} for task {task_id!r}")
-        catalog = load_route_catalog_snapshot(run_dir, state)
+        catalog = load_route_catalog_snapshot(run_dir, state, manifest)
         if (
             receipt.get("policy_sha256") != receipt_digest(catalog)
             or receipt.get("policy_version") != catalog.get("catalog_version")
@@ -656,6 +795,21 @@ def task_model(run_dir: Path, task_id: str) -> dict[str, str]:
         )
         if selected not in allowed:
             raise PlanError(f"Route receipt selects a route outside the pinned catalog for task {task_id!r}")
+        selector_source, selector_path, catalog_locator = load_route_selector_snapshot(
+            run_dir, state, manifest
+        )
+        expected_receipt = select_task_receipt(
+            task,
+            surface,
+            catalog_locator,
+            selector_path,
+            catalog,
+            selector_source,
+        )
+        if receipt != expected_receipt:
+            raise PlanError(
+                f"Route receipt does not match the pinned deterministic selector for task {task_id!r}"
+            )
         return {
             "intelligence_tier": task["intelligence_tier"],
             "provider": route["provider"],
@@ -663,7 +817,7 @@ def task_model(run_dir: Path, task_id: str) -> dict[str, str]:
             "reasoning_effort": route["reasoning_effort"],
             "route_id": route["id"],
             "decision_id": receipt["decision_id"],
-        }
+        }, deepcopy(receipt)
     if "difficulty" not in task:
         raise PlanError("Run plan has no routing requirement; create a new run")
     model_policy = state["tasks"][task_id].get("model_policy", state.get("model_policy", {}))
@@ -675,7 +829,31 @@ def task_model(run_dir: Path, task_id: str) -> dict[str, str]:
     effort = selection.get("reasoning_effort")
     if not isinstance(model, str) or not isinstance(effort, str):
         raise PlanError(f"Run has an invalid model selection for task {task_id!r}")
-    return {"difficulty": difficulty, "model": model, "reasoning_effort": effort}
+    return {"difficulty": difficulty, "model": model, "reasoning_effort": effort}, None
+
+
+def task_model(
+    run_dir: Path,
+    task_id: str,
+    trusted_manifest_sha256: str | None = None,
+) -> dict[str, str]:
+    selected, _receipt = _task_model_and_receipt(
+        run_dir, task_id, trusted_manifest_sha256
+    )
+    return selected
+
+
+def task_route_receipt(
+    run_dir: Path,
+    task_id: str,
+    trusted_manifest_sha256: str,
+) -> tuple[dict[str, str], dict[str, Any]]:
+    selected, receipt = _task_model_and_receipt(
+        run_dir, task_id, trusted_manifest_sha256
+    )
+    if receipt is None:
+        raise PlanError(f"Task {task_id!r} has no deterministic route receipt")
+    return selected, receipt
 
 
 def refresh(state: dict[str, Any], plan: dict[str, Any]) -> None:
@@ -739,8 +917,10 @@ def launch_claim_path(run_dir: Path, task_id: str) -> Path:
     return run_dir / "tasks" / task_id / "launch.claim"
 
 
-def ready_tasks(run_dir: Path) -> list[str]:
-    plan, state = load_run(run_dir)
+def ready_tasks(
+    run_dir: Path, trusted_manifest_sha256: str | None = None
+) -> list[str]:
+    plan, state = load_run(run_dir, trusted_manifest_sha256)
     refresh(state, plan)
     if state["stop_requested"]:
         return []
@@ -762,8 +942,27 @@ def read_capped(path: Path, allowance: int) -> tuple[str, bool]:
     return text[:allowance], True
 
 
-def render_prompt(run_dir: Path, task_id: str) -> Path:
-    plan, state = load_run(run_dir)
+def task_artifact_path(run_dir: Path, task_id: str, filename: str) -> Path:
+    if not filename or Path(filename).name != filename:
+        raise PlanError(f"Invalid workflow task artifact name: {filename!r}")
+    run_root = run_dir.resolve()
+    tasks_root = run_root / "tasks"
+    task_dir = tasks_root / task_id
+    if (
+        os.path.normcase(str(tasks_root.resolve())) != os.path.normcase(str(tasks_root))
+        or os.path.normcase(str(task_dir.resolve())) != os.path.normcase(str(task_dir))
+        or not task_dir.is_dir()
+    ):
+        raise PlanError(f"Workflow task directory escapes its run: {task_dir}")
+    return task_dir / filename
+
+
+def render_prompt_with_text(
+    run_dir: Path,
+    task_id: str,
+    trusted_manifest_sha256: str | None = None,
+) -> tuple[Path, str]:
+    plan, state = load_run(run_dir, trusted_manifest_sha256)
     by_id = task_map(plan)
     if task_id not in by_id:
         raise PlanError(f"Unknown task: {task_id}")
@@ -820,18 +1019,37 @@ def render_prompt(run_dir: Path, task_id: str) -> Path:
         "- Report missing context or blocked access instead of guessing.\n"
         "- Return the shortest evidence-backed result the parent can verify.\n"
     )
-    prompt_path = run_dir / "tasks" / task_id / "prompt.md"
-    prompt_path.write_text(prompt, encoding="utf-8", newline="\n")
+    prompt_path = task_artifact_path(run_dir, task_id, "prompt.md")
+    atomic_bytes(prompt_path, prompt.encode("utf-8"))
+    return prompt_path, prompt
+
+
+def render_prompt(
+    run_dir: Path,
+    task_id: str,
+    trusted_manifest_sha256: str | None = None,
+) -> Path:
+    prompt_path, _prompt = render_prompt_with_text(
+        run_dir, task_id, trusted_manifest_sha256
+    )
     return prompt_path
 
 
-def claim_task(run_dir: Path, task_id: str) -> str:
+def claim_task(
+    run_dir: Path,
+    task_id: str,
+    trusted_manifest_sha256: str | None = None,
+) -> str:
     with state_lock(run_dir):
-        return _claim_task(run_dir, task_id)
+        return _claim_task(run_dir, task_id, trusted_manifest_sha256)
 
 
-def _claim_task(run_dir: Path, task_id: str) -> str:
-    plan, state = load_run(run_dir)
+def _claim_task(
+    run_dir: Path,
+    task_id: str,
+    trusted_manifest_sha256: str | None = None,
+) -> str:
+    plan, state = load_run(run_dir, trusted_manifest_sha256)
     task = task_map(plan).get(task_id)
     if task is None:
         raise PlanError(f"Unknown task: {task_id}")
@@ -848,7 +1066,7 @@ def _claim_task(run_dir: Path, task_id: str) -> str:
             handle.write(token + "\n")
             handle.flush()
             os.fsync(handle.fileno())
-        plan, state = load_run(run_dir)
+        plan, state = load_run(run_dir, trusted_manifest_sha256)
         current = state["tasks"][task_id]
         ready = (
             not state["stop_requested"]
@@ -877,12 +1095,73 @@ def _claim_task(run_dir: Path, task_id: str) -> str:
     return token
 
 
-def start_task(run_dir: Path, task_id: str, handle: str, launch_token: str = "") -> None:
+def abort_launch(
+    run_dir: Path,
+    task_id: str,
+    error: str,
+    launch_token: str,
+    trusted_manifest_sha256: str | None = None,
+) -> None:
+    """Fail a claimed task when native child construction never completed."""
     with state_lock(run_dir):
-        _start_task(run_dir, task_id, handle, launch_token)
+        _abort_launch(
+            run_dir, task_id, error, launch_token, trusted_manifest_sha256
+        )
 
 
-def _start_task(run_dir: Path, task_id: str, handle: str, launch_token: str = "") -> None:
+def _abort_launch(
+    run_dir: Path,
+    task_id: str,
+    error: str,
+    launch_token: str,
+    trusted_manifest_sha256: str | None = None,
+) -> None:
+    if not isinstance(error, str) or not error.strip():
+        raise PlanError("Launch abort requires a non-empty error")
+    plan, state = load_run(run_dir, trusted_manifest_sha256)
+    if task_id not in state["tasks"]:
+        raise PlanError(f"Unknown task: {task_id}")
+    current = state["tasks"][task_id]
+    claim_path = launch_claim_path(run_dir, task_id)
+    claim_value = claim_path.read_text(encoding="ascii").strip() if claim_path.is_file() else ""
+    if (
+        current["status"] != "launching"
+        or current.get("handle")
+        or not launch_token
+        or launch_token != current.get("launch_token")
+        or launch_token != claim_value
+    ):
+        raise PlanError(f"Task {task_id!r} launch abort needs its exact claim token before a handle is attached")
+    current.update({
+        "status": "failed",
+        "finished_at": now(),
+        "summary": "",
+        "error": error.strip(),
+    })
+    save(run_dir, state, plan)
+    claim_path.unlink(missing_ok=True)
+
+
+def start_task(
+    run_dir: Path,
+    task_id: str,
+    handle: str,
+    launch_token: str = "",
+    trusted_manifest_sha256: str | None = None,
+) -> None:
+    with state_lock(run_dir):
+        _start_task(
+            run_dir, task_id, handle, launch_token, trusted_manifest_sha256
+        )
+
+
+def _start_task(
+    run_dir: Path,
+    task_id: str,
+    handle: str,
+    launch_token: str = "",
+    trusted_manifest_sha256: str | None = None,
+) -> None:
     if (
         not isinstance(handle, str)
         or not handle.strip()
@@ -891,7 +1170,7 @@ def _start_task(run_dir: Path, task_id: str, handle: str, launch_token: str = ""
     ):
         raise PlanError("Native handle must be a non-empty single-line string of at most 4096 characters")
     handle = handle.strip()
-    plan, state = load_run(run_dir)
+    plan, state = load_run(run_dir, trusted_manifest_sha256)
     task = task_map(plan).get(task_id)
     if task is None:
         raise PlanError(f"Unknown task: {task_id}")
@@ -907,8 +1186,8 @@ def _start_task(run_dir: Path, task_id: str, handle: str, launch_token: str = ""
         ):
             raise PlanError(f"Task {task_id!r} needs its exact launch claim token")
     else:
-        ready = ready_tasks(run_dir)
-        _, state = load_run(run_dir)
+        ready = ready_tasks(run_dir, trusted_manifest_sha256)
+        _, state = load_run(run_dir, trusted_manifest_sha256)
         current = state["tasks"][task_id]
         if task_id not in ready:
             raise PlanError(f"Task is not ready: {task_id}")
@@ -927,9 +1206,21 @@ def finish_task(
     handle_closed: bool = False,
     handle: str = "",
     launch_token: str = "",
+    trusted_manifest_sha256: str | None = None,
 ) -> None:
     with state_lock(run_dir):
-        _finish_task(run_dir, task_id, status, output, summary, error, handle_closed, handle, launch_token)
+        _finish_task(
+            run_dir,
+            task_id,
+            status,
+            output,
+            summary,
+            error,
+            handle_closed,
+            handle,
+            launch_token,
+            trusted_manifest_sha256,
+        )
 
 
 def _finish_task(
@@ -942,10 +1233,11 @@ def _finish_task(
     handle_closed: bool = False,
     handle: str = "",
     launch_token: str = "",
+    trusted_manifest_sha256: str | None = None,
 ) -> None:
     if status not in {"succeeded", "failed", "stopped"}:
         raise PlanError("finish status must be succeeded, failed, or stopped")
-    plan, state = load_run(run_dir)
+    plan, state = load_run(run_dir, trusted_manifest_sha256)
     if task_id not in state["tasks"]:
         raise PlanError(f"Unknown task: {task_id}")
     current = state["tasks"][task_id]
@@ -979,37 +1271,72 @@ def _finish_task(
     launch_claim_path(run_dir, task_id).unlink(missing_ok=True)
 
 
-def resume_run(run_dir: Path, retry_failed: bool, retry_interrupted: bool = False) -> None:
+def resume_run(
+    run_dir: Path,
+    retry_failed: bool,
+    retry_interrupted: bool = False,
+    trusted_manifest_sha256: str | None = None,
+) -> None:
     with state_lock(run_dir):
-        _resume_run(run_dir, retry_failed, retry_interrupted)
+        _resume_run(
+            run_dir,
+            retry_failed,
+            retry_interrupted,
+            trusted_manifest_sha256,
+        )
 
 
-def _resume_run(run_dir: Path, retry_failed: bool, retry_interrupted: bool = False) -> None:
-    plan, state = load_run(run_dir)
+def _resume_run(
+    run_dir: Path,
+    retry_failed: bool,
+    retry_interrupted: bool = False,
+    trusted_manifest_sha256: str | None = None,
+) -> None:
+    plan, state = load_run(run_dir, trusted_manifest_sha256)
     by_id = task_map(plan)
     retry_ids = set()
+
+    def stopped_before_launch(current: dict[str, Any]) -> bool:
+        return (
+            current["status"] == "stopped"
+            and not current.get("handle")
+            and not current.get("launch_token")
+            and current.get("error") == "Stop requested before launch"
+        )
+
+    def stopped_attempt(current: dict[str, Any]) -> bool:
+        return current["status"] == "stopped" and bool(current.get("handle"))
+
     interrupted_ids = [
         task_id
         for task_id, current in state["tasks"].items()
         if current["status"] in {"launching", "running"}
         or (current["status"] == "pending" and launch_claim_path(run_dir, task_id).is_file())
+        or stopped_before_launch(current)
+        or stopped_attempt(current)
     ]
     if interrupted_ids and not retry_interrupted:
         raise PlanError(
-            "Interrupted launch claims or running tasks require native-handle reconciliation before resume: "
+            "Interrupted launch claims, running tasks, or stopped-before-launch tasks require handle reconciliation before resume: "
             f"{interrupted_ids}. Record their result, or use --retry-interrupted only after confirming the handles are inactive"
         )
     for task_id, current in state["tasks"].items():
         orphan_claim = current["status"] == "pending" and launch_claim_path(run_dir, task_id).is_file()
-        if retry_interrupted and (current["status"] in {"launching", "running"} or orphan_claim):
+        unlaunched_stop = stopped_before_launch(current)
+        if retry_interrupted and (
+            current["status"] in {"launching", "running"}
+            or orphan_claim
+            or unlaunched_stop
+            or stopped_attempt(current)
+        ):
             retry_ids.add(task_id)
-            if not orphan_claim:
+            if current["status"] in {"launching", "running", "stopped"} and not unlaunched_stop:
                 current["attempts"] = max(0, current["attempts"] - 1)
         elif retry_failed and current["status"] == "failed" and current["attempts"] < by_id[task_id]["attempts"]:
             retry_ids.add(task_id)
     for task_id in retry_ids:
         launch_claim_path(run_dir, task_id).unlink(missing_ok=True)
-        state["tasks"][task_id].update({"status": "pending", "handle": "", "launch_token": "", "claimed_at": "", "handle_closed_at": "", "started_at": "", "finished_at": "", "output_path": "", "summary": "", "error": ""})
+        state["tasks"][task_id].update({"status": "pending", "handle": "", "launch_token": "", "claimed_at": "", "handle_closed_at": "", "started_at": "", "finished_at": "", "blocked_at": "", "blocked_by": [], "blocked_reason": "", "requires_operator": False, "output_path": "", "summary": "", "error": ""})
     changed = True
     while changed:
         changed = False
@@ -1100,13 +1427,17 @@ def _repin_model(run_dir: Path, model_catalog: Path | None = None) -> dict[str, 
     return event
 
 
-def request_stop(run_dir: Path) -> None:
+def request_stop(
+    run_dir: Path, trusted_manifest_sha256: str | None = None
+) -> None:
     with state_lock(run_dir):
-        _request_stop(run_dir)
+        _request_stop(run_dir, trusted_manifest_sha256)
 
 
-def _request_stop(run_dir: Path) -> None:
-    plan, state = load_run(run_dir)
+def _request_stop(
+    run_dir: Path, trusted_manifest_sha256: str | None = None
+) -> None:
+    plan, state = load_run(run_dir, trusted_manifest_sha256)
     state["stop_requested"] = True
     for current in state["tasks"].values():
         if current["status"] == "pending":
@@ -1163,6 +1494,11 @@ def build_parser() -> argparse.ArgumentParser:
     start.add_argument("task_id")
     start.add_argument("--handle", required=True)
     start.add_argument("--launch-token", default="")
+    abort = commands.add_parser("abort-launch")
+    abort.add_argument("run")
+    abort.add_argument("task_id")
+    abort.add_argument("--error", required=True)
+    abort.add_argument("--launch-token", required=True)
     finish = commands.add_parser("finish")
     finish.add_argument("run")
     finish.add_argument("task_id")
@@ -1220,6 +1556,8 @@ def main(argv: list[str] | None = None) -> int:
             print(claim_task(resolve_run(args.run), args.task_id))
         elif args.command == "start":
             start_task(resolve_run(args.run), args.task_id, args.handle, args.launch_token)
+        elif args.command == "abort-launch":
+            abort_launch(resolve_run(args.run), args.task_id, args.error, args.launch_token)
         elif args.command == "finish":
             finish_task(
                 resolve_run(args.run),

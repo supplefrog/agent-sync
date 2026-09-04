@@ -22,6 +22,20 @@
       "note": "Portable intent and retirement source; adapters do not inject this file verbatim."
     },
     {
+      "id": "portable.reconciliation-authority",
+      "hosts": ["codex", "hermes", "omp"],
+      "kind": "portable-reference",
+      "scope": "user-global",
+      "status": "active",
+      "owner": "tools/reconcile.py",
+      "artifact": "tools/reconcile.py",
+      "target": "Explicit reconcile-with-Agent-Signal workflow through admitted cross-agent-surface-engineering",
+      "precedence": 10,
+      "model_sensitive": false,
+      "backup": "not-effective",
+      "note": "Deterministic shared governance authority. Host overlays carry only a concise trigger; novel or unsafe changes remain review-only."
+    },
+    {
       "id": "provider.native-system",
       "hosts": ["provider"],
       "kind": "provider-native",
@@ -57,7 +71,8 @@
       "target": "${HERMES_HOME}/SOUL.md",
       "precedence": 200,
       "model_sensitive": true,
-      "backup": "captured"
+      "backup": "captured",
+      "note": "Includes the Hermes reconciliation trigger for the shared deterministic Agent Signal workflow."
     },
     {
       "id": "hermes.project-context",
@@ -78,7 +93,7 @@
       "kind": "runtime-native",
       "scope": "runtime",
       "status": "external",
-      "owner": "openai/codex@0.152.1",
+      "owner": "openai/codex@0.153.1",
       "target": "Codex prompt builder",
       "precedence": 110,
       "model_sensitive": true,
@@ -96,7 +111,7 @@
       "precedence": 200,
       "model_sensitive": true,
       "backup": "captured",
-      "note": "The user-approved INSTRUCTION-AUTHORING line routes durable/shared instruction content to the Agent Signal skill-creator, Codex-only scaffolding/UI metadata/validation to Codex's bundled .system/skill-creator, placement ambiguity to hermes-self-engineering, and cross-host convergence to cross-agent-surface-engineering."
+      "note": "The user-approved INSTRUCTION-AUTHORING line routes durable/shared instruction content to the Agent Signal skill-creator. RECONCILIATION routes persistent cross-agent changes to the same deterministic Agent Signal workflow used by Hermes; OMP inherits this overlay."
     },
     {
       "id": "codex.session-start-hook",
@@ -136,8 +151,8 @@
       "precedence": 350,
       "model_sensitive": false,
       "backup": "not-effective",
-      "replacement": "skills/capability-curator",
-      "note": "The earlier surface curator guarded edits and retirement decisions; it did not own every effective instruction."
+      "replacement": "tools/reconcile.py",
+      "note": "The earlier host-local guard was removed after the shared route and deterministic reconciler were installed and read back. The staged capability-curator is not the replacement authority."
     },
     {
       "id": "omp.runtime-native",

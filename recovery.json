@@ -142,10 +142,15 @@
             "mcp_servers.chrome-devtools.command",
             "mcp_servers.chrome-devtools.connect_timeout",
             "mcp_servers.chrome-devtools.enabled",
+            "mcp_servers.chrome-devtools.env",
             "mcp_servers.claude-context.args",
             "mcp_servers.claude-context.command",
             "mcp_servers.claude-context.connect_timeout",
             "mcp_servers.claude-context.enabled",
+            "mcp_servers.context7.enabled",
+            "mcp_servers.context7.url",
+            "mcp_servers.deepwiki.enabled",
+            "mcp_servers.deepwiki.url",
             "mcp_servers.parallel.enabled",
             "mcp_servers.parallel.url",
             "mcp_servers.tavily.enabled",
@@ -238,7 +243,9 @@
             "model_reasoning_effort",
             "notify",
             "personality",
+            "plugins",
             "service_tier",
+            "skills.config",
             "windows.sandbox"
           ]
         },
@@ -320,6 +327,17 @@
             "textVerbosity",
             "theme.dark",
             "theme.light"
+          ]
+        },
+        {
+          "id": "mcp-tools",
+          "kind": "config",
+          "source": "mcp.json",
+          "snapshot": "hosts/omp/mcp.json",
+          "format": "json",
+          "strategy": "merge",
+          "include": [
+            "mcpServers"
           ]
         },
         {

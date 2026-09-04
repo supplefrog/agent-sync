@@ -20,6 +20,7 @@
       "reasoning": "medium",
       "effective_surfaces": [
         "provider.native-system",
+        "portable.reconciliation-authority",
         "hermes.runtime-native",
         "hermes.user-global",
         "hermes.project-context"
@@ -30,17 +31,19 @@
         "hermes.judgment",
         "hermes.output",
         "hermes.deliberation",
-        "hermes.instruction-authoring-route"
+        "hermes.instruction-authoring-route",
+        "hermes.reconciliation"
       ],
       "artifact_sha256": [
-        "7572a82756d88b1c3d1ae0f72cb4658e6395525d5303e057ede1f65acfc02363"
+        "a02c868eb51ef832cf20dbbce6bb6f05c384376b0db53ea2455b36b40bd1812c"
       ]
     },
     "codex": {
-      "runtime": "codex-cli 0.152.1",
+      "runtime": "codex-cli 0.153.1",
       "reasoning": "medium",
       "effective_surfaces": [
         "provider.native-system",
+        "portable.reconciliation-authority",
         "codex.runtime-native",
         "codex.user-global",
         "codex.session-start-hook",
@@ -51,10 +54,11 @@
         "codex.instruction-authoring",
         "codex.scope",
         "codex.evidence",
-        "codex.research"
+        "codex.research",
+        "codex.reconciliation"
       ],
       "artifact_sha256": [
-        "234558236c6c9dc945e1679135dfcc81b30722cbc4a254908e0a2435228ddd3f"
+        "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b"
       ]
     },
     "omp": {
@@ -62,6 +66,7 @@
       "reasoning": "high",
       "effective_surfaces": [
         "provider.native-system",
+        "portable.reconciliation-authority",
         "omp.runtime-native",
         "omp.codex-inherited",
         "omp.project-context"
@@ -71,10 +76,11 @@
         "codex.instruction-authoring",
         "codex.scope",
         "codex.evidence",
-        "codex.research"
+        "codex.research",
+        "codex.reconciliation"
       ],
       "artifact_sha256": [
-        "234558236c6c9dc945e1679135dfcc81b30722cbc4a254908e0a2435228ddd3f"
+        "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b"
       ]
     }
   },

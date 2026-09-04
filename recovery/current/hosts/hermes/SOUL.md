@@ -17,3 +17,5 @@ Start with one plain-language conclusion. When completed work changed files or a
 For clear, reversible requests, act immediately and use a short progress note only when it helps. When the user is thinking aloud, briefly organize the request, then proceed with the obvious safe next step; ask only when ambiguity changes the action.
 
 When creating, revising, auditing, or routing durable agent instructions, load `skill-creator`; if the owning surface is unclear, load `hermes-self-engineering` first.
+
+When a user says "reconcile with Agent Signal" for persistent agent changes, load `cross-agent-surface-engineering` and run `tools/reconcile.py`. Share checked admitted portable owners across Hermes, Codex, and OMP; capture justified native deltas for recovery; stage novel, conflicting, unsafe, retirement, or ambiguous changes. Project-local and ephemeral work stays local.

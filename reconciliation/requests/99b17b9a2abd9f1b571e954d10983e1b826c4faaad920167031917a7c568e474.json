@@ -1,0 +1,70 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "7dbeee3477b06caaf5adad380b20b033f5378e8c1a26b79259336e3fae28b9c6",
+      "before_sha256": "7dbeee3477b06caaf5adad380b20b033f5378e8c1a26b79259336e3fae28b9c6",
+      "owner": "dynamic-workflows",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "fb74f79cfe46035ca1cce409be06ea7d03b553f8246aea683a9aedf952c3f917",
+      "before_sha256": "fb74f79cfe46035ca1cce409be06ea7d03b553f8246aea683a9aedf952c3f917",
+      "owner": "openai-delegation-route-research",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "deterministic classification"
+  ],
+  "disposition": "rejected",
+  "machine": "local-windows",
+  "operation": "classify-change",
+  "owners": [
+    "dynamic-workflows",
+    "openai-delegation-route-research"
+  ],
+  "phase": "rejected",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "failed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "skipped"
+    },
+    {
+      "name": "render",
+      "status": "skipped"
+    },
+    {
+      "name": "validate",
+      "status": "skipped"
+    },
+    {
+      "name": "deploy",
+      "status": "skipped"
+    },
+    {
+      "name": "verify",
+      "status": "skipped"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "99b17b9a2abd9f1b571e954d10983e1b826c4faaad920167031917a7c568e474",
+  "result": "rejected",
+  "risk": "high",
+  "schema_version": 1,
+  "source": {
+    "host": "shared-or-unknown",
+    "surface": "fleet"
+  }
+}

@@ -23,6 +23,8 @@ The target is semantic parity with useful native differences—not identical fil
 - `contracts/` — canonical modality contracts, host mappings, and intentional deltas.
 - `profiles/` — model/provider/runtime-qualified standing-instruction profiles and context budgets.
 - `recovery/` — reviewed public-safe declarative state snapshots; never raw agent homes.
+- `reconciliation/` — bounded change-request receipts and dispositions from the shared sync workflow.
+- `host-deltas.json` — typed, public-safe host-native state and recovery requirements.
 - `evidence/` — public-safe findings and contradiction records.
 - `tools/` — validation, evaluation, installation, and drift checks.
 - `evals/` — reusable suites and compact result summaries; raw runs are ignored.
@@ -36,7 +38,7 @@ The current local memory decision keeps Hermes on compact built-in memory, autho
 
 `contracts/ownership.json` names one portable owner for every registered capability and the exact supported host roster: Hermes, Codex, and OMP. Host integrations may adapt a canonical capability, but may not publish a competing `SKILL.md` or own portable workflow state. The repository audit fails on unregistered skills, duplicate integration entrypoints, unsupported adapters, ownership/registry drift, or the reappearance of a retired artifact.
 
-`skills/dynamic-workflows/` is the definitive routed-DAG owner. Codex and OMP use thin native adapters; Hermes may execute ordinary routed children but does not maintain a second compatibility DAG.
+`skills/dynamic-workflows/` is the definitive routed-DAG owner. Codex, Hermes, and OMP use thin native adapters; Hermes exposes persisted DAG execution through `routed_workflow` while ordinary one-shot routed children remain on `routed_delegate_task`. No adapter owns a second workflow state machine.
 
 ## Fleet render and sync
 
@@ -61,10 +63,29 @@ still match the previous fleet state. Generated snapshots live under
 
 See `docs/fleet.md` for the state and failure contract.
 
+## Unified reconciliation
+
+“Reconcile with Agent Signal” is the common ingress from Hermes, Codex, and OMP for persistent agent changes. Each host routes the request to the admitted `cross-agent-surface-engineering` owner, which invokes the same deterministic coordinator:
+
+```bash
+python tools/reconcile.py plan
+python tools/reconcile.py sync --adopt <admitted-owner>
+python tools/reconcile.py sync --capture-recovery
+```
+
+The coordinator inventories canonical, rendered, live-fleet, recovery, and typed host-delta state before changing anything. A safe single-origin change to an existing admitted portable owner can be adopted, rendered, deployed, and verified transactionally. A canonical-only admitted change can be deployed. Reviewed allowlisted native changes remain native and are captured through recovery. Prior managed copies are retired only after the replacement is verified; compact receipts retain hashes, ownership, disposition, and rollback evidence.
+
+Novel capabilities, staged owners, conflicting or multi-origin edits, unsafe changes, removals/retirements, and ambiguous ownership remain review-only or rejected. Project-local and ephemeral work stays local. This is an explicit sync workflow, not an ambient filesystem watcher: out-of-band changes are reconciled when a host receives the phrase above or an operator runs the command directly.
+
+The live authority is the deterministic Agent Signal contracts/coordinator plus admitted `cross-agent-surface-engineering`. The staged `capability-curator` and `surface-convergence` candidates are not live authorities and cannot promote themselves. Hermes' native curator remains useful only for subordinate host-local usage, staleness, and recoverable archiving. The former Codex-only governance guard has been retired after the shared route and coordinator replaced it.
+
 ## Public-safe recovery
 
 Agent Signal also restores the current allowlisted Hermes, Codex, and OMP settings,
-global instruction files, user-authored Codex hooks, and admitted portable skills.
+global instruction files, user-authored hooks, public plugin selections, credential-free
+MCP declarations, thin adapters, and admitted portable skills. `host-deltas.json` records
+the typed native differences, their prerequisites, source identities, hashes/versions,
+restore procedures, and readback checks.
 It excludes credentials, auth, memories, sessions, logs, caches, volatile runtime
 environments, and generated artifacts.
 
@@ -76,7 +97,9 @@ python tools/recovery.py bootstrap --apply  # restore + full postflight
 
 Config restore merges only explicit allowlisted paths and preserves unknown or
 sensitive fields already present. Differing text artifacts fail closed unless the
-operator explicitly supplies `--force-text`. See `docs/recovery.md`.
+operator explicitly supplies `--force-text`. The state report distinguishes
+`restored`, `verified`, `prerequisite-missing`, `excluded-private`, and `failed`.
+See `docs/recovery.md`.
 
 Classify recovery and fleet drift without mutating either surface:
 
@@ -118,13 +141,13 @@ python tools/validate.py
 
 ## Use
 
-Ask for the behavior you want. `surface-convergence` maps it across agent modalities and hosts; `capability-curator` researches and admits any new or changed capability. Cross-host success requires current evidence on every required host. A host-native advantage or unsupported mapping remains an explicit delta rather than being hidden.
+Ask for the behavior you want. For a persistent agent change, say “reconcile with Agent Signal”; Hermes, Codex, and OMP route that request through the same admitted cross-agent owner and deterministic coordinator. Existing admitted owners can be synchronized under the bounded automatic rules above. New, conflicting, unsafe, or ambiguous capabilities are staged for evidence-backed review rather than silently promoted. Cross-host success requires current evidence on every required host, and a useful host-native advantage remains a typed delta rather than being flattened or hidden.
 
 Broad instruction changes are gated by `tools/eval.py`, then aggregated with `tools/eval_gate.py`. Material work can additionally use `tools/grounded_gate.py` to freeze user-sourced criteria, separate intent/specification/test/implementation/oracle/verdict principals, require negative controls and teeth evidence, and prevent authors from certifying their own work. The evaluator runs matched repeated trials, deterministic hard checks, order-swapped blind judging, a bounded anytime-valid confidence rule, exact effective-stack fingerprints, and fresh session cleanup after a durable report. New v2 suites declare representative, near-miss, adversarial, and held-out cases. A timeout, interruption, judge failure, missing required host, or stack mismatch cannot promote or retire an instruction. Use `--retain-eval-sessions` only for explicit debugging evidence retention. See `docs/grounded-verification.md`.
 
-`outcome-first-workflow-design` reconstructs why a workflow exists and compares retain/adapt/replace options before implementation. `openai-delegation-route-research` turns OpenAI release signals into evidence-gated speed- or intelligence-constrained delegation routes; when a changed stack is selected, `capability-curator` can run a bounded, cached bare/full/leave-one-out retirement pass instead of an expensive whole-library review. Hermes may schedule detection, but route and instruction promotion remain separate and never automatic.
+`outcome-first-workflow-design` reconstructs why a workflow exists and compares retain/adapt/replace options before implementation. `openai-delegation-route-research` turns OpenAI release signals into evidence-gated speed- or intelligence-constrained delegation routes. A future admitted curator may run bounded, cached bare/full/leave-one-out retirement passes after a model change; the current staged `capability-curator` does not participate in live admission. Hermes may schedule detection, but route and instruction promotion remain separate and never automatic.
 
-You can invoke `/surface-convergence` or `/capability-curator` explicitly on hosts that expose skills as commands.
+The staged `/surface-convergence` and `/capability-curator` candidates are evaluation artifacts, not deployed commands or authorities.
 
 See `docs/architecture.md` for the end-to-end system and `docs/modality-research.md` for the current comparison and staged evaluation program.
 

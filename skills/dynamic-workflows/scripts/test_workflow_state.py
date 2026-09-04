@@ -8,6 +8,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import redirect_stdout
@@ -133,6 +134,25 @@ class WorkflowStateTests(unittest.TestCase):
         self.assertIn("Study reliable agents", prompt)
         self.assertNotIn("{{var:", prompt)
 
+    def test_render_prompt_replaces_a_static_hardlink_without_touching_its_target(self) -> None:
+        run = self.init()
+        victim = self.root / "hardlink-victim.txt"
+        victim.write_text("do not overwrite", encoding="utf-8")
+        prompt_path = ws.task_artifact_path(run, "a", "prompt.md")
+        os.link(victim, prompt_path)
+
+        rendered_path, prompt = ws.render_prompt_with_text(run, "a")
+
+        self.assertEqual(rendered_path, prompt_path)
+        self.assertEqual(victim.read_text(encoding="utf-8"), "do not overwrite")
+        self.assertEqual(prompt_path.read_text(encoding="utf-8"), prompt)
+        self.assertIn("Study reliable agents", prompt)
+
+    def test_task_artifact_name_cannot_escape_its_task_directory(self) -> None:
+        run = self.init()
+        with self.assertRaisesRegex(ws.PlanError, "artifact name"):
+            ws.task_artifact_path(run, "a", "../outside.txt")
+
     def test_read_only_inspection_does_not_replace_durable_state(self) -> None:
         run = self.init()
         before = (run / "state.json").read_bytes()
@@ -213,6 +233,17 @@ class WorkflowStateTests(unittest.TestCase):
         with self.assertRaisesRegex(ws.PlanError, "plan changed"):
             ws.ready_tasks(run)
 
+    def test_trusted_manifest_digest_closes_verify_then_reload_race(self) -> None:
+        run = self.init()
+        manifest_path = run / "run_manifest.json"
+        manifest = ws.load_json(manifest_path)
+        trusted_digest = ws.receipt_digest(manifest)
+        manifest["plan_sha256"] = "0" * 64
+        ws.atomic_json(manifest_path, manifest)
+
+        with self.assertRaisesRegex(ws.PlanError, "trusted host binding"):
+            ws.load_run(run, trusted_digest)
+
     def test_stop_terminalizes_unlaunched_tasks(self) -> None:
         run = self.init()
         ws.start_task(run, "a", "agent-a")
@@ -223,6 +254,64 @@ class WorkflowStateTests(unittest.TestCase):
         self.assertEqual(state["tasks"]["verify"]["status"], "stopped")
         ws.finish_task(run, "a", "stopped", "", "", "cancel confirmed", True, "agent-a")
         self.assertEqual(ws.load_json(run / "state.json")["status"], "stopped")
+
+    def test_retry_interrupted_restores_running_and_stopped_before_launch_tasks(self) -> None:
+        run = self.init()
+        ws.start_task(run, "a", "agent-a")
+        ws.request_stop(run)
+        with self.assertRaisesRegex(ws.PlanError, "stopped-before-launch"):
+            ws.resume_run(run, retry_failed=False)
+
+        ws.resume_run(run, retry_failed=False, retry_interrupted=True)
+        state = ws.load_json(run / "state.json")
+        self.assertFalse(state["stop_requested"])
+        self.assertEqual(
+            {task_id: current["status"] for task_id, current in state["tasks"].items()},
+            {"a": "pending", "b": "pending", "verify": "pending"},
+        )
+        self.assertEqual(ws.ready_tasks(run), ["a", "b"])
+
+    def test_retry_interrupted_restores_closed_stopped_attempt(self) -> None:
+        run = self.init()
+        ws.start_task(run, "a", "agent-a")
+        ws.request_stop(run)
+        ws.finish_task(
+            run,
+            "a",
+            "stopped",
+            "",
+            "",
+            "cancel confirmed",
+            True,
+            "agent-a",
+        )
+
+        ws.resume_run(run, retry_failed=False, retry_interrupted=True)
+        state = ws.load_json(run / "state.json")
+        self.assertEqual(
+            {task_id: current["status"] for task_id, current in state["tasks"].items()},
+            {"a": "pending", "b": "pending", "verify": "pending"},
+        )
+        self.assertEqual(state["tasks"]["a"]["attempts"], 0)
+
+    def test_execution_lock_excludes_concurrent_reconciliation(self) -> None:
+        run = self.init()
+        attempted = threading.Event()
+        acquired = threading.Event()
+
+        def acquire() -> bool:
+            attempted.set()
+            with ws.execution_lock(run):
+                acquired.set()
+            return True
+
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            with ws.execution_lock(run):
+                future = pool.submit(acquire)
+                self.assertTrue(attempted.wait(timeout=1))
+                self.assertFalse(acquired.wait(timeout=0.1))
+            self.assertTrue(future.result(timeout=2))
+            self.assertTrue(acquired.is_set())
 
     def test_atomic_write_preserves_previous_file_on_replace_failure(self) -> None:
         target = self.root / "atomic.json"
@@ -382,6 +471,87 @@ class WorkflowStateTests(unittest.TestCase):
         with self.assertRaisesRegex(ws.PlanError, "policy binding|outside the pinned catalog"):
             ws.task_model(run, "task")
 
+    def test_routed_task_rejects_rehashed_catalog_valid_route_substitution(self) -> None:
+        run = self.init_routed([{
+            "id": "task",
+            "intelligence_tier": "standard",
+            "latency_sensitive": False,
+            "acceptance": ["Returns the requested result."],
+            "prompt": "Do the task.",
+        }], "catalog-valid-substitution")
+        state = ws.load_json(run / "state.json")
+        receipt = state["tasks"]["task"]["decision_receipt"]
+        catalog = ws.load_json(run / "route_catalog.json")
+        alternate = next(
+            candidate
+            for candidate in catalog["delegation_candidates"]
+            if candidate["id"] != receipt["route"]["id"]
+        )
+        receipt["route"].update({
+            "id": alternate["id"],
+            "provider": catalog["provider"],
+            "model": alternate["model"],
+            "reasoning_effort": alternate["reasoning_effort"],
+        })
+        receipt["decision_id"] = ws.receipt_digest({
+            "policy_sha256": receipt["policy_sha256"],
+            "requirement_sha256": receipt["requirement_sha256"],
+            "outcome": "selected",
+            "route": receipt["route"],
+        })
+        ws.atomic_json(run / "state.json", state)
+        with self.assertRaisesRegex(ws.PlanError, "pinned deterministic selector"):
+            ws.task_model(run, "task")
+
+    def test_initial_route_selection_executes_the_exact_verified_bytes(self) -> None:
+        tasks = [{
+            "id": "task",
+            "intelligence_tier": "standard",
+            "latency_sensitive": False,
+            "acceptance": ["Returns the requested result."],
+            "prompt": "Do the task.",
+        }]
+        with mock.patch.object(
+            ws,
+            "load_route_selector",
+            side_effect=AssertionError("verified selector path must not be reopened"),
+        ):
+            run = self.init_routed(tasks, "exact-selector-init-bytes")
+        self.assertTrue(
+            ws.load_json(run / "state.json")["tasks"]["task"]["decision_receipt"]
+        )
+
+    def test_selector_revalidation_executes_the_exact_verified_bytes(self) -> None:
+        run = self.init_routed([{
+            "id": "task",
+            "intelligence_tier": "standard",
+            "latency_sensitive": False,
+            "acceptance": ["Returns the requested result."],
+            "prompt": "Do the task.",
+        }], "exact-selector-bytes")
+        plan, state, manifest = ws.load_run_snapshot(run)
+        task = ws.task_map(plan)["task"]
+        selector_source, selector_path, catalog_path = ws.load_route_selector_snapshot(
+            run, state, manifest
+        )
+        catalog = ws.load_route_catalog_snapshot(run, state, manifest)
+
+        with mock.patch.object(
+            ws,
+            "load_route_selector",
+            side_effect=AssertionError("verified selector path must not be reopened"),
+        ):
+            receipt = ws.select_task_receipt(
+                task,
+                "codex-workflow",
+                catalog_path,
+                selector_path,
+                catalog=catalog,
+                selector_source=selector_source,
+            )
+
+        self.assertEqual(receipt, state["tasks"]["task"]["decision_receipt"])
+
     def test_legacy_routed_run_without_catalog_snapshot_fails_closed(self) -> None:
         run = self.init_routed([{
             "id": "task",
@@ -443,6 +613,67 @@ class WorkflowStateTests(unittest.TestCase):
             ws.launch_claim_path(run, "task").read_text(encoding="ascii").strip(),
             claimed[0],
         )
+
+    def test_launch_abort_requires_exact_claim_and_blocks_descendants(self) -> None:
+        run = self.init_routed([
+            {
+                "id": "root",
+                "intelligence_tier": "standard",
+                "latency_sensitive": False,
+                "attempts": 2,
+                "acceptance": ["Returns a result."],
+                "prompt": "Do the root task.",
+            },
+            {
+                "id": "child",
+                "intelligence_tier": "standard",
+                "latency_sensitive": False,
+                "depends_on": ["root"],
+                "acceptance": ["Uses the root result."],
+                "prompt": "Do the child task.",
+            },
+        ], "launch-abort")
+        token = ws.claim_task(run, "root")
+        with self.assertRaisesRegex(ws.PlanError, "claim token"):
+            ws.abort_launch(run, "root", "construction failed", "wrong-token")
+        ws.abort_launch(run, "root", "construction failed", token)
+        state = ws.load_json(run / "state.json")
+        self.assertEqual(state["tasks"]["root"]["status"], "failed")
+        self.assertEqual(state["tasks"]["root"]["attempts"], 1)
+        self.assertEqual(state["tasks"]["root"]["error"], "construction failed")
+        self.assertEqual(state["tasks"]["child"]["status"], "blocked")
+        self.assertFalse(ws.launch_claim_path(run, "root").exists())
+
+    def test_hermes_workflow_receipt_is_pinned_to_hermes(self) -> None:
+        plan = {
+            "name": "hermes-route",
+            "tasks": [{
+                "id": "task",
+                "intelligence_tier": "standard",
+                "latency_sensitive": False,
+                "acceptance": ["Returns a bounded result."],
+                "prompt": "Do the bounded task.",
+            }],
+        }
+        plan_path = write_json(self.root / "hermes-route.json", plan)
+        skills_root = Path(__file__).resolve().parents[2]
+        run = ws.init_run(
+            plan_path,
+            self.root / "hermes-route-runs",
+            {},
+            target_surface="hermes-workflow",
+            route_catalog=skills_root / "openai-delegation-route-research" / "references" / "current-gpt-catalog.json",
+            route_selector=skills_root / "openai-delegation-route-research" / "scripts" / "route_selector.py",
+        )
+        state = ws.load_json(run / "state.json")
+        receipt = state["tasks"]["task"]["decision_receipt"]
+        self.assertEqual(receipt["target_surface"], "hermes-workflow")
+        self.assertEqual(receipt["route"]["runtime"], {
+            "host": "hermes",
+            "transport": "hermes-workflow",
+            "selector_contract": "automatic-gpt-frontier-v1",
+        })
+        self.assertEqual(ws.task_model(run, "task")["decision_id"], receipt["decision_id"])
 
     def test_concurrent_independent_lifecycle_updates_are_not_lost(self) -> None:
         tasks = [

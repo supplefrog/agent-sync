@@ -185,6 +185,7 @@ class AutomaticFrontierRouteTests(unittest.TestCase):
     def test_workflow_surfaces_bind_receipts_to_the_executing_host(self):
         expected_hosts = {
             "codex-workflow": "codex",
+            "hermes-workflow": "hermes",
             "omp-workflow": "omp",
         }
         for surface, host in expected_hosts.items():

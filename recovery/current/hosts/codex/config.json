@@ -84,11 +84,131 @@
   "model": "gpt-5.6-sol",
   "model_reasoning_effort": "medium",
   "notify": [
-    "{{agent-signal:HOME}}\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\2c6075088d3180ec\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
+    "{{agent-signal:HOME}}\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\c2900163265bdaec\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
     "turn-ended"
   ],
   "personality": "pragmatic",
+  "plugins": {
+    "agent-ops@local-agent-skills": {
+      "enabled": true
+    },
+    "browser@openai-bundled": {
+      "enabled": true
+    },
+    "chrome@openai-bundled": {
+      "enabled": true
+    },
+    "codex-app-tools@openai-bundled": {
+      "enabled": true
+    },
+    "codex-security@openai-curated": {
+      "enabled": true
+    },
+    "computer-use@openai-bundled": {
+      "enabled": true
+    },
+    "documents@openai-primary-runtime": {
+      "enabled": false
+    },
+    "engineering-comms@local-agent-skills": {
+      "enabled": true
+    },
+    "github@openai-curated": {
+      "enabled": false
+    },
+    "hermes-image-guidance@personal": {
+      "enabled": true
+    },
+    "hyperframes@openai-curated": {
+      "enabled": true
+    },
+    "latex@openai-bundled": {
+      "enabled": true
+    },
+    "life-science-research@openai-curated": {
+      "enabled": false
+    },
+    "notion@openai-curated": {
+      "enabled": false
+    },
+    "pdf@openai-primary-runtime": {
+      "enabled": true
+    },
+    "presentations@openai-primary-runtime": {
+      "enabled": false
+    },
+    "research-tools@local-agent-skills": {
+      "enabled": true
+    },
+    "sites@openai-bundled": {
+      "enabled": true
+    },
+    "spreadsheets@openai-primary-runtime": {
+      "enabled": true
+    },
+    "template-creator@openai-primary-runtime": {
+      "enabled": true
+    },
+    "unified-computer-use@openai-bundled": {
+      "enabled": true
+    },
+    "visualize@openai-bundled": {
+      "enabled": true
+    }
+  },
   "service_tier": "default",
+  "skills": {
+    "config": [
+      {
+        "enabled": false,
+        "name": "notion:notion-meeting-intelligence"
+      },
+      {
+        "enabled": false,
+        "name": "notion:notion-spec-to-implementation"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\sora\\SKILL.md"
+      },
+      {
+        "enabled": false,
+        "name": "presentations:Presentations"
+      },
+      {
+        "enabled": false,
+        "name": "spreadsheets:Spreadsheets"
+      },
+      {
+        "enabled": false,
+        "name": "documents:documents"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\.system\\openai-docs\\SKILL.md"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\pdf\\SKILL.md"
+      },
+      {
+        "enabled": false,
+        "name": "agent-ops:resourceful-agent"
+      },
+      {
+        "enabled": false,
+        "name": "agent-ops:personal-ops-agent"
+      },
+      {
+        "enabled": false,
+        "name": "browser-use:browser"
+      },
+      {
+        "enabled": false,
+        "name": "agent-ops:project-bootstrap"
+      }
+    ]
+  },
   "windows": {
     "sandbox": "unelevated"
   }

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "evidence_state": "hermes-native-routed-dag-adapter",
+  "observed_at": "2026-09-04",
+  "decision": "Admit the thin Hermes routed_workflow adapter while retaining skills/dynamic-workflows as the definitive portable DAG state owner.",
+  "implementation_boundary": {
+    "portable_owner": "skills/dynamic-workflows/scripts/workflow_state.py",
+    "hermes_adapter": "integrations/hermes/routed-delegation",
+    "target_surface": "hermes-workflow",
+    "native_children": "leaf-only",
+    "route_owner": "skills/openai-delegation-route-research/scripts/route_selector.py",
+    "automatic_effort_escalation": false
+  },
+  "deterministic_verification": [
+    "python -m unittest integrations/hermes/routed-delegation/test_plugin.py: 27 tests passed",
+    "python skills/dynamic-workflows/scripts/test_workflow_state.py: 58 tests passed",
+    "python -m unittest tests/test_route_selector.py: 11 tests passed",
+    "python -m compileall on adapter, workflow-state, and route-selector Python: passed",
+    "git diff --check: passed",
+    "python tools/validate.py: 19/19 skills valid",
+    "Hermes plugin doctor: routed-delegation 0.4.0 imported and registered 2 tools, 0 hooks"
+  ],
+  "security_and_lifecycle_coverage": [
+    "trusted external manifest binding under HERMES_HOME",
+    "exact verified selector bytes used for initialization and revalidation",
+    "exact receipt recomputation and retry pinning",
+    "cross-process state and execution locks",
+    "claim-token and stale-attempt rejection",
+    "task artifact path containment",
+    "exclusive random atomic temporary files and static hardlink replacement",
+    "native leaf-only launch with fallback disabled",
+    "explicit result-model mismatch rejection",
+    "trusted close witnesses keyed by run, task, handle, and claim token",
+    "interrupt finalization and descendant failure blocking"
+  ],
+  "live_smoke": {
+    "run_id": "20260903T231632Z-hermes-routed-dag-smoke-v8",
+    "status": "succeeded",
+    "trusted_manifest_sha256": "c891890ca91fdd88b7d4104cf9fe0e75e30d3c366fe72ebcea0bb15951040714",
+    "parallel_root_start_delta_seconds": 1.0,
+    "synthesis_started_after_dependencies": true,
+    "trusted_close_witnesses": 3,
+    "artifact_count": 19,
+    "routes": {
+      "alpha": "openai-codex/gpt-5.6-luna:high",
+      "beta": "openai-codex/gpt-5.6-luna:high",
+      "synthesize": "openai-codex/gpt-5.6-sol:medium"
+    },
+    "result_model_echoes_matched_receipts": true,
+    "orphan_claims": 0,
+    "generated_bytecode_artifacts": 0
+  },
+  "independent_review": {
+    "verdict": "SHIP",
+    "material_findings": 0,
+    "reviewer_probe": "Two focused hardlink and close-witness tests passed."
+  },
+  "residual_limitations": [
+    "Hermes native in-flight child processes are process-local and are not supervised across a full Hermes process or machine restart.",
+    "A missing child model echo is accepted only after exact launch-route construction was verified; an explicit mismatch fails closed."
+  ],
+  "owner_capability": "dynamic-workflows"
+}

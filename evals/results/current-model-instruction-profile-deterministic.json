@@ -2,8 +2,9 @@
   "schema_version": 1,
   "suite": "current-model-instruction-profile",
   "profile": "gpt-5.6-sol-openai-codex",
+  "observed_at": "2026-09-04T18:51:17Z",
   "status": "pass",
-  "claim": "The current user-owned instruction overlays are identified, hash-bound, restorable, host-qualified, and below the standing context budget for gpt-5.6-sol on openai-codex.",
+  "claim": "The current user-owned instruction overlays are identified, hash-bound, restorable, host-qualified, semantically aligned on the Agent Signal reconciliation route, and below the standing context budget for gpt-5.6-sol on openai-codex.",
   "target": {
     "model": "gpt-5.6-sol",
     "provider": "openai-codex",
@@ -16,27 +17,31 @@
   "hosts": {
     "hermes": {
       "runtime": "Hermes Agent 0.21.0",
-      "standing_bytes": 1493,
+      "standing_bytes": 1869,
       "budget": 2048,
-      "artifact_sha256": "7572a82756d88b1c3d1ae0f72cb4658e6395525d5303e057ede1f65acfc02363",
-      "live_hash_match": true
+      "artifact_sha256": "a02c868eb51ef832cf20dbbce6bb6f05c384376b0db53ea2455b36b40bd1812c",
+      "live_hash_match": true,
+      "reconciliation_unit": "hermes.reconciliation"
     },
     "codex": {
-      "runtime": "codex-cli 0.152.1",
-      "standing_bytes": 1663,
+      "runtime": "codex-cli 0.153.1",
+      "standing_bytes": 2018,
       "budget": 2048,
-      "artifact_sha256": "234558236c6c9dc945e1679135dfcc81b30722cbc4a254908e0a2435228ddd3f",
-      "live_hash_match": true
+      "artifact_sha256": "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b",
+      "live_hash_match": true,
+      "reconciliation_unit": "codex.reconciliation"
     },
     "omp": {
       "runtime": "omp 17.2.13",
-      "standing_bytes": 1663,
+      "standing_bytes": 2018,
       "budget": 2048,
       "inherits": "codex.user-global",
+      "artifact_sha256": "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b",
       "codex_discovery_provider_enabled": true,
       "native_agents_file_absent": true,
       "duplicate_rules_delta": "retired",
-      "live_rules_file_absent": true
+      "live_rules_file_absent": true,
+      "reconciliation_unit": "codex.reconciliation"
     }
   },
   "verification": {
@@ -45,8 +50,12 @@
     "live_runtime_and_state": "pass",
     "instruction_profile_tests": "11 passed",
     "instruction_retirement_tests": "13 passed",
-    "recovery_tests": "18 passed, 1 skipped, 32 subtests passed",
-    "repository_tests": "233 passed, 1 skipped",
+    "recovery_tests": "24 passed, 1 skipped",
+    "reconciliation_and_host_delta_tests": "17 passed, 1 skipped",
+    "repository_tests": "260 passed, 2 skipped",
+    "routed_delegation_tests": "27 passed",
+    "dynamic_workflow_tests": "58 passed",
+    "route_selector_and_tools_tests": "33 passed",
     "writing_routes": "routine chat, public prose, model-facing instructions, and surface placement each have one on-demand owner",
     "recovery_loaded_into_prompt": false
   },

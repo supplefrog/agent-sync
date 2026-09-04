@@ -213,7 +213,35 @@ hello world this works
         self.assertEqual(adapter["instructions"]["strategy"], "manual-merge")
         self.assertEqual(
             adapter["instructions"]["required_markers"],
-            ["# Identity", "# Style", "# Judgment", "# Defaults"],
+            ["# Identity", "# Style", "# Judgment", "# Defaults", "reconcile with Agent Signal"],
+        )
+
+    def test_reconciliation_routes_share_trigger_and_near_miss_boundary(self):
+        hermes = (REPO / "recovery/current/hosts/hermes/SOUL.md").read_text(encoding="utf-8")
+        codex = (REPO / "recovery/current/hosts/codex/AGENTS.md").read_text(encoding="utf-8")
+        contract = json.loads(
+            (REPO / "contracts/instruction-surfaces.json").read_text(encoding="utf-8")
+        )
+        normalized = [text.lower() for text in (hermes, codex)]
+        for text in normalized:
+            self.assertIn("reconcile with agent signal", text)
+            self.assertIn("persistent", text)
+            self.assertIn("cross-agent-surface-engineering", text)
+            self.assertIn("tools/reconcile.py", text)
+            self.assertIn("novel", text)
+            self.assertIn("unsafe", text)
+            self.assertIn("ephemeral", text)
+            self.assertIn("stays local", text)
+
+        omp = next(
+            surface
+            for surface in contract["surfaces"]
+            if surface["id"] == "omp.codex-inherited"
+        )
+        self.assertEqual("active", omp["status"])
+        self.assertEqual("codex.user-global", omp["owner"])
+        self.assertEqual(
+            "recovery/current/hosts/codex/AGENTS.md", omp["artifact"]
         )
 
     def test_routing_adapters_share_contract_and_declare_supported_surfaces(self):

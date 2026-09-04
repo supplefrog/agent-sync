@@ -19,10 +19,10 @@ requirements plan
 
 ## State and routing
 
-- `plan.json` is a normalized snapshot bound by independently stored `run_manifest.json`. Every stateful command verifies both the manifest and state bindings.
-- Routed runs copy `route_catalog.json` at initialization. Receipt reuse must match the manifest-bound catalog hash and one exact allowed route tuple.
+- `plan.json` is a normalized snapshot bound by the run-local `run_manifest.json`. Every stateful command verifies both the manifest and state bindings; Hermes additionally pins the exact manifest digest in an independently stored binding under `HERMES_HOME`.
+- Routed runs copy `route_catalog.json` and `route_selector.py` at initialization. Receipt reuse must match both manifest-bound hashes, the currently admitted selector, and a fresh deterministic selection from the exact verified selector bytes.
 - `state.json` is atomically replaced and records target surface, variables, task status, attempts, launch claims, native handles, handle closure, outputs, errors, and exact decision receipts.
-- Every lifecycle read-modify-write is serialized by a cross-process `.state.lock`; atomic replacement alone is not treated as concurrency control.
+- Every lifecycle read-modify-write is serialized by a cross-process `.state.lock`; atomic replacement alone is not treated as concurrency control. Host adapters also serialize run finalization against interrupted resume with `.execution.lock`.
 - `ready`, `model`, `render`, and `status` are read-only; only explicit lifecycle commands replace durable state.
 - New tasks declare `intelligence_tier`, `latency_sensitive`, and `failure_cost`; they do not select models.
 - New tasks also declare observable acceptance criteria and a stopping condition rather than relying on an underspecified prompt.
@@ -65,9 +65,9 @@ A workflow task cannot widen parent authorization, filesystem roots, network acc
 
 - **Codex:** exact model and reasoning effort are parent-selected native spawn arguments. Reject reported mismatches and close the worker handle; current JSONL evidence does not independently echo the child resolved route.
 - **OMP:** dispatch the immutable `route-<route-id>` named agent whose frontmatter pins exact model and `thinkingLevel`. Verify `resolvedModel`; reject fallback/mismatch.
-- **Hermes:** a compatible executor may consume the state contract, but must pass current Hermes lifecycle/process tests before promotion. Ordinary routing remains owned by `routed_delegate_task`.
+- **Hermes:** `routed_workflow` consumes this state owner and launches current native leaf children with the exact receipt tuple and fallback disabled. A trusted binding under `HERMES_HOME` pins the run manifest independently; exact run/task/handle/claim close witnesses under that trusted root gate interrupted retry. An explicit result-model mismatch fails closed. Ordinary one-shot routing remains owned by `routed_delegate_task`.
 
-The retired Hermes compatibility runner is not an available executor. Its automatic verifier-feedback loop, reasoning-tier escalation, and `model_tier` compatibility were deliberately rejected; explicit verifier nodes or `answer-key-gauntlet` preserve the verification outcome without mutating the immutable plan. Its per-task host controls and subprocess/session cleanup belong only in a future thin Hermes adapter after current-runtime lifecycle tests pass.
+The retired Hermes compatibility runner is not an available executor. Its automatic verifier-feedback loop, reasoning-tier escalation, and `model_tier` compatibility were deliberately rejected; explicit verifier nodes or `answer-key-gauntlet` preserve the verification outcome without mutating the immutable plan. Per-task host controls remain native concerns and are not reintroduced into the portable plan.
 
 ## Context contract
 
@@ -89,11 +89,12 @@ Before promotion, run deterministic tests for:
 6. Atomic state writes and plan-hash preservation.
 7. Per-output and total context truncation.
 8. All shipped templates parsing and validating.
-9. Exact selector receipt creation for Codex and OMP surfaces.
+9. Exact selector receipt creation for Codex, Hermes, and OMP surfaces, including init/revalidation from the exact verified in-memory selector bytes.
 10. Receipt reuse across retry/resume and rejection of route mismatch.
 11. Native handle closure before terminal success.
-12. Fresh-host discovery plus one bounded real worker smoke per promoted adapter.
+12. Static hardlink and task-directory escape rejection for task artifacts and trusted adapter writes.
+13. Fresh-host discovery plus one bounded real worker smoke per promoted adapter.
 
 ## Durability boundary
 
-The helper makes plans, state, outputs, inspection, and retry durable on disk. The manifest detects partial or coordinated plan/state rewrites that do not also replace the trust anchor; it is not a signature, so an actor able to rewrite every run file remains inside the host filesystem trust boundary. The helper does not supervise workers across machine reboot, guarantee background survival after host shutdown, provide token accounting, or create a native progress UI. Report these limits directly.
+The helper makes plans, state, outputs, inspection, and retry durable on disk. The run-local manifest detects partial or coordinated plan/state rewrites; by itself it is not a signature, so an actor able to rewrite every run file remains inside the host filesystem trust boundary. Hermes narrows that boundary with an independently stored manifest binding and close witnesses under `HERMES_HOME`. The helper still does not supervise workers across machine reboot, guarantee background survival after host shutdown, provide token accounting, or create a native progress UI. Report these limits directly.

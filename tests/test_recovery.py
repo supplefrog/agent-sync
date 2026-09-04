@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import yaml
 
@@ -386,6 +387,12 @@ class RecoveryTests(unittest.TestCase):
         fragment = json.loads((self.snapshot / "hosts/hermes/config.json").read_text("utf-8"))
         self.assertEqual("OPENAI_API_KEY", fragment["model"]["api_key_env"])
 
+    def test_public_safety_does_not_mistake_skeptical_words_for_tokens(self) -> None:
+        recovery._assert_public_safe(
+            b"skeptical-case skeptical checking keeps evidence honest\n",
+            label="ordinary-prose",
+        )
+
     def test_snapshot_refuses_secret_in_text_before_writing_anything(self) -> None:
         mock_token = "sk" + "-mock-not-a-real-secret-value"
         (self.hermes / "SOUL.md").write_text(f"Use token {mock_token}\n", encoding="utf-8")
@@ -541,6 +548,39 @@ class RecoveryTests(unittest.TestCase):
 
         recovery.restore(self.policy, self.snapshot, roots, apply=True, force_text=True)
         self.assertEqual("Lead with the conclusion.\n", (restore_root / "SOUL.md").read_text("utf-8"))
+
+    def test_restore_rolls_back_every_target_when_a_later_atomic_write_fails(self) -> None:
+        recovery.snapshot(self.policy, self.snapshot, self.roots)
+        fresh = self.base / "transactional-restore"
+        roots = {
+            "hermes": fresh / "hermes",
+            "codex": fresh / "codex",
+            "omp": fresh / "omp",
+        }
+        for root in roots.values():
+            root.mkdir(parents=True)
+        original = "unmanaged:\n  keep: true\n"
+        (roots["hermes"] / "config.yaml").write_text(original, encoding="utf-8")
+
+        real_atomic_write = recovery._atomic_write
+        calls = 0
+
+        def fail_second_write(path: Path, data: bytes) -> None:
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise OSError("injected write failure")
+            real_atomic_write(path, data)
+
+        with patch.object(recovery, "_atomic_write", side_effect=fail_second_write):
+            with self.assertRaisesRegex(OSError, "injected write failure"):
+                recovery.restore(self.policy, self.snapshot, roots, apply=True)
+
+        self.assertEqual(original, (roots["hermes"] / "config.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(
+            ["hermes/config.yaml"],
+            sorted(path.relative_to(fresh).as_posix() for path in fresh.rglob("*") if path.is_file()),
+        )
 
 
 if __name__ == "__main__":

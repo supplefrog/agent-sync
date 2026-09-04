@@ -1,4 +1,8 @@
 name: routed-delegation
-version: "0.3.1"
-description: "Automatic exact-route Hermes delegation with persistent receipts."
+version: "0.4.0"
+description: "Automatic exact-route Hermes delegation and persisted routed DAG execution."
 author: local
+kind: standalone
+provides_tools:
+  - routed_delegate_task
+  - routed_workflow

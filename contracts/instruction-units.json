@@ -162,6 +162,18 @@
       "priority": 90
     },
     {
+      "id": "hermes.reconciliation",
+      "path": "recovery/current/hosts/hermes/SOUL.md",
+      "selector": {"kind": "paragraph-prefix", "value": "When a user says \"reconcile with Agent Signal\""},
+      "class": "safety-governance",
+      "status": "effective",
+      "hosts": ["hermes"],
+      "owner": "cross-agent-surface-engineering",
+      "suite": "evals/capability-admission.json",
+      "retest_on": ["curator-policy-changed", "instruction-changed"],
+      "priority": 100
+    },
+    {
       "id": "codex.output",
       "path": "recovery/current/hosts/codex/AGENTS.md",
       "selector": {"kind": "tagged-line", "value": "[OUTPUT]"},
@@ -184,6 +196,18 @@
       "suite": "evals/capability-admission.json",
       "retest_on": ["instruction-owner-changed", "instruction-changed"],
       "priority": 80
+    },
+    {
+      "id": "codex.reconciliation",
+      "path": "recovery/current/hosts/codex/AGENTS.md",
+      "selector": {"kind": "tagged-line", "value": "[RECONCILIATION]"},
+      "class": "safety-governance",
+      "status": "effective",
+      "hosts": ["codex", "omp"],
+      "owner": "cross-agent-surface-engineering",
+      "suite": "evals/capability-admission.json",
+      "retest_on": ["curator-policy-changed", "instruction-changed"],
+      "priority": 100
     },
     {
       "id": "codex.scope",

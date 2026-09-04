@@ -72,7 +72,11 @@ def atomic_json(path: Path, value: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.tmp-{uuid.uuid4().hex}")
     try:
-        temporary.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        # JSON identities are repository contracts, so never let the host
+        # newline convention change their bytes or SHA-256 digest.
+        temporary.write_bytes(
+            (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        )
         os.replace(temporary, path)
     finally:
         if temporary.exists():

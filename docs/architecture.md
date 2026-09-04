@@ -7,8 +7,8 @@ Agent Signal accepts a desired persistent behavior and produces the smallest ver
 1. compile the request into observable outcomes, triggers, regressions, target hosts, and acceptable deltas;
 2. inventory the portable surface and each host's current native mechanisms;
 3. research the baseline, canonical owner sources, and credible alternatives;
-4. use `capability-curator` to stage and qualify any new or changed capability, and to retire generic steering that no longer beats the current model baseline;
-5. map the admitted behavior through `surface-convergence` into one portable contract plus thin host adapters;
+4. route persistent cross-agent changes through the admitted `cross-agent-surface-engineering` owner and deterministic `tools/reconcile.py` coordinator;
+5. synchronize safe changes to existing admitted owners, while staging novel, unsafe, conflicting, retiring, multi-origin, or ambiguous work for separately evidenced review;
 6. run baseline-versus-candidate, non-trigger, adversarial, and fresh held-out checks on every required current runtime;
 7. preserve compact evidence, contradictions, hashes, versions, rollback, and reevaluation triggers; and
 8. expose only admitted artifacts.
@@ -23,8 +23,11 @@ The convergence target is equivalent useful behavior. Mechanisms may differ, and
 | Portable procedures | `skills/` | Agent Skills-compatible workflows shared without host assumptions |
 | Shared judgment surface | `surfaces/core.md` | Small, stable behavior and routing policy useful across hosts |
 | Host integration | `adapters/` | Installation targets and discovery mechanisms only |
-| Admission and retirement | `skills/capability-curator/` | Research, qualify, adapt, compare, reject/admit capabilities, and run bounded instruction retirement after model changes |
-| Convergence | `skills/surface-convergence/` | Map admitted behavior across hosts and manage semantic delta |
+| Reconciliation and governance | `tools/reconcile.py`, `contracts/change-request.schema.json`, `reconciliation/requests/` | One deterministic inventory, classification, transaction, receipt, and rollback path used by all supported hosts |
+| Host-native delta | `host-deltas.json`, `contracts/host-deltas.schema.json`, `tools/host_deltas.py` | Typed public-safe native state, restore prerequisites, source identity, version/hash, enablement, and readback |
+| Cross-host routing | `skills/cross-agent-surface-engineering/` | Admitted judgment owner that routes persistent changes into the deterministic coordinator |
+| Admission and retirement candidate | `skills/capability-curator/` | Staged evaluation artifact; not a live authority until separately admitted |
+| Convergence candidate | `skills/surface-convergence/` | Staged evaluation artifact; not a live authority until separately admitted |
 | Evaluation | `evals/`, `tools/eval.py`, `tools/eval_gate.py`, `tools/grounded_gate.py`, `tools/instruction_retirement.py` | Reproducible admission, independent grounded verdict contracts, and leave-one-unit-out comparison with artifact hashes and exact-stack receipt caching |
 | Evidence memory | `evidence/findings.json`, `evals/results/` | Public-safe findings, contradictions, decisions, and compact summaries |
 | Drift intake | `tools/capability_intake.py` | Read-only metadata scan across recovery and fleet state; classify owner, route, disposition, and bounded automatic eligibility without exposing file bodies |
@@ -36,13 +39,31 @@ The convergence target is equivalent useful behavior. Mechanisms may differ, and
 
 This is the first vertical slice of the capability librarian, not autonomous promotion. A deterministic, reversible fleet action for an already admitted owner can be marked eligible only after checks. New or unmanaged capabilities, staged owners, content conflicts, retirement, recovery adoption, cross-host changes, safety-sensitive changes, and ambiguous changes remain review-only. Future Hermes or host hooks must remain thin adapters over this classifier and require separate admission evidence.
 
+## Unified reconciliation
+
+The phrase “reconcile with Agent Signal” is a shared, explicit ingress from Hermes, Codex, and OMP. Host instructions route it to admitted `cross-agent-surface-engineering`, which calls `tools/reconcile.py`; no host owns a competing governance receipt store.
+
+The coordinator creates one bounded change request, inventories the canonical tree, rendered fleet, live managed state, recovery snapshot, and typed host deltas, then classifies the change before mutation. Its safe automatic cases are deliberately narrow:
+
+- adopt a single-origin live change into the same existing admitted portable owner, then render, deploy, and verify it transactionally;
+- deploy a canonical-only change for an existing admitted owner; or
+- capture a reviewed allowlisted native change into recovery and the typed delta manifest.
+
+The canonical source, rendered snapshot, live fleet, recovery snapshot, managed-state manifest, and request receipt are rolled back if a later transaction phase fails. A previously managed implementation is removed only when its identity still matches managed state and its replacement verifies. Novel capabilities, staged owners, multi-origin edits, conflicts, unsafe changes, removals/retirements, and ambiguous ownership cannot take the automatic path.
+
+This provides a common sync operation, not universal interception. Manual editors and processes can still change files while no agent is running; an explicit host request or direct command performs the inventory and reconciliation. Project-local and ephemeral work is intentionally outside this system.
+
+The effective governance authority is the deterministic contracts/coordinator plus admitted `cross-agent-surface-engineering`. The canonical `capability-curator` and `surface-convergence` designs remain staged until their own admission evidence is conclusive. Hermes' native curator is retained only for subordinate local usage tracking, staleness, consolidation, and recoverable archiving; it cannot admit or distribute portable capabilities. The legacy Codex-only governance guard was retired after the common route and coordinator were installed.
+
 ## Staged context-integrity validation
 
 Cross-provider orchestration keeps transcript and task state in the native Hermes, Codex, and OMP owners; no single host board is the authority for every conversation or runtime. The staged `tools/context_ledger.py` prototype adds only provider-scoped execution identities, source locators/digests, versioned lineage and assertion evidence, and future receipt boundaries. It does not copy transcript payloads or enable provider mutations. See `docs/context-integrity-ledger.md` for the executable invariants and remaining admission gate.
 
 ## Recovery and instruction profiles
 
-`recovery.json` allowlists public-safe declarative state and `tools/recovery.py` snapshots, diffs, merges, restores, and verifies it. Admitted skills remain owned by the fleet; `bootstrap --apply` composes both paths and requires a clean postflight. Credentials, memories, sessions, logs, caches, and runtime-generated environments remain outside the repository.
+`recovery.json` allowlists public-safe declarative state and `tools/recovery.py` snapshots, diffs, merges, restores, and verifies it. `host-deltas.json` binds every reviewed native difference to its owner, desired state, source identity, version/hash, enablement, prerequisites, restore procedure, redaction policy, and readback. Admitted skills remain owned by the fleet; `bootstrap --apply` composes both paths and requires a clean postflight. Its report distinguishes `restored`, `verified`, `prerequisite-missing`, `excluded-private`, and `failed`. Credentials, memories, sessions, logs, caches, provider-hidden instructions, and runtime-generated environments remain outside the repository.
+
+The recovery tests destroy temporary host roots and reconstruct allowlisted state plus the admitted fleet from the current repository snapshot, then require an exact second dry-run. This proves declarative reconstruction within the explicit boundary, not disk imaging: runtimes, authentication, private state, and unavailable native prerequisites must still be supplied externally.
 
 `contracts/instruction-surfaces.json` inventories provider/runtime, global, project, inherited, hook-injected, disabled, and retired instruction surfaces. `contracts/instruction-units.json` makes effective generic steering independently retireable. A model profile binds the current model/provider/runtime/reasoning stack to exact user-owned artifacts and standing-byte budgets without pretending to copy provider-hidden system prompts.
 
@@ -79,7 +100,7 @@ The release cron may produce a retirement plan and evidence only after recommend
 ## Rejected patterns
 
 - identical files as proof of behavioral parity;
-- a universal hook or memory schema that neither host natively guarantees;
+- an ambient universal hook or watcher that neither host natively guarantees;
 - synchronizing private memory, sessions, credentials, or raw transcripts;
 - deleting a host advantage to reach a lowest common denominator;
 - cloning staged skills into a live discovery directory;
@@ -104,10 +125,11 @@ Partial support is a valid staged result. It must remain explicit and cannot be 
 ## Version anchors for the current comparison
 
 - Agent Skills specification: <https://agentskills.io/specification>
-- Codex source/docs revision: `a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3`; local CLI `0.150.0-alpha.12.2`
-- Hermes upstream revision: `933c209e96630a6026b0a18ecf6a86e65110f5b8`; local CLI `0.20.5`
-- Codex instruction docs: <https://github.com/openai/codex/blob/a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3/docs/agents_md.md>
-- Codex skill docs: <https://github.com/openai/codex/blob/a9802304f60ab14c0b07e3ee0db9a9c105ab0cb3/docs/skills.md>
+- Codex source/docs revision: `985641272869835d01d025ed2a218fbbce35fa9f`; local CLI `0.153.1`
+- Hermes upstream revision: `63279301bcbdc185c1b07b98a9312eb0c862f26d`; local CLI `0.21.0`
+- OMP release revision: `v17.2.13`; local CLI `17.2.13`
+- Codex instruction docs: <https://github.com/openai/codex/blob/985641272869835d01d025ed2a218fbbce35fa9f/docs/agents_md.md>
+- Codex skill docs: <https://github.com/openai/codex/blob/985641272869835d01d025ed2a218fbbce35fa9f/docs/skills.md>
 - Hermes configuration docs: <https://hermes-agent.nousresearch.com/docs/user-guide/configuration>
 - Hermes skills docs: <https://hermes-agent.nousresearch.com/docs/user-guide/features/skills>
 

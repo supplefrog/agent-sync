@@ -109,3 +109,64 @@ Agent Signal should behave as one hybrid capability librarian. An ordinary reque
 3. Verify repository safety, recovery, and fleet behavior.
 4. Reopen curator/intake/convergence only under new sealed admission plans.
 5. Activate thin native gates only after the routed owners and scanner pass their checks.
+
+## 2026-09-04 completion: unified reconciliation and recovery
+
+### Destination
+
+One explicit request to “reconcile with Agent Signal” from Hermes, Codex, or OMP runs the same canonical workflow: discover portable and host-native drift, classify ownership, adopt a checked change to an existing admitted portable owner when deterministic safety permits, stage novel or ambiguous work, render the admitted fleet, retain justified host deltas, and produce exact recovery/readback evidence. Effective host instructions express this same soft gate even when their native syntax and lifecycle mechanisms differ. A destroyed agent home can be reconstructed from Agent Signal after its runtime and credentials are reinstalled.
+
+### Scope
+
+- In: one versioned reconciliation/change-request contract and CLI; deterministic existing-owner adoption with rollback; review staging for novel, conflicting, unsafe, cross-host, retirement, or ambiguous work; semantic soft-gate parity across Hermes, Codex, and OMP; a typed public-safe inventory for reconstructable host-native settings, instructions, hooks, plugins/extensions, tools/MCP declarations, native skills/adapters, runtime versions, and install/readback metadata; recovery bootstrap integration; live audit coverage; stale-evidence supersession; real live reconciliation and temp-root disaster-recovery probes.
+- Out: copying credentials, auth tokens, sessions, transcripts, private memories, caches, generated plugin state, or provider-hidden prompts into the public repository; silently promoting any staged owner; weakening or resuming exhausted evaluation episodes; claiming exact runtime installation or private-data recovery when prerequisites are absent; ambient filesystem watching; blocking ordinary project-local or ephemeral work.
+
+### Decisions
+
+| ID | Decision | Rationale | Evidence/owner | Answer-key IDs |
+|---|---|---|---|---|
+| D-023 | Make explicit reconciliation the common ingress and persist a bounded change request before mutation. | The user works through agents and wants one command/intent, while ambient observation is incomplete and unnecessary for the immediate outcome. | `tools/capability_intake.py`, user request, cross-agent-surface-engineering | AK-025, AK-026 |
+| D-024 | Centralize governance in deterministic Agent Signal contracts and the admitted `cross-agent-surface-engineering` operator; keep `capability-curator` staged until fresh admission evidence passes. | Governance can be centralized without falsely promoting a behavior owner whose prior evaluation is inconclusive. | ownership registry and closed attempt ledgers | AK-027, AK-028 |
+| D-025 | Treat Hermes native curator as a subordinate host lifecycle mechanism, not a competing admission authority; retire the Codex legacy surface guard only after equivalent shared soft routing and audit coverage are live. | Hermes adds useful staleness/archive mechanics for host-owned skills; the Codex guard is narrower standalone receipt infrastructure and contradicts the declared current architecture. | Hermes curator source, live Codex plugin inventory | AK-028, AK-029 |
+| D-026 | Compile one small model-facing reconciliation policy into equivalent Hermes and Codex/OMP overlays rather than injecting identical files. | Behavior intent is portable; precedence, syntax, discovery, and lifecycle mechanics are host-native. | instruction-surface contracts and live overlays | AK-030 |
+| D-027 | Auto-adopt only a single-origin change to an existing admitted portable owner when canonical source is unchanged from the last managed snapshot, the live tree is safe, and all declared checks pass. | This implements the previously selected autonomy boundary without overwriting concurrent canonical work or treating a collision as intent. | fleet managed-state hashes and D-018 | AK-031, AK-032 |
+| D-028 | Stage novel, multi-origin, concurrent, safety-sensitive, retirement, and ambiguous changes with metadata and hashes only. | Those cases require semantic judgment or explicit authority; file bodies remain in their source/staging location, not a public event ledger. | capability intake privacy boundary | AK-026, AK-032 |
+| D-029 | Add a typed public-safe host-delta manifest whose entries declare ownership, desired state, source identity, version/hash, enablement, restore method, readback method, prerequisites, redaction class, and exclusion reason. | Config fragments alone cannot prove that plugins, hooks, MCP/tools, native adapters, and versions can be reconstructed. | recovery audit and `docs/recovery.md` gaps | AK-033, AK-034, AK-035 |
+| D-030 | Recovery remains public-safe and declarative: bootstrap restores admitted skills and declared state after runtime installation/authentication, verifies exact readback, and reports unmet prerequisites. | Credentials and private conversation state cannot safely live in Agent Signal; honest reconstruction is preferable to a false full-image claim. | existing recovery threat model | AK-034, AK-036 |
+| D-031 | Make live audit fail on undeclared or contradictory governance mechanisms, stale current evidence, instruction drift, fleet drift, recovery drift, or delta readback failure. | The prior `--live` check only compared CLI versions and allowed a false-green release. | independent audit and current live mismatch | AK-037, AK-038 |
+| D-032 | Resolve current state by adopting the intended Hermes working directory as a declared host delta, reconciling effective instructions, and removing the legacy Codex authority only after the shared replacement verifies. | This preserves the user’s current state and eliminates declared/live contradiction without lowering safety first. | live `terminal.cwd`, Codex plugin state | AK-029, AK-030, AK-039 |
+
+### Constraints
+
+- Existing frozen answer-key requirements and closed evaluation episodes are not weakened or rewritten.
+- No staged skill enters the rendered fleet without new complete admission evidence.
+- The reconciliation ledger contains no file bodies, secret values, private identifiers, or absolute user-home paths.
+- Every mutation has a complete preflight, rollback material outside live discovery, and post-apply readback.
+- Host-native strengths remain only when typed as intentional deltas with one portable concern owner.
+- Public recovery guarantees reconstructable declarative behavior, not credentials, private memory, sessions, or provider-hidden state.
+
+### Failure modes and recovery
+
+| Failure | Required behavior | Recovery/rollback |
+|---|---|---|
+| Canonical and live copies both changed since the managed snapshot | Refuse automatic adoption and record a concurrent-change request. | Keep both trees untouched; require explicit semantic reconciliation. |
+| A live skill tree contains a link, unsafe path, secret-like value, invalid metadata, or failed check | Refuse adoption before canonical mutation. | Preserve canonical and managed fleet state; record bounded rejection metadata. |
+| Fleet apply or a later host write fails | Restore canonical/live files and managed state from the same transaction. | Verify rollback hashes and leave a failed request with exact phase. |
+| A host-native component cannot be reinstalled or read back | Fail bootstrap for that required entry; distinguish missing prerequisite from state mismatch. | Retain manifest and emit the exact manual prerequisite; never claim recovery complete. |
+| Live audit sees an unmanifested governance plugin/hook | Fail with the component identity and host. | Declare and verify it as an intentional delta or remove it through its native lifecycle. |
+| A staged curator/convergence owner is requested | Route through admitted fallback governance and keep the staged owner undiscoverable. | Open a fresh admission episode only as separate work. |
+| Soft model routing is ignored | Deterministic reconciliation/audit commands remain authoritative when invoked. | No mutation occurs without their preflight and explicit apply boundary. |
+
+### Sequencing
+
+1. Freeze this extension and its immutable checks.
+2. Implement the change-request/reconciliation and typed-delta contracts with negative tests.
+3. Render equivalent soft routing and reconcile the current live instruction surfaces.
+4. Add recovery/bootstrap and live-audit readback for declared native deltas.
+5. Reconcile the current Hermes delta and Codex legacy authority in dependency order.
+6. Run temporary-home disaster recovery, rollback, live parity, fleet discovery, and full regression checks.
+7. Supersede stale evidence, clean artifacts, and ship only if every required new check passes.
+
+### Blockers
+
+- None for the deterministic unified reconciliation and recovery plumbing. Admission of `capability-curator` remains separately evidence-gated and is not required to deploy the admitted fallback operator and shared soft gate.

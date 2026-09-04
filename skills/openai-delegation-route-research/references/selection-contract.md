@@ -43,6 +43,6 @@ Select once per new task. Existing runs and resumes reuse their receipt. Reselec
 
 ## Surface boundaries
 
-- Task threads and receipt-aware workflow tasks can enforce exact model/provider/reasoning tuples. `codex-workflow` passes the tuple directly to native workers; `omp-workflow` uses exact-route named agents and verifies the resolved model.
+- Task threads and receipt-aware workflow tasks can enforce exact model/provider/reasoning tuples. `codex-workflow` passes the tuple directly to native workers; `omp-workflow` uses exact-route named agents and verifies the resolved model; `hermes-workflow` passes the tuple to native leaf children with fallback disabled and binds durable state to trusted manifest and close-witness records under `HERMES_HOME`.
 - Native `delegate_task` currently has one configured route for all children. It is suitable only for homogeneous work on that route; shared config must not be mutated between children.
 - Auxiliary assignments are purpose-specific static choices, not delegation candidates.
