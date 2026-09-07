@@ -33,6 +33,7 @@ ALLOWED_COMMAND_READBACKS = frozenset(
         ("hermes", "hooks", "list"),
         ("codex", "plugin", "list", "--json"),
         ("omp", "plugin", "list"),
+        ("omp", "config", "get", "enabledProviders", "--json"),
         ("hermes", "curator", "status"),
     }
 )
@@ -338,6 +339,8 @@ def verify(
             else:
                 target = repo / raw
             success = target.is_file()
+            if success and "sha256" in readback:
+                success = fleet.sha256_file(target) == readback["sha256"]
             if success and "contains" in readback:
                 success = str(readback["contains"]) in target.read_text(encoding="utf-8")
         elif kind == "none":

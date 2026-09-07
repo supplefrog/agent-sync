@@ -67,15 +67,21 @@
                 ["hermes", "hooks", "list"],
                 ["codex", "plugin", "list", "--json"],
                 ["omp", "plugin", "list"],
+                ["omp", "config", "get", "enabledProviders", "--json"],
                 ["hermes", "curator", "status"]
               ]
             },
+            "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
             "contains": {"type": "string"},
             "not_contains": {"type": "string"},
             "reference": {"type": "string", "minLength": 1},
             "path": {"type": "string", "minLength": 1}
           },
           "allOf": [
+            {
+              "if": {"required": ["sha256"]},
+              "then": {"properties": {"kind": {"const": "file"}}}
+            },
             {
               "if": {
                 "properties": {"kind": {"const": "command"}},

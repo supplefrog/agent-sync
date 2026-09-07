@@ -1,0 +1,57 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [],
+  "checks": [
+    "deterministic classification"
+  ],
+  "disposition": "rejected",
+  "machine": "local-windows",
+  "operation": "classify-change",
+  "owners": [
+    "host-deltas",
+    "recovery-state"
+  ],
+  "phase": "rejected",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "failed"
+    },
+    {
+      "name": "deploy",
+      "status": "skipped"
+    },
+    {
+      "name": "verify",
+      "status": "skipped"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "fdf3dd52483c0327d593a2cef55fdc822bc8182019acbcc20803cea2f7339c8b",
+  "result": "rejected",
+  "risk": "high",
+  "schema_version": 1,
+  "source": {
+    "host": "shared-or-unknown",
+    "surface": "fleet"
+  }
+}

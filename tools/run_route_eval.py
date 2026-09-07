@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Run a frozen adaptive-routing suite through Hermes one-shot transport."""
+"""Describe historical route observations; unsafe legacy execution is unsupported."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import os
 import re
 import shutil
 import statistics
+import math
 import subprocess
 import tempfile
 import time
@@ -18,7 +19,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import psutil
 
 CONTROLLER_ENV_KEYS = {
     "HERMES_SESSION_ID",
@@ -30,7 +30,7 @@ CONTROLLER_ENV_KEYS = {
 
 def canonical_hash(value: object) -> str:
     return hashlib.sha256(
-        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
     ).hexdigest()
 
 
@@ -38,24 +38,49 @@ def sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8", errors="replace")).hexdigest()
 
 
-def parse_object(text: str) -> object:
-    stripped = text.strip()
-    if stripped.startswith("```"):
-        lines = stripped.splitlines()[1:-1]
-        stripped = "\n".join(lines)
-    start, end = stripped.find("{"), stripped.rfind("}")
-    if start < 0 or end < start:
-        raise ValueError("no JSON object")
-    return json.loads(stripped[start : end + 1])
+def _reject_constant(value: str):
+    raise ValueError(f"non-finite JSON constant: {value}")
+
+
+def _finite_float(value: str):
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        raise ValueError("non-finite JSON number")
+    return parsed
+
+
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
+def parse_object(text: str) -> dict[str, Any]:
+    value = json.loads(text, object_pairs_hook=_unique_object, parse_constant=_reject_constant, parse_float=_finite_float)
+    if not isinstance(value, dict):
+        raise ValueError("expected exactly one JSON object")
+    return value
+
+
+SYSTEM_ENV_KEYS = {
+    "PATH", "SYSTEMROOT", "WINDIR", "COMSPEC", "PATHEXT", "SYSTEMDRIVE",
+    "PROGRAMFILES", "PROGRAMFILES(X86)", "PROGRAMW6432", "PROGRAMDATA",
+    "PROCESSOR_ARCHITECTURE", "NUMBER_OF_PROCESSORS", "SSL_CERT_FILE", "SSL_CERT_DIR",
+    "REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY",
+}
 
 
 def isolated_env(source: dict[str, str] | None = None) -> dict[str, str]:
-    """Keep provider credentials/config while removing controller identity."""
-    env = dict(os.environ if source is None else source)
-    for key in list(env):
-        if key.startswith("HERMES_KANBAN_") or key in CONTROLLER_ENV_KEYS:
-            env.pop(key, None)
-    return env
+    """OS/runtime/network allowlist only; never inherit home, auth or instructions.
+
+    This filter is not a tool sandbox. New route execution is explicitly
+    unsupported until a native owner supplies isolated homes and tool evidence.
+    """
+    return {key: value for key, value in (os.environ if source is None else source).items()
+            if key.upper() in SYSTEM_ENV_KEYS}
 
 
 def _under(root: Path, relative: str) -> Path:
@@ -84,73 +109,118 @@ def materialize_case(root: Path, case: dict[str, Any]) -> None:
 
 
 def check_acceptance(root: Path, case: dict[str, Any]) -> dict[str, Any]:
+    """Check inert JSON artifacts; mutable-fixture command verification is unsafe."""
     acceptance = case.get("acceptance", {})
-    if not isinstance(acceptance, dict):
-        raise ValueError("case acceptance must be an object")
-    result: dict[str, Any] = {
-        "passed": True,
-        "json_match": None,
-        "command_exit_code": None,
-        "command_stdout_sha256": None,
-        "command_stderr_sha256": None,
-    }
-    json_file = acceptance.get("json_file")
-    if json_file:
-        path = _under(root, json_file)
-        try:
-            actual = json.loads(path.read_text(encoding="utf-8"))
-            result["json_match"] = actual == acceptance.get("expected")
-            result["actual"] = actual
-        except (OSError, json.JSONDecodeError) as exc:
-            result["json_match"] = False
-            result["json_error"] = type(exc).__name__
-        result["passed"] = result["passed"] and result["json_match"] is True
-    command = acceptance.get("command")
-    if command:
-        if not isinstance(command, list) or any(not isinstance(item, str) for item in command):
-            raise ValueError("acceptance command must be an array of strings")
-        completed = subprocess.run(
-            command,
-            cwd=root,
-            text=True,
-            capture_output=True,
-            timeout=int(acceptance.get("timeout_seconds", 30)),
-            check=False,
-        )
-        expected_exit = int(acceptance.get("command_exit", 0))
-        result["command_exit_code"] = completed.returncode
-        result["command_stdout_sha256"] = sha256_text(completed.stdout)
-        result["command_stderr_sha256"] = sha256_text(completed.stderr)
-        result["passed"] = result["passed"] and completed.returncode == expected_exit
+    result = {"passed": False, "json_match": None, "command_exit_code": None,
+              "command_stdout_sha256": None, "command_stderr_sha256": None,
+              "unsupported_checks": [], "errors": [], "acceptance_state": "invalid"}
+    if not isinstance(acceptance, dict) or not acceptance:
+        result["errors"].append("nonempty acceptance criteria are required")
+        return result
+    allowed = {"json_file", "expected", "command", "command_exit", "timeout_seconds"}
+    unknown = sorted(set(acceptance) - allowed)
+    if unknown:
+        result["unsupported_checks"].extend(unknown)
+    if "command" in acceptance:
+        result["unsupported_checks"].append("command")
+        result["errors"].append("unsupported-verifier: model-fixture commands require an independently owned sandboxed verifier")
+    checked = False
+    if "json_file" in acceptance:
+        if "expected" not in acceptance:
+            result["errors"].append("json_file acceptance requires an explicit expected value")
+        else:
+            checked = True
+            try:
+                path = _under(root, acceptance["json_file"])
+                actual = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_unique_object,
+                                    parse_constant=_reject_constant, parse_float=_finite_float)
+                # JSON booleans must not pass numeric answer keys (True == 1 in Python).
+                result["json_match"] = canonical_hash(actual) == canonical_hash(acceptance["expected"])
+                result["actual"] = actual
+            except (OSError, ValueError, TypeError) as exc:
+                result["json_match"] = False
+                result["json_error"] = type(exc).__name__
+    if not checked and not result["unsupported_checks"]:
+        result["errors"].append("no supported executable acceptance criterion")
+    result["passed"] = checked and result["json_match"] is True and not result["errors"] and not result["unsupported_checks"]
+    result["acceptance_state"] = "unsupported-verifier" if result["unsupported_checks"] else "checked" if checked else "invalid"
     return result
 
 
+_USAGE_FIELDS = {
+    "model", "provider", "input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens",
+    "reasoning_tokens", "total_tokens", "api_calls", "completed", "failed", "interrupted", "partial",
+    "estimated_cost_usd", "cost_status", "cost_source", "service_tier",
+}
+
+
 def sanitize_usage(usage: dict[str, Any]) -> dict[str, Any]:
-    safe = dict(usage)
-    session_id = safe.pop("session_id", None)
-    if session_id:
-        safe["session_id_sha256"] = sha256_text(str(session_id))
-    for key in list(safe):
-        lowered = key.lower()
-        if any(marker in lowered for marker in ("token_value", "api_key", "access_token", "refresh_token", "password")):
-            safe.pop(key, None)
+    safe = {key: value for key, value in usage.items() if key in _USAGE_FIELDS and not isinstance(value, (dict, list))}
+    session_id = usage.get("session_id")
+    if isinstance(session_id, str) and session_id:
+        safe["session_id_sha256"] = sha256_text(session_id)
     return safe
 
 
-def nominal_cost_usd(usage: dict[str, Any], route: dict[str, Any]) -> float:
+def _nonnegative(value: Any) -> float | None:
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        return None
+    try:
+        numeric = float(value)
+    except (OverflowError, ValueError):
+        return None
+    return numeric if math.isfinite(numeric) and numeric >= 0 else None
+
+
+def nominal_cost_usd(usage: dict[str, Any], route: dict[str, Any]) -> float | None:
+    """CanonicalUsage input tokens already exclude cache reads/writes.
+
+    Missing observations remain unknown. An explicit zero token bucket costs
+    zero regardless of an absent rate; a positive unpriced bucket is unknown.
+    """
     pricing = route.get("pricing_usd_per_million", {})
-    token_fields = {
-        "input": "input_tokens",
-        "output": "output_tokens",
-        "cache_read": "cache_read_tokens",
-        "cache_write": "cache_write_tokens",
-    }
+    if not isinstance(pricing, dict):
+        return None
     total = 0.0
-    for price_key, usage_key in token_fields.items():
-        price = float(pricing.get(price_key, 0.0) or 0.0)
-        tokens = int(usage.get(usage_key, 0) or 0)
-        total += price * tokens / 1_000_000
-    return round(total, 9)
+    for price_key, usage_key in {"input": "input_tokens", "output": "output_tokens",
+                               "cache_read": "cache_read_tokens", "cache_write": "cache_write_tokens"}.items():
+        tokens = usage.get(usage_key)
+        if type(tokens) is not int or tokens < 0:
+            return None
+        if tokens == 0:
+            continue
+        price = _nonnegative(pricing.get(price_key))
+        if price is None:
+            return None
+        try:
+            total += price * tokens / 1_000_000
+        except OverflowError:
+            return None
+    return round(total, 9) if math.isfinite(total) else None
+
+
+def cost_observation(usage: dict[str, Any], route: dict[str, Any], *,
+                     task_contract_sha256: str | None = None, verifier_sha256: str | None = None,
+                     exact_route: dict[str, Any] | None = None) -> dict[str, Any]:
+    status = usage.get("cost_status")
+    if not isinstance(status, str):
+        status = "unknown"
+    amount = _nonnegative(usage.get("estimated_cost_usd"))
+    billing = amount if status in {"actual", "estimated", "included"} else None
+    if status == "included" and billing != 0:
+        billing = None
+    bound = (isinstance(task_contract_sha256, str) and re.fullmatch(r"[a-f0-9]{64}", task_contract_sha256)
+             and isinstance(verifier_sha256, str) and re.fullmatch(r"[a-f0-9]{64}", verifier_sha256)
+             and isinstance(exact_route, dict))
+    return {"nominal_token_cost_usd": nominal_cost_usd(usage, route),
+            "reported_billing_cost_usd": billing, "reported_cost_status": status or "unknown",
+            "reported_cost_source": usage.get("cost_source"),
+            "marginal_oauth_cost_usd": 0.0 if status == "included" and billing == 0 else None,
+            "quota_cost": None, "quota_unit": None,
+            "task_contract_sha256": task_contract_sha256 if bound else None,
+            "verifier_sha256": verifier_sha256 if bound else None,
+            "route_sha256": canonical_hash(exact_route) if bound else None,
+            "limitation": "Nominal USD, reported billing, and subscription quota are distinct; no USD-to-quota conversion."}
 
 
 def _percentile(values: list[float], quantile: float) -> float | None:
@@ -161,80 +231,94 @@ def _percentile(values: list[float], quantile: float) -> float | None:
     return round(ordered[index], 3)
 
 
-def _mean(values: list[float]) -> float:
-    return round(statistics.fmean(values), 9) if values else 0.0
+def _mean(values: list[float | None]) -> float | None:
+    return round(statistics.fmean(values), 9) if values and all(v is not None for v in values) else None
+
+
+def _all_observed(rows, field):
+    values = [row.get(field) for row in rows]
+    if not values or any(type(value) is not bool for value in values):
+        return None
+    return all(values)
+
+
+def _tool_observations(rows):
+    # Preserve explicit reported native observations, separately from any claim
+    # that an independent validator has qualified their origin/effects.
+    names = set()
+    for row in rows:
+        if row.get("runtime_lane") == "inline-text-no-tools-v1":
+            continue
+        observations = row.get("tool_observations", [])
+        if not isinstance(observations, list):
+            continue
+        for item in observations:
+            if isinstance(item, dict) and isinstance(item.get("name"), str):
+                names.add(item["name"])
+    return sorted(names)
+
+
+def _observed_cost(row, field):
+    observations = row.get("cost_observations", {})
+    observation = observations.get(field) if isinstance(observations, dict) else None
+    if not isinstance(observation, dict) or not isinstance(observation.get("source"), str) or not observation["source"].strip():
+        return None
+    evidence = observation.get("evidence", {})
+    if not (isinstance(evidence, dict) and isinstance(evidence.get("locator"), str) and evidence["locator"].strip()
+            and isinstance(evidence.get("sha256"), str) and re.fullmatch(r"[a-f0-9]{64}", evidence["sha256"])):
+        return None
+    return _nonnegative(observation.get("amount_usd"))
 
 
 def _task_summary(rows: list[dict[str, Any]], concurrency: int) -> dict[str, Any]:
-    durations = [float(row["duration_seconds"]) for row in rows]
-    transport_successes = sum(bool(row["transport_success"]) for row in rows)
-    retries = [int(row["retries"]) for row in rows]
-    required_tools = [set(row.get("required_tools_verified", [])) for row in rows]
-    tools_verified = sorted(set.intersection(*required_tools)) if required_tools else []
-    attempts = [
-        float(row.get("attempt_nominal_cost_usd", row.get("nominal_cost_usd", 0.0)))
-        for row in rows
-    ]
-    retry_costs = [float(row.get("retry_nominal_cost_usd", 0.0)) for row in rows]
-    verification = [float(row.get("verification_cost_usd", 0.0)) for row in rows]
-    recovery = [float(row.get("recovery_cost_usd", 0.0)) for row in rows]
-    components = {
-        "attempts_usd": _mean(attempts),
-        "retries_usd": _mean(retry_costs),
-        "verification_usd": _mean(verification),
-        "recovery_usd": _mean(recovery),
-    }
-    expected_total = round(sum(components.values()), 9)
-    critical_failures = sum(bool(row.get("critical_failure")) for row in rows)
+    durations = [_nonnegative(row.get("duration_seconds")) for row in rows]
+    complete_durations = bool(rows) and all(value is not None for value in durations)
+    retries = [row.get("retries") if type(row.get("retries")) is int and row["retries"] >= 0 else None for row in rows]
+    components = {name: _mean([_observed_cost(row, field) for row in rows]) for name, field in {
+        "attempts_usd": "attempt_nominal_cost_usd", "retries_usd": "retry_nominal_cost_usd",
+        "verification_usd": "verification_cost_usd", "recovery_usd": "recovery_cost_usd"}.items()}
+    expected_total = round(sum(components.values()), 9) if all(value is not None for value in components.values()) else None
     return {
-        "sample_size": len(rows),
-        "passed": sum(bool(row["passed"]) for row in rows),
-        "pass_rate": round(sum(bool(row["passed"]) for row in rows) / len(rows), 6),
-        "critical_failures": critical_failures,
-        "p50_seconds": round(statistics.median(durations), 3),
-        "p95_seconds": _percentile(durations, 0.95),
-        "attempt_success_rate": round(transport_successes / len(rows), 6),
-        "expected_retries": round(statistics.fmean(retries), 6),
-        "max_retries_observed": max(retries, default=0),
-        "cleanup_passed": all(bool(row["cleanup_passed"]) for row in rows),
-        "verifier_passed": all(bool(row["verifier_passed"]) for row in rows),
-        "required_tools_verified": tools_verified,
-        "capabilities_verified": ["text", "tool-use"],
-        "concurrency_verified": concurrency,
-        "expected_total_cost_usd": expected_total,
-        "cost_components": components,
-        "marginal_oauth_cost_usd": 0.0,
-        "nominal_cost_basis": "live catalog token prices; OAuth marginal billing is included/subscription",
+        "sample_size": len(rows), "passed": sum(row.get("passed") is True for row in rows),
+        "pass_rate": round(sum(row.get("passed") is True for row in rows) / len(rows), 6) if rows else None,
+        "critical_failures": sum(row.get("critical_failure") is True for row in rows),
+        "unobserved_critical_failure_rows": sum(type(row.get("critical_failure")) is not bool for row in rows),
+        "p50_seconds": round(statistics.median(durations), 3) if complete_durations else None,
+        "p95_seconds": _percentile(durations, .95) if complete_durations else None,
+        "attempt_success_rate": round(sum(row.get("transport_success") is True for row in rows) / len(rows), 6) if rows else None,
+        "expected_retries": _mean(retries),
+        "max_retries_observed": max(retries) if retries and all(value is not None for value in retries) else None,
+        "cleanup_passed": _all_observed(rows, "cleanup_passed"),
+        "verifier_passed": _all_observed(rows, "verifier_passed"),
+        "required_tools_verified": [], "capabilities_verified": [], "concurrency_verified": None,
+        "observed_tool_names": _tool_observations(rows), "requested_concurrency": concurrency,
+        "recorded_tool_claims": [row.get("required_tools_verified", []) for row in rows],
+        "recorded_tool_observations": [row.get("tool_observations", []) for row in rows],
+        "expected_total_cost_usd": expected_total, "cost_components": components,
+        "generation_nominal_cost_usd": _mean([_nonnegative(row.get("nominal_cost_usd")) for row in rows]),
+        "marginal_oauth_cost_usd": _mean([_observed_cost(row, "marginal_oauth_cost_usd") for row in rows]),
+        "recorded_cost_claims": [{key: row.get(key) for key in ("attempt_nominal_cost_usd", "retry_nominal_cost_usd", "verification_cost_usd", "recovery_cost_usd", "marginal_oauth_cost_usd")} for row in rows],
+        "runtime_evidence_verified": False,
+        "nominal_cost_basis": "Explicit observed canonical token buckets and declared token rates; missing data remains unknown.",
     }
 
 
 def summarize_route(route: dict[str, Any], trials: list[dict[str, Any]], concurrency: int) -> dict[str, Any]:
-    rows = [row for row in trials if row["route_id"] == route["id"]]
-    by_class: dict[str, list[dict[str, Any]]] = {}
+    rows = [row for row in trials if row.get("route_id") == route["id"]]
+    by_class = {}
     for row in rows:
         by_class.setdefault(row["task_class"], []).append(row)
-    transport_durations = [float(row["duration_seconds"]) for row in rows]
-    result = {
-        **route,
-        "task_classes": {
-            task_class: _task_summary(class_rows, concurrency)
-            for task_class, class_rows in sorted(by_class.items())
-        },
-        "transport": {
-            "sample_size": len(rows),
-            "p50_seconds": round(statistics.median(transport_durations), 3),
-            "p95_seconds": _percentile(transport_durations, 0.95),
-            "attempt_success_rate": round(
-                sum(bool(row["transport_success"]) for row in rows) / len(rows), 6
-            ),
-            "failures": sum(not bool(row["transport_success"]) for row in rows),
-            "retries": sum(int(row["retries"]) for row in rows),
-            "empty_outputs": sum(bool(row.get("empty_output")) for row in rows),
-            "cleanup_passed": all(bool(row["cleanup_passed"]) for row in rows),
-            "concurrency": concurrency,
-        },
-    }
-    return result
+    total = _task_summary(rows, concurrency)
+    return {**route, "task_classes": {key: _task_summary(group, concurrency) for key, group in sorted(by_class.items())},
+            "transport": {"sample_size": len(rows), "p50_seconds": total["p50_seconds"], "p95_seconds": total["p95_seconds"],
+                          "attempt_success_rate": total["attempt_success_rate"],
+                          "failures": sum(row.get("transport_success") is False for row in rows),
+                          "retries": sum(row["retries"] for row in rows) if rows and all(type(row.get("retries")) is int and row["retries"] >= 0 for row in rows) else None,
+                          "empty_outputs": sum(row.get("empty_output") is True for row in rows),
+                          "cleanup_passed": total["cleanup_passed"], "concurrency": None, "requested_concurrency": concurrency},
+            "evidence_state": "descriptive-only", "eligible_for_routing": False,
+            "limitations": ["Historical outcome claims are retained as observations, not independently qualified route evidence.",
+                            "Declared required tools and concurrency do not establish exercised capabilities."]}
 
 
 def _public_safe_text(text: str, root: Path) -> str:
@@ -246,342 +330,58 @@ def _public_safe_text(text: str, root: Path) -> str:
     return cleaned[-1000:]
 
 
-def _reset_trial(root: Path, case: dict[str, Any]) -> None:
-    if root.exists():
-        shutil.rmtree(root)
-    materialize_case(root, case)
+class UnsupportedExecutionError(RuntimeError):
+    pass
+
+
+EXECUTION_SUPPORT = {
+    "status": "unsupported-legacy-execution",
+    "transport": "hermes-oneshot/openai-codex",
+    "reason": "Legacy one-shot inherits personal context and YOLO, exposes mutable receipts/verifiers, and has no proven session cleanup authority.",
+    "tool_capability": "required native tool execution remains unsupported here; no-tools evidence is not a substitute",
+    "historical_reports": "preserved; pure descriptive summaries remain available",
+}
 
 
 def _delete_session(session_id: Any, env: dict[str, str], cwd: Path) -> bool:
-    if not session_id:
-        return True
-    try:
-        completed = subprocess.run(
-            ["hermes", "sessions", "delete", str(session_id), "--yes"],
-            cwd=cwd,
-            env=env,
-            text=True,
-            capture_output=True,
-            timeout=30,
-            check=False,
-        )
-    except subprocess.TimeoutExpired:
-        return False
-    return completed.returncode == 0
+    """An untrusted usage receipt cannot grant global session deletion authority."""
+    return not bool(session_id)
 
 
-async def _monitor_descendants(pid: int, stop: asyncio.Event) -> dict[int, float]:
-    observed: dict[int, float] = {}
-    while not stop.is_set():
-        try:
-            for child in psutil.Process(pid).children(recursive=True):
-                try:
-                    observed[child.pid] = child.create_time()
-                except (psutil.NoSuchProcess, psutil.AccessDenied):
-                    pass
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-        try:
-            await asyncio.wait_for(stop.wait(), timeout=0.2)
-        except asyncio.TimeoutError:
-            pass
-    return observed
-
-
-def _reap_owned_processes(observed: dict[int, float]) -> bool:
-    remaining: list[psutil.Process] = []
-    for pid, create_time in observed.items():
-        try:
-            process = psutil.Process(pid)
-            if abs(process.create_time() - create_time) < 0.01 and process.is_running():
-                remaining.append(process)
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-    for process in remaining:
-        try:
-            process.terminate()
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-    _, alive = psutil.wait_procs(remaining, timeout=2)
-    for process in alive:
-        try:
-            process.kill()
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-    _, alive = psutil.wait_procs(alive, timeout=2)
-    return not alive
-
-
-async def run_one(
-    route: dict[str, Any],
-    case: dict[str, Any],
-    repeat: int,
-    scratch: Path,
-    semaphore: asyncio.Semaphore,
-    timeout_seconds: int,
-    max_retries: int,
-) -> dict[str, Any]:
-    trial_root = scratch / route["id"] / case["id"] / str(repeat)
-    _reset_trial(trial_root, case)
-    env = isolated_env()
-    attempt_records: list[dict[str, Any]] = []
-    cleanup_results: list[bool] = []
-    final_stdout = b""
-    final_stderr = b""
-    final_exit_code = 124
-    started = 0.0
-    ended = 0.0
-
-    async with semaphore:
-        started = time.perf_counter()
-        for attempt in range(max_retries + 1):
-            usage_path = trial_root / f"usage-{attempt}.json"
-            cmd = [
-                "hermes",
-                "-z",
-                case["prompt"],
-                "--model",
-                route["model"],
-                "--provider",
-                route["provider"],
-                "--reasoning",
-                route["reasoning_effort"],
-                "--toolsets",
-                ",".join(case.get("toolsets", ["file", "terminal"])),
-                "--usage-file",
-                str(usage_path),
-                "--safe-mode",
-                "--in",
-                str(trial_root),
-            ]
-            proc = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-                env=env,
-                cwd=trial_root,
-            )
-            stop_monitor = asyncio.Event()
-            monitor = asyncio.create_task(_monitor_descendants(proc.pid, stop_monitor))
-            timed_out = False
-            try:
-                stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout_seconds)
-                exit_code = int(proc.returncode)
-            except asyncio.TimeoutError:
-                timed_out = True
-                proc.kill()
-                await proc.wait()
-                stdout, stderr, exit_code = b"", b"timeout", 124
-            finally:
-                stop_monitor.set()
-                observed_descendants = await monitor
-            process_cleanup_passed = _reap_owned_processes(observed_descendants)
-            usage_raw: dict[str, Any] = {}
-            if usage_path.exists():
-                try:
-                    usage_raw = json.loads(usage_path.read_text(encoding="utf-8"))
-                except (OSError, json.JSONDecodeError):
-                    usage_raw = {}
-            session_cleanup_passed = _delete_session(usage_raw.get("session_id"), env, trial_root)
-            cleanup_results.append(session_cleanup_passed and process_cleanup_passed)
-            transport_success = exit_code == 0 and not timed_out and usage_raw.get("failed") is not True
-            attempt_records.append(
-                {
-                    "attempt": attempt + 1,
-                    "exit_code": exit_code,
-                    "timed_out": timed_out,
-                    "transport_success": transport_success,
-                    "process_cleanup_passed": process_cleanup_passed,
-                    "session_cleanup_passed": session_cleanup_passed,
-                    "observed_descendant_count": len(observed_descendants),
-                    "usage": sanitize_usage(usage_raw),
-                    "nominal_cost_usd": nominal_cost_usd(usage_raw, route),
-                    "stdout_sha256": sha256_text(stdout.decode("utf-8", errors="replace")),
-                    "stderr_sha256": sha256_text(stderr.decode("utf-8", errors="replace")),
-                }
-            )
-            final_stdout, final_stderr, final_exit_code = stdout, stderr, exit_code
-            if transport_success or attempt >= max_retries:
-                break
-            _reset_trial(trial_root, case)
-        ended = time.perf_counter()
-
-    transport_success = bool(attempt_records[-1]["transport_success"])
-    acceptance = check_acceptance(trial_root, case) if transport_success else {"passed": False}
-    passed = transport_success and bool(acceptance["passed"])
-    first_cost = float(attempt_records[0]["nominal_cost_usd"])
-    retry_cost = sum(float(item["nominal_cost_usd"]) for item in attempt_records[1:])
-    required_tools = case.get("required_tools", []) if passed else []
-    critical_failure = (
-        not transport_success
-        or not all(cleanup_results)
-        or (bool(case.get("critical_failure_on_fail")) and not passed)
-    )
-    text = final_stdout.decode("utf-8", errors="replace")
-    try:
-        final_object = parse_object(text)
-    except (ValueError, json.JSONDecodeError):
-        final_object = None
-    return {
-        "route_id": route["id"],
-        "case_id": case["id"],
-        "task_class": case["task_class"],
-        "repeat": repeat,
-        "passed": passed,
-        "critical_failure": critical_failure,
-        "duration_seconds": round(ended - started, 3),
-        "exit_code": final_exit_code,
-        "transport_success": transport_success,
-        "retries": len(attempt_records) - 1,
-        "attempts": attempt_records,
-        "attempt_nominal_cost_usd": first_cost,
-        "retry_nominal_cost_usd": round(retry_cost, 9),
-        "nominal_cost_usd": round(first_cost + retry_cost, 9),
-        "verification_cost_usd": 0.0,
-        "recovery_cost_usd": 0.0,
-        "marginal_oauth_cost_usd": 0.0,
-        "empty_output": not bool(text.strip()),
-        "final_object": final_object,
-        "acceptance": acceptance,
-        "verifier_passed": bool(acceptance.get("passed")),
-        "required_tools_verified": required_tools,
-        "cleanup_passed": all(cleanup_results),
-        "error": _public_safe_text(final_stderr.decode("utf-8", errors="replace"), trial_root) or None,
-    }
+async def run_one(route: dict[str, Any], case: dict[str, Any], repeat: int,
+                  scratch: Path, semaphore: asyncio.Semaphore, timeout_seconds: int,
+                  max_retries: int) -> dict[str, Any]:
+    raise UnsupportedExecutionError("unsupported legacy route execution: " + EXECUTION_SUPPORT["reason"])
 
 
 def _eligible(metrics: dict[str, Any], constraints: dict[str, Any]) -> tuple[bool, list[str]]:
     reasons = []
-    if metrics["sample_size"] < constraints["min_sample_size"]:
-        reasons.append("min_sample_size")
-    if metrics["pass_rate"] < constraints["min_pass_rate"]:
-        reasons.append("min_pass_rate")
-    if metrics["critical_failures"] > constraints.get("max_critical_failures", 0):
-        reasons.append("max_critical_failures")
-    if metrics["p95_seconds"] > constraints["max_p95_seconds"]:
-        reasons.append("max_p95_seconds")
-    if metrics["expected_total_cost_usd"] > constraints["max_expected_total_cost_usd"]:
-        reasons.append("max_expected_total_cost_usd")
-    if metrics["max_retries_observed"] > constraints.get("max_retries", 1):
-        reasons.append("max_retries")
-    if not metrics["cleanup_passed"]:
-        reasons.append("cleanup_passed")
-    if constraints.get("verifier_required") and not metrics["verifier_passed"]:
-        reasons.append("verifier_required")
-    if set(constraints.get("required_tools", [])) - set(metrics["required_tools_verified"]):
-        reasons.append("required_tools")
-    return not reasons, reasons
+    comparisons = [("sample_size", "min_sample_size", lambda a,b:a>=b),
+                   ("pass_rate", "min_pass_rate", lambda a,b:a>=b),
+                   ("critical_failures", "max_critical_failures", lambda a,b:a<=b),
+                   ("p95_seconds", "max_p95_seconds", lambda a,b:a<=b),
+                   ("expected_total_cost_usd", "max_expected_total_cost_usd", lambda a,b:a<=b),
+                   ("max_retries_observed", "max_retries", lambda a,b:a<=b)]
+    for field, constraint, compare in comparisons:
+        if constraint not in constraints:
+            continue
+        value = _nonnegative(metrics.get(field))
+        limit = _nonnegative(constraints[constraint])
+        if value is None:
+            reasons.append(field + "_unobserved")
+        elif limit is None or not compare(value, limit):
+            reasons.append(constraint)
+    if metrics.get("cleanup_passed") is not True: reasons.append("cleanup_passed")
+    if constraints.get("verifier_required") and metrics.get("verifier_passed") is not True: reasons.append("verifier_required")
+    if set(constraints.get("required_tools", [])) - set(metrics.get("required_tools_verified", [])): reasons.append("required_tools")
+    # This descriptive producer cannot self-issue a trusted quality record.
+    reasons.append("independent_runtime_evidence_required")
+    return False, reasons
 
 
 async def main_async(args: argparse.Namespace) -> None:
-    suite_path = Path(args.suite).resolve()
-    routes_path = Path(args.routes).resolve()
-    suite = json.loads(suite_path.read_text(encoding="utf-8"))
-    route_manifest = json.loads(routes_path.read_text(encoding="utf-8"))
-    routes = route_manifest["routes"]
-    cases = suite["cases"]
-    if args.route_id:
-        wanted_routes = set(args.route_id)
-        routes = [route for route in routes if route["id"] in wanted_routes]
-        if {route["id"] for route in routes} != wanted_routes:
-            raise ValueError("unknown --route-id")
-    if args.case_id:
-        wanted_cases = set(args.case_id)
-        cases = [case for case in cases if case["id"] in wanted_cases]
-        if {case["id"] for case in cases} != wanted_cases:
-            raise ValueError("unknown --case-id")
-    semaphore = asyncio.Semaphore(args.concurrency)
-    batch_started = time.perf_counter()
-    temp_parent = suite_path.parents[2] / ".evals"
-    temp_parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="route-eval-", dir=temp_parent) as temp:
-        scratch = Path(temp)
-        jobs = [
-            run_one(
-                route,
-                case,
-                repeat,
-                scratch,
-                semaphore,
-                args.timeout_seconds,
-                args.max_retries,
-            )
-            for route in routes
-            for case in cases
-            for repeat in range(args.repeats)
-        ]
-        trials = await asyncio.gather(*jobs)
-        scratch_root = str(scratch)
-    scratch_removed = not Path(scratch_root).exists()
-    summaries = [summarize_route(route, trials, args.concurrency) for route in routes]
-    constraints = suite["hard_constraints"]
-    eligibility: dict[str, Any] = {}
-    for summary in summaries:
-        route_result: dict[str, Any] = {}
-        for task_class, metrics in summary["task_classes"].items():
-            eligible, reasons = _eligible(metrics, constraints[task_class])
-            route_result[task_class] = {"eligible": eligible, "reasons": reasons}
-        eligibility[summary["id"]] = route_result
-    observed = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    result = {
-        "schema_version": 2,
-        "artifact_type": "hermes-adaptive-routing-local-evidence",
-        "suite_id": suite["suite_id"],
-        "suite_sha256": hashlib.sha256(suite_path.read_bytes()).hexdigest(),
-        "route_manifest_sha256": hashlib.sha256(routes_path.read_bytes()).hexdigest(),
-        "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        "observed_at": observed,
-        "transport": "hermes-oneshot/openai-codex",
-        "host": route_manifest["host"],
-        "repeats": args.repeats,
-        "concurrency": args.concurrency,
-        "max_retries": args.max_retries,
-        "timeout_seconds": args.timeout_seconds,
-        "batch_wall_seconds": round(time.perf_counter() - batch_started, 3),
-        "routes": routes,
-        "summaries": summaries,
-        "eligibility": eligibility,
-        "trials": trials,
-        "cleanup": {
-            "scratch_removed": scratch_removed,
-            "all_sessions_deleted": all(
-                all(attempt["session_cleanup_passed"] for attempt in row["attempts"])
-                for row in trials
-            ),
-            "all_cli_processes_reaped": all(
-                all(attempt["process_cleanup_passed"] for attempt in row["attempts"])
-                for row in trials
-            ),
-        },
-        "evidence_state": "verified-local" if all(
-            summary["transport"]["sample_size"] >= 8 and summary["transport"]["cleanup_passed"]
-            for summary in summaries
-        ) else "profiled",
-        "cost_note": (
-            "OpenAI Codex OAuth reported zero marginal billing. Nominal token-equivalent cost uses the "
-            "refreshed live catalog rates and includes harness retries plus zero-cost deterministic verification. "
-            "No automatic recovery route was exercised; candidates with task failures remain ineligible."
-        ),
-        "limitations": [
-            "Eight samples per task class support only a rough p95 (nearest-rank maximum); uncertainty remains high.",
-            "The one-shot Hermes host exercises file and terminal tools but is not proof of native per-child receipt wiring.",
-            "Provider-internal retry counts and queue delay are not exposed by the Hermes usage receipt.",
-            "Synthetic local research evidence tests synthesis and lineage handling without live-web variability.",
-        ],
-    }
-    output = Path(args.output).resolve()
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    compact = {
-        "output": str(output),
-        "summaries": [
-            {"id": item["id"], "transport": item["transport"], "task_classes": item["task_classes"]}
-            for item in summaries
-        ],
-        "eligibility": eligibility,
-        "cleanup": result["cleanup"],
-    }
-    print(json.dumps(compact, indent=2, sort_keys=True))
+    # Fail before fixture allocation, native launch, usage-file reads or cleanup.
+    raise UnsupportedExecutionError("unsupported legacy route execution: " + EXECUTION_SUPPORT["reason"])
 
 
 def main() -> None:
@@ -596,7 +396,11 @@ def main() -> None:
     parser.add_argument("--route-id", action="append", help="Run only this exact route id (repeatable)")
     parser.add_argument("--case-id", action="append", help="Run only this exact case id (repeatable)")
     args = parser.parse_args()
-    asyncio.run(main_async(args))
+    try:
+        asyncio.run(main_async(args))
+    except UnsupportedExecutionError:
+        print(json.dumps(EXECUTION_SUPPORT, indent=2))
+        raise SystemExit(2)
 
 
 if __name__ == "__main__":

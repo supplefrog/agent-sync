@@ -1,5 +1,5 @@
 {
-  "_config_version": 40,
+  "_config_version": 41,
   "agent": {
     "api_max_retries": 3,
     "clarify_timeout": 600,
@@ -12,7 +12,7 @@
     "image_input_mode": "auto",
     "max_turns": 500,
     "parallel_tool_call_guidance": true,
-    "reasoning_effort": "medium",
+    "reasoning_effort": "low",
     "restart_drain_timeout": 60,
     "service_tier": "normal",
     "task_completion_guidance": true,
@@ -374,7 +374,7 @@
     "write_approval": false
   },
   "model": {
-    "default": "gpt-5.6-sol",
+    "default": "gpt-6-astra",
     "provider": "openai-codex",
     "request_overrides": {
       "extra_body": {

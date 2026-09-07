@@ -25,7 +25,7 @@ repository or treat a generated snapshot as editable source.
 ## Procedure
 
 1. Run `python tools/fleet.py render` in the owning checkout.
-2. Run `python tools/fleet.py diff` and inspect every proposed action.
+2. Run `python tools/fleet.py diff` and inspect every proposed action and destination; a scoped repair must not carry unrelated staged changes.
 3. For a status or audit request, stop after `diff` and
    `python tools/fleet.py verify`; do not mutate live roots.
 4. For an explicit sync, propagation, repair, or apply request, run
@@ -36,11 +36,7 @@ repository or treat a generated snapshot as editable source.
    change into repository source and rerender, or have the user explicitly
    retire/rename the colliding live directory.
 
-The fleet tool preserves unrelated skills, rejects unmanaged same-name
-collisions and modified managed skills before writes, rolls back a failed batch,
-and removes a retired skill only when its installed bytes still match managed
-state. Do not add a force flag, broad-delete a host skill root, or leave rollback
-copies behind.
+The fleet tool preflights all destinations and attempts rollback within each destination. Destinations commit sequentially: a later failure does not undo earlier commits. Preserve recoverable destination snapshots until post-apply checks pass, and recover earlier destinations after partial failure. Unmanaged collisions and modified managed skills remain conflicts; retired skills are removed only when their bytes match managed state. Do not force collisions or broadly delete skill roots.
 
 Remote transport is allowed only for machines already declared in `fleet.json`.
 Adding a machine or transport adapter is a fleet design change, not an ordinary

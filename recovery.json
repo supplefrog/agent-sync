@@ -357,6 +357,17 @@
           "format": "text",
           "strategy": "replace-if-absent",
           "portable_paths": true
+        },
+        {
+          "id": "astra-model-registration",
+          "kind": "config",
+          "source": "models.yml",
+          "snapshot": "hosts/omp/models.json",
+          "format": "yaml",
+          "strategy": "merge",
+          "include": [
+            "providers.openai-codex.models"
+          ]
         }
       ]
     }

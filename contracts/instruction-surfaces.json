@@ -1,212 +1,256 @@
 {
   "$schema": "contracts/instruction-surfaces.schema.json",
-  "schema_version": 1,
-  "precedence_rule": "Higher precedence is applied later and wins on conflict; runtime-native and provider-native surfaces remain externally owned.",
+  "schema_version": 2,
+  "precedence_rule": "Assembly order records prompt composition, not instruction authority. Provider and host instruction hierarchy governs conflicts; later user, project, retrieved, or worker content does not override higher-authority instructions. Native host rules resolve precedence within a supported authority level.",
   "exclusions": [
-    "Skills and tool schemas are on-demand capabilities, not standing instruction surfaces.",
-    "Credentials, auth state, memory, sessions, logs, caches, and generated plugin caches are never instruction sources or recovery artifacts.",
+    "This standing-instruction index is one part of the effective-context audit. Skill catalogs and bodies, tool schemas, hooks, and memory injection mechanisms must also be inspected, including those excluded from recovery.",
+    "Credentials, auth state, personal memory contents, sessions, logs, caches, and generated plugin caches are excluded from recovery artifacts. Their injection and discovery mechanisms remain subject to audit.",
     "Project-local instruction files are discovered at runtime and remain owned by their project unless explicitly admitted elsewhere."
   ],
   "surfaces": [
     {
       "id": "portable.core-reference",
-      "hosts": ["codex", "hermes", "omp"],
+      "hosts": [
+        "codex",
+        "hermes",
+        "omp"
+      ],
       "kind": "portable-reference",
       "scope": "user-global",
       "status": "reference",
       "owner": "surfaces/core.md",
       "artifact": "surfaces/core.md",
-      "precedence": 0,
       "model_sensitive": true,
       "backup": "not-effective",
-      "note": "Portable intent and retirement source; adapters do not inject this file verbatim."
+      "note": "Portable intent and retirement source; adapters do not inject this file verbatim.",
+      "assembly_order": 0
     },
     {
       "id": "portable.reconciliation-authority",
-      "hosts": ["codex", "hermes", "omp"],
+      "hosts": [
+        "codex",
+        "hermes",
+        "omp"
+      ],
       "kind": "portable-reference",
       "scope": "user-global",
       "status": "active",
       "owner": "tools/reconcile.py",
       "artifact": "tools/reconcile.py",
       "target": "Explicit reconcile-with-Agent-Signal workflow through admitted cross-agent-surface-engineering",
-      "precedence": 10,
       "model_sensitive": false,
       "backup": "not-effective",
-      "note": "Deterministic shared governance authority. Host overlays carry only a concise trigger; novel or unsafe changes remain review-only."
+      "note": "Deterministic shared governance authority. Host overlays carry only a concise trigger; novel or unsafe changes remain review-only.",
+      "assembly_order": 10
     },
     {
       "id": "provider.native-system",
-      "hosts": ["provider"],
+      "hosts": [
+        "provider"
+      ],
       "kind": "provider-native",
       "scope": "provider",
       "status": "external",
       "owner": "provider runtime",
       "target": "provider-managed hidden system instructions",
-      "precedence": 100,
       "model_sensitive": true,
       "backup": "reinstall-runtime",
-      "note": "Not user-readable or safely representable as one portable file."
+      "note": "Not user-readable or safely representable as one portable file.",
+      "assembly_order": 100
     },
     {
       "id": "hermes.runtime-native",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "kind": "runtime-native",
       "scope": "runtime",
       "status": "external",
       "owner": "NousResearch/hermes-agent@0.21.0",
       "target": "Hermes prompt builder",
-      "precedence": 110,
       "model_sensitive": true,
-      "backup": "reinstall-runtime"
+      "backup": "reinstall-runtime",
+      "assembly_order": 110
     },
     {
       "id": "hermes.user-global",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "kind": "user-global",
       "scope": "user-global",
       "status": "active",
       "owner": "recovery/current/hosts/hermes/SOUL.md",
       "artifact": "recovery/current/hosts/hermes/SOUL.md",
       "target": "${HERMES_HOME}/SOUL.md",
-      "precedence": 200,
       "model_sensitive": true,
       "backup": "captured",
-      "note": "Includes the Hermes reconciliation trigger for the shared deterministic Agent Signal workflow."
+      "note": "Includes the Hermes reconciliation trigger for the shared deterministic Agent Signal workflow.",
+      "assembly_order": 200
     },
     {
       "id": "hermes.project-context",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "kind": "project-dynamic",
       "scope": "project",
       "status": "dynamic",
       "owner": "current project",
       "target": "workdir ancestor chain",
-      "patterns": ["AGENTS.md", "CLAUDE.md", ".cursorrules"],
-      "precedence": 300,
+      "patterns": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        ".cursorrules"
+      ],
       "model_sensitive": false,
-      "backup": "project-owned"
+      "backup": "project-owned",
+      "assembly_order": 300
     },
     {
       "id": "codex.runtime-native",
-      "hosts": ["codex"],
+      "hosts": [
+        "codex"
+      ],
       "kind": "runtime-native",
       "scope": "runtime",
       "status": "external",
       "owner": "openai/codex@0.153.1",
       "target": "Codex prompt builder",
-      "precedence": 110,
       "model_sensitive": true,
-      "backup": "reinstall-runtime"
+      "backup": "reinstall-runtime",
+      "assembly_order": 110
     },
     {
       "id": "codex.user-global",
-      "hosts": ["codex", "omp"],
+      "hosts": [
+        "codex",
+        "omp"
+      ],
       "kind": "user-global",
       "scope": "user-global",
       "status": "active",
       "owner": "recovery/current/hosts/codex/AGENTS.md",
       "artifact": "recovery/current/hosts/codex/AGENTS.md",
       "target": "${CODEX_HOME}/AGENTS.md",
-      "precedence": 200,
       "model_sensitive": true,
       "backup": "captured",
-      "note": "The user-approved INSTRUCTION-AUTHORING line routes durable/shared instruction content to the Agent Signal skill-creator. RECONCILIATION routes persistent cross-agent changes to the same deterministic Agent Signal workflow used by Hermes; OMP inherits this overlay."
+      "note": "The user-approved INSTRUCTION-AUTHORING line routes durable/shared instruction content to the Agent Signal skill-creator. RECONCILIATION routes persistent cross-agent changes to the same deterministic Agent Signal workflow used by Hermes; OMP inherits this overlay.",
+      "assembly_order": 200
     },
     {
       "id": "codex.session-start-hook",
-      "hosts": ["codex"],
+      "hosts": [
+        "codex"
+      ],
       "kind": "hook-injection",
       "scope": "session",
       "status": "active",
       "owner": "recovery/current/hosts/codex/hooks/run-gsd-check-update.ps1",
       "artifact": "recovery/current/hosts/codex/hooks/run-gsd-check-update.ps1",
       "target": "${CODEX_HOME}/hooks/run-gsd-check-update.ps1",
-      "precedence": 250,
       "model_sensitive": false,
       "backup": "captured",
-      "note": "Operational session-start output only; not a standing prose owner."
+      "note": "Operational session-start output only; not a standing prose owner.",
+      "assembly_order": 250
     },
     {
       "id": "codex.project-context",
-      "hosts": ["codex", "omp"],
+      "hosts": [
+        "codex",
+        "omp"
+      ],
       "kind": "project-dynamic",
       "scope": "project",
       "status": "dynamic",
       "owner": "current project",
       "target": "Codex AGENTS hierarchy",
-      "patterns": ["AGENTS.md"],
-      "precedence": 300,
+      "patterns": [
+        "AGENTS.md"
+      ],
       "model_sensitive": false,
-      "backup": "project-owned"
+      "backup": "project-owned",
+      "assembly_order": 300
     },
     {
       "id": "codex.surface-curator-plugin",
-      "hosts": ["codex"],
+      "hosts": [
+        "codex"
+      ],
       "kind": "hook-injection",
       "scope": "session",
       "status": "disabled",
       "owner": "local agent-surface-governance plugin",
       "target": "Codex plugin hooks",
-      "precedence": 350,
       "model_sensitive": false,
       "backup": "not-effective",
       "replacement": "tools/reconcile.py",
-      "note": "The earlier host-local guard was removed after the shared route and deterministic reconciler were installed and read back. The staged capability-curator is not the replacement authority."
+      "note": "The earlier host-local guard was removed after the shared route and deterministic reconciler were installed and read back. The staged capability-curator is not the replacement authority.",
+      "assembly_order": 350
     },
     {
       "id": "omp.runtime-native",
-      "hosts": ["omp"],
+      "hosts": [
+        "omp"
+      ],
       "kind": "runtime-native",
       "scope": "runtime",
       "status": "external",
-      "owner": "oh-my-pi@17.2.13",
+      "owner": "oh-my-pi@18.1.10",
       "target": "OMP prompt builder",
-      "precedence": 110,
       "model_sensitive": true,
-      "backup": "reinstall-runtime"
+      "backup": "reinstall-runtime",
+      "assembly_order": 110
     },
     {
       "id": "omp.codex-inherited",
-      "hosts": ["omp"],
+      "hosts": [
+        "omp"
+      ],
       "kind": "inherited",
       "scope": "user-global",
-      "status": "active",
-      "owner": "codex.user-global",
+      "status": "disabled",
+      "owner": "oh-my-pi@18.1.10 Codex discovery provider",
       "artifact": "recovery/current/hosts/codex/AGENTS.md",
       "target": "Codex-compatible AGENTS inheritance",
-      "precedence": 200,
       "model_sensitive": true,
-      "backup": "captured",
-      "note": "OMP v17.2.13's codex discovery provider loads ~/.codex/AGENTS.md at user scope. No native ~/.omp/agent/AGENTS.md is present to shadow it; source: https://github.com/can1357/oh-my-pi/blob/v17.2.13/docs/context-files.md"
+      "backup": "not-effective",
+      "note": "OMP 18.1.10 can load ~/.codex/AGENTS.md only when its opt-out Codex discovery provider is enabled. The current enabledProviders state omits codex, a fresh native get_state contains none of the expected standing lines, and no ~/.omp/agent/AGENTS.md exists.",
+      "assembly_order": 200
     },
     {
       "id": "omp.rules-delta",
-      "hosts": ["omp"],
+      "hosts": [
+        "omp"
+      ],
       "kind": "user-global",
       "scope": "user-global",
       "status": "retired",
       "owner": "recovery/current/hosts/omp/RULES.md",
       "artifact": "recovery/current/hosts/omp/RULES.md",
       "target": "${OMP_HOME}/RULES.md",
-      "precedence": 210,
       "model_sensitive": true,
       "backup": "retired",
-      "replacement": "codex.user-global",
-      "note": "Duplicated the inherited output rule and added standing context without a distinct behavior."
+      "replacement": "none",
+      "note": "The retired file duplicated a previously assumed Codex inheritance route. Current OMP 18.1.10 has no observed managed user-global standing overlay.",
+      "assembly_order": 210
     },
     {
       "id": "omp.project-context",
-      "hosts": ["omp"],
+      "hosts": [
+        "omp"
+      ],
       "kind": "project-dynamic",
       "scope": "project",
       "status": "dynamic",
       "owner": "current project",
       "target": "OMP/Codex project hierarchy",
-      "patterns": ["AGENTS.md"],
-      "precedence": 300,
+      "patterns": [
+        "AGENTS.md"
+      ],
       "model_sensitive": false,
-      "backup": "project-owned"
+      "backup": "project-owned",
+      "assembly_order": 300
     }
   ]
 }

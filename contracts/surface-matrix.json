@@ -5,26 +5,26 @@
   "hosts": {
     "hermes": {
       "cli_version": "0.21.0",
-      "source_revision": "63279301bcbdc185c1b07b98a9312eb0c862f26d",
+      "source_revision": "59d330fd15a692b439219e505bc704fcde0b2b6f (local source changes recorded separately)",
       "sources": [
         "https://hermes-agent.nousresearch.com/docs/",
         "https://github.com/NousResearch/hermes-agent"
       ]
     },
     "codex": {
-      "cli_version": "0.153.1",
-      "source_revision": "985641272869835d01d025ed2a218fbbce35fa9f",
+      "cli_version": "0.153.4",
+      "source_revision": "unknown; installed binary reports 0.153.4",
       "sources": [
         "https://developers.openai.com/codex/",
-        "https://github.com/openai/codex/tree/985641272869835d01d025ed2a218fbbce35fa9f"
+        "https://github.com/openai/codex"
       ]
     },
     "omp": {
-      "cli_version": "17.2.13",
-      "source_revision": "v17.2.13",
+      "cli_version": "18.1.10",
+      "source_revision": "v18.1.10",
       "sources": [
         "https://github.com/can1357/oh-my-pi",
-        "https://github.com/can1357/oh-my-pi/releases/tag/v17.2.13"
+        "https://github.com/can1357/oh-my-pi/releases/tag/v18.1.10"
       ]
     }
   },
@@ -47,7 +47,7 @@
         "surfaces/core.md",
         "contracts/instruction-surfaces.json",
         "contracts/instruction-units.json",
-        "profiles/gpt-5.6-sol-openai-codex.json",
+        "profiles/gpt-6-astra-openai-codex.json",
         "recovery/current/hosts/hermes/SOUL.md",
         "recovery/current/hosts/codex/AGENTS.md"
       ],

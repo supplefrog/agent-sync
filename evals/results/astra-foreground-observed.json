@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "status": "observed",
+  "observed_at_utc": "2026-09-05T20:00:03.534370+00:00",
+  "scope": "Foreground defaults and retained standing artifacts; no broad prompt-quality or full cross-host parity claim",
+  "model": "gpt-6-astra",
+  "provider": "openai-codex",
+  "reasoning": "host-specific",
+  "hosts": {
+    "codex": {
+      "runtime": "0.153.4",
+      "reasoning": "xhigh",
+      "basis": "live native version, configuration and earlier isolated route metadata"
+    },
+    "hermes": {
+      "runtime": "0.21.0",
+      "reasoning": "low",
+      "native_route_verified": true,
+      "real_tool_fixture": "Earlier xhigh fixture passed; not evidence of low behavior. Low default is the explicit user preference and native resolution is verified."
+    },
+    "omp": {
+      "runtime": "18.1.10",
+      "reasoning": "xhigh",
+      "default_route_verified": true,
+      "real_tool_fixture": "passed at xhigh"
+    }
+  },
+  "source_notes": [
+    "Hermes has recorded local source modifications on the stated commit.",
+    "Codex installed source commit is unknown; its CLI version is observed.",
+    "OMP model pricing is not supplied; a displayed zero must not be interpreted as verified pricing."
+  ],
+  "rollback": "Local private backups preserved; public recovery contains selected nonsecret configuration and instruction artifacts only."
+}

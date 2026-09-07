@@ -12,10 +12,17 @@
       "properties": {
         "source": {"type": "string"},
         "target": {"type": "string"},
-        "strategy": {"enum": ["link-or-copy", "manual-merge", "inherit-codex"]},
-        "required_markers": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1}
+        "strategy": {"enum": ["link-or-copy", "manual-merge", "inherit-codex", "inactive"]},
+        "required_markers": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+        "reason": {"type": "string", "minLength": 1}
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {"properties": {"strategy": {"const": "inactive"}}, "required": ["strategy"]},
+          "then": {"required": ["reason"]}
+        }
+      ]
     },
     "skills": {
       "type": "object",

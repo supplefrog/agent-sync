@@ -5,15 +5,8 @@
   "instructions": {
     "source": "recovery/current/hosts/codex/AGENTS.md",
     "target": "{CODEX_HOME}/AGENTS.md",
-    "strategy": "inherit-codex",
-    "required_markers": [
-      "[OUTPUT]",
-      "[INSTRUCTION-AUTHORING]",
-      "[SCOPE]",
-      "[EVIDENCE]",
-      "[RESEARCH]",
-      "[RECONCILIATION]"
-    ]
+    "strategy": "inactive",
+    "reason": "OMP 18.1.10's opt-out Codex discovery provider is not enabled, and no native OMP user-global AGENTS.md is installed."
   },
   "skills": {
     "source": "skills",

@@ -155,25 +155,15 @@ class EvalGateTests(unittest.TestCase):
         self.assertEqual(order, ["write", "cleanup", "write"])
         self.assertEqual(payload["session_lifecycle"]["deleted"], [])
 
-    def test_timeout_kills_child_and_preserves_session_receipt(self):
-        process = mock.Mock(returncode=None)
-        process.communicate.side_effect = [
-            subprocess.TimeoutExpired(["hermes"], 1),
-            ("partial", "session_id: 20260814_111111_abcd1234"),
-        ]
-        lifecycle = mock.Mock()
-        lifecycle.register_receipt.return_value = (["20260814_111111_abcd1234"], None)
-        with tempfile.TemporaryDirectory() as temp, \
-             mock.patch.object(self.evaluator.shutil, "which", return_value="hermes"), \
-             mock.patch.object(self.evaluator.subprocess, "Popen", return_value=process):
-            result = self.evaluator.run_agent(
-                "hermes", "task", Path(temp), 1, False,
-                "model", "provider", "low", "safe", lifecycle,
-            )
-        process.kill.assert_called_once()
-        self.assertFalse(result["ok"])
-        self.assertEqual(result["session_ids"], ["20260814_111111_abcd1234"])
-        lifecycle.register_receipt.assert_called_once_with("session_id: 20260814_111111_abcd1234")
+    def test_timeout_kills_child_and_preserves_output_without_global_session_authority(self):
+        from test_evaluation_runtime import EvaluationRuntimeTests
+        with tempfile.TemporaryDirectory() as temp:
+            result, record = EvaluationRuntimeTests.fake_native(self, Path(temp), 'hermes', timeout=True)
+        record['process'].kill.assert_called_once()
+        self.assertFalse(result['ok'])
+        self.assertEqual(result['output'], '{"ok":true}')
+        self.assertEqual(result['session_ids'], [])
+        self.assertTrue(result['runtime_contract']['cleanup']['state_removed'])
 
     def test_transient_provider_failure_retries_within_physical_run_budget(self):
         overloaded = {
@@ -182,11 +172,12 @@ class EvalGateTests(unittest.TestCase):
             "seconds": 1.0,
             "output": "",
             "stderr": "HTTP 503: provider overloaded",
+            "failure": {"kind": "provider-transient", "source": "native-transport", "http_status": 503},
             "session_ids": [],
             "session_receipt_error": None,
             "route_attestation": {"required": False, "ok": True, "errors": []},
         }
-        success = {**overloaded, "ok": True, "returncode": 0, "output": "answer", "stderr": ""}
+        success = {**overloaded, "ok": True, "returncode": 0, "output": "answer", "stderr": "", "failure": None}
         budget = self.evaluator.AgentRunBudget(limit=2)
         with mock.patch.object(self.evaluator, "run_agent", side_effect=[overloaded, success]) as run, \
              mock.patch.object(self.evaluator.time, "sleep") as sleep:
@@ -201,7 +192,7 @@ class EvalGateTests(unittest.TestCase):
         self.assertEqual(result["attempt_count"], 2)
         sleep.assert_called_once_with(0.01)
 
-    def test_explicit_hermes_provider_response_timeout_is_transient(self):
+    def test_unstructured_provider_timeout_text_is_not_retry_evidence(self):
         result = {
             "ok": False,
             "returncode": 1,
@@ -212,7 +203,7 @@ class EvalGateTests(unittest.TestCase):
             "stderr": "session_id: 20260902_192444_e9e49a",
         }
 
-        self.assertTrue(self.evaluator.transient_provider_failure(result))
+        self.assertFalse(self.evaluator.transient_provider_failure(result))
 
     def test_nontransient_agent_failure_is_not_retried(self):
         failure = {
@@ -243,6 +234,7 @@ class EvalGateTests(unittest.TestCase):
             "seconds": 1.0,
             "output": "",
             "stderr": "rate_limit_exceeded (429)",
+            "failure": {"kind": "provider-transient", "source": "native-transport", "http_status": 429},
             "session_ids": [],
             "session_receipt_error": None,
             "route_attestation": {"required": False, "ok": True, "errors": []},
@@ -258,39 +250,23 @@ class EvalGateTests(unittest.TestCase):
         self.assertEqual(budget.used, 1)
         self.assertTrue(result["run_budget_exhausted"])
 
-    def test_hermes_no_tools_uses_inline_prompt_and_explicit_none_toolset(self):
-        process = mock.Mock(returncode=0)
-        process.communicate.return_value = ("answer", "session_id: 20260814_111111_abcd1234")
-        lifecycle = mock.Mock()
-        lifecycle.register_receipt.return_value = (["20260814_111111_abcd1234"], None)
-        with tempfile.TemporaryDirectory() as temp, \
-             mock.patch.object(self.evaluator.shutil, "which", return_value="hermes"), \
-             mock.patch.object(self.evaluator.subprocess, "Popen", return_value=process) as popen:
-            result = self.evaluator.run_agent(
-                "hermes", "INLINE_SENTINEL", Path(temp), 1, False,
-                "model", "provider", "low", "none", lifecycle,
-            )
-            self.assertFalse((Path(temp) / "eval-prompt.txt").exists())
-        command = popen.call_args.args[0]
-        self.assertTrue(result["ok"])
-        self.assertEqual(command[command.index("-q") + 1], "INLINE_SENTINEL")
-        self.assertIn("--toolsets", command)
-        self.assertEqual(command[command.index("--toolsets") + 1], "none")
+    def test_hermes_no_tools_uses_framed_inline_prompt_and_native_api_controls(self):
+        from test_evaluation_runtime import EvaluationRuntimeTests
+        with tempfile.TemporaryDirectory() as temp:
+            result, record = EvaluationRuntimeTests.fake_native(self, Path(temp), 'hermes')
+        self.assertTrue(result['ok'])
+        job = json.loads(record['process'].communicate.call_args.kwargs['input'])
+        self.assertEqual(job['prompt'], 'synthetic task')
+        self.assertEqual(result['runtime_contract']['controls']['toolsets'], 'none')
+        self.assertTrue(result['runtime_contract']['controls']['credentials_in_memory_only'])
 
     def test_codex_child_receives_reasoning_override(self):
-        process = mock.Mock(returncode=0)
-        process.communicate.return_value = ("answer", "")
-        with tempfile.TemporaryDirectory() as temp, \
-             mock.patch.object(self.evaluator.shutil, "which", return_value="codex"), \
-             mock.patch.object(self.evaluator.subprocess, "Popen", return_value=process) as popen:
-            result = self.evaluator.run_agent(
-                "codex", "task", Path(temp), 1, False,
-                "model", "provider", "medium", "none",
-            )
-        command = popen.call_args.args[0]
-        self.assertIn("-c", command)
-        self.assertIn('model_reasoning_effort="medium"', command)
-        self.assertTrue(result["ok"])
+        from test_evaluation_runtime import EvaluationRuntimeTests
+        with tempfile.TemporaryDirectory() as temp:
+            result, record = EvaluationRuntimeTests.fake_native(self, Path(temp))
+        command = record['launches'][0][0]
+        self.assertIn('model_reasoning_effort="high"', command)
+        self.assertTrue(result['ok'])
 
     def test_v3_suite_requires_receipt_contract_and_expected_receipts(self):
         suite = {
@@ -348,44 +324,23 @@ class EvalGateTests(unittest.TestCase):
         self.assertTrue(any("evidence.clean_environment" in reason for reason in failed["reasons"]))
 
     def test_codex_structured_run_uses_native_schema_and_observed_attestation(self):
-        process = mock.Mock(returncode=0)
-        process.communicate.return_value = (
-            '{"decision":"hold"}',
-            "model: gpt-5.6-sol\nprovider: openai\nreasoning effort: low\n",
-        )
-        schema = {"type": "object", "required": ["decision"], "properties": {"decision": {"type": "string"}}}
-        with tempfile.TemporaryDirectory() as temp, \
-             mock.patch.object(self.evaluator.shutil, "which", return_value="codex"), \
-             mock.patch.object(self.evaluator.subprocess, "Popen", return_value=process) as popen:
-            result = self.evaluator.run_agent(
-                "codex", "task", Path(temp), 1, False,
-                "gpt-5.6-sol", "openai-codex", "low", "none",
-                output_schema=schema,
-                require_attestation=True,
-            )
-        command = popen.call_args.args[0]
-        self.assertIn("--output-schema", command)
-        self.assertTrue(result["ok"])
-        self.assertEqual(result["route_attestation"]["observed"]["reasoning"], "low")
-        self.assertEqual(result["route_attestation"]["observed"]["model"], "gpt-5.6-sol")
+        from test_evaluation_runtime import EvaluationRuntimeTests
+        schema = {'type': 'object', 'required': ['ok'], 'properties': {'ok': {'type': 'boolean'}}}
+        with tempfile.TemporaryDirectory() as temp:
+            result, record = EvaluationRuntimeTests.fake_native(self, Path(temp), output_schema=schema)
+        command = record['launches'][0][0]
+        self.assertIn('--output-schema', command)
+        self.assertTrue(result['ok'])
+        self.assertEqual(result['route_attestation']['observed']['reasoning'], 'high')
+        self.assertEqual(result['route_attestation']['observed']['model'], 'test-model')
 
     def test_codex_route_attestation_mismatch_fails_the_run(self):
-        process = mock.Mock(returncode=0)
-        process.communicate.return_value = (
-            "answer",
-            "model: gpt-5.6-sol\nprovider: openai\nreasoning effort: none\n",
-        )
-        with tempfile.TemporaryDirectory() as temp, \
-             mock.patch.object(self.evaluator.shutil, "which", return_value="codex"), \
-             mock.patch.object(self.evaluator.subprocess, "Popen", return_value=process):
-            result = self.evaluator.run_agent(
-                "codex", "task", Path(temp), 1, False,
-                "gpt-5.6-sol", "openai-codex", "low", "none",
-                require_attestation=True,
-            )
-        self.assertFalse(result["ok"])
-        self.assertFalse(result["route_attestation"]["ok"])
-        self.assertIn("reasoning", result["route_attestation"]["errors"][0])
+        from test_evaluation_runtime import EvaluationRuntimeTests
+        with tempfile.TemporaryDirectory() as temp:
+            result, _record = EvaluationRuntimeTests.fake_native(self, Path(temp), metadata_reasoning='low')
+        self.assertFalse(result['ok'])
+        self.assertFalse(result['route_attestation']['ok'])
+        self.assertTrue(any('reasoning' in error for error in result['route_attestation']['errors']))
 
     def test_hermes_route_attestation_uses_redacted_export_and_discards_payload(self):
         exported = {
@@ -641,114 +596,124 @@ class EvalGateTests(unittest.TestCase):
         self.assertTrue(all("<CANDIDATE_SKILL>" not in prompt for prompt in generation_prompts))
         self.assertEqual(payload["effective_stack"]["prompt_assembly"], "isolated-anonymous-artifact-v3")
 
-    def test_failed_child_preserves_direct_session_receipt(self):
-        process = mock.Mock(returncode=2)
-        process.communicate.return_value = (
-            "failed output",
-            "session_id: 20260814_111111_abcd12",
-        )
-        lifecycle = mock.Mock()
-        lifecycle.register_receipt.return_value = (["20260814_111111_abcd12"], None)
-        with tempfile.TemporaryDirectory() as temp, \
-             mock.patch.object(self.evaluator.shutil, "which", return_value="hermes"), \
-             mock.patch.object(self.evaluator.subprocess, "Popen", return_value=process):
-            result = self.evaluator.run_agent(
-                "hermes", "task", Path(temp), 1, False,
-                "model", "provider", "low", "safe", lifecycle,
-            )
-        self.assertFalse(result["ok"])
-        self.assertEqual(result["returncode"], 2)
-        self.assertEqual(result["session_ids"], ["20260814_111111_abcd12"])
+    def test_failed_child_preserves_output_without_global_session_authority(self):
+        from test_evaluation_runtime import EvaluationRuntimeTests
+        with tempfile.TemporaryDirectory() as temp:
+            result, _record = EvaluationRuntimeTests.fake_native(self, Path(temp), 'hermes', returncode=2)
+        self.assertFalse(result['ok'])
+        self.assertEqual(result['returncode'], 2)
+        self.assertEqual(result['output'], '{"ok":true}')
+        self.assertEqual(result['session_ids'], [])
 
-    def test_interruption_kills_child_and_registers_direct_receipt_before_reraise(self):
-        process = mock.Mock()
-        process.communicate.side_effect = [
-            KeyboardInterrupt("stop"),
-            ("", "session_id: 20260814_111111_abcd1234"),
-        ]
-        lifecycle = mock.Mock()
-        with tempfile.TemporaryDirectory() as temp, \
-             mock.patch.object(self.evaluator.shutil, "which", return_value="hermes"), \
-             mock.patch.object(self.evaluator.subprocess, "Popen", return_value=process):
+    def test_interruption_kills_child_and_cleans_state_without_global_session_authority(self):
+        from test_evaluation_runtime import EvaluationRuntimeTests
+        record = {}
+        with tempfile.TemporaryDirectory() as temp:
             with self.assertRaises(KeyboardInterrupt):
-                self.evaluator.run_agent(
-                    "hermes", "task", Path(temp), 1, False,
-                    "model", "provider", "low", "safe", lifecycle,
-                )
-        process.kill.assert_called_once()
-        lifecycle.register_receipt.assert_called_once_with("session_id: 20260814_111111_abcd1234")
+                EvaluationRuntimeTests.fake_native(self, Path(temp), 'hermes', interrupt=True, record_out=record)
+        record['process'].kill.assert_called_once()
+        record['lifecycle'].register_receipt.assert_not_called()
+        self.assertFalse(Path(record['launches'][0][1]['HERMES_HOME']).exists())
 
 
 class CrossHostGateTests(unittest.TestCase):
     def setUp(self):
         self.gate = load("cross_host_gate", "tools/eval_gate.py")
+        self.fixtures = load("gate_evidence_fixtures", "tests/test_evaluation_evidence.py")
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.counter = 0
+
+    def fixture(self, agent="codex", outcome="win", **kwargs):
+        self.counter += 1
+        return self.fixtures.make_evaluation(Path(self.temp.name) / str(self.counter), agent=agent, outcome=outcome, **kwargs)
+
+    def aggregate(self, fixtures, required=None, hashes=None):
+        reports = [fixture["report"] for fixture in fixtures]
+        hosts = [report["agent"] for report in reports]
+        return self.gate.aggregate(
+            reports, required or hosts, "admission", "restore fixture",
+            hashes or {host: "a" * 64 for host in hosts},
+            suite=fixtures[0]["suite"], suite_sha256=fixtures[0]["suite_sha256"],
+        )
 
     def test_required_host_regression_rejects(self):
-        base = {
-            "schema_version": 2,
-            "suite": "x",
-            "artifacts": {"candidate_sha256": "c", "suite_sha256": "s", "harness_sha256": "h"},
-            "effective_stack": {"equivalence_group": "g"},
-            "decision": {"decision": "admit"},
-        }
-        reports = [dict(base, agent="codex"), dict(base, agent="hermes", decision={"decision": "reject"})]
+        fixtures = [self.fixture(), self.fixture("hermes", "early-failure")]
         hashes = {"codex": "c" * 64, "hermes": "d" * 64}
-        result = self.gate.aggregate(
-            reports, ["codex", "hermes"], "admission", "restore previous artifacts", hashes,
-        )
-        self.assertEqual(result["decision"], "reject")
+        result = self.aggregate(fixtures, hashes=hashes)
+        self.assertEqual(result["decision"], "reject", result)
         self.assertEqual(result["host_decisions"]["hermes"], "reject")
         self.assertEqual(result["report_hash_inputs"], hashes)
 
     def test_missing_required_host_is_inconclusive(self):
-        report = {
-            "schema_version": 2,
-            "suite": "x",
-            "agent": "codex",
-            "artifacts": {"candidate_sha256": "c", "suite_sha256": "s", "harness_sha256": "h"},
-            "effective_stack": {"equivalence_group": "g"},
-            "decision": {"decision": "admit"},
-        }
-        result = self.gate.aggregate(
-            [report], ["codex", "hermes"], "admission", "restore", {"codex": "c" * 64},
-        )
+        result = self.aggregate([self.fixture()], required=["codex", "hermes"])
         self.assertEqual(result["decision"], "inconclusive")
         self.assertEqual(result["missing_hosts"], ["hermes"])
 
     def test_harness_failure_is_inconclusive_not_candidate_rejection(self):
-        base = {
-            "schema_version": 2,
-            "suite": "x",
-            "artifacts": {"candidate_sha256": "c", "suite_sha256": "s", "harness_sha256": "h"},
-            "effective_stack": {"equivalence_group": "g"},
-            "decision": {"decision": "admit"},
-        }
-        reports = [
-            dict(base, agent="codex"),
-            dict(base, agent="hermes", decision={"decision": "harness-failure"}),
-        ]
-        hashes = {"codex": "c" * 64, "hermes": "d" * 64}
-
-        result = self.gate.aggregate(
-            reports, ["codex", "hermes"], "admission", "restore", hashes,
-        )
-
-        self.assertEqual(result["decision"], "inconclusive")
+        result = self.aggregate([self.fixture(), self.fixture("hermes", "harness-failure")])
+        self.assertEqual(result["decision"], "inconclusive", result)
         self.assertEqual(result["regression_hosts"], [])
         self.assertEqual(result["inconclusive_hosts"], ["hermes"])
 
     def test_missing_or_malformed_report_hash_is_inconclusive(self):
-        report = {
-            "schema_version": 2,
-            "suite": "x",
-            "agent": "codex",
-            "artifacts": {"candidate_sha256": "c", "suite_sha256": "s", "harness_sha256": "h"},
-            "effective_stack": {"equivalence_group": "g"},
-            "decision": {"decision": "admit"},
-        }
-        result = self.gate.aggregate([report], ["codex"], "admission", "restore", {"codex": "not-a-hash"})
+        result = self.aggregate([self.fixture()], hashes={"codex": "not-a-hash"})
         self.assertEqual(result["decision"], "inconclusive")
         self.assertEqual(result["artifact_mismatches"], ["codex:report_sha256"])
+
+    def test_complete_compatible_evidence_can_be_admitted(self):
+        result = self.aggregate([self.fixture(), self.fixture("hermes")])
+        self.assertEqual(result["decision"], "admit", result)
+
+    def test_runtime_lane_and_scope_survive_gate(self):
+        result = self.aggregate([self.fixture(), self.fixture("hermes")])
+        self.assertEqual(result["decision"], "admit", result)
+        self.assertEqual(result["scope"]["runtime_lane"], "inline-text-no-tools-v1")
+        self.assertFalse(result["scope"]["package_behavior_exercised"])
+        self.assertTrue(result["scope"]["full_suite"])
+        self.assertEqual(result["scope"]["selected_case_ids"], result["scope"]["suite_case_ids"])
+
+    def test_historical_and_current_lanes_are_not_compatible(self):
+        fixtures = [self.fixture(), self.fixture("hermes", "tie")]
+        fixtures[1]["report"] = self.fixtures.historical_report(fixtures[1]["report"])
+        result = self.aggregate(fixtures)
+        self.assertEqual(result["decision"], "inconclusive")
+        self.assertIn("hermes:effective_stack.runtime_lane", result["artifact_mismatches"])
+
+    def test_subset_diagnostic_scope_and_negative_survive_gate(self):
+        for outcome, expected in (("win", "inconclusive"), ("early-failure", "reject")):
+            with self.subTest(outcome=outcome):
+                result = self.aggregate([self.fixture(outcome=outcome, case_ids=["held-out-0"])])
+                self.assertEqual(result["decision"], expected, result)
+                self.assertFalse(result["scope"]["full_suite"])
+                self.assertEqual(result["scope"]["selected_case_ids"], ["held-out-0"])
+
+    def test_retry_reports_and_cleanup_limits_survive_gate(self):
+        result = self.aggregate([self.fixture(retry_first=True), self.fixture("hermes", retry_first=True)])
+        self.assertEqual(result["decision"], "admit", result)
+        for outcome, expected in (("win", "inconclusive"), ("early-failure", "reject")):
+            with self.subTest(outcome=outcome):
+                result = self.aggregate([self.fixture(outcome=outcome, cleanup_failure=True)])
+                self.assertEqual(result["decision"], expected, result)
+                self.assertFalse(result["operational_ok"])
+
+    def test_declared_admission_cannot_hide_incomplete_trials_or_failed_routes(self):
+        for mutation in ("missing-case", "failed-route", "failed-judge", "missing-artifact", "wrong-model"):
+            with self.subTest(mutation=mutation):
+                fixtures = [self.fixture(), self.fixture("hermes")]
+                report = fixtures[1]["report"]
+                if mutation == "missing-case":
+                    report["results"].pop()
+                elif mutation == "failed-route":
+                    report["results"][0]["candidate"]["route_attestation"]["ok"] = False
+                elif mutation == "failed-judge":
+                    report["results"][0]["judgments"][0]["run"]["ok"] = False
+                elif mutation == "missing-artifact":
+                    del report["artifacts"]["candidate_sha256"]
+                else:
+                    report["effective_stack"]["model"] = "different-model"
+                result = self.aggregate(fixtures)
+                self.assertEqual(result["decision"], "inconclusive", result)
 
 
 if __name__ == "__main__":

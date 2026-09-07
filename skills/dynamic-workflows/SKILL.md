@@ -1,7 +1,7 @@
 ---
 name: dynamic-workflows
 description: Run persisted routed DAGs across Codex, Hermes, and OMP. Use for broad parallel work, durable multi-agent workflows, or explicit DAG requests; not ordinary one-agent tasks or a small one-shot batch.
-version: 2.3.0
+version: 3.0.0
 author: Local User
 license: UNLICENSED
 ---
@@ -18,50 +18,23 @@ Use a DAG when work has real parallel units, durable intermediate artifacts, dep
 
 ## Plan contract
 
-Start from `assets/templates/`. New tasks declare requirements, not models:
+Start new task-aware plans from [`assets/templates/workflow-v3.json`](assets/templates/workflow-v3.json). Every task selects exactly one plan mode:
 
-```json
-{
-  "name": "bounded-workflow",
-  "max_workers": 3,
-  "tasks": [
-    {
-      "id": "inspect",
-      "role": "discover",
-      "intelligence_tier": "standard",
-      "latency_sensitive": false,
-      "failure_cost": "low",
-      "risk": "read",
-      "acceptance": ["Returns a source-grounded map with named unknowns."],
-      "prompt": "Map the exact target and acceptance checks."
-    },
-    {
-      "id": "verify",
-      "role": "verifier",
-      "intelligence_tier": "demanding",
-      "latency_sensitive": false,
-      "failure_cost": "high",
-      "depends_on": ["inspect"],
-      "include_outputs": ["inspect"],
-      "acceptance": ["Returns pass, revise, or blocked coverage for every mapped criterion."],
-      "prompt": "Verify every claim against the target.\n{{output:inspect}}"
-    }
-  ]
-}
-```
+- `route_request`: V3 task-aware routing template. It declares the task contract, actual capability requirements, independent verifier, effects, failure cost, deterministic alternative, and resource policy. It requires observable `acceptance` and exactly one execution attempt in this consumer.
+- `intelligence_tier` plus `latency_sensitive`: V2 compatibility for existing routed plans. The tier is `routine`, `standard`, `strong`, `demanding`, or `maximum`.
+- `difficulty`: legacy compatibility only.
 
-- `intelligence_tier`: `routine`, `standard`, `strong`, `demanding`, or `maximum`.
-- `latency_sensitive`: true only when this node blocks foreground progress.
+Do not mix these modes within one task. Mixed-plan DAGs may contain different tasks using different modes; their catalogs and receipts remain separate.
+
 - `failure_cost`: `low`, `medium`, or `high`.
 - `acceptance`: one or more observable completion criteria. New routed tasks require this; do not bury the stopping condition in prose.
-- `attempts`: bounded retries of the **same pinned route** for transient execution failures. Never use attempts as Medium → High → xhigh → Max escalation.
+- `attempts`: V3 must use exactly `1`. V2 may use bounded retries of the same pinned route for transient execution failures; never use attempts as an effort ladder.
 - `risk`: `read`, `write`, or `external`; it never widens parent authorization.
 - `depends_on`: nodes that must succeed first.
 - `include_outputs`: dependency artifacts injected as untrusted evidence; every included task must also be a dependency.
 - `ownership`: optional non-overlapping write scopes.
-- `difficulty`: legacy compatibility only. Do not use it in new plans.
 
-The deterministic selector chooses the least-cost qualifying route, or the fastest qualifying route when latency-sensitive. Every node receives one hash-bound receipt at initialization. Resume and retry reuse it unchanged. If the pinned route cannot run or the task remains unsolved, fail closed and return to the parent/human rather than spending through an effort ladder.
+Initialization snapshots V3 catalog, selector, materializer, and schema identities without selecting a route. Once dependencies succeed, `dispatch` binds the exact rendered input and emits one immutable action. V2 `intelligence_tier` tasks retain initialization-time selection and exact receipt reuse. If a pinned route cannot run or the task remains unsolved, fail closed and return to the parent rather than spending through an effort ladder.
 
 ## Initialize and inspect
 
@@ -72,7 +45,11 @@ python scripts/workflow_state.py ready <run-dir>
 python scripts/workflow_state.py model <run-dir> <task-id>
 python scripts/workflow_state.py render <run-dir> <task-id>
 python scripts/workflow_state.py claim <run-dir> <task-id>
+python scripts/workflow_state.py dispatch <run-dir> <task-id> --execution-context <json>
+python scripts/workflow_state.py claim-parent <run-dir> <task-id>
 ```
+
+V3 tasks are materialized only by `dispatch`, after their dependencies succeed. Dispatch freezes the rendered prompt, dependency artifact hashes, workflow contract, controller execution context, materialized request, route receipt, and explicit `model`, `deterministic`, `parent`, or `defer` action. Render, claim, and start replay that binding and reject changed dependencies or routing state. Only `model` uses `model` plus the normal native claim/start path. `deterministic` and `parent` use `claim-parent` and the exact `parent-sequential:<task-id>` handle after the parent actually performs and checks the work. `defer` remains pending and absent from `ready` until an operator resolves or stops it. A succeeded lifecycle record proves output and launch ownership; its acceptance handoff remains pending until the parent independently checks the declared criteria.
 
 `model` returns the exact provider, model, reasoning effort, route ID, and decision ID for routed tasks. Pass those values exactly at worker creation and verify the resolved runtime route before accepting output.
 
@@ -93,7 +70,9 @@ Before spawning a routed task, atomically claim it and retain the returned token
 
 ### Codex
 
-Use Codex-native workers. For each ready node:
+Follow [the Codex adapter contract](references/codex-adapter.md). V2 tasks keep the existing model/render/claim lifecycle. For V3, call `dispatch` with the exact native execution context before deciding the action. The current admitted V3 catalog has no `codex-workflow` cell, so it cannot currently produce a Codex model action.
+
+For an admitted model action, use Codex-native workers:
 
 1. Read `model` and `render` outputs.
 2. Claim the node, then spawn with the exact model and reasoning effort; disable child delegation for the routed node.
@@ -105,7 +84,7 @@ Use native concurrency up to `max_workers`. Keep final integration and acceptanc
 
 ### OMP
 
-Use the installed `route-<route-id>` task-agent definitions. Their frontmatter pins one exact `openai-codex/<model>` and `thinkingLevel`; they cannot spawn children. They are generated from the reviewed catalogue—after a manual catalogue refresh, run `python scripts/install_omp_route_agents.py` and then `python scripts/install_omp_route_agents.py --check`.
+Follow [the OMP adapter contract](references/omp-adapter.md). V2 uses the installed `route-<route-id>` task-agent definitions. Their frontmatter pins one exact `openai-codex/<model>` and `thinkingLevel`; they cannot spawn children. They are generated only from the reviewed V2 catalogue—after a manual catalogue refresh, run `python scripts/install_omp_route_agents.py` and then `python scripts/install_omp_route_agents.py --check`.
 
 For each ready node:
 
@@ -116,9 +95,11 @@ For each ready node:
 
 OMP's task wire does not accept an exact provider/model directly; the named agent is the host adapter. Do not use generic `task`, `effort`, or mutable global role mappings for routed DAG nodes.
 
+The current admitted V3 catalog has no `omp-workflow` cell, and the V2 installer rejects V3 catalogs without changing installed agents. Treat a future V3 `model` dispatch as unsupported until the exact route cell and a matching immutable OMP agent definition have both been separately admitted.
+
 ### Hermes
 
-Use `routed_workflow` for persisted DAGs and keep `routed_delegate_task` for ordinary one-shot routed delegation. `routed_workflow` exposes `init`, `run`, `status`, and `resume`; it consumes this state owner rather than implementing another scheduler or router.
+Use `routed_workflow` for persisted DAGs and keep `routed_delegate_task` for ordinary one-shot routed delegation. `routed_workflow` exposes `init`, `run`, `status`, `resume`, and `complete-parent`; it consumes this state owner rather than implementing another scheduler or router.
 
 The adapter accepts routed tasks only, requires `workdir: "."`, and launches native Hermes leaf children with the exact receipt provider/model/reasoning tuple and fallback disabled. It binds each run manifest in a separate trusted store under `HERMES_HOME`, serializes run/resume with an execution lock, persists native results and outputs under each task, and records authoritative close witnesses outside the mutable run directory. An explicit reported model mismatch fails the task; a missing model echo is accepted only because the exact launch route was already verified.
 

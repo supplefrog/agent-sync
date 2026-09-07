@@ -2,7 +2,7 @@
   "$schema": "../contracts/model-profile.schema.json",
   "schema_version": 1,
   "id": "gpt-5.6-sol-openai-codex",
-  "status": "current-observed",
+  "status": "superseded",
   "claim": "Definitive user-owned standing instruction overlay for the named model/provider stack; provider-hidden and runtime-native system instructions remain externally owned and are identified rather than copied.",
   "target": {
     "model": "gpt-5.6-sol",
@@ -35,7 +35,7 @@
         "hermes.reconciliation"
       ],
       "artifact_sha256": [
-        "a02c868eb51ef832cf20dbbce6bb6f05c384376b0db53ea2455b36b40bd1812c"
+        "52cbc855943d78ae1904938018166c665b1113c60db5081a1f6dd7eb323265ef"
       ]
     },
     "codex": {
@@ -58,7 +58,7 @@
         "codex.reconciliation"
       ],
       "artifact_sha256": [
-        "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b"
+        "8e78024a9a7c6bdcf24df92a4f5bb5a496d2634d7a1beb2a8e8687fcfb1c0953"
       ]
     },
     "omp": {
@@ -68,20 +68,11 @@
         "provider.native-system",
         "portable.reconciliation-authority",
         "omp.runtime-native",
-        "omp.codex-inherited",
         "omp.project-context"
       ],
-      "effective_units": [
-        "codex.output",
-        "codex.instruction-authoring",
-        "codex.scope",
-        "codex.evidence",
-        "codex.research",
-        "codex.reconciliation"
-      ],
-      "artifact_sha256": [
-        "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b"
-      ]
+      "effective_units": [],
+      "artifact_sha256": [],
+      "no_managed_standing_reason": "OMP 18.1.10's Codex discovery provider is not enabled, and no native OMP user-global AGENTS.md is installed."
     }
   },
   "writing_routes": {

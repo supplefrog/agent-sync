@@ -52,6 +52,14 @@ class HostDeltaTests(unittest.TestCase):
                 {"installed", "enabled", "disabled", "absent", "inherited", "managed"},
             )
             self.assertIsInstance(entry["prerequisites"], list)
+        omp_instructions = next(entry for entry in loaded["entries"] if entry["id"] == "omp-instructions")
+        self.assertEqual("absent", omp_instructions["enablement"])
+        self.assertEqual("OMP's opt-out Codex discovery provider remains disabled", omp_instructions["desired_state"])
+        self.assertEqual(
+            ["omp", "config", "get", "enabledProviders", "--json"],
+            omp_instructions["readback"]["argv"],
+        )
+        self.assertEqual("codex", omp_instructions["readback"]["not_contains"])
 
     def test_manifest_rejects_secret_values_and_absolute_user_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -231,7 +239,7 @@ class HostDeltaTests(unittest.TestCase):
             self.assertEqual("excluded-private", report["exclusions"][0]["status"])
             self.assertFalse(report["passed"])
 
-    def test_current_snapshot_reconstructs_destroyed_host_roots_and_fleet(self) -> None:
+    def test_current_snapshot_restores_declarative_state_and_reports_missing_native_prerequisites(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             base = Path(temp)
             roots = {
@@ -299,10 +307,11 @@ class HostDeltaTests(unittest.TestCase):
                     "hermes --version": "Hermes Agent 0.21.0",
                     "hermes hooks list": "No shell hooks configured",
                     "hermes curator status": "curator: ENABLED",
-                    "codex --version": "codex-cli 0.153.1",
+                    "codex --version": "codex-cli 0.153.4",
                     "codex plugin list --json": "[]",
-                    "omp --version": "OMP 17.2.13",
+                    "omp --version": "OMP 18.1.10",
                     "omp plugin list": "No plugins installed",
+                    "omp config get enabledProviders --json": '{"enabledProviders":[]}',
                 }
                 return (0, outputs[command]) if command in outputs else (127, "missing")
 
@@ -315,7 +324,17 @@ class HostDeltaTests(unittest.TestCase):
                 fleet_snapshot=fleet_snapshot,
                 restored_ids=restored_ids,
             )
-            self.assertTrue(report["passed"], report)
+            # Native source patches are explicit prerequisites, not declarative
+            # artifacts. Empty fake host roots must not be called fully restored.
+            missing_native = {
+                item["id"] for item in manifest["entries"]
+                if item["restore"]["kind"] == "manual-prerequisite"
+                and item["readback"]["kind"] == "file"
+                and "sha256" in item["readback"]
+            }
+            failed = {item["id"] for item in report["entries"] if item["status"] == "failed"}
+            self.assertEqual(missing_native, failed, report)
+            self.assertEqual(not missing_native, report["passed"], report)
             statuses = {item["status"] for item in report["entries"]}
             self.assertIn("restored", statuses)
             self.assertIn("verified", statuses)

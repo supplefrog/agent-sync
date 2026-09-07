@@ -1,0 +1,14 @@
+{
+  "status": "candidate-pipeline-qualified-contingent",
+  "route": {"host": "hermes", "transport": "hermes-delegate", "provider": "openai-codex", "model": "gpt-5.6-sol", "reasoning_effort": "low", "runtime": "hermes-delegate/native-source-v1", "contract_sha256": "e0a1b656d0e871f1cec8f10a3b64e8655c78f2075baff65b9175ac18073d3124"},
+  "route_sha256": "225cee4c55995a52294b4b9ffa84922a901cb98b9d38f9faf781fcb7b01723fa",
+  "task_class": "bounded-source-review-question-answering",
+  "task_protocol_sha256": "e20a9bf495942602da6f44104a18e8e774014c21ade56ab256cc30d5ef39309e",
+  "task_contract_sha256": "05beb99fb15afc3a7319d1ac63b9907896c357973eefd8ece385b9a8465b7805",
+  "shared_verifier_sha256": "af2a869414c54d6c37e8bb9f54275477ed30e6eaafe1b9164d81e8b161e6e497",
+  "native_calls": {"count": 4, "tools": [], "raw_results_sha256": "3b284c22ffcccf69883b11347cb8794a4f51578298a136d94d8f909aed23999c", "provider_resolved_identity_verified": false},
+  "quality": {"model_alone_exact_snippet_structural_passes": 2, "candidate_pipeline_structural_passes": 4, "parent_review_locator": "work/v3-useful-review-qualification/v3/evidence/root-review.json", "parent_review_sha256": "69e3b0993e627d28528ec0b4ffb1118344536301a4219c2a8cf6d07046f38755", "semantic_cells_passed": 4, "semantic_cells_total": 4},
+  "admission_gates": {"root_review_binding": "satisfied", "heldout_routed_delegate_task": "pending", "catalog_admission": false},
+  "cost": {"billing": "subscription", "api_usd": null, "quota_weight": null, "selection_policy": "unknown costs remain unknown; bounded trials require explicit preference"},
+  "limits": ["Two excerpts and two trials each.", "Formatting repair is deterministic and separately traced.", "No model-alone 4/4 claim.", "No general reasoning-quality claim."]
+}

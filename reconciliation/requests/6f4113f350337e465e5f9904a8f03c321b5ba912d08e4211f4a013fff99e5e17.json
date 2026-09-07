@@ -1,0 +1,99 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "0de4ec84f45785850d801f616e82484a5080b5d208f3949102899b564ed1e123",
+      "before_sha256": "0de4ec84f45785850d801f616e82484a5080b5d208f3949102899b564ed1e123",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "d7e69b66270ce7609ec2753022bec415a3f79b47ce910cec17ea7d3cca7e9ffb",
+      "before_sha256": "d7e69b66270ce7609ec2753022bec415a3f79b47ce910cec17ea7d3cca7e9ffb",
+      "owner": "dynamic-workflows",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "93ddfeb80f8fdad7e5f66ea089ef18a7ed3212ea9c4b5f15b41b60c6c01ca8ae",
+      "before_sha256": "93ddfeb80f8fdad7e5f66ea089ef18a7ed3212ea9c4b5f15b41b60c6c01ca8ae",
+      "owner": "fleet-sync",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "faab756c182cc2ee6500a8fad096bcfdf702e2ab2d32af5aa3256637b3293b60",
+      "before_sha256": "faab756c182cc2ee6500a8fad096bcfdf702e2ab2d32af5aa3256637b3293b60",
+      "owner": "hermes-self-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "846b655736c0facf1d064c97f7fd0bf75f959e53c3726219fb6894bc0648dc38",
+      "before_sha256": "846b655736c0facf1d064c97f7fd0bf75f959e53c3726219fb6894bc0648dc38",
+      "owner": "openai-delegation-route-research",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "d586eed8141be133e6edddded2830c07f6c5e5ea7c5508e3cbd187bb64d054a0",
+      "before_sha256": "d586eed8141be133e6edddded2830c07f6c5e5ea7c5508e3cbd187bb64d054a0",
+      "owner": "skill-creator",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "cross-agent-surface-engineering",
+    "dynamic-workflows",
+    "fleet-sync",
+    "hermes-self-engineering",
+    "openai-delegation-route-research",
+    "skill-creator"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "skipped"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "6f4113f350337e465e5f9904a8f03c321b5ba912d08e4211f4a013fff99e5e17",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

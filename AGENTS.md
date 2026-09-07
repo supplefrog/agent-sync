@@ -1,17 +1,17 @@
 # Repository rules
 
-Use `capability-curator` before adding, installing, replacing, or materially changing a skill or persistent instruction surface.
+Use [Agent Signal skill-creator](skills/skill-creator/SKILL.md) for durable/shared instruction content. Identify this owner by source path; Codex's bundled `.system/skill-creator` owns Codex-only scaffolding and UI metadata. Use `capability-curator` when an unresolved capability comparison needs its evaluation procedure, not as a required approval hop.
 
-Use `surface-convergence` when a persistent behavior targets multiple agents, adds a host, or may have drifted after host changes. Optimize semantic parity, preserve useful native differences, and record unsupported mappings explicitly.
+Use [cross-agent-surface-engineering](skills/cross-agent-surface-engineering/SKILL.md) for cross-host placement or parity, and [hermes-self-engineering](skills/hermes-self-engineering/SKILL.md) for unresolved Hermes placement. Preserve native capabilities and explicit unsupported mappings; existing procedures remain reviewable within the user's authorization.
 
 Keep `skills/` compatible with the Agent Skills standard. Put host-specific behavior in adapters, not portable skill instructions.
 
-Do not promote a capability without a checked-in suite and a current evidence summary showing baseline-versus-candidate results. No change is preferable to an unproven change.
+Match evidence to the claim: reproduce and verify a mechanism correction, check source/discovery for structural changes, and compare current-model behavior for quality claims. Carry existing authorization forward, preserve rollback, and state missing or inconclusive evidence.
 
 Treat `contracts/surface-matrix.json` as the cross-host behavior contract and `evidence/findings.json` as the public-safe findings and contradiction ledger. Never erase contradictory evidence merely to present a unified result.
 
 Keep the repository small: extend or replace an existing capability when its scope substantially overlaps; do not add aliases or speculative skills.
 
-Do not delegate research, architecture, evaluation design, or synthesis to a fixed weak worker route. Use task-tiered routing: main model low for substantive work, medium for verification, high for refutation or synthesis; weak models are for mechanical checks only.
+Choose supported worker routes from task requirements and available evidence. Fixed model tiers or reasoning labels are not fitness tests. Keep persisted runs pinned unless changing their route is part of the authorized task.
 
 Never commit generated run transcripts, credentials, private paths, or third-party content without a compatible license.

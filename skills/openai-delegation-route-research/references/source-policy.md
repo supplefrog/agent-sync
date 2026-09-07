@@ -1,15 +1,12 @@
-# Catalogue source policy
+# Routing evidence sources
 
-Use only data the user can verify for each exact GPT model and reasoning-level combination.
+Use evidence that matches the task and exact execution surface. Keep the source, observation date, scope, uncertainty and content hash with each material claim. Never store credentials or personal session transcripts in routing catalogs.
 
-1. **Availability and identifiers:** the user's current `openai-codex` model list. Keep model and reasoning identifiers exact.
-2. **Intelligence:** Artificial Analysis Intelligence Index for that exact displayed variant.
-3. **Task time:** Artificial Analysis Time per Intelligence Index Task for that exact displayed variant. It is weighted decode time per task and excludes first-token and other overhead.
-4. **Task cost:** Artificial Analysis Cost per Intelligence Index Task in USD for that exact displayed variant.
-5. **Hallucination:** Artificial Analysis AA-Omniscience Hallucination Rate for that exact displayed variant. Treat it as one knowledge-reliability signal, not a universal factuality guarantee.
+1. **Callability:** current native catalog plus an observed request on the intended host/transport/model/effort. Record what was actually exercised. A no-tools request cannot establish tool capability; unsupported effort aliases remain unavailable.
+2. **Task quality:** independently accepted outcomes on representative work, tied to stable protocol, exact input, verifier and harness identities. Keep individual outcome observations separate from an independently justified qualification over the admitted workload. Preserve regressions and inconclusive results. A model's generation, general rank, or its own judgment of success does not establish task fitness.
+3. **External priors:** task/category results from primary benchmark providers such as Arena, Artificial Analysis, or a relevant reproducible task benchmark. Inspect task mix, metric, uncertainty, date, exact variant and harness differences. Use priors to identify candidates for local evaluation, not as universal intelligence thresholds. Do not transfer scores across effort or tool configurations without evidence.
+4. **Resources:** actual task-level generation, verification and fallback observations when available, bound to the protocol, verifier and route. Keep subscription quota, API dollars, latency and token counts separate. Official prices may support labeled estimates; missing quantities remain null. Shared-account allowance movement cannot be attributed to one worker without evidence.
 
-Record the comparison URL and observation date. Store visible comparison precision: whole Intelligence points, task time and task cost to two decimals, and hallucination rate to two decimal percentage points. Do not transfer a value to another reasoning level unless the source explicitly shows that variant.
+Investigate existing routing implementations on GitHub before adding a learned model, gateway or orchestration layer. Use arXiv when implementation research leaves a genuinely novel architecture gap. Reuse relevant current source inspections instead of repeating discovery. Additional routing machinery must improve held-out task outcomes or total resource use enough to justify its own inference, data and maintenance costs.
 
-Prefer the rendered Artificial Analysis page because the user can inspect it. If extraction is blocked, accept a user-provided table, screenshot, or export, or another attributed page reproducing the same fields. Never invent values or silently substitute per-token throughput/price, fixed-output response time, or local benchmarks.
-
-Do not store credentials or account data. Refresh is manual and creates no monitor.
+Historical v2 Artificial Analysis values and floors remain attached to their original catalogs and pins. They are not the admission policy for new task-aware catalogs. Do not silently replace historical numbers with local results or re-label prior success evidence after a source change.

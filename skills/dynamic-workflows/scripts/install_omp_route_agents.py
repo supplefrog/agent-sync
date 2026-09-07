@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate exact-route OMP task agents from the reviewed GPT catalogue."""
+"""Generate exact-route OMP task agents from the reviewed V2 GPT catalogue."""
 
 from __future__ import annotations
 
@@ -49,7 +49,7 @@ Execute only the assigned routed DAG node. Do not reroute or delegate. Return co
 def expected_agents(catalog_path: Path) -> dict[str, str]:
     value = json.loads(catalog_path.read_text(encoding="utf-8"))
     if value.get("schema_version") != 2 or value.get("status") != "active":
-        raise ValueError("catalogue must be active schema version 2")
+        raise ValueError("OMP route-agent installation currently requires the active V2 catalogue; V3 is unsupported")
     if value.get("provider") != "openai-codex":
         raise ValueError("catalogue provider must be openai-codex")
     routes = value.get("delegation_candidates")

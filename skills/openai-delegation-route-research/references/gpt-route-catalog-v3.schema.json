@@ -1,0 +1,411 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gpt-route-catalog-v3.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 3
+    },
+    "catalog_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "route": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string",
+                "minLength": 1
+              },
+              "transport": {
+                "type": "string",
+                "minLength": 1
+              },
+              "provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "model": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reasoning_effort": {
+                "type": "string",
+                "minLength": 1
+              },
+              "runtime": {
+                "type": "string",
+                "minLength": 1
+              },
+              "contract_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "host",
+              "transport",
+              "provider",
+              "model",
+              "reasoning_effort",
+              "runtime",
+              "contract_sha256"
+            ],
+            "additionalProperties": false
+          },
+          "availability": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "enum": [
+                  "verified",
+                  "unverified"
+                ]
+              },
+              "observed_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "valid_until": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "route_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "context_tokens": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "tools_verified": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "allowed_effects": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "none",
+                    "reversible",
+                    "irreversible"
+                  ]
+                },
+                "uniqueItems": true
+              },
+              "evidence": {
+                "type": "object",
+                "properties": {
+                  "locator": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "locator",
+                  "sha256"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "status",
+              "observed_at",
+              "valid_until",
+              "route_sha256",
+              "context_tokens",
+              "tools_verified",
+              "allowed_effects",
+              "evidence"
+            ],
+            "additionalProperties": false
+          },
+          "quality": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "task_class": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "task_contract_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "verifier_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "route_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "status": {
+                  "enum": [
+                    "qualified",
+                    "regression",
+                    "inconclusive"
+                  ]
+                },
+                "scope": {
+                  "enum": [
+                    "artifact-effects",
+                    "independent-review",
+                    "inline-text"
+                  ]
+                },
+                "evidence": {
+                  "type": "object",
+                  "properties": {
+                    "locator": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "locator",
+                    "sha256"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "task_class",
+                "task_contract_sha256",
+                "verifier_sha256",
+                "route_sha256",
+                "status",
+                "scope",
+                "evidence"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "cost": {
+            "type": "object",
+            "properties": {
+              "billing": {
+                "enum": [
+                  "subscription",
+                  "api"
+                ]
+              },
+              "basis": {
+                "enum": [
+                  "observed",
+                  "quoted",
+                  "unknown"
+                ]
+              },
+              "task_contract_sha256": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                ]
+              },
+              "verifier_sha256": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                ]
+              },
+              "route_sha256": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                ]
+              },
+              "api_usd": {
+                "type": "object",
+                "properties": {
+                  "generation": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0
+                  },
+                  "verification": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0
+                  },
+                  "fallback": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "generation",
+                  "verification",
+                  "fallback"
+                ],
+                "additionalProperties": false
+              },
+              "quota": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "bucket": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "unit": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "parts": {
+                        "type": "object",
+                        "properties": {
+                          "generation": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "verification": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "fallback": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "generation",
+                          "verification",
+                          "fallback"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "bucket",
+                      "unit",
+                      "parts"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "evidence": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "locator": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      }
+                    },
+                    "required": [
+                      "locator",
+                      "sha256"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "billing",
+              "basis",
+              "task_contract_sha256",
+              "verifier_sha256",
+              "route_sha256",
+              "api_usd",
+              "quota",
+              "evidence"
+            ],
+            "additionalProperties": false
+          },
+          "benchmark_priors": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "route",
+          "availability",
+          "quality",
+          "cost",
+          "benchmark_priors"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "catalog_version",
+    "candidates"
+  ],
+  "additionalProperties": false
+}

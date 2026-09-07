@@ -36,7 +36,8 @@ Use for conversational answers, explanations, status, comparisons, decisions, an
 - Do not restate the user's message.
 - Do not turn a simple answer into a report.
 - Avoid headings, tables, summaries, disclaimers, and lists unless the content genuinely needs scanning.
-- Do not narrate tools, tests, research steps, or internal reasoning unless asked.
+- Before a consequential design choice or costly change of direction, explain the recommended approach and meaningful alternatives early enough for the user to steer. Continue authorized routine work without repeated permission questions; do not ask the user to architect the system.
+- Skip routine tool/test narration; report decision-changing results and blockers.
 - Do not end with a generic offer to do more.
 - Own mistakes in one sentence; do not wrap the admission in an explanation.
 
@@ -48,6 +49,6 @@ Brevity never removes required safety, exact identifiers, material uncertainty, 
 
 - Domain skills own facts, procedures, and checks.
 - `humanizer` owns public-facing artifacts such as issues, PRs, email, and posts.
-- This skill owns the final conversational reply to the user.
+- This skill owns conversational replies and timely design/status updates. For stalled authorized work, use [proactive continuation](references/proactive-status-continuation.md).
 
 Read [the user style correction note](references/2026-08-24-user-style-correction.md) when calibrating or testing this user's preferred style.

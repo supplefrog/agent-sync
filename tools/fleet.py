@@ -55,8 +55,8 @@ def directory_record(root: Path, *, allow_root_link: bool = False) -> dict[str, 
     return {"sha256": digest.hexdigest(), "files": files}
 
 
-def registry(repo: Path) -> dict[str, dict[str, Any]]:
-    data = json.loads((repo / "registry.json").read_text(encoding="utf-8"))
+def registry(repo: Path, *, captured: bytes | None = None) -> dict[str, dict[str, Any]]:
+    data = json.loads((captured if captured is not None else (repo / "registry.json").read_bytes()).decode("utf-8"))
     if data.get("schema_version") != 1:
         raise RuntimeError("unsupported registry schema")
     items: dict[str, dict[str, Any]] = {}
@@ -105,6 +105,10 @@ def validated_snapshot_output(repo: Path, output: Path) -> Path:
         raise RuntimeError(f"snapshot output must stay inside the repository: {candidate}") from exc
     if not relative.parts:
         raise RuntimeError("snapshot output cannot replace the repository root")
+    protected = {"skills", "src", "tools", "tests", "contracts", "adapters", "surfaces",
+                 "profiles", "recovery", "docs", "evals", "evidence", "scripts", "licenses"}
+    if relative.parts[0].rstrip(" .").casefold() in protected or any(part.startswith(".") for part in relative.parts):
+        raise RuntimeError(f"snapshot output overlaps source or repository-control paths: {candidate}")
 
     current = repo
     for part in relative.parts:
@@ -115,6 +119,21 @@ def validated_snapshot_output(repo: Path, output: Path) -> Path:
         candidate.resolve(strict=False).relative_to(repo)
     except ValueError as exc:
         raise RuntimeError(f"snapshot output must stay inside the repository: {candidate}") from exc
+    if candidate.exists():
+        if not candidate.is_dir():
+            raise RuntimeError(f"snapshot output cannot replace a file: {candidate}")
+        children = {path.name for path in candidate.iterdir()}
+        if children:
+            if children != {MANIFEST_FILE, "skills"}:
+                raise RuntimeError(f"snapshot output contains unowned content: {candidate}")
+            try:
+                owned = load_manifest(candidate)
+                if not SHA256_RE.fullmatch(str(owned.get("registry_sha256", ""))):
+                    raise RuntimeError("missing registry identity")
+                if {path.name for path in (candidate / "skills").iterdir()} != set(owned["skills"]):
+                    raise RuntimeError("unowned skill directory")
+            except (OSError, ValueError, RuntimeError) as exc:
+                raise RuntimeError(f"existing output is not an intact owned fleet snapshot: {candidate}") from exc
     return candidate
 
 
@@ -124,7 +143,9 @@ def remove_tree(path: Path) -> None:
     # pathlib reports some Windows junctions as directories even though shutil
     # correctly treats them as links. Unlink/rmdir the reparse point; never
     # recurse into its source.
-    if path.is_dir() and not is_linklike_directory(path):
+    if path.is_symlink():
+        path.unlink()
+    elif path.is_dir() and not is_linklike_directory(path):
         shutil.rmtree(path)
     elif path.is_dir():
         os.rmdir(path)
@@ -136,9 +157,10 @@ def render_snapshot(repo: Path, output: Path) -> dict[str, Any]:
     """Render admitted repository skills into a deterministic snapshot."""
     repo = repo.resolve()
     output = validated_snapshot_output(repo, output)
+    registry_raw = (repo / "registry.json").read_bytes()
     selected = {
         name: item
-        for name, item in registry(repo).items()
+        for name, item in registry(repo, captured=registry_raw).items()
         if item.get("status") == "admitted"
     }
     stage = output.with_name(f".{output.name}.stage-{uuid.uuid4().hex}")
@@ -156,10 +178,12 @@ def render_snapshot(repo: Path, output: Path) -> dict[str, Any]:
                 stage / "skills" / name,
                 ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".pytest_cache", ".pytest-cache"),
             )
+            if directory_record(stage / "skills" / name) != record:
+                raise RuntimeError(f"source changed while rendering skill: {name}")
             records[name] = record
         manifest = {
             "schema_version": 1,
-            "registry_sha256": sha256_file(repo / "registry.json"),
+            "registry_sha256": hashlib.sha256(registry_raw).hexdigest(),
             "skills": records,
         }
         atomic_json(stage / MANIFEST_FILE, manifest)
@@ -182,9 +206,9 @@ def render_snapshot(repo: Path, output: Path) -> dict[str, Any]:
         raise
 
 
-def load_manifest(snapshot: Path) -> dict[str, Any]:
+def load_manifest(snapshot: Path, *, captured: bytes | None = None) -> dict[str, Any]:
     path = snapshot / MANIFEST_FILE
-    data = json.loads(path.read_text(encoding="utf-8"))
+    data = json.loads((captured if captured is not None else path.read_bytes()).decode("utf-8"))
     if data.get("schema_version") != 1 or not isinstance(data.get("skills"), dict):
         raise RuntimeError(f"invalid fleet manifest: {path}")
     for name, expected in data["skills"].items():
@@ -222,8 +246,8 @@ def installed_hash(path: Path) -> str | None:
         return None
 
 
-def plan_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
-    manifest = load_manifest(snapshot)
+def plan_snapshot(snapshot: Path, destination: Path, *, manifest: dict[str, Any] | None = None) -> list[dict[str, str]]:
+    manifest = load_manifest(snapshot) if manifest is None else manifest
     state = load_state(destination)
     desired: dict[str, dict[str, Any]] = manifest["skills"]
     managed: dict[str, dict[str, Any]] = state["skills"]
@@ -283,9 +307,10 @@ def plan_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
 
 def apply_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
     """Apply one snapshot, preserving unmanaged and locally modified skills."""
-    manifest = load_manifest(snapshot)
+    manifest_raw = (snapshot / MANIFEST_FILE).read_bytes()
+    manifest = load_manifest(snapshot, captured=manifest_raw)
     destination.mkdir(parents=True, exist_ok=True)
-    actions = plan_snapshot(snapshot, destination)
+    actions = plan_snapshot(snapshot, destination, manifest=manifest)
     conflicts = [item["name"] for item in actions if item["action"] == "conflict"]
     if conflicts:
         raise RuntimeError("managed skill drift or unmanaged collision: " + ", ".join(conflicts))
@@ -293,7 +318,7 @@ def apply_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
     state = {
         "schema_version": 1,
         "source_snapshot": str(snapshot.resolve()),
-        "manifest_sha256": sha256_file(snapshot / MANIFEST_FILE),
+        "manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
         "skills": {
             name: {"sha256": record["sha256"]}
             for name, record in sorted(manifest["skills"].items())
@@ -309,8 +334,10 @@ def apply_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
                 continue
             name = item["name"]
             stage = destination / f".{name}.fleet-stage-{uuid.uuid4().hex}"
-            shutil.copytree(snapshot / "skills" / name, stage)
             stages[name] = stage
+            shutil.copytree(snapshot / "skills" / name, stage)
+            if directory_record(stage) != manifest["skills"][name]:
+                raise RuntimeError(f"snapshot changed while staging skill: {name}")
 
         for item in actions:
             name, action = item["name"], item["action"]
@@ -321,7 +348,8 @@ def apply_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
                     old = destination / f".{name}.fleet-old-{uuid.uuid4().hex}"
                     os.replace(target, old)
                 try:
-                    os.replace(stages.pop(name), target)
+                    os.replace(stages[name], target)
+                    del stages[name]
                 except Exception:
                     if old is not None and old.exists():
                         os.replace(old, target)

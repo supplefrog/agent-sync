@@ -2,7 +2,7 @@
   "$schema": "contracts/recovery-snapshot.schema.json",
   "artifacts": [
     {
-      "bytes": 5281,
+      "bytes": 5280,
       "format": "toml",
       "host": "codex",
       "id": "settings",
@@ -30,20 +30,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "a02dbbaa0f3d63beae1be27aa71f89bb6ed4f7b8b74056da3f64657fad591f5a",
+      "sha256": "c4c564feb93a6e79e59b1ca3012df84984f9175b49881e025b9cb8721a5e320c",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
     },
     {
-      "bytes": 2018,
+      "bytes": 2015,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b",
+      "sha256": "dbb60aed79b87810286d622b0f06a53903718c62d1e3340d3ade045d39ac5651",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -114,7 +114,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16444,
+      "bytes": 16441,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -313,26 +313,26 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "68d56bd55013e5dd48228bb831c84909838abe17181808799ae73820d2b223c8",
+      "sha256": "4f25964f3c079d2da8f2d958c294e37e507125de6ef6e36d9f266c1681d43999",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
     },
     {
-      "bytes": 1887,
+      "bytes": 1962,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "a02c868eb51ef832cf20dbbce6bb6f05c384376b0db53ea2455b36b40bd1812c",
+      "sha256": "82553e93dc47e3d1318eea2e91f2b7b4b41f445f39fa9cb01e5f47ce1605cbe0",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 533,
+      "bytes": 535,
       "format": "yaml",
       "host": "omp",
       "id": "settings",
@@ -353,7 +353,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "bd05e69226b221bdc8609dde004dee87432f0d25f5949bf7299297ac980440a3",
+      "sha256": "fb2c86d025cb765ba39d0f0f6c0b30a7863fde54e37efd83adbd57dd4ad6c8dd",
       "snapshot": "hosts/omp/config.json",
       "source": "config.yml",
       "strategy": "merge"
@@ -398,10 +398,25 @@
       "snapshot": "hosts/omp/adapters/outcome-first-workflow-design.md",
       "source": "skills/outcome-first-workflow-design/SKILL.md",
       "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 468,
+      "format": "yaml",
+      "host": "omp",
+      "id": "astra-model-registration",
+      "include": [
+        "providers.openai-codex.models"
+      ],
+      "kind": "config",
+      "portable_paths": false,
+      "sha256": "067b96f104c4a7f78f491dcce54b956edcbe3776ffcc3d23610c0de5d87f19ae",
+      "snapshot": "hosts/omp/models.json",
+      "source": "models.yml",
+      "strategy": "merge"
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "49241e086f784959ec968840b8dccd7497b01266717afc3c479e5ff3bc60e40e",
+  "policy_sha256": "e8c713d22e52de375aad52a8a8aa6a605ad29b6d3449fee6edba3657ec71f950",
   "public_safe": true,
   "schema_version": 1
 }

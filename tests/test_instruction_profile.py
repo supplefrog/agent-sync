@@ -16,7 +16,20 @@ SPEC.loader.exec_module(profile_tool)
 
 class InstructionProfileTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.profile = ROOT / "profiles" / "gpt-5.6-sol-openai-codex.json"
+        self.profile = profile_tool.current_profile(ROOT)
+
+    def test_default_profile_rejects_missing_and_ambiguous_current_observations(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            (repo / "profiles").mkdir()
+            with self.assertRaisesRegex(profile_tool.ProfileError, "found 0"):
+                profile_tool.current_profile(repo)
+            for name in ("old", "new"):
+                (repo / "profiles" / f"{name}.json").write_text(json.dumps({"status": "current-observed"}), encoding="utf-8")
+            with self.assertRaisesRegex(profile_tool.ProfileError, "found 2"):
+                profile_tool.current_profile(repo)
+            (repo / "profiles" / "old.json").write_text(json.dumps({"status": "superseded"}), encoding="utf-8")
+            self.assertEqual(profile_tool.current_profile(repo), repo / "profiles" / "new.json")
 
     def mutated_profile(self, mutate) -> Path:
         data = json.loads(self.profile.read_text(encoding="utf-8"))
@@ -33,11 +46,33 @@ class InstructionProfileTests(unittest.TestCase):
     def test_current_profile_is_bounded_and_excludes_retired_delta(self) -> None:
         report = self.verify(self.profile)
         self.assertEqual("artifact-only", report["verification_mode"])
-        self.assertEqual("gpt-5.6-sol", report["model"])
+        self.assertEqual("gpt-6-astra", report["model"])
         self.assertEqual("openai-codex", report["provider"])
         self.assertTrue(all(row["bytes"] <= row["budget"] for row in report["hosts"].values()))
         self.assertNotIn("omp.output-delta", report["hosts"]["omp"]["units"])
         self.assertNotIn("omp.rules-delta", report["hosts"]["omp"]["surfaces"])
+        self.assertNotIn("omp.codex-inherited", report["hosts"]["omp"]["surfaces"])
+        self.assertEqual([], report["hosts"]["omp"]["units"])
+        self.assertEqual([], report["hosts"]["omp"]["artifact_sha256"])
+        self.assertEqual(0, report["hosts"]["omp"]["bytes"])
+        self.assertIn("not enabled", report["hosts"]["omp"]["no_managed_standing_reason"])
+
+    def test_empty_managed_standing_requires_explicit_observed_reason(self) -> None:
+        def mutate(data):
+            data["hosts"]["omp"].pop("no_managed_standing_reason")
+
+        with self.assertRaisesRegex(profile_tool.ProfileError, "model profile schema"):
+            self.verify(self.mutated_profile(mutate))
+
+    def test_observed_absence_cannot_hide_managed_units(self) -> None:
+        def mutate(data):
+            data["hosts"]["omp"]["effective_units"] = ["codex.output"]
+            data["hosts"]["omp"]["artifact_sha256"] = [
+                data["hosts"]["codex"]["artifact_sha256"][0]
+            ]
+
+        with self.assertRaisesRegex(profile_tool.ProfileError, "model profile schema"):
+            self.verify(self.mutated_profile(mutate))
 
     def test_unknown_unit_is_rejected(self) -> None:
         path = self.mutated_profile(lambda data: data["hosts"]["hermes"]["effective_units"].append("missing.unit"))

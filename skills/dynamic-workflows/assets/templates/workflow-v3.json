@@ -1,0 +1,102 @@
+{
+  "name": "task-aware-workflow",
+  "max_workers": 2,
+  "tasks": [
+    {
+      "id": "inspect",
+      "role": "discover",
+      "risk": "read",
+      "acceptance": [
+        "The parent checks that the evidence artifact cites the inspected source and names unresolved gaps."
+      ],
+      "prompt": "Produce the evidence artifact consumed by the routed task.",
+      "route_request": {
+        "schema_version": 3,
+        "task_class": "replace-with-scoped-discovery-protocol",
+        "requirements": {
+          "tools": [],
+          "context_tokens": 16000,
+          "task_contract_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "model": null,
+          "reasoning_effort": null
+        },
+        "verifier": {
+          "kind": "independent-review",
+          "independent": true,
+          "coverage": "complete",
+          "scope": "inline-text",
+          "evidence": {
+            "locator": "replace-with-discovery-verifier-evidence-locator",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        },
+        "effects": "none",
+        "failure_cost": "low",
+        "deterministic": null,
+        "budget": {
+          "objective": "quota",
+          "api_remaining": null,
+          "api_reserve": 0,
+          "allow_api_spend": false,
+          "quotas": {},
+          "unknown_cost_policy": "keep_parent",
+          "preference_order": [],
+          "parent_available": true,
+          "attempt_cap": 1,
+          "attempts_used": 0,
+          "fallback_route_id": null,
+          "fallback_route_sha256": null
+        }
+      }
+    },
+    {
+      "id": "decide",
+      "role": "worker",
+      "risk": "read",
+      "depends_on": ["inspect"],
+      "include_outputs": ["inspect"],
+      "acceptance": [
+        "The parent independently checks the result against the declared verifier evidence."
+      ],
+      "prompt": "Use the evidence below.\n{{output:inspect}}",
+      "route_request": {
+        "schema_version": 3,
+        "task_class": "replace-with-scoped-outcome-protocol",
+        "requirements": {
+          "tools": [],
+          "context_tokens": 16000,
+          "task_contract_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "model": null,
+          "reasoning_effort": null
+        },
+        "verifier": {
+          "kind": "independent-review",
+          "independent": true,
+          "coverage": "complete",
+          "scope": "inline-text",
+          "evidence": {
+            "locator": "replace-with-verifier-evidence-locator",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        },
+        "effects": "none",
+        "failure_cost": "low",
+        "deterministic": null,
+        "budget": {
+          "objective": "quota",
+          "api_remaining": null,
+          "api_reserve": 0,
+          "allow_api_spend": false,
+          "quotas": {},
+          "unknown_cost_policy": "keep_parent",
+          "preference_order": [],
+          "parent_available": true,
+          "attempt_cap": 1,
+          "attempts_used": 0,
+          "fallback_route_id": null,
+          "fallback_route_sha256": null
+        }
+      }
+    }
+  ]
+}

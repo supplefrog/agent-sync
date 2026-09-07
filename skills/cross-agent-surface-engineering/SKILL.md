@@ -17,7 +17,7 @@ Use this for persistent instructions, skills, config, plugins, hooks, routing, o
 
 ## Canonical owner
 
-Agent Signal is authoritative. Locate its checkout from the managed skill root's `.agent-signal-fleet.json` and `source_snapshot`, as described by `fleet-sync`; otherwise require a checkout containing `fleet.json`, `registry.json`, and `tools/fleet.py`. Live host directories are deployments or adapters, not editable canonical sources. `agent-surface-bridge` is prior evidence only.
+Agent Signal owns the source of its managed artifacts. Locate its checkout from the managed skill root's `.agent-signal-fleet.json` and `source_snapshot`, as described by `fleet-sync`; otherwise locate a checkout containing `fleet.json`, `registry.json`, and `tools/fleet.py`. Edit that source before deploying its managed copies. Independently owned native surfaces retain their own source. `agent-surface-bridge` is prior evidence only.
 
 ## Procedure
 
@@ -60,11 +60,11 @@ The canonical result may merge compatible winning behaviors from several variant
 
 ### 4. Assign one owner per concern
 
-Use the narrowest owner. Inside Agent Signal, read `skills/capability-curator/SKILL.md` for admission and `skills/surface-convergence/SKILL.md` for semantic parity; their registry status remains authoritative, so do not pretend a staged skill is globally admitted. Portable procedures belong in one Agent Skill, portable judgment in the shared instruction surface, and runtime mechanics in thin adapters or the native host.
+Use the narrowest source owner: portable procedures in an Agent Skill, standing preferences in the applicable instruction surface, and runtime mechanics in a supported config or native adapter/source. Registry state records deployment eligibility; it does not grant authorization or prove model quality. Use `capability-curator` for an unresolved capability comparison and `surface-convergence` as a reference where relevant; staged guides are not required approval hops.
 
 ### 5. Stage and evaluate
 
-Keep candidates outside all live discovery roots. Preserve license and provenance. Modify the portable owner first, then only necessary adapters. For material behavior changes, run the owning admission gate with representative, near-miss, adversarial, held-out, and regression cases on each affected host. Normalize model, provider, reasoning, prompt/tool/context assembly, runtime, and adapter fingerprints. Harness failure is inconclusive; missing-host evidence cannot claim parity.
+Keep unselected candidates outside live discovery roots and preserve license/provenance. Modify the portable owner first, then necessary adapters. Verify mechanism corrections directly; compare model behavior when claiming a quality gain. Record model, provider, reasoning, runtime, and prompt/tool/context identities. Explicit instruction injection does not establish natural triggering. Test every host included in a parity claim; missing or failed host evidence remains an explicit limit.
 
 Structural removal of byte-identical copies needs deterministic identity and fresh-discovery checks, not evaluation theater. A broken unique mechanism is not a winner merely because no other variant implements it.
 

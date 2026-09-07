@@ -40,6 +40,7 @@ SURFACE_HOSTS = {
     "hermes-workflow": "hermes",
     "omp-workflow": "omp",
 }
+_CONTEXT_OMITTED = object()
 DEFAULT_DIFFICULTIES = {
     "low": {"provider": "openai-codex", "model": "gpt-5.6-luna", "reasoning_effort": "high"},
     "medium": {"provider": "openai-codex", "model": "gpt-5.6-sol", "reasoning_effort": "medium"},
@@ -198,6 +199,15 @@ def default_router_paths() -> tuple[Path, Path]:
     return skill / "references" / "current-gpt-catalog.json", skill / "scripts" / "route_selector.py"
 
 
+def default_v3_router_paths() -> tuple[Path, Path, Path]:
+    skill = Path(__file__).resolve().parents[2] / "openai-delegation-route-research"
+    return (
+        skill / "references" / "current-task-route-catalog.json",
+        skill / "scripts" / "route_selector.py",
+        skill / "scripts" / "task_request.py",
+    )
+
+
 def load_route_selector_bytes(source: bytes, path: Path):
     try:
         text = source.decode("utf-8")
@@ -207,6 +217,34 @@ def load_route_selector_bytes(source: bytes, path: Path):
     module.__file__ = str(path)
     exec(compile(text, str(path), "exec"), module.__dict__)
     return module
+
+
+def load_task_materializer_bytes(source: bytes, path: Path):
+    try:
+        text = source.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise PlanError(f"Task materializer is not UTF-8: {path}") from exc
+    module = types.ModuleType("dynamic_workflow_task_materializer")
+    module.__file__ = str(path)
+    try:
+        exec(compile(text, str(path), "exec"), module.__dict__)
+    except (OSError, ValueError, ImportError) as exc:
+        raise PlanError(f"Cannot load task materializer: {path}: {exc}") from exc
+    return module
+
+
+def validate_v3_route_template(template: dict[str, Any], task_id: str) -> None:
+    materializer_path = default_v3_router_paths()[2]
+    try:
+        source = materializer_path.read_bytes()
+        materializer = load_task_materializer_bytes(source, materializer_path)
+        materializer.materialize(
+            deepcopy(template), task_id=task_id, host="validation-host",
+            transport="validation-transport", input_descriptor={"validation": True},
+            as_of="2000-01-01T00:00:00+00:00",
+        )
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise PlanError(f"Task {task_id!r} has an invalid V3 route_request: {exc}") from exc
 
 
 def load_route_selector(path: Path):
@@ -237,7 +275,7 @@ def select_task_receipt(
         "task_class": task["task_class"],
         "failure_cost": task["failure_cost"],
         "attempt_number": 1,
-        "verifier_plan": {"kind": "none"},
+        "verifier_plan": deepcopy(task.get("verifier_plan", {"kind": "none"})),
     }
     try:
         return selector.select_route(
@@ -341,9 +379,10 @@ def validate_plan(raw: Any, source: Path) -> dict[str, Any]:
             raise PlanError(f"Task {task_id!r} model_tier is unsupported; set difficulty explicitly")
         has_difficulty = "difficulty" in item
         has_intelligence = "intelligence_tier" in item
-        if has_difficulty == has_intelligence:
+        has_route_request = "route_request" in item
+        if sum((has_difficulty, has_intelligence, has_route_request)) != 1:
             raise PlanError(
-                f"Task {task_id!r} must set exactly one of legacy difficulty or intelligence_tier"
+                f"Task {task_id!r} must set exactly one of legacy difficulty or intelligence_tier, or V3 route_request"
             )
         difficulty = item.get("difficulty")
         intelligence_tier = item.get("intelligence_tier")
@@ -356,11 +395,28 @@ def validate_plan(raw: Any, source: Path) -> dict[str, Any]:
         latency_sensitive = item.get("latency_sensitive")
         if has_intelligence and not isinstance(latency_sensitive, bool):
             raise PlanError(f"Task {task_id!r} latency_sensitive must be true or false")
-        failure_cost = item.get("failure_cost", "medium")
-        if has_intelligence and failure_cost not in FAILURE_COSTS:
+        route_request = item.get("route_request")
+        if has_route_request:
+            if not isinstance(route_request, dict) or route_request.get("schema_version") != 3:
+                raise PlanError(f"Task {task_id!r} route_request must be a V3 template object")
+            forbidden = {"task_id", "input_sha256", "as_of", "continuation"} & set(route_request)
+            if forbidden:
+                raise PlanError(f"Task {task_id!r} route_request contains controller-owned fields: {sorted(forbidden)}")
+            expected = {"schema_version", "task_class", "requirements", "verifier", "effects", "failure_cost", "deterministic", "budget"}
+            if set(route_request) != expected:
+                raise PlanError(f"Task {task_id!r} route_request must contain exactly {sorted(expected)}")
+            requirements = route_request.get("requirements")
+            if not isinstance(requirements, dict) or "host" in requirements or "transport" in requirements:
+                raise PlanError(f"Task {task_id!r} route_request requirements must omit controller-owned host and transport")
+            budget = route_request.get("budget")
+            if not isinstance(budget, dict) or budget.get("attempt_cap") != 1 or budget.get("attempts_used") != 0:
+                raise PlanError(f"Task {task_id!r} V3 route_request must declare attempt_cap=1 and attempts_used=0")
+            validate_v3_route_template(route_request, task_id)
+        failure_cost = route_request.get("failure_cost") if has_route_request else item.get("failure_cost", "medium")
+        if (has_intelligence or has_route_request) and failure_cost not in FAILURE_COSTS:
             raise PlanError(f"Task {task_id!r} failure_cost must be one of {sorted(FAILURE_COSTS)}")
-        task_class = item.get("task_class", f"workflow-{role}")
-        if has_intelligence and (not isinstance(task_class, str) or not task_class.strip()):
+        task_class = route_request.get("task_class") if has_route_request else item.get("task_class", f"workflow-{role}")
+        if (has_intelligence or has_route_request) and (not isinstance(task_class, str) or not task_class.strip()):
             raise PlanError(f"Task {task_id!r} task_class must be a non-empty string")
         risk = item.get("risk", "read")
         if risk not in RISKS:
@@ -368,12 +424,14 @@ def validate_plan(raw: Any, source: Path) -> dict[str, Any]:
         attempts = item.get("attempts", 1)
         if isinstance(attempts, bool) or not isinstance(attempts, int) or not 1 <= attempts <= MAX_ATTEMPTS:
             raise PlanError(f"Task {task_id!r} attempts must be 1..{MAX_ATTEMPTS}")
+        if has_route_request and attempts != 1:
+            raise PlanError(f"Task {task_id!r} V3 route_request supports exactly one execution attempt")
         workdir = item.get("workdir", ".")
         if not isinstance(workdir, str) or not workdir:
             raise PlanError(f"Task {task_id!r} workdir must be a non-empty string")
         ownership = string_list(item.get("ownership"), "ownership", task_id)
         acceptance = string_list(item.get("acceptance"), "acceptance", task_id)
-        if has_intelligence and not acceptance:
+        if (has_intelligence or has_route_request) and not acceptance:
             raise PlanError(f"Task {task_id!r} acceptance must contain at least one observable criterion")
         normalized_task = {
             "id": task_id,
@@ -389,13 +447,24 @@ def validate_plan(raw: Any, source: Path) -> dict[str, Any]:
         }
         if has_difficulty:
             normalized_task["difficulty"] = difficulty
-        else:
+        elif has_intelligence:
             normalized_task.update({
                 "intelligence_tier": intelligence_tier,
                 "latency_sensitive": latency_sensitive,
                 "failure_cost": failure_cost,
                 "task_class": task_class.strip(),
             })
+        else:
+            normalized_task.update({
+                "route_request": deepcopy(route_request),
+                "failure_cost": failure_cost,
+                "task_class": task_class.strip(),
+            })
+        if "verifier_plan" in item:
+            verifier_plan = item["verifier_plan"]
+            if not has_intelligence or not isinstance(verifier_plan, dict):
+                raise PlanError(f"Task {task_id!r} verifier_plan requires a routed task and an object")
+            normalized_task["verifier_plan"] = deepcopy(verifier_plan)
         tasks.append(normalized_task)
 
     ids = {task["id"] for task in tasks}
@@ -469,13 +538,20 @@ def load_manifest(run_dir: Path, state: dict[str, Any]) -> dict[str, Any] | None
     manifest = load_json(path)
     version = manifest.get("schema_version") if isinstance(manifest, dict) else None
     required = {"schema_version", "plan_sha256", "route_catalog_sha256", "route_catalog_file"}
-    if version == 2:
+    if version in {2, 3}:
         required.update({
             "route_catalog_locator",
             "route_selector_sha256",
             "route_selector_file",
         })
-    if not isinstance(manifest, dict) or set(manifest) != required or version not in {1, 2}:
+    if version == 3:
+        required.update({
+            "v3_route_catalog_sha256", "v3_route_catalog_file", "v3_route_catalog_locator",
+            "v3_route_selector_sha256", "v3_route_selector_file",
+            "v3_task_materializer_sha256", "v3_task_materializer_file",
+            "v3_task_schema_sha256", "v3_task_schema_file",
+        })
+    if not isinstance(manifest, dict) or set(manifest) != required or version not in {1, 2, 3}:
         raise PlanError(f"Invalid run integrity manifest: {path}")
     for field in required - {"schema_version"}:
         if not isinstance(manifest[field], str):
@@ -516,6 +592,10 @@ def init_run(
     target_surface: str = "codex-workflow",
     route_catalog: Path | None = None,
     route_selector: Path | None = None,
+    v3_route_catalog: Path | None = None,
+    v3_route_selector: Path | None = None,
+    v3_task_materializer: Path | None = None,
+    v3_task_schema: Path | None = None,
 ) -> Path:
     plan = read_plan(plan_path)
     if target_surface not in WORKFLOW_SURFACES:
@@ -544,6 +624,33 @@ def init_run(
             raise PlanError(
                 "Routed workflows require the admitted deterministic route selector"
             )
+    default_v3_catalog, default_v3_selector, default_v3_materializer = default_v3_router_paths()
+    v3_route_catalog = v3_route_catalog or default_v3_catalog
+    v3_route_selector = v3_route_selector or default_v3_selector
+    v3_task_materializer = v3_task_materializer or default_v3_materializer
+    default_v3_schema = default_v3_materializer.parent.parent / "references" / "route-task-v3.schema.json"
+    v3_task_schema = v3_task_schema or default_v3_schema
+    has_v3_tasks = any("route_request" in task for task in plan["tasks"])
+    v3_catalog_snapshot = load_json(v3_route_catalog) if has_v3_tasks else None
+    v3_selector_snapshot = b""
+    v3_materializer_snapshot = b""
+    v3_schema_snapshot = b""
+    if has_v3_tasks:
+        try:
+            v3_selector_snapshot = v3_route_selector.read_bytes()
+            v3_materializer_snapshot = v3_task_materializer.read_bytes()
+            v3_schema_snapshot = v3_task_schema.read_bytes()
+            trusted_v3_selector = default_v3_selector.read_bytes()
+            trusted_v3_materializer = default_v3_materializer.read_bytes()
+            trusted_v3_schema = default_v3_schema.read_bytes()
+        except OSError as exc:
+            raise PlanError("Cannot snapshot V3 router sources") from exc
+        if hashlib.sha256(v3_selector_snapshot).digest() != hashlib.sha256(trusted_v3_selector).digest():
+            raise PlanError("V3 workflows require the admitted deterministic route selector")
+        if hashlib.sha256(v3_materializer_snapshot).digest() != hashlib.sha256(trusted_v3_materializer).digest():
+            raise PlanError("V3 workflows require the admitted task materializer")
+        if hashlib.sha256(v3_schema_snapshot).digest() != hashlib.sha256(trusted_v3_schema).digest():
+            raise PlanError("V3 workflows require the admitted task schema")
     required = set(VAR_RE.findall("\n".join(task["prompt"] for task in plan["tasks"])))
     missing = sorted(required - variables.keys())
     if missing:
@@ -576,10 +683,19 @@ def init_run(
     if route_catalog_snapshot is not None:
         atomic_json(run_dir / route_catalog_file, route_catalog_snapshot)
         atomic_bytes(run_dir / route_selector_file, route_selector_snapshot)
+    v3_route_catalog_file = "route_catalog_v3.json" if v3_catalog_snapshot is not None else ""
+    v3_route_selector_file = "route_selector_v3.py" if v3_catalog_snapshot is not None else ""
+    v3_task_materializer_file = "task_request_v3.py" if v3_catalog_snapshot is not None else ""
+    v3_task_schema_file = "route-task-v3.schema.json" if v3_catalog_snapshot is not None else ""
+    if v3_catalog_snapshot is not None:
+        atomic_json(run_dir / v3_route_catalog_file, v3_catalog_snapshot)
+        atomic_bytes(run_dir / v3_route_selector_file, v3_selector_snapshot)
+        atomic_bytes(run_dir / v3_task_materializer_file, v3_materializer_snapshot)
+        atomic_bytes(run_dir / v3_task_schema_file, v3_schema_snapshot)
     atomic_json(
         run_dir / "run_manifest.json",
         {
-            "schema_version": 2,
+            "schema_version": 3 if has_v3_tasks else 2,
             "plan_sha256": plan_hash(plan),
             "route_catalog_sha256": (
                 receipt_digest(route_catalog_snapshot) if route_catalog_snapshot is not None else ""
@@ -594,6 +710,17 @@ def init_run(
                 else ""
             ),
             "route_selector_file": route_selector_file,
+            **({
+                "v3_route_catalog_sha256": receipt_digest(v3_catalog_snapshot) if v3_catalog_snapshot is not None else "",
+                "v3_route_catalog_file": v3_route_catalog_file,
+                "v3_route_catalog_locator": str(v3_route_catalog.resolve()) if v3_catalog_snapshot is not None else "",
+                "v3_route_selector_sha256": hashlib.sha256(v3_selector_snapshot).hexdigest() if v3_catalog_snapshot is not None else "",
+                "v3_route_selector_file": v3_route_selector_file,
+                "v3_task_materializer_sha256": hashlib.sha256(v3_materializer_snapshot).hexdigest() if v3_catalog_snapshot is not None else "",
+                "v3_task_materializer_file": v3_task_materializer_file,
+                "v3_task_schema_sha256": hashlib.sha256(v3_schema_snapshot).hexdigest() if v3_catalog_snapshot is not None else "",
+                "v3_task_schema_file": v3_task_schema_file,
+            } if has_v3_tasks else {}),
         },
     )
     task_state = {}
@@ -618,6 +745,9 @@ def init_run(
             "error": "",
             "model_policy": deepcopy(model_policy),
             "decision_receipt": decision_receipts[task["id"]],
+            "dispatch": None,
+            "dispatch_sha256": "",
+            "route_task_sha256": "",
         }
     state = {
         "schema_version": 6,
@@ -672,7 +802,7 @@ def load_route_selector_snapshot(
     manifest: dict[str, Any] | None = None,
 ) -> tuple[bytes, Path, Path]:
     manifest = manifest if manifest is not None else load_manifest(run_dir, state)
-    if manifest is None or manifest.get("schema_version") != 2:
+    if manifest is None or manifest.get("schema_version") not in {2, 3}:
         raise PlanError("Legacy routed run has no pinned route selector snapshot; create a new run")
     filename = manifest["route_selector_file"]
     expected_hash = manifest["route_selector_sha256"]
@@ -697,10 +827,87 @@ def load_route_selector_snapshot(
     except OSError as exc:
         raise PlanError(f"Missing admitted deterministic route selector: {trusted_selector}") from exc
     if trusted_hash != expected_hash:
-        raise PlanError(
-            "Pinned route selector does not match the installed admitted selector; create a new run"
-        )
+        # Execute only an admitted installed historical source, never run-owned code.
+        # Selector upgrades preserve old receipts without trusting arbitrary snapshots.
+        if not re.fullmatch(r"[0-9a-f]{64}", expected_hash):
+            raise PlanError("Invalid pinned selector identity")
+        historical = trusted_selector.parent / "selector-history" / (expected_hash + ".py")
+        try:
+            historical_source = historical.read_bytes()
+        except OSError as exc:
+            raise PlanError("Pinned selector is not admitted by this installation") from exc
+        if hashlib.sha256(historical_source).hexdigest() != expected_hash:
+            raise PlanError("Admitted historical selector identity changed")
+        trusted_source, trusted_selector = historical_source, historical
     return trusted_source, trusted_selector, Path(catalog_locator)
+
+
+def _admitted_source(expected_hash: str, current: Path, history_dir: str, label: str) -> tuple[bytes, Path]:
+    if not re.fullmatch(r"[0-9a-f]{64}", expected_hash):
+        raise PlanError(f"Invalid pinned {label} identity")
+    candidates = [current, current.parent / history_dir / f"{expected_hash}.py"]
+    for candidate in candidates:
+        try:
+            source = candidate.read_bytes()
+        except OSError:
+            continue
+        if hashlib.sha256(source).hexdigest() == expected_hash:
+            return source, candidate
+    raise PlanError(f"Pinned {label} is not admitted by this installation")
+
+
+def load_v3_router_snapshot(run_dir: Path, state: dict[str, Any], manifest: dict[str, Any] | None = None):
+    manifest = manifest if manifest is not None else load_manifest(run_dir, state)
+    if manifest is None or manifest.get("schema_version") != 3:
+        raise PlanError("V3 routed run has no extended immutable manifest")
+    expected_names = {
+        "v3_route_catalog_file": "route_catalog_v3.json",
+        "v3_route_selector_file": "route_selector_v3.py",
+        "v3_task_materializer_file": "task_request_v3.py",
+        "v3_task_schema_file": "route-task-v3.schema.json",
+    }
+    for field, expected in expected_names.items():
+        if manifest.get(field) != expected:
+            raise PlanError(f"Pinned V3 manifest has invalid {field}; expected {expected}")
+    catalog = load_json(run_dir / manifest["v3_route_catalog_file"])
+    if receipt_digest(catalog) != manifest["v3_route_catalog_sha256"]:
+        raise PlanError("Pinned V3 route catalog changed after initialization")
+    try:
+        selector_snapshot = (run_dir / manifest["v3_route_selector_file"]).read_bytes()
+        materializer_snapshot = (run_dir / manifest["v3_task_materializer_file"]).read_bytes()
+        schema_snapshot = (run_dir / manifest["v3_task_schema_file"]).read_bytes()
+    except OSError as exc:
+        raise PlanError("Missing pinned V3 selector or materializer snapshot") from exc
+    if hashlib.sha256(selector_snapshot).hexdigest() != manifest["v3_route_selector_sha256"]:
+        raise PlanError("Pinned V3 route selector snapshot changed after initialization")
+    if hashlib.sha256(materializer_snapshot).hexdigest() != manifest["v3_task_materializer_sha256"]:
+        raise PlanError("Pinned V3 task materializer snapshot changed after initialization")
+    if hashlib.sha256(schema_snapshot).hexdigest() != manifest["v3_task_schema_sha256"]:
+        raise PlanError("Pinned V3 task schema snapshot changed after initialization")
+    _catalog, current_selector, current_materializer = default_v3_router_paths()
+    selector_source, selector_path = _admitted_source(
+        manifest["v3_route_selector_sha256"], current_selector, "selector-history", "V3 selector"
+    )
+    materializer_source, _materializer_source_path = _admitted_source(
+        manifest["v3_task_materializer_sha256"], current_materializer, "materializer-history", "V3 materializer"
+    )
+    current_schema = current_materializer.parent.parent / "references" / "route-task-v3.schema.json"
+    try:
+        admitted_schema_hash = hashlib.sha256(current_schema.read_bytes()).hexdigest()
+    except OSError as exc:
+        raise PlanError("Missing admitted V3 task schema") from exc
+    if admitted_schema_hash != manifest["v3_task_schema_sha256"]:
+        raise PlanError(
+            "Pinned V3 task schema is not admitted by this installation; historical schema data is unavailable"
+        )
+    return (
+        catalog,
+        Path(manifest["v3_route_catalog_locator"]),
+        selector_source,
+        selector_path,
+        materializer_source,
+        current_materializer,
+    )
 
 
 def _task_model_and_receipt(
@@ -713,6 +920,23 @@ def _task_model_and_receipt(
     if task_id not in by_id:
         raise PlanError(f"Unknown task: {task_id}")
     task = by_id[task_id]
+    if "route_request" in task:
+        frozen = state["tasks"][task_id].get("dispatch")
+        if not isinstance(frozen, dict):
+            raise PlanError(f"V3 task {task_id!r} must be dependency-ready and dispatched before model inspection")
+        execution_context = frozen.get("input", {}).get("execution_context")
+        dispatch = task_dispatch(run_dir, task_id, execution_context, trusted_manifest_sha256)
+        if dispatch.get("kind") != "model":
+            raise PlanError(f"V3 task {task_id!r} has a {dispatch.get('kind')} dispatch and no task model")
+        route = dispatch.get("route")
+        receipt = state["tasks"][task_id].get("decision_receipt")
+        return {
+            "provider": route["provider"],
+            "model": route["model"],
+            "reasoning_effort": route["reasoning_effort"],
+            "route_id": receipt["route_id"],
+            "decision_id": receipt["decision_id"],
+        }, deepcopy(receipt)
     if "intelligence_tier" in task:
         receipt = state["tasks"][task_id].get("decision_receipt")
         if (
@@ -930,16 +1154,31 @@ def ready_tasks(
         task = by_id[task_id]
         if current["status"] != "pending" or current["attempts"] >= task["attempts"]:
             continue
+        if "route_request" in task:
+            dispatch = current.get("dispatch")
+            if isinstance(dispatch, dict) and dispatch.get("kind") != "model":
+                continue
         if all(state["tasks"][dep]["status"] == "succeeded" for dep in task["depends_on"]):
             ready.append(task_id)
     return ready
 
 
 def read_capped(path: Path, allowance: int) -> tuple[str, bool]:
-    text = ANSI_RE.sub("", path.read_text(encoding="utf-8", errors="replace"))
+    text, truncated, _digest = read_capped_hashed(path, allowance)
+    return text, truncated
+
+
+def read_capped_hashed(path: Path, allowance: int) -> tuple[str, bool, str]:
+    try:
+        artifact = path.read_bytes()
+    except OSError as exc:
+        raise PlanError(f"Cannot read dependency artifact: {path}") from exc
+    digest = hashlib.sha256(artifact).hexdigest()
+    text = artifact.decode("utf-8", errors="replace").replace("\r\n", "\n").replace("\r", "\n")
+    text = ANSI_RE.sub("", text)
     if len(text) <= allowance:
-        return text, False
-    return text[:allowance], True
+        return text, False, digest
+    return text[:allowance], True, digest
 
 
 def task_artifact_path(run_dir: Path, task_id: str, filename: str) -> Path:
@@ -962,7 +1201,35 @@ def render_prompt_with_text(
     task_id: str,
     trusted_manifest_sha256: str | None = None,
 ) -> tuple[Path, str]:
-    plan, state = load_run(run_dir, trusted_manifest_sha256)
+    plan, _state, _manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
+    task = task_map(plan).get(task_id)
+    if task is None:
+        raise PlanError(f"Unknown task: {task_id}")
+    if "route_request" in task:
+        with state_lock(run_dir):
+            plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
+            if state["tasks"][task_id].get("dispatch") is None:
+                prompt, _dependencies = render_prompt_data(run_dir, task_id, trusted_manifest_sha256)
+                prompt_path = task_artifact_path(run_dir, task_id, "prompt.md")
+                atomic_bytes(prompt_path, prompt.encode("utf-8"))
+                return prompt_path, prompt
+            dispatch = _replay_v3_binding_locked(
+                run_dir, task_id, plan, state, manifest, verify_live_input=True
+            )
+            prompt_path = Path(dispatch["prompt_path"])
+            return prompt_path, dispatch["input"]["prompt"]
+    prompt, _dependencies = render_prompt_data(run_dir, task_id, trusted_manifest_sha256)
+    prompt_path = task_artifact_path(run_dir, task_id, "prompt.md")
+    atomic_bytes(prompt_path, prompt.encode("utf-8"))
+    return prompt_path, prompt
+
+
+def render_prompt_data(
+    run_dir: Path,
+    task_id: str,
+    trusted_manifest_sha256: str | None = None,
+) -> tuple[str, list[dict[str, str]]]:
+    plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
     by_id = task_map(plan)
     if task_id not in by_id:
         raise PlanError(f"Unknown task: {task_id}")
@@ -976,14 +1243,20 @@ def render_prompt_with_text(
 
     remaining = MAX_TOTAL_INJECTED_CHARS
     blocks: dict[str, str] = {}
+    dependencies: list[dict[str, str]] = []
     for dependency in task["include_outputs"]:
         output_value = state["tasks"][dependency]["output_path"]
         if state["tasks"][dependency]["status"] != "succeeded" or not output_value:
             raise PlanError(f"Dependency {dependency!r} has no successful output")
         output_path = Path(output_value)
         allowance = min(MAX_INJECTED_CHARS, remaining)
-        content, truncated = read_capped(output_path, allowance)
+        content, truncated, artifact_sha256 = read_capped_hashed(output_path, allowance)
         remaining -= len(content)
+        dependencies.append({
+            "task_id": dependency,
+            "path": str(output_path.resolve()),
+            "sha256": artifact_sha256,
+        })
         note = f"\n[truncated; full artifact: {output_path}]" if truncated else f"\n[full artifact: {output_path}]"
         blocks[dependency] = (
             f"<dependency_output task=\"{dependency}\">\n"
@@ -999,11 +1272,12 @@ def render_prompt_with_text(
             appended.append(block)
     if appended:
         prompt += "\n\nDeclared dependency artifacts:\n\n" + "\n\n".join(appended)
-    route_line = (
-        f"- Intelligence tier: {task['intelligence_tier']}\n"
-        if "intelligence_tier" in task
-        else f"- Legacy difficulty: {task['difficulty']}\n"
-    )
+    if "intelligence_tier" in task:
+        route_line = f"- Intelligence tier: {task['intelligence_tier']}\n"
+    elif "difficulty" in task:
+        route_line = f"- Legacy difficulty: {task['difficulty']}\n"
+    else:
+        route_line = "- Routing: V3 dependency-ready dispatch\n"
     acceptance_block = "".join(f"  - {criterion}\n" for criterion in task["acceptance"])
     prompt += (
         "\n\nFixed execution envelope:\n"
@@ -1019,9 +1293,7 @@ def render_prompt_with_text(
         "- Report missing context or blocked access instead of guessing.\n"
         "- Return the shortest evidence-backed result the parent can verify.\n"
     )
-    prompt_path = task_artifact_path(run_dir, task_id, "prompt.md")
-    atomic_bytes(prompt_path, prompt.encode("utf-8"))
-    return prompt_path, prompt
+    return prompt, dependencies
 
 
 def render_prompt(
@@ -1033,6 +1305,224 @@ def render_prompt(
         run_dir, task_id, trusted_manifest_sha256
     )
     return prompt_path
+
+
+def _v3_input_descriptor(task: dict[str, Any], prompt: str, dependencies: list[dict[str, str]], execution_context: Any) -> dict[str, Any]:
+    return {
+        "prompt": prompt,
+        "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
+        "dependency_artifacts": dependencies,
+        "workdir": task["workdir"],
+        "role": task["role"],
+        "risk": task["risk"],
+        "ownership": task["ownership"],
+        "acceptance": task["acceptance"],
+        "execution_context": deepcopy(execution_context),
+    }
+
+
+def _replay_v3_binding_locked(
+    run_dir: Path,
+    task_id: str,
+    plan: dict[str, Any],
+    state: dict[str, Any],
+    manifest: dict[str, Any] | None,
+    *,
+    execution_context: Any = _CONTEXT_OMITTED,
+    verify_live_input: bool,
+) -> dict[str, Any]:
+    task = task_map(plan).get(task_id)
+    current = state["tasks"].get(task_id)
+    if task is None or "route_request" not in task or not isinstance(current, dict):
+        raise PlanError("V3 binding replay applies only to route_request tasks")
+    frozen = current.get("dispatch")
+    if not isinstance(frozen, dict):
+        raise PlanError(f"V3 task {task_id!r} has no frozen dispatch; call dispatch after dependencies succeed")
+    catalog, _catalog_locator, selector_source, selector_path, materializer_source, materializer_path = load_v3_router_snapshot(
+        run_dir, state, manifest
+    )
+    selector = load_route_selector_bytes(selector_source, selector_path)
+    materializer = load_task_materializer_bytes(materializer_source, materializer_path)
+    task_dir = task_artifact_path(run_dir, task_id, "route_task.json").parent
+    prompt_path = task_dir / "prompt.md"
+    route_task_path = task_dir / "route_task.json"
+    receipt_path = task_dir / "route_receipt.json"
+    dispatch_path = task_dir / "dispatch.json"
+    route_task = load_json(route_task_path)
+    receipt = load_json(receipt_path)
+    stored_dispatch = load_json(dispatch_path)
+    descriptor = frozen.get("input")
+    try:
+        expected_static = {
+            "workdir": task["workdir"],
+            "role": task["role"],
+            "risk": task["risk"],
+            "ownership": task["ownership"],
+            "acceptance": task["acceptance"],
+        }
+        if not isinstance(descriptor, dict) or any(
+            descriptor.get(field) != value for field, value in expected_static.items()
+        ):
+            raise PlanError(f"Frozen V3 workflow contract changed for task {task_id!r}")
+        if materializer.input_digest(descriptor) != route_task.get("input_sha256"):
+            raise PlanError(f"Frozen V3 input digest changed for task {task_id!r}")
+        expected_route_task = materializer.materialize(
+            deepcopy(task["route_request"]), task_id=task_id,
+            host=SURFACE_HOSTS[state["target_surface"]], transport=state["target_surface"],
+            input_descriptor=descriptor, as_of=route_task.get("as_of"),
+        )
+        if expected_route_task != route_task:
+            raise PlanError(f"Frozen V3 route request changed from the immutable plan for task {task_id!r}")
+        base_dispatch = selector.dispatch_decision(receipt, catalog, route_task)
+    except (ValueError, KeyError, TypeError) as exc:
+        raise PlanError(f"Frozen V3 route replay failed for task {task_id!r}: {exc}") from exc
+    expected_dispatch = {
+        **base_dispatch,
+        "task_id": task_id,
+        "prompt_path": str(prompt_path.resolve()),
+        "route_task_path": str(route_task_path.resolve()),
+        "route_receipt_path": str(receipt_path.resolve()),
+        "input": descriptor,
+        "acceptance_handoff": {
+            "criteria": deepcopy(task["acceptance"]),
+            "verifier": deepcopy(route_task["verifier"]),
+            "owner": "parent",
+            "independent_of_execution": True,
+            "status": "pending-independent-acceptance",
+        },
+    }
+    if (
+        route_task.get("task_id") != task_id
+        or current.get("route_task_sha256") != receipt_digest(route_task)
+        or current.get("decision_receipt") != receipt
+        or current.get("dispatch_sha256") != receipt_digest(expected_dispatch)
+        or frozen != expected_dispatch
+        or stored_dispatch != expected_dispatch
+    ):
+        raise PlanError(f"Frozen V3 task, receipt, or dispatch changed for task {task_id!r}")
+    try:
+        prompt_bytes = prompt_path.read_bytes()
+    except OSError as exc:
+        raise PlanError(f"Missing frozen V3 prompt: {prompt_path}") from exc
+    if (
+        not isinstance(descriptor, dict)
+        or hashlib.sha256(prompt_bytes).hexdigest() != descriptor.get("prompt_sha256")
+        or prompt_bytes != str(descriptor.get("prompt", "")).encode("utf-8")
+    ):
+        raise PlanError(f"Frozen V3 prompt changed for task {task_id!r}")
+    if verify_live_input:
+        prompt, dependencies = render_prompt_data(run_dir, task_id)
+        context = (
+            descriptor.get("execution_context")
+            if execution_context is _CONTEXT_OMITTED
+            else execution_context
+        )
+        live_descriptor = _v3_input_descriptor(task, prompt, dependencies, context)
+        try:
+            live_task = materializer.materialize(
+                deepcopy(task["route_request"]), task_id=task_id,
+                host=SURFACE_HOSTS[state["target_surface"]], transport=state["target_surface"],
+                input_descriptor=live_descriptor, as_of=route_task.get("as_of"),
+            )
+        except (ValueError, KeyError, TypeError) as exc:
+            raise PlanError(f"V3 input replay failed for task {task_id!r}: {exc}") from exc
+        if live_task != route_task:
+            raise PlanError(f"Frozen V3 input or execution context changed for task {task_id!r}")
+    return deepcopy(expected_dispatch)
+
+
+def task_dispatch(
+    run_dir: Path,
+    task_id: str,
+    execution_context: Any,
+    trusted_manifest_sha256: str | None = None,
+) -> dict[str, Any]:
+    with state_lock(run_dir):
+        plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
+        task = task_map(plan).get(task_id)
+        if task is None:
+            raise PlanError(f"Unknown task: {task_id}")
+        if "route_request" not in task:
+            raise PlanError("Dispatch binding applies only to V3 route_request tasks")
+        current = state["tasks"][task_id]
+        if current["status"] not in {"pending", "launching", "running", "succeeded", "failed", "stopped"}:
+            raise PlanError(f"Task {task_id!r} cannot be dispatched from {current['status']}")
+        if current["dispatch"] is None:
+            if state["stop_requested"] or current["status"] != "pending" or current["attempts"] != 0:
+                raise PlanError(f"Task is not dependency-ready for initial dispatch: {task_id}")
+            if not all(state["tasks"][dep]["status"] == "succeeded" for dep in task["depends_on"]):
+                raise PlanError(f"Task is not dependency-ready for initial dispatch: {task_id}")
+        else:
+            return _replay_v3_binding_locked(
+                run_dir, task_id, plan, state, manifest,
+                execution_context=execution_context, verify_live_input=True,
+            )
+
+        catalog, catalog_locator, selector_source, selector_path, materializer_source, materializer_path = load_v3_router_snapshot(
+            run_dir, state, manifest
+        )
+        selector = load_route_selector_bytes(selector_source, selector_path)
+        materializer = load_task_materializer_bytes(materializer_source, materializer_path)
+        prompt, dependencies = render_prompt_data(run_dir, task_id, trusted_manifest_sha256)
+        descriptor = _v3_input_descriptor(task, prompt, dependencies, execution_context)
+        frozen = current.get("dispatch")
+        as_of = None
+        try:
+            materialized = materializer.materialize(
+                deepcopy(task["route_request"]), task_id=task_id,
+                host=SURFACE_HOSTS[state["target_surface"]], transport=state["target_surface"],
+                input_descriptor=descriptor, as_of=as_of,
+            )
+            receipt = selector.decide_route(catalog, materialized, catalog_locator=str(catalog_locator))
+            base_dispatch = selector.dispatch_decision(receipt, catalog, materialized)
+        except (ValueError, KeyError, TypeError) as exc:
+            raise PlanError(f"V3 dispatch failed for task {task_id!r}: {exc}") from exc
+
+        task_dir = task_artifact_path(run_dir, task_id, "route_task.json").parent
+        prompt_path = task_dir / "prompt.md"
+        route_task_path = task_dir / "route_task.json"
+        receipt_path = task_dir / "route_receipt.json"
+        dispatch_path = task_dir / "dispatch.json"
+        dispatch = {
+            **base_dispatch,
+            "task_id": task_id,
+            "prompt_path": str(prompt_path.resolve()),
+            "route_task_path": str(route_task_path.resolve()),
+            "route_receipt_path": str(receipt_path.resolve()),
+            "input": descriptor,
+            "acceptance_handoff": {
+                "criteria": deepcopy(task["acceptance"]),
+                "verifier": deepcopy(materialized["verifier"]),
+                "owner": "parent",
+                "independent_of_execution": True,
+                "status": "pending-independent-acceptance",
+            },
+        }
+        if frozen is None:
+            existing = [path.name for path in (route_task_path, receipt_path, dispatch_path) if path.exists()]
+            if existing:
+                raise PlanError(
+                    f"Task {task_id!r} has an interrupted unbound V3 dispatch with existing artifacts: {existing}"
+                )
+            atomic_bytes(prompt_path, prompt.encode("utf-8"))
+            atomic_json(route_task_path, materialized)
+            atomic_json(receipt_path, receipt)
+            atomic_json(dispatch_path, dispatch)
+            current["decision_receipt"] = deepcopy(receipt)
+            current["dispatch"] = deepcopy(dispatch)
+            current["dispatch_sha256"] = receipt_digest(dispatch)
+            current["route_task_sha256"] = receipt_digest(materialized)
+            save(run_dir, state, plan)
+            return dispatch
+
+        raise PlanError(f"Task {task_id!r} reached an invalid V3 dispatch state")
+
+
+def claim_parent_task(
+    run_dir: Path, task_id: str, trusted_manifest_sha256: str | None = None
+) -> str:
+    with state_lock(run_dir):
+        return _claim_task(run_dir, task_id, trusted_manifest_sha256, allowed_kinds={"parent", "deterministic"})
 
 
 def claim_task(
@@ -1048,12 +1538,20 @@ def _claim_task(
     run_dir: Path,
     task_id: str,
     trusted_manifest_sha256: str | None = None,
+    allowed_kinds: set[str] | None = None,
 ) -> str:
-    plan, state = load_run(run_dir, trusted_manifest_sha256)
+    plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
     task = task_map(plan).get(task_id)
     if task is None:
         raise PlanError(f"Unknown task: {task_id}")
-    if "intelligence_tier" not in task:
+    if "route_request" in task:
+        dispatch = _replay_v3_binding_locked(
+            run_dir, task_id, plan, state, manifest, verify_live_input=True
+        )
+        expected = allowed_kinds or {"model"}
+        if dispatch.get("kind") not in expected:
+            raise PlanError(f"Task {task_id!r} has no eligible {'/'.join(sorted(expected))} dispatch")
+    elif "intelligence_tier" not in task:
         raise PlanError("Launch claims apply only to receipt-routed tasks")
     token = secrets.token_hex(16)
     claim_path = launch_claim_path(run_dir, task_id)
@@ -1118,7 +1616,7 @@ def _abort_launch(
 ) -> None:
     if not isinstance(error, str) or not error.strip():
         raise PlanError("Launch abort requires a non-empty error")
-    plan, state = load_run(run_dir, trusted_manifest_sha256)
+    plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
     if task_id not in state["tasks"]:
         raise PlanError(f"Unknown task: {task_id}")
     current = state["tasks"][task_id]
@@ -1170,12 +1668,12 @@ def _start_task(
     ):
         raise PlanError("Native handle must be a non-empty single-line string of at most 4096 characters")
     handle = handle.strip()
-    plan, state = load_run(run_dir, trusted_manifest_sha256)
+    plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
     task = task_map(plan).get(task_id)
     if task is None:
         raise PlanError(f"Unknown task: {task_id}")
     current = state["tasks"][task_id]
-    if "intelligence_tier" in task:
+    if "intelligence_tier" in task or "route_request" in task:
         claim_path = launch_claim_path(run_dir, task_id)
         claim_value = claim_path.read_text(encoding="ascii").strip() if claim_path.is_file() else ""
         if (
@@ -1185,6 +1683,16 @@ def _start_task(
             or launch_token != claim_value
         ):
             raise PlanError(f"Task {task_id!r} needs its exact launch claim token")
+        if "route_request" in task:
+            dispatch = _replay_v3_binding_locked(
+                run_dir, task_id, plan, state, manifest, verify_live_input=True
+            )
+            dispatch_kind = dispatch["kind"]
+            parent_handle = f"parent-sequential:{task_id}"
+            if dispatch_kind in {"parent", "deterministic"} and handle != parent_handle:
+                raise PlanError(f"Task {task_id!r} parent/local action requires exact handle {parent_handle!r}")
+            if dispatch_kind == "model" and handle.startswith("parent-sequential:"):
+                raise PlanError(f"Task {task_id!r} model dispatch requires a native worker handle")
     else:
         ready = ready_tasks(run_dir, trusted_manifest_sha256)
         _, state = load_run(run_dir, trusted_manifest_sha256)
@@ -1237,7 +1745,7 @@ def _finish_task(
 ) -> None:
     if status not in {"succeeded", "failed", "stopped"}:
         raise PlanError("finish status must be succeeded, failed, or stopped")
-    plan, state = load_run(run_dir, trusted_manifest_sha256)
+    plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
     if task_id not in state["tasks"]:
         raise PlanError(f"Unknown task: {task_id}")
     current = state["tasks"][task_id]
@@ -1250,6 +1758,11 @@ def _finish_task(
     if not current["handle"].startswith("parent-sequential:") and not handle_closed:
         raise PlanError(
             "A native worker result must be persisted, its handle closed, and --handle-closed supplied before finish"
+        )
+    task = task_map(plan)[task_id]
+    if status == "succeeded" and "route_request" in task:
+        _replay_v3_binding_locked(
+            run_dir, task_id, plan, state, manifest, verify_live_input=False
         )
     output_path = ""
     if status == "succeeded":
@@ -1296,6 +1809,14 @@ def _resume_run(
     by_id = task_map(plan)
     retry_ids = set()
 
+    if retry_failed:
+        unsupported = [
+            task_id for task_id, current in state["tasks"].items()
+            if "route_request" in by_id[task_id] and current["status"] == "failed"
+        ]
+        if unsupported:
+            raise PlanError(f"V3 tasks own one execution attempt and cannot retry failed work: {unsupported}")
+
     def stopped_before_launch(current: dict[str, Any]) -> bool:
         return (
             current["status"] == "stopped"
@@ -1329,6 +1850,8 @@ def _resume_run(
             or unlaunched_stop
             or stopped_attempt(current)
         ):
+            if "route_request" in by_id[task_id] and current.get("attempts", 0) > 0:
+                raise PlanError(f"V3 task {task_id!r} already consumed its single execution attempt")
             retry_ids.add(task_id)
             if current["status"] in {"launching", "running", "stopped"} and not unlaunched_stop:
                 current["attempts"] = max(0, current["attempts"] - 1)
@@ -1458,7 +1981,9 @@ def print_status(run_dir: Path, as_json: bool) -> None:
     print(f"{state['name']}: {state['status']}")
     for task_id, current in state["tasks"].items():
         handle = f" handle={current['handle']}" if current["handle"] else ""
-        print(f"- {task_id}: {current['status']} attempts={current['attempts']}{handle}")
+        dispatch = current.get("dispatch")
+        dispatch_note = f" dispatch={dispatch['kind']}" if isinstance(dispatch, dict) else ""
+        print(f"- {task_id}: {current['status']} attempts={current['attempts']}{handle}{dispatch_note}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1478,6 +2003,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     init.add_argument("--route-catalog")
     init.add_argument("--route-selector")
+    init.add_argument("--v3-route-catalog")
+    init.add_argument("--v3-route-selector")
+    init.add_argument("--v3-task-materializer")
+    init.add_argument("--v3-task-schema")
     ready = commands.add_parser("ready")
     ready.add_argument("run")
     render = commands.add_parser("render")
@@ -1489,6 +2018,13 @@ def build_parser() -> argparse.ArgumentParser:
     claim = commands.add_parser("claim")
     claim.add_argument("run")
     claim.add_argument("task_id")
+    dispatch = commands.add_parser("dispatch")
+    dispatch.add_argument("run")
+    dispatch.add_argument("task_id")
+    dispatch.add_argument("--execution-context", required=True)
+    claim_parent = commands.add_parser("claim-parent")
+    claim_parent.add_argument("run")
+    claim_parent.add_argument("task_id")
     start = commands.add_parser("start")
     start.add_argument("run")
     start.add_argument("task_id")
@@ -1535,6 +2071,10 @@ def main(argv: list[str] | None = None) -> int:
             catalog = Path(args.model_catalog) if args.model_catalog else None
             route_catalog = Path(args.route_catalog) if args.route_catalog else None
             route_selector = Path(args.route_selector) if args.route_selector else None
+            v3_route_catalog = Path(args.v3_route_catalog) if args.v3_route_catalog else None
+            v3_route_selector = Path(args.v3_route_selector) if args.v3_route_selector else None
+            v3_task_materializer = Path(args.v3_task_materializer) if args.v3_task_materializer else None
+            v3_task_schema = Path(args.v3_task_schema) if args.v3_task_schema else None
             print(
                 init_run(
                     Path(args.plan),
@@ -1544,6 +2084,10 @@ def main(argv: list[str] | None = None) -> int:
                     target_surface=args.target_surface,
                     route_catalog=route_catalog,
                     route_selector=route_selector,
+                    v3_route_catalog=v3_route_catalog,
+                    v3_route_selector=v3_route_selector,
+                    v3_task_materializer=v3_task_materializer,
+                    v3_task_schema=v3_task_schema,
                 )
             )
         elif args.command == "ready":
@@ -1554,6 +2098,14 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(task_model(resolve_run(args.run), args.task_id), sort_keys=True))
         elif args.command == "claim":
             print(claim_task(resolve_run(args.run), args.task_id))
+        elif args.command == "dispatch":
+            try:
+                execution_context = json.loads(args.execution_context)
+            except json.JSONDecodeError as exc:
+                raise PlanError(f"--execution-context must be JSON: {exc}") from exc
+            print(json.dumps(task_dispatch(resolve_run(args.run), args.task_id, execution_context), indent=2, sort_keys=True))
+        elif args.command == "claim-parent":
+            print(claim_parent_task(resolve_run(args.run), args.task_id))
         elif args.command == "start":
             start_task(resolve_run(args.run), args.task_id, args.handle, args.launch_token)
         elif args.command == "abort-launch":

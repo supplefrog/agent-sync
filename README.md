@@ -111,9 +111,9 @@ The scanner reports bounded metadata and review routes only. Novel, staged,
 conflicting, cross-host, safety-sensitive, and ambiguous changes are never marked
 for automatic application. See `docs/architecture.md`.
 
-The current `gpt-5.6-sol` / `openai-codex` user-owned instruction overlay is
+The current `gpt-6-astra` / `openai-codex` user-owned instruction overlay is
 identified by host, runtime, reasoning level, artifact hash, effective unit, and
-standing byte budget in `profiles/gpt-5.6-sol-openai-codex.json`. Provider-hidden
+standing byte budget in `profiles/gpt-6-astra-openai-codex.json`. Provider-hidden
 and runtime-native system instructions are inventoried as external dependencies,
 not copied or guessed. See `docs/instruction-profiles.md`.
 

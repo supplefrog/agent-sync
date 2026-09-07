@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
 import subprocess
 import sys
@@ -67,6 +68,22 @@ def base_plan() -> dict:
 
 class WorkflowStateTests(unittest.TestCase):
     def setUp(self) -> None:
+        routing_skill = Path(os.environ["AGENT_SIGNAL_ROOT"]) / "skills" / "openai-delegation-route-research"
+        self.default_router_patcher = mock.patch.object(
+            ws, "default_router_paths", return_value=(
+                routing_skill / "references" / "current-gpt-catalog.json",
+                routing_skill / "scripts" / "route_selector.py",
+            )
+        )
+        self.default_v3_router_patcher = mock.patch.object(
+            ws, "default_v3_router_paths", return_value=(
+                routing_skill / "references" / "current-task-route-catalog.json",
+                routing_skill / "scripts" / "route_selector.py",
+                routing_skill / "scripts" / "task_request.py",
+            )
+        )
+        self.default_router_patcher.start()
+        self.default_v3_router_patcher.start()
         temp_root = Path(os.environ.get("CODEX_TEST_TMP", tempfile.gettempdir()))
         self.temp = tempfile.TemporaryDirectory(dir=temp_root)
         self.root = Path(self.temp.name)
@@ -81,6 +98,8 @@ class WorkflowStateTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.temp.cleanup()
+        self.default_v3_router_patcher.stop()
+        self.default_router_patcher.stop()
 
     def init(self) -> Path:
         return ws.init_run(
@@ -92,7 +111,12 @@ class WorkflowStateTests(unittest.TestCase):
 
     def init_routed(self, tasks: list[dict], name: str = "routed-test") -> Path:
         plan_path = write_json(self.root / f"{name}.json", {"name": name, "tasks": tasks})
-        skills_root = Path(__file__).resolve().parents[2]
+        agent_signal_root = os.environ.get("AGENT_SIGNAL_ROOT")
+        skills_root = (
+            Path(agent_signal_root).resolve() / "skills"
+            if agent_signal_root
+            else Path(__file__).resolve().parents[2]
+        )
         return ws.init_run(
             plan_path,
             self.root / f"{name}-runs",
@@ -330,6 +354,15 @@ class WorkflowStateTests(unittest.TestCase):
         self.assertIn("[truncated; full artifact:", prompt)
         self.assertNotIn("x" * (ws.MAX_INJECTED_CHARS + 1), prompt)
 
+    def test_read_capped_preserves_legacy_universal_newline_text_and_hashes_raw_bytes(self) -> None:
+        artifact = self.root / "mixed-newlines.txt"
+        raw = b"first\r\nsecond\rthird\n"
+        artifact.write_bytes(raw)
+        text, truncated, digest = ws.read_capped_hashed(artifact, 100)
+        self.assertEqual(text, "first\nsecond\nthird\n")
+        self.assertFalse(truncated)
+        self.assertEqual(digest, __import__("hashlib").sha256(raw).hexdigest())
+
     def test_total_dependency_output_cap_is_enforced(self) -> None:
         run = self.init()
         self.succeed(run, "a", "a" * ws.MAX_INJECTED_CHARS)
@@ -342,7 +375,7 @@ class WorkflowStateTests(unittest.TestCase):
     def test_all_shipped_templates_validate(self) -> None:
         templates = Path(__file__).resolve().parents[1] / "assets" / "templates"
         validated = [ws.read_plan(path)["name"] for path in sorted(templates.glob("*.json"))]
-        self.assertEqual(len(validated), 4)
+        self.assertEqual(len(validated), 5)
 
     def test_explicit_difficulties_choose_matching_efforts(self) -> None:
         plan = ws.read_plan(self.plan_path)
@@ -368,7 +401,7 @@ class WorkflowStateTests(unittest.TestCase):
             ],
         }
         plan_path = write_json(self.root / "routed-plan.json", plan)
-        skills_root = Path(__file__).resolve().parents[2]
+        skills_root = Path(os.environ["AGENT_SIGNAL_ROOT"]) / "skills"
         run = ws.init_run(
             plan_path,
             self.root / "routed-runs",
@@ -430,7 +463,7 @@ class WorkflowStateTests(unittest.TestCase):
             ],
         }
         plan_path = write_json(self.root / "tamper-plan.json", plan)
-        skills_root = Path(__file__).resolve().parents[2]
+        skills_root = Path(os.environ["AGENT_SIGNAL_ROOT"]) / "skills"
         run = ws.init_run(
             plan_path,
             self.root / "tamper-runs",
@@ -581,7 +614,7 @@ class WorkflowStateTests(unittest.TestCase):
             ],
         }
         plan_path = write_json(self.root / "concurrent-plan.json", plan)
-        skills_root = Path(__file__).resolve().parents[2]
+        skills_root = Path(os.environ["AGENT_SIGNAL_ROOT"]) / "skills"
         run = ws.init_run(
             plan_path,
             self.root / "concurrent-runs",
@@ -656,7 +689,7 @@ class WorkflowStateTests(unittest.TestCase):
             }],
         }
         plan_path = write_json(self.root / "hermes-route.json", plan)
-        skills_root = Path(__file__).resolve().parents[2]
+        skills_root = Path(os.environ["AGENT_SIGNAL_ROOT"]) / "skills"
         run = ws.init_run(
             plan_path,
             self.root / "hermes-route-runs",
@@ -1127,6 +1160,455 @@ class WorkflowStateTests(unittest.TestCase):
         output.write_text("done", encoding="utf-8")
         ws.finish_task(run, "a", "succeeded", str(output), "", "", False, "parent-sequential:a")
         self.assertEqual(ws.load_json(run / "state.json")["tasks"]["a"]["status"], "succeeded")
+
+    def v3_paths(self) -> tuple[Path, Path, Path]:
+        root = Path(os.environ["AGENT_SIGNAL_ROOT"]) / "skills" / "openai-delegation-route-research"
+        return (
+            root / "references" / "current-task-route-catalog.json",
+            root / "scripts" / "route_selector.py",
+            root / "scripts" / "task_request.py",
+        )
+
+    def v3_template(self, *, parent_available: bool = True, deterministic: dict | None = None) -> dict:
+        route_id = "hermes-sol-low-inline"
+        return {
+            "schema_version": 3,
+            "task_class": "workflow-inline-test",
+            "requirements": {
+                "tools": [], "context_tokens": 1000,
+                "task_contract_sha256": "a" * 64,
+                "model": None, "reasoning_effort": None,
+            },
+            "verifier": {
+                "kind": "deterministic", "independent": True, "coverage": "complete",
+                "scope": "inline-text", "evidence": {"locator": "test:verifier", "sha256": "b" * 64},
+            },
+            "effects": "none", "failure_cost": "low", "deterministic": deterministic,
+            "budget": {
+                "objective": "quota", "api_remaining": None, "api_reserve": 0,
+                "allow_api_spend": False,
+                "quotas": {"codex-main": {"unit": "percentage-points", "remaining": 100, "reserve": 0}},
+                "unknown_cost_policy": "explicit_preference", "preference_order": [route_id],
+                "parent_available": parent_available, "attempt_cap": 1, "attempts_used": 0,
+                "fallback_route_id": None, "fallback_route_sha256": None,
+            },
+        }
+
+    def v3_catalog(self, *, workflow_transport: bool = False) -> Path:
+        source, _selector, _materializer = self.v3_paths()
+        catalog = ws.load_json(source)
+        if workflow_transport:
+            route = catalog["candidates"][0]["route"]
+            route["transport"] = "hermes-workflow"
+            catalog["candidates"][0]["availability"]["route_sha256"] = ws.receipt_digest(route)
+        return write_json(self.root / ("v3-model.json" if workflow_transport else "v3-parent.json"), catalog)
+
+    def init_v3(self, tasks: list[dict], *, workflow_transport: bool = False) -> Path:
+        plan = write_json(self.root / "v3-plan.json", {"name": "v3-flow", "tasks": tasks})
+        _catalog, selector, materializer = self.v3_paths()
+        return ws.init_run(
+            plan, self.root / "v3-runs", {}, target_surface="hermes-workflow",
+            model_catalog=self.catalog_path,
+            v3_route_catalog=self.v3_catalog(workflow_transport=workflow_transport),
+            v3_route_selector=selector, v3_task_materializer=materializer,
+        )
+
+    def test_v3_mixed_schema_roundtrip_and_manifest_separates_catalogs(self) -> None:
+        tasks = [
+            {"id": "old", "intelligence_tier": "standard", "latency_sensitive": False,
+             "failure_cost": "low", "acceptance": ["old output exists"], "prompt": "old"},
+            {"id": "new", "route_request": self.v3_template(), "acceptance": ["new output checked"],
+             "prompt": "new", "depends_on": ["old"]},
+        ]
+        plan = write_json(self.root / "mixed.json", {"name": "mixed", "tasks": tasks})
+        v2_catalog, selector = ws.default_router_paths()
+        _v3_catalog, _v3_selector, materializer = self.v3_paths()
+        run = ws.init_run(plan, self.root / "mixed-runs", {}, target_surface="hermes-workflow",
+                          route_catalog=v2_catalog, route_selector=selector,
+                          v3_route_catalog=self.v3_catalog(), v3_route_selector=selector,
+                          v3_task_materializer=materializer)
+        normalized = ws.load_json(run / "plan.json")
+        self.assertIn("intelligence_tier", normalized["tasks"][0])
+        self.assertIn("route_request", normalized["tasks"][1])
+        manifest = ws.load_json(run / "run_manifest.json")
+        self.assertEqual(manifest["schema_version"], 3)
+        self.assertNotEqual(manifest["route_catalog_file"], manifest["v3_route_catalog_file"])
+        self.assertIsNone(ws.load_json(run / "state.json")["tasks"]["new"]["decision_receipt"])
+
+    def test_v3_dependency_gated_bind_hashes_full_truncated_artifact_and_replays(self) -> None:
+        tasks = [
+            {"id": "source", "difficulty": "low", "prompt": "source"},
+            {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"],
+             "prompt": "Use {{output:source}}", "depends_on": ["source"], "include_outputs": ["source"]},
+        ]
+        run = self.init_v3(tasks)
+        with self.assertRaisesRegex(ws.PlanError, "dependency-ready"):
+            ws.task_dispatch(run, "new", {"controller": "test"})
+        content = "x" * (ws.MAX_INJECTED_CHARS + 17) + "TAIL"
+        self.succeed(run, "source", content)
+        dispatch = ws.task_dispatch(run, "new", {"controller": "test"})
+        artifact = run / "tasks" / "source" / "output.md"
+        self.assertEqual(dispatch["input"]["dependency_artifacts"][0]["sha256"], __import__("hashlib").sha256(artifact.read_bytes()).hexdigest())
+        self.assertNotIn("TAIL", dispatch["input"]["prompt"])
+        self.assertEqual(dispatch, ws.task_dispatch(run, "new", {"controller": "test"}))
+
+    def test_v3_render_preview_before_dispatch_is_safely_replaced_at_bind(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "preview"}
+        run = self.init_v3([task])
+        preview_path, preview = ws.render_prompt_with_text(run, "new")
+        self.assertEqual(preview_path.read_text(encoding="utf-8"), preview)
+        preview_path.write_text("caller modified preview", encoding="utf-8")
+        dispatch = ws.task_dispatch(run, "new", {"controller": "bound"})
+        self.assertEqual(preview_path.read_text(encoding="utf-8"), dispatch["input"]["prompt"])
+
+    def test_v3_partial_route_artifact_still_blocks_initial_bind(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "preview"}
+        run = self.init_v3([task])
+        (run / "tasks" / "new" / "route_task.json").write_text("{}", encoding="utf-8")
+        with self.assertRaisesRegex(ws.PlanError, "interrupted unbound V3 dispatch"):
+            ws.task_dispatch(run, "new", {})
+
+    def test_v3_tamper_rejection_for_context_dependency_input_and_receipt(self) -> None:
+        tasks = [{"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}]
+        run = self.init_v3(tasks)
+        ws.task_dispatch(run, "new", {"controller": "original"})
+        with self.assertRaisesRegex(ws.PlanError, "input or execution context"):
+            ws.task_dispatch(run, "new", {"controller": "changed"})
+        receipt_path = run / "tasks" / "new" / "route_receipt.json"
+        receipt = ws.load_json(receipt_path)
+        receipt["selection_basis"] = "tampered"
+        receipt["decision_id"] = ws.receipt_digest({key: value for key, value in receipt.items() if key != "decision_id"})
+        write_json(receipt_path, receipt)
+        with self.assertRaises((ws.PlanError, ValueError)):
+            ws.task_dispatch(run, "new", {"controller": "original"})
+
+    def test_v3_bound_object_context_rejects_explicit_json_null(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        run = self.init_v3([task])
+        ws.task_dispatch(run, "new", {})
+        with self.assertRaisesRegex(ws.PlanError, "execution context changed"):
+            ws.task_dispatch(run, "new", None)
+
+    def test_v3_initial_json_null_replays_and_rejects_changed_object(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        run = self.init_v3([task])
+        bound = ws.task_dispatch(run, "new", None)
+        self.assertIsNone(bound["input"]["execution_context"])
+        self.assertEqual(bound, ws.task_dispatch(run, "new", None))
+        with self.assertRaisesRegex(ws.PlanError, "execution context changed"):
+            ws.task_dispatch(run, "new", {})
+
+    def test_v3_rejects_mutated_dependency_and_frozen_input(self) -> None:
+        tasks = [
+            {"id": "source", "difficulty": "low", "prompt": "source"},
+            {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"],
+             "prompt": "{{output:source}}", "depends_on": ["source"], "include_outputs": ["source"]},
+        ]
+        run = self.init_v3(tasks)
+        self.succeed(run, "source", "original")
+        ws.task_dispatch(run, "new", {})
+        (run / "tasks" / "source" / "output.md").write_text("mutated", encoding="utf-8")
+        with self.assertRaisesRegex(ws.PlanError, "Frozen V3"):
+            ws.task_dispatch(run, "new", {})
+
+    def test_v3_mutated_dependency_blocks_render_and_claim_without_redispatch(self) -> None:
+        tasks = [
+            {"id": "source", "difficulty": "low", "prompt": "source"},
+            {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"],
+             "prompt": "{{output:source}}", "depends_on": ["source"], "include_outputs": ["source"]},
+        ]
+        run = self.init_v3(tasks)
+        self.succeed(run, "source", "original")
+        ws.task_dispatch(run, "new", {})
+        (run / "tasks" / "source" / "output.md").write_text("changed", encoding="utf-8")
+        with self.assertRaisesRegex(ws.PlanError, "Frozen V3"):
+            ws.render_prompt(run, "new")
+        with self.assertRaisesRegex(ws.PlanError, "Frozen V3"):
+            ws.claim_parent_task(run, "new")
+
+    def test_v3_plan_template_tamper_is_rejected_by_manifest(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        run = self.init_v3([task])
+        plan = ws.load_json(run / "plan.json")
+        plan["tasks"][0]["route_request"]["task_class"] = "tampered"
+        write_json(run / "plan.json", plan)
+        with self.assertRaisesRegex(ws.PlanError, "plan changed"):
+            ws.task_dispatch(run, "new", {})
+
+    def test_v3_manifest_rejects_renamed_snapshot_and_changed_schema_bytes(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        run = self.init_v3([task])
+        manifest_path = run / "run_manifest.json"
+        manifest = ws.load_json(manifest_path)
+        manifest["v3_route_selector_file"] = "renamed.py"
+        write_json(manifest_path, manifest)
+        with self.assertRaisesRegex(ws.PlanError, "invalid v3_route_selector_file"):
+            ws.task_dispatch(run, "new", {})
+        manifest["v3_route_selector_file"] = "route_selector_v3.py"
+        write_json(manifest_path, manifest)
+        (run / "route-task-v3.schema.json").write_text("{}", encoding="utf-8")
+        with self.assertRaisesRegex(ws.PlanError, "schema snapshot changed"):
+            ws.task_dispatch(run, "new", {})
+
+    def test_v3_nonmodel_dispatch_never_exposes_model_or_native_claim(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        run = self.init_v3([task])
+        dispatch = ws.task_dispatch(run, "new", {})
+        self.assertEqual(dispatch["kind"], "parent")
+        self.assertNotIn("task_model", dispatch)
+        with self.assertRaisesRegex(ws.PlanError, "no task model"):
+            ws.task_model(run, "new")
+        with self.assertRaisesRegex(ws.PlanError, "model dispatch"):
+            ws.claim_task(run, "new")
+
+    def test_v3_parent_claim_completion_is_truthful_and_preserves_handoff(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["parent checks output"], "prompt": "new"}
+        run = self.init_v3([task])
+        dispatch = ws.task_dispatch(run, "new", {"controller": "parent"})
+        token = ws.claim_parent_task(run, "new")
+        with self.assertRaisesRegex(ws.PlanError, "exact handle"):
+            ws.start_task(run, "new", "arbitrary", token)
+        handle = "parent-sequential:new"
+        ws.start_task(run, "new", handle, token)
+        output = run / "tasks" / "new" / "output.md"
+        output.write_text("parent-produced evidence", encoding="utf-8")
+        ws.finish_task(run, "new", "succeeded", str(output), "parent completed work", "", False, handle, token)
+        current = ws.load_json(run / "state.json")["tasks"]["new"]
+        self.assertEqual(current["output_path"], str(output.resolve()))
+        self.assertEqual(current["launch_token"], token)
+        self.assertEqual(current["dispatch"]["acceptance_handoff"], dispatch["acceptance_handoff"])
+
+    def test_v3_deterministic_dispatch_uses_parent_claim_without_launcher(self) -> None:
+        executor = {
+            "executor_id": "checked-local-transform", "artifact_sha256": "c" * 64,
+            "task_contract_sha256": "a" * 64, "coverage": "complete", "effects": "none",
+        }
+        task = {"id": "new", "route_request": self.v3_template(deterministic=executor),
+                "acceptance": ["parent runs and checks transform"], "prompt": "new"}
+        run = self.init_v3([task])
+        dispatch = ws.task_dispatch(run, "new", {"controller": "parent"})
+        self.assertEqual(dispatch["kind"], "deterministic")
+        self.assertEqual(dispatch["executor"]["executor_id"], executor["executor_id"])
+        with self.assertRaisesRegex(ws.PlanError, "model dispatch"):
+            ws.claim_task(run, "new")
+        self.assertTrue(ws.claim_parent_task(run, "new"))
+
+    def test_v3_defer_stays_visible_and_does_not_reenter_ready_loop(self) -> None:
+        template = self.v3_template(parent_available=False)
+        template["effects"] = "irreversible"
+        task = {"id": "new", "route_request": template, "acceptance": ["operator resolves deferral"], "prompt": "new"}
+        run = self.init_v3([task])
+        self.assertEqual(ws.task_dispatch(run, "new", {})["kind"], "defer")
+        self.assertEqual(ws.ready_tasks(run), [])
+        self.assertEqual(ws.load_json(run / "state.json")["tasks"]["new"]["status"], "pending")
+
+    def test_v3_model_route_claim_and_stop_lifecycle(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        run = self.init_v3([task], workflow_transport=True)
+        dispatch = ws.task_dispatch(run, "new", {"controller": "native"})
+        self.assertEqual(dispatch["kind"], "model")
+        self.assertEqual(ws.task_model(run, "new")["model"], dispatch["route"]["model"])
+        token = ws.claim_task(run, "new")
+        ws.request_stop(run)
+        ws.start_task(run, "new", "native:new", token)
+        output = run / "tasks" / "new" / "output.md"
+        output.write_text("done", encoding="utf-8")
+        ws.finish_task(run, "new", "stopped", "", "", "cancelled", True, "native:new", token)
+        with self.assertRaisesRegex(ws.PlanError, "single execution attempt"):
+            ws.resume_run(run, retry_failed=False, retry_interrupted=True)
+
+    def test_v3_dispatch_kind_tamper_after_claim_blocks_start(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        run = self.init_v3([task], workflow_transport=True)
+        ws.task_dispatch(run, "new", {})
+        token = ws.claim_task(run, "new")
+        state = ws.load_json(run / "state.json")
+        state["tasks"]["new"]["dispatch"]["kind"] = "parent"
+        state["tasks"]["new"]["dispatch_sha256"] = ws.receipt_digest(state["tasks"]["new"]["dispatch"])
+        write_json(run / "state.json", state)
+        with self.assertRaisesRegex(ws.PlanError, "dispatch changed"):
+            ws.start_task(run, "new", "native:new", token)
+
+    def test_v3_rehashed_receipt_state_blocks_claim(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        run = self.init_v3([task])
+        ws.task_dispatch(run, "new", {})
+        state = ws.load_json(run / "state.json")
+        receipt = state["tasks"]["new"]["decision_receipt"]
+        receipt["selection_basis"] = "forged"
+        receipt["decision_id"] = ws.receipt_digest({key: value for key, value in receipt.items() if key != "decision_id"})
+        write_json(run / "state.json", state)
+        with self.assertRaisesRegex(ws.PlanError, "receipt, or dispatch changed"):
+            ws.claim_parent_task(run, "new")
+
+    def test_v3_success_checks_frozen_ownership_without_rereading_dependencies(self) -> None:
+        tasks = [
+            {"id": "source", "difficulty": "low", "prompt": "source"},
+            {"id": "new", "route_request": self.v3_template(), "acceptance": ["parent still must accept"],
+             "prompt": "{{output:source}}", "depends_on": ["source"], "include_outputs": ["source"]},
+        ]
+        run = self.init_v3(tasks)
+        self.succeed(run, "source", "dispatch input")
+        dispatch = ws.task_dispatch(run, "new", {})
+        token = ws.claim_parent_task(run, "new")
+        handle = "parent-sequential:new"
+        ws.start_task(run, "new", handle, token)
+        (run / "tasks" / "source" / "output.md").write_text("changed after execution began", encoding="utf-8")
+        output = run / "tasks" / "new" / "output.md"
+        output.write_text("result", encoding="utf-8")
+        ws.finish_task(run, "new", "succeeded", str(output), "executed", "", False, handle, token)
+        current = ws.load_json(run / "state.json")["tasks"]["new"]
+        self.assertEqual(current["status"], "succeeded")
+        self.assertEqual(dispatch["acceptance_handoff"]["status"], "pending-independent-acceptance")
+
+    def test_v3_success_rejects_coherently_rehashed_post_start_request_change(self) -> None:
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["parent still must accept"], "prompt": "new"}
+        run = self.init_v3([task])
+        ws.task_dispatch(run, "new", {})
+        token = ws.claim_parent_task(run, "new")
+        handle = "parent-sequential:new"
+        ws.start_task(run, "new", handle, token)
+
+        manifest = ws.load_json(run / "run_manifest.json")
+        catalog = ws.load_json(run / "route_catalog_v3.json")
+        route_task_path = run / "tasks" / "new" / "route_task.json"
+        receipt_path = run / "tasks" / "new" / "route_receipt.json"
+        dispatch_path = run / "tasks" / "new" / "dispatch.json"
+        route_task = ws.load_json(route_task_path)
+        route_task["budget"]["api_reserve"] = 1
+        selector = ws.load_route_selector(self.v3_paths()[1])
+        receipt = selector.decide_route(
+            catalog, route_task, catalog_locator=manifest["v3_route_catalog_locator"]
+        )
+        base_dispatch = selector.dispatch_decision(receipt, catalog, route_task)
+        dispatch = ws.load_json(dispatch_path)
+        dispatch.update(base_dispatch)
+        write_json(route_task_path, route_task)
+        write_json(receipt_path, receipt)
+        write_json(dispatch_path, dispatch)
+        state = ws.load_json(run / "state.json")
+        current = state["tasks"]["new"]
+        current["route_task_sha256"] = ws.receipt_digest(route_task)
+        current["decision_receipt"] = receipt
+        current["dispatch"] = dispatch
+        current["dispatch_sha256"] = ws.receipt_digest(dispatch)
+        write_json(run / "state.json", state)
+
+        output = run / "tasks" / "new" / "output.md"
+        output.write_text("result", encoding="utf-8")
+        with self.assertRaisesRegex(ws.PlanError, "immutable plan"):
+            ws.finish_task(run, "new", "succeeded", str(output), "executed", "", False, handle, token)
+
+    def test_v3_rejects_attempt_retry_contract(self) -> None:
+        template = self.v3_template()
+        template["budget"]["attempt_cap"] = 2
+        plan = {"name": "bad-v3", "tasks": [{"id": "new", "route_request": template, "attempts": 2,
+                                                "acceptance": ["checked"], "prompt": "new"}]}
+        with self.assertRaisesRegex(ws.PlanError, "attempt_cap=1"):
+            ws.validate_plan(plan, self.root / "bad.json")
+
+    def test_v3_uses_only_matching_admitted_current_or_history_sources(self) -> None:
+        source_catalog, source_selector, source_materializer = self.v3_paths()
+        skill = self.root / "routing-skill"
+        scripts = skill / "scripts"
+        references = skill / "references"
+        scripts.mkdir(parents=True)
+        references.mkdir()
+        catalog = references / "current-task-route-catalog.json"
+        selector = scripts / "route_selector.py"
+        materializer = scripts / "task_request.py"
+        catalog.write_bytes(source_catalog.read_bytes())
+        selector.write_bytes(source_selector.read_bytes())
+        materializer.write_bytes(source_materializer.read_bytes())
+        (references / "route-task-v3.schema.json").write_bytes(
+            (source_catalog.parent / "route-task-v3.schema.json").read_bytes()
+        )
+        task = {"id": "new", "route_request": self.v3_template(), "acceptance": ["checked"], "prompt": "new"}
+        plan = write_json(self.root / "history-plan.json", {"name": "history", "tasks": [task]})
+        with mock.patch.object(ws, "default_v3_router_paths", return_value=(catalog, selector, materializer)):
+            run = ws.init_run(plan, self.root / "history-runs", {}, target_surface="hermes-workflow",
+                              v3_route_catalog=catalog, v3_route_selector=selector,
+                              v3_task_materializer=materializer)
+            selector_hash = __import__("hashlib").sha256(selector.read_bytes()).hexdigest()
+            materializer_hash = __import__("hashlib").sha256(materializer.read_bytes()).hexdigest()
+            selector_history = scripts / "selector-history" / f"{selector_hash}.py"
+            materializer_history = scripts / "materializer-history" / f"{materializer_hash}.py"
+            selector_history.parent.mkdir()
+            materializer_history.parent.mkdir()
+            selector_history.write_bytes(selector.read_bytes())
+            materializer_history.write_bytes(materializer.read_bytes())
+            selector.write_text("# upgraded selector\n", encoding="utf-8")
+            materializer.write_text("# upgraded materializer\n", encoding="utf-8")
+            ws.task_dispatch(run, "new", {})
+            schema = references / "route-task-v3.schema.json"
+            original_schema = schema.read_bytes()
+            schema.write_text("{}", encoding="utf-8")
+            with self.assertRaisesRegex(ws.PlanError, "historical schema data is unavailable"):
+                ws.task_dispatch(run, "new", {})
+            schema.write_bytes(original_schema)
+            selector_history.unlink()
+            with self.assertRaisesRegex(ws.PlanError, "not admitted"):
+                ws.task_dispatch(run, "new", {})
+
+    def test_current_v3_catalog_keeps_codex_and_omp_model_dispatch_unselected(self) -> None:
+        catalog_path, selector, materializer = self.v3_paths()
+        for surface in ("codex-workflow", "omp-workflow"):
+            with self.subTest(surface=surface):
+                task = {"id": "new", "route_request": self.v3_template(),
+                        "acceptance": ["parent checks result"], "prompt": surface}
+                plan = write_json(self.root / f"{surface}.json", {"name": surface, "tasks": [task]})
+                run = ws.init_run(
+                    plan, self.root / f"{surface}-runs", {}, target_surface=surface,
+                    v3_route_catalog=catalog_path, v3_route_selector=selector,
+                    v3_task_materializer=materializer,
+                )
+                dispatch = ws.task_dispatch(run, "new", {"native_host": surface})
+                self.assertEqual(dispatch["kind"], "parent")
+                with self.assertRaisesRegex(ws.PlanError, "no task model"):
+                    ws.task_model(run, "new")
+
+    def test_v3_dispatch_kinds_are_surface_generic_and_model_requires_matching_catalog_cell(self) -> None:
+        source_catalog, selector, materializer = self.v3_paths()
+        for surface, host in (("codex-workflow", "codex"), ("omp-workflow", "omp")):
+            with self.subTest(surface=surface):
+                template = self.v3_template()
+                catalog = ws.load_json(source_catalog)
+                candidate = catalog["candidates"][0]
+                candidate["id"] = f"synthetic-{host}-test-only"
+                candidate["route"].update(host=host, transport=surface)
+                candidate["availability"]["route_sha256"] = ws.receipt_digest(candidate["route"])
+                candidate["availability"]["valid_until"] = "2099-01-01T00:00:00Z"
+                candidate["cost"]["quota"]["bucket"] = "codex-main"
+                template["budget"]["preference_order"] = [candidate["id"]]
+                catalog["catalog_version"] = f"synthetic-{host}-test-only"
+                catalog_path = write_json(self.root / f"{host}-synthetic-v3.json", catalog)
+                task = {"id": "model", "route_request": template,
+                        "acceptance": ["parent independently accepts"], "prompt": surface}
+                plan = write_json(self.root / f"{host}-model.json", {"name": f"{host}-model", "tasks": [task]})
+                run = ws.init_run(
+                    plan, self.root / f"{host}-model-runs", {}, target_surface=surface,
+                    v3_route_catalog=catalog_path, v3_route_selector=selector,
+                    v3_task_materializer=materializer,
+                )
+                dispatch = ws.task_dispatch(run, "model", {"native_host": host})
+                self.assertEqual(dispatch["kind"], "model")
+                self.assertEqual(dispatch["route"]["host"], host)
+                self.assertEqual(ws.task_model(run, "model")["route_id"], candidate["id"])
+
+    def test_omp_v2_agent_installer_rejects_v3_catalog_without_mutating_agents(self) -> None:
+        path = Path(__file__).with_name("install_omp_route_agents.py")
+        spec = importlib.util.spec_from_file_location("staged_omp_installer", path)
+        assert spec and spec.loader
+        installer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(installer)
+        catalog_path = self.v3_paths()[0]
+        agents = self.root / "omp-agents"
+        agents.mkdir()
+        sentinel = agents / "route-existing.md"
+        sentinel.write_text("preserve", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "active V2 catalogue"):
+            installer.synchronize(catalog_path, agents, check=False)
+        self.assertEqual(sentinel.read_text(encoding="utf-8"), "preserve")
 
 
 if __name__ == "__main__":

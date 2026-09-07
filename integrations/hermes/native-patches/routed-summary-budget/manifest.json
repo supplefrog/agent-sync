@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "owner": "Hermes native delegation results",
+  "base_revision": "59d330fd15a692b439219e505bc704fcde0b2b6f",
+  "base_source_matches_commit": true,
+  "patch_sha256": "dd7ed3bcfeac282ffd84e46f8a45cee8a5f9bc93fc37a16969427883faaa9395",
+  "file": {
+    "path": "tools/delegate_tool_results.py",
+    "before_sha256": "2d4e09506a4d0d07f8fb527bcce6616eb129c93130cc818eb81a33597bc0685c",
+    "after_sha256": "33a932fbded887234168cc2e4e646ce7aa7263c46b839da013aadd453a3eb8b0"
+  },
+  "paired_canonical_plugin": {
+    "path": "integrations/hermes/routed-delegation/__init__.py",
+    "sha256": "96798010ae0664dcd20e94ef2572b4e86d7f95193d3d1ec4c75cb3ab6423d4f5"
+  },
+  "verification": {
+    "fresh_native_checks": 8,
+    "installed_plugin_tests": 27,
+    "model_calls": 0
+  },
+  "order": "Restore the exact native helper first, then expose the paired canonical plugin through the Hermes plugin path.",
+  "limits": [
+    "Native runtime/dependencies and plugin registration are prerequisites, not installed by declarative recovery.",
+    "Native session reset and accounting do not share an atomic epoch transaction; observed drift is quarantined.",
+    "This lifecycle repair preserves current v2 routing; v3 automatic consumers remain separate."
+  ]
+}

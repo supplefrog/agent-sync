@@ -152,7 +152,7 @@
     {
       "id": "hermes.instruction-authoring-route",
       "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "paragraph-prefix", "value": "When creating, revising, auditing, or routing durable agent instructions,"},
+      "selector": {"kind": "paragraph-prefix", "value": "For durable/shared instruction authoring,"},
       "class": "workflow-routing",
       "status": "effective",
       "hosts": ["hermes"],

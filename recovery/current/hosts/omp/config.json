@@ -1,6 +1,6 @@
 {
   "colorBlindMode": false,
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "xhigh",
   "dev": {
     "autoqaConsent": "granted"
   },
@@ -8,10 +8,10 @@
     "backend": "off"
   },
   "modelRoles": {
-    "default": "openai-codex/gpt-5.6-sol"
+    "default": "openai-codex/gpt-6-astra"
   },
   "prewalk": {
-    "enabled": true
+    "enabled": false
   },
   "providers": {
     "webSearchOrder": [

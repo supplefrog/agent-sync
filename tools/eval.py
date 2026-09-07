@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime as dt
 import hashlib
 import json
@@ -21,18 +22,18 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from artifact_hash import candidate_hash, candidate_prompt_text
+    from artifact_hash import candidate_hash, candidate_prompt_text, freeze_candidate, harness_hash
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from artifact_hash import candidate_hash, candidate_prompt_text
+    from artifact_hash import candidate_hash, candidate_prompt_text, freeze_candidate, harness_hash
 
 
-def command_version(name: str) -> str:
-    exe = shutil.which(name)
-    if not exe:
-        return "not-found"
-    result = subprocess.run([exe, "--version"], text=True, capture_output=True, check=False)
-    return (result.stdout or result.stderr).strip()
+def command_version(name: str, receipt_sink: dict[str, Any] | None = None) -> str:
+    from evaluation_runtime import native_version
+    receipt = native_version(name)
+    if receipt_sink is not None:
+        receipt_sink[name] = receipt
+    return receipt["version"]
 
 
 def clean_output(text: str) -> str:
@@ -56,12 +57,6 @@ CHILD_ENV_EXACT = {
     "HERMES_DELEGATED_CHILD_CONTEXT",
 }
 CHILD_ENV_PREFIXES = ("HERMES_KANBAN_", "HERMES_DELEGATION_", "DELEGATION_")
-TRANSIENT_PROVIDER_ERROR_RE = re.compile(
-    r"(?:\b(?:429|502|503|504)\b|rate[_ -]?limit(?:ed|_exceeded)?|overload(?:ed)?|"
-    r"temporar(?:ily|y) unavailable|service unavailable|server_error|upstream connect error|"
-    r"non-streaming api call timed out after \d+(?:\.\d+)?s with no response)",
-    re.IGNORECASE,
-)
 
 
 def parse_session_ids(text: str) -> set[str]:
@@ -119,6 +114,9 @@ class HermesSessionLifecycle:
                 "remaining": targets,
                 "errors": self.receipt_errors,
             }
+        if not targets:
+            return {"policy": "delete-after-durable-report", "created": sorted(self.created),
+                    "protected": protected, "deleted": [], "remaining": [], "errors": self.receipt_errors}
         deleted: list[str] = []
         delete_errors: list[str] = []
         for session_id in targets:
@@ -213,12 +211,17 @@ def sequential_decision(mode: str, scores: list[float], rule: DecisionRule, look
 
 
 def validate_suite(suite: dict[str, Any]) -> None:
+    if not isinstance(suite, dict):
+        raise ValueError("suite must be a JSON object")
+    # Fail before model execution when the required validator is unavailable.
+    _schema_validator({"type": "object"})
     cases = suite.get("cases", [])
     if len(cases) < 3:
         raise ValueError("suite must contain at least three cases")
     ids = [case.get("id") for case in cases]
     if len(ids) != len(set(ids)):
         raise ValueError("suite case ids must be unique")
+    suite_report_version(suite)
     schema_version = int(suite.get("schema_version", 1))
     if schema_version >= 2:
         present = {case.get("kind") for case in cases}
@@ -231,6 +234,7 @@ def validate_suite(suite: dict[str, Any]) -> None:
     receipt_schema = suite.get("receipt_schema")
     if not isinstance(receipt_schema, dict) or receipt_schema.get("type") != "object":
         raise ValueError("schema v3 requires an object receipt_schema")
+    _schema_validator(receipt_schema)
     stability = suite.get("stability")
     if not isinstance(stability, dict):
         raise ValueError("schema v3 requires a stability contract")
@@ -249,8 +253,9 @@ def validate_suite(suite: dict[str, Any]) -> None:
             node = _schema_for_path(receipt_schema, str(path))
             if node is None:
                 raise ValueError(f"schema v3 case {case.get('id')} expected_receipt path not in receipt_schema: {path}")
-            if "enum" in node and value not in node["enum"]:
-                raise ValueError(f"schema v3 case {case.get('id')} expected_receipt value is outside enum: {path}")
+            reasons = _schema_reasons(value, node, root_schema=receipt_schema)
+            if reasons:
+                raise ValueError(f"schema v3 case {case.get('id')} expected_receipt violates receipt_schema at {path}: " + "; ".join(reasons))
         semantic = case.get("semantic_criteria", [])
         if not isinstance(semantic, list) or not semantic:
             raise ValueError(f"schema v3 case {case.get('id')} requires semantic_criteria")
@@ -279,6 +284,46 @@ def finalize_report(path: Path, report: dict[str, Any], lifecycle: HermesSession
     durable_json_write(path, report)
     report["session_lifecycle"] = lifecycle.cleanup()
     durable_json_write(path, report)
+
+
+def finalize_workspace(path: Path, report: dict[str, Any], lifecycle: HermesSessionLifecycle, workdir: Path) -> None:
+    """Make cleanup/retention explicit, including failure to publish the report."""
+    report["report_export"] = {"requested_path": str(path), "written": True, "recovery_path": None, "errors": []}
+    report["workspace_lifecycle"] = {"policy": "remove-after-durable-report", "outcome": "pending", "path": str(workdir), "errors": []}
+
+    def retain(exc: BaseException) -> None:
+        report["operational_ok"] = False
+        report["report_export"]["written"] = False
+        report["report_export"]["errors"].append(f"report export failed: {type(exc).__name__}")
+        report["workspace_lifecycle"].update(outcome="retained-report-write-failure", path=str(workdir))
+        recovery = workdir / "recovery-report.json"
+        try:
+            workdir.mkdir(parents=True, exist_ok=True)
+            report["report_export"]["recovery_path"] = str(recovery)
+            durable_json_write(recovery, report)
+        except Exception as recovery_exc:
+            report["report_export"]["recovery_path"] = None
+            report["report_export"]["errors"].append(f"recovery report write failed: {type(recovery_exc).__name__}")
+
+    try:
+        finalize_report(path, report, lifecycle)
+    except Exception as exc:
+        retain(exc)
+        return
+    session = report.get("session_lifecycle", {})
+    if session.get("errors") or (session.get("remaining") and session.get("policy") != "retain-evidence"):
+        report["operational_ok"] = False
+    try:
+        shutil.rmtree(workdir)
+        report["workspace_lifecycle"].update(outcome="removed", path=None)
+    except OSError as exc:
+        report["operational_ok"] = False
+        report["workspace_lifecycle"].update(outcome="cleanup-failed", path=str(workdir),
+                                            errors=[f"workspace cleanup failed: {type(exc).__name__}"])
+    try:
+        durable_json_write(path, report)
+    except Exception as exc:
+        retain(exc)
 
 
 def codex_route_attestation(stderr: str, model: str | None, provider: str | None, reasoning: str | None) -> dict[str, Any]:
@@ -446,148 +491,19 @@ def run_agent(
     model: str | None = None,
     provider: str | None = None,
     reasoning: str | None = None,
-    tool_policy: str = "safe",
+    tool_policy: str = "none",
     lifecycle: HermesSessionLifecycle | None = None,
     output_schema: dict[str, Any] | None = None,
     require_attestation: bool = False,
 ) -> dict[str, Any]:
-    exe = shutil.which(agent)
-    if not exe:
-        raise RuntimeError(f"{agent} executable not found")
-    workdir.mkdir(parents=True, exist_ok=True)
-    started = time.monotonic()
-    output_file = workdir / f"last-{time.time_ns()}.txt"
-    input_text = None
-    run_env = isolated_child_env()
-    schema_file: Path | None = None
-    if output_schema is not None:
-        schema_file = workdir / "output-schema.json"
-        schema_file.write_text(json.dumps(output_schema, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    if agent == "hermes":
-        if output_schema is not None:
-            prompt += "\n\nReturn only one JSON object matching this schema:\n" + json.dumps(output_schema, ensure_ascii=False)
-        command = [exe, "chat", "-Q", "--source", "agent-signal-eval", "--in", str(workdir), "--ignore-rules"]
-        if model:
-            command += ["-m", model]
-        if provider:
-            command += ["--provider", provider]
-        if reasoning:
-            command += ["--reasoning", reasoning]
-        if tool_policy == "none":
-            # Empty/falsey toolsets trigger Hermes' configured coding-tool fallback.
-            # A truthy unknown sentinel produces an explicit empty selection.
-            command += ["--toolsets", "none"]
-        elif not full_tools or tool_policy == "safe":
-            command.append("--safe-mode")
-        command += ["-q", prompt]
-    elif agent == "codex":
-        source_codex_home = Path(run_env.get("CODEX_HOME") or Path.home() / ".codex")
-        isolated_codex_home = workdir / ".codex"
-        isolated_codex_home.mkdir(parents=True, exist_ok=True)
-        source_auth = source_codex_home / "auth.json"
-        if source_auth.is_file():
-            shutil.copy2(source_auth, isolated_codex_home / "auth.json")
-        # Codex discovers user skills below HOME. Isolate HOME so a candidate
-        # already present in ~/.agents/skills or CODEX_HOME cannot contaminate
-        # the baseline. Copy only auth into the disposable home.
-        run_env["HOME"] = str(workdir)
-        run_env["USERPROFILE"] = str(workdir)
-        run_env["CODEX_HOME"] = str(isolated_codex_home)
-        command = [exe, "exec"]
-        if model:
-            command += ["-m", model]
-        if reasoning:
-            command += ["-c", f'model_reasoning_effort="{reasoning}"']
-        if schema_file is not None:
-            command += ["--output-schema", str(schema_file)]
-        command += [
-            "--ephemeral",
-            "--skip-git-repo-check",
-            "--ignore-user-config",
-            "--ignore-rules",
-            "--sandbox",
-            "read-only",
-            "-C",
-            str(workdir),
-            "-o",
-            str(output_file),
-            "-",
-        ]
-        input_text = prompt
-    else:
-        raise RuntimeError("agent must be hermes or codex")
-    session_ids: list[str] = []
-    session_receipt_error: str | None = None
-    process = subprocess.Popen(
-        command,
-        stdin=subprocess.PIPE if input_text is not None else None,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        env=run_env,
-    )
-    try:
-        stdout, stderr = process.communicate(input=input_text, timeout=timeout)
-    except subprocess.TimeoutExpired as exc:
-        process.kill()
-        stdout, stderr = process.communicate()
-        elapsed = round(time.monotonic() - started, 3)
-        if agent == "hermes" and lifecycle:
-            session_ids, session_receipt_error = lifecycle.register_receipt(stderr or "")
-        return {
-            "ok": False,
-            "returncode": None,
-            "seconds": elapsed,
-            "output": clean_output(stdout or exc.stdout or ""),
-            "stderr": f"timed out after {timeout}s",
-            "session_ids": session_ids,
-            "session_receipt_error": session_receipt_error,
-            "route_attestation": {"required": require_attestation, "ok": False, "errors": ["run timed out"]},
-        }
-    except BaseException:
-        process.kill()
-        _stdout, stderr = process.communicate()
-        if agent == "hermes" and lifecycle:
-            lifecycle.register_receipt(stderr or "")
-        raise
-    elapsed = round(time.monotonic() - started, 3)
-    if agent == "hermes" and lifecycle:
-        session_ids, session_receipt_error = lifecycle.register_receipt(stderr or "")
-    text = output_file.read_text(encoding="utf-8") if output_file.exists() else stdout
-    text = clean_output(text)
-    if require_attestation and agent == "codex":
-        route_attestation = {"required": True, **codex_route_attestation(stderr or "", model, provider, reasoning)}
-    elif require_attestation and agent == "hermes":
-        route_attestation = {
-            "required": True,
-            **hermes_route_attestation(exe, session_ids, model, provider, reasoning, tool_policy, env=run_env),
-        }
-    elif require_attestation:
-        route_attestation = {
-            "required": True,
-            "requested": {"model": model, "provider": provider, "reasoning": reasoning},
-            "observed": {},
-            "ok": False,
-            "errors": [f"observed route attestation unsupported for {agent}"],
-        }
-    else:
-        route_attestation = {
-            "required": False,
-            "requested": {"model": model, "provider": provider, "reasoning": reasoning},
-            "observed": {},
-            "ok": True,
-            "errors": [],
-        }
-    return {
-        "ok": process.returncode == 0 and session_receipt_error is None and route_attestation["ok"],
-        "returncode": process.returncode,
-        "seconds": elapsed,
-        "output": text,
-        "stderr": stderr[-4000:],
-        "session_ids": session_ids,
-        "session_receipt_error": session_receipt_error,
-        "route_attestation": route_attestation,
-    }
+    # Only the text-only lane has verified native controls. Keep historical
+    # policy strings in reports verifiable, but never launch an unproven lane.
+    from evaluation_runtime import run_no_tools, supported_lane
+    supported_lane(agent, provider, tool_policy, full_tools)
+    if not model or not reasoning:
+        raise ValueError("exact model and reasoning are required for the isolated evaluator")
+    return run_no_tools(agent, prompt, workdir, timeout, model, provider, reasoning,
+                        output_schema, require_attestation, extract_json)
 
 
 class AgentRunBudget:
@@ -610,13 +526,65 @@ class AgentRunBudget:
         return True
 
 
+ATTEMPT_WRAPPER_KEYS = {"attempt", "transient", "attempts", "attempt_count", "transient_retry_count", "run_budget_exhausted"}
+RUN_RESULT_KEYS = {"ok", "execution_ok", "operational_ok", "returncode", "seconds", "output", "stderr",
+                   "session_ids", "session_receipt_error", "route_attestation", "runtime_contract", "native_events",
+                   "native_result_metadata", "runtime_error", "failure", "evidence_incomplete"}
+
+
+def attempt_result(run: dict[str, Any]) -> dict[str, Any]:
+    """Keep the complete declared result, excluding wrappers and undeclared data."""
+    return copy.deepcopy({key: value for key, value in run.items() if key in RUN_RESULT_KEYS and key not in ATTEMPT_WRAPPER_KEYS})
+
+
+def execution_succeeded(run: dict[str, Any]) -> bool:
+    return run.get("execution_ok", run.get("ok")) is True
+
+
+def suite_report_version(suite: dict[str, Any]) -> int:
+    version = suite.get("schema_version", 1)
+    if type(version) is not int or version not in {1, 2, 3}:
+        raise ValueError("unsupported suite schema_version")
+    return 3 if version == 3 else 2
+
+
+def evaluation_scope(suite: dict[str, Any], selected_ids: list[str]) -> dict[str, Any]:
+    ids = [case["id"] for case in suite["cases"]]
+    return {"runtime_lane": "inline-text-no-tools-v1", "evaluated_projection": "inline-linked-text-only",
+            "package_behavior_exercised": False, "selected_case_ids": list(selected_ids), "suite_case_ids": ids,
+            "full_suite": list(selected_ids) == ids}
+
+
+def scope_decision(decision: dict[str, Any], full_suite: bool) -> dict[str, Any]:
+    if not full_suite and decision.get("decision") in {"admit", "retire"}:
+        return {**decision, "decision": "inconclusive", "coverage_reason": "partial-suite",
+                "diagnostic_decision": decision["decision"]}
+    return dict(decision)
+
+
 def transient_provider_failure(result: dict[str, Any]) -> bool:
     """Return true only for explicit retryable provider/transport failures."""
 
-    if result.get("ok") or result.get("returncode") in {None, 0}:
+    if execution_succeeded(result) or result.get("operational_ok") is False or result.get("returncode") in {None, 0}:
         return False
-    text = f"{result.get('stderr', '')}\n{result.get('output', '')}"
-    return bool(TRANSIENT_PROVIDER_ERROR_RE.search(text))
+    contract = result.get("runtime_contract", {})
+    cleanup = contract.get("cleanup", {})
+    if cleanup and (cleanup.get("credentials_removed") is not True or cleanup.get("state_removed") is not True or cleanup.get("errors")):
+        return False
+    isolation = contract.get("prompt_isolation", {})
+    tools = contract.get("tool_observation", {})
+    if (isolation.get("verified") is False or isolation.get("contamination")
+            or isolation.get("canary_absent") is False or isolation.get("native_tool_names")
+            or tools.get("tool_activity_count", 0) or tools.get("execution_blocker_installed") is False
+            or contract.get("credentials_outside_fixture") is False or contract.get("personal_config_copied") is True):
+        return False
+    failure = result.get("failure")
+    status = failure.get("http_status") if isinstance(failure, dict) else None
+    code = failure.get("code") if isinstance(failure, dict) else None
+    return (isinstance(failure, dict) and failure.get("kind") == "provider-transient"
+            and failure.get("source") == "native-transport"
+            and ((type(status) is int and status in {429, 502, 503, 504})
+                 or (isinstance(code, str) and code in {"rate_limit_exceeded", "server_error", "overloaded", "service_unavailable", "temporarily_unavailable"})))
 
 
 def run_agent_with_retry(
@@ -624,6 +592,7 @@ def run_agent_with_retry(
     *args: Any,
     transient_retries: int = 2,
     retry_delay: float = 2.0,
+    attempt_observer: Any = None,
     **kwargs: Any,
 ) -> dict[str, Any]:
     """Run once, retrying only explicit transient provider failures."""
@@ -651,18 +620,35 @@ def run_agent_with_retry(
                     "route_attestation": {"required": False, "ok": False, "errors": ["run budget exhausted"]},
                 }
             break
-        result = run_agent(*args, **kwargs)
+        started = time.monotonic()
+        try:
+            result = attempt_result(run_agent(*args, **kwargs))
+        except BaseException as exc:
+            result = {"ok": False, "execution_ok": False, "operational_ok": False, "returncode": None,
+                      "seconds": round(time.monotonic() - started, 3), "output": "", "stderr": "",
+                      "session_ids": [], "session_receipt_error": None,
+                      "route_attestation": {"required": True, "ok": False, "observed": {},
+                                            "errors": [f"native invocation failed: {type(exc).__name__}"]},
+                      "failure": {"kind": "interrupted" if isinstance(exc, KeyboardInterrupt) else "runtime",
+                                  "source": "runtime-control", "code": type(exc).__name__},
+                      "evidence_incomplete": True}
+            record = {"attempt": len(attempts) + 1, "transient": False, **result}
+            attempts.append(record)
+            if attempt_observer is not None:
+                attempt_observer(copy.deepcopy(record))
+            if isinstance(exc, (KeyboardInterrupt, SystemExit)):
+                raise
+            break
         transient = transient_provider_failure(result)
         attempts.append(
             {
                 "attempt": len(attempts) + 1,
-                "ok": bool(result.get("ok")),
-                "returncode": result.get("returncode"),
-                "seconds": result.get("seconds"),
-                "transient_provider_failure": transient,
-                "stderr": str(result.get("stderr", ""))[-1000:],
+                "transient": transient,
+                **copy.deepcopy(result),
             }
         )
+        if attempt_observer is not None:
+            attempt_observer(copy.deepcopy(attempts[-1]))
         if not transient or retries_used >= transient_retries:
             break
         if budget.remaining <= 0:
@@ -683,17 +669,28 @@ def run_agent_with_retry(
 
 
 def extract_json(text: str) -> dict[str, Any]:
-    decoder = json.JSONDecoder()
-    for index, char in enumerate(text):
-        if char != "{":
-            continue
-        try:
-            value, _ = decoder.raw_decode(text[index:])
-            if isinstance(value, dict):
-                return value
-        except json.JSONDecodeError:
-            pass
-    raise ValueError("judge did not return a JSON object")
+    """Parse exactly one object; ambiguity and non-JSON numbers fail closed."""
+    def pairs(items: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in items:
+            if key in result:
+                raise ValueError(f"duplicate JSON key: {key}")
+            result[key] = value
+        return result
+
+    def constant(value: str) -> Any:
+        raise ValueError(f"non-finite JSON number: {value}")
+
+    def number(value: str) -> float:
+        result = float(value)
+        if not math.isfinite(result):
+            raise ValueError(f"non-finite JSON number: {value}")
+        return result
+
+    value = json.loads(text, object_pairs_hook=pairs, parse_constant=constant, parse_float=number)
+    if not isinstance(value, dict):
+        raise ValueError("output must be exactly one JSON object")
+    return value
 
 
 def _schema_for_path(schema: dict[str, Any], path: str) -> dict[str, Any] | None:
@@ -715,53 +712,71 @@ def _value_at_path(value: dict[str, Any], path: str) -> tuple[bool, Any]:
     return True, current
 
 
-def _json_type_matches(value: Any, expected: str) -> bool:
-    if expected == "object":
-        return isinstance(value, dict)
-    if expected == "array":
-        return isinstance(value, list)
-    if expected == "string":
-        return isinstance(value, str)
-    if expected == "boolean":
-        return isinstance(value, bool)
-    if expected == "integer":
-        return isinstance(value, int) and not isinstance(value, bool)
-    if expected == "number":
-        return isinstance(value, (int, float)) and not isinstance(value, bool)
-    if expected == "null":
-        return value is None
-    return True
+def _schema_validator(schema: dict[str, Any] | bool) -> Any:
+    """Use Draft 2020-12 assertions, with local references and checked formats.
+
+    Unknown keywords/dialects are rejected instead of becoming ignored
+    annotations. No schema is allowed to initiate a network fetch.
+    """
+    try:
+        from jsonschema import Draft202012Validator, FormatChecker
+        from jsonschema.exceptions import SchemaError
+        from referencing import Registry
+        from referencing.exceptions import NoSuchResource
+    except ImportError as exc:
+        raise ValueError("evaluation requires jsonschema>=4.18; install requirements.txt") from exc
+    try:
+        Draft202012Validator.check_schema(schema)
+    except SchemaError as exc:
+        raise ValueError("invalid JSON Schema: " + exc.message) from exc
+    checker = FormatChecker()
+    annotations = {"$schema", "$id", "$anchor", "$dynamicAnchor", "$defs", "$comment",
+                   "title", "description", "default", "examples", "deprecated", "readOnly", "writeOnly"}
+    # These keywords are evaluated by their parent (if/contains) validator.
+    allowed = set(Draft202012Validator.VALIDATORS) | annotations | {"then", "else", "minContains", "maxContains"}
+    maps = {"$defs", "properties", "patternProperties", "dependentSchemas"}
+    singles = {"items", "contains", "additionalProperties", "unevaluatedProperties", "propertyNames",
+               "unevaluatedItems", "not", "if", "then", "else"}
+    arrays = {"allOf", "anyOf", "oneOf", "prefixItems"}
+
+    def inspect(node: Any) -> None:
+        if isinstance(node, bool):
+            return
+        for key, value in node.items():
+            if key not in allowed:
+                raise ValueError(f"unsupported JSON Schema keyword: {key}")
+            if key == "$schema" and value.rstrip("#") != "https://json-schema.org/draft/2020-12/schema":
+                raise ValueError(f"unsupported JSON Schema dialect: {value}")
+            if key in {"$ref", "$dynamicRef"} and not value.startswith("#"):
+                raise ValueError("JSON Schema references must be local fragments")
+            if key == "format" and value not in checker.checkers:
+                raise ValueError(f"unsupported JSON Schema format: {value}")
+            if key in maps:
+                for child in value.values():
+                    inspect(child)
+            elif key in singles:
+                inspect(value)
+            elif key in arrays:
+                for child in value:
+                    inspect(child)
+
+    inspect(schema)
+
+    def no_remote(uri: str) -> Any:
+        raise NoSuchResource(ref=uri)
+
+    return Draft202012Validator(schema, format_checker=checker, registry=Registry(retrieve=no_remote))
 
 
-def _schema_reasons(value: Any, schema: dict[str, Any], path: str = "$") -> list[str]:
-    reasons: list[str] = []
-    expected_type = schema.get("type")
-    if isinstance(expected_type, str) and not _json_type_matches(value, expected_type):
-        return [f"{path}: expected {expected_type}"]
-    if "enum" in schema and value not in schema["enum"]:
-        reasons.append(f"{path}: value {value!r} is outside enum")
-    if isinstance(value, dict):
-        properties = schema.get("properties", {})
-        required = schema.get("required", [])
-        for key in required:
-            if key not in value:
-                reasons.append(f"{path}.{key}: missing required field")
-        if schema.get("additionalProperties") is False:
-            for key in value:
-                if key not in properties:
-                    reasons.append(f"{path}.{key}: unexpected field")
-        for key, item in value.items():
-            child_schema = properties.get(key) if isinstance(properties, dict) else None
-            if isinstance(child_schema, dict):
-                reasons.extend(_schema_reasons(item, child_schema, f"{path}.{key}"))
-    elif isinstance(value, list):
-        if isinstance(schema.get("minItems"), int) and len(value) < schema["minItems"]:
-            reasons.append(f"{path}: fewer than {schema['minItems']} items")
-        item_schema = schema.get("items")
-        if isinstance(item_schema, dict):
-            for index, item in enumerate(value):
-                reasons.extend(_schema_reasons(item, item_schema, f"{path}[{index}]"))
-    return reasons
+def _schema_reasons(value: Any, schema: dict[str, Any] | bool, path: str = "$", *,
+                    root_schema: dict[str, Any] | None = None) -> list[str]:
+    validator = _schema_validator(schema if root_schema is None else root_schema)
+    if root_schema is not None:
+        validator = validator.evolve(schema=schema)
+    try:
+        return [f"{path}{error.json_path[1:]}: {error.message}" for error in validator.iter_errors(value)]
+    except Exception as exc:
+        raise ValueError(f"JSON Schema validation could not complete: {exc}") from exc
 
 
 def structured_receipt_check(case: dict[str, Any], output: str, receipt_schema: dict[str, Any]) -> dict[str, Any]:
@@ -774,7 +789,7 @@ def structured_receipt_check(case: dict[str, Any], output: str, receipt_schema: 
         found, observed = _value_at_path(receipt, str(path))
         if not found:
             reasons.append(f"{path}: expected value is missing")
-        elif observed != expected:
+        elif _schema_reasons(observed, {"const": expected}):
             reasons.append(f"{path}: expected {expected!r}, observed {observed!r}")
     return {"pass": not reasons, "receipt": receipt, "reasons": reasons}
 
@@ -819,7 +834,25 @@ def decision_pass(mode: str, candidate_wins: int, candidate_losses: int, candida
 
 
 def map_judgment(judgment: dict[str, Any], order: list[str]) -> tuple[str, dict[str, bool]]:
-    anonymous_winner = str(judgment.get("winner", "tie")).upper()
+    answer_schema = {
+        "type": "object", "required": ["hard_pass", "reason"],
+        "additionalProperties": False,
+        "properties": {"hard_pass": {"type": "boolean"}, "reason": {"type": "string"}},
+    }
+    reasons = _schema_reasons(judgment, {
+        "type": "object", "required": ["a", "b", "winner", "reason"],
+        "additionalProperties": False,
+        "properties": {
+            "a": answer_schema, "b": answer_schema,
+            "winner": {"type": "string", "enum": ["A", "B", "tie"]},
+            "reason": {"type": "string"},
+        },
+    })
+    if len(order) != 2 or set(order) != {"baseline", "candidate"}:
+        reasons.append("invalid anonymous answer order")
+    if reasons:
+        raise ValueError("invalid judgment: " + "; ".join(reasons))
+    anonymous_winner = judgment["winner"]
     if anonymous_winner == "A":
         winner = order[0]
     elif anonymous_winner == "B":
@@ -827,8 +860,8 @@ def map_judgment(judgment: dict[str, Any], order: list[str]) -> tuple[str, dict[
     else:
         winner = "tie"
     return winner, {
-        order[0]: bool(judgment.get("a", {}).get("hard_pass")),
-        order[1]: bool(judgment.get("b", {}).get("hard_pass")),
+        order[0]: judgment["a"]["hard_pass"],
+        order[1]: judgment["b"]["hard_pass"],
     }
 
 
@@ -887,12 +920,17 @@ def v3_judge_schema(criterion_ids: list[str]) -> dict[str, Any]:
 def map_v3_judgment(
     judgment: dict[str, Any], order: list[str], criterion_ids: list[str]
 ) -> tuple[str, dict[str, dict[str, bool]]]:
-    anonymous_winner = str(judgment.get("winner", "tie")).upper()
+    reasons = _schema_reasons(judgment, v3_judge_schema(criterion_ids))
+    if len(order) != 2 or set(order) != {"baseline", "candidate"}:
+        reasons.append("invalid anonymous answer order")
+    if reasons:
+        raise ValueError("invalid v3 judgment (missing semantic criterion or invalid field): " + "; ".join(reasons))
+    anonymous_winner = judgment["winner"]
     if anonymous_winner == "A":
         winner = order[0]
     elif anonymous_winner == "B":
         winner = order[1]
-    elif anonymous_winner == "TIE":
+    elif anonymous_winner == "tie":
         winner = "tie"
     else:
         raise ValueError(f"invalid v3 winner: {anonymous_winner}")
@@ -914,7 +952,7 @@ def map_v3_judgment(
                 raise ValueError(f"{anonymous} has duplicate semantic criterion: {criterion_id}")
             if not isinstance(entry.get("pass"), bool):
                 raise ValueError(f"{anonymous} semantic criterion lacks boolean pass: {criterion_id}")
-            if not str(entry.get("evidence", "")).strip():
+            if not entry["evidence"].strip():
                 raise ValueError(f"{anonymous} semantic criterion lacks evidence: {criterion_id}")
             values[criterion_id] = entry["pass"]
         for criterion_id in criterion_ids:
@@ -1006,11 +1044,81 @@ def v3_effective_result(
     return str(resolution.get("winner", "tie")), hard_pass
 
 
+def effective_judgment_result(
+    winners: list[str], passes: list[dict[str, Any]], deterministic_passes: dict[str, bool],
+    criterion_ids: list[str] | None = None,
+) -> dict[str, Any]:
+    """Compute eligibility before preference, preserving only material uncertainty.
+
+    A failed deterministic check or resolved semantic failure is ineligible.
+    An unresolved vote is unknown, not evidence of a semantic failure. A
+    disagreement blocks only when it can alter the winner or candidate pass.
+    """
+    names = ("baseline", "candidate")
+    is_v3 = criterion_ids is not None
+    ids = criterion_ids if is_v3 else ["hard_pass"]
+    semantic_passes = passes if is_v3 else [
+        {name: {"hard_pass": item.get(name)} for name in names} for item in passes
+    ]
+    resolution = resolve_v3_judgments(winners, semantic_passes, ids)
+    raw = v3_disagreement(winners[:2], semantic_passes[:2])
+    unresolved = set(resolution["unresolved"]["details"])
+    eligibility: dict[str, str] = {}
+    for name in names:
+        known_false = any(
+            not resolution["passes"][name][criterion_id] and f"{name}.{criterion_id}" not in unresolved
+            for criterion_id in ids
+        )
+        if not deterministic_passes.get(name) or known_false:
+            eligibility[name] = "fail"
+        elif any(f"{name}.{criterion_id}" in unresolved for criterion_id in ids):
+            eligibility[name] = "unresolved"
+        else:
+            eligibility[name] = "pass"
+    possibilities = {
+        name: [True, False] if eligibility[name] == "unresolved" else [eligibility[name] == "pass"]
+        for name in names
+    }
+    preferences = list(names) + ["tie"] if resolution["unresolved"]["winner"] else [resolution["winner"]]
+
+    def outcome(baseline: bool, candidate: bool, preference: str) -> tuple[str, bool]:
+        winner = preference if baseline and candidate else "candidate" if candidate else "baseline" if baseline else "tie"
+        return winner, candidate
+
+    possible = {outcome(b, c, p) for b in possibilities["baseline"] for c in possibilities["candidate"] for p in preferences}
+    possible_winners = {item[0] for item in possible}
+    winner = next(iter(possible_winners)) if len(possible_winners) == 1 else "tie"
+    material_names: set[str] = set()
+    for name in names:
+        if eligibility[name] != "unresolved":
+            continue
+        other = "candidate" if name == "baseline" else "baseline"
+        for other_pass in possibilities[other]:
+            for preference in preferences:
+                outcomes = {outcome(value, other_pass, preference) if name == "baseline"
+                            else outcome(other_pass, value, preference) for value in (True, False)}
+                if len(outcomes) > 1:
+                    material_names.add(name)
+    details = [detail for detail in resolution["unresolved"]["details"] if detail.split(".", 1)[0] in material_names]
+    material_winner = resolution["unresolved"]["winner"] and True in possibilities["baseline"] and True in possibilities["candidate"]
+    disagreement = {
+        "winner": material_winner, "criteria": bool(details), "details": details,
+        "raw": raw, "unresolved": resolution["unresolved"],
+        "resolved_by": "third-judge" if len(winners) == 3 and not any(
+            resolution["unresolved"][key] for key in ("winner", "criteria")
+        ) else None,
+        "votes": resolution["votes"],
+    }
+    return {"winner": winner, "hard_pass": {name: eligibility[name] == "pass" for name in names},
+            "eligibility": eligibility, "raw_disagreement": raw, "disagreement": disagreement}
+
+
 def v3_stability_decision(results: list[dict[str, Any]], contract: dict[str, Any], trials_run: int) -> dict[str, Any]:
     required_trials = int(contract.get("trials", 1))
     receipt_failures = sum(not item.get("candidate_receipt_pass", False) for item in results)
     candidate_failures = sum(
-        not item.get("candidate_hard_pass", item.get("candidate_receipt_pass", False))
+        item["eligibility"]["candidate"] == "fail" if "eligibility" in item
+        else not item.get("candidate_hard_pass", item.get("candidate_receipt_pass", False))
         for item in results
     )
     losses = sum(item.get("winner") == "baseline" for item in results)
@@ -1038,12 +1146,22 @@ def v3_stability_decision(results: list[dict[str, Any]], contract: dict[str, Any
     return {"decision": "admit", "basis": "bounded-stability", **metrics}
 
 
-def artifact_hashes(candidate: Path, baseline: Path | None, suite: Path) -> dict[str, Any]:
+def artifact_hashes(candidate: Path, baseline: Path | None, suite: Path, *,
+                    candidate_snapshot: dict[str, Any] | None = None,
+                    baseline_snapshot: dict[str, Any] | None = None,
+                    suite_bytes: bytes | None = None, harness_sha256: str | None = None) -> dict[str, Any]:
+    candidate_snapshot = candidate_snapshot if candidate_snapshot is not None else freeze_candidate(candidate)
+    baseline_snapshot = baseline_snapshot if baseline_snapshot is not None else freeze_candidate(baseline) if baseline else None
+    empty_hash = hashlib.sha256(b"").hexdigest()
     return {
-        "candidate_sha256": candidate_hash(candidate),
-        "baseline_candidate_sha256": candidate_hash(baseline) if baseline else None,
-        "suite_sha256": hashlib.sha256(suite.read_bytes()).hexdigest(),
-        "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "candidate_sha256": candidate_snapshot["package_sha256"],
+        "baseline_candidate_sha256": baseline_snapshot["package_sha256"] if baseline_snapshot else empty_hash,
+        "candidate_prompt_sha256": candidate_snapshot["prompt_sha256"],
+        "baseline_prompt_sha256": baseline_snapshot["prompt_sha256"] if baseline_snapshot else empty_hash,
+        "candidate_identity_format": candidate_snapshot.get("identity_format", "legacy-unspecified"),
+        "baseline_candidate_identity_format": baseline_snapshot.get("identity_format", "legacy-unspecified") if baseline_snapshot else "empty-input-sha256",
+        "suite_sha256": hashlib.sha256(suite.read_bytes() if suite_bytes is None else suite_bytes).hexdigest(),
+        "harness_sha256": harness_sha256 if harness_sha256 is not None else harness_hash(Path(__file__)),
     }
 
 
@@ -1070,7 +1188,7 @@ def main() -> int:
     parser.add_argument("--retry-delay", type=float, default=2.0)
     parser.add_argument("--timeout", type=int, default=600)
     parser.add_argument("--full-tools", action="store_true")
-    parser.add_argument("--tool-policy", choices=("none", "safe", "full"), default="safe")
+    parser.add_argument("--tool-policy", choices=("none", "safe", "full"), default="none")
     parser.add_argument("--prompt-assembly", default="isolated-explicit-artifact-v2")
     parser.add_argument("--context-policy", default="fresh-session-per-output")
     parser.add_argument("--equivalence-group", required=True, help="Cross-host effective-stack equivalence group")
@@ -1082,13 +1200,15 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
 
-    suite = json.loads(args.suite.read_text(encoding="utf-8"))
     try:
+        initial_harness_hash = harness_hash(Path(__file__))
+        suite_bytes = args.suite.read_bytes()
+        suite = extract_json(suite_bytes.decode("utf-8"))
         validate_suite(suite)
     except ValueError as exc:
         parser.error(str(exc))
-    schema_version = int(suite.get("schema_version", 1))
-    is_v3 = schema_version >= 3
+    schema_version = suite_report_version(suite)
+    is_v3 = schema_version == 3
     all_cases = suite.get("cases", [])
     if args.case_ids:
         requested = set(args.case_ids)
@@ -1135,8 +1255,10 @@ def main() -> int:
     if args.max_agent_runs < minimum_runs:
         panel = "matched generation, order-swapped judges, and bounded tiebreaks" if is_v3 else "matched generation and order-swapped judges"
         parser.error(f"max-agent-runs must be at least {minimum_runs} for {panel}")
-    candidate = candidate_prompt_text(args.candidate)
-    baseline_candidate = candidate_prompt_text(args.baseline_candidate) if args.baseline_candidate else ""
+    candidate_snapshot = freeze_candidate(args.candidate)
+    baseline_snapshot = freeze_candidate(args.baseline_candidate) if args.baseline_candidate else None
+    candidate = candidate_snapshot["prompt_text"]
+    baseline_candidate = baseline_snapshot["prompt_text"] if baseline_snapshot else ""
 
     out = args.out or Path(".evals") / f"{suite.get('name','suite')}-{args.agent}.json"
     out = out.resolve()
@@ -1149,24 +1271,31 @@ def main() -> int:
     workdir = Path(tempfile.mkdtemp(prefix="agent-signal-eval-"))
     run_budget = AgentRunBudget(args.max_agent_runs)
     report: dict[str, Any] = {
-        "schema_version": 3 if is_v3 else 2,
+        "schema_version": schema_version,
         "suite": suite.get("name"),
         "claim": suite.get("claim"),
+        "suite_cases": [{"id": case["id"], "kind": case.get("kind")} for case in all_cases],
+        "selected_case_ids": [case["id"] for case in cases],
         "candidate": str(args.candidate.resolve()),
         "baseline_candidate": str(args.baseline_candidate.resolve()) if args.baseline_candidate else None,
         "agent": args.agent,
-        "agent_version": command_version(args.agent),
+        "agent_version": "unavailable",
         "judge_agent": judge_agent,
-        "judge_version": command_version(judge_agent),
+        "judge_version": "unavailable",
+        "version_probes": {},
         "decision_mode": args.decision_mode,
         "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "status": "running",
+        "scope": evaluation_scope(suite, [case["id"] for case in cases]),
         "effective_stack": {
+            "runtime_lane": "inline-text-no-tools-v1",
             "model": args.model,
             "provider": args.provider,
             "reasoning": args.reasoning,
             "judge_model": args.judge_model or args.model,
             "judge_provider": args.judge_provider or args.provider,
+            "judge_reasoning": args.reasoning,
+            "judge_tool_policy": "none",
             "tool_policy": args.tool_policy,
             "prompt_assembly": effective_prompt_assembly,
             "context_policy": args.context_policy,
@@ -1184,9 +1313,17 @@ def main() -> int:
         },
         "rollback": args.rollback,
         "seeds": [],
-        "artifacts": artifact_hashes(args.candidate, args.baseline_candidate, args.suite),
+        "artifacts": artifact_hashes(args.candidate, args.baseline_candidate, args.suite,
+                                    candidate_snapshot=candidate_snapshot, baseline_snapshot=baseline_snapshot,
+                                    suite_bytes=suite_bytes, harness_sha256=initial_harness_hash),
+        "input_snapshot": {
+            "candidate": candidate_snapshot, "baseline": baseline_snapshot,
+            "suite_source": suite_bytes.decode("utf-8"),
+            "coverage": "inline-linked-text-only; package identity does not demonstrate script execution",
+        },
         "decision": {"decision": "continue"},
         "results": results,
+        "attempt_ledger": [],
     }
     if is_v3:
         report["stability"] = suite["stability"]
@@ -1200,6 +1337,9 @@ def main() -> int:
     for signum in (signal.SIGINT, signal.SIGTERM):
         old_handlers[signum] = signal.signal(signum, interrupt_handler)
     try:
+        report["agent_version"] = command_version(args.agent, report["version_probes"])
+        report["judge_version"] = (report["agent_version"] if judge_agent == args.agent
+                                   else command_version(judge_agent, report["version_probes"]))
         for trial_index in range(args.max_trials):
             if run_budget.remaining < len(cases) * runs_per_case:
                 break
@@ -1208,6 +1348,8 @@ def main() -> int:
             rng = random.Random(trial_seed)
             trial_results: list[dict[str, Any]] = []
             for case_index, case in enumerate(cases):
+                def observe(role: str) -> Any:
+                    return lambda attempt: report["attempt_ledger"].append({"trial": trial_index, "case_id": case["id"], "role": role, **attempt})
                 safe_id = "".join(char if char.isalnum() or char in "-_" else "-" for char in str(case.get("id", case_index)))
                 case_root = workdir / f"trial-{trial_index:03d}" / f"{case_index:03d}-{safe_id}"
                 baseline_workdir = case_root / "baseline"
@@ -1271,6 +1413,7 @@ def main() -> int:
                     require_attestation=True,
                     transient_retries=args.transient_retries,
                     retry_delay=args.retry_delay,
+                    attempt_observer=observe("baseline"),
                 )
                 contender = run_agent_with_retry(
                     run_budget,
@@ -1288,6 +1431,7 @@ def main() -> int:
                     require_attestation=True,
                     transient_retries=args.transient_retries,
                     retry_delay=args.retry_delay,
+                    attempt_observer=observe("candidate"),
                 )
                 if is_v3:
                     baseline_det = structured_receipt_check(case, baseline["output"], suite["receipt_schema"])
@@ -1321,15 +1465,16 @@ def main() -> int:
                         args.judge_model or args.model,
                         args.judge_provider or args.provider,
                         args.reasoning,
-                        "safe",
+                        "none",
                         lifecycle,
                         output_schema=judge_output_schema,
                         require_attestation=True,
                         transient_retries=args.transient_retries,
                         retry_delay=args.retry_delay,
+                        attempt_observer=observe(f"judge-{judge_index}"),
                     )
                     try:
-                        if is_v3 and not judged_run["ok"]:
+                        if not execution_succeeded(judged_run) or not judged_run.get("route_attestation", {}).get("ok", False):
                             errors = judged_run.get("route_attestation", {}).get("errors", [])
                             raise ValueError("judge run failed" + (": " + "; ".join(errors) if errors else ""))
                         judgment = extract_json(judged_run["output"])
@@ -1345,7 +1490,6 @@ def main() -> int:
                         judge_errors.append(str(exc))
                 if is_v3:
                     raw_disagreement = v3_disagreement(mapped_winners, mapped_passes)
-                    used_tiebreak = False
                     if (raw_disagreement["winner"] or raw_disagreement["criteria"]) and not judge_errors:
                         tiebreak_order = list(order if rng.choice((True, False)) else reversed(order))
                         prompt = v3_judge_prompt(
@@ -1363,16 +1507,16 @@ def main() -> int:
                             args.judge_model or args.model,
                             args.judge_provider or args.provider,
                             args.reasoning,
-                            "safe",
+                            "none",
                             lifecycle,
                             output_schema=v3_judge_schema(criterion_ids),
                             require_attestation=True,
                             transient_retries=args.transient_retries,
                             retry_delay=args.retry_delay,
+                            attempt_observer=observe("judge-tiebreak"),
                         )
-                        used_tiebreak = True
                         try:
-                            if not judged_run["ok"]:
+                            if not execution_succeeded(judged_run) or not judged_run.get("route_attestation", {}).get("ok", False):
                                 errors = judged_run.get("route_attestation", {}).get("errors", [])
                                 raise ValueError("tiebreak judge run failed" + (": " + "; ".join(errors) if errors else ""))
                             judgment = extract_json(judged_run["output"])
@@ -1390,41 +1534,20 @@ def main() -> int:
                                 "role": "tiebreak",
                             })
                             judge_errors.append(str(exc))
-                    resolution = resolve_v3_judgments(mapped_winners, mapped_passes, criterion_ids)
-                    winner, hard_pass = v3_effective_result(
-                        resolution,
-                        {
-                            "baseline": bool(baseline_det["pass"]),
-                            "candidate": bool(candidate_det["pass"]),
-                        },
+                    outcome = effective_judgment_result(
+                        mapped_winners, mapped_passes,
+                        {"baseline": bool(baseline_det["pass"]), "candidate": bool(candidate_det["pass"])},
                         criterion_ids,
                     )
-                    disagreement = {
-                        **resolution["unresolved"],
-                        "raw": raw_disagreement,
-                        "resolved_by": "third-judge" if used_tiebreak and not (resolution["unresolved"]["winner"] or resolution["unresolved"]["criteria"]) else None,
-                        "votes": resolution["votes"],
-                    }
                     deterministic_report = {"baseline": baseline_det, "candidate": candidate_det}
                 else:
-                    winner = mapped_winners[0] if len(mapped_winners) == 2 and len(set(mapped_winners)) == 1 else "tie"
-                    raw_disagreement = {
-                        "winner": len(mapped_winners) == 2 and len(set(mapped_winners)) > 1,
-                        "criteria": False,
-                        "details": [],
-                    }
-                    disagreement = {
-                        **raw_disagreement,
-                    }
-                    hard_pass = {
-                        name: bool(mapped_passes) and all(mapped[name] for mapped in mapped_passes)
-                        for name in ("baseline", "candidate")
-                    }
-                    if not baseline_det[0]:
-                        hard_pass["baseline"] = False
-                    if not candidate_det[0]:
-                        hard_pass["candidate"] = False
+                    outcome = effective_judgment_result(
+                        mapped_winners, mapped_passes,
+                        {"baseline": baseline_det[0], "candidate": candidate_det[0]},
+                    )
                     deterministic_report = {"baseline": baseline_det[1], "candidate": candidate_det[1]}
+                winner, hard_pass = outcome["winner"], outcome["hard_pass"]
+                raw_disagreement, disagreement = outcome["raw_disagreement"], outcome["disagreement"]
                 item = {
                     "id": case.get("id"),
                     "kind": case.get("kind"),
@@ -1440,6 +1563,7 @@ def main() -> int:
                     "judge_disagreement": bool(disagreement["winner"] or disagreement["criteria"]),
                     "judge_disagreement_detail": disagreement,
                     "hard_pass": hard_pass,
+                    "eligibility": outcome["eligibility"],
                     "winner": winner,
                     "score": 1 if winner == "candidate" else -1 if winner == "baseline" else 0,
                 }
@@ -1452,8 +1576,8 @@ def main() -> int:
             trial_evidence = decision_scores(trial_results)
             trial_scores.append(sum(trial_evidence) / len(trial_evidence) if trial_evidence else 0.0)
             harness_failure = any(
-                not item["baseline"]["ok"]
-                or not item["candidate"]["ok"]
+                not execution_succeeded(item["baseline"])
+                or not execution_succeeded(item["candidate"])
                 or item["judge_errors"]
                 for item in results
             )
@@ -1465,8 +1589,11 @@ def main() -> int:
                 decision = sequential_decision(args.decision_mode, decision_scores(results), rule, len(trial_scores))
                 if harness_failure:
                     decision = {**decision, "decision": "harness-failure"}
-                elif any(not item["hard_pass"]["candidate"] for item in results):
+                elif any(item["eligibility"]["candidate"] == "fail" for item in results):
                     decision = {**decision, "decision": "reject" if args.decision_mode == "admission" else "retain"}
+                elif any(item["judge_disagreement"] for item in results) and decision["decision"] != "continue":
+                    decision = {**decision, "decision": "inconclusive"}
+            decision = scope_decision(decision, report["scope"]["full_suite"])
             report["decision"] = decision
             report["run_count"] = run_budget.used
             durable_json_write(out, report)
@@ -1488,17 +1615,28 @@ def main() -> int:
         report["decision"] = {"decision": "harness-failure", "reason": "interrupted"}
     except Exception as exc:
         report["status"] = "failed"
-        report["failure"] = f"{type(exc).__name__}: {exc}"
+        report["failure"] = f"{type(exc).__name__}: evaluation failed"
         report["decision"] = {"decision": "harness-failure", "reason": "exception"}
     finally:
         for signum, handler in old_handlers.items():
             signal.signal(signum, handler)
         report["run_count"] = run_budget.used
+        try:
+            final_harness_hash = harness_hash(Path(__file__))
+            unchanged = final_harness_hash == initial_harness_hash
+            report["harness_integrity"] = {"unchanged": unchanged, "final_sha256": final_harness_hash}
+            if not unchanged:
+                report["status"] = "failed"
+                report["decision"] = {"decision": "harness-failure", "reason": "harness changed during evaluation"}
+        except Exception as exc:
+            report["harness_integrity"] = {"unchanged": False, "error": str(exc)}
+            report["status"] = "failed"
+            report["decision"] = {"decision": "harness-failure", "reason": "harness integrity could not be checked"}
         report["summary"] = {
             "candidate_wins": sum(item["winner"] == "candidate" for item in results),
             "candidate_losses": sum(item["winner"] == "baseline" for item in results),
             "ties": sum(item["winner"] == "tie" for item in results),
-            "candidate_hard_failures": sum(not item["hard_pass"]["candidate"] for item in results),
+            "candidate_hard_failures": sum(item["eligibility"]["candidate"] == "fail" for item in results),
             "judge_errors": sum(bool(item["judge_errors"]) for item in results),
             "judge_disagreements": sum(bool(item["judge_disagreement"]) for item in results),
             "raw_judge_disagreements": sum(bool(item.get("raw_judge_disagreement")) for item in results),
@@ -1515,11 +1653,14 @@ def main() -> int:
             ),
             "trial_scores": trial_scores,
         }
-        finalize_report(out, report, lifecycle)
-        shutil.rmtree(workdir, ignore_errors=True)
-    print(json.dumps({"status": report["status"], **report["decision"]}, indent=2))
-    print("report:", out)
-    passed = report["decision"]["decision"] in {"admit", "retire"}
+        report["decision"] = scope_decision(report["decision"], report["scope"]["full_suite"])
+        report["operational_ok"] = (report["status"] == "complete"
+                                    and all(item.get("operational_ok", True) for item in report["attempt_ledger"])
+                                    and all(probe.get("ok") is True for probe in report["version_probes"].values()))
+        finalize_workspace(out, report, lifecycle, workdir)
+    print(json.dumps({"status": report["status"], **report["decision"], "operational_ok": report["operational_ok"]}, indent=2))
+    print("report:", out if report["report_export"]["written"] else report["report_export"]["recovery_path"] or report["workspace_lifecycle"]["path"])
+    passed = report["decision"]["decision"] in {"admit", "retire"} and report["operational_ok"]
     return 130 if interrupted else 0 if passed else 1
 
 

@@ -23,6 +23,204 @@ _FAILURE_COSTS = {"low", "medium", "high"}
 _ROLES = {"leaf", "orchestrator"}
 _MAX_ITERATIONS = 250
 _PIN_LOCK = threading.RLock()
+_INTERRUPT_GRACE_SECONDS = 2.0
+_ACCOUNTING_POLL_SECONDS = 0.05
+
+
+def _epoch(parent):
+    return (getattr(parent, "session_id", None), getattr(parent, "_current_turn_id", None))
+
+
+def _own_child(child, parent):
+    """Take ownership immediately after the native constructor returns."""
+    child._routed_home = _hermes_home()
+    child._routed_context = contextvars.copy_context()
+    try:
+        from hermes_constants import set_hermes_home_override
+    except ImportError:
+        pass  # injected historical test seam; current native resolver requires it
+    else:
+        child._routed_context.run(set_hermes_home_override, child._routed_home)
+    child._routed_epoch = _epoch(parent)
+    child._routed_started = False
+    child._routed_closed = False
+    child._routed_accounting = {"status": "pending"}
+    child._routed_accounting_lock = threading.Lock()
+    child._routed_accounting_done = threading.Event()
+    original = getattr(child, "close", None)
+    if callable(original):
+        def close():
+            result = original()
+            child._routed_closed = True
+            return result
+        child.close = close
+
+
+def _dispose_unentered(child, parent, detach=None):
+    """Independent cleanup obligations; never close an ambiguous native turn."""
+    errors = []
+    if getattr(child, "_routed_started", False):
+        return [{"phase": "close", "error_type": "ExecutionUnknown"}]
+    try:
+        child.close()
+    except BaseException as exc:
+        errors.append({"phase": "close", "error_type": type(exc).__name__})
+    try:
+        if detach is not None:
+            detach(parent, child)
+        elif hasattr(parent, "_active_children"):
+            # Synthetic/older injected seams only; current native resolves detach.
+            lock = getattr(parent, "_active_children_lock", _PIN_LOCK)
+            with lock:
+                if child in parent._active_children:
+                    parent._active_children.remove(child)
+    except BaseException as exc:
+        errors.append({"phase": "detach", "error_type": type(exc).__name__})
+    child._routed_cleanup_errors = errors
+    return errors
+
+
+def _definitive_result(result):
+    return (isinstance(result, dict) and result.get("status") in {"completed", "failed", "interrupted"}
+            and result.get("exit_reason") not in {None, "timeout"}
+            and result.get("execution_outcome") != "unknown"
+            and result.get("closure_confirmed") is not False)
+
+
+class _Admission:
+    """submit may enqueue before throwing. The callable needs separate consent."""
+    def __init__(self):
+        self.event = threading.Event()
+        self.allowed = False
+
+    def resolve(self, allowed):
+        self.allowed = allowed
+        self.event.set()
+
+    def run(self, fn, *args):
+        self.event.wait()
+        if not self.allowed:
+            return None  # revoked queue entries never enter native execution
+        return fn(*args)
+
+
+def _submit_owned(pool, fn, *args):
+    gate = _Admission()
+    try:
+        future = pool.submit(gate.run, fn, *args)
+    except BaseException:
+        gate.resolve(False)
+        raise
+    gate.resolve(True)
+    return future
+
+
+def _background(context, fn):
+    # add_done_callback can call inline: its only job is starting this daemon.
+    thread = threading.Thread(target=context.copy().run, args=(fn,), daemon=True,
+                              name="routed-accounting")
+    thread.start()
+    return thread
+
+
+class _AccountingParent:
+    """Keep launch identity stable and reject writes after an observed epoch change.
+
+    Native session resets do not share a generation lock with finalization. This
+    guards observed changes, not an atomic reset/accounting transaction.
+    """
+    def __init__(self, parent, epoch):
+        object.__setattr__(self, "_parent", parent)
+        object.__setattr__(self, "_epoch", epoch)
+        object.__setattr__(self, "_memory_manager", getattr(parent, "_memory_manager", None))
+
+    def __getattr__(self, key):
+        if key in {"session_id", "_current_turn_id"}:
+            return self._epoch[0 if key == "session_id" else 1]
+        return getattr(self._parent, key)
+
+    def __setattr__(self, key, value):
+        if _epoch(self._parent) != self._epoch:
+            raise RuntimeError("launch accounting epoch changed")
+        setattr(self._parent, key, value)
+
+
+def _schedule_finalization(finalize, parent, item, result, persist=None):
+    index, task, _receipt, child = item[:4]
+    status = child._routed_accounting
+    with child._routed_accounting_lock:
+        if getattr(child, "_routed_finalization_scheduled", False):
+            return status
+        child._routed_finalization_scheduled = True
+
+    def save():
+        if persist is not None:
+            try:
+                persist(dict(status))
+            except BaseException as exc:
+                status["persistence_error_type"] = type(exc).__name__
+
+    try:
+        displayed = _display_result(child, parent, result)
+    except BaseException as exc:
+        # Projection failure cannot discard independent native accounting.
+        displayed = _safe_json(result)
+        displayed["summary"] = None
+        status["display_error_type"] = type(exc).__name__
+
+    def account():
+        try:
+            if child._routed_started and not _definitive_result(result):
+                status.update(status="pending-execution", error_type="ExecutionUnknown")
+                return
+            if _epoch(parent) != child._routed_epoch:
+                status.update(status="pending-epoch", error_type="AccountingEpochChanged")
+                return
+            tasks = [{"goal": ""} for _ in range(index)] + [task]
+            # Native finalization mutates result entries; keep raw evidence intact.
+            entries = [_safe_json(displayed)]
+            options = {"summary_budget_applied": True} if callable(getattr(child, "_routed_budget_summary", None)) else {}
+            finalize(entries, tasks, [(index, task, child)],
+                     _AccountingParent(parent, child._routed_epoch), **options)
+            child._routed_finalized_result = entries[0]
+            status["status"] = ("failed" if status.get("display_error_type") else
+                                "returned" if _epoch(parent) == child._routed_epoch else "pending-epoch")
+        except BaseException as exc:
+            status.update(status="failed", error_type=type(exc).__name__, error=str(exc))
+        finally:
+            save()
+            child._routed_accounting_done.set()
+    save()
+    try:
+        _background(child._routed_context, account)
+    except BaseException as exc:
+        status.update(status="failed", error_type=type(exc).__name__)
+        save()
+        child._routed_accounting_done.set()
+    return status
+
+
+def _poll_accounting(children):
+    deadline = time.monotonic() + _ACCOUNTING_POLL_SECONDS
+    for child in children:
+        child._routed_accounting_done.wait(max(0, deadline - time.monotonic()))
+
+
+def _display_result(child, parent, result):
+    """Keep full execution evidence; budget only the derived native summary."""
+    identity = _sha(_safe_json(result))
+    cached = getattr(child, "_routed_display_result", None)
+    if cached is not None:
+        if child._routed_display_input_sha256 != identity:
+            raise RuntimeError("display projection input changed for the owned attempt")
+        return _safe_json(cached)
+    displayed = _safe_json(result)
+    budget = getattr(child, "_routed_budget_summary", None)
+    if callable(budget):
+        child._routed_context.copy().run(budget, [displayed], parent, summary_count=child._routed_summary_count)
+    child._routed_display_input_sha256 = identity
+    child._routed_display_result = _safe_json(displayed)
+    return displayed
 
 
 def _canonical(value: Any) -> bytes:
@@ -77,18 +275,41 @@ def _route_skill() -> Path:
     raise RuntimeError("openai-delegation-route-research skill is unavailable")
 
 
-def _selector_and_catalog() -> tuple[Any, dict[str, Any], Path]:
-    skill = _route_skill()
-    selector_path = skill / "scripts" / "route_selector.py"
-    catalog_path = skill / "references" / "current-gpt-catalog.json"
+def _load_selector(selector_path: Path) -> Any:
     spec = importlib.util.spec_from_file_location("routed_delegation_selector", selector_path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load route selector: {selector_path}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    return module
+
+
+def _selector_and_catalog(version: int = 2) -> tuple[Any, dict[str, Any], Path]:
+    if version not in {2, 3}:
+        raise ValueError("route selector version must be 2 or 3")
+    skill = _route_skill()
+    selector_path = skill / "scripts" / "route_selector.py"
+    catalog_path = skill / "references" / (
+        "current-gpt-catalog.json"
+        if version == 2
+        else "current-task-route-catalog.json"
+    )
+    module = _load_selector(selector_path)
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     module.validate_catalog(catalog)
     return module, catalog, catalog_path
+
+
+def _task_request_module() -> Any:
+    path = _route_skill() / "scripts" / "task_request.py"
+    spec = importlib.util.spec_from_file_location("routed_delegation_task_request", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load task request materializer: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    if not callable(getattr(module, "materialize", None)):
+        raise RuntimeError("task request owner has no materialize function")
+    return module
 
 
 def _workflow_skill() -> Path:
@@ -123,10 +344,10 @@ def _workflow_state_module() -> Any:
 
 
 def _validate_hermes_workflow_plan(plan: dict[str, Any]) -> None:
-    legacy = [task["id"] for task in plan["tasks"] if "intelligence_tier" not in task]
+    legacy = [task["id"] for task in plan["tasks"] if not ({"intelligence_tier", "route_request"} & task.keys())]
     if legacy:
         raise ValueError(
-            "Hermes workflows require router-selected intelligence_tier tasks; "
+            "Hermes workflows require router-selected intelligence_tier tasks or V3 route_request; "
             f"legacy difficulty tasks are unsupported: {legacy}"
         )
     unsupported_workdirs = [
@@ -157,8 +378,8 @@ def _workflow_binding_path(run_dir: Path) -> Path:
 
 def _workflow_binding(workflow: Any, run_dir: Path) -> dict[str, Any]:
     _plan, _state, manifest = workflow.load_run_snapshot(run_dir)
-    if not isinstance(manifest, dict) or manifest.get("schema_version") != 2:
-        raise RuntimeError("Hermes workflow run lacks a version 2 integrity manifest")
+    if not isinstance(manifest, dict) or manifest.get("schema_version") not in {2, 3}:
+        raise RuntimeError("Hermes workflow run lacks a supported version 2/3 integrity manifest")
     canonical, _key = _workflow_run_key(run_dir)
     return {
         "schema_version": 1,
@@ -221,22 +442,21 @@ def _initialize_workflow(
 def _normalize_task(raw: Any) -> dict[str, Any]:
     if not isinstance(raw, dict):
         raise ValueError("each task must be an object")
+    allowed = {
+        "id", "goal", "context", "toolsets", "role", "intelligence_tier",
+        "latency_sensitive", "failure_cost", "task_class", "verifier_plan",
+        "route_request",
+    }
+    unknown = set(raw) - allowed
+    if unknown:
+        raise ValueError(f"task has unknown fields: {', '.join(sorted(unknown))}")
     task_id = str(raw.get("id") or "").strip()
     goal = str(raw.get("goal") or "").strip()
-    tier = str(raw.get("intelligence_tier") or "").strip()
-    latency = raw.get("latency_sensitive")
-    failure_cost = str(raw.get("failure_cost") or "medium").strip()
     role = str(raw.get("role") or "leaf").strip()
     if not task_id or len(task_id) > 128:
         raise ValueError("task id must contain 1-128 characters")
     if not goal or len(goal) > 16000:
         raise ValueError(f"task {task_id!r} goal must contain 1-16000 characters")
-    if tier not in _TIERS:
-        raise ValueError(f"task {task_id!r} has invalid intelligence_tier")
-    if not isinstance(latency, bool):
-        raise ValueError(f"task {task_id!r} latency_sensitive must be true or false")
-    if failure_cost not in _FAILURE_COSTS:
-        raise ValueError(f"task {task_id!r} has invalid failure_cost")
     if role not in _ROLES:
         raise ValueError(f"task {task_id!r} role must be leaf or orchestrator")
     context = raw.get("context")
@@ -248,21 +468,62 @@ def _normalize_task(raw: Any) -> dict[str, Any]:
         or not all(isinstance(value, str) and value.strip() for value in toolsets)
     ):
         raise ValueError(f"task {task_id!r} toolsets must be a list of names")
-    verifier_plan = raw.get("verifier_plan", {"kind": "none"})
-    if not isinstance(verifier_plan, dict):
-        raise ValueError(f"task {task_id!r} verifier_plan must be an object")
-    return {
+    has_route_request = "route_request" in raw
+    route_request = raw.get("route_request")
+    legacy_fields = {
+        "intelligence_tier", "latency_sensitive", "failure_cost", "task_class",
+        "verifier_plan",
+    }
+    if has_route_request and legacy_fields.intersection(raw):
+        raise ValueError(f"task {task_id!r} conflicts between v2 tier fields and route_request")
+    normalized = {
         "id": task_id,
         "goal": goal,
         "context": context,
+        "toolsets": toolsets,
+        "role": role,
+    }
+    if has_route_request:
+        required = {
+            "schema_version", "task_class", "requirements", "verifier", "effects",
+            "failure_cost", "deterministic", "budget",
+        }
+        if not isinstance(route_request, dict) or set(route_request) != required:
+            raise ValueError(f"task {task_id!r} route_request must contain exactly the v3 template fields")
+        if route_request.get("schema_version") != 3:
+            raise ValueError(f"task {task_id!r} route_request schema_version must be 3")
+        deterministic = route_request.get("deterministic")
+        if isinstance(deterministic, dict) and "input_sha256" in deterministic:
+            raise ValueError(f"task {task_id!r} deterministic input_sha256 is controller-owned")
+        try:
+            _task_request_module().input_digest(route_request)
+            normalized["route_request"] = json.loads(
+                json.dumps(route_request, ensure_ascii=False, allow_nan=False)
+            )
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"task {task_id!r} route_request must be finite JSON") from exc
+        return normalized
+
+    tier = str(raw.get("intelligence_tier") or "").strip()
+    latency = raw.get("latency_sensitive")
+    failure_cost = str(raw.get("failure_cost") or "medium").strip()
+    verifier_plan = raw.get("verifier_plan", {"kind": "none"})
+    if tier not in _TIERS:
+        raise ValueError(f"task {task_id!r} has invalid intelligence_tier")
+    if not isinstance(latency, bool):
+        raise ValueError(f"task {task_id!r} latency_sensitive must be true or false")
+    if failure_cost not in _FAILURE_COSTS:
+        raise ValueError(f"task {task_id!r} has invalid failure_cost")
+    if not isinstance(verifier_plan, dict):
+        raise ValueError(f"task {task_id!r} verifier_plan must be an object")
+    normalized.update({
         "intelligence_tier": tier,
         "latency_sensitive": latency,
         "failure_cost": failure_cost,
         "task_class": str(raw.get("task_class") or "delegated-agent-task").strip(),
         "verifier_plan": verifier_plan,
-        "toolsets": toolsets,
-        "role": role,
-    }
+    })
+    return normalized
 
 
 def _pin_path(parent_session_id: str) -> Path:
@@ -367,6 +628,8 @@ def _select_or_reuse(
         store = _read_pins(path)
         existing = store["tasks"].get(task["id"])
         if existing is not None:
+            if existing.get("route_version") == 3:
+                raise RuntimeError(f"task {task['id']!r} already has a v3 route pin")
             envelope = {key: existing.get(key) for key in ("binding", "receipt")}
             if existing.get("pin_sha256") != _sha(envelope):
                 raise RuntimeError(f"task {task['id']!r} route pin failed integrity validation")
@@ -387,17 +650,227 @@ def _select_or_reuse(
         return receipt
 
 
+def _v3_input_descriptor(task: dict[str, Any], max_iterations: int) -> dict[str, Any]:
+    descriptor = {
+        "task_id": task["id"],
+        "goal": task["goal"],
+        "context": task.get("context"),
+        "toolsets": task.get("toolsets"),
+        "role": task["role"],
+        "max_iterations": max_iterations,
+    }
+    if "_native_envelope" in task:
+        descriptor["native_envelope"] = task["_native_envelope"]
+    return descriptor
+
+
+def _v3_native_contract() -> dict[str, Any]:
+    """Disk-source identity for the supported native seam, not server attestation."""
+    import run_agent
+    root = Path(run_agent.__file__).resolve().parent
+    files = (
+        "run_agent.py", "tools/delegate_tool.py", "tools/delegate_tool_config.py",
+        "tools/delegate_tool_toolsets.py", "tools/delegate_tool_progress.py",
+        "tools/delegate_tool_child_run.py", "tools/delegate_tool_results.py",
+        "agent/agent_init.py", "agent/system_prompt.py", "agent/prompt_builder.py",
+        "agent/chat_completion_helpers.py", "agent/transports/codex.py",
+    )
+    return {"runtime": "hermes-delegate/native-source-v1",
+            "sources": {name: _sha((root / name).read_bytes()) for name in files}}
+
+
+def _v3_profile_files(home: Path) -> dict[str, Any]:
+    return {name: _sha((home / name).read_bytes()) if (home / name).is_file() else None
+            for name in ("SOUL.md", "config.yaml")}
+
+
+def _v3_native_envelope(parent: Any, task: dict[str, Any]) -> dict[str, Any]:
+    """Hash inherited context; retain no extra prompt or prefill body in pins."""
+    from tools.delegate_tool_config import _get_max_spawn_depth, _get_orchestrator_enabled
+    from tools.delegate_tool_toolsets import _resolve_child_toolsets
+    from tools.delegate_tool_progress import _build_child_system_prompt, _resolve_workspace_hint
+    depth = int(getattr(parent, "_delegate_depth", 0) or 0) + 1
+    maximum = _get_max_spawn_depth()
+    role = "orchestrator" if _get_orchestrator_enabled() and depth < maximum else "leaf"
+    enabled, disabled = _resolve_child_toolsets(parent, task["toolsets"], role)
+    prompt = _build_child_system_prompt(task["goal"], task.get("context"),
+        workspace_path=_resolve_workspace_hint(parent), role=role,
+        max_spawn_depth=maximum, child_depth=depth)
+    return {"effective_role": role, "depth": depth,
+            "enabled_toolsets": enabled, "disabled_toolsets": disabled,
+            "child_prompt_sha256": _sha(prompt),
+            "prefill_sha256": _sha(getattr(parent, "prefill_messages", None) or []),
+            "home": str(_hermes_home().resolve()),
+            "profile_files": _v3_profile_files(_hermes_home())}
+
+
+def _validate_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) -> None:
+    expected = task["_native_envelope"]
+    actual = {"effective_role": getattr(child, "_delegate_role", None),
+              "depth": getattr(child, "_delegate_depth", None),
+              "enabled_toolsets": getattr(child, "enabled_toolsets", None),
+              "disabled_toolsets": getattr(child, "disabled_toolsets", None),
+              "child_prompt_sha256": _sha(getattr(child, "ephemeral_system_prompt", None)),
+              "prefill_sha256": _sha(getattr(child, "prefill_messages", None) or []),
+              "home": str(child._routed_home.resolve()),
+              "profile_files": _v3_profile_files(child._routed_home)}
+    if actual != expected:
+        raise RuntimeError("native child context/tools/role differ from the pinned execution input")
+    required = pin["request"]["requirements"]
+    names = getattr(child, "valid_tool_names", None)
+    if names is None or set(names) != set(required["tools"]):
+        raise RuntimeError("actual native tools differ from the v3 declared tools")
+    capacity = getattr(getattr(child, "context_compressor", None), "context_length", None)
+    if not isinstance(capacity, int) or capacity < required["context_tokens"]:
+        raise RuntimeError("native context capacity does not meet the pinned requirement")
+
+
+def _guard_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) -> None:
+    _validate_v3_child(child, task, pin)
+    original = child._build_api_kwargs
+    # Freeze the controller's expected envelope; later task mutation cannot move it.
+    frozen_task, frozen_pin = _safe_json(task), _safe_json(pin)
+    def checked(*args: Any, **kwargs: Any) -> Any:
+        _validate_v3_child(child, frozen_task, frozen_pin)
+        return original(*args, **kwargs)
+    child._build_api_kwargs = checked
+
+
+def _selector_identity(selector_path: Path) -> dict[str, str]:
+    return {
+        "locator": str(selector_path.resolve()),
+        "sha256": _sha(selector_path.read_bytes()),
+    }
+
+
+def _validate_v3_dispatch(
+    dispatch: Any, decision: dict[str, Any], request: dict[str, Any], *, surface: str = _SURFACE
+) -> None:
+    if not isinstance(dispatch, dict) or dispatch.get("decision_id") != decision.get("decision_id"):
+        raise RuntimeError("v3 dispatch does not preserve the selected decision identity")
+    kind = dispatch.get("kind")
+    if kind not in {"model", "deterministic", "parent", "defer"}:
+        raise RuntimeError("v3 selector returned an unsupported dispatch kind")
+    if kind != "model":
+        if decision.get("route") is not None or dispatch.get("route") is not None:
+            raise RuntimeError("non-model v3 dispatch unexpectedly contains a model route")
+        return
+    route = dispatch.get("route")
+    if not isinstance(route, dict) or route != decision.get("route"):
+        raise RuntimeError("v3 model dispatch changed the selected route")
+    required = request["requirements"]
+    actual = (
+        route.get("host"),
+        route.get("transport"),
+        route.get("provider"),
+        route.get("model"),
+        route.get("reasoning_effort"),
+    )
+    if (
+        actual[0] != "hermes"
+        or surface not in {_SURFACE, _WORKFLOW_SURFACE}
+        or actual[1] != surface
+        or actual[2] not in _ALLOWED_PROVIDERS
+        or not all(isinstance(value, str) and value for value in actual[3:])
+    ):
+        raise RuntimeError("v3 route has an unsupported host/transport/provider tuple")
+    if required.get("host") != actual[0] or required.get("transport") != actual[1]:
+        raise RuntimeError("v3 route does not match the materialized host/transport requirement")
+    for field in ("model", "reasoning_effort"):
+        if required.get(field) is not None and required[field] != route.get(field):
+            raise RuntimeError(f"v3 route does not match required {field}")
+    contract = _v3_native_contract()
+    if route.get("runtime") != contract["runtime"] or route.get("contract_sha256") != _sha(contract):
+        raise RuntimeError("v3 route native runtime/source contract differs from installed Hermes")
+
+
+def _select_or_reuse_v3(
+    parent_session_id: str, task: dict[str, Any], max_iterations: int
+) -> dict[str, Any]:
+    descriptor = _v3_input_descriptor(task, max_iterations)
+    template = task["route_request"]
+    path = _pin_path(parent_session_id)
+    with _PIN_LOCK:
+        store = _read_pins(path)
+        existing = store["tasks"].get(task["id"])
+        selector_path = _route_skill() / "scripts" / "route_selector.py"
+        identity = _selector_identity(selector_path)
+        identity["consumer_sha256"] = _sha(Path(__file__).read_bytes())
+        identity["materializer_sha256"] = _sha((_route_skill() / "scripts/task_request.py").read_bytes())
+        materializer = _task_request_module()
+        if existing is not None:
+            selector = _load_selector(selector_path)
+            if existing.get("route_version") != 3:
+                raise RuntimeError(f"task {task['id']!r} already has a v2 route pin")
+            payload = {key: value for key, value in existing.items() if key != "pin_sha256"}
+            if existing.get("pin_sha256") != _sha(payload):
+                raise RuntimeError(f"task {task['id']!r} v3 route pin failed integrity validation")
+            if existing.get("selector_identity") != identity:
+                raise RuntimeError("v3 pinned selector identity is no longer admitted")
+            request = materializer.materialize(
+                template,
+                task_id=task["id"],
+                host="hermes",
+                transport=_SURFACE,
+                input_descriptor=descriptor,
+                as_of=existing["request"]["as_of"],
+            )
+            binding = {"input_descriptor": descriptor, "template": template}
+            if existing.get("binding") != binding or existing.get("request") != request:
+                raise RuntimeError(f"task {task['id']!r} already pins a different task or requirement")
+            dispatch = selector.dispatch_decision(
+                existing["decision"], existing["catalog"], existing["request"]
+            )
+            if dispatch != existing.get("dispatch"):
+                raise RuntimeError("v3 pinned dispatch decision changed on replay")
+            _validate_v3_dispatch(dispatch, existing["decision"], existing["request"])
+            return existing
+
+        selector, current_catalog, catalog_path = _selector_and_catalog(version=3)
+        request = materializer.materialize(
+            template,
+            task_id=task["id"],
+            host="hermes",
+            transport=_SURFACE,
+            input_descriptor=descriptor,
+        )
+        decision = selector.decide_route(
+            current_catalog, request, catalog_locator=str(catalog_path.resolve())
+        )
+        dispatch = selector.dispatch_decision(decision, current_catalog, request)
+        _validate_v3_dispatch(dispatch, decision, request)
+        payload = {
+            "route_version": 3,
+            "binding": {"input_descriptor": descriptor, "template": template},
+            "request": request,
+            "catalog": current_catalog,
+            "selector_identity": identity,
+            "decision": decision,
+            "dispatch": dispatch,
+        }
+        entry = {**payload, "pin_sha256": _sha(payload)}
+        store["tasks"][task["id"]] = entry
+        _write_pins(path, store)
+        return entry
+
+
 def _private_runtime() -> dict[str, Any]:
     from tools import delegate_tool
+    from tools.delegate_tool_child_run import _detach_child
+    from hermes_constants import set_hermes_home_override
     from agent.chat_completion_helpers import (
         _build_api_kwargs_for_mode,
         _reasoning_config_for_wire,
     )
     from agent.transports.codex import ResponsesApiTransport
+    from tools.delegate_tool_results import _apply_summary_budget
 
     build = getattr(delegate_tool, "_build_child_preserving_parent_tools", None)
     run = getattr(delegate_tool, "_run_single_child", None)
-    finalize = getattr(delegate_tool, "_finalize_child_results", None)
+    finalize = _native_finalizer(delegate_tool)
+    if (not {"summary_count", "summary_budget_applied"}.issubset(inspect.signature(finalize).parameters)
+            or "summary_count" not in inspect.signature(_apply_summary_budget).parameters):
+        raise RuntimeError("installed Hermes shared summary-budget seam is incompatible")
     get_max_children = getattr(delegate_tool, "_get_max_concurrent_children", None)
     get_max_depth = getattr(delegate_tool, "_get_max_spawn_depth", None)
     is_paused = getattr(delegate_tool, "is_spawn_paused", None)
@@ -417,28 +890,31 @@ def _private_runtime() -> dict[str, Any]:
         capture_owner,
         interrupt,
         list_active,
+        _detach_child,
+        set_hermes_home_override,
     )
     if not all(callable(value) for value in required_callables) or not isinstance(
         default_iterations, int
     ):
         raise RuntimeError("installed Hermes delegation seam is incompatible")
-    required = {"task_index", "goal", "context", "toolsets", "model", "parent_agent", "role"}
+    required = {"task_index", "goal", "context", "toolsets", "model", "parent_agent", "role", "max_iterations", "task_count"}
     if not required.issubset(inspect.signature(build).parameters) and not any(
         parameter.kind is inspect.Parameter.VAR_KEYWORD
         for parameter in inspect.signature(build).parameters.values()
     ):
         raise RuntimeError("installed Hermes child builder contract changed")
-    reasoning_helper_source = inspect.getsource(_reasoning_config_for_wire)
-    mode_builder_source = inspect.getsource(_build_api_kwargs_for_mode)
-    transport_source = inspect.getsource(ResponsesApiTransport.build_kwargs)
-    if not _reasoning_source_contract(
-        reasoning_helper_source, mode_builder_source, transport_source
+    for fn, parameters in (
+        (_reasoning_config_for_wire, {"agent"}),
+        (_build_api_kwargs_for_mode, {"agent", "api_messages", "tools_for_api"}),
+        (ResponsesApiTransport.build_kwargs, {"self", "model", "messages", "tools"}),
     ):
-        raise RuntimeError("installed Hermes exact-reasoning request seam changed")
+        if not callable(fn) or not parameters.issubset(inspect.signature(fn).parameters):
+            raise RuntimeError("installed Hermes native request-construction interface is unsupported")
     return {
         "build": build,
         "run": run,
         "finalize": finalize,
+        "budget_summary": _apply_summary_budget,
         "get_max_children": get_max_children,
         "get_max_depth": get_max_depth,
         "is_paused": is_paused,
@@ -447,22 +923,60 @@ def _private_runtime() -> dict[str, Any]:
         "interrupt": interrupt,
         "list_active": list_active,
         "default_iterations": default_iterations,
+        "validate_request": _install_exact_request_guard,
+        "detach": _detach_child,
     }
 
 
-def _reasoning_source_contract(
-    reasoning_helper_source: str,
-    mode_builder_source: str,
-    transport_source: str,
-) -> bool:
-    return (
-        "cfg = agent.reasoning_config" in reasoning_helper_source
-        and "_wire_reasoning_config = _reasoning_config_for_wire(agent)"
-        in mode_builder_source
-        and "reasoning_config=_wire_reasoning_config" in mode_builder_source
-        and 'reasoning_config = params.get("reasoning_config")' in transport_source
-        and 'reasoning_effort = reasoning_config["effort"]' in transport_source
-    )
+def _native_finalizer(delegate_tool: Any) -> Any:
+    """Keep the old exported seam; Hermes 0.21 split its implementation owner."""
+    finalize = getattr(delegate_tool, "_finalize_child_results", None)
+    if callable(finalize):
+        return finalize
+    from tools.delegate_tool_results import _finalize_child_results
+
+    return _finalize_child_results
+
+
+def _assert_native_request_kwargs(child: Any, route: dict[str, Any], kwargs: Any) -> None:
+    """Check locally constructed request arguments; this is not provider attestation."""
+    if (route.get("provider") != "openai-codex" or child.provider != route["provider"]
+            or getattr(child, "api_mode", None) != "codex_responses"
+            or str(getattr(child, "base_url", "")).rstrip("/") != "https://chatgpt.com/backend-api/codex"):
+        raise RuntimeError("unsupported exact-route native provider/transport")
+    if (not isinstance(kwargs, dict) or kwargs.get("model") != route["model"]
+            or not isinstance(kwargs.get("reasoning"), dict)
+            or kwargs["reasoning"].get("effort") != route["reasoning_effort"]):
+        raise RuntimeError("native request arguments do not preserve the pinned model and reasoning effort")
+    extra = kwargs.get("extra_body") or {}
+    if not isinstance(extra, dict) or any(key in extra and extra[key] != kwargs.get(key) for key in ("model", "reasoning")):
+        raise RuntimeError("native request overrides conflict with the pinned route")
+
+
+def _install_exact_request_guard(child: Any, route: dict[str, Any]) -> None:
+    original = getattr(child, "_build_api_kwargs", None)
+    if not callable(original):
+        raise RuntimeError("installed Hermes child request builder is unsupported")
+    # Exercise the actual native request-construction path without a transport
+    # call. No task content or personal prompt enters this capability probe.
+    try:
+        kwargs = original([{"role": "user", "content": "Synthetic route compatibility probe."}], [])
+        _assert_native_request_kwargs(child, route, kwargs)
+    except Exception as exc:
+        raise RuntimeError("native request construction cannot preserve this exact route") from exc
+    pinned = dict(route)
+
+    def checked_builder(*args: Any, **kwargs: Any) -> Any:
+        _assert_exact_child_route(child, pinned)
+        request = original(*args, **kwargs)
+        _assert_native_request_kwargs(child, pinned, request)
+        return request
+
+    child._build_api_kwargs = checked_builder
+    child._routed_request_contract = {
+        "source": "native-request-construction", "provider_resolved_identity_verified": False,
+        "provider": route["provider"], "model": route["model"], "reasoning_effort": route["reasoning_effort"],
+    }
 
 
 def _prepare_child(
@@ -474,6 +988,9 @@ def _prepare_child(
     max_iterations: int,
     *,
     build: Any = None,
+    validate_request: Any = None,
+    on_built: Any = None,
+    budget_summary: Any = None,
 ) -> Any:
     from hermes_constants import parse_reasoning_effort
 
@@ -487,7 +1004,10 @@ def _prepare_child(
     if reasoning is None:
         raise RuntimeError(f"unsupported reasoning effort: {route['reasoning_effort']}")
     if build is None:
-        build = _private_runtime()["build"]
+        runtime = _private_runtime()
+        build = runtime["build"]
+        validate_request = runtime["validate_request"]
+        budget_summary = runtime["budget_summary"]
     child = build(
         task_index=index,
         goal=task["goal"],
@@ -499,12 +1019,16 @@ def _prepare_child(
         parent_agent=parent,
         role=task["role"],
     )
+    if on_built is not None:
+        on_built(child)
+    _own_child(child, parent)
+    child._routed_summary_count = count
+    child._routed_budget_summary = budget_summary
     child.reasoning_config = dict(reasoning)
     session_config = getattr(child, "_session_init_model_config", None)
     if not isinstance(session_config, dict):
-        close = getattr(child, "close", None)
-        if callable(close):
-            close()
+        if on_built is None:
+            _dispose_unentered(child, parent)
         raise RuntimeError("child session model-config persistence seam changed")
     session_config["reasoning_config"] = dict(reasoning)
     primary_runtime = getattr(child, "_primary_runtime", None)
@@ -516,10 +1040,11 @@ def _prepare_child(
     child._fallback_activated = False
     try:
         _assert_exact_child_route(child, route)
+        if validate_request is not None:
+            validate_request(child, route)
     except Exception:
-        close = getattr(child, "close", None)
-        if callable(close):
-            close()
+        if on_built is None:
+            _dispose_unentered(child, parent)
         raise
     return child
 
@@ -555,118 +1080,136 @@ def _run_exact_child(
     parent: Any,
     owner_kwargs: dict[str, Any],
 ) -> Any:
-    _assert_exact_child_route(child, receipt["route"])
+    try:
+        _assert_exact_child_route(child, receipt["route"])
+    except BaseException:
+        _dispose_unentered(child, parent)
+        raise
+    child._routed_started = True
     return run(
-        task_index=index,
-        goal=task["goal"],
-        child=child,
-        parent_agent=parent,
-        **owner_kwargs,
-    )
+            task_index=index,
+            goal=task["goal"],
+            child=child,
+            parent_agent=parent,
+            **owner_kwargs,
+        )
+
+
+def _child_error(index: int, child: Any, error: BaseException, status: str = "error") -> dict[str, Any]:
+    return {"task_index": index, "status": status, "exit_reason": "error",
+            "summary": None, "error": str(error), "api_calls": 0,
+            "duration_seconds": 0, "_child_role": getattr(child, "_delegate_role", None),
+            "error_type": type(error).__name__,
+            "execution_outcome": "unknown" if getattr(child, "_routed_started", False) else "not-started"}
+
+
+def _interrupt_child(child: Any, interrupt: Any) -> None:
+    """Request cooperative stopping; neither acceptance nor return proves closure."""
+    try:
+        accepted = callable(interrupt) and interrupt(getattr(child, "_subagent_id", ""))
+        if not accepted and callable(getattr(child, "interrupt", None)):
+            child.interrupt()
+    except Exception:
+        pass
 
 
 def _execute_children(
-    prepared: list[tuple[int, dict[str, Any], dict[str, Any], Any]],
-    parent: Any,
-    run: Any,
-    finalize: Any,
-    *,
-    max_children: int,
-    owner_kwargs: dict[str, Any],
-) -> list[dict[str, Any]]:
+    prepared, parent, run, finalize, *, max_children, owner_kwargs,
+    interrupt=None, detach=None,
+):
     from concurrent.futures import FIRST_COMPLETED, wait
     from tools.daemon_pool import DaemonThreadPoolExecutor
+    results, futures, settled = [], {}, []
+    pool, deadline = None, None
 
-    results: list[dict[str, Any]] = []
-    if len(prepared) == 1:
-        index, task, receipt, child = prepared[0]
-        results.append(
-            _run_exact_child(
-                run, index, task, receipt, child, parent, owner_kwargs
-            )
-        )
-    else:
-        child_by_index = {index: child for index, _task, _receipt, child in prepared}
-        with DaemonThreadPoolExecutor(
-            max_workers=max_children, thread_name_prefix="routed-delegate"
-        ) as pool:
-            futures = {}
-            for index, task, receipt, child in prepared:
-                child_context = contextvars.copy_context()
-                future = pool.submit(
-                    child_context.run,
-                    _run_exact_child,
-                    run,
-                    index,
-                    task,
-                    receipt,
-                    child,
-                    parent,
-                    owner_kwargs,
-                )
-                futures[future] = index
-            pending = set(futures)
-            while pending:
-                if getattr(parent, "_interrupt_requested", False) is True:
-                    for future in pending:
-                        index = futures[future]
-                        if future.done():
-                            try:
-                                entry = future.result()
-                            except Exception as exc:
-                                entry = {
-                                    "task_index": index,
-                                    "status": "error",
-                                    "summary": None,
-                                    "error": str(exc),
-                                    "api_calls": 0,
-                                    "duration_seconds": 0,
-                                    "_child_role": getattr(
-                                        child_by_index[index], "_delegate_role", None
-                                    ),
-                                }
-                        else:
-                            entry = {
-                                "task_index": index,
-                                "status": "interrupted",
-                                "summary": None,
-                                "error": "Parent agent interrupted — child did not finish in time",
-                                "api_calls": 0,
-                                "duration_seconds": 0,
-                                "_child_role": getattr(
-                                    child_by_index[index], "_delegate_role", None
-                                ),
-                            }
-                        results.append(entry)
+    def consume(future, item):
+        try:
+            result = future.result()
+            if not isinstance(result, dict):
+                raise RuntimeError("native child returned no result object")
+            return result
+        except BaseException as exc:
+            return _child_error(item[0], item[3], exc)
+
+    def account(item, result):
+        _schedule_finalization(finalize, parent, item, result)
+        settled.append((item, result))
+
+    try:
+        try:
+            pool = DaemonThreadPoolExecutor(max_workers=max_children, thread_name_prefix="routed-delegate")
+            for item in prepared:
+                index, task, receipt, child = item
+                future = _submit_owned(pool, _run_exact_child, run, index, task, receipt, child, parent, owner_kwargs)
+                futures[future] = item
+        except BaseException as exc:
+            submitted = {item[0] for item in futures.values()}
+            for item in prepared:
+                if item[0] in submitted:
+                    continue
+                cleanup = _dispose_unentered(item[3], parent, detach)
+                result = _child_error(item[0], item[3], exc)
+                result["cleanup_errors"] = cleanup
+                results.append(result)
+                account(item, result)
+            deadline = time.monotonic() + _INTERRUPT_GRACE_SECONDS
+
+        pending = set(futures)
+        signalled = set()
+        while pending:
+            if deadline is None and getattr(parent, "_interrupt_requested", False) is True:
+                deadline = time.monotonic() + _INTERRUPT_GRACE_SECONDS
+            if deadline is not None:
+                for future in pending - signalled:
+                    item = futures[future]
+                    if future.cancel():
+                        _background(item[3]._routed_context, lambda owned=item: _dispose_unentered(owned[3], parent, detach))
+                    else:
+                        _background(item[3]._routed_context, lambda owned=item: _interrupt_child(owned[3], interrupt))
+                    signalled.add(future)
+            try:
+                done, pending = wait(pending, timeout=0.05, return_when=FIRST_COMPLETED)
+            except BaseException:
+                deadline = deadline or (time.monotonic() + _INTERRUPT_GRACE_SECONDS)
+                if time.monotonic() >= deadline:
                     break
-                done, pending = wait(
-                    pending, timeout=0.5, return_when=FIRST_COMPLETED
-                )
-                for future in done:
-                    index = futures[future]
-                    try:
-                        results.append(future.result())
-                    except Exception as exc:
-                        results.append(
-                            {
-                                "task_index": index,
-                                "status": "error",
-                                "summary": None,
-                                "error": str(exc),
-                                "api_calls": 0,
-                                "duration_seconds": 0,
-                                "_child_role": getattr(
-                                    child_by_index[index], "_delegate_role", None
-                                ),
-                            }
-                        )
-    results.sort(key=lambda entry: entry["task_index"])
-    task_list = [task for _index, task, _receipt, _child in prepared]
-    native_children = [
-        (index, task, child) for index, task, _receipt, child in prepared
-    ]
-    finalize(results, task_list, native_children, parent)
-    return results
+                continue
+            for future in done:
+                item = futures[future]
+                result = consume(future, item)
+                results.append(result)
+                account(item, result)
+            if deadline is not None and time.monotonic() >= deadline:
+                break
+        for future in pending:
+            item = futures[future]
+            entry = _child_error(item[0], item[3], RuntimeError("cooperative stop requested; completion and closure unconfirmed"), "interrupted")
+            entry["closure_confirmed"] = False
+            entry["finalization_status"] = "pending-execution"
+            results.append(entry)
+            def late(completed, owned=item):
+                _background(owned[3]._routed_context, lambda: _schedule_finalization(finalize, parent, owned, consume(completed, owned)))
+            future.add_done_callback(late)
+        _poll_accounting([item[3] for item, _result in settled])
+        for item, result in settled:
+            status = dict(item[3]._routed_accounting)
+            item[3]._routed_raw_result = _safe_json(result)
+            displayed = getattr(item[3], "_routed_display_result", None)
+            if displayed is not None:
+                result.clear()
+                result.update(_safe_json(displayed))
+            elif callable(getattr(item[3], "_routed_budget_summary", None)):
+                result["summary"] = None  # projection failure cannot expose the unbounded raw summary
+            if status["status"] == "returned":
+                result.clear()
+                result.update(item[3]._routed_finalized_result)
+            result["finalization_status"] = status["status"]
+            if status["status"] != "returned":
+                result["finalization_error"] = status.get("error") or status.get("error_type") or status["status"]
+        return sorted(results, key=lambda entry: entry["task_index"])
+    finally:
+        if pool is not None:
+            pool.shutdown(wait=False, cancel_futures=True)
 
 
 def _workflow_owner_kwargs(runtime: dict[str, Any]) -> dict[str, Any]:
@@ -691,6 +1234,8 @@ def _workflow_snapshot(
 ) -> dict[str, Any]:
     _plan, state = workflow.load_run(run_dir, trusted_manifest_sha256)
     tasks = {}
+    finalization_pending = []
+    parent_actions = []
     for task_id, current in state["tasks"].items():
         receipt = current.get("decision_receipt")
         route = receipt.get("route") if isinstance(receipt, dict) else None
@@ -704,11 +1249,30 @@ def _workflow_snapshot(
             "decision_id": receipt.get("decision_id") if isinstance(receipt, dict) else None,
             "route": route,
         }
+        dispatch = current.get("dispatch")
+        if isinstance(dispatch, dict):
+            tasks[task_id]["dispatch_kind"] = dispatch.get("kind")
+            tasks[task_id]["acceptance_handoff"] = dispatch.get("acceptance_handoff")
+            if dispatch.get("kind") != "model" and current["status"] == "pending":
+                parent_actions.append({"task_id": task_id,
+                    **{key: dispatch.get(key) for key in ("kind", "decision_id", "executor", "prompt_path", "route_task_path", "route_receipt_path", "acceptance_handoff")}})
+        handle, token = current.get("handle", ""), current.get("launch_token", "")
+        if handle and token:
+            recorded = _trusted_attempt(run_dir, task_id, handle, token, "intent.json")
+            if recorded.is_file():
+                accounting = _trusted_attempt(run_dir, task_id, handle, token, "finalization.json")
+                data = json.loads(accounting.read_text(encoding="utf-8")) if accounting.is_file() else {}
+                tasks[task_id]["finalization_status"] = data.get("status", "unconfirmed")
+                if data.get("status") != "returned" or data.get("persistence_error_type"):
+                    finalization_pending.append(task_id)
     return {
         "run_dir": str(run_dir.resolve()),
         "status": state["status"],
         "stop_requested": state["stop_requested"],
         "tasks": tasks,
+        "finalization_pending": finalization_pending,
+        "parent_actions": parent_actions,
+        "accounting_assurance": "native-finalizer-return-only; internally suppressed outcomes are unverified",
     }
 
 
@@ -723,8 +1287,61 @@ def _validate_hermes_workflow_run(
         )
     _validate_hermes_workflow_plan(plan)
     for task in plan["tasks"]:
-        workflow.task_model(run_dir, task["id"], trusted_manifest_sha256)
+        if "route_request" not in task:
+            workflow.task_model(run_dir, task["id"], trusted_manifest_sha256)
+    if any("route_request" in task for task in plan["tasks"]):
+        workflow.load_v3_router_snapshot(run_dir, state)
     return plan, state, trusted_manifest_sha256
+
+
+def _complete_workflow_parent_action(
+    workflow: Any,
+    run_dir: Path,
+    task_id: str,
+    output_path: Path,
+    summary: str,
+    trusted_manifest_sha256: str,
+) -> None:
+    output_path = output_path.resolve()
+    if not output_path.is_file():
+        raise ValueError(f"parent action output does not exist: {output_path}")
+    token = workflow.claim_parent_task(run_dir, task_id, trusted_manifest_sha256)
+    handle = f"parent-sequential:{task_id}"
+    try:
+        workflow.start_task(run_dir, task_id, handle, token, trusted_manifest_sha256)
+        workflow.finish_task(
+            run_dir, task_id, "succeeded", str(output_path), summary, "",
+            False, handle, token, trusted_manifest_sha256,
+        )
+    except Exception as exc:
+        _plan, state = workflow.load_run(run_dir, trusted_manifest_sha256)
+        current = state["tasks"].get(task_id, {})
+        if current.get("status") == "launching":
+            workflow.abort_launch(
+                run_dir, task_id, str(exc) or type(exc).__name__, token,
+                trusted_manifest_sha256,
+            )
+        raise
+
+
+def _dispatch_workflow_v3(workflow, run_dir, task, trusted_manifest_sha256, parent, max_iterations):
+    # Resolve the native envelope before the portable owner freezes its input.
+    goal, _dependencies = workflow.render_prompt_data(run_dir, task["id"], trusted_manifest_sha256)
+    tools = task["route_request"]["requirements"]["tools"]
+    envelope = {"id": task["id"], "goal": goal, "context": None,
+                "toolsets": ["none"] if not tools else None, "role": "leaf"}
+    envelope["_native_envelope"] = _v3_native_envelope(parent, envelope)
+    context = {"max_iterations": max_iterations, "native_envelope": envelope["_native_envelope"],
+               "toolsets": envelope["toolsets"], "role": "leaf",
+               "adapter_sha256": _sha(Path(__file__).read_bytes()),
+               "workflow_sha256": _sha(Path(workflow.__file__).read_bytes())}
+    dispatch = workflow.task_dispatch(run_dir, task["id"], context, trusted_manifest_sha256)
+    request = json.loads(Path(dispatch["route_task_path"]).read_bytes())
+    receipt = json.loads(Path(dispatch["route_receipt_path"]).read_bytes())
+    selected_dispatch = {key: dispatch[key] for key in ("kind", "decision_id", "route", "executor") if key in dispatch}
+    _validate_v3_dispatch(selected_dispatch, receipt, request, surface=_WORKFLOW_SURFACE)
+    envelope["_v3_request"] = request
+    return envelope, receipt, dispatch
 
 
 def _workflow_task_envelope(
@@ -732,7 +1349,17 @@ def _workflow_task_envelope(
     run_dir: Path,
     task: dict[str, Any],
     trusted_manifest_sha256: str,
+    parent: Any = None,
+    max_iterations: int | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
+    if "route_request" in task:
+        if parent is None or max_iterations is None:
+            raise RuntimeError("V3 workflow preparation needs its actual native parent and iteration limit")
+        envelope, receipt, dispatch = _dispatch_workflow_v3(
+            workflow, run_dir, task, trusted_manifest_sha256, parent, max_iterations)
+        if dispatch["kind"] != "model":
+            raise RuntimeError("Non-model V3 workflow action cannot prepare a native child")
+        return envelope, receipt
     selected, receipt = workflow.task_route_receipt(
         run_dir, task["id"], trusted_manifest_sha256
     )
@@ -763,6 +1390,9 @@ def _prepare_workflow_child(
     count: int,
     max_iterations: int,
     build: Any,
+    validate_request: Any = None,
+    on_built: Any = None,
+    budget_summary: Any = None,
 ) -> Any:
     child = _prepare_child(
         parent,
@@ -772,19 +1402,27 @@ def _prepare_workflow_child(
         count,
         max_iterations,
         build=build,
+        validate_request=validate_request,
+        on_built=on_built,
+        budget_summary=budget_summary,
     )
     if getattr(child, "_delegate_role", None) != "leaf":
-        close = getattr(child, "close", None)
-        if callable(close):
-            close()
+        if on_built is None:
+            _dispose_unentered(child, parent)
         raise RuntimeError(
             "Hermes workflow nodes must be native leaf children with delegation disabled"
         )
+    if "_v3_request" in task:
+        try:
+            _guard_v3_child(child, task, {"request": task["_v3_request"]})
+        except Exception:
+            if on_built is None:
+                _dispose_unentered(child, parent)
+            raise
     handle = getattr(child, "_subagent_id", None)
     if not isinstance(handle, str) or not handle:
-        close = getattr(child, "close", None)
-        if callable(close):
-            close()
+        if on_built is None:
+            _dispose_unentered(child, parent)
         raise RuntimeError("Hermes failed to assign a native workflow child handle")
     child._workflow_task_id = task["id"]
     return child
@@ -852,12 +1490,14 @@ def _install_close_witness(
         raise RuntimeError("Hermes workflow child has no close method")
     close_lock = threading.Lock()
     close_result: list[Any] = []
+    trusted_path = _trusted_close_witness_path(run_dir, task_id, handle, launch_token)
 
     def close_with_witness() -> Any:
         with close_lock:
             if close_result:
                 return close_result[0]
             result = original_close()
+            close_result.append(result)
             canonical_run, _run_key = _workflow_run_key(run_dir)
             payload = {
                 "schema_version": 1,
@@ -873,13 +1513,10 @@ def _install_close_witness(
                 ensure_ascii=False,
             ) + "\n"
             _atomic_text(
-                _trusted_close_witness_path(
-                    run_dir, task_id, handle, launch_token
-                ),
+                trusted_path,
                 text,
             )
             _atomic_text(_close_witness_path(run_dir, task_id), text)
-            close_result.append(result)
             return result
 
     child.close = close_with_witness
@@ -906,7 +1543,7 @@ def _native_handle_is_closed(
         witness = json.loads(witness_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return False
-    return witness == {
+    return isinstance(witness, dict) and witness == {
         "schema_version": 1,
         "run_dir": _workflow_run_key(run_dir)[0],
         "task_id": task_id,
@@ -941,6 +1578,112 @@ def _native_result_status(result: dict[str, Any], route: dict[str, Any]) -> tupl
     )
 
 
+def _attempt_artifact(workflow, run_dir, task_id, handle, token, suffix):
+    key = _sha({"handle": handle, "launch_token": token})
+    return workflow.task_artifact_path(run_dir, task_id, f"attempt-{key}.{suffix}")
+
+
+def _trusted_attempt(run_dir, task_id, handle, token, suffix, home=None):
+    canonical_run, run_key = _workflow_run_key(run_dir)
+    key = _sha({"run_dir": canonical_run, "task_id": task_id, "handle": handle, "launch_token": token})
+    return (home or _hermes_home()) / "cache/routed-delegation/workflow-attempts" / run_key / f"{key}.{suffix}"
+
+
+def _execution_intent(run_dir, manifest_sha, metadata):
+    _index, envelope, receipt, child, token = metadata
+    path = _trusted_attempt(run_dir, envelope["id"], child._subagent_id, token, "intent.json", child._routed_home)
+    _atomic_text(path, json.dumps({"manifest_sha256": manifest_sha, "receipt_sha256": _sha(receipt),
+                                  "execution_outcome": "unknown", "replay_allowed": False}))
+
+
+def _record_workflow_result(workflow, run_dir, manifest_sha, metadata, result, parent=None):
+    index, envelope, receipt, child, token = metadata
+    task_id, handle = envelope["id"], child._subagent_id
+    record = _safe_json({"schema_version": 2, "task_id": task_id, "handle": handle,
+                        "launch_token": token, "manifest_sha256": manifest_sha,
+                        "route_receipt": receipt, "native_result": result})
+    try:
+        record["display_result"] = _display_result(child, parent, result)
+        record["summary_count"] = child._routed_summary_count
+    except BaseException as exc:
+        # Full raw outcome still persists if deriving its context view fails.
+        record["display_error_type"] = type(exc).__name__
+    trusted = _trusted_attempt(run_dir, task_id, handle, token, "result.json", child._routed_home)
+    if trusted.exists() and json.loads(trusted.read_text(encoding="utf-8")) != record:
+        raise RuntimeError("trusted attempt result already exists with different evidence")
+    _atomic_text(trusted, json.dumps(record, ensure_ascii=False))
+    path = _attempt_artifact(workflow, run_dir, task_id, handle, token, "result.json")
+    if path.exists():
+        if json.loads(path.read_text(encoding="utf-8")) != record:
+            raise RuntimeError("attempt result already exists with different evidence")
+    else:
+        workflow.atomic_json(path, record)
+    workflow.atomic_json(workflow.task_artifact_path(run_dir, task_id, "result.json"), record)
+    return record
+
+
+def _finish_recorded_workflow_result(workflow, run_dir, manifest_sha, runtime, record):
+    task_id, handle, token = record["task_id"], record["handle"], record["launch_token"]
+    result = record["native_result"]
+    if record.get("display_error_type"):
+        return False
+    displayed = record.get("display_result", result)  # historical records retain their original semantics
+    if not _definitive_result(result):
+        return False
+    if not _native_handle_is_closed(runtime, run_dir, task_id, handle, token):
+        return False
+    status, error = _native_result_status(result, record["route_receipt"]["route"])
+    output = ""
+    if status == "succeeded":
+        output_path = _attempt_artifact(workflow, run_dir, task_id, handle, token, "output.md")
+        _atomic_text(output_path, displayed["summary"])
+        _atomic_text(workflow.task_artifact_path(run_dir, task_id, "output.md"), displayed["summary"])
+        output = str(output_path)
+    workflow.finish_task(run_dir, task_id, status, output, str(displayed.get("summary") or ""),
+                         error, True, handle, token, manifest_sha)
+    return True
+
+
+def _settle_workflow_result(workflow, run_dir, manifest_sha, runtime, parent, metadata, result, *, finish_state=True):
+    index, envelope, receipt, child, token = metadata
+    def persist(status):
+        _atomic_text(_trusted_attempt(run_dir, envelope["id"], child._subagent_id, token, "finalization.json", child._routed_home),
+                     json.dumps(status, ensure_ascii=False))
+        workflow.atomic_json(_attempt_artifact(workflow, run_dir, envelope["id"], child._subagent_id, token, "finalization.json"), status)
+    try:
+        record = _record_workflow_result(workflow, run_dir, manifest_sha, metadata, result, parent)
+        finished = finish_state and _finish_recorded_workflow_result(workflow, run_dir, manifest_sha, runtime, record)
+        return {"finished": bool(finished)}
+    finally:
+        # Accounting ownership survives persistence or canonical state failures.
+        _schedule_finalization(runtime["finalize"], parent, metadata, result, persist)
+
+
+def _reconcile_workflow_results(workflow, run_dir, manifest_sha, runtime):
+    _plan, state = workflow.load_run(run_dir, manifest_sha)
+    reconciled = []
+    for task_id, current in state["tasks"].items():
+        if current["status"] != "running":
+            continue
+        handle, token = current.get("handle", ""), current.get("launch_token", "")
+        path = _attempt_artifact(workflow, run_dir, task_id, handle, token, "result.json")
+        trusted = _trusted_attempt(run_dir, task_id, handle, token, "result.json")
+        if not trusted.is_file():
+            raise RuntimeError("execution completion is unknown or unbound; manual reconciliation required before replay")
+        record = json.loads(trusted.read_text(encoding="utf-8"))
+        if path.is_file() and json.loads(path.read_text(encoding="utf-8")) != record:
+            raise RuntimeError("stored execution result does not match trusted active attempt evidence")
+        if not isinstance(record, dict) or any(record.get(key) != value for key, value in {
+            "schema_version": 2, "task_id": task_id, "handle": handle, "launch_token": token,
+            "manifest_sha256": manifest_sha, "route_receipt": current.get("decision_receipt"),
+        }.items()) or not isinstance(record.get("native_result"), dict):
+            raise RuntimeError("stored execution result does not match the active attempt")
+        if not _finish_recorded_workflow_result(workflow, run_dir, manifest_sha, runtime, record):
+            raise RuntimeError("completed execution cannot be reconciled without exact native close witnesses; replay excluded")
+        reconciled.append(task_id)
+    return reconciled
+
+
 def _run_workflow_wave(
     workflow: Any,
     run_dir: Path,
@@ -966,6 +1709,7 @@ def _run_workflow_wave(
         for index, task_id in enumerate(ready):
             task = by_id[task_id]
             child = None
+            constructed = []
             token = ""
             try:
                 token = workflow.claim_task(
@@ -976,6 +1720,7 @@ def _run_workflow_wave(
                     run_dir,
                     task,
                     trusted_manifest_sha256,
+                    **({"parent": parent, "max_iterations": max_iterations} if "route_request" in task else {}),
                 )
                 child = _prepare_workflow_child(
                     parent,
@@ -985,6 +1730,9 @@ def _run_workflow_wave(
                     len(ready),
                     max_iterations,
                     runtime["build"],
+                    runtime.get("validate_request"),
+                    constructed.append,
+                    budget_summary=runtime.get("budget_summary"),
                 )
                 handle = child._subagent_id
                 _install_close_witness(
@@ -998,7 +1746,8 @@ def _run_workflow_wave(
                     trusted_manifest_sha256,
                 )
                 prepared.append((index, envelope, receipt, child, token))
-                future = pool.submit(
+                _execution_intent(run_dir, trusted_manifest_sha256, prepared[-1])
+                future = _submit_owned(pool,
                     _run_exact_child,
                     runtime["run"],
                     index,
@@ -1010,14 +1759,15 @@ def _run_workflow_wave(
                 )
                 futures[future] = prepared[-1]
             except Exception as exc:
-                error_text = str(exc)
+                child = child or (constructed[0] if constructed else None)
+                error_text = str(exc) or type(exc).__name__
                 if child is not None:
-                    close = getattr(child, "close", None)
-                    if callable(close):
-                        try:
-                            close()
-                        except Exception as close_exc:
-                            error_text += f"; child close failed: {close_exc}"
+                    cleanup = _dispose_unentered(child, parent, runtime.get("detach"))
+                    if cleanup:
+                        error_text += f"; cleanup incomplete: {cleanup}"
+                    _schedule_finalization(runtime["finalize"], parent,
+                                           (index, envelope, receipt, child),
+                                           _child_error(index, child, exc))
                 try:
                     if not token:
                         raise RuntimeError("task claim was not acquired")
@@ -1067,113 +1817,81 @@ def _run_workflow_wave(
                     launch_errors.append({"task_id": task_id, "error": error_text})
 
         pending = set(futures)
-        done_results: list[
-            tuple[dict[str, Any], tuple[int, dict[str, Any], dict[str, Any], Any, str]]
-        ] = []
-        interrupt_sent = False
+        completed = 0
+        finalization_errors = []
+        interrupt_deadline = None
+        signalled = set()
         while pending:
-            if getattr(parent, "_interrupt_requested", False) is True and not interrupt_sent:
+            if getattr(parent, "_interrupt_requested", False) is True and interrupt_deadline is None:
                 workflow.request_stop(run_dir, trusted_manifest_sha256)
-                interrupt = runtime.get("interrupt")
-                if callable(interrupt):
-                    for future in pending:
-                        interrupt(futures[future][3]._subagent_id)
-                interrupt_sent = True
-            done, pending = wait(pending, timeout=0.2, return_when=FIRST_COMPLETED)
+                interrupt_deadline = time.monotonic() + _INTERRUPT_GRACE_SECONDS
+                for future in pending:
+                    metadata = futures[future]
+                    if future.cancel():
+                        _background(metadata[3]._routed_context, lambda owned=metadata: _dispose_unentered(owned[3], parent, runtime.get("detach")))
+                    else:
+                        _background(metadata[3]._routed_context, lambda owned=metadata: _interrupt_child(owned[3], runtime.get("interrupt")))
+                    signalled.add(future)
+            try:
+                done, pending = wait(pending, timeout=0.05, return_when=FIRST_COMPLETED)
+            except BaseException:
+                workflow.request_stop(run_dir, trusted_manifest_sha256)
+                interrupt_deadline = interrupt_deadline or (time.monotonic() + _INTERRUPT_GRACE_SECONDS)
+                for future in pending - signalled:
+                    owned = futures[future]
+                    _background(owned[3]._routed_context, lambda owned=owned: _interrupt_child(owned[3], runtime.get("interrupt")))
+                    signalled.add(future)
+                if time.monotonic() >= interrupt_deadline:
+                    break
+                continue
             for future in done:
                 metadata = futures[future]
                 try:
                     result = future.result()
+                except BaseException as exc:
+                    result = _child_error(metadata[0], metadata[3], exc)
+                try:
+                    outcome = _settle_workflow_result(workflow, run_dir, trusted_manifest_sha256,
+                                                     runtime, parent, metadata, result)
+                    completed += 1
+                    if not outcome["finished"]:
+                        launch_errors.append({"task_id": metadata[1]["id"], "error": "native execution outcome or exact close witness unconfirmed; replay excluded"})
                 except Exception as exc:
-                    result = {
-                        "task_index": metadata[0],
-                        "status": "failed",
-                        "exit_reason": "error",
-                        "summary": None,
-                        "error": str(exc),
-                        "model": metadata[2]["route"]["model"],
-                    }
-                done_results.append((result, metadata))
-
-        completion_records = []
-        for result, metadata in done_results:
+                    launch_errors.append({"task_id": metadata[1]["id"], "error": str(exc)})
+            if interrupt_deadline is not None and time.monotonic() >= interrupt_deadline:
+                break
+        for future in pending:
+            metadata = futures[future]
             index, envelope, receipt, child, token = metadata
-            task_id = envelope["id"]
-            handle = child._subagent_id
-            result_path = workflow.task_artifact_path(
-                run_dir, task_id, "result.json"
-            )
-            workflow.atomic_json(
-                result_path,
-                _safe_json({
-                    "task_id": task_id,
-                    "route_receipt": receipt,
-                    "native_result": result,
-                }),
-            )
-            status, error = _native_result_status(result, receipt["route"])
-            output_path = workflow.task_artifact_path(
-                run_dir, task_id, "output.md"
-            )
-            if status == "succeeded":
-                _atomic_text(output_path, result["summary"])
-            completion_records.append({
-                "index": index,
-                "task": envelope,
-                "receipt": receipt,
-                "child": child,
-                "token": token,
-                "handle": handle,
-                "result": result,
-                "status": status,
-                "error": error,
-                "output": str(output_path) if status == "succeeded" else "",
-            })
-
-        if completion_records:
-            ordered = sorted(completion_records, key=lambda item: item["index"])
-            native_results = [item["result"] for item in ordered]
-            task_list = [{"goal": ""} for _ in ready]
-            for item in ordered:
-                task_list[item["index"]] = item["task"]
-            runtime["finalize"](
-                native_results,
-                task_list,
-                [(item["index"], item["task"], item["child"]) for item in ordered],
-                parent,
-            )
-            for item in ordered:
-                if not _native_handle_is_closed(
-                    runtime,
-                    run_dir,
-                    item["task"]["id"],
-                    item["handle"],
-                    item["token"],
-                ):
-                    launch_errors.append({
-                        "task_id": item["task"]["id"],
-                        "error": "native handle lacks an exact close witness after child completion",
-                    })
-                    continue
-                workflow.finish_task(
-                    run_dir,
-                    item["task"]["id"],
-                    item["status"],
-                    item["output"],
-                    str(item["result"].get("summary") or ""),
-                    item["error"],
-                    True,
-                    item["handle"],
-                    item["token"],
-                    trusted_manifest_sha256,
-                )
-        return {
-            "completed": len(completion_records),
-            "launch_errors": launch_errors,
-            "abandoned_after_interrupt": False,
-        }
+            workflow.atomic_json(_attempt_artifact(workflow, run_dir, envelope["id"], child._subagent_id, token, "abandoned.json"),
+                                 {"status": "closure-unconfirmed", "replay_allowed": False})
+            def record_late(finished, owned=metadata):
+                try:
+                    try:
+                        result = finished.result()
+                    except BaseException as exc:
+                        result = _child_error(owned[0], owned[3], exc)
+                    # Best-effort evidence/accounting only. Canonical task state
+                    # is reconciled later under the workflow execution lock.
+                    _settle_workflow_result(workflow, run_dir, trusted_manifest_sha256,
+                                            runtime, parent, owned, result, finish_state=False)
+                except Exception:
+                    # The durable abandonment marker continues excluding replay.
+                    pass
+            future.add_done_callback(lambda finished, owned=metadata, callback=record_late:
+                                     _background(owned[3]._routed_context, lambda: callback(finished)))
+        _poll_accounting([owned[3] for future, owned in futures.items() if future not in pending])
+        for future, owned in futures.items():
+            status = owned[3]._routed_accounting
+            if future not in pending and (status["status"] != "returned" or status.get("persistence_error_type")):
+                finalization_errors.append({"task_id": owned[1]["id"], **status})
+        return {"completed": completed, "launch_errors": launch_errors,
+                "finalization_errors": finalization_errors,
+                "abandoned_after_interrupt": bool(pending),
+                "closure_unconfirmed": [futures[f][1]["id"] for f in pending],
+                "stop_reason": "closure-unconfirmed" if pending else "no-progress" if completed == 0 else ""}
     finally:
-        pool.shutdown(wait=True, cancel_futures=False)
+        pool.shutdown(wait=False, cancel_futures=True)
 
 
 def _run_workflow(
@@ -1200,11 +1918,20 @@ def _run_workflow(
         raise RuntimeError("Hermes max_concurrent_children must be positive")
 
     waves = []
+    by_id = {task["id"]: task for task in plan["tasks"]}
     while True:
         ready = workflow.ready_tasks(run_dir, trusted_manifest_sha256)
         if getattr(parent, "_interrupt_requested", False) is True:
             workflow.request_stop(run_dir, trusted_manifest_sha256)
             break
+        if not ready:
+            break
+        v3_ready = [task_id for task_id in ready if "route_request" in by_id[task_id]]
+        if v3_ready:
+            for task_id in v3_ready:
+                _dispatch_workflow_v3(workflow, run_dir, by_id[task_id], trusted_manifest_sha256, parent, max_iterations)
+            # Non-model choices remain actions in the snapshot, outside the wave.
+            ready = workflow.ready_tasks(run_dir, trusted_manifest_sha256)
         if not ready:
             break
         wave = _run_workflow_wave(
@@ -1219,17 +1946,19 @@ def _run_workflow(
             owner_kwargs,
         )
         waves.append(wave)
-        if wave["abandoned_after_interrupt"]:
+        if wave["abandoned_after_interrupt"] or wave.get("stop_reason") == "no-progress":
             break
     snapshot = _workflow_snapshot(
         workflow, run_dir, trusted_manifest_sha256
     )
-    snapshot["success"] = snapshot["status"] == "succeeded"
+    snapshot["operational_ok"] = not snapshot["finalization_pending"] and not any(w.get("finalization_errors") or w.get("launch_errors") or w.get("abandoned_after_interrupt") for w in waves)
+    snapshot["success"] = snapshot["status"] == "succeeded" and snapshot["operational_ok"]
     snapshot["waves"] = waves
     return snapshot
 
 
 def _handle(params: dict[str, Any], **_kwargs: Any) -> str:
+    preparation_cleanup = []
     try:
         from agent.subagent_lifecycle import get_active_subagent_parent
 
@@ -1240,25 +1969,12 @@ def _handle(params: dict[str, Any], **_kwargs: Any) -> str:
         if not parent_session_id:
             raise RuntimeError("active Hermes parent has no session id")
         runtime = _private_runtime()
-        if runtime["is_paused"]():
-            raise RuntimeError("Delegation spawning is paused")
-        depth = int(getattr(parent, "_delegate_depth", 0) or 0)
-        max_depth = runtime["get_max_depth"]()
-        if depth >= max_depth:
-            raise RuntimeError(
-                f"Delegation depth limit reached (depth={depth}, max_spawn_depth={max_depth})"
-            )
         raw_tasks = params.get("tasks")
         if not isinstance(raw_tasks, list) or not 1 <= len(raw_tasks) <= 4:
             raise ValueError("tasks must contain 1-4 entries")
         tasks = [_normalize_task(raw) for raw in raw_tasks]
         if len({task["id"] for task in tasks}) != len(tasks):
             raise ValueError("task ids must be unique")
-        max_children = runtime["get_max_children"]()
-        if len(tasks) > max_children:
-            raise ValueError(
-                f"Too many tasks: {len(tasks)} provided, but max_concurrent_children is {max_children}"
-            )
         config = runtime["load_config"]()
         max_iterations = config.get(
             "max_iterations", runtime["default_iterations"]
@@ -1278,58 +1994,166 @@ def _handle(params: dict[str, Any], **_kwargs: Any) -> str:
             "owner_session_record": owner_record,
         }
         prepared = []
+        reservations = {}
+        selected = []
         try:
             for index, task in enumerate(tasks):
-                receipt = _select_or_reuse(
-                    parent_session_id, task, max_iterations
+                if "route_request" in task:
+                    task["_native_envelope"] = _v3_native_envelope(parent, task)
+                    pin = _select_or_reuse_v3(parent_session_id, task, max_iterations)
+                    receipt = pin["decision"]
+                    dispatch = pin["dispatch"]
+                else:
+                    pin = None
+                    receipt = _select_or_reuse(parent_session_id, task, max_iterations)
+                    dispatch = {
+                        "kind": "model",
+                        "route": receipt["route"],
+                        "decision_id": receipt["decision_id"],
+                    }
+                selected.append((index, task, receipt, dispatch, pin))
+            model_selected = [item for item in selected if item[3]["kind"] == "model"]
+            max_children = runtime["get_max_children"]()
+            if len(model_selected) > max_children:
+                raise ValueError(
+                    f"Too many model tasks: {len(model_selected)} selected, but max_concurrent_children is {max_children}"
                 )
+            if model_selected and runtime["is_paused"]():
+                raise RuntimeError("Delegation spawning is paused")
+            depth = int(getattr(parent, "_delegate_depth", 0) or 0)
+            max_depth = runtime["get_max_depth"]()
+            if model_selected and depth >= max_depth:
+                raise RuntimeError(
+                    f"Delegation depth limit reached (depth={depth}, max_spawn_depth={max_depth})"
+                )
+            for index, task, receipt, _dispatch, pin in selected:
+                # Own each attempt after admission checks, before any construction.
+                reservation = _hermes_home() / "cache/routed-delegation/direct-attempts" / (_sha({"parent": parent_session_id, "task_id": task["id"]}) + ".json")
+                reservation.parent.mkdir(parents=True, exist_ok=True)
+                try:
+                    with reservation.open("x", encoding="utf-8") as target:
+                        json.dump({"task_sha256": _sha(task), "route_pin": pin, "receipt": receipt,
+                                   "execution_outcome": "unknown", "replay_allowed": False}, target)
+                except FileExistsError as exc:
+                    raise RuntimeError("direct task already has an owned attempt; explicit reconciliation required before replay") from exc
+                reservations[index] = reservation
+            for index, task, receipt, _dispatch, _pin in model_selected:
                 child = _prepare_child(
                     parent,
                     task,
                     receipt,
                     index,
-                    len(tasks),
+                    len(model_selected),
                     max_iterations,
                     build=runtime["build"],
+                    validate_request=runtime.get("validate_request"),
+                    on_built=lambda child, i=index, t=task, r=receipt: prepared.append((i, t, r, child)),
+                    budget_summary=runtime.get("budget_summary"),
                 )
-                prepared.append((index, task, receipt, child))
-        except Exception:
-            for _index, _task, _receipt, child in prepared:
-                close = getattr(child, "close", None)
-                if callable(close):
-                    close()
+                if _pin is not None:
+                    _guard_v3_child(child, task, _pin)
+        except Exception as exc:
+            for item in prepared:
+                errors = _dispose_unentered(item[3], parent, runtime.get("detach"))
+                _schedule_finalization(runtime["finalize"], parent, item, _child_error(item[0], item[3], exc))
+                preparation_cleanup.append({"task_id": item[1]["id"], "close_returned": item[3]._routed_closed,
+                                            "cleanup_errors": errors, "finalization": item[3]._routed_accounting})
+            _poll_accounting([item[3] for item in prepared])
             raise
-        results = _execute_children(
-            prepared,
-            parent,
-            runtime["run"],
-            runtime["finalize"],
-            max_children=max_children,
-            owner_kwargs=owner_kwargs,
+        results = (
+            _execute_children(
+                prepared,
+                parent,
+                runtime["run"],
+                runtime["finalize"],
+                max_children=max_children,
+                owner_kwargs=owner_kwargs,
+                interrupt=runtime.get("interrupt"),
+                detach=runtime.get("detach"),
+            )
+            if prepared
+            else []
         )
-        wrapped = []
+        wrapped_by_index = {}
         by_index = {index: (task, receipt) for index, task, receipt, _child in prepared}
         for result in results:
             task, receipt = by_index[result["task_index"]]
-            wrapped.append(
-                {
+            pin = next(item[4] for item in selected if item[0] == result["task_index"])
+            if pin is None:
+                wrapped_by_index[result["task_index"]] = {
                     "task_id": task["id"],
                     "route": receipt["route"],
                     "route_receipt": receipt,
                     "result": result,
                 }
-            )
-        success = all(item["result"].get("status") == "completed" for item in wrapped)
-        return json.dumps({"success": success, "results": wrapped}, ensure_ascii=False)
+            else:
+                wrapped_by_index[result["task_index"]] = {
+                    "task_id": task["id"],
+                    "route": receipt["route"],
+                    "route_request": pin["request"],
+                    "route_receipt": receipt,
+                    "decision_id": receipt["decision_id"],
+                    "request_sha256": _sha(pin["request"]),
+                    "result": result,
+                    "acceptance_required": {
+                        "owner": "parent",
+                        "verifier": pin["request"]["verifier"],
+                        "message": "The parent must run the declared independent acceptance check; native completion is not task-quality qualification.",
+                    },
+                }
+        for index, task, receipt, dispatch, pin in selected:
+            if dispatch["kind"] == "model":
+                continue
+            wrapped_by_index[index] = {
+                "task_id": task["id"],
+                "parent_action_required": True,
+                "action": dispatch,
+                "route_request": pin["request"],
+                "route_receipt": receipt,
+                "decision_id": receipt["decision_id"],
+                "request_sha256": _sha(pin["request"]),
+                "catalog_sha256": _sha(pin["catalog"]),
+                "selector_identity": pin["selector_identity"],
+            }
+        wrapped = [wrapped_by_index[index] for index in range(len(tasks))]
+        prepared_by_index = {item[0]: item for item in prepared}
+        pins_by_index = {item[0]: item[4] for item in selected}
+        for index, item in enumerate(wrapped):
+            prepared_item = prepared_by_index.get(index)
+            persisted = {
+                "receipt": item["route_receipt"],
+                "route_pin": pins_by_index[index],
+                "result": item.get("result"),
+                "action": item.get("action"),
+                "native_result": (
+                    getattr(prepared_item[3], "_routed_raw_result", None)
+                    if prepared_item is not None
+                    else None
+                ),
+                "replay_allowed": False,
+            }
+            _atomic_text(reservations[index], json.dumps(persisted, ensure_ascii=False))
+        success = bool(wrapped) and all(
+            "result" in item
+            and _definitive_result(item["result"])
+            and item["result"].get("status") == "completed"
+            and item["result"].get("finalization_status") == "returned"
+            and not item["result"].get("cleanup_errors")
+            for item in wrapped
+        )
+        return json.dumps({"success": success, "results": wrapped,
+                           "pending_parent_actions": sum("action" in item for item in wrapped),
+                           "accounting_assurance": "native-finalizer-return-only; internally suppressed outcomes are unverified"}, ensure_ascii=False)
     except Exception as exc:
-        return json.dumps({"success": False, "error": str(exc)}, ensure_ascii=False)
+        return json.dumps({"success": False, "error": str(exc) or type(exc).__name__,
+                           "preparation_cleanup": preparation_cleanup}, ensure_ascii=False)
 
 
 def _workflow_handle(params: dict[str, Any], **_kwargs: Any) -> str:
     try:
         action = str(params.get("action") or "").strip()
-        if action not in {"init", "run", "status", "resume"}:
-            raise ValueError("action must be init, run, status, or resume")
+        if action not in {"init", "run", "status", "resume", "complete-parent"}:
+            raise ValueError("action must be init, run, status, resume, or complete-parent")
         workflow = _workflow_state_module()
         if action == "init":
             plan_value = str(params.get("plan_path") or "").strip()
@@ -1337,6 +2161,8 @@ def _workflow_handle(params: dict[str, Any], **_kwargs: Any) -> str:
                 raise ValueError("action=init requires plan_path")
             if params.get("run_dir"):
                 raise ValueError("action=init does not accept run_dir")
+            if any(params.get(field) is not None for field in ("task_id", "output_path", "summary")):
+                raise ValueError("action=init does not accept completion fields")
             root_value = str(params.get("run_root") or "").strip()
             run_root = (
                 Path(root_value)
@@ -1357,6 +2183,14 @@ def _workflow_handle(params: dict[str, Any], **_kwargs: Any) -> str:
             raise ValueError(f"action={action} requires run_dir")
         if params.get("plan_path") or params.get("run_root") or params.get("variables"):
             raise ValueError(f"action={action} does not accept init-only fields")
+        if action != "complete-parent" and any(
+            params.get(field) is not None for field in ("task_id", "output_path", "summary")
+        ):
+            raise ValueError(f"action={action} does not accept completion fields")
+        if action == "complete-parent" and any(
+            params.get(field) is not None for field in ("retry_failed", "retry_interrupted")
+        ):
+            raise ValueError("action=complete-parent does not accept retry flags")
         run_dir = workflow.resolve_run(run_value)
         if action == "status":
             _plan, _state, trusted_manifest_sha256 = (
@@ -1367,6 +2201,31 @@ def _workflow_handle(params: dict[str, Any], **_kwargs: Any) -> str:
             )
             snapshot["success"] = True
             return json.dumps(snapshot, ensure_ascii=False)
+        if action == "complete-parent":
+            task_id = str(params.get("task_id") or "").strip()
+            output_value = str(params.get("output_path") or "").strip()
+            summary = params.get("summary", "")
+            if not task_id or not output_value:
+                raise ValueError("action=complete-parent requires task_id and output_path")
+            if not isinstance(summary, str):
+                raise ValueError("action=complete-parent summary must be a string")
+            from agent.subagent_lifecycle import get_active_subagent_parent
+            parent = get_active_subagent_parent()
+            if parent is None or int(getattr(parent, "_delegate_depth", 0) or 0) != 0:
+                raise RuntimeError("complete-parent requires the active top-level Hermes parent")
+            with workflow.execution_lock(run_dir):
+                _plan, _state, trusted_manifest_sha256 = _validate_hermes_workflow_run(
+                    workflow, run_dir
+                )
+                _complete_workflow_parent_action(
+                    workflow, run_dir, task_id, Path(output_value), summary,
+                    trusted_manifest_sha256,
+                )
+                snapshot = _workflow_snapshot(
+                    workflow, run_dir, trusted_manifest_sha256
+                )
+                snapshot["success"] = True
+                return json.dumps(snapshot, ensure_ascii=False)
         if action == "resume":
             retry_failed = params.get("retry_failed", False)
             retry_interrupted = params.get("retry_interrupted", False)
@@ -1376,8 +2235,9 @@ def _workflow_handle(params: dict[str, Any], **_kwargs: Any) -> str:
                 _plan, _state, trusted_manifest_sha256 = (
                     _validate_hermes_workflow_run(workflow, run_dir)
                 )
+                runtime = _private_runtime() if retry_interrupted or any(t["status"] == "running" for t in _state["tasks"].values()) else {}
+                reconciled = _reconcile_workflow_results(workflow, run_dir, trusted_manifest_sha256, runtime)
                 if retry_interrupted:
-                    runtime = _private_runtime()
                     active = {
                         entry.get("subagent_id")
                         for entry in runtime["list_active"]()
@@ -1415,6 +2275,7 @@ def _workflow_handle(params: dict[str, Any], **_kwargs: Any) -> str:
                     workflow, run_dir, trusted_manifest_sha256
                 )
                 snapshot["success"] = True
+                snapshot["reconciled_completed_tasks"] = reconciled
                 return json.dumps(snapshot, ensure_ascii=False)
 
         from agent.subagent_lifecycle import get_active_subagent_parent
@@ -1441,9 +2302,10 @@ def register(ctx: Any) -> None:
     schema = {
         "name": "routed_delegate_task",
         "description": (
-            "Delegate 1-4 independent tasks. Classify requirements only; the tool deterministically "
-            "selects and pins each exact provider/model/reasoning route. Reuse a task id only for an "
-            "identical task retry."
+            "Delegate 1-4 independent tasks. Use route_request for task-aware V3; legacy tier fields retain V2. "
+            "The tool deterministically "
+            "selects and pins each exact provider/model/reasoning route. A task id owns one execution "
+            "attempt; repeated calls with that id are blocked."
         ),
         "parameters": {
             "type": "object",
@@ -1457,7 +2319,25 @@ def register(ctx: Any) -> None:
                     "items": {
                         "type": "object",
                         "additionalProperties": False,
-                        "required": ["id", "goal", "intelligence_tier", "latency_sensitive"],
+                        "required": ["id", "goal"],
+                        "oneOf": [
+                            {
+                                "required": ["intelligence_tier", "latency_sensitive"],
+                                "not": {"required": ["route_request"]},
+                            },
+                            {
+                                "required": ["route_request"],
+                                "not": {
+                                    "anyOf": [
+                                        {"required": ["intelligence_tier"]},
+                                        {"required": ["latency_sensitive"]},
+                                        {"required": ["failure_cost"]},
+                                        {"required": ["task_class"]},
+                                        {"required": ["verifier_plan"]},
+                                    ]
+                                },
+                            },
+                        ],
                         "properties": {
                             "id": {"type": "string", "minLength": 1, "maxLength": 128},
                             "goal": {"type": "string", "minLength": 1, "maxLength": 16000},
@@ -1469,6 +2349,13 @@ def register(ctx: Any) -> None:
                             "verifier_plan": {"type": "object"},
                             "toolsets": {"type": "array", "items": {"type": "string", "minLength": 1}},
                             "role": {"enum": sorted(_ROLES)},
+                            "route_request": {"type": "object", "description":
+                                "Task-aware V3 template from openai-delegation-route-research/references/"
+                                "hermes-direct-v3.md. Requires schema_version, task_class, requirements, "
+                                "verifier, effects, failure_cost, deterministic and budget. Controller fields "
+                                "(task_id/input_sha256/as_of/continuation/host/transport) are supplied by this tool. "
+                                "Declare the exact native tool names; inherited tools are checked before execution. "
+                                "Non-model decisions return parent actions. Parent verifies every model result."},
                         },
                     },
                 },
@@ -1497,7 +2384,7 @@ def register(ctx: Any) -> None:
             "additionalProperties": False,
             "required": ["action"],
             "properties": {
-                "action": {"enum": ["init", "run", "status", "resume"]},
+                "action": {"enum": ["init", "run", "status", "resume", "complete-parent"]},
                 "plan_path": {"type": "string", "minLength": 1},
                 "run_root": {"type": "string", "minLength": 1},
                 "run_dir": {"type": "string", "minLength": 1},
@@ -1507,6 +2394,9 @@ def register(ctx: Any) -> None:
                 },
                 "retry_failed": {"type": "boolean"},
                 "retry_interrupted": {"type": "boolean"},
+                "task_id": {"type": "string", "minLength": 1},
+                "output_path": {"type": "string", "minLength": 1},
+                "summary": {"type": "string"},
             },
         },
     }

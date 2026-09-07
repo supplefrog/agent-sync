@@ -1,0 +1,22 @@
+{
+  "providers": {
+    "openai-codex": {
+      "models": [
+        {
+          "api": "openai-codex-responses",
+          "baseUrl": "https://chatgpt.com/backend-api",
+          "contextWindow": 272000,
+          "id": "gpt-6-astra",
+          "input": [
+            "text",
+            "image"
+          ],
+          "maxTokens": 16384,
+          "name": "GPT-6 Astra",
+          "omitMaxOutputTokens": true,
+          "reasoning": true
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,1006 @@
+--- a/assertion_store.py
++++ b/assertion_store.py
+@@ -9,7 +9,8 @@
+ 
+ from __future__ import annotations
+ 
+-from dataclasses import dataclass
++from dataclasses import dataclass
++from functools import wraps
+ import hashlib
+ import json
+ import math
+@@ -212,7 +213,16 @@
+     return result
+ 
+ 
+-class AssertionStore:
++def _serialized_connection_read(method):
++    """Keep public reads outside another thread's unfinished publication."""
++    @wraps(method)
++    def serialized(self, *args, **kwargs):
++        with self._write_lock:
++            return method(self, *args, **kwargs)
++    return serialized
++
++
++class AssertionStore:
+     """SQLite assertion store bound to the same physical DB as ``MessageStore``."""
+ 
+     def __init__(self, db_path: str | Path, *, read_only: bool = False):
+@@ -291,8 +301,10 @@
+             if conn is None:
+                 return
+             try:
+-                if not self.read_only:
+-                    conn.commit()
++                # Completed public writes commit before returning. Any open
++                # transaction here is unfinished work, never a shutdown publish.
++                if conn.in_transaction:
++                    conn.rollback()
+             finally:
+                 conn.close()
+                 self._conn = None  # type: ignore[assignment]
+@@ -339,13 +351,15 @@
+             content_sha256=_sha256_text(content),
+         )
+ 
+-    def snapshot_source(self, store_id: int) -> SourceSnapshot:
++    @_serialized_connection_read
++    def snapshot_source(self, store_id: int) -> SourceSnapshot:
+         row = self._source_row(store_id)
+         if row is None:
+             raise KeyError(f"message store_id {store_id} does not exist")
+         return self._snapshot_from_row(row)
+ 
+-    def has_current_receipt(
++    @_serialized_connection_read
++    def has_current_receipt(
+         self,
+         snapshot: SourceSnapshot,
+         *,
+@@ -363,7 +377,8 @@
+             (snapshot.store_id, version, snapshot.content_sha256),
+         ).fetchone() is not None
+ 
+-    def plan_rebuild(
++    @_serialized_connection_read
++    def plan_rebuild(
+         self,
+         *,
+         extraction_version: str = CURRENT_EXTRACTION_VERSION,
+@@ -566,10 +581,12 @@
+         assertion_ids = tuple(str(row["assertion_id"]) for row in assertion_rows)
+         relation_ids = tuple(str(row["relation_id"]) for row in relation_rows)
+ 
+-        with self._write_lock:
+-            self._begin_write()
+-            try:
+-                current_row = self._source_row(snapshot.store_id)
++        with self._write_lock:
++            if self._conn.in_transaction:
++                raise AssertionStoreError("connection already has an active transaction")
++            try:
++                self._begin_write()
++                current_row = self._source_row(snapshot.store_id)
+                 if current_row is None:
+                     raise AssertionSourceStaleError(
+                         f"source store_id {snapshot.store_id} was deleted before publication"
+@@ -740,9 +757,10 @@
+                         {**row, "created_at": time.time()},
+                     )
+                 self._conn.execute("COMMIT")
+-            except Exception:
+-                self._conn.execute("ROLLBACK")
+-                raise
++            except BaseException:
++                if self._conn.in_transaction:
++                    self._conn.rollback()
++                raise
+ 
+         return PublishResult(
+             source_store_id=snapshot.store_id,
+@@ -777,7 +795,8 @@
+         if current_content[start:end] != quote:
+             raise AssertionSourceStaleError(f"active {label} span changed")
+ 
+-    def query_assertions(
++    @_serialized_connection_read
++    def query_assertions(
+         self,
+         *,
+         extraction_version: str = CURRENT_EXTRACTION_VERSION,
+@@ -876,7 +895,8 @@
+             output.append(item)
+         return output
+ 
+-    def query_relations(
++    @_serialized_connection_read
++    def query_relations(
+         self,
+         *,
+         extraction_version: str = CURRENT_EXTRACTION_VERSION,
+@@ -1047,10 +1067,12 @@
+         timestamp = _finite_number(invalidated_at, "invalidated_at")
+         if timestamp is None:
+             timestamp = time.time()
+-        with self._write_lock:
+-            self._begin_write()
+-            try:
+-                cursor = self._conn.execute(
++        with self._write_lock:
++            if self._conn.in_transaction:
++                raise AssertionStoreError("connection already has an active transaction")
++            try:
++                self._begin_write()
++                cursor = self._conn.execute(
+                     """
+                     UPDATE lcm_assertion_sources
+                        SET invalidated_at = ?, invalidation_reason = ?
+@@ -1061,18 +1083,21 @@
+                 changed = int(cursor.rowcount or 0)
+                 self._conn.execute("COMMIT")
+                 return changed
+-            except Exception:
+-                self._conn.execute("ROLLBACK")
+-                raise
++            except BaseException:
++                if self._conn.in_transaction:
++                    self._conn.rollback()
++                raise
+ 
+     def remove_version(self, extraction_version: str) -> dict[str, int]:
+         """Remove one rebuildable derived generation; raw messages are untouched."""
+         self._require_writable()
+         version = _validated_version(extraction_version)
+-        with self._write_lock:
+-            self._begin_write()
+-            try:
+-                counts = {
++        with self._write_lock:
++            if self._conn.in_transaction:
++                raise AssertionStoreError("connection already has an active transaction")
++            try:
++                self._begin_write()
++                counts = {
+                     "sources": int(self._conn.execute(
+                         "SELECT COUNT(*) FROM lcm_assertion_sources WHERE extraction_version = ?",
+                         (version,),
+@@ -1093,6 +1118,7 @@
+                 )
+                 self._conn.execute("COMMIT")
+                 return counts
+-            except Exception:
+-                self._conn.execute("ROLLBACK")
+-                raise
++            except BaseException:
++                if self._conn.in_transaction:
++                    self._conn.rollback()
++                raise
+--- a/engine.py
++++ b/engine.py
+@@ -3233,21 +3233,23 @@
+         *,
+         conversation_id: str | None = None,
+     ) -> Optional[int]:
+-        try:
+-            stored_messages = self._store.get_range(
+-                session_id,
+-                limit=max(1, len(messages)),
+-                conversation_id=conversation_id,
+-            )
+-        except Exception:
+-            logger.debug("LCM session-end prefix check failed", exc_info=True)
+-            return None
++        # Durable rows omit ignored messages. Keep their host-list positions
++        # so the returned append boundary still indexes the original callback.
++        retained = [
++            (idx, msg) for idx, msg in enumerate(messages)
++            if not self._matches_ignore_message_patterns(msg)
++        ]
++        stored_messages = self._store.get_range(
++            session_id,
++            limit=max(1, len(retained)),
++            conversation_id=conversation_id,
++        )
+         if not stored_messages:
+             return 0
+-        if len(messages) < len(stored_messages):
++        if len(retained) < len(stored_messages):
+             return None
+         for idx, stored_msg in enumerate(stored_messages):
+-            msg = messages[idx]
++            msg = retained[idx][1]
+             try:
+                 message_identity = self._session_end_prefix_compare_identity(
+                     msg,
+@@ -3262,7 +3264,7 @@
+                 return None
+             if message_identity != stored_identity:
+                 return None
+-        return len(stored_messages)
++        return retained[len(stored_messages) - 1][0] + 1
+ 
+     @staticmethod
+     def _lcm_bypass_message_fingerprint(message: Dict[str, Any]) -> str:
+@@ -3454,6 +3456,22 @@
+         )
+ 
+     def on_session_end(self, session_id: str, messages: List[Dict[str, Any]]) -> None:
++        # Cover identity/prefix reads as well as writes. This bounds each SQLite
++        # busy wait, not Python locks, normalization, or the whole callback.
++        try:
++            with _temporary_sqlite_busy_timeout(
++                [getattr(self._store, "_conn", None), getattr(self._lifecycle, "_conn", None)],
++                _SESSION_END_BUSY_TIMEOUT_MS,
++            ):
++                self._on_session_end_with_short_sqlite_wait(session_id, messages)
++        except KeyboardInterrupt:
++            logger.warning("LCM session-end interrupted during identity/flush; final messages may be absent")
++        except Exception as exc:
++            if not _is_sqlite_locked_error(exc):
++                raise
++            logger.warning("LCM session-end skipped due to SQLite lock during identity/flush; final messages may be absent")
++
++    def _on_session_end_with_short_sqlite_wait(self, session_id: str, messages: List[Dict[str, Any]]) -> None:
+         ended_generation = self._in_process_auxiliary_caller_generation(session_id)
+         active_auxiliary_end = session_id in self._active_auxiliary_session_ids()
+         if (
+@@ -3582,6 +3600,9 @@
+             and (
+                 self._has_lcm_bypass_lineage_session(session_id)
+                 or off_current_auxiliary_reused_normal
++                # Ordinary delayed ends need the same explicit session-scoped
++                # writer; the foreground cursor belongs to the current binding.
++                or bool(self._lcm_session_last_normal_conversation_id.get(session_id))
+             )
+         )
+         off_current_normal_conversation_id = (
+@@ -3617,16 +3638,16 @@
+         off_current_store_prefix_for_append = int(off_current_store_prefix_count or 0)
+         off_current_recorded_prefix_for_append = 0
+         if off_current_recorded_prefix_count > 0 and off_current_normal_conversation_id:
+-            try:
+-                stored_normal_rows = self._store.get_range(
+-                    session_id,
+-                    limit=off_current_recorded_prefix_count + 1,
+-                    conversation_id=off_current_normal_conversation_id,
+-                )
+-            except Exception:
+-                logger.debug("LCM off-current recorded-prefix row-count probe failed", exc_info=True)
+-                stored_normal_rows = []
+-            if len(stored_normal_rows) == off_current_recorded_prefix_count:
++            retained_prefix_count = sum(
++                not self._matches_ignore_message_patterns(msg)
++                for msg in messages[:off_current_recorded_prefix_count]
++            )
++            stored_normal_rows = self._store.get_range(
++                session_id,
++                limit=retained_prefix_count + 1,
++                conversation_id=off_current_normal_conversation_id,
++            )
++            if len(stored_normal_rows) == retained_prefix_count:
+                 off_current_recorded_prefix_for_append = off_current_recorded_prefix_count
+         off_current_strongest_normal_prefix_count = max(
+             off_current_store_prefix_for_append if off_current_store_prefix_positive else 0,
+@@ -3660,7 +3681,7 @@
+             off_current_lineage
+             and not off_current_auxiliary_reused_normal
+             and off_current_normal_conversation_id
+-            and off_current_store_prefix_count == 0
++            and (off_current_store_prefix_count == 0 or not messages)
+             and off_current_bypass_prefix_count <= 0
+             and self._lcm_session_last_bypassed.get(session_id) is False
+         ):
+@@ -3686,27 +3707,53 @@
+         if off_current_prefix_count is not None:
+             prefix_count = off_current_prefix_count
+             suffix = messages[prefix_count:]
+-            if suffix:
+-                self._append_off_current_session_end_suffix(
+-                    session_id,
+-                    suffix,
+-                    source=(
+-                        self._lcm_session_last_normal_platform.get(session_id)
+-                        or self._lcm_session_last_platform.get(session_id, self._session_platform)
+-                    ),
+-                    conversation_id=off_current_normal_conversation_id,
+-                )
+             try:
+-                state = self._lifecycle.get_by_conversation(off_current_normal_conversation_id)
+-                frontier_store_id = state.current_frontier_store_id if state is not None else 0
+-                self._lifecycle.finalize_session(
+-                    off_current_normal_conversation_id,
+-                    session_id,
+-                    frontier_store_id=frontier_store_id,
+-                )
+-            except Exception:
+-                logger.debug("LCM off-current session-end lifecycle finalization failed", exc_info=True)
++                with _temporary_sqlite_busy_timeout(
++                    [getattr(self._store, "_conn", None), getattr(self._lifecycle, "_conn", None)],
++                    _SESSION_END_BUSY_TIMEOUT_MS,
++                ):
++                    if suffix:
++                        self._append_off_current_session_end_suffix(
++                            session_id,
++                            suffix,
++                            source=(
++                                self._lcm_session_last_normal_platform.get(session_id)
++                                or self._lcm_session_last_platform.get(session_id, "")
++                            ),
++                            conversation_id=off_current_normal_conversation_id,
++                        )
++                    # A conversation may already belong to a newer session.
++                    # Inspect/finalize under the native lifecycle RLock so this
++                    # instance cannot copy that session's frontier onto this end.
++                    with self._lifecycle._lock:
++                        state = self._lifecycle.get_by_conversation(off_current_normal_conversation_id)
++                        if state is not None and (
++                            state.current_session_id == session_id
++                            or (state.current_session_id is None and state.last_finalized_session_id == session_id)
++                        ):
++                            frontier_store_id = (
++                                state.current_frontier_store_id
++                                if state.current_session_id == session_id
++                                else state.last_finalized_frontier_store_id
++                            )
++                            self._lifecycle.finalize_session(
++                                off_current_normal_conversation_id,
++                                session_id,
++                                frontier_store_id=frontier_store_id,
++                            )
++            except KeyboardInterrupt:
++                logger.warning("LCM off-current session-end flush interrupted; final messages may be absent")
++            except Exception as exc:
++                if not _is_sqlite_locked_error(exc):
++                    raise
++                logger.warning("LCM off-current session-end flush skipped due to SQLite lock; final messages may be absent")
+             return
++        if (
++            off_current_should_bypass
++            and off_current_normal_conversation_id
++            and not self._has_lcm_bypass_lineage_session(session_id)
++        ):
++            logger.warning("LCM rejected delayed normal session-end for %s: no matching stored prefix", session_id)
+         if (
+             current_session_bypasses
+             or same_id_should_bypass
+@@ -3718,6 +3765,12 @@
+                 session_id,
+                 messages,
+                 current_session_bypasses=current_session_bypasses,
++            )
++            return
++        if session_id != self._session_id:
++            logger.warning(
++                "LCM ignored off-current session-end with unresolved identity for %s",
++                session_id,
+             )
+             return
+         try:
+--- /dev/null
++++ b/tests/test_repair_boundaries.py
+@@ -0,0 +1,315 @@
++"""Synthetic regressions for explicit lifecycle identity and atomic publication."""
++import sqlite3
++import time
++import threading
++
++import pytest
++
++from hermes_lcm.assertion_store import AssertionCandidate, AssertionRelationCandidate, AssertionStore
++from hermes_lcm.config import LCMConfig
++from hermes_lcm.engine import LCMEngine
++from hermes_lcm.store import MessageStore
++
++
++def make_engine(tmp_path):
++    return LCMEngine(config=LCMConfig(
++        database_path=str(tmp_path / 'synthetic-lcm.db'),
++        temporal_rollups_enabled=False,
++        assertions_enabled=False,
++        assertion_extraction_enabled=False,
++        extraction_enabled=False,
++    ), hermes_home=str(tmp_path / 'synthetic-home'))
++
++
++@pytest.mark.parametrize('old_already_ingested', [False, True])
++@pytest.mark.parametrize('foreground_rows', [0, 3])
++def test_delayed_ordinary_end_preserves_ended_identity_and_foreground_cursor(
++    tmp_path, old_already_ingested, foreground_rows,
++):
++    instance = make_engine(tmp_path)
++    old = [{'role':'user','content':'Synthetic A question'}]
++    ended = old + [{'role':'assistant','content':'Synthetic A final'}]
++    foreground = [{'role':'user','content':f'Synthetic B message {i}'} for i in range(foreground_rows)]
++    try:
++        instance.on_session_start('ordinary-a', platform='cli', conversation_id='conversation-a', context_length=10000)
++        if old_already_ingested:
++            instance.ingest(old)
++        instance.on_session_start('ordinary-b', platform='discord', conversation_id='conversation-b', context_length=10000)
++        if foreground:
++            instance.ingest(foreground)
++        cursor_before = instance._ingest_cursor
++        instance.on_session_end('ordinary-a', ended)
++        rows_a = instance._store.get_range('ordinary-a', conversation_id='conversation-a')
++        rows_b = instance._store.get_range('ordinary-b', conversation_id='conversation-b')
++        assert [(r['role'],r['content'],r['source']) for r in rows_a] == [
++            ('user','Synthetic A question','cli'),('assistant','Synthetic A final','cli')]
++        assert [r['content'] for r in rows_b] == [m['content'] for m in foreground]
++        assert (instance._session_id, instance._conversation_id, instance._ingest_cursor) == (
++            'ordinary-b','conversation-b',cursor_before)
++        ended_state = instance._lifecycle.get_by_conversation('conversation-a')
++        foreground_state = instance._lifecycle.get_by_conversation('conversation-b')
++        assert ended_state.last_finalized_session_id == 'ordinary-a'
++        assert foreground_state.current_session_id == 'ordinary-b'
++        # Repeated callbacks must not duplicate A or corrupt B's next ingest.
++        instance.on_session_end('ordinary-a', ended)
++        assert len(instance._store.get_range('ordinary-a', conversation_id='conversation-a')) == 2
++        instance.ingest(foreground + [{'role':'assistant','content':'Synthetic B final'}])
++        assert [r['content'] for r in instance._store.get_range('ordinary-b', conversation_id='conversation-b')] == [
++            *[m['content'] for m in foreground], 'Synthetic B final']
++    finally:
++        instance.shutdown()
++
++
++def test_unknown_ended_identity_does_not_write_or_finalize_current_session(tmp_path, caplog):
++    instance = make_engine(tmp_path)
++    try:
++        instance.on_session_start('known', platform='cli', conversation_id='known-conversation', context_length=10000)
++        instance.on_session_end('never-bound', [{'role':'assistant','content':'Unknown identity synthetic payload'}])
++        assert instance._store.get_range('known') == []
++        assert instance._store.get_range('never-bound') == []
++        assert instance._lifecycle.get_by_conversation('known-conversation').current_session_id == 'known'
++        assert 'identity' in caplog.text.lower() or 'off-current' in caplog.text.lower()
++    finally:
++        instance.shutdown()
++
++
++def test_mismatched_delayed_snapshot_does_not_append_or_finalize_foreground(tmp_path):
++    instance = make_engine(tmp_path)
++    try:
++        instance.on_session_start('ordinary-a', platform='cli', conversation_id='conversation-a', context_length=10000)
++        instance.ingest([{'role':'user','content':'Recorded A opener'}])
++        instance.on_session_start('ordinary-b', platform='cli', conversation_id='conversation-b', context_length=10000)
++        instance.on_session_end('ordinary-a', [
++            {'role':'user','content':'Different unverified opener'},
++            {'role':'assistant','content':'Unverified late suffix'},
++        ])
++        assert [r['content'] for r in instance._store.get_range('ordinary-a')] == ['Recorded A opener']
++        assert instance._store.get_range('ordinary-b') == []
++        assert instance._lifecycle.get_by_conversation('conversation-b').current_session_id == 'ordinary-b'
++    finally:
++        instance.shutdown()
++
++
++def test_delayed_end_remains_bounded_under_writer_lock_and_can_retry(tmp_path, caplog):
++    instance = make_engine(tmp_path)
++    ended = [{'role':'user','content':'Recorded A opener'}, {'role':'assistant','content':'A final'}]
++    try:
++        instance.on_session_start('ordinary-a', platform='cli', conversation_id='conversation-a', context_length=10000)
++        instance.ingest(ended[:1])
++        instance.on_session_start('ordinary-b', platform='cli', conversation_id='conversation-b', context_length=10000)
++        with sqlite3.connect(tmp_path / 'synthetic-lcm.db') as blocker:
++            blocker.execute('BEGIN IMMEDIATE')
++            started = time.monotonic()
++            instance.on_session_end('ordinary-a', ended)
++            elapsed = time.monotonic() - started
++            blocker.rollback()
++        assert elapsed < 3.0
++        assert 'SQLite lock' in caplog.text
++        assert instance._store.get_range('ordinary-b') == []
++        instance.on_session_end('ordinary-a', ended)
++        assert [r['content'] for r in instance._store.get_range('ordinary-a')] == ['Recorded A opener','A final']
++        assert instance._lifecycle.get_by_conversation('conversation-b').current_session_id == 'ordinary-b'
++    finally:
++        instance.shutdown()
++
++
++class SyntheticCancellation(BaseException):
++    pass
++
++
++class InterruptAfterSQL:
++    def __init__(self, connection, needle, interruption):
++        self.connection = connection
++        self.needle = needle
++        self.interruption = interruption
++        self.fired = False
++
++    def execute(self, sql, *args, **kwargs):
++        result = self.connection.execute(sql, *args, **kwargs)
++        if not self.fired and self.needle in ' '.join(sql.split()).upper():
++            self.fired = True
++            raise self.interruption()
++        return result
++
++    def __getattr__(self, name):
++        return getattr(self.connection, name)
++
++
++def source_fixture(tmp_path):
++    db_path = tmp_path / 'synthetic-assertions.db'
++    messages = MessageStore(db_path)
++    assertions = AssertionStore(db_path)
++    content = 'Synthetic Alice likes tea and water.'
++    store_id = messages.append('synthetic-session', {'role':'user','content':content}, source='cli')
++    snapshot = assertions.snapshot_source(store_id)
++    candidates = []
++    for value in ['tea','water']:
++        start = content.index(value)
++        candidates.append(AssertionCandidate(start,start+len(value),'Alice','likes',object_value=value))
++    ids = [assertions.assertion_id_for(snapshot,c) for c in candidates]
++    relation = AssertionRelationCandidate(0,len(content),ids[0],'narrows',ids[1])
++    return db_path,messages,assertions,snapshot,candidates,relation
++
++
++@pytest.mark.parametrize('interruption', [KeyboardInterrupt, SystemExit, SyntheticCancellation])
++@pytest.mark.parametrize('statement', [
++    'INSERT INTO LCM_ASSERTION_SOURCES(',
++    'INSERT INTO LCM_ASSERTIONS(',
++    'INSERT INTO LCM_ASSERTION_RELATIONS(',
++])
++def test_interrupted_publication_remains_unpublished_after_close(tmp_path, interruption, statement):
++    db_path,messages,assertions,snapshot,candidates,relation = source_fixture(tmp_path)
++    assertions._conn = InterruptAfterSQL(assertions._conn, statement, interruption)
++    try:
++        with pytest.raises(interruption):
++            assertions.publish_source(snapshot,candidates,relations=[relation])
++        transaction_left_open = assertions.connection.in_transaction
++    finally:
++        assertions.close()
++        messages.close()
++    with sqlite3.connect(db_path) as reader:
++        counts = {table:reader.execute('SELECT COUNT(*) FROM '+table).fetchone()[0]
++                  for table in ['messages','lcm_assertion_sources','lcm_assertions','lcm_assertion_relations']}
++    assert counts == {'messages':1,'lcm_assertion_sources':0,'lcm_assertions':0,'lcm_assertion_relations':0}
++    assert transaction_left_open is False
++
++
++@pytest.mark.parametrize('operation,statement', [
++    ('invalidate','UPDATE LCM_ASSERTION_SOURCES'),
++    ('remove','DELETE FROM LCM_ASSERTION_SOURCES'),
++])
++def test_interrupted_derived_maintenance_does_not_publish_on_close(tmp_path, operation, statement):
++    db_path,messages,assertions,snapshot,candidates,relation = source_fixture(tmp_path)
++    assertions.publish_source(snapshot,candidates,relations=[relation])
++    assertions._conn = InterruptAfterSQL(assertions._conn, statement, KeyboardInterrupt)
++    try:
++        with pytest.raises(KeyboardInterrupt):
++            if operation == 'invalidate':
++                assertions.invalidate_source(snapshot.store_id, reason='synthetic-test')
++            else:
++                assertions.remove_version('assertions-v1')
++    finally:
++        assertions.close()
++        messages.close()
++    reopened = AssertionStore(db_path, read_only=True)
++    try:
++        assert len(reopened.query_assertions()) == 2
++        assert len(reopened.query_relations()) == 1
++    finally:
++        reopened.close()
++
++
++def test_close_rolls_back_unfinished_transaction_without_erasing_completed_publication(tmp_path):
++    db_path,messages,assertions,snapshot,candidates,relation = source_fixture(tmp_path)
++    assertions.publish_source(snapshot,candidates,relations=[relation])
++    assertions.connection.execute('BEGIN IMMEDIATE')
++    assertions.connection.execute('DELETE FROM lcm_assertion_sources')
++    assertions.close()
++    messages.close()
++    reopened = AssertionStore(db_path, read_only=True)
++    try:
++        assert len(reopened.query_assertions()) == 2
++        assert len(reopened.query_relations()) == 1
++    finally:
++        reopened.close()
++
++
++@pytest.mark.parametrize('read_operation', ['assertions','relations','receipt','plan','snapshot'])
++def test_reads_cannot_observe_publication_that_is_rolled_back(tmp_path, read_operation):
++    _db_path,messages,assertions,snapshot,candidates,relation = source_fixture(tmp_path)
++    inserted = threading.Event()
++    release = threading.Event()
++    reader_started = threading.Event()
++    reader_at_lock = threading.Event()
++    reader_finished = threading.Event()
++    failures = []
++    observed = []
++    real = assertions._conn
++    real_lock = assertions._write_lock
++
++    class ObservedLock:
++        def __enter__(self):
++            if threading.current_thread() is read_thread:
++                reader_at_lock.set()
++            return real_lock.__enter__()
++        def __exit__(self, *args):
++            return real_lock.__exit__(*args)
++
++    assertions._write_lock = ObservedLock()
++    pause_statement = 'INSERT INTO LCM_ASSERTION_RELATIONS(' if read_operation == 'relations' else 'INSERT INTO LCM_ASSERTIONS('
++
++    class PausedConnection:
++        def execute(self, sql, *args, **kwargs):
++            result = real.execute(sql, *args, **kwargs)
++            if pause_statement in ' '.join(sql.split()).upper() and not inserted.is_set():
++                inserted.set()
++                if not release.wait(timeout=5):
++                    raise RuntimeError('synthetic publication release timed out')
++                raise KeyboardInterrupt()
++            return result
++        def __getattr__(self,name):
++            return getattr(real,name)
++
++    assertions._conn = PausedConnection()
++    def writer():
++        try:
++            assertions.publish_source(snapshot,candidates,relations=[relation])
++        except BaseException as exc:
++            failures.append(type(exc).__name__)
++    def reader():
++        reader_started.set()
++        try:
++            if read_operation == 'assertions':
++                observed.append(assertions.query_assertions())
++            elif read_operation == 'relations':
++                observed.append(assertions.query_relations())
++            elif read_operation == 'receipt':
++                observed.append(assertions.has_current_receipt(snapshot))
++            elif read_operation == 'snapshot':
++                observed.append(assertions.snapshot_source(snapshot.store_id))
++            else:
++                observed.append(assertions.plan_rebuild().pending_count)
++        except BaseException as exc:
++            failures.append(type(exc).__name__)
++        finally:
++            reader_finished.set()
++
++    write_thread = threading.Thread(target=writer, daemon=True)
++    read_thread = threading.Thread(target=reader, daemon=True)
++    try:
++        write_thread.start()
++        assert inserted.wait(timeout=5)
++        read_thread.start()
++        assert reader_started.wait(timeout=5)
++        assert reader_at_lock.wait(timeout=5)
++        assert not reader_finished.wait(timeout=0.15)
++    finally:
++        release.set()
++        write_thread.join(timeout=5)
++        if read_thread.ident is not None:
++            read_thread.join(timeout=5)
++        assert not write_thread.is_alive() and not read_thread.is_alive(), 'Synthetic workers did not settle; skip lock-taking cleanup'
++        assertions.close()
++        messages.close()
++    assert not write_thread.is_alive() and not read_thread.is_alive()
++    assert failures == ['KeyboardInterrupt']
++    expected = {'assertions':[[]], 'relations':[[]], 'receipt':[False], 'plan':[1], 'snapshot':[snapshot]}
++    assert observed == expected[read_operation]
++
++
++@pytest.mark.parametrize('interruption', [KeyboardInterrupt, SystemExit])
++def test_interruption_after_commit_preserves_complete_publication_and_original_signal(tmp_path, interruption):
++    db_path,messages,assertions,snapshot,candidates,relation = source_fixture(tmp_path)
++    assertions._conn = InterruptAfterSQL(assertions._conn, 'COMMIT', interruption)
++    try:
++        with pytest.raises(interruption):
++            assertions.publish_source(snapshot,candidates,relations=[relation])
++    finally:
++        assertions.close()
++        messages.close()
++    reopened = AssertionStore(db_path, read_only=True)
++    try:
++        assert len(reopened.query_assertions()) == 2
++        assert len(reopened.query_relations()) == 1
++    finally:
++        reopened.close()
+--- /dev/null
++++ b/tests/test_root_transaction_entry.py
+@@ -0,0 +1,68 @@
++"""Independent review counterexamples over synthetic SQLite fixtures."""
++import sqlite3
++import pytest
++from hermes_lcm.assertion_store import AssertionStoreError
++from test_repair_boundaries import source_fixture, InterruptAfterSQL, SyntheticCancellation
++
++
++def operation(store, snapshot, candidates, relation, name):
++    if name == 'publish':
++        return store.publish_source(snapshot, candidates, relations=[relation])
++    if name == 'invalidate':
++        return store.invalidate_source(snapshot.store_id, reason='root-synthetic')
++    return store.remove_version('assertions-v1')
++
++
++@pytest.mark.parametrize('name', ['publish', 'invalidate', 'remove'])
++@pytest.mark.parametrize('interruption', [KeyboardInterrupt, SystemExit, SyntheticCancellation])
++def test_begin_interruption_rolls_back_owned_transaction_and_allows_retry(tmp_path, name, interruption):
++    _, messages, store, snapshot, candidates, relation = source_fixture(tmp_path)
++    try:
++        if name != 'publish':
++            store.publish_source(snapshot, candidates, relations=[relation])
++        store._conn = InterruptAfterSQL(store._conn, 'BEGIN IMMEDIATE', interruption)
++        with pytest.raises(interruption):
++            operation(store, snapshot, candidates, relation, name)
++        assert store.connection.in_transaction is False
++        operation(store, snapshot, candidates, relation, name)
++        assert store.connection.in_transaction is False
++    finally:
++        store.close()
++        messages.close()
++
++
++@pytest.mark.parametrize('name', ['publish', 'invalidate', 'remove'])
++def test_rejected_nested_write_preserves_callers_open_transaction(tmp_path, name):
++    _, messages, store, snapshot, candidates, relation = source_fixture(tmp_path)
++    try:
++        store.connection.execute('CREATE TABLE root_fixture(value TEXT)')
++        store.connection.commit()
++        store.connection.execute('BEGIN IMMEDIATE')
++        store.connection.execute("INSERT INTO root_fixture VALUES ('pending caller work')")
++        with pytest.raises((AssertionStoreError, sqlite3.OperationalError)):
++            operation(store, snapshot, candidates, relation, name)
++        assert store.connection.in_transaction is True
++        assert store.connection.execute('SELECT value FROM root_fixture').fetchall()[0][0] == 'pending caller work'
++        store.connection.rollback()
++    finally:
++        store.close()
++        messages.close()
++
++
++@pytest.mark.parametrize('name,statement', [('invalidate', 'UPDATE LCM_ASSERTION_SOURCES'), ('remove', 'DELETE FROM LCM_ASSERTION_SOURCES')])
++@pytest.mark.parametrize('interruption', [KeyboardInterrupt, SystemExit, SyntheticCancellation])
++def test_maintenance_rolls_back_immediately_without_relying_on_close(tmp_path, name, statement, interruption):
++    _, messages, store, snapshot, candidates, relation = source_fixture(tmp_path)
++    try:
++        store.publish_source(snapshot, candidates, relations=[relation])
++        store._conn = InterruptAfterSQL(store._conn, statement, interruption)
++        with pytest.raises(interruption):
++            operation(store, snapshot, candidates, relation, name)
++        assert store.connection.in_transaction is False
++        assert len(store.query_assertions()) == 2
++        assert len(store.query_relations()) == 1
++        operation(store, snapshot, candidates, relation, name)
++        assert store.connection.in_transaction is False
++    finally:
++        store.close()
++        messages.close()
+--- /dev/null
++++ b/tests/test_session_end_refutation.py
+@@ -0,0 +1,234 @@
++"""Final-review session boundaries over actual native stores and synthetic data."""
++from dataclasses import asdict
++import sqlite3
++import time
++
++import pytest
++
++from hermes_lcm.config import LCMConfig
++from hermes_lcm.engine import LCMEngine
++from hermes_lcm.store import MessageStore
++
++
++class SyntheticCancel(BaseException):
++    pass
++
++
++def engine(tmp_path, *, ignored=False):
++    instance=LCMEngine(config=LCMConfig(database_path=str(tmp_path/'engine.db'),
++        temporal_rollups_enabled=False, assertions_enabled=False,
++        assertion_extraction_enabled=False, extraction_enabled=False,
++        ignore_message_patterns=['^IGNORE_SYNTHETIC$'] if ignored else []),
++        hermes_home=str(tmp_path/'home'))
++    if ignored:
++        # The inspected Hermes venv lacks the optional regex wheel. Exercise
++        # the real native filtering/ingest paths with a constant-time literal
++        # matcher implementing the same timeout-aware compiled-pattern API.
++        class LiteralPattern:
++            pattern='^IGNORE_SYNTHETIC$'
++            def search(self,text,*,timeout):
++                assert timeout > 0
++                return text=='IGNORE_SYNTHETIC'
++        instance._compiled_ignore_message_patterns=[LiteralPattern()]
++    return instance
++
++
++def bind_pair(obj, *, shared=False, rows=None):
++    original=rows if rows is not None else [{'role':'user','content':'A opener'}]
++    obj.on_session_start('ended-a',platform='cli',conversation_id='conversation-a',context_length=10000)
++    if original:
++        obj.ingest(original)
++    obj.on_session_start('active-b',platform='discord',conversation_id='conversation-a' if shared else 'conversation-b',context_length=10000)
++    return original
++
++
++def binding(obj):
++    return (obj._session_id,obj._conversation_id,obj._ingest_cursor,obj._last_compacted_store_id)
++
++
++def contents(obj):
++    return [r['content'] for r in obj._store.get_range('ended-a',conversation_id='conversation-a')]
++
++
++def test_prefix_reads_use_short_busy_timeout_and_restore(tmp_path,monkeypatch):
++    obj=engine(tmp_path)
++    try:
++        original=bind_pair(obj)
++        obj._store._conn.execute('PRAGMA busy_timeout=1500')
++        native=obj._store.get_range
++        observed=[]
++        def read(*args,**kwargs):
++            observed.append(obj._store._conn.execute('PRAGMA busy_timeout').fetchone()[0])
++            return native(*args,**kwargs)
++        monkeypatch.setattr(obj._store,'get_range',read)
++        obj.on_session_end('ended-a',original+[{'role':'assistant','content':'A final'}])
++        assert observed and set(observed)=={50}
++        assert obj._store._conn.execute('PRAGMA busy_timeout').fetchone()[0]==1500
++    finally:
++        obj.shutdown()
++
++
++def test_actual_exclusive_read_lock_warns_quickly_and_retry_works(tmp_path,caplog):
++    obj=engine(tmp_path)
++    old_store=None
++    try:
++        original=bind_pair(obj)
++        # A separate native MessageStore permits rollback journal mode without
++        # interference from the engine's other WAL connections to engine.db.
++        old_store=obj._store
++        obj._store=MessageStore(tmp_path/'read-lock.db')
++        obj._store.append_batch('ended-a',original,source='cli',conversation_id='conversation-a')
++        assert obj._store._conn.execute('PRAGMA journal_mode=DELETE').fetchone()[0]=='delete'
++        obj._store._conn.execute('PRAGMA busy_timeout=1500')
++        ended=original+[{'role':'assistant','content':'A final'}]
++        before=binding(obj)
++        with sqlite3.connect(tmp_path/'read-lock.db') as blocker:
++            blocker.execute('BEGIN EXCLUSIVE')
++            start=time.monotonic()
++            obj.on_session_end('ended-a',ended)
++            elapsed=time.monotonic()-start
++            blocker.rollback()
++        assert elapsed < 0.75, f'Prefix read waited {elapsed:.3f}s with normal timeout'
++        assert 'SQLite lock' in caplog.text
++        assert obj._store._conn.execute('PRAGMA busy_timeout').fetchone()[0]==1500
++        assert binding(obj)==before
++        assert contents(obj)==['A opener']
++        obj.on_session_end('ended-a',ended)
++        assert contents(obj)==['A opener','A final']
++    finally:
++        obj.shutdown()
++        if old_store:old_store.close()
++
++
++@pytest.mark.parametrize('ignored_position',[0,1,2])
++def test_filtered_host_prefix_repeated_end_does_not_duplicate(tmp_path,ignored_position):
++    obj=engine(tmp_path,ignored=True)
++    u={'role':'user','content':'A opener'}
++    x={'role':'assistant','content':'IGNORE_SYNTHETIC'}
++    f={'role':'assistant','content':'A final'}
++    end=[u,f]
++    end.insert(ignored_position,x)
++    original=end[:end.index(f)]
++    try:
++        bind_pair(obj,rows=original)
++        before=binding(obj)
++        obj.on_session_end('ended-a',end)
++        obj.on_session_end('ended-a',end)
++        assert contents(obj)==['A opener','A final']
++        assert binding(obj)==before
++    finally:
++        obj.shutdown()
++
++
++@pytest.mark.parametrize('point',['prefix','append','finalize'])
++@pytest.mark.parametrize('locked',[False,True])
++def test_database_errors_are_warned_only_for_locks(tmp_path,monkeypatch,caplog,point,locked):
++    obj=engine(tmp_path)
++    try:
++        original=bind_pair(obj)
++        before=binding(obj)
++        failure=sqlite3.OperationalError('database is locked') if locked else sqlite3.DatabaseError('synthetic database failure')
++        owner,name={'prefix':(obj._store,'get_range'),'append':(obj._store,'_append_protected_batch'),
++                    'finalize':(obj._lifecycle,'finalize_session')}[point]
++        native=getattr(owner,name)
++        def fail(*args,**kwargs):raise failure
++        monkeypatch.setattr(owner,name,fail)
++        ended=original+[{'role':'assistant','content':'A final'}]
++        if locked:
++            obj.on_session_end('ended-a',ended)
++            assert 'SQLite lock' in caplog.text
++        else:
++            with pytest.raises(sqlite3.DatabaseError,match='synthetic database failure'):
++                obj.on_session_end('ended-a',ended)
++        monkeypatch.setattr(owner,name,native)
++        assert binding(obj)==before
++        obj.on_session_end('ended-a',ended)
++        assert contents(obj)==['A opener','A final']
++    finally:
++        obj.shutdown()
++
++
++@pytest.mark.parametrize('stored',[False,True])
++def test_known_empty_delayed_end_finalizes_without_changing_rows(tmp_path,stored):
++    obj=engine(tmp_path)
++    try:
++        bind_pair(obj,rows=[{'role':'user','content':'A opener'}] if stored else [])
++        before=binding(obj)
++        rows=contents(obj)
++        obj.on_session_end('ended-a',[])
++        state=obj._lifecycle.get_by_conversation('conversation-a')
++        assert state.last_finalized_session_id=='ended-a'
++        assert state.current_session_id is None
++        assert contents(obj)==rows
++        assert binding(obj)==before
++    finally:obj.shutdown()
++
++
++@pytest.mark.parametrize('newer_finished',[False,True])
++def test_late_shared_conversation_end_preserves_newer_lifecycle_and_frontier(tmp_path,newer_finished):
++    obj=engine(tmp_path)
++    try:
++        original=bind_pair(obj,shared=True)
++        obj._lifecycle.advance_frontier('conversation-a','active-b',99)
++        if newer_finished:
++            obj._lifecycle.finalize_session('conversation-a','active-b',frontier_store_id=99)
++        before_state=asdict(obj._lifecycle.get_by_conversation('conversation-a'))
++        before=binding(obj)
++        obj.on_session_end('ended-a',original+[{'role':'assistant','content':'A final'}])
++        assert asdict(obj._lifecycle.get_by_conversation('conversation-a'))==before_state
++        assert binding(obj)==before
++        assert contents(obj)==['A opener','A final']
++    finally:obj.shutdown()
++
++
++class InterruptConnection:
++    def __init__(self,connection,needle,signal):
++        self.connection,self.needle,self.signal=connection,needle,signal
++        self.fired=False
++    def execute(self,sql,*args,**kwargs):
++        value=self.connection.execute(sql,*args,**kwargs)
++        if not self.fired and self.needle in ' '.join(sql.split()).upper():
++            self.fired=True
++            raise self.signal()
++        return value
++    def __enter__(self):
++        self.connection.__enter__()
++        return self
++    def __exit__(self,*args):return self.connection.__exit__(*args)
++    def __getattr__(self,name):return getattr(self.connection,name)
++
++
++@pytest.mark.parametrize('point',['prefix','append','finalize'])
++@pytest.mark.parametrize('signal',[KeyboardInterrupt,SystemExit,SyntheticCancel])
++def test_cancel_at_native_sql_boundaries_preserves_binding_and_retry(tmp_path,caplog,point,signal):
++    obj=engine(tmp_path)
++    try:
++        original=bind_pair(obj)
++        before=binding(obj)
++        store_conn=obj._store._conn
++        lifecycle_conn=obj._lifecycle._conn
++        store_conn.execute('PRAGMA busy_timeout=1500')
++        lifecycle_conn.execute('PRAGMA busy_timeout=1800')
++        if point=='finalize':
++            obj._lifecycle._conn=InterruptConnection(lifecycle_conn,'UPDATE LCM_LIFECYCLE_STATE',signal)
++        else:
++            obj._store._conn=InterruptConnection(store_conn,'SELECT' if point=='prefix' else 'INSERT INTO MESSAGES',signal)
++        ended=original+[{'role':'assistant','content':'A final 1'},{'role':'assistant','content':'A final 2'}]
++        if signal is KeyboardInterrupt:
++            try:obj.on_session_end('ended-a',ended)
++            except KeyboardInterrupt:pytest.fail('Session-end prefix interruption escaped best-effort policy')
++            assert 'interrupt' in caplog.text.lower()
++        else:
++            with pytest.raises(signal):obj.on_session_end('ended-a',ended)
++        assert binding(obj)==before
++        assert store_conn.execute('PRAGMA busy_timeout').fetchone()[0]==1500
++        assert lifecycle_conn.execute('PRAGMA busy_timeout').fetchone()[0]==1800
++        assert store_conn.in_transaction is False
++        # Native MessageStore's connection context rolls back an interrupted
++        # append batch. Lifecycle uses autocommit; a signal after its UPDATE
++        # may leave the complete finalization committed, which retry preserves.
++        assert contents(obj)==(['A opener','A final 1','A final 2'] if point=='finalize' else ['A opener'])
++        obj.on_session_end('ended-a',ended)
++        assert contents(obj)==['A opener','A final 1','A final 2']
++        assert binding(obj)==before
++    finally:obj.shutdown()

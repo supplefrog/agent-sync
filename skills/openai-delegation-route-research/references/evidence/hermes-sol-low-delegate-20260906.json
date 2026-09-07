@@ -1,0 +1,64 @@
+{
+  "observed_at": "2026-09-06T01:58:03.657101+00:00",
+  "scope": "native Hermes delegated-child no-tools callability",
+  "route": {
+    "host": "hermes",
+    "transport": "hermes-delegate",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "runtime": "hermes-delegate/native-source-v1",
+    "contract_sha256": "17c9d19b75380293d11457211020c6b5ecd66626b1cb6a16bf9b0ff4a03bef56"
+  },
+  "native_contract": {
+    "runtime": "hermes-delegate/native-source-v1",
+    "sources": {
+      "run_agent.py": "9f789a3cd61821e8894882b6a035b6885d749a35ab045d9b16928bb4155b049c",
+      "tools/delegate_tool.py": "f9bcbfaf15bd02a6d01136d1645c6ca0f9debcd1035a7221fe9c0ef2c19fd3aa",
+      "tools/delegate_tool_config.py": "8b8d013577604291d5810471b3329d3ce9c9ed27fd9e8bddcb27f0dcfb7c6392",
+      "tools/delegate_tool_toolsets.py": "a1967a15c535dbbd100a812bfa5d43dd26459f1775ded775d59716faa1acfbe2",
+      "tools/delegate_tool_progress.py": "d9de7e17db388f5dc2fe5c1450d429cab4aef02e960b4bd1de1f41657ab51c17",
+      "tools/delegate_tool_child_run.py": "cd1f991dd17587012269ff08ae021bb01266c0ad7113dd714291e024cd769e45",
+      "tools/delegate_tool_results.py": "33a932fbded887234168cc2e4e646ce7aa7263c46b839da013aadd453a3eb8b0",
+      "agent/agent_init.py": "ff051678e80721ad4e053f83b66b220fbffaeef28c441fdbd8c9a7e81bdd1a8b",
+      "agent/system_prompt.py": "b1dfee1ecfdb3d6a04e5aa0bdedda4e88ab499722e71fb0ec14b45138cf23e91",
+      "agent/prompt_builder.py": "15971a1a450558da904c67881193b8688db20cfdb50c2e7264dc0a63ffece3bb",
+      "agent/chat_completion_helpers.py": "57e15e7c3033fc5daf655392e59dd1c18889bedf1526c85a64b54468ddc3a827",
+      "agent/transports/codex.py": "56b0251fcdfbfc4b4c175175bb9e81c50a263ed6b3fba63ef450a44c790aa7e9"
+    }
+  },
+  "provider_resolved_identity_verified": false,
+  "quality_qualification": null,
+  "context_tokens": 272000,
+  "context_capacity_basis": "Configured native ceiling; the observed provider call used 1101 input tokens. No long-context empirical claim.",
+  "probe_adapter": "Synthetic parent/profile; workspace resolver forced None only during construction; SOUL, memory, tools and background review disabled. Native delegate construction/run/finalizer used.",
+  "completion": {
+    "child_closed": true,
+    "closure_confirmed": null,
+    "execution_outcome": null,
+    "exit_reason": "completed",
+    "finalization_status": "returned",
+    "native_result_sha256": "41688ca3c656e31e7fa82aa7cc322b75d4fb5a4337fad1590483b6d1949e70e1",
+    "output_characters": 17,
+    "output_exact_match": true,
+    "output_sha256": "374817e4a6671fb725529ac517c996a029512c2b419084ce1d58c468cce509c2",
+    "status": "completed",
+    "tool_activity_count": 0
+  },
+  "observed_usage": {
+    "api_calls": 1,
+    "cost_status": "included",
+    "cost_usd": 0.0,
+    "input_tokens": 1101,
+    "output_tokens": 10,
+    "reasoning_tokens": 0
+  },
+  "resource_interpretation": "Native included/0-dollar telemetry is not free quota. Subscription weight and total task/verification/fallback cost remain unknown.",
+  "raw_receipt_sha256": "e84c37ef6f113fc86c9a50bded36e860f2131aa045569568a7fb466547b43c3e",
+  "reviewed_probe_sha256": {
+    "worker.py": "8ac4b60340024dc1e1bce3de8e29530571d054d8c097f7cd5dd40085f27f8e03",
+    "runner.py": "98f7a3c583e75a1242aa7c5dfb5b70d9eec9c6ea6c6e289d12458aaa46e25180",
+    "guard/sitecustomize.py": "1528ec94ddb2520caa0f4d75f418826d9fd35434ed3575fd874c5de0344e47da",
+    "probe-contract.json": "8ba6b713a2195728bf5cac88bff1666df907ea343a644383c7a3a756adcfb013"
+  }
+}

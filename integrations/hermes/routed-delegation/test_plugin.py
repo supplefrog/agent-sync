@@ -14,8 +14,9 @@ from pathlib import Path
 from unittest import mock
 
 PLUGIN = Path(__file__).with_name("__init__.py")
-ROUTE_SKILL = Path(__file__).resolve().parents[3] / "skills" / "openai-delegation-route-research"
-DYNAMIC_WORKFLOWS_SKILL = Path(__file__).resolve().parents[3] / "skills" / "dynamic-workflows"
+REPO_ROOT = Path(__file__).resolve().parents[3]
+ROUTE_SKILL = REPO_ROOT / "skills" / "openai-delegation-route-research"
+DYNAMIC_WORKFLOWS_SKILL = REPO_ROOT / "skills" / "dynamic-workflows"
 
 
 def load_plugin():
@@ -26,11 +27,35 @@ def load_plugin():
     return module
 
 
+def load_staged_workflow_state():
+    path = DYNAMIC_WORKFLOWS_SKILL / "scripts" / "workflow_state.py"
+    spec = importlib.util.spec_from_file_location("staged_workflow_state_tested", path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.default_router_paths = lambda: (
+        ROUTE_SKILL / "references" / "current-gpt-catalog.json",
+        ROUTE_SKILL / "scripts" / "route_selector.py",
+    )
+    module.default_v3_router_paths = lambda: (
+        ROUTE_SKILL / "references" / "current-task-route-catalog.json",
+        ROUTE_SKILL / "scripts" / "route_selector.py",
+        ROUTE_SKILL / "scripts" / "task_request.py",
+    )
+    return module
+
+
 class RoutedDelegationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.plugin = load_plugin()
+        self.workflow = load_staged_workflow_state()
+        self.workflow_patcher = mock.patch.object(
+            self.plugin, "_workflow_state_module", return_value=self.workflow
+        )
+        self.workflow_patcher.start()
         self.temp = tempfile.TemporaryDirectory()
-        self.home = Path(self.temp.name) / "hermes"
+        self.root = Path(self.temp.name)
+        self.home = self.root / "hermes"
         self.env = mock.patch.dict(
             os.environ,
             {
@@ -44,6 +69,11 @@ class RoutedDelegationTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.env.stop()
+        self.workflow_patcher.stop()
+        logging_module = sys.modules.get("hermes_logging")
+        reset_logging = getattr(logging_module, "_reset_queued_handlers", None)
+        if callable(reset_logging):
+            reset_logging()
         self.temp.cleanup()
 
     def task(self, goal: str = "Inspect one bounded file") -> dict:
@@ -120,6 +150,9 @@ class RoutedDelegationTests(unittest.TestCase):
     def test_project_sibling_route_skill_is_discovered_without_override(self) -> None:
         with mock.patch.dict(
             os.environ, {"HERMES_ROUTED_DELEGATION_SKILL": ""}, clear=False
+        ), mock.patch.object(
+            self.plugin, "__file__",
+            str(REPO_ROOT / "integrations" / "hermes" / "routed-delegation" / "__init__.py"),
         ):
             self.assertEqual(self.plugin._route_skill(), ROUTE_SKILL.resolve())
 
@@ -161,6 +194,7 @@ class RoutedDelegationTests(unittest.TestCase):
                 "task_index": kwargs["task_index"],
                 "status": "completed",
                 "summary": marker.get(),
+                "exit_reason": "completed",
                 "_child_role": "leaf",
                 "_child_cost_usd": 0.0,
             }
@@ -172,6 +206,8 @@ class RoutedDelegationTests(unittest.TestCase):
                 result.pop("_child_cost_usd", None)
 
         parent = types.SimpleNamespace(_interrupt_requested=False)
+        for item in prepared:
+            self.plugin._own_child(item[3], parent)
         results = self.plugin._execute_children(
             prepared,
             parent,
@@ -181,8 +217,9 @@ class RoutedDelegationTests(unittest.TestCase):
             owner_kwargs={},
         )
         self.assertEqual([item["summary"] for item in results], ["parent-context"] * 2)
-        self.assertEqual(len(finalized), 1)
-        self.assertNotIn("_child_role", results[0])
+        self.assertEqual(len(finalized), 2)
+        self.assertNotIn("_child_role", results[0])  # native bounded response projection
+        self.assertIn("_child_role", prepared[0][3]._routed_raw_result)
 
     def test_prepare_child_injects_and_verifies_exact_route(self) -> None:
         child = types.SimpleNamespace(
@@ -246,33 +283,13 @@ class RoutedDelegationTests(unittest.TestCase):
             self.plugin._prepare_child(parent, self.task(), receipt, 0, 1, 50)
 
 
-    def test_reasoning_source_contract_rejects_host_drift(self) -> None:
-        reasoning_helper = "cfg = agent.reasoning_config"
-        mode_builder = (
-            "_wire_reasoning_config = _reasoning_config_for_wire(agent)\n"
-            "return transport(reasoning_config=_wire_reasoning_config)"
-        )
-        transport = (
-            'reasoning_config = params.get("reasoning_config")\n'
-            'reasoning_effort = reasoning_config["effort"]'
-        )
-        self.assertTrue(
-            self.plugin._reasoning_source_contract(
-                reasoning_helper, mode_builder, transport
-            )
-        )
-        self.assertFalse(
-            self.plugin._reasoning_source_contract(
-                "cfg = None", mode_builder, transport
-            )
-        )
-        self.assertFalse(
-            self.plugin._reasoning_source_contract(
-                reasoning_helper,
-                "return transport(reasoning_config=None)",
-                transport,
-            )
-        )
+    def test_native_request_contract_rejects_changed_wire_route(self) -> None:
+        route = {"provider": "openai-codex", "model": "gpt-6-astra", "reasoning_effort": "xhigh"}
+        child = types.SimpleNamespace(provider="openai-codex", api_mode="codex_responses", base_url="https://chatgpt.com/backend-api/codex")
+        self.plugin._assert_native_request_kwargs(child, route, {"model": "gpt-6-astra", "reasoning": {"effort": "xhigh"}})
+        for kwargs in [{"model": "gpt-6-astra", "reasoning": {"effort": "high"}}, {"model": "other", "reasoning": {"effort": "xhigh"}}, {"model": "gpt-6-astra", "reasoning": {"effort": "xhigh"}, "extra_body": {"model": "other"}}]:
+            with self.assertRaises(RuntimeError):
+                self.plugin._assert_native_request_kwargs(child, route, kwargs)
 
     def workflow_plan(self) -> Path:
         path = Path(self.temp.name) / "workflow.json"
@@ -398,7 +415,8 @@ class RoutedDelegationTests(unittest.TestCase):
         self.assertTrue(result["success"])
         state = workflow_state.load_json(run_dir / "state.json")
         self.assertEqual(state["status"], "succeeded")
-        self.assertEqual(finalized, [[0, 1], [0]])
+        self.assertEqual(sorted(finalized[:2]), [[0], [1]])
+        self.assertEqual(finalized[2:], [[0]])
         for task_id, task_state in state["tasks"].items():
             self.assertEqual(task_state["status"], "succeeded")
             self.assertTrue(task_state["handle_closed_at"])
@@ -448,6 +466,7 @@ class RoutedDelegationTests(unittest.TestCase):
         def run(**kwargs):
             parent._interrupt_requested = True
             self.assertTrue(interrupted.wait(timeout=2))
+            kwargs['child'].close()  # current native runner owns close, not finalizer
             return {
                 "task_index": kwargs["task_index"],
                 "status": "interrupted",
@@ -905,10 +924,10 @@ class RoutedDelegationTests(unittest.TestCase):
                     "retry_interrupted": True,
                 })
             )
-        self.assertTrue(resumed["success"])
+        self.assertFalse(resumed["success"])
         state = workflow_state.load_json(run_dir / "state.json")
-        self.assertEqual(state["tasks"]["left"]["status"], "pending")
-        self.assertEqual(state["tasks"]["left"]["handle"], "")
+        self.assertEqual(state["tasks"]["left"]["status"], "running")
+        self.assertEqual(state["tasks"]["left"]["handle"], "sa-deferred")
 
     def test_stopped_attempt_without_close_witness_cannot_resume(self) -> None:
         workflow_state = self.plugin._workflow_state_module()
@@ -940,7 +959,7 @@ class RoutedDelegationTests(unittest.TestCase):
         self.assertFalse(result["success"])
         self.assertIn("without exact native close witnesses", result["error"])
 
-    def test_finalizer_failure_leaves_closed_task_recoverable(self) -> None:
+    def test_finalizer_failure_preserves_completed_execution_without_replay(self) -> None:
         workflow_state = self.plugin._workflow_state_module()
         run_dir = self.plugin._initialize_workflow(
             self.workflow_plan(), Path(self.temp.name) / "finalizer-failure-runs", {}
@@ -987,7 +1006,6 @@ class RoutedDelegationTests(unittest.TestCase):
         hermes_constants.parse_reasoning_effort = lambda value: {"effort": value}
         with (
             mock.patch.dict(sys.modules, {"hermes_constants": hermes_constants}),
-            self.assertRaisesRegex(RuntimeError, "finalizer failed"),
         ):
             self.plugin._run_workflow_wave(
                 workflow_state,
@@ -1002,7 +1020,7 @@ class RoutedDelegationTests(unittest.TestCase):
             )
 
         state = workflow_state.load_json(run_dir / "state.json")
-        self.assertEqual(state["tasks"]["left"]["status"], "running")
+        self.assertEqual(state["tasks"]["left"]["status"], "succeeded")
         witness = self.plugin._close_witness_path(run_dir, "left")
         self.assertTrue(witness.is_file())
 
@@ -1016,7 +1034,244 @@ class RoutedDelegationTests(unittest.TestCase):
             )
         self.assertTrue(resumed["success"])
         state = workflow_state.load_json(run_dir / "state.json")
-        self.assertEqual(state["tasks"]["left"]["status"], "pending")
+        self.assertEqual(state["tasks"]["left"]["status"], "succeeded")
+        self.assertEqual(resumed["finalization_pending"], ["left"])
+        runtime["finalize"].assert_called_once()
+
+    def _v3_workflow_template(self, kind: str) -> dict:
+        deterministic = None
+        effects = "none"
+        parent_available = True
+        if kind == "deterministic":
+            deterministic = {
+                "executor_id": "fixture-parent-check", "artifact_sha256": "e" * 64,
+                "task_contract_sha256": "c" * 64, "coverage": "complete", "effects": "none",
+            }
+        elif kind == "parent":
+            effects = "irreversible"
+        elif kind == "defer":
+            effects = "irreversible"
+            parent_available = False
+        result = {
+            "schema_version": 3,
+            "task_class": "workflow-fixture",
+            "requirements": {"tools": [], "context_tokens": 128,
+                "task_contract_sha256": "c" * 64, "model": None, "reasoning_effort": None},
+            "verifier": {"kind": "deterministic", "independent": True, "coverage": "complete",
+                "scope": "inline-text", "evidence": {"locator": "fixture:verifier", "sha256": "b" * 64}},
+            "effects": effects, "failure_cost": "low", "deterministic": deterministic,
+            "budget": {"objective": "quota", "api_remaining": None, "api_reserve": 0,
+                "allow_api_spend": False,
+                "quotas": {"codex-main": {"unit": "percentage-points", "remaining": 100, "reserve": 0}},
+                "unknown_cost_policy": "keep_parent", "preference_order": [],
+                "parent_available": parent_available, "attempt_cap": 1, "attempts_used": 0,
+                "fallback_route_id": None, "fallback_route_sha256": None},
+        }
+        if kind == "model":
+            result["budget"]["unknown_cost_policy"] = "explicit_preference"
+            result["budget"]["preference_order"] = ["synthetic-workflow-model"]
+        return result
+
+    def _install_synthetic_workflow_catalog(self) -> tuple[Path, dict]:
+        canonical = json.loads(
+            (ROUTE_SKILL / "references" / "current-task-route-catalog.json").read_text(encoding="utf-8")
+        )
+        candidate = canonical["candidates"][0]
+        contract = self.plugin._v3_native_contract()
+        route = candidate["route"]
+        route.update(
+            transport="hermes-workflow", runtime=contract["runtime"],
+            contract_sha256=self.plugin._sha(contract),
+        )
+        candidate["id"] = "synthetic-workflow-model"
+        candidate["availability"]["route_sha256"] = self.plugin._sha(route)
+        candidate["availability"]["valid_until"] = "2099-01-01T00:00:00Z"
+        candidate["quality"] = []
+        candidate["cost"] = {
+            "billing": "subscription", "basis": "unknown",
+            "task_contract_sha256": None, "verifier_sha256": None, "route_sha256": None,
+            "api_usd": {"generation": None, "verification": None, "fallback": None},
+            "quota": {"bucket": "codex-main", "unit": "percentage-points",
+                      "parts": {"generation": None, "verification": None, "fallback": None}},
+            "evidence": None,
+        }
+        canonical["catalog_version"] = "synthetic-workflow-test-only"
+        path = self.root / "synthetic-workflow-catalog.json"
+        path.write_text(json.dumps(canonical), encoding="utf-8")
+        selector = ROUTE_SKILL / "scripts" / "route_selector.py"
+        materializer = ROUTE_SKILL / "scripts" / "task_request.py"
+        self.workflow.default_v3_router_paths = lambda: (path, selector, materializer)
+        return path, route
+
+    def _write_v3_workflow(self, tasks: list[dict], name: str) -> Path:
+        path = self.root / f"{name}.json"
+        path.write_text(json.dumps({"name": name, "tasks": tasks}), encoding="utf-8")
+        return path
+
+    def test_workflow_v3_nonmodel_handoffs_do_not_construct_or_loop(self) -> None:
+        tasks = [
+            {"id": kind, "role": "worker", "risk": "read", "acceptance": [f"parent checks {kind}"],
+             "prompt": kind, "route_request": self._v3_workflow_template(kind)}
+            for kind in ("parent", "deterministic", "defer")
+        ]
+        run_dir = self.plugin._initialize_workflow(
+            self._write_v3_workflow(tasks, "nonmodel-v3"), self.root / "runs-v3", {}
+        )
+        manifest = self.workflow.load_json(run_dir / "run_manifest.json")
+        self.assertEqual(manifest["schema_version"], 3)
+        trusted = self.plugin._verify_workflow_binding(self.workflow, run_dir)
+        self.assertEqual(trusted, self.plugin._sha(manifest))
+        parent = types.SimpleNamespace(_delegate_depth=0, _interrupt_requested=False)
+        runtime = {"load_config": lambda: {"max_iterations": 5}, "default_iterations": 5,
+                   "get_max_children": lambda: 2}
+        with mock.patch.object(self.plugin, "_prepare_workflow_child", side_effect=AssertionError("must not construct")):
+            first = self.plugin._run_workflow(run_dir, parent, runtime, owner_kwargs={})
+            second = self.plugin._run_workflow(run_dir, parent, runtime, owner_kwargs={})
+        self.assertEqual([item["kind"] for item in first["parent_actions"]], ["parent", "deterministic", "defer"])
+        self.assertEqual(second["waves"], [])
+        self.assertEqual([item["kind"] for item in second["parent_actions"]], ["parent", "deterministic", "defer"])
+
+    def test_workflow_v3_truthful_parent_completion_releases_dependency(self) -> None:
+        tasks = [
+            {"id": "parent", "role": "worker", "risk": "read", "acceptance": ["parent checks root"],
+             "prompt": "root", "route_request": self._v3_workflow_template("parent")},
+            {"id": "child", "role": "worker", "risk": "read", "acceptance": ["parent checks child"],
+             "prompt": "use {{output:parent}}", "depends_on": ["parent"], "include_outputs": ["parent"],
+             "route_request": self._v3_workflow_template("parent")},
+        ]
+        run_dir = self.plugin._initialize_workflow(
+            self._write_v3_workflow(tasks, "dependent-v3"), self.root / "runs-dependent", {}
+        )
+        parent = types.SimpleNamespace(_delegate_depth=0, _interrupt_requested=False)
+        runtime = {"load_config": lambda: {"max_iterations": 5}, "default_iterations": 5,
+                   "get_max_children": lambda: 1}
+        first = self.plugin._run_workflow(run_dir, parent, runtime, owner_kwargs={})
+        self.assertEqual([item["task_id"] for item in first["parent_actions"]], ["parent"])
+        output = self.root / "parent-output.md"
+        output.write_text("parent-produced evidence", encoding="utf-8")
+        trusted = self.plugin._verify_workflow_binding(self.workflow, run_dir)
+        from agent.subagent_lifecycle import bind_subagent_parent
+        with bind_subagent_parent(parent):
+            completed = json.loads(self.plugin._workflow_handle({
+                "action": "complete-parent", "run_dir": str(run_dir), "task_id": "parent",
+                "output_path": str(output), "summary": "parent actually completed work",
+            }))
+        self.assertTrue(completed["success"], completed)
+        state = self.workflow.load_json(run_dir / "state.json")
+        self.assertEqual(state["tasks"]["parent"]["handle"], "parent-sequential:parent")
+        self.assertTrue(state["tasks"]["parent"]["launch_token"])
+        self.assertEqual(self.workflow.ready_tasks(run_dir, trusted), ["child"])
+        second = self.plugin._run_workflow(run_dir, parent, runtime, owner_kwargs={})
+        self.assertEqual([item["task_id"] for item in second["parent_actions"]], ["child"])
+
+    def test_workflow_v3_parent_envelope_mutation_rejects_before_child_construction(self) -> None:
+        self._install_synthetic_workflow_catalog()
+        task = {"id": "model", "role": "worker", "risk": "read", "acceptance": ["checked"],
+                "prompt": "model", "route_request": self._v3_workflow_template("model")}
+        run_dir = self.plugin._initialize_workflow(
+            self._write_v3_workflow([task], "mutated-parent-v3"), self.root / "runs-mutated", {}
+        )
+        parent = types.SimpleNamespace(_delegate_depth=0, _interrupt_requested=False)
+        runtime = {"load_config": lambda: {"max_iterations": 5}, "default_iterations": 5,
+                   "get_max_children": lambda: 1, "build": object(), "validate_request": None,
+                   "budget_summary": None, "finalize": lambda *_a, **_k: None, "detach": None}
+        with mock.patch.object(
+            self.plugin, "_v3_native_envelope", side_effect=[{"profile": "before"}, {"profile": "changed"}]
+        ), mock.patch.object(
+            self.plugin, "_prepare_workflow_child", side_effect=AssertionError("must not construct")
+        ):
+            result = self.plugin._run_workflow(run_dir, parent, runtime, owner_kwargs={})
+        self.assertEqual(result["waves"][0]["launch_errors"][0]["task_id"], "model")
+        self.assertIn("execution context changed", result["waves"][0]["launch_errors"][0]["error"])
+
+    def test_workflow_v3_synthetic_model_uses_actual_native_child_and_intercepted_run(self) -> None:
+        _catalog_path, route = self._install_synthetic_workflow_catalog()
+        task = {"id": "model", "role": "worker", "risk": "read", "acceptance": ["parent checks result"],
+                "prompt": "offline model preparation", "route_request": self._v3_workflow_template("model")}
+        run_dir = self.plugin._initialize_workflow(
+            self._write_v3_workflow([task], "native-model-v3"), self.root / "runs-native", {}
+        )
+        self.home.mkdir(parents=True, exist_ok=True)
+        (self.home / "config.yaml").write_text(
+            "delegation:\n  max_iterations: 2\n  max_concurrent_children: 1\n"
+            "  max_spawn_depth: 1\n  orchestrator_enabled: false\n  max_summary_chars: 24000\n",
+            encoding="utf-8",
+        )
+        actual = self.plugin._private_runtime()
+        holder = {"build": 0, "intercept": 0, "provider": 0}
+        native_build = actual["build"]
+
+        def build(**kwargs):
+            holder["build"] += 1
+            child = native_build(**kwargs)
+            holder["child"] = child
+            child.skip_context_files = True
+            child.load_soul_identity = False
+            child.skip_background_review = True
+            child.save_trajectories = False
+            from agent.system_prompt import invalidate_system_prompt
+            invalidate_system_prompt(child)
+            return child
+
+        def intercept(**kwargs):
+            holder["intercept"] += 1
+            child = kwargs["child"]
+            built = child._build_api_kwargs(
+                [{"role": "user", "content": "offline model preparation"}], []
+            )
+            self.assertEqual(built.get("model"), route["model"])
+            self.assertEqual((built.get("reasoning") or {}).get("effort"), route["reasoning_effort"])
+            child.close()
+            actual["detach"](kwargs["parent_agent"], child)
+            return {
+                "task_index": kwargs["task_index"], "status": "completed",
+                "exit_reason": "completed", "summary": "offline intercepted result",
+                "model": route["model"], "api_calls": 0, "duration_seconds": 0,
+                "execution_outcome": "completed", "closure_confirmed": True,
+                "_child_role": "leaf", "_child_cost_usd": 0.0,
+            }
+
+        runtime = {**actual, "build": build, "run": intercept}
+        parent = types.SimpleNamespace(
+            provider=route["provider"], model=route["model"], api_mode="codex_responses",
+            base_url="https://chatgpt.com/backend-api/codex", api_key="synthetic-offline-token",
+            reasoning_config={"enabled": True, "effort": route["reasoning_effort"]},
+            session_id="workflow-native-parent", _current_turn_id="offline-turn",
+            _current_task_id=None, _delegate_depth=0, _interrupt_requested=False,
+            enabled_toolsets=["none"], disabled_toolsets=[], request_overrides={},
+            prefill_messages=None, _session_db=None, _credential_pool=None, _memory_manager=None,
+            session_prompt_tokens=0, session_completion_tokens=0, session_reasoning_tokens=0,
+            session_estimated_cost_usd=0.0, context_compressor=None,
+            _print_fn=lambda *_args, **_kwargs: None,
+        )
+        from tools import delegate_tool, delegate_tool_progress
+        old_delegate_hint = delegate_tool._resolve_workspace_hint
+        old_progress_hint = delegate_tool_progress._resolve_workspace_hint
+        delegate_tool._resolve_workspace_hint = lambda _parent: None
+        delegate_tool_progress._resolve_workspace_hint = lambda _parent: None
+        try:
+            result = self.plugin._run_workflow(
+                run_dir, parent, runtime, owner_kwargs=self.plugin._workflow_owner_kwargs(runtime)
+            )
+        finally:
+            delegate_tool._resolve_workspace_hint = old_delegate_hint
+            delegate_tool_progress._resolve_workspace_hint = old_progress_hint
+        self.assertTrue(result["success"], result)
+        self.assertEqual(holder["build"], 1)
+        self.assertEqual(holder["intercept"], 1)
+        self.assertEqual(holder["provider"], 0)
+        self.assertTrue(getattr(holder["child"], "_routed_closed", False))
+        state = self.workflow.load_json(run_dir / "state.json")
+        current = state["tasks"]["model"]
+        self.assertEqual(current["status"], "succeeded")
+        self.assertEqual(current["summary"], "offline intercepted result")
+        self.assertTrue(current["launch_token"])
+        self.assertTrue(current["handle_closed_at"])
+        record = json.loads((run_dir / "tasks" / "model" / "result.json").read_text(encoding="utf-8"))
+        self.assertEqual(record["native_result"]["summary"], "offline intercepted result")
+        self.assertEqual(Path(current["output_path"]).read_text(encoding="utf-8"), "offline intercepted result")
+        self.assertEqual(result["finalization_pending"], [])
+        self.assertEqual(list(self.root.rglob("auth.json")), [])
 
     def test_register_exposes_both_routed_tools(self) -> None:
         registered = []
@@ -1028,6 +1283,8 @@ class RoutedDelegationTests(unittest.TestCase):
             {entry["name"] for entry in registered},
             {"routed_delegate_task", "routed_workflow"},
         )
+        workflow = next(entry for entry in registered if entry["name"] == "routed_workflow")
+        self.assertIn("complete-parent", workflow["schema"]["parameters"]["properties"]["action"]["enum"])
 
 
 if __name__ == "__main__":

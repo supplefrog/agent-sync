@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "base_revision": "820106d4a52e83a426400659231ae14093585109",
+  "file": {
+    "path": "tools/delegate_tool_results.py",
+    "before_sha256": "bbd8517b4e49d7fa55ffed36fdabf898c2a41292619be4777af55060b19440c5",
+    "after_sha256": "e00aa3ba70ae965b0ab0c696d8868b5ef10bc0cc3ee2e10b2ffb467ed98a6533"
+  },
+  "historical_patch_sha256": "dd7ed3bcfeac282ffd84e46f8a45cee8a5f9bc93fc37a16969427883faaa9395",
+  "limits": [
+    "Rebase preserves new upstream prompt-size budgeting and backend-visible spill paths.",
+    "Fresh affected native tests pending; no quality claim."
+  ],
+  "paired_plugin_sha256": "3845cb96fda4ef00d37ecbcfb9aadbbb8a083e6d5efc5f20ed50fda8af40d9fb"
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "selection": "candidate",
+  "source_selection_receipt": {
+    "path": "work/hermes-guidance-live-lane/evidence/selection.json",
+    "sha256": "67f54b9cfd81175cf275bade4230be594c7f03add34d9db3f815937660df6182"
+  },
+  "source_bindings": {
+    "baseline_prompt_builder_sha256": "15971a1a450558da904c67881193b8688db20cfdb50c2e7264dc0a63ffece3bb",
+    "candidate_prompt_builder_sha256": "eca63c5ae6ce7b2c40b0dce7fe407a39d39c0bd8d1ef5d9ae441beaf707f500e",
+    "blind_review_sha256": "fd9625ec87c76c4003f6f6c9ac748eae16cbb8d124402eaf83c19ebea1655dcd"
+  },
+  "evidence_summary": {
+    "completed_cells": 28,
+    "candidate_artifact_checks_passed": 14,
+    "candidate_artifact_and_scope_checks_passed": 14,
+    "blind_semantic_records": 8,
+    "blind_semantic_records_passed": 8,
+    "preserved_facts": ["input row order", "label case", "integer-cent amounts"]
+  },
+  "selection_reason": "Candidate avoided unsolicited skill maintenance in both export-only trials while preserving specialist artifacts, authorized corrections, explicit memory saves, and held-out controls.",
+  "limits": [
+    "Small paired synthetic library at Astra low; not full-library natural-trigger or general model-quality evidence.",
+    "Two baseline artifacts were absent after fixture guards blocked otherwise reasonable verification commands; this is not an arithmetic or numeric-accuracy claim.",
+    "Forwarded request counts and elapsed time do not measure quota, cost, or provider request totals.",
+    "Universal and Anthropic OAuth compatibility remain unverified; no executable provider-specific branch was removed."
+  ]
+}

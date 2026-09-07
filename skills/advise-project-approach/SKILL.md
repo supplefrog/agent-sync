@@ -24,7 +24,7 @@ Help choose, validate, or correct a project architecture by comparing the curren
 
 This skill owns the project-stage evidence, fit comparison, operating-cost analysis, architecture recommendation, and implementation path. Do not copy the routed owners' procedures here.
 
-Advice, inspection, and review are read-only. An explicit build or change request authorizes only the smallest coherent in-scope implementation and local verification; it does not authorize new dependencies, deployment, publishing, paid services, or irreversible external effects.
+Advice, inspection, and review are read-only. For a build or change request, carry out the coherent in-scope implementation and local verification, including necessary reversible setup already covered by the request. Preserve the user's existing authorization; ask only for an action that still requires it. Do not infer authorization for publishing, purchases, or unrelated external effects from a request for advice.
 
 ## Modes
 

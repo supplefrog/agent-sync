@@ -29,6 +29,15 @@ class ProfileError(RuntimeError):
     pass
 
 
+def current_profile(repo: Path) -> Path:
+    """Resolve the one declared current observation, without a model-name constant."""
+    matches = [path for path in sorted((repo / "profiles").glob("*.json"))
+               if _load(path).get("status") == "current-observed"]
+    if len(matches) != 1:
+        raise ProfileError(f"expected exactly one current-observed model profile, found {len(matches)}")
+    return matches[0]
+
+
 def _load(path: Path) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -235,6 +244,11 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
                 raise ProfileError(f"instruction surface is not valid for {host}: {surface_id}")
 
         selected_units: list[str] = host_profile["effective_units"]
+        no_managed_standing_reason = host_profile.get("no_managed_standing_reason")
+        if not selected_units and not no_managed_standing_reason:
+            raise ProfileError(f"empty managed standing state requires an observed reason for {host}")
+        if selected_units and no_managed_standing_reason:
+            raise ProfileError(f"managed standing units conflict with no-managed-standing reason for {host}")
         total_bytes = 0
         source_hashes: set[str] = set()
         normalized_units: dict[str, str] = {}
@@ -264,7 +278,7 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
         budget = int(profile["context_policy"]["max_standing_bytes"][host])
         if total_bytes > budget:
             raise ProfileError(f"standing byte budget exceeded for {host}: {total_bytes}>{budget}")
-        report_hosts[host] = {
+        report_host = {
             "runtime": host_profile["runtime"],
             "reasoning": host_profile["reasoning"],
             "bytes": total_bytes,
@@ -273,6 +287,9 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
             "surfaces": selected_surfaces,
             "artifact_sha256": sorted(source_hashes),
         }
+        if no_managed_standing_reason:
+            report_host["no_managed_standing_reason"] = no_managed_standing_reason
+        report_hosts[host] = report_host
 
     evidence = profile["evidence"]
     if profile["status"] == "current-observed":
@@ -326,7 +343,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--profile",
         type=Path,
-        default=Path("profiles/gpt-5.6-sol-openai-codex.json"),
+        default=None,
+        help="explicit profile; default resolves the one current-observed profile",
     )
     parser.add_argument(
         "--artifact-only",
@@ -335,8 +353,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     repo = args.repo.resolve()
-    profile_path = args.profile if args.profile.is_absolute() else repo / args.profile
     try:
+        profile_path = (args.profile if args.profile.is_absolute() else repo / args.profile) if args.profile else current_profile(repo)
         report = verify_profile(repo, profile_path, live=not args.artifact_only)
     except ProfileError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)

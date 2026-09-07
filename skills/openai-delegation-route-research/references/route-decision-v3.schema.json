@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "route-decision-v3.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 3
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "outcome": {
+      "enum": [
+        "execute_deterministic",
+        "selected_model",
+        "keep_parent",
+        "defer"
+      ]
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "requirement_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_locator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_class": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_contract_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "verifier_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "continuation_contract_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "route": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "minLength": 1
+            },
+            "transport": {
+              "type": "string",
+              "minLength": 1
+            },
+            "provider": {
+              "type": "string",
+              "minLength": 1
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reasoning_effort": {
+              "type": "string",
+              "minLength": 1
+            },
+            "runtime": {
+              "type": "string",
+              "minLength": 1
+            },
+            "contract_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "host",
+            "transport",
+            "provider",
+            "model",
+            "reasoning_effort",
+            "runtime",
+            "contract_sha256"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "route_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "executor": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "executor_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "task_contract_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "input_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "coverage": {
+              "enum": [
+                "complete",
+                "partial"
+              ]
+            },
+            "effects": {
+              "enum": [
+                "none",
+                "reversible",
+                "irreversible"
+              ]
+            }
+          },
+          "required": [
+            "executor_id",
+            "artifact_sha256",
+            "task_contract_sha256",
+            "input_sha256",
+            "coverage",
+            "effects"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "selection_basis": {
+      "type": "string",
+      "minLength": 1
+    },
+    "qualification": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cost_observation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "excluded": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uniqueItems": true
+      }
+    },
+    "evidence_used": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "locator": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "locator",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "previous_decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attempt_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "attempt_policy": {
+      "type": "object",
+      "properties": {
+        "cap": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        },
+        "fallback_route_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fallback_route_sha256": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          ]
+        }
+      },
+      "required": [
+        "cap",
+        "fallback_route_id",
+        "fallback_route_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "resource_claim": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "decision_id",
+    "outcome",
+    "policy_sha256",
+    "requirement_sha256",
+    "policy_version",
+    "policy_locator",
+    "task_id",
+    "task_class",
+    "task_contract_sha256",
+    "verifier_sha256",
+    "input_sha256",
+    "continuation_contract_sha256",
+    "route",
+    "route_id",
+    "executor",
+    "selection_basis",
+    "qualification",
+    "cost_observation",
+    "excluded",
+    "evidence_used",
+    "previous_decision_id",
+    "attempt_number",
+    "attempt_policy",
+    "resource_claim"
+  ],
+  "additionalProperties": false
+}

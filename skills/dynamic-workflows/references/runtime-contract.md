@@ -9,8 +9,9 @@
 ```text
 requirements plan
   -> validate and normalize immutable DAG
-  -> select and pin one exact route receipt per new task
-  -> persist atomic state
+  -> persist atomic state and required routing-source snapshots
+  -> V2: select and pin at initialization
+  -> V3: bind exact input and dispatch after dependencies succeed
   -> launch bounded native workers through a host adapter
   -> persist one prompt/output per task
   -> inject declared dependencies as untrusted evidence
@@ -20,16 +21,16 @@ requirements plan
 ## State and routing
 
 - `plan.json` is a normalized snapshot bound by the run-local `run_manifest.json`. Every stateful command verifies both the manifest and state bindings; Hermes additionally pins the exact manifest digest in an independently stored binding under `HERMES_HOME`.
-- Routed runs copy `route_catalog.json` and `route_selector.py` at initialization. Receipt reuse must match both manifest-bound hashes, the currently admitted selector, and a fresh deterministic selection from the exact verified selector bytes.
+- V2 routed runs copy `route_catalog.json` and `route_selector.py` at initialization. V3 runs separately copy `route_catalog_v3.json`, `route_selector_v3.py`, `task_request_v3.py`, and `route-task-v3.schema.json`. Receipt replay must match the applicable manifest-bound hashes and admitted current/history code.
 - `state.json` is atomically replaced and records target surface, variables, task status, attempts, launch claims, native handles, handle closure, outputs, errors, and exact decision receipts.
 - Every lifecycle read-modify-write is serialized by a cross-process `.state.lock`; atomic replacement alone is not treated as concurrency control. Host adapters also serialize run finalization against interrupted resume with `.execution.lock`.
-- `ready`, `model`, `render`, and `status` are read-only; only explicit lifecycle commands replace durable state.
-- New tasks declare `intelligence_tier`, `latency_sensitive`, and `failure_cost`; they do not select models.
-- New tasks also declare observable acceptance criteria and a stopping condition rather than relying on an underspecified prompt.
-- The shared deterministic selector pins one provider/model/reasoning tuple at initialization.
-- Resume and retries reuse the same receipt. No automatic Medium → High → xhigh → Max ladder exists.
+- `ready`, `model`, and `status` do not replace durable state. `render` writes only the derived task prompt artifact. `dispatch`, `claim`, `start`, `abort-launch`, `finish`, `resume`, and `request-stop` own explicit state transitions.
+- New V3 tasks declare `route_request` plus observable acceptance criteria. V2 `intelligence_tier`, `latency_sensitive`, and `failure_cost` remain compatibility fields.
+- The shared deterministic selector pins V2 receipts at initialization and V3 receipts at dependency-ready dispatch.
+- V2 retries reuse the same receipt. V3 supports one execution attempt in this consumer. No automatic Medium → High → xhigh → Max ladder exists.
 - An unavailable or mismatched route fails closed. A human or separately authorized new task owns escalation.
 - Legacy `difficulty` plans retain the old three-route policy only for compatibility.
+- V3 `route_request` tasks are a third exclusive plan mode. Initialization snapshots the separate V3 catalog plus selector, materializer, and materializer-schema identities without selecting; dependency-ready dispatch binds the actual execution input once and replays it thereafter. Run snapshot filenames are fixed. Historical executable sources must match admitted current/history bytes; an old materializer whose pinned schema data is no longer admitted fails closed.
 
 Task states:
 
@@ -51,10 +52,13 @@ A workflow task cannot widen parent authorization, filesystem roots, network acc
 - Validate IDs, prompts, roles, risk, attempts, dependencies, outputs, variables, and cycles before launch.
 - Spawn only ready tasks; bound concurrency by `max_workers`.
 - Read the pinned route immediately before spawn and pass it exactly through the host adapter.
+- For V3, call `dispatch` only after dependencies succeed. Spawn only a `model` result. A `parent` or `deterministic` result is claimed with the parent path and completed only after the parent supplies checked output; a `defer` result remains visibly unresolved and does not re-enter native ready loops.
 - Atomically claim a routed task before spawn with an exclusive per-task claim file; only the matching claim token may attach one non-empty native handle.
 - Treat a pending task with a claim file as an interrupted launch. Require native-handle reconciliation before deleting the orphan and retrying.
 - Persist a native handle immediately after spawn.
 - Persist full output, close/release the handle, then record terminal state with the exact active handle and claim token. Reject stale attempt completions.
+- V3 binds the rendered prompt, full SHA-256 of every injected dependency artifact, workdir, role, risk, ownership, acceptance, and explicit controller execution context. The bytes used for each full artifact hash are the bytes used for its capped rendering.
+- V3 render, claim, and start replay the live dependency/input binding. Successful finish replays the frozen task, receipt, dispatch, prompt, handle, and claim ownership without rereading dependencies that may legitimately change after execution begins. Lifecycle success does not mark the independent acceptance handoff complete.
 - Failed/stopped dependencies block descendants.
 - Persist `blocked_by`, `blocked_reason`, `blocked_at`, and `requires_operator`; clear them only when dependency reconciliation restores the node to pending.
 - Reconcile interrupted handles before retrying.
@@ -63,8 +67,8 @@ A workflow task cannot widen parent authorization, filesystem roots, network acc
 
 ## Host enforcement
 
-- **Codex:** exact model and reasoning effort are parent-selected native spawn arguments. Reject reported mismatches and close the worker handle; current JSONL evidence does not independently echo the child resolved route.
-- **OMP:** dispatch the immutable `route-<route-id>` named agent whose frontmatter pins exact model and `thinkingLevel`. Verify `resolvedModel`; reject fallback/mismatch.
+- **Codex:** V3 parent/deterministic/defer actions use the portable dispatch and parent lifecycle directly. A model action requires an admitted `codex-workflow` catalog cell, then exact model and reasoning effort as native spawn arguments. The current V3 catalog has no such cell. Reject reported mismatches and close the worker handle; current JSONL evidence does not independently echo the child resolved route.
+- **OMP:** V3 parent/deterministic/defer actions use the portable dispatch and parent lifecycle directly. A model action additionally requires an admitted `omp-workflow` catalog cell and immutable matching `route-<route-id>` agent. The current V3 catalog has no such cell, and the existing agent installer intentionally accepts only V2. Verify `resolvedModel`; reject fallback/mismatch.
 - **Hermes:** `routed_workflow` consumes this state owner and launches current native leaf children with the exact receipt tuple and fallback disabled. A trusted binding under `HERMES_HOME` pins the run manifest independently; exact run/task/handle/claim close witnesses under that trusted root gate interrupted retry. An explicit result-model mismatch fails closed. Ordinary one-shot routing remains owned by `routed_delegate_task`.
 
 The retired Hermes compatibility runner is not an available executor. Its automatic verifier-feedback loop, reasoning-tier escalation, and `model_tier` compatibility were deliberately rejected; explicit verifier nodes or `answer-key-gauntlet` preserve the verification outcome without mutating the immutable plan. Per-task host controls remain native concerns and are not reintroduced into the portable plan.

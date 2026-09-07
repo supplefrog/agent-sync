@@ -1,68 +1,49 @@
 ---
 name: openai-delegation-route-research
-description: Use when selecting a GPT route for a task or refreshing the reviewed Codex catalogue.
+description: Use when selecting a GPT route for a task or refreshing task-specific routing evidence.
 license: MIT
-compatibility: Requires the user's OpenAI Codex catalogue and reviewed Artificial Analysis data.
+compatibility: Requires current native route availability and the repository's existing jsonschema dependency.
 metadata:
   author: supplefrog
-  version: "0.4.0"
+  version: "0.5.1"
 ---
 
-# Automatic GPT routing
+# Task-aware GPT routing
 
-Use the reviewed catalogue to select the exact GPT model and reasoning effort for each new task. The caller classifies the task; deterministic code chooses the route.
+Choose a route that meets the actual task's quality requirement with lower total resource use. Use existing code when it already completes the work. Keep consequential judgment with the current quality route unless relevant verified task evidence supports delegation.
 
-Read [the selection contract](references/selection-contract.md) and [source policy](references/source-policy.md).
+Read [the selection contract](references/selection-contract.md) for request and dispatch semantics, and [source policy](references/source-policy.md) when adding evidence. This owner selects routes; native workers and `dynamic-workflows` own execution and lifecycle.
 
-## Select
+For Hermes direct tool calls, use [the V3 consumer contract](references/hermes-direct-v3.md), which also describes the shared request materializer. Existing V2 DAG runs retain their current policy.
 
-1. Classify the minimum intelligence tier:
-   - `routine`: bounded or mechanical work with cheap retries or direct verification.
-   - `standard`: normal professional work; this is the default when no stronger signal exists.
-   - `strong`: substantial ambiguity, judgment, or synthesis.
-   - `demanding`: hard reasoning where a weaker attempt materially risks rework.
-   - `maximum`: quality-ceiling work where the strongest measured route is justified.
-2. Set `latency_sensitive: true` only when completion blocks the user or a foreground dependency. Background and nonblocking work defaults to false.
-3. Create a task request matching `references/route-task.schema.json` and run:
+For qualified three-question source-review tasks, use [the bounded review Q&A contract](references/review-qa.md) and its deterministic `scripts/review_qa.py` verifier. Admission still requires the bound parent review and heldout gate.
+
+## New tasks
+
+1. Identify the outcome protocol, exact input hash, required tools/context, allowed effects, failure cost, and independent acceptance check. Keep protocol qualification separate from an individual input. A JSON schema or an output file's existence does not establish content correctness.
+2. Use the v3 task and catalog schemas in `references/`. Record actual callable host/transport/model/effort tuples, task evidence, resource state and unknown costs. Use a complete deterministic handler when available. For bounded reversible work with complete independent verification, an explicitly preferred candidate may be tried provisionally; this is not an established quality or savings claim.
+3. Run the selector with the owning Agent Signal checkout's Python environment (`.venv` when present), satisfying its `requirements.txt`. Save the receipt with the exact catalog/task/selector snapshots:
 
 ```text
-python scripts/route_selector.py select --catalog <gpt-catalog.json> --task <route-task.json> --out <decision-receipt.json>
+python scripts/route_selector.py select --catalog <catalog.json> --task <task.json> --out <decision.json>
 ```
 
-The selector filters routes below the intelligence floor. Among the remaining routes it chooses lowest Artificial Analysis task cost by default, or lowest Artificial Analysis task time when latency-sensitive. Hallucination rate, excess intelligence, and route ID are deterministic tie-breakers only. Do not manually rerank the result. Use `selected_route_id` plus `selection_reason` only as an explicit operator override; overrides cannot violate the intelligence floor.
+4. Dispatch the explicit outcome: `execute_deterministic`, `selected_model`, `keep_parent`, or `defer`. Only `selected_model` permits a new model worker. Enforce the exact native tuple, verify the result, and retain the actual outcome and resource observations. Do not pass a new receipt to a consumer that supports only v2.
 
-Pin once per new task. Reuse the receipt on resume and throughout the run. Reselect only for a new task, an explicit user change, or a separately authorized retry/escalation.
+The selector compares total observed cost only for the matching protocol, verifier and route, within comparable units and including verification and fallback. Missing prices or quota weights remain unknown. An explicit provisional preference may guide bounded exploration; it must not be described as the cheapest route. Benchmark averages and release order cannot overturn relevant local regressions.
 
-## Surface boundaries
+## Existing runs and retries
 
-- `routed_delegate_task` is live for automatic Hermes child routing. The caller classifies task requirements only; the plugin selects and pins the exact provider/model/reasoning receipt, disables route fallback, and launches through Hermes's native child builder/finalizer. Reusing the same parent-session/task ID reuses the receipt only when the task and requirements are identical.
-- Built-in `delegate_task` still has one global delegation route. It remains the rollback path and homogeneous-batch fallback. Never rewrite shared config between children to imitate per-child routing.
-- Exact automatic routes also work on task-thread and receipt-aware workflow tasks. `skills/dynamic-workflows` is the definitive portable DAG state contract: Codex passes the receipt tuple directly to native workers; OMP dispatches an immutable `route-<route-id>` named agent and verifies the resolved model. Hermes has no admitted DAG executor; ordinary Hermes routing remains here, and any future thin DAG adapter must pass current lifecycle/process tests before promotion.
-- Workflow retries reuse the original receipt. Never spend through Medium → High → xhigh → Max after the same task fails; return the blocked task to the parent/human or create a separately authorized new task.
-- Auxiliary assignments remain purpose-specific. Do not pass bounded utilities through a generic agent-work intelligence floor. For each purpose, inspect the real transformation, input/output bounds, failure cost, incumbent performance, and whether exact verification or cheap retry exists. Compare reasoning-token volume and task cost across efforts, then choose the weakest reliably enforceable effort that clears the purpose-specific fidelity requirement. When that requirement is unknown, keep the current quality incumbent and run a representative non-inferiority evaluation against cheaper challengers; do not ask the user to guess an intelligence level, and do not downgrade from broad benchmark scores alone. Treat the broad Artificial Analysis Intelligence Index as supporting evidence, not a task-specific pass/fail score. Preserve specialized or non-Codex incumbents unless task-specific evidence supports replacement. If a configured effort does not map to an explicit wire value on the intended provider, treat that effort as unavailable until live-verified; never assume an omitted field disables reasoning.
-- Thread/DAG construction and prompt wording belong to their existing owners. This skill selects routes only.
+Preserve in-flight pins. V2 catalogs and receipts retain their original policy; do not rewrite them into v3 or populate missing evidence with invented scores. New evidence changes new decisions.
 
-## Manual catalogue refresh
+V3 permits at most two total model attempts. A transport retry keeps the exact route; a failed acceptance check may use only a predeclared fallback within the same total cap. Preserve the previous-decision and failure-evidence links. Return unresolved work to the parent when the contract, budget, or capability no longer permits execution. Reset credits require the user's authorization to redeem.
 
-Refresh only when the user invokes it after a new GPT family becomes available. Do not poll releases or scrape Artificial Analysis at runtime.
+## Refresh and auxiliary work
 
-1. Enumerate the exact GPT model/reasoning combinations available to the user's `openai-codex` account.
-2. Record the four approved Artificial Analysis axes for each exact comparable variant.
-3. Remove unavailable and strictly dominated candidates; record why omissions are evidence-based.
-4. Set catalogue-specific intelligence floors from the reviewed frontier. Do not turn one family's index values into universal thresholds.
-5. Review auxiliary assignments separately, update dates/versions, and validate the catalogue.
+Refresh affected evidence when requested or when a material availability, task, harness, tool, prompt, verifier, or resource change invalidates it. Reuse current verified findings; do not launch recurring benchmark swarms. For solution discovery, follow `outcome-first-workflow-design`: existing implementations before novel research.
+
+Auxiliary transformations retain their purpose-specific incumbents until representative task evidence supports replacement. Native callability is transport-specific: a catalog entry or successful text request does not prove tool use, another host, or every reasoning effort. Preserve specialized non-Codex routes when their purpose remains justified. Never mutate shared configuration between children to imitate per-child routing.
 
 ## Verification
 
-1. Validate the catalogue, route request, receipt, and auxiliary assignment files against their schemas.
-2. Run `tests/test_route_selector.py` and `tests/test_route_adapter.py`.
-3. Exercise cost-default, speed-priority, override, fail-closed, and receipt-reuse paths.
-4. Confirm selected model identifiers are still callable through the intended Codex account before live use.
-
-## Boundaries
-
-- Only GPT routes available through `openai-codex` belong in the catalogue.
-- Artificial Analysis is reviewed evidence, not a live runtime dependency or a complete task benchmark.
-- Missing tiers, unavailable routes, and overrides below the floor fail closed.
-- The selector never calls an LLM or edits Hermes configuration.
-- Existing runs remain pinned when the catalogue changes.
+Validate schemas, replay frozen decisions, and run the selector and affected consumer tests. Exercise wrong-but-well-formed output, unavailable capabilities, unknown costs, reserve exhaustion, bounded fallback, and non-model outcomes. Use independent acceptance on useful delegated work before claiming improved quality or savings.

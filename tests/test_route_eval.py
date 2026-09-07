@@ -37,9 +37,10 @@ def test_materialize_and_check_json_plus_command_acceptance():
         root = Path(temp)
         route_eval.materialize_case(root, case)
         result = route_eval.check_acceptance(root, case)
-    assert result["passed"] is True
+    assert result["passed"] is False
     assert result["json_match"] is True
-    assert result["command_exit_code"] == 0
+    assert result["command_exit_code"] is None
+    assert result["unsupported_checks"] == ["command"]
 
 
 def test_materialize_rejects_fixture_path_escape():
@@ -63,7 +64,7 @@ def test_usage_is_public_safe_and_session_id_is_hash_only():
     assert len(cleaned["session_id_sha256"]) == 64
     assert cleaned["model"] == "gpt-5.6-luna"
     safe_text = route_eval._public_safe_text(
-        "Bearer secret-value C:/" + "Users/Person/private «redacted:sk-…»", Path("C:/trial")
+        "Bearer secret-value C:/" + "Users/Person/private Â«redacted:sk-â€¦Â»", Path("C:/trial")
     )
     assert "secret-value" not in safe_text
     assert "C:/" + "Users/Person" not in safe_text
@@ -128,7 +129,8 @@ def test_route_summary_is_per_task_class_and_records_transport_retries_cleanup_a
     assert task["expected_retries"] == 0.5
     assert task["max_retries_observed"] == 1
     assert task["cleanup_passed"] is True
-    assert task["expected_total_cost_usd"] == pytest.approx(0.15)
+    assert task["expected_total_cost_usd"] is None
+    assert task["generation_nominal_cost_usd"] == pytest.approx(0.15)
     assert task["required_tools_verified"] == []
     assert result["transport"]["sample_size"] == 2
     assert result["transport"]["p95_seconds"] == 20.0

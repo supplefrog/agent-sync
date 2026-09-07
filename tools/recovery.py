@@ -964,7 +964,7 @@ def bootstrap(
     import instruction_profile as profile_tool
 
     result["profile"] = profile_tool.verify_profile(
-        repo, repo / "profiles" / "gpt-5.6-sol-openai-codex.json"
+        repo, profile_tool.current_profile(repo)
     )
     result["postflight"] = postflight
     changed_references = {

@@ -1,48 +1,24 @@
-# Automatic GPT route selection contract
+# Task-aware selection contract
 
-## Outcome
+New requests use `route-task-v3.schema.json`, `gpt-route-catalog-v3.schema.json`, and `route-decision-v3.schema.json`. V2 schemas/catalogs remain readable under their original policy. The selector is a deterministic policy function over trusted, frozen inputs; it does not acquire evidence, verify external artifact bytes, launch workers, or edit configuration.
 
-For each new task, choose the least expensive reviewed Codex GPT route that meets the task's intelligence requirement. When completion is latency-sensitive, choose the fastest qualifying route instead. Do not collapse intelligence, time, and cost into one weighted score.
+## Inputs and responsibility
 
-## Catalogue refresh
+The parent supplies the actual task class, stable outcome-protocol hash, separate exact `input_sha256`, required host/transport/tools/context, effects, failure cost, independent verifier, resource snapshot, and attempt policy. The protocol defines success criteria and the workload envelope covered by qualification; a broad label such as coding cannot replace it. Exact input hashes protect replay, retries and artifact reuse without preventing protocol evidence from applying to a new input in its admitted scope. The parent checks referenced evidence and artifact hashes before admitting a catalog or task request. Worker-authored success claims are not trusted qualification records.
 
-Refresh manually only after the user invokes the workflow for a new GPT family. There is no scheduled polling, automatic promotion, or runtime Artificial Analysis dependency.
+Each candidate binds the exact native route and runtime contract to scoped, dated callability evidence. Quality records match the task contract, verifier, route and evidence scope. A recorded local regression excludes that task cell. Category benchmark priors help discovery; they cannot certify an untested local route.
 
-1. Enumerate exact callable model/reasoning tuples from the user's current `openai-codex` account.
-2. Record exact Artificial Analysis intelligence, task time, task cost, and hallucination values.
-3. Keep the useful nondominated frontier. An omitted available model needs evidence, such as another model being at least as intelligent and cheaper across the relevant frontier.
-4. Define catalogue-specific, strictly increasing intelligence floors for `routine`, `standard`, `strong`, `demanding`, and `maximum`. Every floor must have at least one qualifying route.
-5. Review auxiliary purposes separately and preserve specialized/non-Codex incumbents without task-specific replacement evidence.
+## Selection and dispatch
 
-## Runtime request
+1. A complete matching deterministic handler with independent verification and no irreversible effects yields `execute_deterministic` without a model call.
+2. Otherwise enforce exact callability, context/tools/effects, relevant task evidence or a complete low-risk verifier, and resource bounds.
+3. Compare complete observed generation, verification and fallback costs only for matching protocol, verifier and route bindings, within the same unit and quota bucket. A cost from another task is unknown for this decision. Unknown or incomparable costs require the request's explicit preference/parent/defer policy. Never convert an API price into subscription quota or treat OAuth usage as free.
+4. Emit `selected_model` only for an eligible route; unresolved cases stay with the parent or defer. `dispatch_decision` replays the frozen inputs before returning an explicit dispatch kind. Native consumers must reject unsupported receipt versions and unsupported route surfaces.
 
-The caller supplies:
+Catalog evidence is a curated input, not an automatic training pipeline. Retain negative, inconclusive, operational and quality outcomes separately. A passed schema or worker completion alone must not update quality qualification. Claim cost improvements only against comparable observed task totals with acceptance quality preserved.
 
-- `intelligence_tier`: the minimum required capability, inferred from the task rather than the desired model;
-- `latency_sensitive`: true only when completion blocks the user or a foreground dependency;
-- the target surface and optional task metadata.
+## Pins and recovery
 
-`standard` is the default tier for ordinary professional work. `maximum` is reserved for quality-ceiling tasks, not general uncertainty.
+Save the exact task, catalog, selector identity and decision before launch. A resume replays those inputs; it must not silently adopt current availability, budget, scores or prompts. An execution retry keeps the model/effort pin. A failed verifier permits only the predeclared fallback to a distinct exact route, with at most two total model attempts and the original task/verifier/effects contract. Resource state may be refreshed for a new attempt without rewriting the prior receipt. An exhausted cap or insufficient resources stops new model dispatch.
 
-## Deterministic selection
-
-1. Reject candidates below the tier's intelligence floor.
-2. Default: sort qualifying routes by task cost, then task time, hallucination rate, excess intelligence, and route ID.
-3. Latency-sensitive: sort by task time, then task cost, hallucination rate, excess intelligence, and route ID.
-4. Pin the first route in a hash-bound receipt before launch.
-5. An explicit `selected_route_id` override requires a reason and still must meet the intelligence floor.
-6. Unknown tiers, unreachable floors, unavailable overrides, or malformed requests fail closed.
-
-The selector chooses the model. The caller chooses only the task tier and whether latency matters.
-
-For DAG nodes, a bounded execution retry reuses the same receipt. Failure does not trigger a Medium → High → xhigh → Max ladder; unresolved work returns to the parent/human or becomes a separately authorized new task.
-
-## Lifecycle
-
-Select once per new task. Existing runs and resumes reuse their receipt. Reselect only for a new task, an explicit user change, or an authorized retry/escalation.
-
-## Surface boundaries
-
-- Task threads and receipt-aware workflow tasks can enforce exact model/provider/reasoning tuples. `codex-workflow` passes the tuple directly to native workers; `omp-workflow` uses exact-route named agents and verifies the resolved model; `hermes-workflow` passes the tuple to native leaf children with fallback disabled and binds durable state to trusted manifest and close-witness records under `HERMES_HOME`.
-- Native `delegate_task` currently has one configured route for all children. It is suitable only for homogeneous work on that route; shared config must not be mutated between children.
-- Auxiliary assignments are purpose-specific static choices, not delegation candidates.
+Existing v2 workflow/task adapters preserve their old schema semantics until their v3 consumer path is verified. The standalone v3 policy can be used through an explicit native parent dispatch while that migration proceeds; this does not establish every host's automatic integration.

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "owner": "hermes-lcm native source",
+  "repository": "https://github.com/stephenschoettler/hermes-lcm",
+  "base_revision": "b8c5170affa4ef0ca89c20cc1986943b4ad1e85a",
+  "patch_sha256": "6415a88277bc551ecaa87c655cc4e6f7d8201eb35907cfd832c67ca472251db6",
+  "files": [
+    {
+      "path": "assertion_store.py",
+      "before_sha256": "6b9333bebe03d89ea52607be93a27a85d32b1fc5689ba6b6940866c61ef724e0",
+      "after_sha256": "9a6990b1e64fa50f568d9a401d4d1fb69c85eb02fdcd904c11cba74250c6e7c4"
+    },
+    {
+      "path": "engine.py",
+      "before_sha256": "85cf29549093a93f4a2c9add807c57d73fecc0519b980a6fca784ae327719433",
+      "after_sha256": "221487f41c56be97d786ec51d748b18a0afd66829666b003989435c6932156d8"
+    },
+    {
+      "path": "tests/test_repair_boundaries.py",
+      "before_sha256": null,
+      "after_sha256": "f0117f29cfa5d8c9954d00991dc825db074ba8177ecb2decf3f8abe4ec619963"
+    },
+    {
+      "path": "tests/test_root_transaction_entry.py",
+      "before_sha256": null,
+      "after_sha256": "77892d694b47a39496c7f676896b54f4973682ccdc0bb5c8b3659418397da832"
+    },
+    {
+      "path": "tests/test_session_end_refutation.py",
+      "before_sha256": null,
+      "after_sha256": "79783535f3a1fdfd19d711a0e065a59cfa76d5df2edf5e9963ad2a49f15cdf23"
+    }
+  ],
+  "verification": {
+    "affected_tests": 189,
+    "fresh_native_checks": 7,
+    "model_calls": 0
+  },
+  "restore": "Install the native base revision, check original file hashes, apply repair.patch, verify expected file hashes; existing unrelated edits must be preserved.",
+  "limits": [
+    "A source patch is not an installer for the host, dependencies, plugin registration, or private history.",
+    "Fresh Hermes processes load the change; existing processes may retain older imported modules."
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "owner": "Hermes native prompt construction",
+  "repository": "https://github.com/NousResearch/hermes-agent",
+  "native_base_revision": "59d330fd15a692b439219e505bc704fcde0b2b6f",
+  "target": {
+    "path": "agent/prompt_builder.py",
+    "before_sha256": "15971a1a450558da904c67881193b8688db20cfdb50c2e7264dc0a63ffece3bb",
+    "after_sha256": "eca63c5ae6ce7b2c40b0dce7fe407a39d39c0bd8d1ef5d9ae441beaf707f500e"
+  },
+  "artifacts": {
+    "LICENSE": "e29dfaf6905a8d396a58ea4bd84ad27057756bbd9599b5bec0971ae34d2a2118",
+    "README.md": "bac5d3021b14705e0b806d76e1e629bd2cd8b946de4ac434e266a7b6ed9a45c9",
+    "guidance.patch": "bd5963dc3753da2980d4732f047fa6215d96f67d6ff55dabb5f248b674e991f5",
+    "recovery/baseline/agent/prompt_builder.py": "15971a1a450558da904c67881193b8688db20cfdb50c2e7264dc0a63ffece3bb",
+    "recovery/candidate/agent/prompt_builder.py": "eca63c5ae6ce7b2c40b0dce7fe407a39d39c0bd8d1ef5d9ae441beaf707f500e"
+  },
+  "source_bindings": {
+    "agent/skill_utils.py": "8205488a6b622c9754df2fa1d5c93c94d0d21410fd9ce8f68e2ac3287f6ee842",
+    "tools/skills_guard.py": "70832f00bbd582cc2c30f3f0192114d2054596a38ae011885a4b851fb0efc35c",
+    "tools/file_tools.py": "9d7e6db859f56800e0480bbbe2c25160e81b124e8c1ee9975151094f93b5646a",
+    "tools/terminal_tool.py": "8b224829613459a530d31a94c7070b166c8711f79cbd7a09cc4f7f86eee6ea1d",
+    "tools/memory_tool_store.py": "27e13a0c5e38923e550a52f6c3af119596d017db9924240627ee8c664c0a9c4a",
+    "tools/skill_usage.py": "82702d4736a8fc81ceb4dd5e6ce9706aa242102c84277c474c661e659a6f1aed",
+    "tools/skill_ledger.py": "bf7e80b0705ccd80d6307e308f6b2cbcae875585055b2f3e62b768b0168b0c34"
+  },
+  "selection_evidence": {
+    "path": "evidence/hermes-native-guidance-selection.json",
+    "sha256": "0697fd25e21ec97888eb03fa9e62975e5d1eaff1592ccc80c1c983a33115073a"
+  },
+  "license": {
+    "spdx": "MIT",
+    "copyright": "Copyright (c) 2025 Nous Research",
+    "source": "installed Hermes source LICENSE",
+    "sha256": "e29dfaf6905a8d396a58ea4bd84ad27057756bbd9599b5bec0971ae34d2a2118"
+  },
+  "restore": "Verify base revision, exact target before hash, and all source bindings; validate the patch on a copy; install the bundled exact candidate bytes; verify after hash; restart Hermes. Reverse with the same guards and exact baseline backup.",
+  "limits": [
+    "One native target only; this is not a Hermes installer or state backup.",
+    "Existing processes may retain older imported code until restarted.",
+    "No generic Anthropic, provider, or universal compatibility claim is made."
+  ]
+}

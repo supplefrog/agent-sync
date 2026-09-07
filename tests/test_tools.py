@@ -238,11 +238,14 @@ hello world this works
             for surface in contract["surfaces"]
             if surface["id"] == "omp.codex-inherited"
         )
-        self.assertEqual("active", omp["status"])
-        self.assertEqual("codex.user-global", omp["owner"])
+        self.assertEqual("disabled", omp["status"])
+        self.assertEqual("oh-my-pi@18.1.10 Codex discovery provider", omp["owner"])
         self.assertEqual(
             "recovery/current/hosts/codex/AGENTS.md", omp["artifact"]
         )
+        adapter = json.loads((REPO / "adapters" / "omp.json").read_text(encoding="utf-8"))
+        self.assertEqual("inactive", adapter["instructions"]["strategy"])
+        self.assertIn("not enabled", adapter["instructions"]["reason"])
 
     def test_routing_adapters_share_contract_and_declare_supported_surfaces(self):
         shared = {
@@ -324,6 +327,26 @@ hello world this works
             findings = public_check.scan(root)
         self.assertEqual([(str(path), rule) for path, _, rule in findings], [("report.json", "windows-user-path")])
 
+    def test_public_check_allowlist_is_exact_and_fails_when_stale(self):
+        public_check = load("public_check_allowlist", REPO / "tools" / "public_check.py")
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "fixture.txt"
+            line = "generic example: C:/" + "Users/<user>/file.txt"
+            target.write_text(line + "\n", encoding="utf-8")
+            allowlist = root / "review.json"
+            allowlist.write_text(json.dumps({"schema_version": 1, "findings": [{
+                "path": "fixture.txt", "line": 1, "rule": "windows-user-path",
+                "line_sha256": __import__("hashlib").sha256(line.encode()).hexdigest(),
+                "disposition": "generic placeholder",
+            }]}), encoding="utf-8")
+
+            reviewed = public_check.reviewed_findings(root, allowlist)
+            self.assertEqual(reviewed, {(Path("fixture.txt"), 1, "windows-user-path")})
+            target.write_text("changed: C:/" + "Users/<user>/file.txt\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "stale public-safety allowlist row"):
+                public_check.reviewed_findings(root, allowlist)
+
     def test_eval_summary_binds_raw_report_without_session_ids(self):
         summarizer = load("summarize_eval_compact", REPO / "tools" / "summarize_eval.py")
         report = {
@@ -352,7 +375,8 @@ hello world this works
         self.assertEqual(summary["session_lifecycle"]["created_count"], 1)
         self.assertEqual(summary["session_lifecycle"]["deleted_count"], 1)
         self.assertTrue(summary["session_lifecycle"]["clean"])
-        self.assertEqual(summary["decision_detail"]["observations"], 3)
+        self.assertEqual(summary["recorded_decision_detail"]["observations"], 3)
+        self.assertIsNone(summary["decision"])
         self.assertNotIn("private-session-a", json.dumps(summary))
 
     def test_eval_summary_rejects_stale_artifact_hashes(self):
@@ -367,6 +391,10 @@ hello world this works
             candidate.write_text("candidate", encoding="utf-8")
             suite.write_text("{}", encoding="utf-8")
             harness.write_text("pass", encoding="utf-8")
+            (root / "artifact_hash.py").write_text("# loader fixture", encoding="utf-8")
+            (root / "fleet.py").write_text("# package identity fixture", encoding="utf-8")
+            (root / "evaluation_runtime.py").write_text("# isolated launcher fixture", encoding="utf-8")
+            (root / "evaluation_hermes_worker.py").write_text("# native API worker fixture", encoding="utf-8")
             report.write_text(
                 json.dumps(
                     {
@@ -377,7 +405,7 @@ hello world this works
                         "artifacts": {
                             "candidate_sha256": "stale",
                             "suite_sha256": summarizer.sha256(suite),
-                            "harness_sha256": summarizer.sha256(harness),
+                            "harness_sha256": summarizer.harness_hash(harness),
                         },
                         "summary": {},
                         "results": [],

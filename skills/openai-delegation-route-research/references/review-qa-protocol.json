@@ -1,0 +1,43 @@
+{
+  "schema_version": 3,
+  "task_class": "bounded-source-review-question-answering",
+  "scope": "independent-review",
+  "effects": "none",
+  "max_input_characters": 6000,
+  "question_count": 3,
+  "max_answer_words": 120,
+  "max_snippet_characters": 350,
+  "acceptance_contract": [
+    "Answer every part of each of the three controller questions from the supplied excerpt.",
+    "Do not attempt to cover material that no controller question asks about.",
+    "Keep each answer at or below 120 words, excluding copied supporting snippets.",
+    "Use one or two short exact supporting snippets per answer; every snippet must be copied from the excerpt and be at most 350 characters.",
+    "State an explicit source-unknown caveat for each answer whenever the excerpt leaves dependency, runtime, threat-model, or deployment behavior unresolved.",
+    "Return exactly the three fixed question IDs in JSON. Schema validity alone is not evidence of answer quality."
+  ],
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["excerpt_id", "answers"],
+    "properties": {
+      "excerpt_id": {"type": "string"},
+      "answers": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 3,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["question_id", "answer", "supporting_snippets", "source_unknown_caveat"],
+          "properties": {
+            "question_id": {"type": "string"},
+            "answer": {"type": "string", "minLength": 1},
+            "supporting_snippets": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"type": "string", "minLength": 1, "maxLength": 350}},
+            "source_unknown_caveat": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    }
+  },
+  "quality_decision": "root-manual-independent-review-required"
+}

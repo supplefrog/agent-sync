@@ -1,0 +1,4 @@
+# Python tool dependencies tested during the Astra harness audit.
+jsonschema==4.26.0
+PyYAML==6.0.3
+toml==0.10.2

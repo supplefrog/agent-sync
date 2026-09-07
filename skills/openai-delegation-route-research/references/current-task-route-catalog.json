@@ -1,0 +1,57 @@
+{
+  "schema_version": 3,
+  "catalog_version": "2026-09-07-current-native-parent-review-trial",
+  "candidates": [
+    {
+      "id": "hermes-sol-low-inline",
+      "route": {
+        "host": "hermes",
+        "transport": "hermes-delegate",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "low",
+        "runtime": "hermes-delegate/native-source-v1",
+        "contract_sha256": "6e695e5995e724286744775e8ba464a0a65d7f1b88e3b7ac3afa35873086242b"
+      },
+      "availability": {
+        "status": "verified",
+        "observed_at": "2026-09-06T23:34:57.864617+00:00",
+        "valid_until": "2026-09-07T23:34:57.864617+00:00",
+        "route_sha256": "551f09e4d4224254d397a4e73abe54fd7c30da16927d2b315a1decebc6861559",
+        "context_tokens": 272000,
+        "tools_verified": [],
+        "allowed_effects": [
+          "none"
+        ],
+        "evidence": {
+          "locator": "references/evidence/hermes-sol-low-current-source.json",
+          "sha256": "d499e08cd9f6b402310af9c50d7ced753526148f52e21e1634575100ee09ffe3"
+        }
+      },
+      "quality": [],
+      "benchmark_priors": [],
+      "cost": {
+        "billing": "subscription",
+        "basis": "unknown",
+        "task_contract_sha256": null,
+        "verifier_sha256": null,
+        "route_sha256": null,
+        "api_usd": {
+          "generation": null,
+          "verification": null,
+          "fallback": null
+        },
+        "quota": {
+          "bucket": "codex-main",
+          "unit": "percentage-points",
+          "parts": {
+            "generation": null,
+            "verification": null,
+            "fallback": null
+          }
+        },
+        "evidence": null
+      }
+    }
+  ]
+}

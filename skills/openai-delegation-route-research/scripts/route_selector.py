@@ -83,7 +83,7 @@ def _route_identity(route: dict[str, Any], surface: str) -> dict[str, Any]:
     }
 
 
-def validate_catalog(catalog: dict[str, Any]) -> None:
+def _validate_catalog_v2(catalog: dict[str, Any]) -> None:
     if not isinstance(catalog, dict):
         raise RouteSelectionError("catalogue must be an object")
     allowed_catalog = {
@@ -333,7 +333,7 @@ def _rank_key(route: dict[str, Any], *, latency_sensitive: bool) -> tuple[Any, .
     return cost, task_time, hallucination, -intelligence, route["id"]
 
 
-def decide_route(
+def _decide_route_v2(
     catalog: dict[str, Any], task: dict[str, Any], *, catalog_locator: str | None = None
 ) -> dict[str, Any]:
     """Choose the cheapest or fastest route that meets the task intelligence floor."""
@@ -399,7 +399,7 @@ def select_route(
     catalog: dict[str, Any], task: dict[str, Any], *, catalog_locator: str | None = None
 ) -> dict[str, Any]:
     receipt = decide_route(catalog, task, catalog_locator=catalog_locator)
-    if receipt["outcome"] != "selected":
+    if receipt["outcome"] not in {"selected", "selected_model"}:
         detail = "; ".join(
             f"{key}: {','.join(value)}" for key, value in receipt["excluded"].items()
         )
@@ -420,6 +420,379 @@ def atomic_json(path: Path, value: dict[str, Any]) -> None:
     finally:
         if os.path.exists(name):
             os.unlink(name)
+
+
+# V3 is additive. Its schemas are embedded so frozen selector replay remains
+# self-contained; the reference JSON files are generated from these constants.
+def _v3_object(properties, required=None):
+    return {"type": "object", "properties": properties, "required": list(properties) if required is None else required,
+            "additionalProperties": False}
+
+
+_V3_TEXT = {"type": "string", "minLength": 1}
+_V3_HASH = {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+_V3_OPTIONAL_HASH = {"oneOf": [{"type": "null"}, _V3_HASH]}
+_V3_NUMBER = {"type": ["number", "null"], "minimum": 0}
+_V3_STRINGS = {"type": "array", "items": _V3_TEXT, "uniqueItems": True}
+_V3_TIME = {"type": "string", "format": "date-time"}
+_V3_REF = _v3_object({"locator": _V3_TEXT, "sha256": _V3_HASH})
+_V3_EFFECT = {"enum": ["none", "reversible", "irreversible"]}
+_V3_ROUTE = _v3_object({key: _V3_TEXT for key in ("host", "transport", "provider", "model", "reasoning_effort", "runtime")}
+                      | {"contract_sha256": _V3_HASH})
+_V3_PARTS = _v3_object({key: _V3_NUMBER for key in ("generation", "verification", "fallback")})
+_V3_COST = _v3_object({"billing": {"enum": ["subscription", "api"]}, "basis": {"enum": ["observed", "quoted", "unknown"]},
+                      "task_contract_sha256": _V3_OPTIONAL_HASH, "verifier_sha256": _V3_OPTIONAL_HASH, "route_sha256": _V3_OPTIONAL_HASH,
+                      "api_usd": _V3_PARTS,
+                      "quota": {"oneOf": [{"type": "null"}, _v3_object({"bucket": _V3_TEXT, "unit": _V3_TEXT, "parts": _V3_PARTS})]},
+                      "evidence": {"oneOf": [{"type": "null"}, _V3_REF]}})
+_V3_AVAILABILITY = _v3_object({"status": {"enum": ["verified", "unverified"]}, "observed_at": _V3_TIME,
+                              "valid_until": _V3_TIME, "route_sha256": _V3_HASH,
+                              "context_tokens": {"type": ["integer", "null"], "minimum": 0},
+                              "tools_verified": _V3_STRINGS, "allowed_effects": {"type": "array", "items": _V3_EFFECT, "uniqueItems": True},
+                              "evidence": _V3_REF})
+_V3_QUALITY = _v3_object({"task_class": _V3_TEXT, "task_contract_sha256": _V3_HASH, "verifier_sha256": _V3_HASH,
+                         "route_sha256": _V3_HASH, "status": {"enum": ["qualified", "regression", "inconclusive"]},
+                         "scope": {"enum": ["artifact-effects", "independent-review", "inline-text"]},
+                         "evidence": _V3_REF})
+_V3_CANDIDATE = _v3_object({"id": _V3_TEXT, "route": _V3_ROUTE, "availability": _V3_AVAILABILITY,
+                           "quality": {"type": "array", "items": _V3_QUALITY}, "cost": _V3_COST,
+                           "benchmark_priors": {"type": "array", "items": {"type": "object"}}})
+V3_CATALOG_SCHEMA = _v3_object({"schema_version": {"const": 3}, "catalog_version": _V3_TEXT,
+                               "candidates": {"type": "array", "items": _V3_CANDIDATE}})
+_V3_REQUIREMENTS = _v3_object({"host": _V3_TEXT, "transport": _V3_TEXT, "tools": _V3_STRINGS,
+                              "context_tokens": {"type": "integer", "minimum": 0}, "task_contract_sha256": _V3_HASH,
+                              "model": {"type": ["string", "null"]}, "reasoning_effort": {"type": ["string", "null"]}})
+_V3_VERIFIER = _v3_object({"kind": {"enum": ["deterministic", "independent-review", "schema-only", "none"]},
+                          "independent": {"type": "boolean"}, "coverage": {"enum": ["complete", "partial", "none"]},
+                          "scope": {"enum": ["artifact-effects", "independent-review", "inline-text"]}, "evidence": _V3_REF})
+_V3_DETERMINISTIC = {"oneOf": [{"type": "null"}, _v3_object({"executor_id": _V3_TEXT, "artifact_sha256": _V3_HASH,
+                        "task_contract_sha256": _V3_HASH, "input_sha256": _V3_HASH,
+                        "coverage": {"enum": ["complete", "partial"]}, "effects": _V3_EFFECT})]}
+_V3_CONTINUATION = {"oneOf": [{"type": "null"}, _v3_object({"previous_receipt": {"type": "object"},
+                        "reason": {"enum": ["transport-failure", "verification-failure"]}, "failure_evidence": _V3_REF})]}
+_V3_QUOTA = _v3_object({"unit": _V3_TEXT, "remaining": _V3_NUMBER, "reserve": {"type": "number", "minimum": 0}})
+_V3_BUDGET = _v3_object({"objective": {"enum": ["api_usd", "quota"]}, "api_remaining": _V3_NUMBER,
+                        "api_reserve": {"type": "number", "minimum": 0}, "allow_api_spend": {"type": "boolean"},
+                        "quotas": {"type": "object", "additionalProperties": _V3_QUOTA},
+                        "unknown_cost_policy": {"enum": ["explicit_preference", "keep_parent", "defer"]},
+                        "preference_order": _V3_STRINGS, "parent_available": {"type": "boolean"},
+                        "attempt_cap": {"type": "integer", "minimum": 1, "maximum": 2},
+                        "attempts_used": {"type": "integer", "minimum": 0},
+                        "fallback_route_id": {"type": ["string", "null"]}, "fallback_route_sha256": {"oneOf": [{"type": "null"}, _V3_HASH]}})
+V3_TASK_SCHEMA = _v3_object({"schema_version": {"const": 3}, "task_id": _V3_TEXT, "task_class": _V3_TEXT,
+                            "input_sha256": _V3_HASH,
+                            "as_of": _V3_TIME, "requirements": _V3_REQUIREMENTS, "verifier": _V3_VERIFIER,
+                            "effects": _V3_EFFECT, "failure_cost": {"enum": ["low", "medium", "high"]},
+                            "deterministic": _V3_DETERMINISTIC, "budget": _V3_BUDGET, "continuation": _V3_CONTINUATION})
+V3_DECISION_SCHEMA = _v3_object({"schema_version": {"const": 3}, "decision_id": _V3_HASH,
+                                "outcome": {"enum": ["execute_deterministic", "selected_model", "keep_parent", "defer"]},
+                                "policy_sha256": _V3_HASH, "requirement_sha256": _V3_HASH, "policy_version": _V3_TEXT,
+                                "policy_locator": _V3_TEXT, "task_id": _V3_TEXT, "task_class": _V3_TEXT,
+                                "task_contract_sha256": _V3_HASH, "verifier_sha256": _V3_HASH,
+                                "input_sha256": _V3_HASH,
+                                "continuation_contract_sha256": _V3_HASH,
+                                "route": {"oneOf": [{"type": "null"}, _V3_ROUTE]}, "route_id": {"type": ["string", "null"]},
+                                "executor": _V3_DETERMINISTIC, "selection_basis": _V3_TEXT,
+                                "qualification": {"type": ["string", "null"]}, "cost_observation": {"type": ["object", "null"]},
+                                "excluded": {"type": "object", "additionalProperties": _V3_STRINGS},
+                                "evidence_used": {"type": "array", "items": _V3_REF},
+                                "previous_decision_id": {"type": ["string", "null"]},
+                                "attempt_number": {"type": "integer", "minimum": 1},
+                                "attempt_policy": _v3_object({"cap": {"type": "integer", "minimum": 1, "maximum": 2},
+                                    "fallback_route_id": {"type": ["string", "null"]}, "fallback_route_sha256": {"oneOf": [{"type": "null"}, _V3_HASH]}}),
+                                "resource_claim": _V3_TEXT})
+
+
+def _v3_validate(value, schema, label):
+    try:
+        from jsonschema import Draft202012Validator, FormatChecker
+    except ImportError as exc:
+        raise RouteSelectionError("v3 requires the repository's existing jsonschema dependency") from exc
+    # Reject NaN/Infinity as well as structural errors; replay only accepts JSON values.
+    try:
+        json.dumps(value, allow_nan=False)
+    except (ValueError, TypeError) as exc:
+        raise RouteSelectionError(f"invalid {label}: not finite JSON") from exc
+    errors = sorted(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(value), key=lambda e: str(e.absolute_path))
+    if errors:
+        raise RouteSelectionError(f"invalid {label}: {errors[0].json_path}: {errors[0].message}")
+
+
+def _v3_time(value):
+    import datetime
+    return datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def _v3_total(parts):
+    return None if any(value is None for value in parts.values()) else sum(parts.values())
+
+
+def _v3_continuation_contract(task):
+    """Only observation clock/resource readings and attempt history may change."""
+    stable = json.loads(json.dumps(task))
+    stable.pop("as_of")
+    stable.pop("continuation")
+    for field in ("attempts_used", "api_remaining", "parent_available"):
+        stable["budget"].pop(field)
+    for quota in stable["budget"]["quotas"].values():
+        quota.pop("remaining")
+    return digest(stable)
+
+
+def _v3_scope_admissible(task):
+    needs_effect_coverage = bool(task["requirements"]["tools"]) or task["effects"] != "none"
+    return not needs_effect_coverage or task["verifier"]["scope"] == "artifact-effects"
+
+
+def _v3_resource(candidate, task):
+    """No conversion between API price, distinct quota buckets or unknown costs."""
+    cost, budget = candidate["cost"], task["budget"]
+    matches = (cost["task_contract_sha256"] == task["requirements"]["task_contract_sha256"]
+               and cost["verifier_sha256"] == task["verifier"]["evidence"]["sha256"]
+               and cost["route_sha256"] == digest(candidate["route"]))
+    api = _v3_total(cost["api_usd"]) if matches else None
+    quota = cost["quota"]
+    units = _v3_total(quota["parts"]) if quota is not None and matches else None
+    reasons = []
+    if cost["basis"] != "unknown" and cost["route_sha256"] != digest(candidate["route"]):
+        reasons.append("cost_route_binding_mismatch")
+    if cost["basis"] != "unknown" and cost["evidence"] is None:
+        reasons.append("cost_basis_has_no_evidence")
+    # Generation billing does not exempt an API-based verifier or fallback.
+    # A known positive component is a spend claim even when its total is unknown.
+    api_charge_declared = any(amount is not None and amount > 0 for amount in cost["api_usd"].values())
+    if cost["billing"] == "api" or api_charge_declared:
+        if not budget["allow_api_spend"]:
+            reasons.append("api_spend_not_allowed")
+        if api is None or budget["api_remaining"] is None:
+            reasons.append("api_budget_not_bounded")
+        elif api > budget["api_remaining"] - budget["api_reserve"]:
+            reasons.append("api_reserve_would_be_spent")
+    if quota is not None:
+        pool = budget["quotas"].get(quota["bucket"])
+        if pool is None or pool["unit"] != quota["unit"] or pool["remaining"] is None:
+            reasons.append("quota_state_unknown_or_incomparable")
+        elif pool["remaining"] <= pool["reserve"]:
+            reasons.append("quota_reserve_reached")
+        elif units is not None and units > pool["remaining"] - pool["reserve"]:
+            reasons.append("quota_reserve_would_be_spent")
+        elif units is None and pool["reserve"] > 0:
+            reasons.append("unknown_cost_cannot_protect_reserve")
+    elif cost["billing"] == "subscription":
+        reasons.append("subscription_quota_bucket_unknown")
+    # A known-looking number without observed evidence must not win as measured cost.
+    key, total = None, None
+    if cost["basis"] == "observed" and cost["evidence"] is not None and matches:
+        if budget["objective"] == "api_usd":
+            key, total = ("api_usd",), api
+        elif budget["objective"] == "quota" and quota is not None:
+            key, total = ("quota", quota["bucket"], quota["unit"]), units
+    return reasons, {"comparison_key": list(key) if key else None, "total": total,
+                     "binding_status": "unknown" if cost["basis"] == "unknown" else "matched" if matches else "mismatched",
+                     "api_usd_total": api, "quota_total": units, "cost": cost}
+
+
+def _v3_receipt(catalog, task, outcome, basis, excluded, *, selected=None, qualification=None,
+                costs=None, evidence=(), catalog_locator=None):
+    continuation = task["continuation"]
+    receipt = {"schema_version": 3, "outcome": outcome, "policy_sha256": digest(catalog),
+               "requirement_sha256": digest(task), "policy_version": catalog["catalog_version"],
+               "policy_locator": catalog_locator or "inline:catalog/" + catalog["catalog_version"],
+               "task_id": task["task_id"], "task_class": task["task_class"],
+               "task_contract_sha256": task["requirements"]["task_contract_sha256"], "verifier_sha256": task["verifier"]["evidence"]["sha256"],
+               "input_sha256": task["input_sha256"],
+               "continuation_contract_sha256": _v3_continuation_contract(task),
+               "route": selected["route"] if selected else None, "route_id": selected["id"] if selected else None,
+               "executor": task["deterministic"] if outcome == "execute_deterministic" else None,
+               "selection_basis": basis, "qualification": qualification, "cost_observation": costs,
+               "excluded": {key: sorted(set(value)) for key, value in sorted(excluded.items())},
+               "evidence_used": list(evidence), "previous_decision_id": continuation["previous_receipt"]["decision_id"] if continuation else None,
+               "attempt_number": task["budget"]["attempts_used"] + 1,
+               "attempt_policy": {"cap": task["budget"]["attempt_cap"], "fallback_route_id": task["budget"]["fallback_route_id"],
+                                  "fallback_route_sha256": task["budget"]["fallback_route_sha256"]},
+               "resource_claim": "minimum comparable observed total" if basis == "minimum_observed_total" else "no cheapest-route or quota-conversion claim"}
+    receipt["decision_id"] = digest(receipt)
+    _v3_validate(receipt, V3_DECISION_SCHEMA, "v3 decision")
+    return json.loads(json.dumps(receipt))
+
+
+def validate_catalog_v3(catalog):
+    _v3_validate(catalog, V3_CATALOG_SCHEMA, "v3 catalog")
+    ids = [item["id"] for item in catalog["candidates"]]
+    if len(ids) != len(set(ids)):
+        raise RouteSelectionError("duplicate v3 candidate id")
+    for candidate in catalog["candidates"]:
+        if _v3_time(candidate["availability"]["observed_at"]) > _v3_time(candidate["availability"]["valid_until"]):
+            raise RouteSelectionError("availability expires before its observation")
+        cost = candidate["cost"]
+        if cost["basis"] == "unknown":
+            components = [*cost["api_usd"].values(), *(cost["quota"]["parts"].values() if cost["quota"] else [])]
+            if any(value is not None for value in components):
+                raise RouteSelectionError("unknown cost components must be null, not fabricated numbers")
+
+
+def decide_route_v3(catalog, task, *, catalog_locator=None):
+    validate_catalog_v3(catalog)
+    _v3_validate(task, V3_TASK_SCHEMA, "v3 task")
+    budget, requirement, verifier = task["budget"], task["requirements"], task["verifier"]
+    continuation = task["continuation"]
+    if (budget["attempts_used"] == 0) != (continuation is None):
+        raise RouteSelectionError("a subsequent attempt requires its previous-decision/failure link")
+    if (budget["fallback_route_id"] is None) != (budget["fallback_route_sha256"] is None):
+        raise RouteSelectionError("fallback route id and exact route hash must be declared together")
+    if continuation is not None:
+        previous = continuation["previous_receipt"]
+        _v3_validate(previous, V3_DECISION_SCHEMA, "previous v3 receipt")
+        content = {key: value for key, value in previous.items() if key != "decision_id"}
+        if digest(content) != previous["decision_id"] or previous["outcome"] != "selected_model" or previous["route"] is None:
+            raise RouteSelectionError("invalid previous selected-model pin")
+        expected = {"cap": budget["attempt_cap"], "fallback_route_id": budget["fallback_route_id"], "fallback_route_sha256": budget["fallback_route_sha256"]}
+        if (previous["attempt_policy"] != expected or previous["attempt_number"] != budget["attempts_used"]
+                or previous["continuation_contract_sha256"] != _v3_continuation_contract(task)
+                or previous["task_id"] != task["task_id"] or previous["task_class"] != task["task_class"]
+                or previous["task_contract_sha256"] != requirement["task_contract_sha256"] or previous["verifier_sha256"] != verifier["evidence"]["sha256"]):
+            raise RouteSelectionError("continuation changed its bounded task/pin contract")
+    fallback = "keep_parent" if budget["parent_available"] else "defer"
+
+    def finish(outcome, basis, excluded=None, **kwargs):
+        return _v3_receipt(catalog, task, outcome, basis, excluded or {}, catalog_locator=catalog_locator, **kwargs)
+
+    scope_admissible = _v3_scope_admissible(task)
+    complete_check = (verifier["independent"] and verifier["coverage"] == "complete"
+                      and verifier["kind"] == "deterministic" and scope_admissible)
+    handler = task["deterministic"]
+    if (handler is not None and complete_check and handler["coverage"] == "complete"
+            and handler["task_contract_sha256"] == requirement["task_contract_sha256"] and handler["effects"] == task["effects"]
+            and handler["input_sha256"] == task["input_sha256"]
+            and task["effects"] != "irreversible"):
+        return finish("execute_deterministic", "existing_complete_deterministic_handler", evidence=[verifier["evidence"]])
+    if budget["attempts_used"] >= budget["attempt_cap"]:
+        return finish("defer", "attempt_cap_reached")
+    if task["effects"] == "irreversible":
+        return finish(fallback, "irreversible_effect_requires_parent")
+    now = _v3_time(task["as_of"])
+    eligible, excluded = [], {}
+    for candidate in catalog["candidates"]:
+        route, available = candidate["route"], candidate["availability"]
+        reasons = []
+        for field in ("host", "transport"):
+            if route[field] != requirement[field]:
+                reasons.append("required_" + field + "_mismatch")
+        for field in ("model", "reasoning_effort"):
+            if requirement[field] is not None and route[field] != requirement[field]:
+                reasons.append("required_" + field + "_mismatch")
+        if available["status"] != "verified" or available["route_sha256"] != digest(route):
+            reasons.append("exact_callable_route_unverified")
+        if not (_v3_time(available["observed_at"]) <= now <= _v3_time(available["valid_until"])):
+            reasons.append("availability_outside_valid_window")
+        if available["context_tokens"] is None or requirement["context_tokens"] > available["context_tokens"]:
+            reasons.append("context_capacity_unverified_or_exceeded")
+        if not set(requirement["tools"]).issubset(available["tools_verified"]):
+            reasons.append("required_tools_unverified")
+        if task["effects"] not in available["allowed_effects"]:
+            reasons.append("effect_not_supported_on_surface")
+        if not scope_admissible:
+            reasons.append("verifier_scope_does_not_cover_effects")
+        evidence = [item for item in candidate["quality"] if item["task_class"] == task["task_class"]
+                    and item["task_contract_sha256"] == requirement["task_contract_sha256"]
+                    and item["verifier_sha256"] == verifier["evidence"]["sha256"] and item["route_sha256"] == digest(route)
+                    and item["scope"] == verifier["scope"]
+                    and (not requirement["tools"] or item["scope"] == "artifact-effects")]
+        qualified = (scope_admissible and verifier["independent"] and verifier["coverage"] == "complete"
+                     and verifier["kind"] in {"deterministic", "independent-review"}
+                     and any(item["status"] == "qualified" for item in evidence))
+        if any(item["status"] == "regression" for item in evidence):
+            reasons.append("local_task_regression")
+        deterministic_trial = task["failure_cost"] == "low" and complete_check and task["effects"] in {"none", "reversible"}
+        parent_review_trial = (
+            task["failure_cost"] == "low" and task["effects"] == "none"
+            and not requirement["tools"] and scope_admissible
+            and verifier["kind"] == "independent-review" and verifier["independent"]
+            and verifier["coverage"] == "complete" and verifier["scope"] == "independent-review"
+            and budget["parent_available"] and budget["attempt_cap"] == 1
+            and budget["attempts_used"] == 0 and task["continuation"] is None
+            and budget["fallback_route_id"] is None and budget["fallback_route_sha256"] is None
+            and budget["unknown_cost_policy"] == "explicit_preference"
+            and budget["preference_order"] == [candidate["id"]]
+        )
+        provisional = deterministic_trial or parent_review_trial
+        if not qualified and not provisional:
+            reasons.append("no_matching_task_qualification_or_complete_low_risk_verifier")
+        if continuation is not None:
+            previous = continuation["previous_receipt"]
+            expected_route = previous["route_id"] if continuation["reason"] == "transport-failure" else budget["fallback_route_id"]
+            expected_hash = digest(previous["route"]) if continuation["reason"] == "transport-failure" else budget["fallback_route_sha256"]
+            if candidate["id"] != expected_route or digest(route) != expected_hash:
+                reasons.append("not_the_predeclared_retry_or_fallback_route")
+            if continuation["reason"] == "verification-failure" and digest(route) == digest(previous["route"]):
+                reasons.append("verification_failure_cannot_repeat_same_route")
+        resource_reasons, costs = _v3_resource(candidate, task)
+        reasons.extend(resource_reasons)
+        if reasons:
+            excluded[candidate["id"]] = reasons
+        else:
+            eligible.append((candidate, "qualified" if qualified else ("provisional-parent-review-trial" if parent_review_trial else "provisional-complete-verifier"), costs, evidence))
+    if not eligible:
+        return finish(fallback, "no_eligible_delegation_route", excluded)
+    keys = {tuple(item[2]["comparison_key"] or []) for item in eligible}
+    comparable = len(keys) == 1 and () not in keys and all(item[2]["total"] is not None for item in eligible)
+    if comparable:
+        selected = min(eligible, key=lambda item: (item[2]["total"], item[0]["id"]))
+        basis = "minimum_observed_total"
+    elif budget["unknown_cost_policy"] == "explicit_preference":
+        selected = next((item for route_id in budget["preference_order"] for item in eligible if item[0]["id"] == route_id), None)
+        if selected is None:
+            return finish(fallback, "unknown_cost_has_no_explicit_eligible_preference", excluded)
+        basis = "explicit_preference_with_unknown_or_incomparable_cost"
+    else:
+        outcome = "defer" if budget["unknown_cost_policy"] == "defer" else fallback
+        return finish(outcome, "cost_unknown_or_incomparable", excluded)
+    candidate, qualification, costs, local = selected
+    evidence = [candidate["availability"]["evidence"], verifier["evidence"], *[item["evidence"] for item in local]]
+    if candidate["cost"]["evidence"] is not None:
+        evidence.append(candidate["cost"]["evidence"])
+    return finish("selected_model", basis, excluded, selected=candidate, qualification=qualification, costs=costs, evidence=evidence)
+
+
+def validate_catalog(catalog):
+    if isinstance(catalog, dict) and catalog.get("schema_version") == 3:
+        return validate_catalog_v3(catalog)
+    return _validate_catalog_v2(catalog)
+
+
+def decide_route(catalog, task, *, catalog_locator=None):
+    if isinstance(catalog, dict) and isinstance(task, dict) and (catalog.get("schema_version") == 3 or task.get("schema_version") == 3):
+        if catalog.get("schema_version") != 3 or task.get("schema_version") != 3:
+            raise RouteSelectionError("new routing requires explicit v3 catalog and v3 task; legacy receipts are not migrated")
+        return decide_route_v3(catalog, task, catalog_locator=catalog_locator)
+    return _decide_route_v2(catalog, task, catalog_locator=catalog_locator)
+
+
+def replay_decision(receipt, frozen_catalog, frozen_task):
+    if not isinstance(receipt, dict):
+        raise RouteSelectionError("receipt must be an object")
+    if receipt.get("schema_version") == 3:
+        _v3_validate(receipt, V3_DECISION_SCHEMA, "v3 replay receipt")
+        content = {key: value for key, value in receipt.items() if key != "decision_id"}
+        if digest(content) != receipt["decision_id"]:
+            raise RouteSelectionError("v3 receipt content does not match its decision hash")
+    locator = receipt.get("policy_locator") if receipt.get("schema_version") == 3 else (receipt.get("evidence_receipt") or {}).get("locator")
+    expected = decide_route(frozen_catalog, frozen_task, catalog_locator=locator)
+    same = canonical_json(receipt) == canonical_json(expected) if receipt.get("schema_version") == 3 else receipt == expected
+    if not same:
+        raise RouteSelectionError("receipt does not match its frozen policy/task inputs")
+    return json.loads(json.dumps(receipt))
+
+
+def dispatch_decision(receipt, frozen_catalog, frozen_task):
+    """Return an explicit dispatch instruction; never launch anything here."""
+    receipt = replay_decision(receipt, frozen_catalog, frozen_task)
+    outcome = receipt["outcome"]
+    if outcome in {"selected", "selected_model"}:
+        return {"kind": "model", "route": receipt["route"], "decision_id": receipt["decision_id"]}
+    if outcome == "execute_deterministic":
+        return {"kind": "deterministic", "executor": receipt["executor"], "decision_id": receipt["decision_id"]}
+    return {"kind": "parent" if outcome == "keep_parent" else "defer", "route": None, "decision_id": receipt["decision_id"]}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -451,7 +824,7 @@ def main(argv: list[str] | None = None) -> int:
         atomic_json(args.out, decision)
     else:
         print(json.dumps(decision, indent=2, sort_keys=True))
-    return 0 if decision["outcome"] == "selected" else 2
+    return 0 if decision["outcome"] in {"selected", "selected_model", "execute_deterministic", "keep_parent"} else 2
 
 
 if __name__ == "__main__":

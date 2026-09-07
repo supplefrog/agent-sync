@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "owner": "hermes-lcm native source",
+  "repository": "https://github.com/stephenschoettler/hermes-lcm",
+  "base_revision": "b8c5170affa4ef0ca89c20cc1986943b4ad1e85a",
+  "patch_sha256": "db97fb4f94aedde20131ef70c403cd8f9e51d4fb7d922c9c84177cefd9620460",
+  "native_host_prerequisite": {
+    "path": "hermes_cli/plugins.py",
+    "sha256": "546c692e3f251bc8ef6920c0c1cfc94a26a892b4076c45aa75616e85dc48680b",
+    "contract": "PluginContext.register_hook owns exact callback removal through PluginManager.unload"
+  },
+  "files": [
+    {
+      "path": "__init__.py",
+      "before_sha256": "bfc304c6066e385117d635b4514bcb9aa6db9dec591fe3a6179c8359a7100699",
+      "after_sha256": "7495d5879083c1ccf747ba6fec59788d30909dd3b19704f696478a7b0cdfa131"
+    },
+    {
+      "path": "plugin.yaml",
+      "before_sha256": "d3a7b3e8254b68b081c7cdf6ac2c90882bf9c0dd9532f076560b4fba8893948d",
+      "after_sha256": "39fcbdcdc9ca726ef0ce332868fef940549d60c8b24b22e6d2da29d1871c32d9"
+    }
+  ],
+  "verification": {
+    "baseline": "post_llm_call counts 1 -> 1 -> 2 -> 2; no ledger owner",
+    "candidate": "post_llm_call counts 1 -> 0 -> 1 -> 0; one ledger owner per load",
+    "fresh_installed_native": "passed without source redirection",
+    "model_calls": 0,
+    "provider_calls": 0
+  },
+  "restore": "Restore the native base revision, preserve or separately apply the existing session-transaction patch, verify these exact before hashes, then apply repair.patch and verify both after hashes.",
+  "limits": [
+    "This additive patch does not replace the existing lcm-session-transactions patch or reconstruct the full plugin/runtime.",
+    "Existing processes that loaded the prior direct append may retain its untracked callback; fresh processes load the corrected owner-tracked registration."
+  ]
+}

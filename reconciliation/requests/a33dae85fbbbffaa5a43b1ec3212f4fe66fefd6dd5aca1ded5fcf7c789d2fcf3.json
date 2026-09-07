@@ -1,0 +1,72 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "7bdcc6c403f896c2956dd3756745d6bf5bc531ae8454bcfb2511a8d9db434b2b",
+      "before_sha256": "7bdcc6c403f896c2956dd3756745d6bf5bc531ae8454bcfb2511a8d9db434b2b",
+      "owner": "advise-project-approach",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "04823c1d9566cd5edbc1131d81d64849d0adaa24ea63a3c49209863cd3e961e9",
+      "before_sha256": "04823c1d9566cd5edbc1131d81d64849d0adaa24ea63a3c49209863cd3e961e9",
+      "owner": "outcome-first-workflow-design",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py --repo outcome-first-workflow-design",
+    "python.exe public_check.py --repo advise-project-approach"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "advise-project-approach",
+    "outcome-first-workflow-design"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "skipped"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "a33dae85fbbbffaa5a43b1ec3212f4fe66fefd6dd5aca1ded5fcf7c789d2fcf3",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

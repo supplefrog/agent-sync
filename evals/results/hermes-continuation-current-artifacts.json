@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "session_id": "20260907_033051_2252fb",
+  "claim": "Current deployed standing artifact identities, not new model-quality evidence. Prior receipts unchanged.",
+  "artifact_changes": {
+    "hermes": {
+      "historical_declared": [
+        "52cbc855943d78ae1904938018166c665b1113c60db5081a1f6dd7eb323265ef"
+      ],
+      "current_observed": "82553e93dc47e3d1318eea2e91f2b7b4b41f445f39fa9cb01e5f47ce1605cbe0"
+    },
+    "codex": {
+      "historical_declared": [
+        "8e78024a9a7c6bdcf24df92a4f5bb5a496d2634d7a1beb2a8e8687fcfb1c0953"
+      ],
+      "current_observed": "dbb60aed79b87810286d622b0f06a53903718c62d1e3340d3ade045d39ac5651"
+    }
+  },
+  "native_guidance_recovery": "integrations/hermes/native-patches/guidance-rebase-820106d/manifest.json",
+  "shared_core": "Default: one shared instruction core. Sol compatibility and foreground switching unverified.",
+  "provider_calls": 0
+}

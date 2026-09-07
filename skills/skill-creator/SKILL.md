@@ -70,7 +70,7 @@ Add a supporting file only when `SKILL.md` links it and names its trigger. Remov
 1. Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome.
 2. State the target behavior and near-miss behavior that must remain unchanged.
 3. Draft the minimum coherent change using the correct modality.
-4. Apply with `skill_manage`: `patch` for a narrow correction; `edit` for an intentional full rewrite; `create`/`delete` only with user authorization.
+4. Edit the canonical source with an available repository editor. Use `skill_manage` only when it targets that source or performs the authorized deployment step. Preserve existing user authorization and the source/deployment relationship.
 5. Verify metadata/frontmatter, linked-file existence, and fresh skill discovery.
 6. Run proportional behavior probes:
    - trigger change => realistic positive and near-miss prompts;

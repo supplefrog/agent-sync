@@ -34,7 +34,7 @@ class InstructionRetirementTests(unittest.TestCase):
             "transport": "transport-a",
             "reasoning": "high",
             "prompt_assembly": "prompt-a",
-            "tool_policy": "safe",
+            "tool_policy": "none",
             "tool_schema": "tools-a",
             "context_policy": "context-a",
             "evaluator_identity": "eval-a",
@@ -139,116 +139,51 @@ class InstructionRetirementTests(unittest.TestCase):
             self.assertEqual(suite.get("schema_version"), 2, unit["id"])
             self.assertEqual({case.get("kind") for case in suite["cases"]}, required, unit["id"])
 
-    def test_exact_receipt_suppresses_retest(self):
-        manifest = {
-            "schema_version": 1,
-            "units": [
-                {
-                    "id": "unit",
-                    "path": "surfaces/core.md",
-                    "selector": {"kind": "heading", "value": "# Communication"},
-                    "class": "generic-steering",
-                    "suite": "evals/core-instruction-retirement.json",
-                    "retest_on": ["model-release"],
-                }
-            ],
-        }
-        stack = self.stack()
+    def test_legacy_remove_receipt_is_historical_without_cache_authority(self):
         with tempfile.TemporaryDirectory() as temp:
-            receipts = Path(temp)
-            first = self.tool.build_plan(REPO, manifest, stack, "model-release", receipts, 1)
-            row = first["units"][0]
-            (receipts / "receipt.json").write_text(
-                json.dumps({"schema_version": 1, "cache_key": row["cache_key"], "decision": "remove"}),
-                encoding="utf-8",
-            )
-            second = self.tool.build_plan(REPO, manifest, stack, "model-release", receipts, 1)
-        self.assertEqual(second["units"][0]["action"], "cached-remove")
-        self.assertFalse(second["selected_units"])
+            path = Path(temp)
+            (path / "old.json").write_text(json.dumps({"schema_version": 1, "cache_key": "old", "decision": "remove"}))
+            result = self.tool.load_receipts(path)
+        self.assertEqual(result["exact"], {})
+        self.assertEqual(result["historical"][0]["recorded_decision"], "remove")
+        self.assertFalse(result["historical"][0]["authority"])
 
-    def test_any_load_bearing_stack_or_trial_margin_change_invalidates_receipt(self):
-        base = self.stack()
-        changed_values = {
-            "host": "codex",
-            "runtime": "runtime-b",
-            "model_snapshot": "snapshot-b",
-            "provider_snapshot": "provider-b",
-            "transport": "transport-b",
-            "reasoning": "medium",
-            "prompt_assembly": "prompt-b",
-            "tool_policy": "full",
-            "tool_schema": "tools-b",
-            "context_policy": "context-b",
-            "evaluator_identity": "eval-b",
-            "trial_design": {"seed": 8, "min_trials": 2, "max_trials": 8},
-            "decision_margin": {"alpha": 0.05, "margin": 0.2, "rule": "hoeffding-alpha-spending"},
-        }
-        identity = ("unit", "suite", "harness")
-        original = self.tool.receipt_key(base, *identity)
-        for field, value in changed_values.items():
+    def test_empty_raw_equivalence_receipt_cannot_authorize_cross_host_reuse(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp)
+            (path / "raw").mkdir()
+            (path / "raw/report.json").write_text("{}")
+            (path / "old.json").write_text(json.dumps({"schema_version": 2, "cache_key": "old",
+                "equivalence_hash": "claimed-equivalence", "decision": "remove", "raw_evidence_path": "raw/report.json"}))
+            result = self.tool.load_receipts(path)
+        self.assertEqual(result["exact"], {})
+        self.assertEqual(result["equivalent"], {})
+        self.assertFalse(result["historical"][0]["authority"])
+
+    def test_actual_experiment_identity_changes_with_host_and_task_rule(self):
+        manifest = json.loads((REPO / "contracts/instruction-units.json").read_bytes())
+        unit = next(u for u in manifest["units"] if u["status"] == "effective" and u["class"] == "generic-steering")
+        base = self.tool.build_experiment(REPO, unit, self.stack())["cache_key"]
+        for field, value in (("host", "codex"), ("runtime", "runtime-b"), ("reasoning", "medium"),
+                             ("decision_margin", {"alpha": .05, "margin": .2, "rule": "hoeffding-alpha-spending"})):
             with self.subTest(field=field):
-                changed = self.tool.receipt_key(self.stack(**{field: value}), *identity)
-                self.assertNotEqual(original, changed)
+                changed = self.tool.build_experiment(REPO, unit, self.stack(**{field: value}))["cache_key"]
+                self.assertNotEqual(base, changed)
 
-    def test_receipt_is_host_scoped_without_explicit_equivalence_hash(self):
-        identity = ("unit", "suite", "harness")
-        self.assertNotEqual(
-            self.tool.receipt_key(self.stack(host="hermes"), *identity),
-            self.tool.receipt_key(self.stack(host="codex"), *identity),
-        )
-        self.assertIsNone(self.tool.equivalence_receipt_key(self.stack(host="hermes"), *identity))
-
-    def test_explicit_equivalence_hash_allows_cross_host_receipt_reuse(self):
-        manifest = {
-            "schema_version": 1,
-            "units": [{
-                "id": "unit", "path": "surfaces/core.md",
-                "selector": {"kind": "heading", "value": "# Communication"},
-                "class": "generic-steering", "suite": "evals/core-instruction-retirement.json",
-                "retest_on": ["effective-stack-changed"],
-            }],
-        }
+    def test_tool_dependent_lane_is_explicitly_unsupported(self):
+        manifest = json.loads((REPO / "contracts/instruction-units.json").read_bytes())
         with tempfile.TemporaryDirectory() as temp:
-            receipts = Path(temp)
-            hermes = self.tool.build_plan(
-                REPO, manifest, self.stack(host="hermes", equivalence_hash="eq-proof"),
-                "effective-stack-changed", receipts, 1,
-            )
-            row = hermes["units"][0]
-            raw = receipts / "raw" / "report.json"
-            raw.parent.mkdir()
-            raw.write_text("{}", encoding="utf-8")
-            (receipts / "append-only-receipt.json").write_text(json.dumps({
-                "schema_version": 2,
-                "cache_key": row["cache_key"],
-                "equivalence_hash": "eq-proof",
-                "equivalence_cache_key": row["equivalence_cache_key"],
-                "decision": "remove",
-                "raw_evidence_path": "raw/report.json",
-            }), encoding="utf-8")
-            codex = self.tool.build_plan(
-                REPO, manifest, self.stack(host="codex", runtime="runtime-b", equivalence_hash="eq-proof"),
-                "effective-stack-changed", receipts, 1,
-            )
-        self.assertEqual(codex["units"][0]["action"], "cached-remove")
-        self.assertIn("explicit cross-host equivalence", codex["units"][0]["reasons"][0])
+            result = self.tool.build_plan(REPO, manifest, self.stack(tool_policy="safe"), "effective-stack-changed", Path(temp), 2)
+        self.assertFalse(result["selected_units"])
+        self.assertTrue(any(row["action"] == "unsupported-runtime" for row in result["units"]))
 
-    def test_equivalence_receipt_without_preserved_raw_evidence_is_ignored(self):
-        stack = self.stack(equivalence_hash="eq-proof")
-        identity = ("unit", "suite", "harness")
+    def test_unknown_receipt_version_is_diagnostic_not_authority(self):
         with tempfile.TemporaryDirectory() as temp:
-            receipts = Path(temp)
-            key = self.tool.equivalence_receipt_key(stack, *identity)
-            (receipts / "receipt.json").write_text(json.dumps({
-                "schema_version": 2,
-                "cache_key": "exact-other-host",
-                "equivalence_hash": "eq-proof",
-                "equivalence_cache_key": key,
-                "decision": "remove",
-                "raw_evidence_path": "missing.json",
-            }), encoding="utf-8")
-            loaded = self.tool.load_receipts(receipts)
-        self.assertEqual(loaded["equivalent"], {})
+            path = Path(temp)
+            (path / "bad.json").write_text(json.dumps({"schema_version": 999, "decision": "remove"}))
+            result = self.tool.load_receipts(path)
+        self.assertEqual(result["exact"], {})
+        self.assertEqual(len(result["invalid"]), 1)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,94 @@
+{
+  "status": "observed-current-source-one-heldout",
+  "native_contract": {
+    "runtime": "hermes-delegate/native-source-v1",
+    "sources": {
+      "run_agent.py": "a05058c2d5bb4f13dc2f8e2f9d3b334d66e88fbbd4465becf5dd3112020aae0c",
+      "tools/delegate_tool.py": "ecb3d6c89ec10f10a4e176d409b8086158e0a8b632a4c0b412e5680062c4538d",
+      "tools/delegate_tool_config.py": "8b8d013577604291d5810471b3329d3ce9c9ed27fd9e8bddcb27f0dcfb7c6392",
+      "tools/delegate_tool_toolsets.py": "a1967a15c535dbbd100a812bfa5d43dd26459f1775ded775d59716faa1acfbe2",
+      "tools/delegate_tool_progress.py": "1d7a55f17d1d9a6689b4167bb1ec8b9cb7825fe9b1fb8f6ee259c6d3235bd90a",
+      "tools/delegate_tool_child_run.py": "cd1f991dd17587012269ff08ae021bb01266c0ad7113dd714291e024cd769e45",
+      "tools/delegate_tool_results.py": "e00aa3ba70ae965b0ab0c696d8868b5ef10bc0cc3ee2e10b2ffb467ed98a6533",
+      "agent/agent_init.py": "1ce0546a03fde38b030e1c1df24ce78f2a9dbddb265a108ef8512d1b4cc5bcc9",
+      "agent/system_prompt.py": "e520a6322479928c49db125a0542b48b7db69eb9a369e6c8e21492a346c49707",
+      "agent/prompt_builder.py": "d75ea9d8596be4676493768a0172820064ab37431fd36ba02a95263abda4dce8",
+      "agent/chat_completion_helpers.py": "247506b46d3269b84993061528a4ccbe51dca7106496db7cc3b70759ac1b308a",
+      "agent/transports/codex.py": "56b0251fcdfbfc4b4c175175bb9e81c50a263ed6b3fba63ef450a44c790aa7e9"
+    }
+  },
+  "historical_transport_evidence": "references/evidence/hermes-sol-low-review-qa-contingent.json",
+  "current_checks": "Installed consumer offline preflight passed; one native requested Sol-low heldout completed and passed independent controller review.",
+  "quality_qualification": null,
+  "source_change_limit": "Only this bound runtime/protocol and no-tools request were exercised. Provider response identity not captured; no general reasoning, foreground compatibility or savings claim.",
+  "observed_at": "2026-09-06T23:34:57.864617+00:00",
+  "heldout": {
+    "raw_output": "{\"excerpt_id\":\"omp-worker-contract-heldout\",\"answers\":[{\"question_id\":\"omp-q1\",\"answer\":\"The rule confines each leaf worker to one assigned DAG node and bars self-rerouting or delegation, helping prevent duplicate execution, unexpected cost, and unauthorized DAG expansion. The assignment contract leaves unspecified node identity, authorized scope, permitted side effects, required inputs, completion criteria, and return destination. It also does not clarify whether reporting a defective assignment or route is permitted while execution outside the node is prohibited.\",\"supporting_snippets\":[\"Execute only the assigned routed DAG node. Do not reroute or delegate.\",\"These files do not specify what makes an assignment sufficiently defined: node identity, authorized scope, permitted side effects, required inputs, completion criteria, or return destination.\"],\"source_unknown_caveat\":\"Source unknown: whether the surrounding router supplies these boundaries at runtime is unresolved because the runtime dependencies were not supplied.\"},{\"question_id\":\"omp-q2\",\"answer\":\"The contract does not distinguish successful completion, partial execution followed by a blocker, failed action, unverified result, or a need to wait or yield. After partial side effects, the worker must disclose work already performed and its side effects, along with outcome, evidence and verification limits, blockers, and the requested next action, so a modified-but-untested state is distinguishable from no changes.\",\"supporting_snippets\":[\"It also does not explicitly require disclosure of changes already made before a blocker occurred.\",\"Adopt a compact, shared result contract containing node identity, outcome, work performed and side effects, evidence and verification limits, and blockers or requested next action.\"],\"source_unknown_caveat\":\"Source unknown: whether the actual output consumer already provides an equivalent completion or handoff contract remains unresolved.\"},{\"question_id\":\"omp-q3\",\"answer\":\"Runtime evidence does not establish that configured models or thinking levels are invalid, that exact-route enforcement works, or that a current model violates the instructions. The excerpt provides no further F4 details: its evidence sentence ends after a colon. I therefore abstain from asserting omitted model-route mappings, effort values or semantics, and any proposed exact-route failure behavior; no such behavior is recoverable from this excerpt.\",\"supporting_snippets\":[\"No supplied source proves that the configured models or thinking levels are invalid, that route enforcement works, or that a current model actually violates these instructions.\",\"Exact-route and effort semantics require verification, not speculative correction\"],\"source_unknown_caveat\":\"Source unknown: runtime model availability, route enforcement, effort interpretation, and exact-route failure handling cannot be determined because relevant runtime dependencies and the remainder of F4 were not supplied.\"}]}",
+    "raw_sha256": "486bd896fdf6daa904a6f4aa3e7eec327d2493a4c352f1486fffd8b636eeaa34",
+    "request_receipts": [
+      {
+        "canaries_absent_from_instructions": true,
+        "forwarded": true,
+        "full_frozen_goal_present_in_input": true,
+        "instructions_match_cached_plus_ephemeral": true,
+        "model": "gpt-5.6-sol",
+        "ordinal": 1,
+        "payload_sha256": "14a2d708c921d59419c48e71ccda0075c56ae17dc59f8944cd17edc74abefbdd",
+        "reasoning_effort": "low",
+        "token_absent": true,
+        "tools_count": 0
+      }
+    ],
+    "parent_acceptance": {
+      "accepted": true,
+      "scope": "One heldout bounded-source-review QA with independent controller semantic review; not general Sol reasoning or foreground instruction compatibility.",
+      "raw_summary_sha256": "486bd896fdf6daa904a6f4aa3e7eec327d2493a4c352f1486fffd8b636eeaa34",
+      "task_sha256": "7ad46c744af114b2fda63b4d86e1010010b17d74a2ca9dec2e1eeef68eabeb3e",
+      "verifier_sha256": "af2a869414c54d6c37e8bb9f54275477ed30e6eaafe1b9164d81e8b161e6e497",
+      "structural_errors": [],
+      "raw_exact_snippets": 6,
+      "repairs": 0,
+      "questions": [
+        {
+          "id": "omp-q1",
+          "accepted": true,
+          "reason": "Names the assigned-node/no-rerouting boundary, its benefit, all six missing assignment fields, and unresolved runtime provision. No unsupported enforcement claim."
+        },
+        {
+          "id": "omp-q2",
+          "accepted": true,
+          "reason": "Covers all five outcome/handoff states and disclosure of performed work/side effects and verification limits. Correctly leaves surrounding output consumer unknown."
+        },
+        {
+          "id": "omp-q3",
+          "accepted": true,
+          "reason": "States route/effort runtime uncertainty and explicitly abstains from unavailable F4 details, including failure policy; does not invent behavior suggested by the question."
+        }
+      ],
+      "answer_word_counts": {
+        "omp-q1": 66,
+        "omp-q2": 61,
+        "omp-q3": 65
+      },
+      "answer_plus_caveat_word_counts": {
+        "omp-q1": 86,
+        "omp-q2": 78,
+        "omp-q3": 93
+      },
+      "native_requested_model": "gpt-5.6-sol",
+      "native_requested_effort": "low",
+      "provider_reported_identity": "not captured by this runner",
+      "provider_requests": 1,
+      "seconds_including_setup_cleanup": 21.766,
+      "cost_usd": null,
+      "subscription_quota_weight": null,
+      "catalog_admission": false
+    },
+    "cleanup": {
+      "credentials_removed": true,
+      "errors": [],
+      "runtime_removed": true
+    },
+    "actual_receipt_sha256": "5cbbe26f6996733a39f23d260b2aff98c9a9ce472387407f8701e28096127dcb"
+  }
+}

@@ -72,7 +72,7 @@ Prefer deleting, merging, narrowing triggers, or moving details into on-demand r
 - Put common workflow in one owner; use references instead of duplicating large sections.
 - Preserve useful scripts/templates and hard-earned edge cases when consolidating.
 - Do not edit other profiles unless explicitly requested.
-- Do not leave installed Hermes source patched. If source is required, use `github-pr-workflow` and restore the normal tree.
+- When supported configuration cannot fix the behavior, a tested source patch is allowed within the user's authorization. Preserve its source revision, exact diff, backup, rollback, and fresh-runtime checks. Public issues or pull requests are separate actions requiring their own authorization.
 
 ## 6. Verify behavior
 

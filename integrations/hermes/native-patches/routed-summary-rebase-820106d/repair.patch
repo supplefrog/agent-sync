@@ -1,0 +1,50 @@
+--- a/tools/delegate_tool_results.py
++++ b/tools/delegate_tool_results.py
+@@ -239,19 +239,21 @@
+         logger.debug("Summary budget computation failed", exc_info=True)
+         return None
+ 
+-def _apply_summary_budget(results: List[Dict[str, Any]], parent_agent) -> None:
++def _apply_summary_budget(results: List[Dict[str, Any]], parent_agent, *, summary_count: Optional[int] = None) -> None:
+     """Trim subagent summaries in-place so a batch can't overflow the parent's context window (full text spilled to
+     disk). Per-summary cap = MIN(dynamic headroom budget, static ``delegation.max_summary_chars`` ceiling; 0 =
+     disabled); over-cap summaries become head+tail plus a pointer to the spill file."""
+     from tools.delegate_tool import _load_config
+     summaries = [r for r in results if isinstance(r, dict) and isinstance(r.get("summary"), str) and r["summary"]]
++    if summary_count is not None and (type(summary_count) is not int or summary_count < max(1, len(summaries))):
++        raise ValueError("summary_count must cover the complete batch of summary slots")
+     if not summaries:
+         return
+     try:
+         static_ceiling = int(_load_config().get("max_summary_chars", DEFAULT_MAX_SUMMARY_CHARS))
+     except (TypeError, ValueError):
+         static_ceiling = DEFAULT_MAX_SUMMARY_CHARS
+-    candidates = [c for c in (static_ceiling, _parent_summary_char_budget(parent_agent, len(summaries))) if c and c > 0]
++    candidates = [c for c in (static_ceiling, _parent_summary_char_budget(parent_agent, summary_count or len(summaries))) if c and c > 0]
+     if not candidates:
+         return  # both disabled / unknown → leave summaries untouched
+     cap = min(candidates)
+@@ -367,11 +369,20 @@
+ 
+ def _finalize_child_results(
+     results: List[Dict[str, Any]], task_list: List[Dict[str, Any]], children: List[tuple[int, Dict[str, Any], Any]],
+-    parent_agent,
++    parent_agent, *, summary_count: Optional[int] = None, summary_budget_applied: bool = False,
+ ) -> None:
+-    """Apply host-owned summary, memory, hook, and cost contracts once."""
++    """Apply host-owned summary, memory, hook, and cost contracts once.
++
++    An adapter may prepare a copy with _apply_summary_budget before asynchronous
++    accounting, then pass summary_budget_applied=True to avoid trimming twice.
++    summary_count preserves the shared batch allowance when settling one child.
++    Existing native callers retain the synchronous batch contract by default.
++    """
++    if type(summary_budget_applied) is not bool:
++        raise ValueError("summary_budget_applied must be a boolean")
+     with _parent_finalization_lock(parent_agent):
+-        _apply_summary_budget(results, parent_agent)
++        if not summary_budget_applied:
++            _apply_summary_budget(results, parent_agent, summary_count=summary_count)
+         child_by_index = {index: child for index, _task, child in children}
+         _notify_memory_manager(results, task_list, child_by_index, parent_agent)
+         _rollup_children_cost(parent_agent, _fire_subagent_stop_hooks(results, child_by_index, parent_agent))
