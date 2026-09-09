@@ -1,0 +1,71 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "266719f90438fd759b67bb9eecb724ad56440a462b46d92677ee3593ff661530",
+      "before_sha256": "93624b35ad499f99adfb1e68e097f5390797a717cd4e17aa547a4af6353b7211",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "5c9f639952910efcf3ffad86ebb8bca5f75c0b54c10e1e68ce17fc0323660ba3",
+      "before_sha256": "c98df7301ccf34dabc21226fc9342fb63faf6666bfa23c07d5756429e3693483",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "capture-recovery",
+  "owners": [
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "skipped"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "skipped"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "5ac56a8f5df8964a01ffc815b861105a35a95fb5780b38049f6a5df3d09c2207",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "recovery"
+  }
+}

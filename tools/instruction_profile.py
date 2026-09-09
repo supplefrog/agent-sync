@@ -99,6 +99,22 @@ def _selector_observations(repo: Path) -> dict[str, dict[str, str]]:
     }
 
 
+def _verify_selector_observations(
+    profile: dict[str, Any], observations: dict[str, dict[str, str]]
+) -> None:
+    for host, observed in observations.items():
+        declared = profile["hosts"][host]
+        expected = {
+            "model": str(declared.get("model", profile["target"]["model"])),
+            "provider": str(declared.get("provider", profile["target"]["provider"])),
+            "reasoning": declared["reasoning"],
+        }
+        if observed != expected:
+            raise ProfileError(
+                f"selector mismatch for {host}: declared={expected} observed={observed}"
+            )
+
+
 def _version_command(host: str) -> list[str]:
     executable = shutil.which(host)
     if executable is None and host == "codex":
@@ -280,6 +296,8 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
             raise ProfileError(f"standing byte budget exceeded for {host}: {total_bytes}>{budget}")
         report_host = {
             "runtime": host_profile["runtime"],
+            "model": host_profile.get("model", profile["target"]["model"]),
+            "provider": host_profile.get("provider", profile["target"]["provider"]),
             "reasoning": host_profile["reasoning"],
             "bytes": total_bytes,
             "budget": budget,
@@ -300,17 +318,7 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
             if not rel.startswith("evals/results/") or not path.is_file():
                 raise ProfileError(f"missing profile evidence: {rel}")
         observations = _selector_observations(repo)
-        for host, observed in observations.items():
-            declared = profile["hosts"][host]
-            expected = {
-                "model": profile["target"]["model"],
-                "provider": profile["target"]["provider"],
-                "reasoning": declared["reasoning"],
-            }
-            if observed != expected:
-                raise ProfileError(
-                    f"selector mismatch for {host}: declared={expected} observed={observed}"
-                )
+        _verify_selector_observations(profile, observations)
         matrix = _load(repo / "contracts" / "surface-matrix.json")
         runtime_prefix = {"hermes": "Hermes Agent", "codex": "codex-cli", "omp": "omp"}
         for host, declared in profile["hosts"].items():

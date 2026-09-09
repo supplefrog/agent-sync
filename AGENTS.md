@@ -1,6 +1,6 @@
 # Repository rules
 
-Use [Agent Signal skill-creator](skills/skill-creator/SKILL.md) for durable/shared instruction content. Identify this owner by source path; Codex's bundled `.system/skill-creator` owns Codex-only scaffolding and UI metadata. Use `capability-curator` when an unresolved capability comparison needs its evaluation procedure, not as a required approval hop.
+Use [Agent Signal skill-creator](skills/skill-creator/SKILL.md) for durable/shared instruction content. Identify this owner by source path; Codex's bundled `.system/skill-creator` owns Codex-only scaffolding and UI metadata.
 
 Use [cross-agent-surface-engineering](skills/cross-agent-surface-engineering/SKILL.md) for cross-host placement or parity, and [hermes-self-engineering](skills/hermes-self-engineering/SKILL.md) for unresolved Hermes placement. Preserve native capabilities and explicit unsupported mappings; existing procedures remain reviewable within the user's authorization.
 

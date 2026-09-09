@@ -53,7 +53,20 @@ The canonical source, rendered snapshot, live fleet, recovery snapshot, managed-
 
 This provides a common sync operation, not universal interception. Manual editors and processes can still change files while no agent is running; an explicit host request or direct command performs the inventory and reconciliation. Project-local and ephemeral work is intentionally outside this system.
 
-The effective governance authority is the deterministic contracts/coordinator plus admitted `cross-agent-surface-engineering`. The canonical `capability-curator` and `surface-convergence` designs remain staged until their own admission evidence is conclusive. Hermes' native curator is retained only for subordinate local usage tracking, staleness, consolidation, and recoverable archiving; it cannot admit or distribute portable capabilities. The legacy Codex-only governance guard was retired after the common route and coordinator were installed.
+The effective governance authority is the deterministic contracts/coordinator plus admitted `cross-agent-surface-engineering`. The canonical `capability-curator` and `surface-convergence` designs remain staged until their own admission evidence is conclusive. The legacy Codex-only governance guard was retired after the common route and coordinator were installed.
+
+### Scoped semantic curation
+
+Keep useful knowledge discoverable, preserve meaningful triggers and procedures, and remove only what has stopped helping through recoverable changes. Reuse `skills/skill-creator` for semantic review and `cross-agent-surface-engineering` for ownership or deployment; no separate background semantic agent or new promotion authority is installed.
+
+- Start from a concrete signal: a missed trigger, conflicting instructions, obsolete commands, demonstrated duplication, or an explicit user review request. Inspect only the affected owner and relevant neighbors. Usage and age can suggest inspection, never authorize retirement.
+- Return retain, repair, merge, or retire with source evidence, the distinctions that must survive, and the smallest verification that could change the decision. Prefer no change when the existing owner already meets the need. A broad umbrella is not inherently better than distinct skills.
+- The foreground parent owns ambiguous integration and acceptance of instruction changes; workers may collect evidence or propose edits. The current Hermes foreground is Astra. This is a responsibility boundary, not a model-specific tool sandbox or a claim that Astra has passed a comparative curator evaluation.
+- Use direct checks for broken commands or links; realistic trigger and near-miss cases for discovery changes; comparative behavioral checks when benefit is uncertain. Reuse existing authorization and reconciliation gates rather than introducing another mandatory review hop. Keep removals recoverable and verify the actual target after applying a scoped change.
+
+On the current Hermes installation, `curator.enabled: false` and `curator.consolidate: false` stop unattended lifecycle transitions and LLM rewriting. Native usage telemetry, inspection, pinning, and archive/restore facilities remain available; archiving is an explicit reviewed action, not a consequence of inactivity. The configured auxiliary curator model remains dormant while disabled. Do not run a whole-library consolidation pass as a substitute for semantic review.
+
+The original `capability-curator` was included in Agent Signal's founding design. Its [cross-host admission report](../evals/results/capability-curator-cross-host-sol-ultra.json) is inconclusive with harness failures on both hosts; it is neither an admitted service nor evidence of general uselessness. Borrow its useful evidence principles through the existing owners, without activating the full staged procedure.
 
 ## Staged context-integrity validation
 

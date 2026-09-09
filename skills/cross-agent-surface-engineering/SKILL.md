@@ -13,7 +13,7 @@ metadata:
 
 # Cross-Agent Surface Engineering
 
-Use this for persistent instructions, skills, config, plugins, hooks, routing, or source that affects more than one of the supported hosts: Hermes, Codex, and OMP. Ordinary host use, project code, and one-host status inspection stay with their narrower owners.
+Use this for cross-host placement, parity, or reconciliation across Hermes, Codex, and OMP. Known-owner wording edits use `skill-creator`; ordinary host use and project code stay with their narrower owners.
 
 ## Canonical owner
 
@@ -36,7 +36,7 @@ python tools/fleet.py render
 python tools/fleet.py diff
 ```
 
-Read `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json`, `contracts/ownership.json`, the selected model profile, and `recovery/current/manifest.json`. Then inspect the live target config, docs, source, discovery roots, precedence, and enabled plugins for the exact host, profile, and working directory. Official current host docs beat stale repository prose; reviewed Agent Signal ownership beats live copies and generated caches.
+Read the affected entries in `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json`, `contracts/ownership.json`, the selected model profile, and `recovery/current/manifest.json`. Inspect the corresponding live discovery and precedence; expand to config, plugins, docs, or source only for unresolved dependencies. Official current host docs beat stale repository prose; reviewed Agent Signal ownership beats live copies and generated caches. Keep unrelated drift out of a scoped deployment.
 
 ### 3. Compare behaviors, not whole skills
 
@@ -60,7 +60,7 @@ The canonical result may merge compatible winning behaviors from several variant
 
 ### 4. Assign one owner per concern
 
-Use the narrowest source owner: portable procedures in an Agent Skill, standing preferences in the applicable instruction surface, and runtime mechanics in a supported config or native adapter/source. Registry state records deployment eligibility; it does not grant authorization or prove model quality. Use `capability-curator` for an unresolved capability comparison and `surface-convergence` as a reference where relevant; staged guides are not required approval hops.
+Use the narrowest source owner: portable procedures in an Agent Skill, standing preferences in the applicable instruction surface, and runtime mechanics in a supported config or native adapter/source. Registry state records deployment eligibility; it does not grant authorization or prove model quality. Staged comparison guides are optional evidence, not required approval hops or promotion authorities.
 
 ### 5. Stage and evaluate
 
@@ -69,6 +69,10 @@ Keep unselected candidates outside live discovery roots and preserve license/pro
 Structural removal of byte-identical copies needs deterministic identity and fresh-discovery checks, not evaluation theater. A broken unique mechanism is not a winner merely because no other variant implements it.
 
 ### 6. Promote and clean up
+
+For authorized Agent Signal changes or an explicit reconciliation, run `python tools/reconcile.py plan` in the owning checkout; inspect destinations and findings, then run `python tools/reconcile.py sync`. Sync checks and shares eligible changes, commits them locally, pushes to the configured remote branch, and verifies both the agents and remote commit. Do not call a local copy or recovery capture “synced.” The agent handles these steps as one authorized job, not separate user reminders.
+
+Review additional dirty repository files before naming their exact paths with repeated `--include FILE`; never collect all files blindly. This selects commit content only, not admission or deployment authority. Capture justified native settings without copying them indiscriminately across hosts. Novel, conflicting, unsafe, retirement, or ambiguous findings still require their existing review; project-local and ephemeral work stays local. A failed check, commit, push, or readback is incomplete. Preserve the pending work and rerun the same sync after resolving the cause; never force-push or erase another task's edits.
 
 Use `fleet-sync` for admitted portable skills. Never force through an unmanaged collision, edit a generated plugin cache, or delete a live variant before preflight. Keep adapters only for runtime discovery, precedence, host command/config format, or an irreducible native protocol.
 

@@ -1,0 +1,33 @@
+{
+  "suite": "breadcrumb-records",
+  "host": "local-windows-deterministic",
+  "result": {
+    "passed": true
+  },
+  "checks": [
+    "13 CLI regression tests passed from the canonical portable package",
+    "Agent Skill metadata validation passed",
+    "Existing reconciliation public-safety check passed for the new skill",
+    "Script and CLI tests are byte-identical to the tested local helper",
+    "13 CLI tests passed from the installed shared copy",
+    "Installed full skill tree matches canonical digest",
+    "Fresh named discovery passed on all three hosts with no model prompt",
+    "Unrelated managed skill trees and fleet state were unchanged by the scoped install"
+  ],
+  "discovery": {
+    "hermes": "PASS: fresh native skills_list + skill_view loaded the exact shared file",
+    "codex": "PASS: fresh debug prompt-input advertised breadcrumb-records; raw prompt not saved",
+    "omp": "PASS: fresh no-session RPC get_available_commands with normal extension discovery advertised skill:breadcrumb-records; direct file read passed"
+  },
+  "deployment": "Installed canonical copy; subsequent governed reconciliation adopted it into the fleet ledger. Fleet verify passes.",
+  "limitations": [
+    "Structural validation is not evidence authentication or current-state verification.",
+    "One independent historical reconstruction supported STOP, not readiness to resume.",
+    "No automatic capture or concurrent writers.",
+    "Research without deployment still needs explicit not-applicable prose in the first schema.",
+    "Discovery is verified; spontaneous model triggering and cross-host behavior parity are not."
+  ],
+  "observed_at": "2026-09-08T13:34:57.091887+00:00",
+  "fleet_limit": "No remaining fleet conflict. Whole-environment health is not claimed: concurrent Hermes settings/recovery and runtime/native-file verification gaps remain outside the breadcrumb scope.",
+  "installed_tree_sha256": "9be748377f95d2c357858dd6200928687f9df1d902ca2a4845e7a447c3a4ee4e"
+}

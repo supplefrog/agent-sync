@@ -9,26 +9,10 @@
      extract_skill_conditions, extract_skill_description, get_all_skills_dirs, get_disabled_skill_names,
      iter_skill_index_files, parse_frontmatter, read_active_org_id, skill_matches_environment,
      skill_matches_platform, skill_matches_platform_list,
-@@ -159,13 +159,12 @@
- 
- 
- # Memory guidance (#95681, consolidated): ONE block from ONE builder. The opening frame adapts to which
--# stores config enables; everything else is written exactly once. Leads with the positive posture (save
--# proactively, replace when full) — the routing rules come after, as refinements, not as the headline. WHAT
-+# stores config enables; everything else is written exactly once. WHAT
- # belongs in memory is the memory tool schema's job and is never re-taught here.
- def build_memory_guidance(memory_enabled: bool = True, profile_enabled: bool = True) -> str:
-     """ONE memory-guidance block whose opening frame adapts to the enabled store(s); "" when both are off.
- 
--    Positive posture first, routing rules as refinements. WHAT belongs in memory is the tool schema's job.
-+    WHAT belongs in memory is the tool schema's job.
-     """
-     if not memory_enabled and not profile_enabled:
-         return ""
-@@ -181,10 +180,9 @@
+@@ -177,10 +177,9 @@
              "memory tool (target='user') — the built-in notes store is disabled, so never target='memory'. "
          )
-     return frame + (
+     skill_routing = (
 -        "Skills come first: when you learn something while doing a task — a "
 -        "procedure, a pitfall, and the user's preferences and corrections "
 -        "for that kind of work — record it in the skill you used or built "
@@ -36,10 +20,10 @@
 +        "Task-specific procedures, verified pitfalls, and conventions belong "
 +        "in a relevant skill when their persistence is within the user's "
 +        "authorized work; skills load only when relevant. "
-         "Memory is the narrow exception for facts that apply to EVERY "
-         "session regardless of task (who the user is, environment facts, "
-         "standing conventions with no task home); it has a hard character "
-@@ -207,23 +205,14 @@
+         if skill_manage_available else
+         "Task-specific knowledge — procedures, pitfalls, and the user's preferences "
+         "and corrections for that kind of work — belongs in skills, not in memory, "
+@@ -209,23 +208,14 @@
      "context exists, use session_search to recall it before asking them to repeat themselves."
  )
  
@@ -70,7 +54,7 @@
      "## Skill Safety Rule\n"
      "A skill placeholder containing `[SKILL_PRUNED]` lost its content in context compression and is inaccessible — "
      "reload it with skill_view(name='...') before acting on anything that depends on it. After reloading, ignore any "
-@@ -1050,12 +1039,12 @@
+@@ -1063,12 +1053,12 @@
  # One entry per profile × platform (key carries skills_dir); a multiplexing gateway needs more than a handful.
  # Sized for multi-profile processes: since #86313 the cache key carries a per-profile skills_dir (one entry
  # per profile × platform), so the old cap of 8 could thrash on a gateway multiplexing default + several bots
@@ -86,7 +70,7 @@
  
  
  def _skills_prompt_snapshot_path() -> Path:
-@@ -1093,7 +1082,7 @@
+@@ -1106,7 +1096,7 @@
          elif root == org_root:
              dirs[:] = [d for d in dirs if d == active_org]
          dirs[:] = [d for d in dirs if d not in EXCLUDED_SKILL_DIRS and not (has_skill_md and d in SKILL_SUPPORT_DIRS)]
@@ -95,7 +79,7 @@
              path = os.path.join(root, filename)
              try:
                  if filename in files:
-@@ -1104,14 +1093,14 @@
+@@ -1117,14 +1107,14 @@
      return manifest
  
  
@@ -112,7 +96,7 @@
          return snapshot
      return None
  
-@@ -1127,9 +1116,12 @@
+@@ -1140,9 +1130,12 @@
      category = "general" if len(parts) < 2 else "/".join(parts[:-2]) if len(parts) > 2 else parts[0]
      platforms = frontmatter.get("platforms") or []
      platforms = [platforms] if isinstance(platforms, str) else platforms
@@ -125,7 +109,7 @@
          "conditions": extract_skill_conditions(frontmatter),
      }
      if org_id:
-@@ -1142,14 +1134,14 @@
+@@ -1155,14 +1148,14 @@
      return entry
  
  
@@ -144,7 +128,7 @@
      except Exception as e:
          logger.warning("Failed to parse skill file %s: %s", skill_file, e)
          return True, {}, ""
-@@ -1239,12 +1231,12 @@
+@@ -1252,12 +1245,12 @@
  
  def _collect_extra_skills(
      root: Path, skill_files, hides, claimed: set[str], skills_by_category: dict[str, list[tuple[str, str]]],
@@ -159,7 +143,7 @@
              entry = _build_snapshot_entry(skill_file, root, frontmatter, desc) if is_compatible else None
              fm_name = entry["frontmatter_name"] if entry else ""
              if not entry or fm_name in claimed or hides(fm_name, entry["skill_name"], extract_skill_conditions(frontmatter)):
-@@ -1287,8 +1279,6 @@
+@@ -1300,8 +1293,6 @@
          "context, so their descriptions are omitted — the skills work "
          "normally and load with skill_view(name) as usual.)"
      ) if demoted else ""
@@ -168,7 +152,7 @@
      index_lines = []
      for category in sorted(skills_by_category):
          entries = skills_by_category[category]
-@@ -1304,23 +1294,14 @@
+@@ -1317,23 +1308,14 @@
                  index_lines.append(f"    - {name}: {desc}" if desc else f"    - {name}")
      return (
          "## Skills\n"
@@ -197,7 +181,7 @@
          + hidden_note
      )
  
-@@ -1334,11 +1315,29 @@
+@@ -1347,11 +1329,29 @@
      _platform_hint = _current_session_platform_hint()
      disabled = get_disabled_skill_names(_platform_hint or None)
      project_dirs = project_dirs or []
@@ -229,7 +213,7 @@
      )
      with _SKILLS_PROMPT_CACHE_LOCK:
          cached = _SKILLS_PROMPT_CACHE.get(cache_key)
-@@ -1354,15 +1353,15 @@
+@@ -1367,15 +1367,15 @@
      skills_by_category: dict[str, list[tuple[str, str]]] = {}
      category_descriptions: dict[str, str] = {}
      # Disk snapshot (fast path) vs. full scan: both yield (entry, is_compatible) pairs so labeling runs identically.
@@ -248,7 +232,7 @@
              candidates.append((_build_snapshot_entry(skill_file, skills_dir, frontmatter, desc), is_compatible))
      visible_entries: list[dict] = [
          entry for entry, is_compatible in candidates
-@@ -1374,15 +1373,15 @@
+@@ -1387,15 +1387,15 @@
      if project_dirs:
          from agent.skill_utils import iter_project_skill_files
          for proj_dir in (d for d in project_dirs if d.exists()):
@@ -267,7 +251,7 @@
                  "skills": [entry for entry, _ in candidates], "category_descriptions": category_descriptions,
              })
          except Exception as e:
-@@ -1392,7 +1391,7 @@
+@@ -1405,7 +1405,7 @@
      seen_skill_names: set[str] = {name for cat in skills_by_category.values() for name, _ in cat}
      for ext_dir in (d for d in external_dirs if d.exists()):
          _collect_extra_skills(ext_dir, iter_skill_index_files(ext_dir, "SKILL.md"), hides, seen_skill_names,

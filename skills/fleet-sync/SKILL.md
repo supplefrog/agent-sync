@@ -28,8 +28,11 @@ repository or treat a generated snapshot as editable source.
 2. Run `python tools/fleet.py diff` and inspect every proposed action and destination; a scoped repair must not carry unrelated staged changes.
 3. For a status or audit request, stop after `diff` and
    `python tools/fleet.py verify`; do not mutate live roots.
-4. For an explicit sync, propagation, repair, or apply request, run
-   `python tools/fleet.py apply`, then `python tools/fleet.py verify`.
+4. For an explicit sync, propagation, repair, or apply request, use
+   `python tools/reconcile.py plan` followed by `python tools/reconcile.py sync`.
+   Follow `cross-agent-surface-engineering` for review and exact additional commit
+   paths. This finishes agent updates, local commit, remote push, and verification
+   as one job. `fleet.py apply` is a local maintenance primitive, not a completed sync.
 5. Confirm fresh discovery from every host declared for the machine. Keep
    host-specific instruction and runtime adapters in their native owners.
 6. Report conflicts without forcing through them. Move an intentional local

@@ -4,8 +4,8 @@
   "knowledge_ledger": "../evidence/findings.json",
   "hosts": {
     "hermes": {
-      "cli_version": "0.21.0",
-      "source_revision": "59d330fd15a692b439219e505bc704fcde0b2b6f (local source changes recorded separately)",
+      "cli_version": "0.21.1",
+      "source_revision": "ead7e91dabf1e963796ec834b196984a2fa44ff4 (selected native fixes retained in integrations/hermes/native-patches)",
       "sources": [
         "https://hermes-agent.nousresearch.com/docs/",
         "https://github.com/NousResearch/hermes-agent"
@@ -41,7 +41,7 @@
   "modalities": [
     {
       "id": "instructions-style",
-      "contract": "One model-qualified user-owned instruction profile binds exact host artifacts and context budgets; provider/runtime-native layers remain identified external owners and project-local instructions retain native precedence.",
+      "contract": "Host observations bind exact user-owned instruction artifacts and native loading; provider/runtime layers remain external and project instructions retain native precedence.",
       "status": "partial",
       "portable_artifacts": [
         "surfaces/core.md",
@@ -65,16 +65,16 @@
           "parity": "candidate"
         },
         "omp": {
-          "owner": "Codex AGENTS inheritance plus OMP native prompt builder",
-          "mechanism": "inherit the hash-bound current Codex global overlay; the duplicate OMP RULES delta is retired",
-          "support": "adapter",
+          "owner": "OMP native discovery; no managed global overlay currently loads",
+          "mechanism": "Codex provider is not enabled and no native OMP AGENTS.md exists; do not infer inheritance",
+          "support": "native",
           "parity": "intentional-delta"
         }
       },
       "intentional_deltas": [
         "Codex keeps hierarchical repository instruction scoping.",
         "Hermes keeps personality selection and frozen per-session prompt behavior.",
-        "OMP inherits the Codex global overlay instead of maintaining a duplicate RULES file.",
+        "OMP currently has no managed user-global standing overlay; no Codex inheritance is claimed.",
         "Provider-hidden and runtime-native system instructions are version-qualified external dependencies, not copied artifacts."
       ],
       "evidence": {
@@ -86,7 +86,8 @@
         "summaries": [
           "evals/results/current-model-instruction-profile-deterministic.json",
           "evals/results/surface-convergence-codex.json",
-          "evals/results/surface-convergence-held-out-codex.json"
+          "evals/results/surface-convergence-held-out-codex.json",
+          "evals/results/prompt-sentence-review.json"
         ]
       }
     },

@@ -13,7 +13,7 @@ import sys
 import threading
 from collections import OrderedDict
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from hermes_constants import (
     get_hermes_home, get_skills_dir, is_wsl, reset_hermes_home_override, set_hermes_home_override,
@@ -158,14 +158,11 @@ HERMES_AGENT_HELP_GUIDANCE_NO_SKILLS = (
 )
 
 
-# Memory guidance (#95681, consolidated): ONE block from ONE builder. The opening frame adapts to which
-# stores config enables; everything else is written exactly once. WHAT
-# belongs in memory is the memory tool schema's job and is never re-taught here.
-def build_memory_guidance(memory_enabled: bool = True, profile_enabled: bool = True) -> str:
-    """ONE memory-guidance block whose opening frame adapts to the enabled store(s); "" when both are off.
-
-    WHAT belongs in memory is the tool schema's job.
-    """
+# Keep the every-session memory scope even when task knowledge cannot be saved as a skill.
+def build_memory_guidance(
+    memory_enabled: bool = True, profile_enabled: bool = True, *, skill_manage_available: bool = True,
+) -> str:
+    """Adapt store and skill-write guidance without widening what belongs in memory."""
     if not memory_enabled and not profile_enabled:
         return ""
     if memory_enabled:
@@ -179,10 +176,16 @@ def build_memory_guidance(memory_enabled: bool = True, profile_enabled: bool = T
             "loaded into each new session's context; save durable facts about the user with the "
             "memory tool (target='user') — the built-in notes store is disabled, so never target='memory'. "
         )
-    return frame + (
+    skill_routing = (
         "Task-specific procedures, verified pitfalls, and conventions belong "
         "in a relevant skill when their persistence is within the user's "
         "authorized work; skills load only when relevant. "
+        if skill_manage_available else
+        "Task-specific knowledge — procedures, pitfalls, and the user's preferences "
+        "and corrections for that kind of work — belongs in skills, not in memory, "
+        "even when skill writing is unavailable. "
+    )
+    return frame + skill_routing + (
         "Memory is the narrow exception for facts that apply to EVERY "
         "session regardless of task (who the user is, environment facts, "
         "standing conventions with no task home); it has a hard character "
@@ -499,8 +502,20 @@ STEER_MARKER_CLOSE = "[/OUT-OF-BAND USER MESSAGE]"
 
 
 def format_steer_marker(steer_text: str) -> str:
-    """Wrap a mid-turn steer for appending to a tool result (see note above)."""
+    """Wrap a mid-turn steer in the self-describing marker (see note above)."""
     return f"\n\n{STEER_MARKER_OPEN}\n{steer_text}\n{STEER_MARKER_CLOSE}"
+
+
+STEER_DISPLAY_KIND = "steer"
+
+
+def steer_user_row(steer_text: str) -> Dict[str, Any]:
+    """The standalone ``role:user`` row a mid-turn /steer is delivered as (after the newest tool
+    result). Its own row — never smeared onto the already-persisted tool row, which append-only
+    persistence would leave divergent from the live request — and typed so the alternation repair
+    never merges the next real prompt into it and history renderers can label it."""
+    return {"role": "user", "content": format_steer_marker(steer_text).lstrip(),
+            "display_kind": STEER_DISPLAY_KIND}
 
 
 STEER_CHANNEL_NOTE = (
@@ -654,12 +669,7 @@ PLATFORM_HINTS = {
         "height live, width from the content's first measured span — lay content flush left with no centering wrappers "
         "or it measures full-bleed. Widgets talk back: data-hermes-send=\"prompt\" on any clickable element (or "
         "window.hermes.send(\"prompt\")) sends that prompt as a hidden user turn — answer it by updating the widget's "
-        "file, not with prose. Property/rental listings render as browsable cards: emit a ```listing fence "
-        "holding JSON — one object, or an array to compare several — with address (required), price, beds, "
-        "baths, size, note (why it is worth a look), facts[] (short specs), catches[] (risks to verify), "
-        "images[] (direct https photo URLs, in listing order — the first is the hero), and links[] "
-        "({label, url} detail pages, never a search-results URL). Use it for every property you present, "
-        "including follow-ups and re-rankings, so listings stay comparable."
+        "file, not with prose."
     ),
     "sms": (
         "You are communicating via SMS. Keep responses concise and use plain text only — no markdown, no "
@@ -994,6 +1004,10 @@ def build_environment_hints() -> str:
     hints += [WSL_ENVIRONMENT_HINT] if is_wsl() else []
     return "\n\n".join(h for h in (*hints, _embedder_environment_hint()) if h)
 
+
+# Marks the runtime block after project prose for persisted-prompt cwd validation.
+RUNTIME_ENVIRONMENT_HEADING = "# Hermes runtime environment"
+RUNTIME_ENVIRONMENT_END = "<!-- End Hermes runtime environment -->"
 
 CONTEXT_FILE_MAX_CHARS = 20_000
 CONTEXT_TRUNCATE_HEAD_RATIO = 0.7

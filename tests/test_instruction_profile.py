@@ -48,6 +48,10 @@ class InstructionProfileTests(unittest.TestCase):
         self.assertEqual("artifact-only", report["verification_mode"])
         self.assertEqual("gpt-6-astra", report["model"])
         self.assertEqual("openai-codex", report["provider"])
+        declared = json.loads(self.profile.read_text(encoding="utf-8"))
+        for host, settings in declared["hosts"].items():
+            self.assertEqual(settings.get("model", declared["target"]["model"]), report["hosts"][host]["model"])
+            self.assertEqual(settings.get("provider", declared["target"]["provider"]), report["hosts"][host]["provider"])
         self.assertTrue(all(row["bytes"] <= row["budget"] for row in report["hosts"].values()))
         self.assertNotIn("omp.output-delta", report["hosts"]["omp"]["units"])
         self.assertNotIn("omp.rules-delta", report["hosts"]["omp"]["surfaces"])
@@ -126,6 +130,30 @@ class InstructionProfileTests(unittest.TestCase):
 
         with self.assertRaisesRegex(profile_tool.ProfileError, "runtime mismatch"):
             self.verify(self.mutated_profile(mutate))
+
+    def test_mixed_per_host_selectors_are_valid_but_selector_drift_is_rejected(self) -> None:
+        profile = {
+            "target": {"model": "gpt-6-astra", "provider": "openai-codex"},
+            "hosts": {
+                "hermes": {"reasoning": "low"},
+                "codex": {
+                    "model": "gpt-5.6-sol",
+                    "provider": "openai-codex",
+                    "reasoning": "low",
+                },
+                "omp": {"reasoning": "xhigh"},
+            },
+        }
+        observed = {
+            "hermes": {"model": "gpt-6-astra", "provider": "openai-codex", "reasoning": "low"},
+            "codex": {"model": "gpt-5.6-sol", "provider": "openai-codex", "reasoning": "low"},
+            "omp": {"model": "gpt-6-astra", "provider": "openai-codex", "reasoning": "xhigh"},
+        }
+        profile_tool._verify_selector_observations(profile, observed)
+
+        observed["codex"]["model"] = "fabricated-drift"
+        with self.assertRaisesRegex(profile_tool.ProfileError, "selector mismatch for codex"):
+            profile_tool._verify_selector_observations(profile, observed)
 
     def test_live_profile_rejects_coordinated_snapshot_drift(self) -> None:
         drift = {"apply": False, "changes": [{"host": "codex"}], "conflicts": []}

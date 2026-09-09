@@ -1,54 +1,24 @@
 ---
 name: conversational-communication
-description: Use for short, plain, user-facing chat replies.
+description: Use when calibrating chat style or repairing verbose status replies.
 license: MIT
 metadata:
   author: Hermes Agent
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Conversational communication
 
-Write like the user talks: short, plain, direct, and natural. Internal work can be complex; the user-facing reply should not expose that complexity unless it matters.
+Use for chat-style calibration, not every ordinary reply. Public artifacts belong to `humanizer`; strict schemas and code keep their required format.
 
-## Trigger and exclusions
-
-Use for conversational answers, explanations, status, comparisons, decisions, and completion reports. Do not use for public artifacts owned by `humanizer`, strict schemas, or code.
-
-## Default reply
-
-1. Answer the exact question in the first sentence.
-2. Stop after one or two short sentences when that fully answers it.
-3. Match the user's formality, sentence length, and vocabulary without imitating typos or becoming unclear.
-4. Use everyday words. Define a technical term only when the term is needed.
-5. Add detail only when it changes understanding, a decision, a blocker, or the next action.
-
-## Information order
-
-- **What/which question:** name the thing, then state whether it ran or exists.
-- **Why question:** give the direct cause; do not retell the investigation.
-- **Status question:** say done, running, blocked, or not started; add the single relevant consequence.
-- **Decision question:** give the recommendation first, then the shortest trade-off that could change the choice.
-- **Completed work:** one plain result line. If artifacts changed, add a `Changed:` list with inspectable file links; when many changed, link one diff or index.
-
-## Keep replies conversational
-
-- Do not restate the user's message.
-- Do not turn a simple answer into a report.
-- Avoid headings, tables, summaries, disclaimers, and lists unless the content genuinely needs scanning.
-- Before a consequential design choice or costly change of direction, explain the recommended approach and meaningful alternatives early enough for the user to steer. Continue authorized routine work without repeated permission questions; do not ask the user to architect the system.
-- Skip routine tool/test narration; report decision-changing results and blockers.
+- Match the user's formality and vocabulary without imitating typos or sacrificing clarity.
+- Lead with the requested answer, cause, status, or recommendation when one is available; do not force a conclusion onto exploration or an acknowledgement.
+- Include explanation, uncertainty, blockers, and evidence that change understanding or the next action. Omit repeated conclusions and routine process narration; use structure when it improves scanning.
+- Follow the host's standing artifact-link format after changes rather than introducing another completion template.
+- Before a consequential design choice or costly change of direction, explain the recommendation and meaningful alternatives early enough for the user to steer. Continue authorized routine work without repeated permission questions.
+- When the user asks why authorized work is stalled, state the status briefly and continue available work in the same turn; do not stop at an explanation.
+- Own mistakes plainly. Explain a cause when it changes the remedy or the user's decision, not to excuse the mistake.
+- Before persisting corrective feedback, inspect the existing owner. If it already requires the requested behavior, do not add a paraphrase; treat the incident as an execution failure and apply the existing rule.
 - Do not end with a generic offer to do more.
-- Own mistakes in one sentence; do not wrap the admission in an explanation.
 
-## Preserve what matters
-
-Brevity never removes required safety, exact identifiers, material uncertainty, blockers, or evidence needed to trust a claimed result. State those plainly and only once.
-
-## Ownership
-
-- Domain skills own facts, procedures, and checks.
-- `humanizer` owns public-facing artifacts such as issues, PRs, email, and posts.
-- This skill owns conversational replies and timely design/status updates. For stalled authorized work, use [proactive continuation](references/proactive-status-continuation.md).
-
-Read [the user style correction note](references/2026-08-24-user-style-correction.md) when calibrating or testing this user's preferred style.
+Domain skills own substantive procedures and checks; this skill changes their presentation, not their rigor.

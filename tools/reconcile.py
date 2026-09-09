@@ -106,7 +106,9 @@ def _skill_state(repo: Path, snapshot: Path, destinations: list[tuple[str, Path]
     }
     if entry is None or entry.get("status") != "admitted":
         state["reason"] = "owner is not admitted"
-    elif canonical is None or rendered is None or baseline is None or any(digest is None for _, _, digest in live):
+    elif (canonical is None or rendered is None or baseline is None
+          or any(digest is None for _, _, digest in live)
+          or any(not isinstance(digest, str) for _, _, digest in managed)):
         state["reason"] = "owner is missing from canonical, rendered, managed, or live state"
     elif len(prior_values) != 1:
         state["reason"] = "managed destinations do not share one prior owner identity"
@@ -589,6 +591,12 @@ def sync(
                 planned = fleet.preflight_destinations(
                     fleet_snapshot, [path for _, path in destinations]
                 )
+                for _, actions in planned:
+                    if any(action["action"] not in {"unchanged", "reconcile"} and action["name"] not in names
+                           for action in actions):
+                        raise RuntimeError("render includes an unselected owner change")
+                    if any(action["action"] in {"remove", "forget"} for action in actions):
+                        raise RuntimeError("owner retirement requires separate review")
                 for (label, destination), (_, actions) in zip(
                     destinations, planned, strict=True
                 ):
@@ -702,13 +710,181 @@ def sync(
     return {"schema_version": 1, "result": "applied", "mutation_performed": True, "request_id": request_id, "owners": owners}
 
 
+def _agent_identities(destinations) -> dict[str, dict[str, str]]:
+    # Include unmanaged entries as well: managed verification alone misses
+    # additions made by another agent while checks are running.
+    return {label: {path.name: (_tree_hash(path) if path.is_dir() else fleet.sha256_file(path))
+                    for path in sorted(root.iterdir()) if path.is_dir() or path.is_file()}
+            for label, root in destinations}
+
+
+def _recovery_owned_paths(repo: Path) -> set[str]:
+    root = repo / "recovery/current"
+    recovery.verify_snapshot(repo / "recovery.json", root)
+    manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+    owned = {"manifest.json", *(str(item["snapshot"]) for item in manifest["artifacts"])}
+    actual = {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}
+    if actual != owned or any(p.is_symlink() for p in root.rglob("*")):
+        raise RuntimeError("unexpected recovery files require review; capture cannot delete or publish them")
+    return {"recovery/current/" + name for name in owned}
+
+
+def complete_sync(
+    repo: str | Path,
+    *,
+    machine: str = "local-windows",
+    adopt: Sequence[str] | None = None,
+    recovery_roots: Mapping[str, str | Path] | None = None,
+    skill_roots: Sequence[str | Path] | None = None,
+    capture_recovery: bool | None = None,
+    include: Sequence[str] = (),
+    message: str = "chore: reconcile checked agent changes",
+) -> dict[str, Any]:
+    """One operator operation: reconcile checked owners, commit, push, read back.
+
+    `include` names exact additional files already reviewed by the caller. It
+    widens Git publication scope, never admission, ownership, or deployment.
+    The low-level `sync` function remains the rollback-tested local mechanism.
+    """
+    import sync_git
+
+    repo = Path(repo).resolve()
+    try:
+        with sync_git.lock(repo):
+            pending = sync_git.read_pending(repo)
+            destinations = _destinations(repo, machine, skill_roots)
+            capture = (recovery_roots is None or bool(recovery_roots)) if capture_recovery is None else capture_recovery
+            resolved_roots = {host: str(Path(path).resolve()) for host, path in
+                              (recovery_roots if recovery_roots is not None else recovery._default_roots()).items()}
+            checked_agents = pending.get("agent_identities") if pending else None
+            commands = [
+                [sys.executable, str(repo / "tools/validate.py")],
+                [sys.executable, str(repo / "tools/public_check.py")],
+                [sys.executable, str(repo / "tools/instruction_profile.py")],
+            ]
+
+            def readback():
+                if checked_agents is not None and _agent_identities(destinations) != checked_agents:
+                    raise RuntimeError("agent content changed during sync; re-review required")
+                snapshot = _snapshot(repo)
+                manifest = fleet.load_manifest(snapshot)
+                expected = {name: fleet.directory_record(repo / "skills" / name)
+                            for name, entry in fleet.registry(repo).items() if entry.get("status") == "admitted"}
+                if manifest["skills"] != expected:
+                    raise RuntimeError("rendered skills differ from their current source")
+                for _, destination in destinations:
+                    if fleet.verify_snapshot(snapshot, destination):
+                        raise RuntimeError("agent skills do not match the checked source")
+                if capture:
+                    recovery.verify_snapshot(repo / "recovery.json", repo / "recovery/current")
+                    report = recovery.restore(repo / "recovery.json", repo / "recovery/current",
+                                              resolved_roots,
+                                              apply=False, repo_root=repo)
+                    if report["changes"] or report["conflicts"]:
+                        raise RuntimeError("agent settings differ from their saved recovery files")
+
+            def verify():
+                readback()
+                _run_checks(repo, [*commands, [sys.executable, str(repo / "tools/audit.py"), "check"]])
+                readback()
+
+            if pending:
+                if pending.get("recovery_roots") != resolved_roots:
+                    raise sync_git.SyncBlocked("pending sync belongs to different settings directories")
+                if pending["machine"] != machine or pending["destinations"] != [str(p) for _, p in destinations]:
+                    raise sync_git.SyncBlocked("pending sync belongs to different agent destinations")
+                capture = pending["capture_recovery"]
+                return sync_git.publish(repo, pending, verify=verify, readback=readback)
+
+            target = sync_git.destination(repo)
+            sync_git.preflight(repo, target)
+            snapshot = _snapshot(repo)
+            entries = fleet.registry(repo)
+            names = set(adopt or ())
+            states = {}
+            for name, entry in entries.items():
+                if entry.get("status") == "admitted" or name in names:
+                    state = _skill_state(repo, snapshot, destinations, name)
+                    states[name] = state
+                    if state["mode"] != "unchanged":
+                        names.add(name)
+            if names - set(states) or any(states[name]["mode"] == "review-required" for name in names):
+                return {"result": "review-required", "reason": "owner missing, unadmitted, or conflicting",
+                        "owners": sorted(names)}
+            findings = plan(repo, machine=machine, recovery_roots=recovery_roots, skill_roots=skill_roots)["findings"]
+            blocked = []
+            for item in findings:
+                if item["surface"] == "fleet" and item["target"] in names and item.get("source_action") not in {"remove", "forget"}:
+                    continue  # _skill_state has already proved one unambiguous admitted owner.
+                if item["surface"] == "recovery" and capture and item.get("source_action") != "conflict":
+                    continue  # Native settings stay native; only allowlisted recovery data is captured.
+                blocked.append(item)
+            if blocked:
+                return {"result": "review-required", "findings": blocked}
+            recovery_owned = _recovery_owned_paths(repo) if capture else set()
+            agents_before = _agent_identities(destinations)
+            before = sync_git.changed(repo)
+            selected = {sync_git.safe_path(repo, name) for name in include}
+            selected.update(name for name in before if any(name.startswith(f"skills/{owner}/") for owner in names))
+            if capture:
+                selected.update(before & (recovery_owned | {"host-deltas.json"}))
+            if before - selected:
+                return {"result": "review-required", "reason": "additional repository files need review before publication",
+                        "files": sorted(before - selected)}
+            approved = sync_git.identities(repo, selected)
+            sync_git.assert_publishable(repo, selected)
+            _run_checks(repo, [*commands[:-1], [*commands[-1], "--artifact-only"],
+                               [sys.executable, str(repo / "tools/audit.py"), "check", "--structural"]])
+            if (_agent_identities(destinations) != agents_before
+                    or sync_git.identities(repo, selected) != approved or sync_git.changed(repo) != before):
+                raise sync_git.SyncBlocked("files changed during prerequisite checks")
+            if names or capture:
+                result = sync(repo, machine=machine, adopt=sorted(names), recovery_roots=recovery_roots,
+                              skill_roots=skill_roots, capture_recovery=capture)
+                if result["result"] not in {"applied", "unchanged"}:
+                    return result
+                if result.get("request_id"):
+                    selected.add(f"reconciliation/requests/{result['request_id']}.json")
+            checked_agents = _agent_identities(destinations)
+            for label, prior in agents_before.items():
+                current = checked_agents[label]
+                if any(prior.get(name) != current.get(name) for name in (prior.keys() | current.keys())
+                       if name not in names and name != fleet.STATE_FILE):
+                    raise sync_git.SyncBlocked("unselected agent content changed during reconciliation")
+            selected.update(name for name in sync_git.changed(repo) if any(name.startswith(f"skills/{owner}/") for owner in names))
+            if capture:
+                selected.update(sync_git.changed(repo) & (_recovery_owned_paths(repo) | {"host-deltas.json"}))
+            evidence_paths = [f"evals/results/{name}-local-windows.json" for name in
+                              ("fleet-discovery", "unified-reconciliation")]
+            if machine == "local-windows" and all((repo / name).is_file() for name in evidence_paths):
+                import audit
+                selected.update(audit.refresh_current_evidence(repo))
+            if sync_git.changed(repo) - selected:
+                raise sync_git.SyncBlocked("unreviewed changes appeared during reconciliation")
+            pending = {"schema_version": 1, "machine": machine,
+                       "destinations": [str(p) for _, p in destinations], "capture_recovery": capture,
+                       "recovery_roots": resolved_roots, "agent_identities": checked_agents,
+                       "target": target, "base": sync_git.git(repo, "rev-parse", "HEAD"),
+                       "message": message, "files": sync_git.identities(repo, selected)}
+            sync_git.save_pending(repo, pending)
+            return sync_git.publish(repo, pending, verify=verify, readback=readback)
+    except (OSError, RuntimeError, subprocess.SubprocessError) as exc:
+        return {"result": "incomplete", "failed_step": "preflight-or-reconcile", "reason": str(exc)}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("plan", "sync"))
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--machine", default="local-windows")
     parser.add_argument("--adopt", action="append", default=[])
-    parser.add_argument("--capture-recovery", action="store_true")
+    parser.add_argument("--capture-recovery", action="store_true", default=None,
+                        help="capture reviewed allowlisted settings (included by default in sync)")
+    parser.add_argument("--no-capture-recovery", dest="capture_recovery", action="store_false",
+                        help="scope this operation to skills/repository files; do not capture native settings")
+    parser.add_argument("--include", action="append", default=[], metavar="FILE",
+                        help="exact additional repository file already reviewed for commit; does not authorize deployment")
+    parser.add_argument("--message", default="chore: reconcile checked agent changes")
     parser.add_argument("--root", action="append", default=[], metavar="HOST=PATH")
     parser.add_argument("--skill-root", action="append", default=[], type=Path)
     args = parser.parse_args(argv)
@@ -716,9 +892,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.action == "plan":
         report = plan(args.repo, machine=args.machine, recovery_roots=roots, skill_roots=args.skill_root or None, live=True)
     else:
-        report = sync(args.repo, machine=args.machine, adopt=args.adopt, recovery_roots=roots, skill_roots=args.skill_root or None, capture_recovery=args.capture_recovery)
+        report = complete_sync(args.repo, machine=args.machine, adopt=args.adopt, recovery_roots=roots,
+                               skill_roots=args.skill_root or None, capture_recovery=args.capture_recovery,
+                               include=args.include, message=args.message)
     print(json.dumps(report, indent=2, sort_keys=True))
-    return 0 if report.get("result") not in {"review-required", "rejected"} else 2
+    return 0 if args.action == "plan" or report.get("result") == "synced" else 2
 
 
 if __name__ == "__main__":

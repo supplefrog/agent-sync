@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "owner": "Hermes native cache and prompt construction",
-  "native_base_revision": "820106d4a52e83a426400659231ae14093585109",
+  "native_base_revision": "ead7e91dabf1e963796ec834b196984a2fa44ff4",
   "session_id": "20260907_033051_2252fb",
   "targets": [
     {
       "path": "agent/prompt_builder.py",
-      "before_sha256": "7cd8eafb6132e892b8d9b6ccbd2551dba5921fcf83d3ddfbd5863db3cf274404",
-      "after_sha256": "d75ea9d8596be4676493768a0172820064ab37431fd36ba02a95263abda4dce8"
+      "before_sha256": "07229b2e487682c362d9cf499116c2b30be4e3c37ad4f1c08f7a2a2b50b97909",
+      "after_sha256": "8329c7e2cd700fa0dc218ab368d5ea6c2ec773b66590cc5486e6434d5806a873"
     },
     {
       "path": "agent/skill_utils.py",
@@ -23,19 +23,30 @@
   "historical_selection": "integrations/hermes/native-patches/guidance/manifest.json",
   "artifacts": {
     "LICENSE": "e29dfaf6905a8d396a58ea4bd84ad27057756bbd9599b5bec0971ae34d2a2118",
-    "README.md": "ad91f234ea5db7792876fafd2397b2bce633ac98cacd85cb997c708fcf4b7b14",
-    "repair.patch": "1a555ebdeda1592c267553dd380ce8319725e9523866c563d56f19092e826a04",
-    "recovery/baseline/agent/prompt_builder.py": "7cd8eafb6132e892b8d9b6ccbd2551dba5921fcf83d3ddfbd5863db3cf274404",
+    "README.md": "057ca0b50a54e43588041f4d6916a268d83577c54d6bba73e434038980e802ce",
+    "recovery/baseline/agent/prompt_builder.py": "07229b2e487682c362d9cf499116c2b30be4e3c37ad4f1c08f7a2a2b50b97909",
     "recovery/baseline/agent/skill_utils.py": "bac47fc63121852fc2ae564a50fdd083f865b9e85dd4946fc5be62a19f34fb7e",
     "recovery/baseline/tools/skills_guard.py": "007846383d775bbda8ac6ed9f6d9fedef4f4cebf052ad059e0cfcb15c9d3fb27",
-    "recovery/candidate/agent/prompt_builder.py": "d75ea9d8596be4676493768a0172820064ab37431fd36ba02a95263abda4dce8",
+    "recovery/candidate/agent/prompt_builder.py": "8329c7e2cd700fa0dc218ab368d5ea6c2ec773b66590cc5486e6434d5806a873",
     "recovery/candidate/agent/skill_utils.py": "6963533c3f4074b11f5e8d8a3e761dae1b71ef7d71d7739c89ca182153badac8",
-    "recovery/candidate/tools/skills_guard.py": "fd1b6361281e79920844ec4176f51c6644b293ef1c4346f154b490d6120c602f"
+    "recovery/candidate/tools/skills_guard.py": "fd1b6361281e79920844ec4176f51c6644b293ef1c4346f154b490d6120c602f",
+    "repair.patch": "46981ad9a5d898da2f2c40fcc421344d4b84de50923f3f73d500ae6aa39363bc"
   },
-  "verification": {
+  "quality_scope": "Historical Astra-low guidance selection; current mechanical regression checks only; Sol unverified.",
+  "previous_base_revision": "820106d4a52e83a426400659231ae14093585109",
+  "historical_verification": {
     "cache_candidate_receipt_sha256": "96e1bd8d94dcc3258f42bec62ab61d3cb3de7d8614ed86e87c0f3bc4c104156f",
     "cache_baseline_receipt_sha256": "bb04a58daa7563e173cf22d1ed6aa99ffda6a5ab52048a65084b836bf4ee41c5",
     "assembly_receipt_sha256": "0081631cbc2c35653281b4de91242ded2389b612b561a7dbcc06918d69f0315e"
   },
-  "quality_scope": "Historical Astra-low guidance selection; current mechanical regression checks only; Sol unverified."
+  "verification": {
+    "baseline": "34 passed, 1 skipped: skill_utils, external_skills, delegate_summary_budget",
+    "candidate": "55 passed, 1 skipped: same tests plus project_skills",
+    "upstream_preserved": [
+      "skill_manage_available gating",
+      "steer_user_row",
+      "runtime environment markers"
+    ],
+    "scope": "Mechanical restoration of previously selected fixes, not a new model-quality claim"
+  }
 }

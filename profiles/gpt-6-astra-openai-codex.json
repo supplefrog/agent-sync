@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "gpt-6-astra-openai-codex",
   "status": "current-observed",
-  "claim": "Observed Astra foreground configuration and retained standing artifacts. Bounded runtime checks do not establish universal quality or cross-host behavioral parity.",
+  "claim": "Observed mixed-host selectors with one shared instruction policy and native adapters. Exact overlay checks are bounded, not universal model quality or cross-host behavioral parity.",
   "target": {
     "model": "gpt-6-astra",
     "provider": "openai-codex",
@@ -16,7 +16,7 @@
   },
   "hosts": {
     "hermes": {
-      "runtime": "Hermes Agent 0.21.0",
+      "runtime": "Hermes Agent 0.21.1",
       "reasoning": "low",
       "effective_surfaces": [
         "provider.native-system",
@@ -26,21 +26,21 @@
         "hermes.project-context"
       ],
       "effective_units": [
-        "hermes.identity",
         "hermes.style",
         "hermes.judgment",
         "hermes.output",
         "hermes.deliberation",
         "hermes.instruction-authoring-route",
-        "hermes.reconciliation"
+        "hermes.reconciliation",
+        "hermes.execution"
       ],
       "artifact_sha256": [
-        "82553e93dc47e3d1318eea2e91f2b7b4b41f445f39fa9cb01e5f47ce1605cbe0"
+        "fdfa2fcba6a46ebf786bdad1925a877bd289ed78ffa89f6163592f499c593a90"
       ]
     },
     "codex": {
       "runtime": "codex-cli 0.153.4",
-      "reasoning": "xhigh",
+      "reasoning": "low",
       "effective_surfaces": [
         "provider.native-system",
         "portable.reconciliation-authority",
@@ -55,11 +55,14 @@
         "codex.scope",
         "codex.evidence",
         "codex.research",
-        "codex.reconciliation"
+        "codex.reconciliation",
+        "codex.execution"
       ],
       "artifact_sha256": [
-        "dbb60aed79b87810286d622b0f06a53903718c62d1e3340d3ade045d39ac5651"
-      ]
+        "44475e8c564f4e045cffa46ab86bf2a5527380778aab263a2a3af957a0cdcd10"
+      ],
+      "model": "gpt-5.6-sol",
+      "provider": "openai-codex"
     },
     "omp": {
       "runtime": "omp 18.1.10",
@@ -79,7 +82,7 @@
     "routine-chat": {
       "owner": "skills/conversational-communication",
       "loading": "on-demand",
-      "scope": "Short user-facing chat, status, decisions, and completion replies."
+      "scope": "Chat-style calibration and verbose/status reply repair; not a mandatory load for ordinary conversation."
     },
     "public-prose": {
       "owner": "skills/humanizer",
@@ -94,7 +97,7 @@
     "surface-placement": {
       "owner": "skills/hermes-self-engineering",
       "loading": "on-demand",
-      "scope": "Select the narrowest persistent Hermes behavior surface before instruction authoring."
+      "scope": "Resolve unclear Hermes persistence placement; not a prerequisite for known-owner instruction edits."
     }
   },
   "context_policy": {
@@ -118,6 +121,7 @@
   ],
   "evidence": [
     "evals/results/astra-foreground-observed.json",
-    "evals/results/hermes-continuation-current-artifacts.json"
+    "evals/results/hermes-continuation-current-artifacts.json",
+    "evals/results/prompt-sentence-review.json"
   ]
 }

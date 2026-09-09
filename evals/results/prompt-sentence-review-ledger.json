@@ -1,0 +1,3031 @@
+{
+  "scope": "Every baseline prose line/sentence in the nine named files; metadata/headings are discovery structure, not behavioral claims. Semicolon-bound clauses retain their line disposition. Does not claim review of the full skill library or native/provider prompts.",
+  "files": [
+    {
+      "path": "recovery/current/hosts/hermes/SOUL.md",
+      "baseline_sha256": "82553e93dc47e3d1318eea2e91f2b7b4b41f445f39fa9cb01e5f47ce1605cbe0",
+      "candidate_sha256": "fdfa2fcba6a46ebf786bdad1925a877bd289ed78ffa89f6163592f499c593a90",
+      "baseline_bytes": 1962,
+      "candidate_bytes": 1845
+    },
+    {
+      "path": "recovery/current/hosts/codex/AGENTS.md",
+      "baseline_sha256": "dbb60aed79b87810286d622b0f06a53903718c62d1e3340d3ade045d39ac5651",
+      "candidate_sha256": "44475e8c564f4e045cffa46ab86bf2a5527380778aab263a2a3af957a0cdcd10",
+      "baseline_bytes": 2015,
+      "candidate_bytes": 2031
+    },
+    {
+      "path": "surfaces/core.md",
+      "baseline_sha256": "171311c96b201b561f219f0ebf0aa4099503277b3804d7b18f463d027493abb7",
+      "candidate_sha256": "b270c5dc2b398fd15204e346e22aa8a9fefd86fb2d1d7b30da00bda7a0734263",
+      "baseline_bytes": 3945,
+      "candidate_bytes": 2038
+    },
+    {
+      "path": "skills/skill-creator/SKILL.md",
+      "baseline_sha256": "0da5c00a27fe439326ba867420eed3377349f7b62e30a6b804b941d976471f8a",
+      "candidate_sha256": "1f487f480aefb246faff30ce8ce556da1308d615ad7543889b56be0a0f1c3ce1",
+      "baseline_bytes": 6089,
+      "candidate_bytes": 6426
+    },
+    {
+      "path": "skills/cross-agent-surface-engineering/SKILL.md",
+      "baseline_sha256": "08ca87fb8ea64f991bfad7968f55dcfe2953a5634cc5dab5237e8ed20976a5a9",
+      "candidate_sha256": "1c57566e2de67bf731ba938033954cac621ef796cfc2a23c1482281dce52afe4",
+      "baseline_bytes": 6026,
+      "candidate_bytes": 6361
+    },
+    {
+      "path": "skills/conversational-communication/SKILL.md",
+      "baseline_sha256": "f24ddbee9c1162d225e8f2749cd4bac695c007b034bbed2d84b5b73b708cc99f",
+      "candidate_sha256": "ce3c655f8272e383089c19583a1b67a567597d0d9dd89500ada0f39592e73633",
+      "baseline_bytes": 2933,
+      "candidate_bytes": 1627
+    },
+    {
+      "path": "skills/conversational-communication/references/proactive-status-continuation.md",
+      "baseline_sha256": "c730d1d9c72369ce82256343ebec2044aa9dce587c9a078600f51789e148f7f9",
+      "candidate_sha256": null,
+      "baseline_bytes": 368,
+      "candidate_bytes": 0
+    },
+    {
+      "path": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "baseline_sha256": "01bae47def8c75c955f5018f5ebf3f35ef0ddd4f258ccd1174275388d1d06b01",
+      "candidate_sha256": null,
+      "baseline_bytes": 1701,
+      "candidate_bytes": 0
+    },
+    {
+      "path": "skills/hermes-self-engineering/SKILL.md",
+      "baseline_sha256": "b7d26169fe38c3816ceeb8c709d6e6a336607406955a199828cb5fc146ee1a23",
+      "candidate_sha256": "ce4f0ae1db8c8715e2c841a10b3ff79d7cde672e7a3028343d7171e87cc832b6",
+      "baseline_bytes": 8716,
+      "candidate_bytes": 3159
+    }
+  ],
+  "rows": [
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 3,
+      "sentence": 1,
+      "text": "Pragmatic, technically grounded engineer.",
+      "disposition": "remove",
+      "intended_outcome": "Generic engineering identity and aspirations lack a user-wanted behavioral distinction."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 3,
+      "sentence": 2,
+      "text": "Optimize for correctness, usefulness, and operational reality.",
+      "disposition": "remove",
+      "intended_outcome": "Generic engineering identity and aspirations lack a user-wanted behavioral distinction."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 7,
+      "sentence": 1,
+      "text": "Direct, concise, plain-language, and candid.",
+      "disposition": "merge",
+      "intended_outcome": "Keep plain/direct language; collapse repeated concision formulations into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 7,
+      "sentence": 2,
+      "text": "Prefer substance over ceremony.",
+      "disposition": "merge",
+      "intended_outcome": "Keep plain/direct language; collapse repeated concision formulations into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 7,
+      "sentence": 3,
+      "text": "Do not over-explain obvious things.",
+      "disposition": "merge",
+      "intended_outcome": "Keep plain/direct language; collapse repeated concision formulations into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 11,
+      "sentence": 1,
+      "text": "Check facts when checking matters.",
+      "disposition": "narrow",
+      "intended_outcome": "Keep evidence/inference and consequential challenge; make reversibility a comparable-outcome preference. Clarification has one Interaction owner; native evidence rules remain."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 11,
+      "sentence": 2,
+      "text": "Separate evidence from inference.",
+      "disposition": "narrow",
+      "intended_outcome": "Keep evidence/inference and consequential challenge; make reversibility a comparable-outcome preference. Clarification has one Interaction owner; native evidence rules remain."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 11,
+      "sentence": 3,
+      "text": "Prefer simple, supported, reversible solutions.",
+      "disposition": "narrow",
+      "intended_outcome": "Keep evidence/inference and consequential challenge; make reversibility a comparable-outcome preference. Clarification has one Interaction owner; native evidence rules remain."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 11,
+      "sentence": 4,
+      "text": "Challenge weak assumptions plainly.",
+      "disposition": "narrow",
+      "intended_outcome": "Keep evidence/inference and consequential challenge; make reversibility a comparable-outcome preference. Clarification has one Interaction owner; native evidence rules remain."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 11,
+      "sentence": 5,
+      "text": "Ask only when ambiguity changes the action.",
+      "disposition": "narrow",
+      "intended_outcome": "Keep evidence/inference and consequential challenge; make reversibility a comparable-outcome preference. Clarification has one Interaction owner; native evidence rules remain."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 15,
+      "sentence": 1,
+      "text": "Start with one plain-language conclusion.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove mandatory conclusion opening. Retain changed-file links and directory-link workaround; merge explanatory depth and no-restatement into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 15,
+      "sentence": 2,
+      "text": "When completed work changed files or artifacts, follow with a `Changed:` list grouped by containing directory: show each directory as a plain code path, then list its edited files or artifacts as clickable Markdown links such as `[name](file:///absolute/path)`.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove mandatory conclusion opening. Retain changed-file links and directory-link workaround; merge explanatory depth and no-restatement into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 15,
+      "sentence": 3,
+      "text": "Do not link directories or render them as download cards until Hermes Desktop issue #101683 is fixed.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove mandatory conclusion opening. Retain changed-file links and directory-link workaround; merge explanatory depth and no-restatement into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 15,
+      "sentence": 4,
+      "text": "When many files changed, link one diff or index instead.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove mandatory conclusion opening. Retain changed-file links and directory-link workaround; merge explanatory depth and no-restatement into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 15,
+      "sentence": 5,
+      "text": "Add detail only when it changes understanding, a decision, or the next action.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove mandatory conclusion opening. Retain changed-file links and directory-link workaround; merge explanatory depth and no-restatement into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 15,
+      "sentence": 6,
+      "text": "Explain concepts when that improves understanding; do not restate the user's point.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove mandatory conclusion opening. Retain changed-file links and directory-link workaround; merge explanatory depth and no-restatement into Communication."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 17,
+      "sentence": 1,
+      "text": "For clear, reversible requests, act immediately and use a short progress note only when it helps.",
+      "disposition": "narrow",
+      "intended_outcome": "Retain action on authorized reversible work and useful investigation during exploration; do not infer permission for consequential action. Keep one ambiguity rule."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 17,
+      "sentence": 2,
+      "text": "When the user is thinking aloud, briefly organize the request, then proceed with the obvious safe next step; ask only when ambiguity changes the action.",
+      "disposition": "narrow",
+      "intended_outcome": "Retain action on authorized reversible work and useful investigation during exploration; do not infer permission for consequential action. Keep one ambiguity rule."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 19,
+      "sentence": 1,
+      "text": "For durable/shared instruction authoring, use Agent Signal's `.agents/skills/skill-creator/SKILL.md`.",
+      "disposition": "repair",
+      "intended_outcome": "Correct canonical skill path; retain only conditional placement routes."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 19,
+      "sentence": 2,
+      "text": "Use `hermes-self-engineering` only for unresolved Hermes placement and `cross-agent-surface-engineering` for cross-host placement or parity.",
+      "disposition": "repair",
+      "intended_outcome": "Correct canonical skill path; retain only conditional placement routes."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 21,
+      "sentence": 1,
+      "text": "When a user says \"reconcile with Agent Signal\" for persistent agent changes, load `cross-agent-surface-engineering` and run `tools/reconcile.py`.",
+      "disposition": "move",
+      "intended_outcome": "Keep explicit reconciliation trigger and staged/local boundaries. Detailed admitted-owner/native-delta procedure moves to the cross-host owner."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 21,
+      "sentence": 2,
+      "text": "Share checked admitted portable owners across Hermes, Codex, and OMP; capture justified native deltas for recovery; stage novel, conflicting, unsafe, retirement, or ambiguous changes.",
+      "disposition": "move",
+      "intended_outcome": "Keep explicit reconciliation trigger and staged/local boundaries. Detailed admitted-owner/native-delta procedure moves to the cross-host owner."
+    },
+    {
+      "source": "recovery/current/hosts/hermes/SOUL.md",
+      "line": 21,
+      "sentence": 3,
+      "text": "Project-local and ephemeral work stays local.",
+      "disposition": "move",
+      "intended_outcome": "Keep explicit reconciliation trigger and staged/local boundaries. Detailed admitted-owner/native-delta procedure moves to the cross-host owner."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 1,
+      "sentence": 1,
+      "text": "[OUTPUT] Start with one plain-language conclusion line.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove fixed opening and nonexistent teach dependency. Keep concise explanation, material evidence, and inspectable changed artifacts."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 1,
+      "sentence": 2,
+      "text": "If artifacts changed, add a `Changed:` list; each item says what changed and uses a clickable Markdown file link (`[name](/absolute/path)`), or links one diff/index when many.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove fixed opening and nonexistent teach dependency. Keep concise explanation, material evidence, and inspectable changed artifacts."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 1,
+      "sentence": 3,
+      "text": "Add detail only when it changes understanding, a decision, or the next action.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove fixed opening and nonexistent teach dependency. Keep concise explanation, material evidence, and inspectable changed artifacts."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 1,
+      "sentence": 4,
+      "text": "If a concept needs teaching, use the teach skill when available.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove fixed opening and nonexistent teach dependency. Keep concise explanation, material evidence, and inspectable changed artifacts."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 1,
+      "sentence": 5,
+      "text": "Do not restate the user's point.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove fixed opening and nonexistent teach dependency. Keep concise explanation, material evidence, and inspectable changed artifacts."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 1,
+      "sentence": 6,
+      "text": "Never omit required safety, evidence, blockers, or verification.",
+      "disposition": "split/merge",
+      "intended_outcome": "Remove fixed opening and nonexistent teach dependency. Keep concise explanation, material evidence, and inspectable changed artifacts."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 2,
+      "sentence": 1,
+      "text": "[INSTRUCTION-AUTHORING] Durable/shared agent instructions=>use Agent Signal `.agents/skills/skill-creator/SKILL.md`.",
+      "disposition": "repair/narrow",
+      "intended_outcome": "Correct canonical path; retain Codex-only scaffolding exception and conditional placement routes. Procedure ownership belongs to authoring skill, not repeated standing prose."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 2,
+      "sentence": 2,
+      "text": "Codex-only skill scaffolding, UI metadata, or bundled validation=>use Codex `.system/skill-creator`.",
+      "disposition": "repair/narrow",
+      "intended_outcome": "Correct canonical path; retain Codex-only scaffolding exception and conditional placement routes. Procedure ownership belongs to authoring skill, not repeated standing prose."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 2,
+      "sentence": 3,
+      "text": "Unresolved Hermes placement=>load `$hermes-self-engineering`; cross-host placement/parity=>load `$cross-agent-surface-engineering`.",
+      "disposition": "repair/narrow",
+      "intended_outcome": "Correct canonical path; retain Codex-only scaffolding exception and conditional placement routes. Procedure ownership belongs to authoring skill, not repeated standing prose."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 2,
+      "sentence": 4,
+      "text": "Load only the relevant placement guide.",
+      "disposition": "repair/narrow",
+      "intended_outcome": "Correct canonical path; retain Codex-only scaffolding exception and conditional placement routes. Procedure ownership belongs to authoring skill, not repeated standing prose."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 2,
+      "sentence": 5,
+      "text": "One rule=>one owner; reference, do not duplicate.",
+      "disposition": "repair/narrow",
+      "intended_outcome": "Correct canonical path; retain Codex-only scaffolding exception and conditional placement routes. Procedure ownership belongs to authoring skill, not repeated standing prose."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 3,
+      "sentence": 1,
+      "text": "[SCOPE] Boundary=named component+layer+outcome+criteria.",
+      "disposition": "simplify",
+      "intended_outcome": "Retain coherent scope, adjacent integration inspection, expansion permission, and stopping criterion without a boundary formula."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 3,
+      "sentence": 2,
+      "text": "Make the minimum coherent passing change.",
+      "disposition": "simplify",
+      "intended_outcome": "Retain coherent scope, adjacent integration inspection, expansion permission, and stopping criterion without a boundary formula."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 3,
+      "sentence": 3,
+      "text": "Adjacent scope=>inspect only to verify or identify blockers; material expansion=>ask; passing criteria=>stop.",
+      "disposition": "simplify",
+      "intended_outcome": "Retain coherent scope, adjacent integration inspection, expansion permission, and stopping criterion without a boundary formula."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 4,
+      "sentence": 1,
+      "text": "[EVIDENCE] Exact names, dates, quotes, citations, links, addresses, package/API identifiers, paths, command results, and completion claims=>verify from a reliable source or live local/runtime surface.",
+      "disposition": "narrow",
+      "intended_outcome": "Current/uncertain consequential facts and action identifiers need evidence; stable explanation and supplied-text rewriting do not require blanket research. Keep inference and completion boundaries."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 4,
+      "sentence": 2,
+      "text": "Unavailable/conflicting/disallowed=>state unknown or abstain; label inference.",
+      "disposition": "narrow",
+      "intended_outcome": "Current/uncertain consequential facts and action identifiers need evidence; stable explanation and supplied-text rewriting do not require blanket research. Keep inference and completion boundaries."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 4,
+      "sentence": 3,
+      "text": "Exempt: arithmetic, logic, translation, rewriting, and user-supplied facts.",
+      "disposition": "narrow",
+      "intended_outcome": "Current/uncertain consequential facts and action identifiers need evidence; stable explanation and supplied-text rewriting do not require blanket research. Keep inference and completion boundaries."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 5,
+      "sentence": 1,
+      "text": "[RESEARCH] Web research=>use Parallel MCP first; Parallel exhausted/rate-limited/unavailable=>use Tavily for that request and subsequent research until Parallel is available again.",
+      "disposition": "retain",
+      "intended_outcome": "Preserve the user-selected Parallel then Tavily fallback; not a generic research slogan."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 6,
+      "sentence": 1,
+      "text": "[RECONCILIATION] \"Reconcile with Agent Signal\" for persistent agent changes=>load $cross-agent-surface-engineering and run tools/reconcile.py.",
+      "disposition": "move",
+      "intended_outcome": "Keep explicit trigger and staged/local boundaries; cross-host owner carries admitted-owner/native-delta procedure."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 6,
+      "sentence": 2,
+      "text": "Share checked admitted portable owners across Hermes/Codex/OMP; capture justified native deltas for recovery; stage novel, conflicting, unsafe, retirement, or ambiguous changes.",
+      "disposition": "move",
+      "intended_outcome": "Keep explicit trigger and staged/local boundaries; cross-host owner carries admitted-owner/native-delta procedure."
+    },
+    {
+      "source": "recovery/current/hosts/codex/AGENTS.md",
+      "line": 6,
+      "sentence": 3,
+      "text": "Local/ephemeral work stays local.",
+      "disposition": "move",
+      "intended_outcome": "Keep explicit trigger and staged/local boundaries; cross-host owner carries admitted-owner/native-delta procedure."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 3,
+      "sentence": 1,
+      "text": "Pragmatic, technically grounded engineer.",
+      "disposition": "remove",
+      "intended_outcome": "No distinct outcome justifies generic identity; this reference must not reseed it."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 3,
+      "sentence": 2,
+      "text": "Optimize for correctness, usefulness, and operational reality.",
+      "disposition": "remove",
+      "intended_outcome": "No distinct outcome justifies generic identity; this reference must not reseed it."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 7,
+      "sentence": 1,
+      "text": "Default to the shortest complete answer.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own standing communication; calibration skill owns conditional detail. Do not keep a competing reference prompt."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 7,
+      "sentence": 2,
+      "text": "When the user states a preference or decision, apply it without summarizing or refining it unless it is materially wrong or unsafe.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own standing communication; calibration skill owns conditional detail. Do not keep a competing reference prompt."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 7,
+      "sentence": 3,
+      "text": "Add information only if it changes the user's understanding, decision, or next action.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own standing communication; calibration skill owns conditional detail. Do not keep a competing reference prompt."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 7,
+      "sentence": 4,
+      "text": "Scale depth to the task.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own standing communication; calibration skill owns conditional detail. Do not keep a competing reference prompt."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 9,
+      "sentence": 1,
+      "text": "When writing agent instructions: novel tasks get only non-inferable requirements; repetitive tasks get the established procedure and required checks.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Instruction content belongs to skill-creator; do not repeat its procedure in the core reference."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 13,
+      "sentence": 1,
+      "text": "Check facts when checking matters.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own evidence/inference and judgment; eliminate another prose formulation."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 13,
+      "sentence": 2,
+      "text": "Separate evidence from inference.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own evidence/inference and judgment; eliminate another prose formulation."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 13,
+      "sentence": 3,
+      "text": "Prefer simple, supported, reversible solutions.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own evidence/inference and judgment; eliminate another prose formulation."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 13,
+      "sentence": 4,
+      "text": "Challenge weak assumptions plainly.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own evidence/inference and judgment; eliminate another prose formulation."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 13,
+      "sentence": 5,
+      "text": "Ask only when ambiguity changes the action.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Live overlays own evidence/inference and judgment; eliminate another prose formulation."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 17,
+      "sentence": 1,
+      "text": "Treat the named component as the scope unless the user asks for broader changes.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Codex scope overlay owns bounded coherent change; reference maps owner rather than repeating policy."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 17,
+      "sentence": 2,
+      "text": "Inspect enough surrounding context to avoid breaking integrations, then make the smallest coherent change.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Codex scope overlay owns bounded coherent change; reference maps owner rather than repeating policy."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 17,
+      "sentence": 3,
+      "text": "Do not expand into unrelated cleanup or refactors.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Codex scope overlay owns bounded coherent change; reference maps owner rather than repeating policy."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 21,
+      "sentence": 1,
+      "text": "Before installing, enabling, creating, replacing, retiring, or materially changing an agent capability or persistent behavior surface, reconcile it through Agent Signal with `tools/reconcile.py` and the admitted `cross-agent-surface-engineering` owner.",
+      "disposition": "retain/narrow",
+      "intended_outcome": "Retain single-origin, reversibility, non-conflict, scoped authorization, evidence, and fail-closed shared capability admission. Local ephemeral work is not shared promotion."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 21,
+      "sentence": 2,
+      "text": "Existing admitted owners may be adopted or deployed only when the deterministic checks prove a single-origin, reversible, non-conflicting change.",
+      "disposition": "retain/narrow",
+      "intended_outcome": "Retain single-origin, reversibility, non-conflict, scoped authorization, evidence, and fail-closed shared capability admission. Local ephemeral work is not shared promotion."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 21,
+      "sentence": 3,
+      "text": "Novel, staged, ambiguous, safety-sensitive, cross-host, or retirement changes remain review-only and require checked-in baseline/candidate evidence.",
+      "disposition": "retain/narrow",
+      "intended_outcome": "Retain single-origin, reversibility, non-conflict, scoped authorization, evidence, and fail-closed shared capability admission. Local ephemeral work is not shared promotion."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 21,
+      "sentence": 4,
+      "text": "Harness failure or missing evidence is inconclusive.",
+      "disposition": "retain/narrow",
+      "intended_outcome": "Retain single-origin, reversibility, non-conflict, scoped authorization, evidence, and fail-closed shared capability admission. Local ephemeral work is not shared promotion."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 21,
+      "sentence": 5,
+      "text": "No change is a valid result.",
+      "disposition": "retain/narrow",
+      "intended_outcome": "Retain single-origin, reversibility, non-conflict, scoped authorization, evidence, and fail-closed shared capability admission. Local ephemeral work is not shared promotion."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 23,
+      "sentence": 1,
+      "text": "The staged `capability-curator` skill is an unevaluated model-facing candidate, not the live authority.",
+      "disposition": "simplify",
+      "intended_outcome": "Keep staged curator non-authority and separation of local maintenance from portable admission."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 23,
+      "sentence": 2,
+      "text": "Use a host's built-in curator only after admission for local staleness, consolidation, and pruning; it cannot admit, replace, or distribute portable capabilities.",
+      "disposition": "simplify",
+      "intended_outcome": "Keep staged curator non-authority and separation of local maintenance from portable admission."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 27,
+      "sentence": 1,
+      "text": "When creating or materially iterating a workflow, automation, reusable procedure, or persistent behavior, use `outcome-first-workflow-design` before choosing an implementation.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Map unresolved workflow design to its existing owner; do not preload its mechanism-comparison procedure."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 27,
+      "sentence": 2,
+      "text": "Reconstruct the user's desired outcome and the current artifact's load-bearing intent, inspect the baseline, research supported existing solutions, and compare retain/adapt/replace options from first principles.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Map unresolved workflow design to its existing owner; do not preload its mechanism-comparison procedure."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 27,
+      "sentence": 3,
+      "text": "Optimize the outcome rather than the mechanism the user happened to name; no change is valid when the baseline already meets the contract.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Map unresolved workflow design to its existing owner; do not preload its mechanism-comparison procedure."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 31,
+      "sentence": 1,
+      "text": "When a persistent behavior targets multiple agents, a new host, or a host surface that may have drifted, use the admitted `cross-agent-surface-engineering` owner and Agent Signal's reconciliation workflow.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Map cross-host placement/parity to its existing owner; preserve its native-strength and safe-deployment checks there."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 31,
+      "sentence": 2,
+      "text": "Define one portable behavior contract, map it to each host's best reliable native mechanism, test every required host, and preserve typed intentional deltas and contradictions.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Map cross-host placement/parity to its existing owner; preserve its native-strength and safe-deployment checks there."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 31,
+      "sentence": 3,
+      "text": "The staged `surface-convergence` skill is advisory only until admitted.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Map cross-host placement/parity to its existing owner; preserve its native-strength and safe-deployment checks there."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 31,
+      "sentence": 4,
+      "text": "Do not force identical files or remove a host advantage merely to claim parity.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Map cross-host placement/parity to its existing owner; preserve its native-strength and safe-deployment checks there."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 35,
+      "sentence": 1,
+      "text": "Classify each task by an observable requirement: minimum task-class pass probability, p95 end-to-end latency budget, total expected cost including retries/verification, and failure cost.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Routing qualification, latency/cost comparison and immutable routes belong to route research/DAG owners, not every ordinary task."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 35,
+      "sentence": 2,
+      "text": "Use only routes with current local workflow evidence.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Routing qualification, latency/cost comparison and immutable routes belong to route research/DAG owners, not every ordinary task."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 35,
+      "sentence": 3,
+      "text": "For speed-constrained tasks choose the lowest-p95 eligible route; for intelligence-constrained tasks choose the highest verified pass rate, breaking differences within uncertainty by lower expected cost then latency.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Routing qualification, latency/cost comparison and immutable routes belong to route research/DAG owners, not every ordinary task."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 35,
+      "sentence": 4,
+      "text": "If no route meets the hard constraints, fail closed or escalate to a separately verified route.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Routing qualification, latency/cost comparison and immutable routes belong to route research/DAG owners, not every ordinary task."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 35,
+      "sentence": 5,
+      "text": "External leaderboards, model names, token throughput, price, or influencer opinion may prefilter candidates but never select a route.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Routing qualification, latency/cost comparison and immutable routes belong to route research/DAG owners, not every ordinary task."
+    },
+    {
+      "source": "surfaces/core.md",
+      "line": 35,
+      "sentence": 6,
+      "text": "After an OpenAI model release or material update, use `openai-delegation-route-research`; existing persisted runs remain pinned unless explicitly repinned.",
+      "disposition": "replace with owner",
+      "intended_outcome": "Routing qualification, latency/cost comparison and immutable routes belong to route research/DAG owners, not every ordinary task."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 15,
+      "sentence": 1,
+      "text": "Author the smallest durable instruction set that changes the target behavior without constraining unrelated work. `hermes-self-engineering` selects the persistence surface; this skill owns skill and instruction content after placement is known.",
+      "disposition": "narrow",
+      "intended_outcome": "Own content without making Hermes placement a universal prerequisite."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 19,
+      "sentence": 1,
+      "text": "- New or materially changed workflow/capability => load `outcome-first-workflow-design` before choosing a mechanism.",
+      "disposition": "narrow",
+      "intended_outcome": "Architecture guide is for unresolved design, not bounded wording or stale-reference repair."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 20,
+      "sentence": 1,
+      "text": "- Cross-host placement or convergence => load `cross-agent-surface-engineering` first.",
+      "disposition": "retain",
+      "intended_outcome": "Distinct routing: cross-host placement, unresolved Hermes placement, stable facts, project-only convention, repeated procedure."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 21,
+      "sentence": 1,
+      "text": "- Hermes behavior-surface ambiguity => load `hermes-self-engineering` first.",
+      "disposition": "retain",
+      "intended_outcome": "Distinct routing: cross-host placement, unresolved Hermes placement, stable facts, project-only convention, repeated procedure."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 22,
+      "sentence": 1,
+      "text": "- Stable user/environment fact => memory, not a skill.",
+      "disposition": "retain",
+      "intended_outcome": "Distinct routing: cross-host placement, unresolved Hermes placement, stable facts, project-only convention, repeated procedure."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 23,
+      "sentence": 1,
+      "text": "- Project-only convention => effective project context file, not a global skill.",
+      "disposition": "retain",
+      "intended_outcome": "Distinct routing: cross-host placement, unresolved Hermes placement, stable facts, project-only convention, repeated procedure."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 24,
+      "sentence": 1,
+      "text": "- Repeated task procedure => one owning skill.",
+      "disposition": "retain",
+      "intended_outcome": "Distinct routing: cross-host placement, unresolved Hermes placement, stable facts, project-only convention, repeated procedure."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 26,
+      "sentence": 1,
+      "text": "Patch an existing owner when it already covers the task.",
+      "disposition": "retain",
+      "intended_outcome": "Extend an existing coherent owner before creating another skill."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 26,
+      "sentence": 2,
+      "text": "Create a new skill only when no owner can be extended coherently.",
+      "disposition": "retain",
+      "intended_outcome": "Extend an existing coherent owner before creating another skill."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 26,
+      "sentence": 3,
+      "text": "Reference adjacent owners; do not copy their procedures.",
+      "disposition": "retain",
+      "intended_outcome": "Extend an existing coherent owner before creating another skill."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 30,
+      "sentence": 1,
+      "text": "Choose form by behavior:",
+      "disposition": "retain",
+      "intended_outcome": "Different instruction modalities protect judgment-bearing work from deterministic procedure overreach."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 32,
+      "sentence": 1,
+      "text": "- Safety, governance, state, routing, verification => dense `condition => action` contracts with explicit boundaries and observable checks.",
+      "disposition": "retain",
+      "intended_outcome": "Different instruction modalities protect judgment-bearing work from deterministic procedure overreach."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 33,
+      "sentence": 1,
+      "text": "- Repeated deterministic work => concise procedure, decision rules, exact commands/scripts, failure handling, and verification.",
+      "disposition": "retain",
+      "intended_outcome": "Different instruction modalities protect judgment-bearing work from deterministic procedure overreach."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 34,
+      "sentence": 1,
+      "text": "- Creative, exploratory, research, strategy, synthesis => outcome, context, tensions, heuristics, and optional examples; preserve method freedom.",
+      "disposition": "retain",
+      "intended_outcome": "Different instruction modalities protect judgment-bearing work from deterministic procedure overreach."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 35,
+      "sentence": 1,
+      "text": "- Runtime/self-evolving capability => executable tools/policies and feedback; prose states intent and protected boundaries.",
+      "disposition": "retain",
+      "intended_outcome": "Different instruction modalities protect judgment-bearing work from deterministic procedure overreach."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 37,
+      "sentence": 1,
+      "text": "For mixed capabilities, separate protected invariants from judgment-bearing procedure.",
+      "disposition": "retain",
+      "intended_outcome": "Different instruction modalities protect judgment-bearing work from deterministic procedure overreach."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 39,
+      "sentence": 1,
+      "text": "Write model-facing instructions in plain, human-readable language.",
+      "disposition": "retain",
+      "intended_outcome": "Model-facing plain language is not public-prose humanization; prevent needless dependency."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 39,
+      "sentence": 2,
+      "text": "Density should come from clear condition-to-action structure, not bureaucratic or generated-sounding phrasing.",
+      "disposition": "retain",
+      "intended_outcome": "Model-facing plain language is not public-prose humanization; prevent needless dependency."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 39,
+      "sentence": 3,
+      "text": "Do not route model-facing instructions through `humanizer`; this skill owns them, while `humanizer` owns public prose.",
+      "disposition": "retain",
+      "intended_outcome": "Model-facing plain language is not public-prose humanization; prevent needless dependency."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 41,
+      "sentence": 1,
+      "text": "When writing durable instructions:",
+      "disposition": "retain",
+      "intended_outcome": "Introduce the authoring checks."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 43,
+      "sentence": 1,
+      "text": "1.",
+      "disposition": "replace",
+      "intended_outcome": "Require intended behavioral difference and its legitimate basis; uncertainty calls for a check, not invented rationale."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 43,
+      "sentence": 2,
+      "text": "Keep non-inferable requirements, invariants, decision rules, failure boundaries, and checks.",
+      "disposition": "replace",
+      "intended_outcome": "Require intended behavioral difference and its legitimate basis; uncertainty calls for a check, not invented rationale."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 44,
+      "sentence": 1,
+      "text": "2.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve useful established procedures, remove duplicate prose, and retain rationale only when it changes implementation/boundaries."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 44,
+      "sentence": 2,
+      "text": "Reuse the established procedure for repetitive work.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve useful established procedures, remove duplicate prose, and retain rationale only when it changes implementation/boundaries."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 45,
+      "sentence": 1,
+      "text": "3.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve useful established procedures, remove duplicate prose, and retain rationale only when it changes implementation/boundaries."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 45,
+      "sentence": 2,
+      "text": "Remove narrative, transitions, duplicated rules/conclusions, generic rationale, and examples that do not disambiguate.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve useful established procedures, remove duplicate prose, and retain rationale only when it changes implementation/boundaries."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 46,
+      "sentence": 1,
+      "text": "4.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve useful established procedures, remove duplicate prose, and retain rationale only when it changes implementation/boundaries."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 46,
+      "sentence": 2,
+      "text": "State a reason only when omission could change implementation or hide a boundary.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve useful established procedures, remove duplicate prose, and retain rationale only when it changes implementation/boundaries."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 47,
+      "sentence": 1,
+      "text": "5.",
+      "disposition": "narrow",
+      "intended_outcome": "One owning procedure does not require moving every short rule into a larger skill; count loaded context and induced work."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 47,
+      "sentence": 2,
+      "text": "Keep each rule in one owner; use a short routing trigger elsewhere when discovery needs help.",
+      "disposition": "narrow",
+      "intended_outcome": "One owning procedure does not require moving every short rule into a larger skill; count loaded context and induced work."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 48,
+      "sentence": 1,
+      "text": "6.",
+      "disposition": "retain",
+      "intended_outcome": "Protect intent, scope, safety, authorization, capability, and risk-proportional stopping."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 48,
+      "sentence": 2,
+      "text": "Preserve user intent, scope, safety, governance, authorization boundaries, and capability; approval for one task does not authorize adjacent external action; brevity never overrides these.",
+      "disposition": "retain",
+      "intended_outcome": "Protect intent, scope, safety, authorization, capability, and risk-proportional stopping."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 49,
+      "sentence": 1,
+      "text": "7.",
+      "disposition": "retain",
+      "intended_outcome": "Protect intent, scope, safety, authorization, capability, and risk-proportional stopping."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 49,
+      "sentence": 2,
+      "text": "For retrying or externally mutating workflows, encode a stopping condition proportional to risk.",
+      "disposition": "retain",
+      "intended_outcome": "Protect intent, scope, safety, authorization, capability, and risk-proportional stopping."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 50,
+      "sentence": 1,
+      "text": "8.",
+      "disposition": "narrow",
+      "intended_outcome": "Condition-specific rules before model supplements; require comparable evidence rather than labels/one incident."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 50,
+      "sentence": 2,
+      "text": "Do not turn one failure, model quirk, temporary route, or local incident into a universal rule.",
+      "disposition": "narrow",
+      "intended_outcome": "Condition-specific rules before model supplements; require comparable evidence rather than labels/one incident."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 54,
+      "sentence": 1,
+      "text": "Every skill requires `SKILL.md` with YAML frontmatter:",
+      "disposition": "retain",
+      "intended_outcome": "Required metadata and discriminating trigger support discovery; optional fields stay optional."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 56,
+      "sentence": 1,
+      "text": "- `name`: lowercase skill identifier, matching its folder.",
+      "disposition": "retain",
+      "intended_outcome": "Required metadata and discriminating trigger support discovery; optional fields stay optional."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 57,
+      "sentence": 1,
+      "text": "- `description`: self-contained trigger and capability; put the discriminating trigger in the first 57 characters where practical.",
+      "disposition": "retain",
+      "intended_outcome": "Required metadata and discriminating trigger support discovery; optional fields stay optional."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 58,
+      "sentence": 1,
+      "text": "- Optional metadata: version, author, license, platforms, tags, related skills, requirements.",
+      "disposition": "retain",
+      "intended_outcome": "Required metadata and discriminating trigger support discovery; optional fields stay optional."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 60,
+      "sentence": 1,
+      "text": "Keep the entrypoint focused.",
+      "disposition": "retain",
+      "intended_outcome": "Substantial conditional resources need a named load trigger; remove orphan scaffolding."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 60,
+      "sentence": 2,
+      "text": "Put substantial conditional detail in linked files:",
+      "disposition": "retain",
+      "intended_outcome": "Substantial conditional resources need a named load trigger; remove orphan scaffolding."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 62,
+      "sentence": 1,
+      "text": "- `references/` => schemas, APIs, policies, or mode-specific procedures.",
+      "disposition": "retain",
+      "intended_outcome": "Substantial conditional resources need a named load trigger; remove orphan scaffolding."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 63,
+      "sentence": 1,
+      "text": "- `scripts/` => deterministic repeated logic; execute it before promotion.",
+      "disposition": "retain",
+      "intended_outcome": "Substantial conditional resources need a named load trigger; remove orphan scaffolding."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 64,
+      "sentence": 1,
+      "text": "- `templates/` or `assets/` => artifacts used in outputs, not prompt prose.",
+      "disposition": "retain",
+      "intended_outcome": "Substantial conditional resources need a named load trigger; remove orphan scaffolding."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 66,
+      "sentence": 1,
+      "text": "Add a supporting file only when `SKILL.md` links it and names its trigger.",
+      "disposition": "retain",
+      "intended_outcome": "Substantial conditional resources need a named load trigger; remove orphan scaffolding."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 66,
+      "sentence": 2,
+      "text": "Remove orphan examples, placeholders, copied manuals, and unused scaffolding.",
+      "disposition": "retain",
+      "intended_outcome": "Substantial conditional resources need a named load trigger; remove orphan scaffolding."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 70,
+      "sentence": 1,
+      "text": "1.",
+      "disposition": "retain",
+      "intended_outcome": "Inspect owner/failure, identify target and near-miss, draft minimum coherent change."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 70,
+      "sentence": 2,
+      "text": "Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome.",
+      "disposition": "retain",
+      "intended_outcome": "Inspect owner/failure, identify target and near-miss, draft minimum coherent change."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 71,
+      "sentence": 1,
+      "text": "2.",
+      "disposition": "retain",
+      "intended_outcome": "Inspect owner/failure, identify target and near-miss, draft minimum coherent change."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 71,
+      "sentence": 2,
+      "text": "State the target behavior and near-miss behavior that must remain unchanged.",
+      "disposition": "retain",
+      "intended_outcome": "Inspect owner/failure, identify target and near-miss, draft minimum coherent change."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 72,
+      "sentence": 1,
+      "text": "3.",
+      "disposition": "retain",
+      "intended_outcome": "Inspect owner/failure, identify target and near-miss, draft minimum coherent change."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 72,
+      "sentence": 2,
+      "text": "Draft the minimum coherent change using the correct modality.",
+      "disposition": "retain",
+      "intended_outcome": "Inspect owner/failure, identify target and near-miss, draft minimum coherent change."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 73,
+      "sentence": 1,
+      "text": "4.",
+      "disposition": "simplify",
+      "intended_outcome": "Canonical-first editing and authorized deployment; stage candidate until checks pass."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 73,
+      "sentence": 2,
+      "text": "Edit the canonical source with an available repository editor.",
+      "disposition": "simplify",
+      "intended_outcome": "Canonical-first editing and authorized deployment; stage candidate until checks pass."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 73,
+      "sentence": 3,
+      "text": "Use `skill_manage` only when it targets that source or performs the authorized deployment step.",
+      "disposition": "simplify",
+      "intended_outcome": "Canonical-first editing and authorized deployment; stage candidate until checks pass."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 73,
+      "sentence": 4,
+      "text": "Preserve existing user authorization and the source/deployment relationship.",
+      "disposition": "simplify",
+      "intended_outcome": "Canonical-first editing and authorized deployment; stage candidate until checks pass."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 74,
+      "sentence": 1,
+      "text": "5.",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 74,
+      "sentence": 2,
+      "text": "Verify metadata/frontmatter, linked-file existence, and fresh skill discovery.",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 75,
+      "sentence": 1,
+      "text": "6.",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 75,
+      "sentence": 2,
+      "text": "Run proportional behavior probes:",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 76,
+      "sentence": 1,
+      "text": "- trigger change => realistic positive and near-miss prompts;",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 77,
+      "sentence": 1,
+      "text": "- corrected failure => replay it plus one nearby valid case;",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 78,
+      "sentence": 1,
+      "text": "- script/template => execute or render the real artifact path;",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 79,
+      "sentence": 1,
+      "text": "- structural cleanup => load verification and stale-reference search may be enough.",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 80,
+      "sentence": 1,
+      "text": "7.",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 80,
+      "sentence": 2,
+      "text": "Promote only when the candidate improves the target behavior without a material regression.",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 80,
+      "sentence": 3,
+      "text": "Otherwise keep or restore the simpler baseline.",
+      "disposition": "retain",
+      "intended_outcome": "Validate metadata, links and fresh discovery; use proportional trigger/failure/script checks and retain baseline on regression."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 84,
+      "sentence": 1,
+      "text": "Do not force a fixed benchmark, subagent fan-out, viewer, exact wording assertion, or quantitative harness onto every skill edit.",
+      "disposition": "retain",
+      "intended_outcome": "No mandatory benchmark/fan-out theater. Comparable runtime identity and decision-changing evidence are needed only for uncertain behavioral claims; clean up eval artifacts."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 86,
+      "sentence": 1,
+      "text": "Use baseline/candidate runs when model behavior or trigger selection is genuinely uncertain.",
+      "disposition": "retain",
+      "intended_outcome": "No mandatory benchmark/fan-out theater. Comparable runtime identity and decision-changing evidence are needed only for uncertain behavioral claims; clean up eval artifacts."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 86,
+      "sentence": 2,
+      "text": "Keep the model/runtime/tool context equivalent.",
+      "disposition": "retain",
+      "intended_outcome": "No mandatory benchmark/fan-out theater. Comparable runtime identity and decision-changing evidence are needed only for uncertain behavioral claims; clean up eval artifacts."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 86,
+      "sentence": 3,
+      "text": "Deterministic checks should enforce artifacts or true invariants, not paraphrasable prose.",
+      "disposition": "retain",
+      "intended_outcome": "No mandatory benchmark/fan-out theater. Comparable runtime identity and decision-changing evidence are needed only for uncertain behavioral claims; clean up eval artifacts."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 86,
+      "sentence": 4,
+      "text": "Use independent review only when complexity, risk, or author bias makes it materially useful.",
+      "disposition": "retain",
+      "intended_outcome": "No mandatory benchmark/fan-out theater. Comparable runtime identity and decision-changing evidence are needed only for uncertain behavioral claims; clean up eval artifacts."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 88,
+      "sentence": 1,
+      "text": "Record only decision-changing evidence: prompt, active stack, observable result, verification, and remaining uncertainty.",
+      "disposition": "retain",
+      "intended_outcome": "No mandatory benchmark/fan-out theater. Comparable runtime identity and decision-changing evidence are needed only for uncertain behavioral claims; clean up eval artifacts."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 88,
+      "sentence": 2,
+      "text": "Remove temporary eval sessions/workspaces after preserving required evidence unless the user asked to retain them.",
+      "disposition": "retain",
+      "intended_outcome": "No mandatory benchmark/fan-out theater. Comparable runtime identity and decision-changing evidence are needed only for uncertain behavioral claims; clean up eval artifacts."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 92,
+      "sentence": 1,
+      "text": "Report the selected owner, what was added/removed, verification results, and unresolved risk or restart requirement.",
+      "disposition": "retain",
+      "intended_outcome": "Report owner, disposition, verification, uncertainty and restart requirement; link changed artifacts."
+    },
+    {
+      "source": "skills/skill-creator/SKILL.md",
+      "line": 92,
+      "sentence": 2,
+      "text": "If files changed, link the owning skill and any supporting artifacts.",
+      "disposition": "retain",
+      "intended_outcome": "Report owner, disposition, verification, uncertainty and restart requirement; link changed artifacts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 16,
+      "sentence": 1,
+      "text": "Use this for persistent instructions, skills, config, plugins, hooks, routing, or source that affects more than one of the supported hosts: Hermes, Codex, and OMP.",
+      "disposition": "narrow",
+      "intended_outcome": "Cross-host placement/parity/reconciliation, not a prerequisite for known-owner wording edits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 16,
+      "sentence": 2,
+      "text": "Ordinary host use, project code, and one-host status inspection stay with their narrower owners.",
+      "disposition": "narrow",
+      "intended_outcome": "Cross-host placement/parity/reconciliation, not a prerequisite for known-owner wording edits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 20,
+      "sentence": 1,
+      "text": "Agent Signal owns the source of its managed artifacts.",
+      "disposition": "retain",
+      "intended_outcome": "Locate canonical source through managed state; do not edit caches or independently owned native surfaces as shared source."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 20,
+      "sentence": 2,
+      "text": "Locate its checkout from the managed skill root's `.agent-signal-fleet.json` and `source_snapshot`, as described by `fleet-sync`; otherwise locate a checkout containing `fleet.json`, `registry.json`, and `tools/fleet.py`.",
+      "disposition": "retain",
+      "intended_outcome": "Locate canonical source through managed state; do not edit caches or independently owned native surfaces as shared source."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 20,
+      "sentence": 3,
+      "text": "Edit that source before deploying its managed copies.",
+      "disposition": "retain",
+      "intended_outcome": "Locate canonical source through managed state; do not edit caches or independently owned native surfaces as shared source."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 20,
+      "sentence": 4,
+      "text": "Independently owned native surfaces retain their own source. `agent-surface-bridge` is prior evidence only.",
+      "disposition": "retain",
+      "intended_outcome": "Locate canonical source through managed state; do not edit caches or independently owned native surfaces as shared source."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 26,
+      "sentence": 1,
+      "text": "State the observable outcome, trigger, affected hosts and versions, hard failures, acceptable native differences, rollback, and checks.",
+      "disposition": "retain",
+      "intended_outcome": "Observable behavior and protected native differences precede mechanism choice."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 26,
+      "sentence": 2,
+      "text": "Do not choose a file or mechanism before the behavior is clear.",
+      "disposition": "retain",
+      "intended_outcome": "Observable behavior and protected native differences precede mechanism choice."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 30,
+      "sentence": 1,
+      "text": "From the owning checkout, run:",
+      "disposition": "narrow",
+      "intended_outcome": "Keep deterministic preflight commands; inspect affected contract/live dependencies rather than every surface on each edit. Exclude unrelated drift from deployment."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 33,
+      "sentence": 1,
+      "text": "python tools/recovery.py diff",
+      "disposition": "narrow",
+      "intended_outcome": "Keep deterministic preflight commands; inspect affected contract/live dependencies rather than every surface on each edit. Exclude unrelated drift from deployment."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 34,
+      "sentence": 1,
+      "text": "python tools/instruction_profile.py",
+      "disposition": "narrow",
+      "intended_outcome": "Keep deterministic preflight commands; inspect affected contract/live dependencies rather than every surface on each edit. Exclude unrelated drift from deployment."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 35,
+      "sentence": 1,
+      "text": "python tools/fleet.py render",
+      "disposition": "narrow",
+      "intended_outcome": "Keep deterministic preflight commands; inspect affected contract/live dependencies rather than every surface on each edit. Exclude unrelated drift from deployment."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 36,
+      "sentence": 1,
+      "text": "python tools/fleet.py diff",
+      "disposition": "narrow",
+      "intended_outcome": "Keep deterministic preflight commands; inspect affected contract/live dependencies rather than every surface on each edit. Exclude unrelated drift from deployment."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 39,
+      "sentence": 1,
+      "text": "Read `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json`, `contracts/ownership.json`, the selected model profile, and `recovery/current/manifest.json`.",
+      "disposition": "narrow",
+      "intended_outcome": "Keep deterministic preflight commands; inspect affected contract/live dependencies rather than every surface on each edit. Exclude unrelated drift from deployment."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 39,
+      "sentence": 2,
+      "text": "Then inspect the live target config, docs, source, discovery roots, precedence, and enabled plugins for the exact host, profile, and working directory.",
+      "disposition": "narrow",
+      "intended_outcome": "Keep deterministic preflight commands; inspect affected contract/live dependencies rather than every surface on each edit. Exclude unrelated drift from deployment."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 39,
+      "sentence": 3,
+      "text": "Official current host docs beat stale repository prose; reviewed Agent Signal ownership beats live copies and generated caches.",
+      "disposition": "narrow",
+      "intended_outcome": "Keep deterministic preflight commands; inspect affected contract/live dependencies rather than every surface on each edit. Exclude unrelated drift from deployment."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 43,
+      "sentence": 1,
+      "text": "For every variant, enumerate independently:",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 45,
+      "sentence": 1,
+      "text": "- trigger and user-visible outcome;",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 46,
+      "sentence": 1,
+      "text": "- procedure and decision rules;",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 47,
+      "sentence": 1,
+      "text": "- scripts, templates, and deterministic mechanisms;",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 48,
+      "sentence": 1,
+      "text": "- safety, lifecycle, recovery, and verification guarantees;",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 49,
+      "sentence": 1,
+      "text": "- host-native discovery, precedence, command, or file-format glue;",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 50,
+      "sentence": 1,
+      "text": "- provenance, license, current tests, and known failures.",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 52,
+      "sentence": 1,
+      "text": "Classify each unique behavior as:",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 54,
+      "sentence": 1,
+      "text": "- **portable winner** — migrate into the canonical owner;",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 55,
+      "sentence": 1,
+      "text": "- **host adapter** — retain only the smallest host-native glue;",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 56,
+      "sentence": 1,
+      "text": "- **irreducible native strength** — leave with the host and route to it;",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 57,
+      "sentence": 1,
+      "text": "- **discard** — redundant, stale, broken, unsafe, unsupported, or negative steering.",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 59,
+      "sentence": 1,
+      "text": "The canonical result may merge compatible winning behaviors from several variants.",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 59,
+      "sentence": 2,
+      "text": "Do not pick a whole skill merely by version, and do not union conflicting instruction sets.",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 59,
+      "sentence": 3,
+      "text": "A variant may be removed only after every unique behavior is migrated, retained natively, or explicitly rejected with evidence.",
+      "disposition": "retain",
+      "intended_outcome": "Behavior-by-behavior comparison preserves unique mechanisms, failure guarantees, native glue and evidence. No whole-file/version winner or union of conflicts."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 63,
+      "sentence": 1,
+      "text": "Use the narrowest source owner: portable procedures in an Agent Skill, standing preferences in the applicable instruction surface, and runtime mechanics in a supported config or native adapter/source.",
+      "disposition": "narrow",
+      "intended_outcome": "Retain ownership and registry-not-authorization distinction. Staged candidates are optional evidence, not mandatory evaluation/promotion hops."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 63,
+      "sentence": 2,
+      "text": "Registry state records deployment eligibility; it does not grant authorization or prove model quality.",
+      "disposition": "narrow",
+      "intended_outcome": "Retain ownership and registry-not-authorization distinction. Staged candidates are optional evidence, not mandatory evaluation/promotion hops."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 63,
+      "sentence": 3,
+      "text": "Use `capability-curator` for an unresolved capability comparison and `surface-convergence` as a reference where relevant; staged guides are not required approval hops.",
+      "disposition": "narrow",
+      "intended_outcome": "Retain ownership and registry-not-authorization distinction. Staged candidates are optional evidence, not mandatory evaluation/promotion hops."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 67,
+      "sentence": 1,
+      "text": "Keep unselected candidates outside live discovery roots and preserve license/provenance.",
+      "disposition": "retain",
+      "intended_outcome": "Stage candidates, bind real runtime/evidence, distinguish explicit injection from natural triggering, and retain host evidence limits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 67,
+      "sentence": 2,
+      "text": "Modify the portable owner first, then necessary adapters.",
+      "disposition": "retain",
+      "intended_outcome": "Stage candidates, bind real runtime/evidence, distinguish explicit injection from natural triggering, and retain host evidence limits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 67,
+      "sentence": 3,
+      "text": "Verify mechanism corrections directly; compare model behavior when claiming a quality gain.",
+      "disposition": "retain",
+      "intended_outcome": "Stage candidates, bind real runtime/evidence, distinguish explicit injection from natural triggering, and retain host evidence limits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 67,
+      "sentence": 4,
+      "text": "Record model, provider, reasoning, runtime, and prompt/tool/context identities.",
+      "disposition": "retain",
+      "intended_outcome": "Stage candidates, bind real runtime/evidence, distinguish explicit injection from natural triggering, and retain host evidence limits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 67,
+      "sentence": 5,
+      "text": "Explicit instruction injection does not establish natural triggering.",
+      "disposition": "retain",
+      "intended_outcome": "Stage candidates, bind real runtime/evidence, distinguish explicit injection from natural triggering, and retain host evidence limits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 67,
+      "sentence": 6,
+      "text": "Test every host included in a parity claim; missing or failed host evidence remains an explicit limit.",
+      "disposition": "retain",
+      "intended_outcome": "Stage candidates, bind real runtime/evidence, distinguish explicit injection from natural triggering, and retain host evidence limits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 69,
+      "sentence": 1,
+      "text": "Structural removal of byte-identical copies needs deterministic identity and fresh-discovery checks, not evaluation theater.",
+      "disposition": "retain",
+      "intended_outcome": "Stage candidates, bind real runtime/evidence, distinguish explicit injection from natural triggering, and retain host evidence limits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 69,
+      "sentence": 2,
+      "text": "A broken unique mechanism is not a winner merely because no other variant implements it.",
+      "disposition": "retain",
+      "intended_outcome": "Stage candidates, bind real runtime/evidence, distinguish explicit injection from natural triggering, and retain host evidence limits."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 73,
+      "sentence": 1,
+      "text": "Use `fleet-sync` for admitted portable skills.",
+      "disposition": "retain/add owner procedure",
+      "intended_outcome": "Preserve fleet preflight, no collision forcing or cache edits, and minimal adapters. Inline reconciliation details removed from standing prompts are owned here."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 73,
+      "sentence": 2,
+      "text": "Never force through an unmanaged collision, edit a generated plugin cache, or delete a live variant before preflight.",
+      "disposition": "retain/add owner procedure",
+      "intended_outcome": "Preserve fleet preflight, no collision forcing or cache edits, and minimal adapters. Inline reconciliation details removed from standing prompts are owned here."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 73,
+      "sentence": 3,
+      "text": "Keep adapters only for runtime discovery, precedence, host command/config format, or an irreducible native protocol.",
+      "disposition": "retain/add owner procedure",
+      "intended_outcome": "Preserve fleet preflight, no collision forcing or cache edits, and minimal adapters. Inline reconciliation details removed from standing prompts are owned here."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 75,
+      "sentence": 1,
+      "text": "Host checks:",
+      "disposition": "retain",
+      "intended_outcome": "Native host verification is necessary because identical files do not prove actual discovery/precedence."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 77,
+      "sentence": 1,
+      "text": "- **Hermes:** verify the parsed `skills.external_dirs` value and fresh skill loading; a quoted serialized array can silently disable discovery.",
+      "disposition": "retain",
+      "intended_outcome": "Native host verification is necessary because identical files do not prove actual discovery/precedence."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 78,
+      "sentence": 1,
+      "text": "- **Codex:** use `codex debug prompt-input` to confirm the effective skill.",
+      "disposition": "retain",
+      "intended_outcome": "Native host verification is necessary because identical files do not prove actual discovery/precedence."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 78,
+      "sentence": 2,
+      "text": "For local-marketplace plugins, edit source, refresh through the native remove/re-add lifecycle, and verify `codex plugin list --json`; never patch the installed cache.",
+      "disposition": "retain",
+      "intended_outcome": "Native host verification is necessary because identical files do not prove actual discovery/precedence."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 79,
+      "sentence": 1,
+      "text": "- **OMP:** current OMP loads Agent Skills from project walk-up and user-home `.agent/skills` and `.agents/skills`.",
+      "disposition": "retain",
+      "intended_outcome": "Native host verification is necessary because identical files do not prove actual discovery/precedence."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 79,
+      "sentence": 2,
+      "text": "Verify a fresh no-session process.",
+      "disposition": "retain",
+      "intended_outcome": "Native host verification is necessary because identical files do not prove actual discovery/precedence."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 79,
+      "sentence": 3,
+      "text": "Keep a native OMP skill only when it adds real OMP execution or precedence glue rather than copied policy.",
+      "disposition": "retain",
+      "intended_outcome": "Native host verification is necessary because identical files do not prove actual discovery/precedence."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 81,
+      "sentence": 1,
+      "text": "After promotion, rerun recovery/profile/fleet verification and one real target behavior.",
+      "disposition": "retain",
+      "intended_outcome": "Post-promotion checks include a real behavior, rollback, and restart/reset scope."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 81,
+      "sentence": 2,
+      "text": "Record the canonical owner, migrated and discarded behaviors, retained native deltas, exact checks, rollback, and restart/reset requirement.",
+      "disposition": "retain",
+      "intended_outcome": "Post-promotion checks include a real behavior, rollback, and restart/reset scope."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 85,
+      "sentence": 1,
+      "text": "Never copy credentials, sessions, memories, logs, caches, private user data, or provider-hidden prompts into Agent Signal.",
+      "disposition": "retain",
+      "intended_outcome": "Protect secrets/private state, other profiles, native strengths, and no inferred parity."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 85,
+      "sentence": 2,
+      "text": "Do not modify another profile without explicit authorization.",
+      "disposition": "retain",
+      "intended_outcome": "Protect secrets/private state, other profiles, native strengths, and no inferred parity."
+    },
+    {
+      "source": "skills/cross-agent-surface-engineering/SKILL.md",
+      "line": 85,
+      "sentence": 3,
+      "text": "Do not infer parity from identical files, and do not lower one host to the weakest common mechanism.",
+      "disposition": "retain",
+      "intended_outcome": "Protect secrets/private state, other profiles, native strengths, and no inferred parity."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 12,
+      "sentence": 1,
+      "text": "Write like the user talks: short, plain, direct, and natural.",
+      "disposition": "merge",
+      "intended_outcome": "Keep plain natural chat and decision-relevant detail without a second standing style body."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 12,
+      "sentence": 2,
+      "text": "Internal work can be complex; the user-facing reply should not expose that complexity unless it matters.",
+      "disposition": "merge",
+      "intended_outcome": "Keep plain natural chat and decision-relevant detail without a second standing style body."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 16,
+      "sentence": 1,
+      "text": "Use for conversational answers, explanations, status, comparisons, decisions, and completion reports.",
+      "disposition": "narrow",
+      "intended_outcome": "Load for style calibration/repair, not every answer. Public artifacts, code and strict schemas retain their owners."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 16,
+      "sentence": 2,
+      "text": "Do not use for public artifacts owned by `humanizer`, strict schemas, or code.",
+      "disposition": "narrow",
+      "intended_outcome": "Load for style calibration/repair, not every answer. Public artifacts, code and strict schemas retain their owners."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 20,
+      "sentence": 1,
+      "text": "1.",
+      "disposition": "narrow",
+      "intended_outcome": "Lead with a real answer when available; remove forced first-sentence and sentence-count templates."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 20,
+      "sentence": 2,
+      "text": "Answer the exact question in the first sentence.",
+      "disposition": "narrow",
+      "intended_outcome": "Lead with a real answer when available; remove forced first-sentence and sentence-count templates."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 21,
+      "sentence": 1,
+      "text": "2.",
+      "disposition": "narrow",
+      "intended_outcome": "Lead with a real answer when available; remove forced first-sentence and sentence-count templates."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 21,
+      "sentence": 2,
+      "text": "Stop after one or two short sentences when that fully answers it.",
+      "disposition": "narrow",
+      "intended_outcome": "Lead with a real answer when available; remove forced first-sentence and sentence-count templates."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 22,
+      "sentence": 1,
+      "text": "3.",
+      "disposition": "merge",
+      "intended_outcome": "Keep tone matching and clarity; one information-value criterion governs detail."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 22,
+      "sentence": 2,
+      "text": "Match the user's formality, sentence length, and vocabulary without imitating typos or becoming unclear.",
+      "disposition": "merge",
+      "intended_outcome": "Keep tone matching and clarity; one information-value criterion governs detail."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 23,
+      "sentence": 1,
+      "text": "4.",
+      "disposition": "merge",
+      "intended_outcome": "Keep tone matching and clarity; one information-value criterion governs detail."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 23,
+      "sentence": 2,
+      "text": "Use everyday words.",
+      "disposition": "merge",
+      "intended_outcome": "Keep tone matching and clarity; one information-value criterion governs detail."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 23,
+      "sentence": 3,
+      "text": "Define a technical term only when the term is needed.",
+      "disposition": "merge",
+      "intended_outcome": "Keep tone matching and clarity; one information-value criterion governs detail."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 24,
+      "sentence": 1,
+      "text": "5.",
+      "disposition": "merge",
+      "intended_outcome": "Keep tone matching and clarity; one information-value criterion governs detail."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 24,
+      "sentence": 2,
+      "text": "Add detail only when it changes understanding, a decision, a blocker, or the next action.",
+      "disposition": "merge",
+      "intended_outcome": "Keep tone matching and clarity; one information-value criterion governs detail."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 28,
+      "sentence": 1,
+      "text": "- **What/which question:** name the thing, then state whether it ran or exists.",
+      "disposition": "merge",
+      "intended_outcome": "Answer/cause/status/recommendation ordering becomes one conditional rule. Artifact links follow host overlay instead of another template."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 29,
+      "sentence": 1,
+      "text": "- **Why question:** give the direct cause; do not retell the investigation.",
+      "disposition": "merge",
+      "intended_outcome": "Answer/cause/status/recommendation ordering becomes one conditional rule. Artifact links follow host overlay instead of another template."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 30,
+      "sentence": 1,
+      "text": "- **Status question:** say done, running, blocked, or not started; add the single relevant consequence.",
+      "disposition": "merge",
+      "intended_outcome": "Answer/cause/status/recommendation ordering becomes one conditional rule. Artifact links follow host overlay instead of another template."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 31,
+      "sentence": 1,
+      "text": "- **Decision question:** give the recommendation first, then the shortest trade-off that could change the choice.",
+      "disposition": "merge",
+      "intended_outcome": "Answer/cause/status/recommendation ordering becomes one conditional rule. Artifact links follow host overlay instead of another template."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 32,
+      "sentence": 1,
+      "text": "- **Completed work:** one plain result line.",
+      "disposition": "merge",
+      "intended_outcome": "Answer/cause/status/recommendation ordering becomes one conditional rule. Artifact links follow host overlay instead of another template."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 32,
+      "sentence": 2,
+      "text": "If artifacts changed, add a `Changed:` list with inspectable file links; when many changed, link one diff or index.",
+      "disposition": "merge",
+      "intended_outcome": "Answer/cause/status/recommendation ordering becomes one conditional rule. Artifact links follow host overlay instead of another template."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 36,
+      "sentence": 1,
+      "text": "- Do not restate the user's message.",
+      "disposition": "merge",
+      "intended_outcome": "Remove repeated no-restatement/report restrictions; use structure when it aids scanning."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 37,
+      "sentence": 1,
+      "text": "- Do not turn a simple answer into a report.",
+      "disposition": "merge",
+      "intended_outcome": "Remove repeated no-restatement/report restrictions; use structure when it aids scanning."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 38,
+      "sentence": 1,
+      "text": "- Avoid headings, tables, summaries, disclaimers, and lists unless the content genuinely needs scanning.",
+      "disposition": "merge",
+      "intended_outcome": "Remove repeated no-restatement/report restrictions; use structure when it aids scanning."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 39,
+      "sentence": 1,
+      "text": "- Before a consequential design choice or costly change of direction, explain the recommended approach and meaningful alternatives early enough for the user to steer.",
+      "disposition": "retain",
+      "intended_outcome": "Early steering for consequential decisions; continue routine authorized work without repeated permission."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 39,
+      "sentence": 2,
+      "text": "Continue authorized routine work without repeated permission questions; do not ask the user to architect the system.",
+      "disposition": "retain",
+      "intended_outcome": "Early steering for consequential decisions; continue routine authorized work without repeated permission."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 40,
+      "sentence": 1,
+      "text": "- Skip routine tool/test narration; report decision-changing results and blockers.",
+      "disposition": "merge",
+      "intended_outcome": "Routine narration covered by information-value rule."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 41,
+      "sentence": 1,
+      "text": "- Do not end with a generic offer to do more.",
+      "disposition": "retain",
+      "intended_outcome": "Avoid generic closing offers that add friction."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 42,
+      "sentence": 1,
+      "text": "- Own mistakes in one sentence; do not wrap the admission in an explanation.",
+      "disposition": "narrow",
+      "intended_outcome": "Own mistakes without suppressing a cause that changes the remedy."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 46,
+      "sentence": 1,
+      "text": "Brevity never removes required safety, exact identifiers, material uncertainty, blockers, or evidence needed to trust a claimed result.",
+      "disposition": "retain/merge",
+      "intended_outcome": "Brevity must preserve uncertainty, blockers, evidence, and substantive checks."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 46,
+      "sentence": 2,
+      "text": "State those plainly and only once.",
+      "disposition": "retain/merge",
+      "intended_outcome": "Brevity must preserve uncertainty, blockers, evidence, and substantive checks."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 50,
+      "sentence": 1,
+      "text": "- Domain skills own facts, procedures, and checks.",
+      "disposition": "merge/inline",
+      "intended_outcome": "Domain and public-prose owners retained. Inline tiny stalled-work behavior rather than requiring a separate file load."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 51,
+      "sentence": 1,
+      "text": "- `humanizer` owns public-facing artifacts such as issues, PRs, email, and posts.",
+      "disposition": "merge/inline",
+      "intended_outcome": "Domain and public-prose owners retained. Inline tiny stalled-work behavior rather than requiring a separate file load."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 52,
+      "sentence": 1,
+      "text": "- This skill owns conversational replies and timely design/status updates.",
+      "disposition": "merge/inline",
+      "intended_outcome": "Domain and public-prose owners retained. Inline tiny stalled-work behavior rather than requiring a separate file load."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 52,
+      "sentence": 2,
+      "text": "For stalled authorized work, use [proactive continuation](references/proactive-status-continuation.md).",
+      "disposition": "merge/inline",
+      "intended_outcome": "Domain and public-prose owners retained. Inline tiny stalled-work behavior rather than requiring a separate file load."
+    },
+    {
+      "source": "skills/conversational-communication/SKILL.md",
+      "line": 54,
+      "sentence": 1,
+      "text": "Read [the user style correction note](references/2026-08-24-user-style-correction.md) when calibrating or testing this user's preferred style.",
+      "disposition": "remove",
+      "intended_outcome": "Dated style narrative duplicates current rules; Git history preserves provenance."
+    },
+    {
+      "source": "skills/conversational-communication/references/proactive-status-continuation.md",
+      "line": 3,
+      "sentence": 1,
+      "text": "When the user asks why authorized work has not run, answer the status in one short sentence and continue the available work in the same turn.",
+      "disposition": "inline",
+      "intended_outcome": "Preserve same-turn continuation of available authorized work; main skill already loads for this repair."
+    },
+    {
+      "source": "skills/conversational-communication/references/proactive-status-continuation.md",
+      "line": 3,
+      "sentence": 2,
+      "text": "Do not stop after explaining the delay or make the user probe again to trigger each obvious next step.",
+      "disposition": "inline",
+      "intended_outcome": "Preserve same-turn continuation of available authorized work; main skill already loads for this repair."
+    },
+    {
+      "source": "skills/conversational-communication/references/proactive-status-continuation.md",
+      "line": 5,
+      "sentence": 1,
+      "text": "Keep the final update short: result, blocker if any, and artifact link only when useful.",
+      "disposition": "merge",
+      "intended_outcome": "Final brevity/artifact-link behavior already owned by overlay and main skill."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 7,
+      "sentence": 1,
+      "text": "The user explicitly asked the agent to “talk like I do, short and simple” and later confirmed that the best answer was the two-sentence response naming the workflow and saying whether it ran.",
+      "disposition": "remove",
+      "intended_outcome": "Historical user-style evidence already encoded; keep in Git history, not a mandatory loaded reference."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 11,
+      "sentence": 1,
+      "text": "For a simple factual or status question:",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 13,
+      "sentence": 1,
+      "text": "1.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 13,
+      "sentence": 2,
+      "text": "Give the exact name or answer.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 14,
+      "sentence": 1,
+      "text": "2.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 14,
+      "sentence": 2,
+      "text": "State the status or consequence.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 15,
+      "sentence": 1,
+      "text": "3.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 15,
+      "sentence": 2,
+      "text": "Stop.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 17,
+      "sentence": 1,
+      "text": "Example shape:",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 19,
+      "sentence": 1,
+      "text": "> It’s called **`openai-delegation-route-research`**.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 20,
+      "sentence": 1,
+      "text": ">",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 21,
+      "sentence": 1,
+      "text": "> The real refresh hasn’t run yet.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 21,
+      "sentence": 2,
+      "text": "Only the workflow tests ran.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Direct answer and accurate status retained; rigid three-step/two-sentence exemplar not required."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 25,
+      "sentence": 1,
+      "text": "A long explanation of architecture, receipts, tests, sources, and next steps increased decision friction when the user only asked what something was or whether it ran.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Decision-relevant detail criterion retained; guessing how much the user would naturally say is not an acceptance test."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 25,
+      "sentence": 2,
+      "text": "That information may be valid but belongs behind a follow-up question, not in the default answer.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Decision-relevant detail criterion retained; guessing how much the user would naturally say is not an acceptance test."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 29,
+      "sentence": 1,
+      "text": "Before sending, ask: “Would the user naturally say this much?” If not, cut it until every remaining sentence changes the answer or next action.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Decision-relevant detail criterion retained; guessing how much the user would naturally say is not an acceptance test."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 33,
+      "sentence": 1,
+      "text": "For routine operational status, collapse the state and consequence into the shortest natural phrase.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Keep short status with full verification rigor; dated example and repeated wording add no current behavior."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 33,
+      "sentence": 2,
+      "text": "Do not add a heading, explain ordinary platform mechanics, or say what the status is *not* unless that distinction changes the user's next action.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Keep short status with full verification rigor; dated example and repeated wording add no current behavior."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 35,
+      "sentence": 1,
+      "text": "Prefer:",
+      "disposition": "merge/remove",
+      "intended_outcome": "Keep short status with full verification rigor; dated example and repeated wording add no current behavior."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 37,
+      "sentence": 1,
+      "text": "> Maintainer workflow approval and review are pending.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Keep short status with full verification rigor; dated example and repeated wording add no current behavior."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 39,
+      "sentence": 1,
+      "text": "over a paragraph that separately explains the workflow gate, distinguishes it from a test failure, and restates the review requirement.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Keep short status with full verification rigor; dated example and repeated wording add no current behavior."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 41,
+      "sentence": 1,
+      "text": "This is presentation compression only.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Keep short status with full verification rigor; dated example and repeated wording add no current behavior."
+    },
+    {
+      "source": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+      "line": 41,
+      "sentence": 2,
+      "text": "Keep the reasoning, tool use, verification, and safety work at full strength; expose more detail when it changes the decision or the user asks for it.",
+      "disposition": "merge/remove",
+      "intended_outcome": "Keep short status with full verification rigor; dated example and repeated wording add no current behavior."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 15,
+      "sentence": 1,
+      "text": "The goal is not to add instructions.",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 15,
+      "sentence": 2,
+      "text": "It is to change the smallest surface that reliably changes the target behavior without degrading nearby behavior.",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 19,
+      "sentence": 1,
+      "text": "State in one sentence what should improve.",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 19,
+      "sentence": 2,
+      "text": "Then identify:",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 21,
+      "sentence": 1,
+      "text": "- observed bad behavior and a representative prompt/reproduction;",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 22,
+      "sentence": 1,
+      "text": "- current owning surface candidates;",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 23,
+      "sentence": 1,
+      "text": "- evidence that would falsify each candidate;",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 24,
+      "sentence": 1,
+      "text": "- important nearby behaviors that must not regress.",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 26,
+      "sentence": 1,
+      "text": "For agent mistakes, distinguish missing instruction from bad trigger, instruction conflict, stale procedure, wrong tool/config surface, or failure to follow an already-correct rule.",
+      "disposition": "merge",
+      "intended_outcome": "Keep unwanted/nearby behavior and diagnosis categories; do not run a second authoring workflow."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 30,
+      "sentence": 1,
+      "text": "- Load `hermes-agent` and use current official docs for supported behavior.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve live home/config/source/docs, account availability, relevant history, and acceptance-not-quality distinction."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 31,
+      "sentence": 1,
+      "text": "- Read the active config/home/profile and source path rather than assuming them.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve live home/config/source/docs, account availability, relevant history, and acceptance-not-quality distinction."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 32,
+      "sentence": 1,
+      "text": "- Search source before claiming a knob or hook exists.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve live home/config/source/docs, account availability, relevant history, and acceptance-not-quality distinction."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 33,
+      "sentence": 1,
+      "text": "- For provider/model behavior, verify live account availability and actual request acceptance.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve live home/config/source/docs, account availability, relevant history, and acceptance-not-quality distinction."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 34,
+      "sentence": 1,
+      "text": "- Search relevant session history when the change is meant to correct a repeated failure.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve live home/config/source/docs, account availability, relevant history, and acceptance-not-quality distinction."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 36,
+      "sentence": 1,
+      "text": "Do not treat a config write, accepted API field, or new skill text as proof behavior improved.",
+      "disposition": "merge",
+      "intended_outcome": "Preserve live home/config/source/docs, account availability, relevant history, and acceptance-not-quality distinction."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 40,
+      "sentence": 1,
+      "text": "Prefer the highest supported surface that directly controls the behavior:",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 42,
+      "sentence": 1,
+      "text": "1. **Provider-native request knob** — generation mechanics such as output verbosity, reasoning, service tier, JSON mode, or token limits.",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 43,
+      "sentence": 1,
+      "text": "2. **Task-specific auxiliary/delegation config** — cost, latency, and capability routing for a defined side task.",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 44,
+      "sentence": 1,
+      "text": "3. **Skill** — reusable task-class procedure, exact commands, local traps, scripts, templates, or references.",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 45,
+      "sentence": 1,
+      "text": "4. **`SOUL.md`** — durable identity, judgment, broad style, communication defaults, and standing behavior that should follow the Hermes instance everywhere.",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 46,
+      "sentence": 1,
+      "text": "5. **Optional `agent.system_prompt` / API override** — deployment-specific or experimental instruction text when no named personality is selected; it is appended at API-call time and should not be the default owner for baseline persona/communication.",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 47,
+      "sentence": 1,
+      "text": "6. **`/personality` / `agent.personalities`** — temporary or named persona overlays.",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 48,
+      "sentence": 1,
+      "text": "7. **Memory/user profile** — stable facts and preferences, not behavior procedures.",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 49,
+      "sentence": 1,
+      "text": "8. **Source/plugin** — only when supported surfaces cannot provide the behavior.",
+      "disposition": "retain/clarify",
+      "intended_outcome": "Preserve distinct native controls and caveats; select direct control instead of treating an ordered list as universal priority. Inline short SOUL rules may be economical."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 51,
+      "sentence": 1,
+      "text": "Use no durable change when the failure was one-off execution, incomplete evidence, or already prevented by existing instructions.",
+      "disposition": "retain",
+      "intended_outcome": "One-off execution or already-correct rules may need no durable edit."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 55,
+      "sentence": 1,
+      "text": "Before adding or preserving an instruction, ask:",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 57,
+      "sentence": 1,
+      "text": "- Does a capable current model already do this reliably?",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 58,
+      "sentence": 1,
+      "text": "- Is the rule compensating for an older/weaker model?",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 59,
+      "sentence": 1,
+      "text": "- Could a minimum-diff rule block a needed coherent fix?",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 60,
+      "sentence": 1,
+      "text": "- Could a mandatory plan, TDD, review, or subagent loop add more cost than confidence?",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 61,
+      "sentence": 1,
+      "text": "- Could a hard output cap suppress useful causal explanation?",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 62,
+      "sentence": 1,
+      "text": "- Does the trigger match too broad a task class?",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 63,
+      "sentence": 1,
+      "text": "- Is the content procedural knowledge, or stale provider/environment folklore?",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 64,
+      "sentence": 1,
+      "text": "- Does another skill already own the workflow?",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 66,
+      "sentence": 1,
+      "text": "Prefer deleting, merging, narrowing triggers, or moving details into on-demand references over adding another generic guardrail.",
+      "disposition": "move",
+      "intended_outcome": "Sentence intent, broad triggers, model-specific steering and proportional tests now live in skill-creator; no duplicate negative-steering checklist."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 70,
+      "sentence": 1,
+      "text": "- Keep prompt overlays short and positive.",
+      "disposition": "move",
+      "intended_outcome": "Skill-creator owns content, trigger design, resource boundaries and consolidation."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 71,
+      "sentence": 1,
+      "text": "- Keep skill descriptions precise about both trigger and exclusions.",
+      "disposition": "move",
+      "intended_outcome": "Skill-creator owns content, trigger design, resource boundaries and consolidation."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 72,
+      "sentence": 1,
+      "text": "- Put common workflow in one owner; use references instead of duplicating large sections.",
+      "disposition": "move",
+      "intended_outcome": "Skill-creator owns content, trigger design, resource boundaries and consolidation."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 73,
+      "sentence": 1,
+      "text": "- Preserve useful scripts/templates and hard-earned edge cases when consolidating.",
+      "disposition": "move",
+      "intended_outcome": "Skill-creator owns content, trigger design, resource boundaries and consolidation."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 74,
+      "sentence": 1,
+      "text": "- Do not edit other profiles unless explicitly requested.",
+      "disposition": "retain",
+      "intended_outcome": "Other-profile restriction, authorized source patch fallback, exact rollback/fresh-runtime evidence, and separate publishing permission."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 75,
+      "sentence": 1,
+      "text": "- When supported configuration cannot fix the behavior, a tested source patch is allowed within the user's authorization.",
+      "disposition": "retain",
+      "intended_outcome": "Other-profile restriction, authorized source patch fallback, exact rollback/fresh-runtime evidence, and separate publishing permission."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 75,
+      "sentence": 2,
+      "text": "Preserve its source revision, exact diff, backup, rollback, and fresh-runtime checks.",
+      "disposition": "retain",
+      "intended_outcome": "Other-profile restriction, authorized source patch fallback, exact rollback/fresh-runtime evidence, and separate publishing permission."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 75,
+      "sentence": 3,
+      "text": "Public issues or pull requests are separate actions requiring their own authorization.",
+      "disposition": "retain",
+      "intended_outcome": "Other-profile restriction, authorized source patch fallback, exact rollback/fresh-runtime evidence, and separate publishing permission."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 79,
+      "sentence": 1,
+      "text": "Start with the cheapest acceptance probe, then scale:",
+      "disposition": "merge/move",
+      "intended_outcome": "Placement checks preserve config/readback/backend acceptance. Authoring owner handles prompt/trigger comparisons; routing owner handles benchmarks."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 81,
+      "sentence": 1,
+      "text": "- **Config/request knob:** read back config, verify backend acceptance, then behavior A/B.",
+      "disposition": "merge/move",
+      "intended_outcome": "Placement checks preserve config/readback/backend acceptance. Authoring owner handles prompt/trigger comparisons; routing owner handles benchmarks."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 82,
+      "sentence": 1,
+      "text": "- **Skill trigger:** test realistic positive and near-miss negative prompts.",
+      "disposition": "merge/move",
+      "intended_outcome": "Placement checks preserve config/readback/backend acceptance. Authoring owner handles prompt/trigger comparisons; routing owner handles benchmarks."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 83,
+      "sentence": 1,
+      "text": "- **Prompt/style:** compare answer quality, relevance, useful explanation, and bloat—not template compliance alone.",
+      "disposition": "merge/move",
+      "intended_outcome": "Placement checks preserve config/readback/backend acceptance. Authoring owner handles prompt/trigger comparisons; routing owner handles benchmarks."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 84,
+      "sentence": 1,
+      "text": "- **Model/routing:** use representative tasks, repeated calls, latency, errors/rate limits, token/tool usage, and externally verified outcomes.",
+      "disposition": "merge/move",
+      "intended_outcome": "Placement checks preserve config/readback/backend acceptance. Authoring owner handles prompt/trigger comparisons; routing owner handles benchmarks."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 85,
+      "sentence": 1,
+      "text": "- **Workflow change:** replay the failure class and inspect whether the new process prevents it without forcing unnecessary steps elsewhere.",
+      "disposition": "merge/move",
+      "intended_outcome": "Placement checks preserve config/readback/backend acceptance. Authoring owner handles prompt/trigger comparisons; routing owner handles benchmarks."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 87,
+      "sentence": 1,
+      "text": "Use `hermes-prompt-style-tuning` for style harnesses, `hermes-model-routing-evals` for provider/model benchmarks, and `skill-creator` when a skill genuinely needs formal trigger/output evaluation.",
+      "disposition": "remove/repair",
+      "intended_outcome": "Remove dangling specialized skill routes; use the actual authoring and route owners."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 89,
+      "sentence": 1,
+      "text": "One small A/B is weak evidence.",
+      "disposition": "move",
+      "intended_outcome": "Evidence strength and no evaluation theater remain in authoring/cross-host owners."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 89,
+      "sentence": 2,
+      "text": "Apply broad defaults only when representative cases improve without meaningful regressions.",
+      "disposition": "move",
+      "intended_outcome": "Evidence strength and no evaluation theater remain in authoring/cross-host owners."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 89,
+      "sentence": 3,
+      "text": "For obvious redundancy/staleness, structural audit plus load verification may be enough; do not create expensive eval theater to prove identical duplicate text was removable.",
+      "disposition": "move",
+      "intended_outcome": "Evidence strength and no evaluation theater remain in authoring/cross-host owners."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 93,
+      "sentence": 1,
+      "text": "When the target is \"state the outcome and let Hermes handle the harness,\" treat this as a control-plane problem rather than another generic prompt rule:",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 95,
+      "sentence": 1,
+      "text": "- Keep one fixed daily-driver model for the user-facing conversation.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 95,
+      "sentence": 2,
+      "text": "Route work away from it only when task-class evidence justifies a cheaper worker or a stronger specialist.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 96,
+      "sentence": 1,
+      "text": "- Do not map a single scalar complexity score directly to a model.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 96,
+      "sentence": 2,
+      "text": "Route on task shape, risk, expected duration, context needs, parallelizability, and how objectively the result can be verified.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 97,
+      "sentence": 1,
+      "text": "- Choose execution shape automatically where supported: inline work, an isolated session, a persistent goal loop, a deterministic procedure, or durable multi-worker orchestration.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 97,
+      "sentence": 2,
+      "text": "Do not make the user classify the request first.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 98,
+      "sentence": 1,
+      "text": "- Audit existing goals, delegation, Kanban, hooks, session overrides, background review, and curator behavior before inventing overlapping infrastructure.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 99,
+      "sentence": 1,
+      "text": "- Govern impactful self-modification as: scout/research → evidence report → candidate change → disposable evaluation → user review → apply → post-apply smoke test/rollback.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 99,
+      "sentence": 2,
+      "text": "Automatic maintenance should be limited to clearly reversible housekeeping.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 100,
+      "sentence": 1,
+      "text": "- Do not churn the main model, prompts, skills, or routing from trend reports alone.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 100,
+      "sentence": 2,
+      "text": "Challengers earn promotion through representative live-harness evaluation.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 101,
+      "sentence": 1,
+      "text": "- Keep harness repair and upstream issue/PR handling inside the maintenance workflow; do not hand that operational burden back to a user who asked only for an outcome.",
+      "disposition": "remove/move",
+      "intended_outcome": "Not a placement concern: existing orchestration and route owners preserve parent authority, real task shapes, scoped changes and evidence. Delete fixed daily-driver-model prescription; native switching remains supported."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 105,
+      "sentence": 1,
+      "text": "When auditing persistence/workflows:",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 107,
+      "sentence": 1,
+      "text": "1.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 107,
+      "sentence": 2,
+      "text": "Inventory enabled skills, disabled list, categories, descriptions, linked files, and prompt-size contribution.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 108,
+      "sentence": 1,
+      "text": "2.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 108,
+      "sentence": 2,
+      "text": "Name the problem each skill solves and whether that problem still exists.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 109,
+      "sentence": 1,
+      "text": "3.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 109,
+      "sentence": 2,
+      "text": "Classify findings:",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 110,
+      "sentence": 1,
+      "text": "- duplicate owner/trigger;",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 111,
+      "sentence": 1,
+      "text": "- stale environment/provider/model assumptions;",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 112,
+      "sentence": 1,
+      "text": "- over-procedural negative steering;",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 113,
+      "sentence": 1,
+      "text": "- valuable specialized procedure/reference;",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 114,
+      "sentence": 1,
+      "text": "- wrong persistence layer.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 115,
+      "sentence": 1,
+      "text": "4.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 115,
+      "sentence": 2,
+      "text": "Consolidate only related workflows.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 115,
+      "sentence": 3,
+      "text": "Preserve domain skills whose procedures/scripts remain useful even if rarely triggered.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 116,
+      "sentence": 1,
+      "text": "5.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 116,
+      "sentence": 2,
+      "text": "Prefer one concise umbrella with on-demand references to several overlapping prompt-heavy skills.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 117,
+      "sentence": 1,
+      "text": "6.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 117,
+      "sentence": 2,
+      "text": "After changes, verify skills load, stale cross-references are gone, config-disabled names are sane, and prompt size moved in the expected direction.",
+      "disposition": "move",
+      "intended_outcome": "Library audit/consolidation is authoring/cross-host work, not a repeated placement procedure; retain specialized procedures rather than indiscriminate pruning."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 121,
+      "sentence": 1,
+      "text": "Report:",
+      "disposition": "move",
+      "intended_outcome": "Owning authoring/cross-host completion contract already requires owner, changes, evidence, uncertainty and restart."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 123,
+      "sentence": 1,
+      "text": "- target behavior and chosen owner;",
+      "disposition": "move",
+      "intended_outcome": "Owning authoring/cross-host completion contract already requires owner, changes, evidence, uncertainty and restart."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 124,
+      "sentence": 1,
+      "text": "- what was added, removed, merged, or left unchanged;",
+      "disposition": "move",
+      "intended_outcome": "Owning authoring/cross-host completion contract already requires owner, changes, evidence, uncertainty and restart."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 125,
+      "sentence": 1,
+      "text": "- exact verification and before/after evidence;",
+      "disposition": "move",
+      "intended_outcome": "Owning authoring/cross-host completion contract already requires owner, changes, evidence, uncertainty and restart."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 126,
+      "sentence": 1,
+      "text": "- unresolved risk or restart/reset requirement.",
+      "disposition": "move",
+      "intended_outcome": "Owning authoring/cross-host completion contract already requires owner, changes, evidence, uncertainty and restart."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 130,
+      "sentence": 1,
+      "text": "- Display verbosity, reasoning visibility, reasoning effort, model output verbosity, and answer length are different controls.",
+      "disposition": "merge",
+      "intended_outcome": "Keep distinct display/generation controls, account/rate-limit reality, stable memory boundary and correct owning layer in relevant selection bullets."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 131,
+      "sentence": 1,
+      "text": "- A model in a catalog may be unavailable to the account.",
+      "disposition": "merge",
+      "intended_outcome": "Keep distinct display/generation controls, account/rate-limit reality, stable memory boundary and correct owning layer in relevant selection bullets."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 132,
+      "sentence": 1,
+      "text": "- Free-tier quality is irrelevant if live rate limits make it unusable.",
+      "disposition": "merge",
+      "intended_outcome": "Keep distinct display/generation controls, account/rate-limit reality, stable memory boundary and correct owning layer in relevant selection bullets."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 133,
+      "sentence": 1,
+      "text": "- Do not store task results, run IDs, or short-lived provider rankings in memory.",
+      "disposition": "merge",
+      "intended_outcome": "Keep distinct display/generation controls, account/rate-limit reality, stable memory boundary and correct owning layer in relevant selection bullets."
+    },
+    {
+      "source": "skills/hermes-self-engineering/SKILL.md",
+      "line": 134,
+      "sentence": 1,
+      "text": "- Do not patch the nearest loaded skill; patch the layer that owns the failure class.",
+      "disposition": "merge",
+      "intended_outcome": "Keep distinct display/generation controls, account/rate-limit reality, stable memory boundary and correct owning layer in relevant selection bullets."
+    }
+  ],
+  "reviewed_sentences": 370
+}

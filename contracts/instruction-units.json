@@ -2,248 +2,312 @@
   "schema_version": 1,
   "units": [
     {
-      "id": "core.identity",
-      "path": "surfaces/core.md",
-      "selector": {"kind": "heading", "value": "# Identity"},
-      "class": "generic-steering",
-      "status": "reference",
-      "hosts": ["codex", "hermes", "omp"],
-      "suite": "evals/core-instruction-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
-      "priority": 20
-    },
-    {
-      "id": "core.communication",
-      "path": "surfaces/core.md",
-      "selector": {"kind": "heading", "value": "# Communication"},
-      "class": "generic-steering",
-      "status": "reference",
-      "hosts": ["codex", "hermes", "omp"],
-      "suite": "evals/core-instruction-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
-      "priority": 40
-    },
-    {
-      "id": "core.judgment",
-      "path": "surfaces/core.md",
-      "selector": {"kind": "heading", "value": "# Judgment"},
-      "class": "generic-steering",
-      "status": "reference",
-      "hosts": ["codex", "hermes", "omp"],
-      "suite": "evals/core-instruction-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
-      "priority": 50
-    },
-    {
-      "id": "core.scope",
-      "path": "surfaces/core.md",
-      "selector": {"kind": "heading", "value": "# Scope"},
-      "class": "generic-steering",
-      "status": "reference",
-      "hosts": ["codex", "hermes", "omp"],
-      "suite": "evals/core-instruction-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
-      "priority": 60
-    },
-    {
-      "id": "core.outcome-first-workflow",
-      "path": "surfaces/core.md",
-      "selector": {"kind": "heading", "value": "# Outcome-first workflow design"},
-      "class": "workflow-routing",
-      "status": "reference",
-      "hosts": ["codex", "hermes", "omp"],
-      "suite": "evals/organic-architecture-governance.json",
-      "retest_on": ["workflow-owner-changed", "instruction-changed"],
-      "priority": 80
-    },
-    {
-      "id": "core.cross-agent-convergence",
-      "path": "surfaces/core.md",
-      "selector": {"kind": "heading", "value": "# Cross-agent convergence"},
-      "class": "workflow-routing",
-      "status": "reference",
-      "hosts": ["codex", "hermes", "omp"],
-      "suite": "evals/surface-convergence.json",
-      "retest_on": ["host-runtime-changed", "instruction-changed"],
-      "priority": 80
-    },
-    {
-      "id": "core.delegation-routing",
-      "path": "surfaces/core.md",
-      "selector": {"kind": "heading", "value": "# Delegation routing"},
-      "class": "workflow-routing",
-      "status": "reference",
-      "hosts": ["codex", "hermes", "omp"],
-      "suite": "evals/suites/adaptive-routing-smoke.json",
-      "retest_on": ["route-catalog-changed", "instruction-changed"],
-      "priority": 80
-    },
-    {
       "id": "core.capability-admission",
       "path": "surfaces/core.md",
-      "selector": {"kind": "heading", "value": "# Capability admission"},
+      "selector": {
+        "kind": "heading",
+        "value": "# Capability admission"
+      },
       "class": "safety-governance",
       "status": "active",
-      "hosts": ["codex", "hermes", "omp"],
+      "hosts": [
+        "codex",
+        "hermes",
+        "omp"
+      ],
       "suite": "evals/capability-admission.json",
-      "retest_on": ["curator-policy-changed", "instruction-changed"],
+      "retest_on": [
+        "curator-policy-changed",
+        "instruction-changed"
+      ],
       "priority": 100
-    },
-    {
-      "id": "hermes.identity",
-      "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "heading", "value": "# Identity"},
-      "class": "generic-steering",
-      "status": "effective",
-      "hosts": ["hermes"],
-      "owner": "hermes-user-global",
-      "suite": "evals/hermes-identity-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
-      "priority": 20
     },
     {
       "id": "hermes.style",
       "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "heading", "value": "# Style"},
+      "selector": {
+        "kind": "heading",
+        "value": "# Communication"
+      },
       "class": "generic-steering",
       "status": "effective",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "owner": "hermes-user-global",
       "suite": "evals/hermes-style-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
       "priority": 40
     },
     {
       "id": "hermes.judgment",
       "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "heading", "value": "# Judgment"},
+      "selector": {
+        "kind": "heading",
+        "value": "# Judgment"
+      },
       "class": "generic-steering",
       "status": "effective",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "owner": "hermes-user-global",
       "suite": "evals/hermes-judgment-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
       "priority": 60
     },
     {
       "id": "hermes.output",
       "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "paragraph-prefix", "value": "Start with one plain-language conclusion."},
+      "selector": {
+        "kind": "heading",
+        "value": "# Output"
+      },
       "class": "generic-steering",
       "status": "effective",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "owner": "hermes-user-global",
       "suite": "evals/hermes-output-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
       "priority": 70
     },
     {
       "id": "hermes.deliberation",
       "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "paragraph-prefix", "value": "For clear, reversible requests, act immediately"},
+      "selector": {
+        "kind": "heading",
+        "value": "# Interaction"
+      },
       "class": "generic-steering",
       "status": "effective",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "owner": "hermes-user-global",
       "suite": "evals/hermes-deliberation-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
       "priority": 80
     },
     {
       "id": "hermes.instruction-authoring-route",
       "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "paragraph-prefix", "value": "For durable/shared instruction authoring,"},
+      "selector": {
+        "kind": "heading",
+        "value": "# Instruction authoring"
+      },
       "class": "workflow-routing",
       "status": "effective",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "owner": "hermes-user-global",
       "suite": "evals/capability-admission.json",
-      "retest_on": ["instruction-owner-changed", "instruction-changed"],
+      "retest_on": [
+        "instruction-owner-changed",
+        "instruction-changed"
+      ],
       "priority": 90
     },
     {
       "id": "hermes.reconciliation",
       "path": "recovery/current/hosts/hermes/SOUL.md",
-      "selector": {"kind": "paragraph-prefix", "value": "When a user says \"reconcile with Agent Signal\""},
+      "selector": {
+        "kind": "heading",
+        "value": "# Reconciliation"
+      },
       "class": "safety-governance",
       "status": "effective",
-      "hosts": ["hermes"],
+      "hosts": [
+        "hermes"
+      ],
       "owner": "cross-agent-surface-engineering",
       "suite": "evals/capability-admission.json",
-      "retest_on": ["curator-policy-changed", "instruction-changed"],
+      "retest_on": [
+        "curator-policy-changed",
+        "instruction-changed"
+      ],
       "priority": 100
     },
     {
       "id": "codex.output",
       "path": "recovery/current/hosts/codex/AGENTS.md",
-      "selector": {"kind": "tagged-line", "value": "[OUTPUT]"},
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[OUTPUT]"
+      },
       "class": "generic-steering",
       "status": "effective",
-      "hosts": ["codex", "omp"],
+      "hosts": [
+        "codex"
+      ],
       "owner": "codex-user-global",
       "suite": "evals/core-instruction-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
       "priority": 50
     },
     {
       "id": "codex.instruction-authoring",
       "path": "recovery/current/hosts/codex/AGENTS.md",
-      "selector": {"kind": "tagged-line", "value": "[INSTRUCTION-AUTHORING]"},
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[INSTRUCTION-AUTHORING]"
+      },
       "class": "workflow-routing",
       "status": "effective",
-      "hosts": ["codex", "omp"],
+      "hosts": [
+        "codex"
+      ],
       "owner": "codex-user-global",
       "suite": "evals/capability-admission.json",
-      "retest_on": ["instruction-owner-changed", "instruction-changed"],
+      "retest_on": [
+        "instruction-owner-changed",
+        "instruction-changed"
+      ],
       "priority": 80
     },
     {
       "id": "codex.reconciliation",
       "path": "recovery/current/hosts/codex/AGENTS.md",
-      "selector": {"kind": "tagged-line", "value": "[RECONCILIATION]"},
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[RECONCILIATION]"
+      },
       "class": "safety-governance",
       "status": "effective",
-      "hosts": ["codex", "omp"],
+      "hosts": [
+        "codex"
+      ],
       "owner": "cross-agent-surface-engineering",
       "suite": "evals/capability-admission.json",
-      "retest_on": ["curator-policy-changed", "instruction-changed"],
+      "retest_on": [
+        "curator-policy-changed",
+        "instruction-changed"
+      ],
       "priority": 100
     },
     {
       "id": "codex.scope",
       "path": "recovery/current/hosts/codex/AGENTS.md",
-      "selector": {"kind": "tagged-line", "value": "[SCOPE]"},
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[SCOPE]"
+      },
       "class": "generic-steering",
       "status": "effective",
-      "hosts": ["codex", "omp"],
+      "hosts": [
+        "codex"
+      ],
       "owner": "codex-user-global",
       "suite": "evals/core-instruction-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
       "priority": 60
     },
     {
       "id": "codex.evidence",
       "path": "recovery/current/hosts/codex/AGENTS.md",
-      "selector": {"kind": "tagged-line", "value": "[EVIDENCE]"},
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[EVIDENCE]"
+      },
       "class": "generic-steering",
       "status": "effective",
-      "hosts": ["codex", "omp"],
+      "hosts": [
+        "codex"
+      ],
       "owner": "codex-user-global",
       "suite": "evals/core-instruction-retirement.json",
-      "retest_on": ["model-release", "effective-stack-changed", "instruction-changed"],
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
       "priority": 70
     },
     {
       "id": "codex.research",
       "path": "recovery/current/hosts/codex/AGENTS.md",
-      "selector": {"kind": "tagged-line", "value": "[RESEARCH]"},
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[RESEARCH]"
+      },
       "class": "workflow-routing",
       "status": "effective",
-      "hosts": ["codex", "omp"],
+      "hosts": [
+        "codex"
+      ],
       "owner": "codex-user-global",
       "suite": "evals/primary-source-research.json",
-      "retest_on": ["research-provider-changed", "instruction-changed"],
+      "retest_on": [
+        "research-provider-changed",
+        "instruction-changed"
+      ],
       "priority": 80
+    },
+    {
+      "id": "hermes.execution",
+      "path": "recovery/current/hosts/hermes/SOUL.md",
+      "selector": {
+        "kind": "heading",
+        "value": "# Execution"
+      },
+      "class": "safety-governance",
+      "status": "effective",
+      "hosts": [
+        "hermes"
+      ],
+      "owner": "hermes-user-global",
+      "suite": "evals/capability-admission.json",
+      "retest_on": [
+        "curator-policy-changed",
+        "instruction-changed"
+      ],
+      "priority": 100
+    },
+    {
+      "id": "codex.execution",
+      "path": "recovery/current/hosts/codex/AGENTS.md",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[EXECUTION]"
+      },
+      "class": "safety-governance",
+      "status": "effective",
+      "hosts": [
+        "codex"
+      ],
+      "owner": "codex-user-global",
+      "suite": "evals/capability-admission.json",
+      "retest_on": [
+        "curator-policy-changed",
+        "instruction-changed"
+      ],
+      "priority": 100
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "base_revision": "820106d4a52e83a426400659231ae14093585109",
+  "base_revision": "ead7e91dabf1e963796ec834b196984a2fa44ff4",
   "file": {
     "path": "tools/delegate_tool_results.py",
     "before_sha256": "bbd8517b4e49d7fa55ffed36fdabf898c2a41292619be4777af55060b19440c5",
@@ -8,8 +8,34 @@
   },
   "historical_patch_sha256": "dd7ed3bcfeac282ffd84e46f8a45cee8a5f9bc93fc37a16969427883faaa9395",
   "limits": [
-    "Rebase preserves new upstream prompt-size budgeting and backend-visible spill paths.",
-    "Fresh affected native tests pending; no quality claim."
+    "Previously selected adapter contract restored on the declared revision.",
+    "Mechanism tests passed; no new model-quality claim."
   ],
-  "paired_plugin_sha256": "3845cb96fda4ef00d37ecbcfb9aadbbb8a083e6d5efc5f20ed50fda8af40d9fb"
+  "paired_plugin_sha256": "3845cb96fda4ef00d37ecbcfb9aadbbb8a083e6d5efc5f20ed50fda8af40d9fb",
+  "native_base_revision": "ead7e91dabf1e963796ec834b196984a2fa44ff4",
+  "previous_base_revision": "820106d4a52e83a426400659231ae14093585109",
+  "verification": {
+    "baseline": "34 passed, 1 skipped: skill_utils, external_skills, delegate_summary_budget",
+    "candidate": "55 passed, 1 skipped: same tests plus project_skills",
+    "upstream_preserved": [
+      "skill_manage_available gating",
+      "steer_user_row",
+      "runtime environment markers"
+    ],
+    "scope": "Mechanical restoration of previously selected fixes, not a new model-quality claim"
+  },
+  "targets": [
+    {
+      "path": "tools/delegate_tool_results.py",
+      "before_sha256": "bbd8517b4e49d7fa55ffed36fdabf898c2a41292619be4777af55060b19440c5",
+      "after_sha256": "e00aa3ba70ae965b0ab0c696d8868b5ef10bc0cc3ee2e10b2ffb467ed98a6533"
+    }
+  ],
+  "artifacts": {
+    "after.py": "e00aa3ba70ae965b0ab0c696d8868b5ef10bc0cc3ee2e10b2ffb467ed98a6533",
+    "before.py": "bbd8517b4e49d7fa55ffed36fdabf898c2a41292619be4777af55060b19440c5",
+    "LICENSE": "e29dfaf6905a8d396a58ea4bd84ad27057756bbd9599b5bec0971ae34d2a2118",
+    "README.md": "057ca0b50a54e43588041f4d6916a268d83577c54d6bba73e434038980e802ce",
+    "repair.patch": "06126afad4c1daf0617939a5c10534af2c75b9b866d111501e4cd0555b2b1f44"
+  }
 }

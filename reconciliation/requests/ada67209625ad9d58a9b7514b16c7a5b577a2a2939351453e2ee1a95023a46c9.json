@@ -1,0 +1,85 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "d993e819a9eea7a5c47357a50a0f02ce435c04f3a72c6411066b2a76809953e2",
+      "before_sha256": "d993e819a9eea7a5c47357a50a0f02ce435c04f3a72c6411066b2a76809953e2",
+      "owner": "conversational-communication",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "22b253f97b49b8463ea859eb1402cc84cf0609c0de3d791820b59c316dbfc7d8",
+      "before_sha256": "22b253f97b49b8463ea859eb1402cc84cf0609c0de3d791820b59c316dbfc7d8",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "b2c76e37f2d1aeb25323097c659d5280ad7d01ba898674e2d1d1c145ada9fdd2",
+      "before_sha256": "b2c76e37f2d1aeb25323097c659d5280ad7d01ba898674e2d1d1c145ada9fdd2",
+      "owner": "hermes-self-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "39014d21ee524e258fa02c6aa06c42b4577fcaa67725f39dfed942759bfaa082",
+      "before_sha256": "39014d21ee524e258fa02c6aa06c42b4577fcaa67725f39dfed942759bfaa082",
+      "owner": "skill-creator",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "conversational-communication",
+    "cross-agent-surface-engineering",
+    "hermes-self-engineering",
+    "skill-creator"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "skipped"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "ada67209625ad9d58a9b7514b16c7a5b577a2a2939351453e2ee1a95023a46c9",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

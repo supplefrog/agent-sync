@@ -1,14 +1,9 @@
 {
-  "schema_version": 1,
-  "suite": "fleet-discovery-local-windows",
-  "observed_at": "2026-09-04T18:51:17Z",
-  "machine": "local-windows",
-  "registry_sha256": "e867685944114f96911685c94e75cf54cbc3fd771b2f2715cf6f19e416a247c7",
-  "fleet_manifest_sha256": "0d7e1b311346a42b498bd21868352873f027d01b8ceef2d687978bdb678050b0",
-  "admitted_count": 15,
+  "admitted_count": 16,
   "admitted_skills": [
     "advise-project-approach",
     "answer-key-gauntlet",
+    "breadcrumb-records",
     "conversational-communication",
     "cross-agent-surface-engineering",
     "dynamic-workflows",
@@ -23,77 +18,24 @@
     "outcome-first-workflow-design",
     "skill-creator"
   ],
-  "distribution": {
-    "rendered_count": 15,
-    "diff": "all admitted skills unchanged after unified reconciliation",
-    "verify": "snapshot and managed state match",
-    "apply_performed": true,
-    "change_requests": [
-      "reconciliation/requests/d3d1f750beac246a53929de14d72a176c84cc36319ab086816ed4ac1fcc8245e.json",
-      "reconciliation/requests/01c1b7d8863e34fd1564c4b460399a20586985266d00210b152dfc127bb0a71a.json",
-      "reconciliation/requests/577a0712373feb1050046503a9e2fd5a70bce5ea4bc1b827bc0f488627818f00.json"
-    ],
-    "applied_skills": [
-      {
-        "name": "dynamic-workflows",
-        "action": "update",
-        "reason": "The canonical admitted owner changed and the last managed live state remained unchanged, so the reconciler deployed it transactionally."
-      },
-      {
-        "name": "openai-delegation-route-research",
-        "action": "update",
-        "reason": "The canonical admitted owner changed and the last managed live state remained unchanged, so the reconciler deployed it transactionally."
-      }
-    ],
-    "rollback_cleanup": "pass"
-  },
-  "hosts": {
-    "hermes": {
-      "runtime": "Hermes Agent 0.21.0",
-      "method": "fresh runtime readback, Agent Signal host-delta verification, and managed shared-root verification",
-      "resolved_count": 15,
-      "canonical_root": "{SHARED_SKILLS_HOME}",
-      "missing_or_wrong_root": [],
-      "duplicate_resolution_errors": [],
-      "result": "pass"
-    },
-    "codex": {
-      "runtime": "codex-cli 0.153.1",
-      "method": "fresh runtime and plugin readback, Agent Signal host-delta verification, and managed shared-root verification",
-      "canonical_root": "{SHARED_SKILLS_HOME}",
-      "canonical_entries": 15,
-      "missing_or_non_singleton": [],
-      "result": "pass",
-      "note": "The retired standalone governance plugin is absent; host-native capabilities remain typed deltas rather than portable-owner duplicates."
-    },
-    "omp": {
-      "runtime": "omp 17.2.13",
-      "method": "fresh runtime and plugin readback, Agent Signal host-delta verification, managed shared-root verification, and recovery-adapter readback",
-      "visible_singleton_entries": 15,
-      "direct_shared_entries": 13,
-      "native_adapter_entries": [
-        "dynamic-workflows",
-        "outcome-first-workflow-design"
-      ],
-      "missing_or_non_singleton": [],
-      "result": "pass",
-      "note": "The two higher-precedence OMP adapters point back to the canonical portable owners and are bound by the verified recovery snapshot; the other 13 entries are deployed from the shared fleet."
-    }
-  },
-  "ownership": {
-    "duplicate_portable_owners": [],
-    "staged_skills_excluded": [
-      "capability-curator",
-      "global-learning-intake",
-      "primary-source-research",
-      "surface-convergence"
-    ],
-    "host_native_deltas_preserved": true
-  },
+  "checks": [
+    "recovery snapshot",
+    "recovery live diff",
+    "instruction profile",
+    "fleet diff",
+    "fleet managed state",
+    "host deltas",
+    "reconciliation plan"
+  ],
+  "fleet_manifest_sha256": "6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e",
+  "machine": "local-windows",
+  "observed_at": "2026-09-09T14:27:03.977037+00:00",
+  "registry_sha256": "c8df64cc2609d35fe75b1f7bbc55c80671ae7f2d2cdaf3dfd52cf005628c5d29",
   "result": {
-    "passed": true,
-    "decision": "unified-reconciliation-discovered",
-    "promotion_performed": false,
-    "apply_performed": true
-  }
+    "decision": "configured-agent-roots-verified",
+    "limitation": "Readback of configured shared roots and typed native settings; not a new natural-trigger or model-behavior evaluation.",
+    "passed": true
+  },
+  "schema_version": 1,
+  "suite": "fleet-discovery-local-windows"
 }

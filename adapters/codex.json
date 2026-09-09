@@ -12,6 +12,7 @@
       "[SCOPE]",
       "[EVIDENCE]",
       "[RESEARCH]",
+      "[EXECUTION]",
       "[RECONCILIATION]"
     ]
   },
@@ -19,7 +20,10 @@
     "source": "skills",
     "selection": "registry:admitted",
     "install_root": "{SHARED_SKILLS_HOME}",
-    "discovery": {"kind": "native", "value": "{SHARED_SKILLS_HOME}"}
+    "discovery": {
+      "kind": "native",
+      "value": "{SHARED_SKILLS_HOME}"
+    }
   },
   "routing": {
     "status": "automatic-selection-active-workflow",
@@ -33,7 +37,12 @@
     "surfaces": [
       {
         "target_surface": "codex-workflow",
-        "required_fields": ["provider", "model", "reasoning_effort", "decision_receipt"],
+        "required_fields": [
+          "provider",
+          "model",
+          "reasoning_effort",
+          "decision_receipt"
+        ],
         "pinning": "The definitive DAG state selects once at initialization; resume and retries reuse the exact receipt.",
         "native_owner": "skills/dynamic-workflows plus Codex native worker handles",
         "enforcement": "live-skill-adapter",

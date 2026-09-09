@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import copy
 import json
 import tempfile
 import unittest
@@ -21,6 +22,17 @@ def load_module():
 class InstructionRetirementTests(unittest.TestCase):
     def setUp(self):
         self.tool = load_module()
+
+    def manifest_with_references(self):
+        manifest = json.loads((REPO / "contracts/instruction-units.json").read_text(encoding="utf-8"))
+        # Synthetic reference copies exercise planner semantics without requiring
+        # retired personality prose to remain in the production instruction set.
+        for source_id, reference_id in (("hermes.style", "reference.style"),
+                                        ("hermes.instruction-authoring-route", "reference.route")):
+            unit = copy.deepcopy(next(u for u in manifest["units"] if u["id"] == source_id))
+            unit.update(id=reference_id, status="reference")
+            manifest["units"].insert(0, unit)
+        return manifest
 
     @staticmethod
     def stack(host="hermes", equivalence_hash=None, **overrides):
@@ -75,7 +87,7 @@ class InstructionRetirementTests(unittest.TestCase):
         self.assertNotIn("When thinking aloud", without)
 
     def test_model_release_selects_only_bounded_model_sensitive_suites(self):
-        manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
+        manifest = self.manifest_with_references()
         stack = self.stack()
         with tempfile.TemporaryDirectory() as temp:
             plan = self.tool.build_plan(REPO, manifest, stack, "model-release", Path(temp), 1)
@@ -83,12 +95,11 @@ class InstructionRetirementTests(unittest.TestCase):
         self.assertTrue(plan["selected_units"])
         rows = {row["id"]: row for row in plan["units"]}
         self.assertEqual(rows["core.capability-admission"]["action"], "protected-manual")
-        self.assertEqual(rows["core.outcome-first-workflow"]["action"], "reference-source-review")
-        self.assertEqual(rows["core.delegation-routing"]["action"], "reference-source-review")
-        self.assertEqual(rows["core.scope"]["action"], "reference-source-review")
+        self.assertEqual(rows["reference.route"]["action"], "reference-source-review")
+        self.assertEqual(rows["reference.style"]["action"], "reference-source-review")
 
     def test_effective_stack_change_reopens_only_model_sensitive_units(self):
-        manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
+        manifest = self.manifest_with_references()
         with tempfile.TemporaryDirectory() as temp:
             plan = self.tool.build_plan(
                 REPO, manifest, self.stack(), "effective-stack-changed", Path(temp), 2,
@@ -96,8 +107,8 @@ class InstructionRetirementTests(unittest.TestCase):
         rows = {row["id"]: row for row in plan["units"]}
         self.assertTrue(plan["selected_units"])
         self.assertLessEqual(len(plan["selected_suites"]), 2)
-        self.assertEqual(rows["core.scope"]["action"], "reference-source-review")
-        self.assertEqual(rows["core.outcome-first-workflow"]["action"], "reference-source-review")
+        self.assertEqual(rows["reference.style"]["action"], "reference-source-review")
+        self.assertEqual(rows["reference.route"]["action"], "reference-source-review")
         self.assertEqual(rows["core.capability-admission"]["action"], "protected-manual")
         self.assertEqual(rows["hermes.deliberation"]["action"], "behavior-ablation")
         self.assertEqual(rows["hermes.instruction-authoring-route"]["action"], "skip-trigger")
@@ -117,16 +128,15 @@ class InstructionRetirementTests(unittest.TestCase):
         self.assertTrue(all(unit_id.startswith("hermes.") for unit_id in plan["selected_units"]))
 
     def test_reference_sources_do_not_shadow_identical_effective_units(self):
-        manifest = json.loads((REPO / "contracts" / "instruction-units.json").read_text(encoding="utf-8"))
+        manifest = self.manifest_with_references()
         with tempfile.TemporaryDirectory() as temp:
             plan = self.tool.build_plan(
                 REPO, manifest, self.stack(host="hermes"),
                 "effective-stack-changed", Path(temp), 4,
             )
         rows = {row["id"]: row for row in plan["units"]}
-        self.assertEqual(rows["core.identity"]["action"], "reference-source-review")
-        self.assertEqual(rows["hermes.identity"]["action"], "behavior-ablation")
-        self.assertEqual(rows["core.judgment"]["action"], "reference-source-review")
+        self.assertEqual(rows["reference.style"]["action"], "reference-source-review")
+        self.assertEqual(rows["hermes.style"]["action"], "behavior-ablation")
         self.assertEqual(rows["hermes.judgment"]["action"], "behavior-ablation")
 
     def test_live_generic_units_use_complete_owner_specific_suites(self):

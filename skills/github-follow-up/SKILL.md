@@ -61,6 +61,8 @@ Classify every changed item:
 
 Prioritize confirmed blockers and required CI, then maintainer questions, issue maintenance, and non-blocking suggestions. Do not generate work merely because an item was updated.
 
+Process clear, authorized fixes; bring scope, design, and conflicting-feedback decisions to the user with a recommendation. Show that distinction before substantial work, then finish the independent fixes rather than merely reporting them as waiting.
+
 ## 4. Act through the owning workflow
 
 ### Issues
@@ -75,7 +77,7 @@ Follow `github-pr-workflow`.
 - Refresh the base and verify the request still applies before coding.
 - Translate feedback into observable behavior; inspect sibling paths and tests.
 - Run targeted and nearby verification, then push only the focused change.
-- Reply with the concrete result and resolve only threads actually addressed.
+- Apply the public-participation rules below; resolve only review threads verified as addressed.
 - Re-read head SHA, comments/reviews/threads, mergeability, and checks.
 
 Do not self-approve. Do not merge without authorization. Do not force-push except for an intentional rebase/amend on a branch the viewer controls, and then use `--force-with-lease`. Stop if remote history changed unexpectedly.
@@ -119,6 +121,14 @@ A manual or scheduled run may automatically patch only this GitHub skill, its re
 
 Do not automatically change models/providers, credentials, global prompts/SOUL, package sets, services, broad config, plugins, or installed source. Do not turn one maintainer preference into a global rule. Put these in **Waiting** with the evidence and smallest proposed change for user review.
 
+## Public participation
+
+Act as the user's contributor, not a triage bot. Post when there is something worth saying: a direct answer, useful evidence, a correction, or a decision the user actually holds. Do not invent firsthand experience, opinions, or commitments. Use `humanizer` for prose; this workflow decides whether to publish at all.
+
+Read the discussion, including the user's previous comments, before posting. Routine base refreshes, passing CI, and unchanged status belong in the private report. Silence is a valid outcome; do not generate activity to demonstrate work or chase merges.
+
+Repair malformed or mistaken comments in place and read back the exact body. After an ambiguous posting failure, look for the existing comment before retrying. Never append a corrected copy just because the first attempt was damaged. For authorized duplicate cleanup, keep the substantive version and preserve replies or discussion that depend on the original; ask only when the target or tradeoff is genuinely unclear.
+
 ## 5. Scheduled gate and idempotency
 
 The optional pre-run gate fingerprints live authored items so unchanged ticks cost no model call. Install the supporting script under the active Hermes home's `scripts/` directory and attach it to a skill-backed cron job. See `references/discovery-and-scheduling.md`.
@@ -136,20 +146,9 @@ Self-authored updates can cause one harmless follow-up tick; prefer that over ac
 
 ## 6. Final report
 
-Keep the report short and link each affected artifact:
+For manual follow-up, keep the linked report compact: **Needs your decision** for open questions with recommendations, **Done** for verified actions, **Useful movement** for meaningful external progress, and **Blocked** for concrete execution barriers. Omit empty sections and unchanged routine status. An open PR is not a delivered fix. If nothing needs action, say so.
 
-```text
-Done
-- OWNER/REPO#N — <verified action and test/check result>
-
-Workflow
-- <narrow local skill/script change and verification>
-
-Waiting
-- OWNER/REPO#N — <decision or external blocker>
-```
-
-Omit empty sections. If a scheduled run found and performed nothing, return only `[SILENT]`. For a manual run, say `No actionable changes.`
+For scheduled runs, report only actions, decisions, or blockers; return `[SILENT]` when there are none.
 
 ## Safety boundaries
 

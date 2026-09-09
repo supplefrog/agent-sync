@@ -304,9 +304,9 @@ class HostDeltaTests(unittest.TestCase):
             def runner(argv: list[str]):
                 command = " ".join(argv)
                 outputs = {
-                    "hermes --version": "Hermes Agent 0.21.0",
+                    "hermes --version": "Hermes Agent 0.21.1",
                     "hermes hooks list": "No shell hooks configured",
-                    "hermes curator status": "curator: ENABLED",
+                    "hermes curator status": "curator: DISABLED",
                     "codex --version": "codex-cli 0.153.4",
                     "codex plugin list --json": "[]",
                     "omp --version": "OMP 18.1.10",

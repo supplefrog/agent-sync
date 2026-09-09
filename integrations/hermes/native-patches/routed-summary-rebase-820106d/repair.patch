@@ -1,6 +1,6 @@
 --- a/tools/delegate_tool_results.py
 +++ b/tools/delegate_tool_results.py
-@@ -239,19 +239,21 @@
+@@ -263,19 +263,21 @@
          logger.debug("Summary budget computation failed", exc_info=True)
          return None
  
@@ -24,7 +24,7 @@
      if not candidates:
          return  # both disabled / unknown → leave summaries untouched
      cap = min(candidates)
-@@ -367,11 +369,20 @@
+@@ -391,11 +393,20 @@
  
  def _finalize_child_results(
      results: List[Dict[str, Any]], task_list: List[Dict[str, Any]], children: List[tuple[int, Dict[str, Any], Any]],

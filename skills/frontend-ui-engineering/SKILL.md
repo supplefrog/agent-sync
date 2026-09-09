@@ -279,6 +279,8 @@ Test at these breakpoints: 320px, 768px, 1024px, 1440px.
 
 ## Loading and Transitions
 
+For motion implementation or review, read `references/motion-design.md`: decide whether motion helps before choosing timing, preserve existing tokens, and verify interruption, reduced motion, input responsiveness, and measured performance. Do not load it for static layout work.
+
 ```tsx
 // Skeleton loading (not spinners for content)
 function TaskListSkeleton() {

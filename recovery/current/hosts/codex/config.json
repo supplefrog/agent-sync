@@ -81,10 +81,10 @@
       "url": "https://mcp.tavily.com/mcp"
     }
   },
-  "model": "gpt-6-astra",
-  "model_reasoning_effort": "xhigh",
+  "model": "gpt-5.6-sol",
+  "model_reasoning_effort": "low",
   "notify": [
-    "{{agent-signal:HOME}}\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\b474a88d5d105afa\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
+    "{{agent-signal:HOME}}\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\b58ca2eaa616c2da\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
     "turn-ended"
   ],
   "personality": "pragmatic",

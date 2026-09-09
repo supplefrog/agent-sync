@@ -16,6 +16,7 @@ This is a routing catalog, not an automatic install list. Recheck live terms, li
 | [TasteSkill](https://www.tasteskill.dev/) | Ideas about stronger visual briefs, typography, composition, and avoiding generic output | Do not install wholesale. Its large variants and prescriptive layouts, spacing, funnels, or GSAP-heavy recipes can override product needs. Borrow only task-relevant principles. |
 | [Anthropic frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Concise subject-grounded visual direction and deliberate aesthetic choices | Conceptual input only when this skill remains the frontend owner. Do not create a duplicate trigger. |
 | [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines) | Review checklist for interface quality | Review aid, not the design authority. Fetching live guidance is a network action. |
+| [Emil Kowalski skills](https://github.com/emilkowalski/skills) | Motion purpose, interruption, and interaction-review guidance | Use the adapted `motion-design.md` reference for motion tasks. Do not install the overlapping suite or treat aesthetic prescriptions and hardware-acceleration claims as universal rules. |
 
 ## Selection rule
 

@@ -7,10 +7,13 @@
     "target": "{HERMES_HOME}/SOUL.md",
     "strategy": "manual-merge",
     "required_markers": [
-      "# Identity",
-      "# Style",
+      "# Communication",
       "# Judgment",
-      "# Defaults",
+      "# Output",
+      "# Interaction",
+      "# Execution",
+      "# Instruction authoring",
+      "# Reconciliation",
       "reconcile with Agent Signal"
     ]
   },

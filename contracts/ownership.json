@@ -8,6 +8,14 @@
   ],
   "capabilities": [
     {
+      "id": "breadcrumb-records",
+      "owner": "skills/breadcrumb-records",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": ["evals/results/breadcrumb-records-deterministic.json"],
+      "selection_reason": "User selected shared on-demand deployment of the tested local helper. Canonical CLI tests and metadata/public-safety checks passed; bounded retrieval supports cautious reuse, not universal reliability or natural triggering. No watcher, provider, memory or standing-overlay change is selected."
+    },
+    {
       "id": "capability-curator",
       "owner": "skills/capability-curator",
       "status": "staged",

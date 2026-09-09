@@ -1,0 +1,99 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "099ee9221722853d43ad1811c8f4b4c344f77990d4b31bf7de9fe359c836803d",
+      "before_sha256": "099ee9221722853d43ad1811c8f4b4c344f77990d4b31bf7de9fe359c836803d",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "58b5c62ef0ceb3e0e9d4b137a24ce8ec624cadb43e2acf259c3b93f57e5b0e64",
+      "before_sha256": "58b5c62ef0ceb3e0e9d4b137a24ce8ec624cadb43e2acf259c3b93f57e5b0e64",
+      "owner": "fleet-sync",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "c92ad61cf6bb78b36c377916cf4071d1a7902b0bd4cd923248fff3b9055e736a",
+      "before_sha256": "c92ad61cf6bb78b36c377916cf4071d1a7902b0bd4cd923248fff3b9055e736a",
+      "owner": "github-follow-up",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "5267a5ea3199f79f5acc81738798b478b525bde78307333024b9623a3aff40a3",
+      "before_sha256": "5267a5ea3199f79f5acc81738798b478b525bde78307333024b9623a3aff40a3",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "08624dc9a48a860ae94726cffad2ef5edbccad071df2056661e6d41559b067ac",
+      "before_sha256": "266719f90438fd759b67bb9eecb724ad56440a462b46d92677ee3593ff661530",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "22ebcf232af4531087e1e4fd32e8c02b9d1b0a19ad9b140d4a3f85165b2ba227",
+      "before_sha256": "6930970aca7bb55a8d5fb9734b0d4b351e9e196b8c1ec836387c3a69f6b41c93",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "cross-agent-surface-engineering",
+    "fleet-sync",
+    "github-follow-up",
+    "skill-creator",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "7e2e5cccde64f3b175366e1fa0c89ec5dd6c54c779cf41390a7c7fdc215791a8",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

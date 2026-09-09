@@ -211,10 +211,11 @@ hello world this works
     def test_hermes_manual_merge_declares_verifiable_markers(self):
         adapter = json.loads((REPO / "adapters" / "hermes.json").read_text(encoding="utf-8"))
         self.assertEqual(adapter["instructions"]["strategy"], "manual-merge")
-        self.assertEqual(
-            adapter["instructions"]["required_markers"],
-            ["# Identity", "# Style", "# Judgment", "# Defaults", "reconcile with Agent Signal"],
-        )
+        source = (REPO / adapter["instructions"]["source"]).read_text(encoding="utf-8")
+        self.assertTrue(adapter["instructions"]["required_markers"])
+        for marker in adapter["instructions"]["required_markers"]:
+            self.assertIn(marker, source)
+        self.assertNotIn("# Identity", adapter["instructions"]["required_markers"])
 
     def test_reconciliation_routes_share_trigger_and_near_miss_boundary(self):
         hermes = (REPO / "recovery/current/hosts/hermes/SOUL.md").read_text(encoding="utf-8")
@@ -225,13 +226,16 @@ hello world this works
         normalized = [text.lower() for text in (hermes, codex)]
         for text in normalized:
             self.assertIn("reconcile with agent signal", text)
-            self.assertIn("persistent", text)
             self.assertIn("cross-agent-surface-engineering", text)
             self.assertIn("tools/reconcile.py", text)
-            self.assertIn("novel", text)
-            self.assertIn("unsafe", text)
+            self.assertIn("review-required", text)
+            self.assertIn("staged", text)
             self.assertIn("ephemeral", text)
             self.assertIn("stays local", text)
+
+        owner = (REPO / "skills/cross-agent-surface-engineering/SKILL.md").read_text(encoding="utf-8").lower()
+        for boundary in ("admitted", "native deltas", "novel", "conflicting", "unsafe", "retirement", "ambiguous", "staged"):
+            self.assertIn(boundary, owner)
 
         omp = next(
             surface

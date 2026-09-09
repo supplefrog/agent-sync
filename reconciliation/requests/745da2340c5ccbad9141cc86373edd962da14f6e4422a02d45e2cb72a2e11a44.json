@@ -1,0 +1,71 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "0f6117f57790c8b0b7cde757c76b9c2a101c5b5e2284d5a96f5197e4b7baa48b",
+      "before_sha256": "d993e819a9eea7a5c47357a50a0f02ce435c04f3a72c6411066b2a76809953e2",
+      "owner": "conversational-communication",
+      "source": "live"
+    },
+    {
+      "after_sha256": "92e93e32f9cc2169a24e69bbaa5a9cb35cf276cb76089f8dc1c5b04754e5e115",
+      "before_sha256": "92e93e32f9cc2169a24e69bbaa5a9cb35cf276cb76089f8dc1c5b04754e5e115",
+      "owner": "frontend-ui-engineering",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "adopt-existing-owner",
+  "owners": [
+    "conversational-communication",
+    "frontend-ui-engineering"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "745da2340c5ccbad9141cc86373edd962da14f6e4422a02d45e2cb72a2e11a44",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "local-windows:skill-root-1",
+    "surface": "fleet"
+  }
+}

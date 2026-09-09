@@ -375,7 +375,7 @@
       "evidence": [
         {
           "kind": "local-verification",
-          "reference": "skills/conversational-communication/references/2026-08-24-user-style-correction.md",
+          "reference": "evals/results/prompt-sentence-review-ledger.json",
           "supports": true
         }
       ],

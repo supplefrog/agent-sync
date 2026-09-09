@@ -1,6 +1,6 @@
 ---
 name: advise-project-approach
-description: Use for project-architecture strategy when an existing skill, native feature, reference architecture, comparable project, framework, or established approach may fit. Audit enabled skills and native/existing solutions first, then adapt the best supported option. If that audit finds no adequate existing approach and the user faces a genuinely new project-architecture decision, route to neuroarxiv. Avoid narrow bug fixes and isolated file edits unless the user asks for broader project direction.
+description: Use for project-architecture decisions and reviews, not isolated repairs. Compare credible current, native, external, and clean-sheet approaches against user outcomes and constraints.
 version: 0.6.0
 author: Aarav Kashyap; Agent Signal adaptation
 license: MIT
@@ -40,7 +40,7 @@ A repository, folder, code excerpt, or project URL normally means mid-build. “
 2. **Trace the current baseline.** For an existing project, inspect the relevant docs, manifests, entry points, subsystem boundaries, tests/CI, data/auth paths, and deploy/runtime configuration. Map first and sample decision-relevant slices; do not read an entire large repository by default.
 3. **Audit existing solutions.** Check enabled skills and host-native features first. Then inspect credible direct/adjacent projects, official templates, reference architectures, frameworks, standards, and primary documentation. Use two useful comparables when available; record what transfers and what should not be copied. Popularity is a lead, never the decision rule.
 4. **Check current cost and constraints.** When a managed service or vendor affects the decision, inspect official pricing, limits, lock-in, migration path, and cost growth. Separate prototype, launch, and growth costs. If current pricing is unavailable, name the unverified cost dimensions instead of inventing numbers.
-5. **Compare viable paths.** Keep two to four credible options, including retain/simplify when applicable. Compare only decision-changing dimensions: user fit, build speed, reliability, security/privacy, maintenance, operational burden, cost, portability, ecosystem maturity, migration risk, and rollback. Avoid fake precision.
+5. **Compare viable paths.** Compare decision-relevant options, including retain/simplify, native or external replacement, and a minimal rebuild when credible. Compare only decision-changing dimensions: user fit, build speed, reliability, security/privacy, maintenance, operational burden, cost, portability, ecosystem maturity, migration risk, and rollback. Avoid fake precision.
 6. **Recommend one path.** State the decisive tradeoff, what the user gains, what they give up, what becomes harder later, and the evidence or condition that would make the recommendation wrong. Name the strongest alternative and why it lost.
 7. **Give the implementation path.** Order the smallest useful vertical slice, next integration boundary, and verification/deploy hardening. If implementation is authorized, route execution to the host's available development and verification owners, or use the repository's existing tests/build/review path when no named owner exists. Preserve the recommendation's constraints.
 

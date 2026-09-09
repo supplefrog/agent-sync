@@ -1,8 +1,5 @@
-# Current Hermes cache and guidance rebase
+# Current native repair
 
-Owner: native Hermes runtime. Rebased on 820106d4a52e83a426400659231ae14093585109.
-Restores only the previously selected cache/scanner and guidance deltas; preserves current upstream changes. Historical guidance/ cache evidence is not rewritten. Current baseline reproduced six failures in seven synthetic checks; candidate passed seven and fresh native AIAgent assembly. These are mechanism checks, not Astra-medium or Sol quality evidence.
+This existing bundle now targets Hermes revision `ead7e91dabf1e963796ec834b196984a2fa44ff4`. It restores the previously selected skill-cache/guidance or summary-adapter behavior; the current upstream memory-write availability gate, steering rows, and runtime markers are preserved.
 
-Restore only after exact HEAD and every baseline hash match manifest.json. Validate repair.patch on a copy, install exact candidate bytes, then rerun fresh native loading and cache checks. Roll back using exact bundled baseline bytes only after every installed hash matches. Existing processes keep imported guidance until restarted; no reset or restart performed by this bundle.
-
-Shared instruction core is the default. No model-specific variant or automatic routing is selected here. Original cache limitations remain: metadata freshness is not atomic, scanner checks are bounded, no comprehensive threat detection or provider-general compatibility claim.
+Before installation require the exact native revision and every target before-hash in manifest.json. Test candidate bytes in a disposable worktree. Install only those candidate files; roll back using bundled baseline bytes only when all installed after-hashes still match. The patch is a review aid; on Windows use the exact bundled bytes to avoid line-ending ambiguity. Do not apply this bundle to a different revision without another checked rebase. Restart Hermes to load changed Python modules; no running session is restarted automatically.

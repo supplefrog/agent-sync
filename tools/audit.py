@@ -88,14 +88,15 @@ def run_live_system_checks(repo: Path) -> list[str]:
         if completed.returncode != 0:
             errors.append(f"{label}: command failed ({completed.returncode})")
             continue
-        if label == "reconciliation plan":
+        if label in {"reconciliation plan", "recovery live diff"}:
             try:
                 report = json.loads(completed.stdout)
             except json.JSONDecodeError:
-                errors.append("reconciliation plan: invalid JSON")
+                errors.append(f"{label}: invalid JSON")
                 continue
-            if report.get("findings"):
-                errors.append("reconciliation plan: unresolved findings")
+            if report.get("findings") or report.get("changes") or report.get("conflicts"):
+                errors.append("reconciliation plan: unresolved findings" if label == "reconciliation plan"
+                              else "recovery live diff: unresolved changes")
     return errors
 
 
@@ -156,7 +157,7 @@ def _validate_current_evidence(repo: Path, registry: dict[str, Any]) -> list[str
     return errors
 
 
-def validate_repo(repo: Path, live: bool = False) -> list[str]:
+def validate_repo(repo: Path, live: bool = False, *, current_evidence: bool = True) -> list[str]:
     errors: list[str] = []
     try:
         registry = load_json(repo / "registry.json")
@@ -396,7 +397,8 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
     else:
         errors.append("missing registry skills")
 
-    errors.extend(_validate_current_evidence(repo, registry))
+    if current_evidence:
+        errors.extend(_validate_current_evidence(repo, registry))
 
     if "fleet-sync" in registry_names:
         tools_dir = str(Path(__file__).resolve().parent)
@@ -416,6 +418,12 @@ def validate_repo(repo: Path, live: bool = False) -> list[str]:
                 errors.append("instruction profiles: no model-qualified profiles")
             current_profiles = 0
             for profile_path in profile_paths:
+                profile = load_json(profile_path)
+                if profile.get("status") == "superseded":
+                    # Historical observations retain the units/hashes observed then;
+                    # require schema validity, not equality with today's instructions.
+                    profile_tool._validate(repo / "contracts/model-profile.schema.json", profile, "historical model profile")
+                    continue
                 report = profile_tool.verify_profile(repo, profile_path, live=False)
                 if report.get("status") == "current-observed":
                     current_profiles += 1
@@ -584,17 +592,67 @@ def snapshot_repo(repo: Path) -> dict[str, Any]:
     return snapshot
 
 
+def refresh_current_evidence(repo: Path) -> list[str]:
+    """Replace dated current-state claims only after real read-only checks pass.
+
+    These reports prove configured roots/settings, not new model-behavior or
+    natural-trigger parity. Historical observations remain in Git history.
+    """
+    errors = validate_repo(repo, current_evidence=False) + run_live_system_checks(repo)
+    if errors:
+        raise RuntimeError("cannot refresh evidence: " + "; ".join(errors))
+    import fleet
+    admitted = sorted(name for name, item in fleet.registry(repo).items() if item['status'] == 'admitted')
+    checks = [label for label, _ in LIVE_CHECK_COMMANDS]
+    binding_paths = ['registry.json', 'render/fleet/manifest.json', 'recovery/current/manifest.json',
+                     'host-deltas.json', 'contracts/ownership.json', 'contracts/surface-matrix.json',
+                     'contracts/change-request.schema.json', 'contracts/host-deltas.schema.json',
+                     'tools/reconcile.py', 'tools/sync_git.py', 'tools/host_deltas.py', 'tools/audit.py']
+    bindings = {name: sha256_file(repo / name) for name in binding_paths}
+    discovery = {
+        'schema_version': 1, 'suite': 'fleet-discovery-local-windows', 'machine': 'local-windows',
+        'admitted_count': len(admitted), 'admitted_skills': admitted,
+        'registry_sha256': bindings['registry.json'],
+        'fleet_manifest_sha256': bindings['render/fleet/manifest.json'],
+        'checks': checks,
+        'result': {'passed': True, 'decision': 'configured-agent-roots-verified',
+                   'limitation': 'Readback of configured shared roots and typed native settings; not a new natural-trigger or model-behavior evaluation.'},
+    }
+    unified = {
+        'schema_version': 1, 'suite': 'unified-reconciliation-local-windows', 'machine': 'local-windows',
+        'status': 'pass', 'admitted_count': len(admitted), 'bindings': bindings, 'checks': checks,
+        'result': {'passed': True, 'decision': 'agent-files-and-governance-verified',
+                   'limitation': 'Local verification before Git publication. Only sync remote readback proves the subsequent push.'},
+    }
+    changed = []
+    for name, report in [('fleet-discovery-local-windows', discovery), ('unified-reconciliation-local-windows', unified)]:
+        relative = f'evals/results/{name}.json'
+        path = repo / relative
+        previous = load_json(path) if path.is_file() else {}
+        observed = previous.pop('observed_at', None)
+        if previous == report:
+            continue
+        report['observed_at'] = dt.datetime.now(dt.timezone.utc).isoformat()
+        fleet.atomic_json(path, report)
+        changed.append(relative)
+    errors = validate_repo(repo)
+    if errors:
+        raise RuntimeError("refreshed evidence failed audit: " + "; ".join(errors))
+    return changed
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("action", nargs="?", choices=("check", "snapshot"), default="check")
     parser.add_argument("--repo", type=Path, default=Path.cwd())
     parser.add_argument("--live", action="store_true")
+    parser.add_argument("--structural", action="store_true", help="pre-refresh check; full audit is still required for sync completion")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args(argv)
 
     repo = args.repo.resolve()
     if args.action == "check":
-        errors = validate_repo(repo, live=args.live)
+        errors = validate_repo(repo, live=args.live, current_evidence=not args.structural)
         if errors:
             for err in errors:
                 print(err, file=sys.stderr)

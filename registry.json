@@ -2,6 +2,13 @@
   "schema_version": 1,
   "skills": [
     {
+      "name": "breadcrumb-records",
+      "status": "admitted",
+      "license": "UNLICENSED",
+      "source": "original",
+      "eval": "evals/results/breadcrumb-records-deterministic.json"
+    },
+    {
       "name": "capability-curator",
       "status": "staged",
       "license": "MIT",

@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Use whenever creating, revising, auditing, or routing durable agent instructions or skills. Owns concise instruction authoring, placement handoff after hermes-self-engineering, trigger design, supporting resources, and proportional behavior evaluation.
+description: Use when authoring or auditing durable instructions or skills. Owns sentence-level intent, triggers, supporting resources, and proportional evaluation; placement guides are conditional.
 version: 2.0.0
 author: Hermes Agent
 license: MIT
@@ -12,11 +12,11 @@ metadata:
 
 # Skill Creator
 
-Author the smallest durable instruction set that changes the target behavior without constraining unrelated work. `hermes-self-engineering` selects the persistence surface; this skill owns skill and instruction content after placement is known.
+Use this to author or review durable instructions. Resolve placement only when it is unclear; this skill owns content, triggers, and proportional evaluation.
 
 ## Owner boundary
 
-- New or materially changed workflow/capability => load `outcome-first-workflow-design` before choosing a mechanism.
+- Unresolved workflow/capability design => `outcome-first-workflow-design`; skip for a bounded wording, duplication, or stale-reference repair with a known owner.
 - Cross-host placement or convergence => load `cross-agent-surface-engineering` first.
 - Hermes behavior-surface ambiguity => load `hermes-self-engineering` first.
 - Stable user/environment fact => memory, not a skill.
@@ -40,14 +40,12 @@ Write model-facing instructions in plain, human-readable language. Density shoul
 
 When writing durable instructions:
 
-1. Keep non-inferable requirements, invariants, decision rules, failure boundaries, and checks.
-2. Reuse the established procedure for repetitive work.
-3. Remove narrative, transitions, duplicated rules/conclusions, generic rationale, and examples that do not disambiguate.
-4. State a reason only when omission could change implementation or hide a boundary.
-5. Keep each rule in one owner; use a short routing trigger elsewhere when discovery needs help.
-6. Preserve user intent, scope, safety, governance, authorization boundaries, and capability; approval for one task does not authorize adjacent external action; brevity never overrides these.
-7. For retrying or externally mutating workflows, encode a stopping condition proportional to risk.
-8. Do not turn one failure, model quirk, temporary route, or local incident into a universal rule.
+1. For each sentence, name the intended behavioral difference and its basis: user preference, required boundary, or observed failure. Remove generic identity/aspiration without a wanted distinction; do not invent a retrospective rationale. Test uncertain benefit rather than treating a plausible story as evidence.
+2. Remove repeated formulations, narrative, and examples that do not disambiguate. Keep rationale only when it changes implementation or exposes a boundary.
+3. Keep each procedure in one owner. Retain short, frequently needed rules inline when that avoids a larger skill load; defer substantial conditional detail. Judge economy by actually loaded context and induced tool work, not repository word count.
+4. Preserve user intent, scope, safety, governance, authorization boundaries, and capability; approval for one task does not authorize adjacent external action; brevity never overrides these.
+5. For retrying or externally mutating workflows, encode a stopping condition proportional to risk.
+6. Narrow a rule to the failure's conditions before considering model-specific supplements. Keep one shared core unless a comparable baseline/candidate check shows a model needs a distinct rule. A model label or one incident is not that evidence.
 
 ## Skill structure
 
@@ -70,7 +68,7 @@ Add a supporting file only when `SKILL.md` links it and names its trigger. Remov
 1. Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome.
 2. State the target behavior and near-miss behavior that must remain unchanged.
 3. Draft the minimum coherent change using the correct modality.
-4. Edit the canonical source with an available repository editor. Use `skill_manage` only when it targets that source or performs the authorized deployment step. Preserve existing user authorization and the source/deployment relationship.
+4. Edit the canonical source; keep candidates outside live discovery until their checks pass. Use `skill_manage` only when it targets that source or performs authorized deployment.
 5. Verify metadata/frontmatter, linked-file existence, and fresh skill discovery.
 6. Run proportional behavior probes:
    - trigger change => realistic positive and near-miss prompts;
@@ -88,5 +86,7 @@ Use baseline/candidate runs when model behavior or trigger selection is genuinel
 Record only decision-changing evidence: prompt, active stack, observable result, verification, and remaining uncertainty. Remove temporary eval sessions/workspaces after preserving required evidence unless the user asked to retain them.
 
 ## Completion
+
+For approved changes owned by Agent Signal, finish the checked sync through `cross-agent-surface-engineering`, including local commit and remote push, as part of the same job unless the user requested draft-only or no publication. Do not leave routine commit/push steps for the user.
 
 Report the selected owner, what was added/removed, verification results, and unresolved risk or restart requirement. If files changed, link the owning skill and any supporting artifacts.

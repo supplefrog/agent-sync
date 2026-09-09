@@ -85,6 +85,8 @@
       "required": ["runtime", "reasoning", "effective_surfaces", "effective_units", "artifact_sha256"],
       "properties": {
         "runtime": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "provider": {"type": "string", "minLength": 1},
         "reasoning": {"type": "string", "minLength": 1},
         "effective_surfaces": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
         "effective_units": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},

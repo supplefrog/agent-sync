@@ -1,120 +1,36 @@
 {
-  "schema_version": 1,
-  "suite": "unified-reconciliation-local-windows",
-  "observed_at": "2026-09-04T18:51:17Z",
-  "machine": "local-windows",
-  "status": "pass",
-  "admitted_count": 15,
-  "authority": {
-    "portable_governance": "Agent Signal deterministic contracts and tools/reconcile.py",
-    "effective_operator": "cross-agent-surface-engineering",
-    "canonical_curator_status": "staged-unresolved",
-    "hermes_native_curator": "enabled-subordinate-local-lifecycle-only",
-    "legacy_codex_governance": "absent",
-    "ambient_watcher": "absent-by-design"
-  },
-  "workflow": {
-    "mode": "explicit-sync",
-    "requests": [
-      "reconciliation/requests/d3d1f750beac246a53929de14d72a176c84cc36319ab086816ed4ac1fcc8245e.json",
-      "reconciliation/requests/01c1b7d8863e34fd1564c4b460399a20586985266d00210b152dfc127bb0a71a.json",
-      "reconciliation/requests/577a0712373feb1050046503a9e2fd5a70bce5ea4bc1b827bc0f488627818f00.json",
-      "reconciliation/requests/17ee465f400a763a86bec137a92abfb28de2efb16a62e441488a251925eda02b.json"
-    ],
-    "latest_request_id": "17ee465f400a763a86bec137a92abfb28de2efb16a62e441488a251925eda02b",
-    "disposition": "applied",
-    "phases": [
-      "classify",
-      "preflight",
-      "canonicalize",
-      "render",
-      "validate",
-      "deploy",
-      "verify",
-      "receipt"
-    ],
-    "applied_owners_across_transactions": [
-      "dynamic-workflows",
-      "openai-delegation-route-research",
-      "recovery-state",
-      "host-deltas"
-    ],
-    "promotion_performed": false,
-    "rollback_material_remaining": false
-  },
-  "live_readback": {
-    "reconciliation_plan_findings": 0,
-    "reconciliation_plan_mutation_performed": false,
-    "recovery_changes": 0,
-    "recovery_conflicts": 0,
-    "fleet_admitted_count": 15,
-    "fleet_diff": "all unchanged",
-    "fleet_verify": "pass",
-    "host_delta_required_failures": 0,
-    "instruction_profile": "pass",
-    "public_check": "pass",
-    "repository_audit": "pass",
-    "live_audit": "pass"
-  },
-  "recovery": {
-    "guarantee": "Reconstruct admitted portable skills and declared public-safe host state after runtimes and authentication are restored separately.",
-    "typed_statuses": [
-      "restored",
-      "verified",
-      "prerequisite-missing",
-      "excluded-private",
-      "failed"
-    ],
-    "excluded": [
-      "credentials",
-      "authentication",
-      "sessions",
-      "transcripts",
-      "private memories",
-      "logs",
-      "generated caches",
-      "provider-hidden prompts"
-    ],
-    "destroyed_root_round_trip": "pass",
-    "transactional_rollback_test": "pass"
-  },
-  "staged_excluded": [
-    "capability-curator",
-    "global-learning-intake",
-    "primary-source-research",
-    "surface-convergence"
-  ],
-  "verification": {
-    "repository_tests": "260 passed, 2 skipped",
-    "routed_delegation_tests": "27 passed",
-    "dynamic_workflow_tests": "58 passed",
-    "route_selector_tests": "11 passed",
-    "route_selector_and_tools_tests": "33 passed",
-    "instruction_profile_tests": "11 passed",
-    "instruction_retirement_tests": "13 passed",
-    "recovery_tests": "24 passed, 1 skipped",
-    "reconciliation_and_host_delta_tests": "17 passed, 1 skipped",
-    "host_delta_binding_validation": "pass"
-  },
+  "admitted_count": 16,
   "bindings": {
-    "registry.json": "e867685944114f96911685c94e75cf54cbc3fd771b2f2715cf6f19e416a247c7",
-    "render/fleet/manifest.json": "0d7e1b311346a42b498bd21868352873f027d01b8ceef2d687978bdb678050b0",
-    "recovery/current/manifest.json": "686536e384431322cfa911341d50237ec89ff32646141a79fe9712ebf61af768",
-    "host-deltas.json": "e2d21acc4bb708e93bd6303a8f64beb81f2cd726c00493d062c770a72db27fbe",
-    "profiles/gpt-5.6-sol-openai-codex.json": "3a8024fd220287d18173732f69f67e23774117f3c205afa9c5888a57947c5983",
     "contracts/change-request.schema.json": "a54d964d47afbffdd050da703739315d51e70a3733f59b3639c46bbcc04c4fed",
-    "contracts/host-deltas.schema.json": "f935e93fafd5337b760b444ec23799fc1d548eeae023f7c0477fadfd06c06686",
-    "tools/reconcile.py": "74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617",
-    "tools/host_deltas.py": "1fd9cd90bbe0f40e8f010f48ed368a219326fb334162c487993f504f5cae358e",
-    "reconciliation/requests/d3d1f750beac246a53929de14d72a176c84cc36319ab086816ed4ac1fcc8245e.json": "e367327242039f1e2129d736c0761ecf2c1008923ea2d0a39fd21bd3644647c6",
-    "reconciliation/requests/01c1b7d8863e34fd1564c4b460399a20586985266d00210b152dfc127bb0a71a.json": "13871e6e2766daf7eef7630273e25b07fae8968a0906492f2596e91de0ddf92f",
-    "reconciliation/requests/577a0712373feb1050046503a9e2fd5a70bce5ea4bc1b827bc0f488627818f00.json": "180e0f1230bc81a0fd1c323284f174c7de8d9a245a2c1defb1b28adca04d33e1",
-    "reconciliation/requests/17ee465f400a763a86bec137a92abfb28de2efb16a62e441488a251925eda02b.json": "e2982f1547b1e59e23b5549d94acf7baee63d613303ca7ba53801d7816ed0464",
-    "evals/results/hermes-routed-dag-adapter-2026-09-04.json": "c38c0b89a870a8e35cf8c218ff2170afe84355c29dafa5b2da9f1890e38706d5"
+    "contracts/host-deltas.schema.json": "02e96f6b0041ddb4dc911bac68b06212ea9f2fa8c0c3fcd31a30c1518994f698",
+    "contracts/ownership.json": "5f1493c688b55da3c33f94595c8434eccf15ff4ff5920d19175c463423484c77",
+    "contracts/surface-matrix.json": "48f57435d06780138ed18c5601b81fd74e5577cf9f60db9f0119b54178f982bb",
+    "host-deltas.json": "22ebcf232af4531087e1e4fd32e8c02b9d1b0a19ad9b140d4a3f85165b2ba227",
+    "recovery/current/manifest.json": "d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d",
+    "registry.json": "c8df64cc2609d35fe75b1f7bbc55c80671ae7f2d2cdaf3dfd52cf005628c5d29",
+    "render/fleet/manifest.json": "6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e",
+    "tools/audit.py": "9852935d45b7ba8f75dc5b4bd439eedad5e13ea8c08709c9a9255c8370bdaff3",
+    "tools/host_deltas.py": "39e9269f81dc838cd8d240e22dba9b15273c36db21bc46d41c17af76391b40e9",
+    "tools/reconcile.py": "290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764",
+    "tools/sync_git.py": "ef4039d373ed77998929d86536b9556233f052b338a2daa9112c02c95311bcf2"
   },
+  "checks": [
+    "recovery snapshot",
+    "recovery live diff",
+    "instruction profile",
+    "fleet diff",
+    "fleet managed state",
+    "host deltas",
+    "reconciliation plan"
+  ],
+  "machine": "local-windows",
+  "observed_at": "2026-09-09T14:27:03.978049+00:00",
   "result": {
-    "passed": true,
-    "decision": "unified-reconciliation-and-recovery-current",
-    "limitation": "This is an explicit governed sync and public-safe declarative recovery contract, not ambient mutation interception or a private full-machine image."
-  }
+    "decision": "agent-files-and-governance-verified",
+    "limitation": "Local verification before Git publication. Only sync remote readback proves the subsequent push.",
+    "passed": true
+  },
+  "schema_version": 1,
+  "status": "pass",
+  "suite": "unified-reconciliation-local-windows"
 }

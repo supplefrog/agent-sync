@@ -3,7 +3,7 @@
   "entries": [
     {
       "category": "runtime",
-      "desired_state": "Hermes Agent 0.21.0 installed",
+      "desired_state": "Hermes Agent 0.21.1 installed",
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-runtime",
@@ -16,7 +16,7 @@
           "hermes",
           "--version"
         ],
-        "contains": "0.21.0",
+        "contains": "0.21.1",
         "kind": "command"
       },
       "redaction": "metadata-only",
@@ -26,7 +26,7 @@
         "reference": "install the declared Hermes runtime"
       },
       "source_identity": "prerequisite:install the declared Hermes runtime",
-      "version_or_hash": "version:0.21.0"
+      "version_or_hash": "version:0.21.1"
     },
     {
       "category": "runtime",
@@ -90,7 +90,7 @@
       "id": "hermes-settings",
       "owner": "recovery:hermes:settings",
       "prerequisites": [
-        "hermes runtime 0.21.0 is installed"
+        "hermes runtime 0.21.1 is installed"
       ],
       "readback": {
         "kind": "recovery-artifact",
@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "settings",
@@ -126,7 +126,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "settings",
@@ -149,7 +149,7 @@
         "reference": "omp:settings"
       },
       "source_identity": "recovery-artifact:omp:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "instructions",
@@ -159,7 +159,7 @@
       "id": "hermes-instructions",
       "owner": "recovery:hermes:standing-instructions",
       "prerequisites": [
-        "hermes runtime 0.21.0 is installed"
+        "hermes runtime 0.21.1 is installed"
       ],
       "readback": {
         "kind": "recovery-artifact",
@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "instructions",
@@ -235,7 +235,7 @@
       "id": "hermes-hook-state",
       "owner": "host-runtime",
       "prerequisites": [
-        "hermes runtime 0.21.0 is installed"
+        "hermes runtime 0.21.1 is installed"
       ],
       "readback": {
         "argv": [
@@ -276,7 +276,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "hook",
@@ -305,7 +305,7 @@
         "reference": "canonical Agent Signal reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617"
+      "version_or_hash": "sha256:290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764"
     },
     {
       "category": "hook",
@@ -328,7 +328,7 @@
         "reference": "canonical Agent Signal reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617"
+      "version_or_hash": "sha256:290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764"
     },
     {
       "category": "plugin",
@@ -338,7 +338,7 @@
       "id": "hermes-plugin-selection",
       "owner": "recovery:hermes:settings",
       "prerequisites": [
-        "hermes runtime 0.21.0 is installed"
+        "hermes runtime 0.21.1 is installed"
       ],
       "readback": {
         "kind": "recovery-artifact",
@@ -351,7 +351,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "plugin",
@@ -374,7 +374,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "plugin",
@@ -412,7 +412,7 @@
       "id": "hermes-mcp-tools",
       "owner": "recovery:hermes:settings",
       "prerequisites": [
-        "hermes runtime 0.21.0 is installed"
+        "hermes runtime 0.21.1 is installed"
       ],
       "readback": {
         "kind": "recovery-artifact",
@@ -425,7 +425,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "mcp-tool",
@@ -448,7 +448,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "mcp-tool",
@@ -471,7 +471,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "native-skill",
@@ -481,7 +481,7 @@
       "id": "hermes-admitted-skills",
       "owner": "fleet-sync",
       "prerequisites": [
-        "hermes runtime 0.21.0 is installed",
+        "hermes runtime 0.21.1 is installed",
         "Agent Signal repository is present"
       ],
       "readback": {
@@ -494,7 +494,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:88af82d34cc0fab4e3c25d9c72e183e6ba4a840b1c71cdfbf2bedbf7dc794686"
+      "version_or_hash": "sha256:6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e"
     },
     {
       "category": "native-skill",
@@ -517,7 +517,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:88af82d34cc0fab4e3c25d9c72e183e6ba4a840b1c71cdfbf2bedbf7dc794686"
+      "version_or_hash": "sha256:6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e"
     },
     {
       "category": "native-skill",
@@ -540,17 +540,17 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:88af82d34cc0fab4e3c25d9c72e183e6ba4a840b1c71cdfbf2bedbf7dc794686"
+      "version_or_hash": "sha256:6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e"
     },
     {
       "category": "curator",
-      "desired_state": "Hermes native curator remains a subordinate local lifecycle mechanic and cannot curate the external shared fleet",
-      "enablement": "enabled",
+      "desired_state": "Automatic native curation disabled; manual inspection and recovery remain available",
+      "enablement": "disabled",
       "host": "hermes",
       "id": "hermes-curator-role",
       "owner": "host-runtime",
       "prerequisites": [
-        "hermes runtime 0.21.0 is installed"
+        "hermes runtime 0.21.1 is installed"
       ],
       "readback": {
         "argv": [
@@ -558,7 +558,7 @@
           "curator",
           "status"
         ],
-        "contains": "curator: ENABLED",
+        "contains": "curator: DISABLED",
         "kind": "command"
       },
       "redaction": "metadata-only",
@@ -568,7 +568,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:996e5b40baeb96c18fc3f5c70849e7c74009d79401e5636a71f332aba5eafc21"
+      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
     },
     {
       "category": "curator",
@@ -591,7 +591,7 @@
         "reference": "Agent Signal contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617"
+      "version_or_hash": "sha256:290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764"
     },
     {
       "category": "curator",
@@ -614,7 +614,7 @@
         "reference": "Agent Signal contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:74eb9ed3ffc38b6b012b8727ef06388ac39c775cc498e47932363b46f06dc617"
+      "version_or_hash": "sha256:290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764"
     },
     {
       "category": "plugin",
@@ -749,7 +749,7 @@
       "id": "hermes-routed-summary-native",
       "owner": "Hermes native delegation results",
       "prerequisites": [
-        "Hermes HEAD 820106d4a52e83a426400659231ae14093585109",
+        "Hermes HEAD ead7e91dabf1e963796ec834b196984a2fa44ff4",
         "Exact baseline source hash and paired plugin match manifest"
       ],
       "readback": {
@@ -764,7 +764,7 @@
         "reference": "integrations/hermes/native-patches/routed-summary-rebase-820106d/README.md"
       },
       "source_identity": "repository:integrations/hermes/native-patches/routed-summary-rebase-820106d/manifest.json",
-      "version_or_hash": "sha256:a0041f621e06617a44a9ec468009ec1d9d9ed379f370ed331d00fbeec36f7c79"
+      "version_or_hash": "sha256:f993523a577ff2693cc8935fe03c92d933a422ac29f73a16d02d49233700ce0b"
     },
     {
       "category": "runtime",
@@ -774,13 +774,13 @@
       "id": "hermes-native-guidance-prompt-builder",
       "owner": "Hermes native cache and prompt construction",
       "prerequisites": [
-        "Native Hermes HEAD 820106d4a52e83a426400659231ae14093585109",
+        "Native Hermes HEAD ead7e91dabf1e963796ec834b196984a2fa44ff4",
         "Exact baseline hashes and selected dependent files match current recovery manifest"
       ],
       "readback": {
         "kind": "file",
         "path": "hermes:hermes-agent/agent/prompt_builder.py",
-        "sha256": "d75ea9d8596be4676493768a0172820064ab37431fd36ba02a95263abda4dce8"
+        "sha256": "8329c7e2cd700fa0dc218ab368d5ea6c2ec773b66590cc5486e6434d5806a873"
       },
       "redaction": "public-artifact",
       "required": true,
@@ -789,7 +789,7 @@
         "reference": "integrations/hermes/native-patches/guidance-rebase-820106d/README.md"
       },
       "source_identity": "repository:integrations/hermes/native-patches/guidance-rebase-820106d/manifest.json",
-      "version_or_hash": "sha256:30572e9ec6d4c6d24b0b6835752f6c622bc7d839a688e2433fb0e3ae1288cf9b"
+      "version_or_hash": "sha256:cc75c9cd148f074145ab06b93ca228016c9c7b284b31785bc976869386947946"
     },
     {
       "category": "runtime",
@@ -799,7 +799,7 @@
       "id": "hermes-native-rebased-skill-utils",
       "owner": "Hermes native cache and prompt construction",
       "prerequisites": [
-        "Native Hermes HEAD 820106d4a52e83a426400659231ae14093585109",
+        "Native Hermes HEAD ead7e91dabf1e963796ec834b196984a2fa44ff4",
         "Exact baseline hashes and selected dependent files match current recovery manifest"
       ],
       "readback": {
@@ -814,7 +814,7 @@
         "reference": "integrations/hermes/native-patches/guidance-rebase-820106d/README.md"
       },
       "source_identity": "repository:integrations/hermes/native-patches/guidance-rebase-820106d/manifest.json",
-      "version_or_hash": "sha256:30572e9ec6d4c6d24b0b6835752f6c622bc7d839a688e2433fb0e3ae1288cf9b"
+      "version_or_hash": "sha256:cc75c9cd148f074145ab06b93ca228016c9c7b284b31785bc976869386947946"
     },
     {
       "category": "runtime",
@@ -824,7 +824,7 @@
       "id": "hermes-native-rebased-skills-guard",
       "owner": "Hermes native cache and prompt construction",
       "prerequisites": [
-        "Native Hermes HEAD 820106d4a52e83a426400659231ae14093585109",
+        "Native Hermes HEAD ead7e91dabf1e963796ec834b196984a2fa44ff4",
         "Exact baseline hashes and selected dependent files match current recovery manifest"
       ],
       "readback": {
@@ -839,7 +839,7 @@
         "reference": "integrations/hermes/native-patches/guidance-rebase-820106d/README.md"
       },
       "source_identity": "repository:integrations/hermes/native-patches/guidance-rebase-820106d/manifest.json",
-      "version_or_hash": "sha256:30572e9ec6d4c6d24b0b6835752f6c622bc7d839a688e2433fb0e3ae1288cf9b"
+      "version_or_hash": "sha256:cc75c9cd148f074145ab06b93ca228016c9c7b284b31785bc976869386947946"
     }
   ],
   "exclusions": [

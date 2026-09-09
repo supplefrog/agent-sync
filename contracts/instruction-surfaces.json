@@ -66,7 +66,7 @@
       "kind": "runtime-native",
       "scope": "runtime",
       "status": "external",
-      "owner": "NousResearch/hermes-agent@0.21.0",
+      "owner": "NousResearch/hermes-agent@0.21.1",
       "target": "Hermes prompt builder",
       "model_sensitive": true,
       "backup": "reinstall-runtime",
@@ -124,8 +124,7 @@
     {
       "id": "codex.user-global",
       "hosts": [
-        "codex",
-        "omp"
+        "codex"
       ],
       "kind": "user-global",
       "scope": "user-global",
@@ -135,7 +134,7 @@
       "target": "${CODEX_HOME}/AGENTS.md",
       "model_sensitive": true,
       "backup": "captured",
-      "note": "The user-approved INSTRUCTION-AUTHORING line routes durable/shared instruction content to the Agent Signal skill-creator. RECONCILIATION routes persistent cross-agent changes to the same deterministic Agent Signal workflow used by Hermes; OMP inherits this overlay.",
+      "note": "Codex native global overlay. OMP does not currently inherit it; see omp.codex-inherited. The instruction-authoring owner is skills/skill-creator.",
       "assembly_order": 200
     },
     {
