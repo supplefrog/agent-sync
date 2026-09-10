@@ -2,7 +2,7 @@
 
 ## Outcome
 
-Use Agent Signal as the Git-owned source for admitted portable skills while
+Use Agent Sync as the Git-owned source for admitted portable skills while
 preserving host-native instructions, adapters, unmanaged skills, and local
 changes. The same deterministic snapshot can be checked before it is applied
 to any declared machine.

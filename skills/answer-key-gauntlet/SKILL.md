@@ -7,7 +7,7 @@ license: MIT
 compatibility: Requires durable project files; subagents are optional.
 metadata:
   tags: [planning, specification, delegation, verification, gauntlet]
-  canonical_owner: Agent Signal
+  canonical_owner: Agent Sync
   related_skills: [outcome-first-workflow-design, dynamic-workflows, code-change-verification]
 ---
 

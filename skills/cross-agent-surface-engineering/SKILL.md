@@ -1,10 +1,10 @@
 ---
 name: cross-agent-surface-engineering
-description: Use for persistent-surface changes across Hermes, Codex, and OMP. Compare variants behavior by behavior, synthesize the strongest portable owner, retain only justified host adapters, and verify fresh discovery before cleanup.
+description: Use for agent-sync requests and cross-host surface changes across Hermes, Codex, and OMP. Compare variants behavior by behavior, synthesize the strongest portable owner, retain only justified host adapters, and verify fresh discovery before cleanup.
 version: 2.0.0
 author: Local User
 license: UNLICENSED
-compatibility: Requires an Agent Signal checkout and access to the affected live hosts.
+compatibility: Requires an Agent Sync checkout and access to the affected live hosts.
 metadata:
   hermes:
     tags: [hermes, codex, omp, cross-agent, convergence]
@@ -13,11 +13,11 @@ metadata:
 
 # Cross-Agent Surface Engineering
 
-Use this for cross-host placement, parity, or reconciliation across Hermes, Codex, and OMP. Known-owner wording edits use `skill-creator`; ordinary host use and project code stay with their narrower owners.
+Use this for cross-host placement, parity, or reconciliation across Hermes, Codex, and OMP. A request to `agent-sync` means complete the checked deployment, commit, push, and remote readback for the current authorized changes; no separate reconciliation phrase or routine confirmation is needed. Review unrelated dirty work before including it, and preserve approval gates for new or high-stakes actions. Known-owner wording edits use `skill-creator`; ordinary host use and project code stay with their narrower owners.
 
 ## Canonical owner
 
-Agent Signal owns the source of its managed artifacts. Locate its checkout from the managed skill root's `.agent-signal-fleet.json` and `source_snapshot`, as described by `fleet-sync`; otherwise locate a checkout containing `fleet.json`, `registry.json`, and `tools/fleet.py`. Edit that source before deploying its managed copies. Independently owned native surfaces retain their own source. `agent-surface-bridge` is prior evidence only.
+Agent Sync owns the source of its managed artifacts. Locate its checkout from the managed skill root's `.agent-signal-fleet.json` and `source_snapshot`, as described by `fleet-sync`; otherwise locate a checkout containing `fleet.json`, `registry.json`, and `tools/fleet.py`. Edit that source before deploying its managed copies. Independently owned native surfaces retain their own source. `agent-surface-bridge` is prior evidence only.
 
 ## Procedure
 
@@ -36,7 +36,7 @@ python tools/fleet.py render
 python tools/fleet.py diff
 ```
 
-Read the affected entries in `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json`, `contracts/ownership.json`, the selected model profile, and `recovery/current/manifest.json`. Inspect the corresponding live discovery and precedence; expand to config, plugins, docs, or source only for unresolved dependencies. Official current host docs beat stale repository prose; reviewed Agent Signal ownership beats live copies and generated caches. Keep unrelated drift out of a scoped deployment.
+Read the affected entries in `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json`, `contracts/ownership.json`, the selected model profile, and `recovery/current/manifest.json`. Inspect the corresponding live discovery and precedence; expand to config, plugins, docs, or source only for unresolved dependencies. Official current host docs beat stale repository prose; reviewed Agent Sync ownership beats live copies and generated caches. Keep unrelated drift out of a scoped deployment.
 
 ### 3. Compare behaviors, not whole skills
 
@@ -70,7 +70,7 @@ Structural removal of byte-identical copies needs deterministic identity and fre
 
 ### 6. Promote and clean up
 
-For authorized Agent Signal changes or an explicit reconciliation, run `python tools/reconcile.py plan` in the owning checkout; inspect destinations and findings, then run `python tools/reconcile.py sync`. Sync checks and shares eligible changes, commits them locally, pushes to the configured remote branch, and verifies both the agents and remote commit. Do not call a local copy or recovery capture “synced.” The agent handles these steps as one authorized job, not separate user reminders.
+For authorized Agent Sync changes or an explicit reconciliation, run `python tools/reconcile.py plan` in the owning checkout; inspect destinations and findings, then run `python tools/reconcile.py sync`. Sync checks and shares eligible changes, commits them locally, pushes to the configured remote branch, and verifies both the agents and remote commit. Do not call a local copy or recovery capture “synced.” A temporary verification hold ends when its named checks pass; continue the already-authorized deployment and publication without asking again. Stop only for a remaining failed check, scope conflict, or explicit no-publication instruction. The agent handles these steps as one authorized job, not separate user reminders.
 
 Review additional dirty repository files before naming their exact paths with repeated `--include FILE`; never collect all files blindly. This selects commit content only, not admission or deployment authority. Capture justified native settings without copying them indiscriminately across hosts. Novel, conflicting, unsafe, retirement, or ambiguous findings still require their existing review; project-local and ephemeral work stays local. A failed check, commit, push, or readback is incomplete. Preserve the pending work and rerun the same sync after resolving the cause; never force-push or erase another task's edits.
 
@@ -80,10 +80,10 @@ Host checks:
 
 - **Hermes:** verify the parsed `skills.external_dirs` value and fresh skill loading; a quoted serialized array can silently disable discovery.
 - **Codex:** use `codex debug prompt-input` to confirm the effective skill. For local-marketplace plugins, edit source, refresh through the native remove/re-add lifecycle, and verify `codex plugin list --json`; never patch the installed cache.
-- **OMP:** current OMP loads Agent Skills from project walk-up and user-home `.agent/skills` and `.agents/skills`. Verify a fresh no-session process. Keep a native OMP skill only when it adds real OMP execution or precedence glue rather than copied policy.
+- **OMP:** current OMP loads Agent Skills from project walk-up and user-home `.agent/skills` and `.agents/skills`. Verify a fresh `omp --mode rpc --no-session` process with the read-only `get_available_commands` request, then close stdin for clean shutdown. `get_commands` is unsupported and its error may omit the request ID; `omp read skill://...` alone has no initialized skill catalog. Keep a native OMP skill only when it adds real OMP execution or precedence glue rather than copied policy.
 
 After promotion, rerun recovery/profile/fleet verification and one real target behavior. Record the canonical owner, migrated and discarded behaviors, retained native deltas, exact checks, rollback, and restart/reset requirement.
 
 ## Safety boundaries
 
-Never copy credentials, sessions, memories, logs, caches, private user data, or provider-hidden prompts into Agent Signal. Do not modify another profile without explicit authorization. Do not infer parity from identical files, and do not lower one host to the weakest common mechanism.
+Never copy credentials, sessions, memories, logs, caches, private user data, or provider-hidden prompts into Agent Sync. Do not modify another profile without explicit authorization. Do not infer parity from identical files, and do not lower one host to the weakest common mechanism.

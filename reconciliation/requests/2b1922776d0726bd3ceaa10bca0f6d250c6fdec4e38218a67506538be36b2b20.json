@@ -1,0 +1,78 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "cb461eb915c24043d972f0cc6299302f320bd88c3aaeb27d0c9489b53d9cf5b2",
+      "before_sha256": "cb461eb915c24043d972f0cc6299302f320bd88c3aaeb27d0c9489b53d9cf5b2",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "0710a75922c4bc83bda0da82cc6d44159afc65b95f73b192c7acbb4380f50619",
+      "before_sha256": "0710a75922c4bc83bda0da82cc6d44159afc65b95f73b192c7acbb4380f50619",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "72274709217f2ef0aa0d7d788be457a0430a34734a926e82e1c6df9cfa116584",
+      "before_sha256": "72274709217f2ef0aa0d7d788be457a0430a34734a926e82e1c6df9cfa116584",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "cross-agent-surface-engineering",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "2b1922776d0726bd3ceaa10bca0f6d250c6fdec4e38218a67506538be36b2b20",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

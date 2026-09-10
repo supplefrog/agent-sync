@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://supplefrog.github.io/agent-signal/contracts/recovery.schema.json",
-  "title": "Agent Signal public-safe recovery policy",
+  "title": "Agent Sync public-safe recovery policy",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "machine", "public_safe", "hosts"],

@@ -1273,10 +1273,82 @@ class RoutedDelegationTests(unittest.TestCase):
         self.assertEqual(result["finalization_pending"], [])
         self.assertEqual(list(self.root.rglob("auth.json")), [])
 
+    def test_current_native_adapter_shares_budget_and_accounts_once(self) -> None:
+        from hermes_cli import plugins
+
+        from tools import delegate_tool_results as native
+        runtime = self.plugin._private_runtime()
+        parent = types.SimpleNamespace(
+            session_id="adapter-parent", _current_turn_id="turn",
+            context_compressor=types.SimpleNamespace(context_length=20000, max_tokens=1000),
+            _last_prompt_size_tokens=11000, session_estimated_cost_usd=1.0,
+            _memory_manager=mock.Mock(),
+        )
+        children, raw = [], []
+        for index in range(4):
+            child = types.SimpleNamespace(session_id=f"child-{index}")
+            self.plugin._own_child(child, parent)
+            child._routed_summary_count = 4
+            child._routed_budget_summary = runtime["budget_summary"]
+            children.append(child)
+            raw.append({"task_index": index, "summary": (f"evidence-{index}\n" * 3000),
+                        "status": "completed", "exit_reason": "completed",
+                        "_child_cost_usd": 0.25, "_child_role": "leaf"})
+        expected = json.loads(json.dumps(raw))
+        # Native batch output is the oracle. Only the filesystem boundary is
+        # intercepted, leaving native cap, trim, accounting and hooks real.
+        with mock.patch.object(native, "_spill_summary_to_file", return_value=None), \
+             mock.patch.object(plugins, "invoke_hook") as hooks:
+            native._apply_summary_budget(expected, parent)
+            for index, child in enumerate(children):
+                item = (index, {"goal": f"goal-{index}"}, {}, child)
+                self.plugin._schedule_finalization(runtime["finalize"], parent, item, raw[index])
+                self.assertTrue(child._routed_accounting_done.wait(5))
+                self.plugin._schedule_finalization(runtime["finalize"], parent, item, raw[index])
+                self.assertEqual(child._routed_accounting["status"], "returned")
+                self.assertEqual(child._routed_display_result["summary"], expected[index]["summary"])
+                self.assertEqual(child._routed_finalized_result["summary"], expected[index]["summary"])
+                self.assertNotIn("_child_cost_usd", child._routed_finalized_result)
+                self.assertEqual(raw[index]["summary"], f"evidence-{index}\n" * 3000)
+            self.assertEqual(hooks.call_count, 4)
+        self.assertEqual(parent._memory_manager.on_delegation.call_count, 4)
+        self.assertEqual(parent.session_estimated_cost_usd, 2.0)
+        self.assertEqual([call.kwargs["result"] for call in
+                          parent._memory_manager.on_delegation.call_args_list],
+                         [entry["summary"] for entry in expected])
+
+    def test_legacy_adapter_rejects_unknown_native_finalization_body(self) -> None:
+        from tools import delegate_tool_results as native
+        def changed(results, task_list, children, parent_agent):
+            raise AssertionError("new native obligation must not be silently omitted")
+        with self.assertRaisesRegex(RuntimeError, "finalization.*unsupported"):
+            self.plugin._summary_runtime_adapter(changed, native)
+
+    def test_native_spawn_requires_router_but_controls_remain_available(self) -> None:
+        registered_hooks = {}
+        ctx = types.SimpleNamespace(
+            register_tool=lambda **kwargs: None,
+            register_hook=lambda name, callback: registered_hooks.update({name: callback}),
+        )
+        self.plugin.register(ctx)
+        self.assertIn("pre_tool_call", registered_hooks)
+        gate = registered_hooks["pre_tool_call"]
+        for args in ({}, {"tasks": [{"goal": "Review code"}]},
+                     {"action": "spawn"}, {"action": "unknown"}, {"action": []}):
+            with self.subTest(args=args):
+                decision = gate(tool_name="delegate_task", args=args)
+                self.assertEqual(decision["action"], "block")
+                self.assertIn("routed_delegate_task", decision["message"])
+        for action in ("list", "steer", "stop"):
+            self.assertIsNone(gate(tool_name="delegate_task", args={"action": action}))
+        for name in ("routed_delegate_task", "routed_workflow", "terminal", "memory"):
+            self.assertIsNone(gate(tool_name=name, args={}))
+
     def test_register_exposes_both_routed_tools(self) -> None:
         registered = []
         ctx = types.SimpleNamespace(
-            register_tool=lambda **kwargs: registered.append(kwargs)
+            register_tool=lambda **kwargs: registered.append(kwargs),
+            register_hook=lambda *args: None,
         )
         self.plugin.register(ctx)
         self.assertEqual(

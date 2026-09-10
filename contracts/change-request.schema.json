@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "change-request.schema.json",
-  "title": "Agent Signal reconciled change request",
+  "title": "Agent Sync reconciled change request",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "request_id", "machine", "phase", "operation", "source", "risk", "disposition", "owners", "artifacts", "phases", "checks", "result"],

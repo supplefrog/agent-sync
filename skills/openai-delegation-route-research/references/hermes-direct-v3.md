@@ -1,6 +1,18 @@
 # Hermes direct task routing
 
-Use `routed_delegate_task` with `route_request` for a new task-aware direct delegation. The existing tier fields remain V2 and cannot be combined with this field. Automatic DAG migration is separate.
+## Router-owned delegation
+
+With the `routed-delegation` plugin enabled, send every new worker request through `routed_delegate_task` with a V3 `route_request`, or through `routed_workflow` for a DAG. Its `pre_tool_call` hook blocks ordinary `delegate_task` spawning and directs the caller to the router; it is not transparent redispatch. Existing-worker `list`, `steer`, and `stop` controls remain available. Do not bypass the gate with subprocesses or legacy V2 requests.
+
+The router selects an executor from task-specific evidence before execution. Missing evidence permits a bounded trial only for low-risk independently verifiable work with established callability. `keep_parent`, parent, deterministic, and defer decisions return parent actions, not permission to start an inherited worker. The parent verifies worker output; task failure does not authorize an unbounded retry ladder.
+
+Keep native `delegation.model`, `provider`, and `reasoning_effort` empty, with `fallback_providers: []`, as the compatibility baseline rather than a global cheaper-model pin. These settings alone do not invoke the selector. Without the enabled plugin, ordinary delegation retains Hermes-native behavior. V2 fields remain compatible for existing runs, but are not the default for new work and cannot be combined with `route_request`.
+
+## Native compatibility
+
+The plugin accepts the extended shared-budget API or adapts the tested split-native finalizer. The adapter keeps a batch-wide budget and invokes native memory, completion hooks, cost rollup, and locking once without global monkeypatches. Full results remain separate from bounded parent summaries. A changed finalizer body fails closed until reviewed; formatting and comments alone do not change its structural comparison. This temporary coupling is tracked [upstream](https://github.com/NousResearch/hermes-agent/pull/90870#issuecomment-5619573754).
+
+The installed plugin directory may be linked directly to the canonical checkout. Check the resolved path before editing or reporting deployment. Verify native plugin discovery, the routing hook, and runtime compatibility in a fresh process; an already-running session may retain the old module until restart.
 
 The template contains exactly `schema_version: 3`, `task_class`, `requirements`, `verifier`, `effects`, `failure_cost`, `deterministic`, and `budget`, as defined in [the task schema](route-task-v3.schema.json). Omit controller fields: `task_id`, `input_sha256`, `as_of`, `continuation`, and requirements `host`/`transport`. A deterministic descriptor also omits `input_sha256`. The tool fills them through [task_request.py](../scripts/task_request.py); the parent supplies the remaining explicit fields and checks referenced evidence.
 

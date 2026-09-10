@@ -1,12 +1,14 @@
-# Agent Signal
+# Agent Sync
 
-Agent Signal maintains shared skills, instructions, and recovery records for **Hermes, Codex, and OMP**. It gives useful agent improvements one maintained home, while keeping each agent's native strengths and private state separate.
+Syncs behaviors across your AI agents.
+
+Keep **Hermes, Codex, and OMP** working the way you want, without updating each one separately. Each agent keeps its native capabilities and private state.
 
 The intended experience is simple: ask for a change, let the agent check and share it where appropriate, and receive a verified result—not a list of deployment and Git chores.
 
 ## Start with the outcome
 
-An existing workflow is a baseline, not a requirement to preserve. Agent Signal's [outcome-first workflow](skills/outcome-first-workflow-design/SKILL.md) asks what the system should accomplish, checks why the current implementation exists, and compares keeping, simplifying, or replacing it.
+An existing workflow is a baseline, not a requirement to preserve. Agent Sync's [outcome-first workflow](skills/outcome-first-workflow-design/SKILL.md) asks what the system should accomplish, checks why the current implementation exists, and compares keeping, simplifying, or replacing it.
 
 A new skill or another layer of automation is not automatically an improvement. Keep useful knowledge and safeguards; require evidence for changes that claim to improve behavior. Shared files alone do not prove that different agents behave equally well.
 
@@ -14,7 +16,7 @@ A new skill or another layer of automation is not automatically an improvement. 
 
 In a configured Hermes, Codex, or OMP session, describe the persistent change you want and say:
 
-> Reconcile with Agent Signal.
+> agent-sync
 
 The agent reviews the affected source and live setup, then uses the common sync command to:
 
@@ -57,7 +59,7 @@ Runtime-specific support, limitations, and evidence are recorded in the [surface
 
 Clone outside an agent's live skill-discovery directories. In particular, do not clone into `~/.agents`: that can expose staged skills before they have been approved.
 
-This repository contains a configured machine inventory and allowlisted recovery snapshot, not universal defaults. Review [fleet setup](docs/fleet.md) and [recovery](docs/recovery.md) before applying them to another machine. Install the required agent runtimes and authenticate separately; Agent Signal does not restore credentials or private conversation state.
+This repository contains a configured machine inventory and allowlisted recovery snapshot, not universal defaults. Review [fleet setup](docs/fleet.md) and [recovery](docs/recovery.md) before applying them to another machine. Install the required agent runtimes and authenticate separately; Agent Sync does not restore credentials or private conversation state.
 
 To inspect recovery before applying it:
 

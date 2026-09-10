@@ -14,7 +14,7 @@
       "# Execution",
       "# Instruction authoring",
       "# Reconciliation",
-      "reconcile with Agent Signal"
+      "reconcile with Agent Sync"
     ]
   },
   "skills": {
@@ -49,7 +49,7 @@
         "pinning": "Pin the complete receipt before launch; identical resumes reuse it and conflicting rewrites fail.",
         "native_owner": "routed-delegation user plugin plus Hermes native child builder/finalizer",
         "enforcement": "live-version-guarded-user-plugin",
-        "current_support": "The live routed_delegate_task plugin selects and pins exact per-child routes, disables route fallback, and reuses identical parent-session/task pins. Built-in delegate_task remains globally routed.",
+        "current_support": "The live routed_delegate_task plugin selects and pins exact per-child routes, disables route fallback, and reuses identical parent-session/task pins. The enabled plugin blocks new built-in delegate_task spawns via pre_tool_call while preserving list/steer/stop; callers must explicitly use the V3 router.",
         "smallest_path": "Keep the plugin as the reversible live adapter. Upstream provider and reasoning fields into the public SubagentLaunchRequest before replacing the private version-guarded seam."
       },
       {

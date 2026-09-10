@@ -39,7 +39,7 @@
       "selection_evidence": [
         "evals/results/learn-from-youtube-deterministic.json"
       ],
-      "selection_reason": "Selected as a behavior-level synthesis: Agent Signal provenance and parser, Hermes AI LABS extraction, OMP routing, and Codex UI metadata; inferior copied policy and generated caches are excluded."
+      "selection_reason": "Selected as a behavior-level synthesis: Agent Sync provenance and parser, Hermes AI LABS extraction, OMP routing, and Codex UI metadata; inferior copied policy and generated caches are excluded."
     },
     {
       "id": "neuroarxiv",
@@ -49,7 +49,7 @@
       "selection_evidence": [
         "evals/results/neuroarxiv-deterministic.json"
       ],
-      "selection_reason": "The Hermes and Codex variants were byte-identical; Agent Signal preserves all behavior and provenance, adds the source-verified OMP task adapter, and remains fail-closed when isolated workers are unavailable."
+      "selection_reason": "The Hermes and Codex variants were byte-identical; Agent Sync preserves all behavior and provenance, adds the source-verified OMP task adapter, and remains fail-closed when isolated workers are unavailable."
     },
     {
       "id": "advise-project-approach",
@@ -69,7 +69,7 @@
       "selection_evidence": [
         "evals/results/answer-key-gauntlet-deterministic.json"
       ],
-      "selection_reason": "The Hermes, Codex, and retired bridge variants were semantically identical; Agent Signal preserves the workflow and contract while replacing stale bridge ownership."
+      "selection_reason": "The Hermes, Codex, and retired bridge variants were semantically identical; Agent Sync preserves the workflow and contract while replacing stale bridge ownership."
     },
     {
       "id": "frontend-ui-engineering",
@@ -79,7 +79,7 @@
       "selection_evidence": [
         "evals/results/frontend-ui-engineering-deterministic.json"
       ],
-      "selection_reason": "The shared and Codex bundles were byte-identical; Agent Signal preserves all behavior and support references while binding upstream MIT provenance and fleet management."
+      "selection_reason": "The shared and Codex bundles were byte-identical; Agent Sync preserves all behavior and support references while binding upstream MIT provenance and fleet management."
     },
     {
       "id": "surface-convergence",
@@ -97,7 +97,7 @@
       "selection_evidence": [
         "evals/results/cross-agent-surface-engineering-deterministic.json"
       ],
-      "selection_reason": "Selected as a behavior-level synthesis of the current Agent Signal operator, useful host-discovery checks, and one shared Agent Skills deployment; stale bridge ownership and retired-host rules were rejected."
+      "selection_reason": "Selected as a behavior-level synthesis of the current Agent Sync operator, useful host-discovery checks, and one shared Agent Skills deployment; stale bridge ownership and retired-host rules were rejected."
     },
     {
       "id": "outcome-first-workflow-design",
@@ -199,6 +199,16 @@
         "evals/results/hermes-self-engineering-deterministic.json"
       ],
       "selection_reason": "Selected as the narrow Hermes behavior-surface placement owner with explicit negative-steering checks."
+    },
+    {
+      "id": "systematic-debugging",
+      "owner": "skills/systematic-debugging",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/systematic-debugging-deterministic.json"
+      ],
+      "selection_reason": "Explicitly approved byte-preserving port of the existing Hermes debugging procedure and optional Windows diagnostic reference. Structural checks preserve all behavior; no new model-quality or natural-trigger parity is claimed."
     }
   ],
   "retired_artifacts": [

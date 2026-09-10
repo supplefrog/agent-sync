@@ -1,6 +1,14 @@
 # GPT routing decision interface
 
-Status: automatic selection is live for `routed_delegate_task`, exact task-thread routes, and the definitive portable routed DAG state contract used by Codex, Hermes, and OMP adapters. Built-in Hermes `delegate_task` remains one global route; persisted Hermes DAG execution uses the separate thin `routed_workflow` adapter.
+## Current entry point: V3 task-aware routing
+
+For new Hermes routed tasks, follow the [V3 direct consumer contract](../skills/openai-delegation-route-research/references/hermes-direct-v3.md) and [selection contract](../skills/openai-delegation-route-research/references/selection-contract.md). V3 uses protocol-specific evidence, exact tools/context/effects, and independent acceptance—not the intelligence-tier ranking below. Expired availability or missing qualification does not authorize an optimized route. Unknown costs remain unknown; a working selector does not establish savings.
+
+When the routed-delegation plugin is enabled, its native pre-tool hook blocks new `delegate_task` spawns and directs callers through the V3 router; worker `list`, `steer`, and `stop` remain available. This is explicit routing, not transparent redispatch. Empty delegation model/provider/reasoning settings preserve the native compatibility baseline, not an alternative spawn path. V3 `keep_parent` means no new worker. Neither path implements foreground Auto.
+
+## Historical V2 interface
+
+The remaining sections describe V2 receipts and existing V2 runs, not the default for new task selection. Preserve existing pins; do not substitute V2 rankings when V3 evidence is missing. Historical surface and auxiliary statements below are not fresh runtime verification.
 
 ## Ownership
 

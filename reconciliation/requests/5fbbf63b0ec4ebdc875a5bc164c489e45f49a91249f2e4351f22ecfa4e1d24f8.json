@@ -1,0 +1,127 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "460a8ff149183cf8e44293656a6743d1212f35f44954b91df3d6e03fce6a239a",
+      "before_sha256": "460a8ff149183cf8e44293656a6743d1212f35f44954b91df3d6e03fce6a239a",
+      "owner": "advise-project-approach",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "663712e42ef48a12a98d9859e8727760e9f39948000487289187596691c9bafb",
+      "before_sha256": "663712e42ef48a12a98d9859e8727760e9f39948000487289187596691c9bafb",
+      "owner": "answer-key-gauntlet",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "4717759f58d3887009a1314d93e6e7fb316d62ab23e11b6fddb26abb9cb6f171",
+      "before_sha256": "4717759f58d3887009a1314d93e6e7fb316d62ab23e11b6fddb26abb9cb6f171",
+      "owner": "breadcrumb-records",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "ed34b2697c214fddb13b966fac0b2671800c02c8e8eb9e61bca4c0996c37383d",
+      "before_sha256": "ed34b2697c214fddb13b966fac0b2671800c02c8e8eb9e61bca4c0996c37383d",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "2448a354b794af3078b1beb6653a90acba54ec538276a4e26d873c0bd8c4a8bd",
+      "before_sha256": "2448a354b794af3078b1beb6653a90acba54ec538276a4e26d873c0bd8c4a8bd",
+      "owner": "fleet-sync",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "be1c57c7586fec3e3ab31328bc599470e8e106b6fdf26a816ebdd6b122e9323a",
+      "before_sha256": "be1c57c7586fec3e3ab31328bc599470e8e106b6fdf26a816ebdd6b122e9323a",
+      "owner": "frontend-ui-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "6325190af3bc1d50bf9523269af91c8930abdce5b79b706aac002d5981d6e7a0",
+      "before_sha256": "6325190af3bc1d50bf9523269af91c8930abdce5b79b706aac002d5981d6e7a0",
+      "owner": "openai-delegation-route-research",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "c56d2814b5ca84261fea91d1e27bb91fc2969c6939926c682d4186134dcfc93b",
+      "before_sha256": "c56d2814b5ca84261fea91d1e27bb91fc2969c6939926c682d4186134dcfc93b",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "158679d529ce00d41b2021c1c58cc16d39fc30e77e979bee9aaefa4750bfcdc7",
+      "before_sha256": "158679d529ce00d41b2021c1c58cc16d39fc30e77e979bee9aaefa4750bfcdc7",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "534c6fbcedd925eeffad6fa906ee7836bc94526ea600934ff16a7d6abd53848b",
+      "before_sha256": "534c6fbcedd925eeffad6fa906ee7836bc94526ea600934ff16a7d6abd53848b",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "advise-project-approach",
+    "answer-key-gauntlet",
+    "breadcrumb-records",
+    "cross-agent-surface-engineering",
+    "fleet-sync",
+    "frontend-ui-engineering",
+    "openai-delegation-route-research",
+    "skill-creator",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "5fbbf63b0ec4ebdc875a5bc164c489e45f49a91249f2e4351f22ecfa4e1d24f8",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

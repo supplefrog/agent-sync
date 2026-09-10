@@ -22,7 +22,7 @@ For qualified three-question source-review tasks, use [the bounded review Q&A co
 
 1. Identify the outcome protocol, exact input hash, required tools/context, allowed effects, failure cost, and independent acceptance check. Keep protocol qualification separate from an individual input. A JSON schema or an output file's existence does not establish content correctness.
 2. Use the v3 task and catalog schemas in `references/`. Record actual callable host/transport/model/effort tuples, task evidence, resource state and unknown costs. Use a complete deterministic handler when available. For bounded reversible work with complete independent verification, an explicitly preferred candidate may be tried provisionally; this is not an established quality or savings claim.
-3. Run the selector with the owning Agent Signal checkout's Python environment (`.venv` when present), satisfying its `requirements.txt`. Save the receipt with the exact catalog/task/selector snapshots:
+3. Run the selector with the owning Agent Sync checkout's Python environment (`.venv` when present), satisfying its `requirements.txt`. Save the receipt with the exact catalog/task/selector snapshots:
 
 ```text
 python scripts/route_selector.py select --catalog <catalog.json> --task <task.json> --out <decision.json>

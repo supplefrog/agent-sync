@@ -2,7 +2,7 @@
 name: fleet-sync
 description: Use when asked to render, diff, sync, propagate, reconcile, or verify admitted agent skills across Hermes, Codex, OMP, or declared machines. Do not use for editing skill content or host-specific instruction adapters.
 license: MIT
-compatibility: Requires an Agent Signal checkout with fleet.json and Python 3.11+.
+compatibility: Requires an Agent Sync checkout with fleet.json and Python 3.11+.
 metadata:
   author: supplefrog
   version: "1.0.0"
@@ -10,14 +10,14 @@ metadata:
 
 # Fleet Sync
 
-Use Agent Signal's deterministic fleet tool. The repository skills and
+Use Agent Sync's deterministic fleet tool. The repository skills and
 `registry.json` are authoritative; live host directories are deployments, not
 sources.
 
 ## Locate the owner
 
 Find the managed skill root containing `.agent-signal-fleet.json`. Its
-`source_snapshot` points into the owning Agent Signal checkout. Walk upward from
+`source_snapshot` points into the owning Agent Sync checkout. Walk upward from
 that snapshot until `fleet.json` is found. If no state exists yet, locate the
 checkout containing both `fleet.json` and `tools/fleet.py`. Never guess another
 repository or treat a generated snapshot as editable source.

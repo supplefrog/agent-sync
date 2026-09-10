@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Render and safely reconcile Agent Signal skills across agent hosts."""
+"""Render and safely reconcile Agent Sync skills across agent hosts."""
 
 from __future__ import annotations
 

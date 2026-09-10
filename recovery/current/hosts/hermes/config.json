@@ -189,10 +189,10 @@
     "max_concurrent_children": 8,
     "max_iterations": 40,
     "max_spawn_depth": 1,
-    "model": "gpt-5.6-luna",
+    "model": "",
     "orchestrator_enabled": true,
-    "provider": "openai-codex",
-    "reasoning_effort": "high",
+    "provider": "",
+    "reasoning_effort": "",
     "subagent_auto_approve": false
   },
   "display": {

@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "settings",
@@ -126,7 +126,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "settings",
@@ -149,11 +149,11 @@
         "reference": "omp:settings"
       },
       "source_identity": "recovery-artifact:omp:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "instructions",
-      "desired_state": "Hermes user-global overlay includes the canonical Agent Signal reconciliation route",
+      "desired_state": "Hermes user-global overlay includes the canonical Agent Sync reconciliation route",
       "enablement": "enabled",
       "host": "hermes",
       "id": "hermes-instructions",
@@ -172,11 +172,11 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "instructions",
-      "desired_state": "Codex user-global overlay includes the canonical Agent Signal reconciliation route",
+      "desired_state": "Codex user-global overlay includes the canonical Agent Sync reconciliation route",
       "enablement": "enabled",
       "host": "codex",
       "id": "codex-instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "instructions",
@@ -276,17 +276,17 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "hook",
-      "desired_state": "the standalone agent-surface-governance authority is disabled and superseded by Agent Signal reconciliation",
+      "desired_state": "the standalone agent-surface-governance authority is disabled and superseded by Agent Sync reconciliation",
       "enablement": "absent",
       "host": "codex",
       "id": "codex-legacy-governance-absent",
       "owner": "cross-agent-surface-engineering",
       "prerequisites": [
-        "Agent Signal repository is present"
+        "Agent Sync repository is present"
       ],
       "readback": {
         "argv": [
@@ -302,20 +302,20 @@
       "required": true,
       "restore": {
         "kind": "repository",
-        "reference": "canonical Agent Signal reconciliation route"
+        "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764"
+      "version_or_hash": "sha256:9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4"
     },
     {
       "category": "hook",
-      "desired_state": "explicit reconciliation routes through the shared Agent Signal workflow without a competing authority",
+      "desired_state": "explicit reconciliation routes through the shared Agent Sync workflow without a competing authority",
       "enablement": "absent",
       "host": "omp",
       "id": "omp-hook-state",
       "owner": "cross-agent-surface-engineering",
       "prerequisites": [
-        "Agent Signal repository is present"
+        "Agent Sync repository is present"
       ],
       "readback": {
         "kind": "file",
@@ -325,10 +325,10 @@
       "required": true,
       "restore": {
         "kind": "repository",
-        "reference": "canonical Agent Signal reconciliation route"
+        "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764"
+      "version_or_hash": "sha256:9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4"
     },
     {
       "category": "plugin",
@@ -351,7 +351,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "plugin",
@@ -374,7 +374,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "plugin",
@@ -425,7 +425,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "mcp-tool",
@@ -448,7 +448,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "mcp-tool",
@@ -471,7 +471,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "native-skill",
@@ -482,7 +482,7 @@
       "owner": "fleet-sync",
       "prerequisites": [
         "hermes runtime 0.21.1 is installed",
-        "Agent Signal repository is present"
+        "Agent Sync repository is present"
       ],
       "readback": {
         "kind": "fleet"
@@ -494,7 +494,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e"
+      "version_or_hash": "sha256:456e1ee68aec45580627e8a109c31e9c0075c0a5e5ed98483662f2947fe6c30f"
     },
     {
       "category": "native-skill",
@@ -505,7 +505,7 @@
       "owner": "fleet-sync",
       "prerequisites": [
         "codex runtime 0.153.1 is installed",
-        "Agent Signal repository is present"
+        "Agent Sync repository is present"
       ],
       "readback": {
         "kind": "fleet"
@@ -517,7 +517,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e"
+      "version_or_hash": "sha256:456e1ee68aec45580627e8a109c31e9c0075c0a5e5ed98483662f2947fe6c30f"
     },
     {
       "category": "native-skill",
@@ -528,7 +528,7 @@
       "owner": "fleet-sync",
       "prerequisites": [
         "omp runtime 17.2.13 is installed",
-        "Agent Signal repository is present"
+        "Agent Sync repository is present"
       ],
       "readback": {
         "kind": "fleet"
@@ -540,7 +540,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e"
+      "version_or_hash": "sha256:456e1ee68aec45580627e8a109c31e9c0075c0a5e5ed98483662f2947fe6c30f"
     },
     {
       "category": "curator",
@@ -568,17 +568,17 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d"
+      "version_or_hash": "sha256:66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5"
     },
     {
       "category": "curator",
-      "desired_state": "deterministic Agent Signal ownership, admission, and reconciliation contracts are the effective portable authority",
+      "desired_state": "deterministic Agent Sync ownership, admission, and reconciliation contracts are the effective portable authority",
       "enablement": "managed",
       "host": "codex",
       "id": "codex-canonical-curation",
       "owner": "cross-agent-surface-engineering",
       "prerequisites": [
-        "Agent Signal repository is present"
+        "Agent Sync repository is present"
       ],
       "readback": {
         "kind": "file",
@@ -588,20 +588,20 @@
       "required": true,
       "restore": {
         "kind": "repository",
-        "reference": "Agent Signal contracts and reconciler"
+        "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764"
+      "version_or_hash": "sha256:9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4"
     },
     {
       "category": "curator",
-      "desired_state": "deterministic Agent Signal ownership, admission, and reconciliation contracts are the effective portable authority",
+      "desired_state": "deterministic Agent Sync ownership, admission, and reconciliation contracts are the effective portable authority",
       "enablement": "managed",
       "host": "omp",
       "id": "omp-canonical-curation",
       "owner": "cross-agent-surface-engineering",
       "prerequisites": [
-        "Agent Signal repository is present"
+        "Agent Sync repository is present"
       ],
       "readback": {
         "kind": "file",
@@ -611,10 +611,10 @@
       "required": true,
       "restore": {
         "kind": "repository",
-        "reference": "Agent Signal contracts and reconciler"
+        "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764"
+      "version_or_hash": "sha256:9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4"
     },
     {
       "category": "plugin",
@@ -725,32 +725,33 @@
       "id": "hermes-routed-plugin-source",
       "owner": "canonical Hermes routed-delegation integration",
       "prerequisites": [
-        "paired native summary helper installed before plugin activation"
+        "Installed Hermes passes the canonical plugin runtime compatibility checks; no native summary patch is required for the supported split interface"
       ],
       "readback": {
         "kind": "file",
         "path": "hermes:plugins/routed-delegation/__init__.py",
-        "sha256": "3845cb96fda4ef00d37ecbcfb9aadbbb8a083e6d5efc5f20ed50fda8af40d9fb"
+        "sha256": "351fa364d35feaf575ac4b2c0b783c8fdee6b823872a3fb27bfec4b6bbd2747a"
       },
       "redaction": "public-artifact",
       "required": true,
       "restore": {
         "kind": "manual-prerequisite",
-        "reference": "integrations/hermes/native-patches/routed-summary-budget/README.md"
+        "reference": "skills/openai-delegation-route-research/references/hermes-direct-v3.md"
       },
       "source_identity": "repository:integrations/hermes/routed-delegation/__init__.py",
-      "version_or_hash": "sha256:3845cb96fda4ef00d37ecbcfb9aadbbb8a083e6d5efc5f20ed50fda8af40d9fb"
+      "version_or_hash": "sha256:351fa364d35feaf575ac4b2c0b783c8fdee6b823872a3fb27bfec4b6bbd2747a"
     },
     {
       "category": "runtime",
-      "desired_state": "Native summary helper matches the paired canonical plugin interface",
-      "enablement": "installed",
+      "desired_state": "Optional historical native patch, excluded from the approved router/skills sync. Exact recorded patch bytes are not installed; recovery remains unresolved.",
+      "enablement": "absent",
       "host": "hermes",
       "id": "hermes-routed-summary-native",
       "owner": "Hermes native delegation results",
       "prerequisites": [
         "Hermes HEAD ead7e91dabf1e963796ec834b196984a2fa44ff4",
-        "Exact baseline source hash and paired plugin match manifest"
+        "Exact baseline source hash and paired plugin match manifest",
+        "Separate explicit approval and exact-base verification before restoring this excluded native patch"
       ],
       "readback": {
         "kind": "file",
@@ -758,7 +759,7 @@
         "sha256": "e00aa3ba70ae965b0ab0c696d8868b5ef10bc0cc3ee2e10b2ffb467ed98a6533"
       },
       "redaction": "public-artifact",
-      "required": true,
+      "required": false,
       "restore": {
         "kind": "manual-prerequisite",
         "reference": "integrations/hermes/native-patches/routed-summary-rebase-820106d/README.md"
@@ -768,14 +769,15 @@
     },
     {
       "category": "runtime",
-      "desired_state": "Selected native skill-loading and persistence guidance bytes are installed",
-      "enablement": "installed",
+      "desired_state": "Optional historical native patch, excluded from the approved router/skills sync. Exact recorded patch bytes are not installed; recovery remains unresolved.",
+      "enablement": "absent",
       "host": "hermes",
       "id": "hermes-native-guidance-prompt-builder",
       "owner": "Hermes native cache and prompt construction",
       "prerequisites": [
         "Native Hermes HEAD ead7e91dabf1e963796ec834b196984a2fa44ff4",
-        "Exact baseline hashes and selected dependent files match current recovery manifest"
+        "Exact baseline hashes and selected dependent files match current recovery manifest",
+        "Separate explicit approval and exact-base verification before restoring this excluded native patch"
       ],
       "readback": {
         "kind": "file",
@@ -783,7 +785,7 @@
         "sha256": "8329c7e2cd700fa0dc218ab368d5ea6c2ec773b66590cc5486e6434d5806a873"
       },
       "redaction": "public-artifact",
-      "required": true,
+      "required": false,
       "restore": {
         "kind": "manual-prerequisite",
         "reference": "integrations/hermes/native-patches/guidance-rebase-820106d/README.md"
@@ -793,14 +795,15 @@
     },
     {
       "category": "runtime",
-      "desired_state": "Selected native cache/scanner dependency is installed",
-      "enablement": "installed",
+      "desired_state": "Optional historical native patch, excluded from the approved router/skills sync. Exact recorded patch bytes are not installed; recovery remains unresolved.",
+      "enablement": "absent",
       "host": "hermes",
       "id": "hermes-native-rebased-skill-utils",
       "owner": "Hermes native cache and prompt construction",
       "prerequisites": [
         "Native Hermes HEAD ead7e91dabf1e963796ec834b196984a2fa44ff4",
-        "Exact baseline hashes and selected dependent files match current recovery manifest"
+        "Exact baseline hashes and selected dependent files match current recovery manifest",
+        "Separate explicit approval and exact-base verification before restoring this excluded native patch"
       ],
       "readback": {
         "kind": "file",
@@ -808,7 +811,7 @@
         "sha256": "6963533c3f4074b11f5e8d8a3e761dae1b71ef7d71d7739c89ca182153badac8"
       },
       "redaction": "public-artifact",
-      "required": true,
+      "required": false,
       "restore": {
         "kind": "manual-prerequisite",
         "reference": "integrations/hermes/native-patches/guidance-rebase-820106d/README.md"
@@ -818,14 +821,15 @@
     },
     {
       "category": "runtime",
-      "desired_state": "Selected native cache/scanner dependency is installed",
-      "enablement": "installed",
+      "desired_state": "Optional historical native patch, excluded from the approved router/skills sync. Exact recorded patch bytes are not installed; recovery remains unresolved.",
+      "enablement": "absent",
       "host": "hermes",
       "id": "hermes-native-rebased-skills-guard",
       "owner": "Hermes native cache and prompt construction",
       "prerequisites": [
         "Native Hermes HEAD ead7e91dabf1e963796ec834b196984a2fa44ff4",
-        "Exact baseline hashes and selected dependent files match current recovery manifest"
+        "Exact baseline hashes and selected dependent files match current recovery manifest",
+        "Separate explicit approval and exact-base verification before restoring this excluded native patch"
       ],
       "readback": {
         "kind": "file",
@@ -833,7 +837,7 @@
         "sha256": "fd1b6361281e79920844ec4176f51c6644b293ef1c4346f154b490d6120c602f"
       },
       "redaction": "public-artifact",
-      "required": true,
+      "required": false,
       "restore": {
         "kind": "manual-prerequisite",
         "reference": "integrations/hermes/native-patches/guidance-rebase-820106d/README.md"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Classify Agent Signal recovery and fleet drift without mutating live state."""
+"""Classify Agent Sync recovery and fleet drift without mutating live state."""
 
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Validate and read back public-safe host-native Agent Signal deltas."""
+"""Validate and read back public-safe host-native Agent Sync deltas."""
 
 from __future__ import annotations
 

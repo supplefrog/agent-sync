@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://supplefrog.github.io/agent-signal/contracts/instruction-units.schema.json",
-  "title": "Agent Signal instruction units",
+  "title": "Agent Sync instruction units",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "units"],

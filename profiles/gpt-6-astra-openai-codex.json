@@ -1,46 +1,31 @@
 {
   "$schema": "../contracts/model-profile.schema.json",
-  "schema_version": 1,
-  "id": "gpt-6-astra-openai-codex",
-  "status": "current-observed",
   "claim": "Observed mixed-host selectors with one shared instruction policy and native adapters. Exact overlay checks are bounded, not universal model quality or cross-host behavioral parity.",
-  "target": {
-    "model": "gpt-6-astra",
-    "provider": "openai-codex",
-    "reasoning": "host-specific"
+  "context_policy": {
+    "max_standing_bytes": {
+      "codex": 2048,
+      "hermes": 2048,
+      "omp": 2048
+    },
+    "recovery_loaded_into_prompt": false,
+    "skills": "on-demand",
+    "tools": "host-native-on-demand"
   },
   "contracts": {
+    "recovery_manifest": "recovery/current/manifest.json",
     "surfaces": "contracts/instruction-surfaces.json",
-    "units": "contracts/instruction-units.json",
-    "recovery_manifest": "recovery/current/manifest.json"
+    "units": "contracts/instruction-units.json"
   },
+  "evidence": [
+    "evals/results/astra-foreground-observed.json",
+    "evals/results/hermes-continuation-current-artifacts.json",
+    "evals/results/prompt-sentence-review.json"
+  ],
   "hosts": {
-    "hermes": {
-      "runtime": "Hermes Agent 0.21.1",
-      "reasoning": "low",
-      "effective_surfaces": [
-        "provider.native-system",
-        "portable.reconciliation-authority",
-        "hermes.runtime-native",
-        "hermes.user-global",
-        "hermes.project-context"
-      ],
-      "effective_units": [
-        "hermes.style",
-        "hermes.judgment",
-        "hermes.output",
-        "hermes.deliberation",
-        "hermes.instruction-authoring-route",
-        "hermes.reconciliation",
-        "hermes.execution"
-      ],
-      "artifact_sha256": [
-        "fdfa2fcba6a46ebf786bdad1925a877bd289ed78ffa89f6163592f499c593a90"
-      ]
-    },
     "codex": {
-      "runtime": "codex-cli 0.153.4",
-      "reasoning": "low",
+      "artifact_sha256": [
+        "44475e8c564f4e045cffa46ab86bf2a5527380778aab263a2a3af957a0cdcd10"
+      ],
       "effective_surfaces": [
         "provider.native-system",
         "portable.reconciliation-authority",
@@ -58,15 +43,36 @@
         "codex.reconciliation",
         "codex.execution"
       ],
-      "artifact_sha256": [
-        "44475e8c564f4e045cffa46ab86bf2a5527380778aab263a2a3af957a0cdcd10"
-      ],
       "model": "gpt-5.6-sol",
-      "provider": "openai-codex"
+      "provider": "openai-codex",
+      "reasoning": "low",
+      "runtime": "codex-cli 0.153.4"
+    },
+    "hermes": {
+      "artifact_sha256": [
+        "3c243834acdc96b534cf39288d50e8ef46131a81f4023d8d7fc9a881d9b25830"
+      ],
+      "effective_surfaces": [
+        "provider.native-system",
+        "portable.reconciliation-authority",
+        "hermes.runtime-native",
+        "hermes.user-global",
+        "hermes.project-context"
+      ],
+      "effective_units": [
+        "hermes.style",
+        "hermes.judgment",
+        "hermes.output",
+        "hermes.deliberation",
+        "hermes.instruction-authoring-route",
+        "hermes.reconciliation",
+        "hermes.execution"
+      ],
+      "reasoning": "low",
+      "runtime": "Hermes Agent 0.21.1"
     },
     "omp": {
-      "runtime": "omp 18.1.10",
-      "reasoning": "xhigh",
+      "artifact_sha256": [],
       "effective_surfaces": [
         "provider.native-system",
         "portable.reconciliation-authority",
@@ -74,42 +80,12 @@
         "omp.project-context"
       ],
       "effective_units": [],
-      "artifact_sha256": [],
-      "no_managed_standing_reason": "OMP 18.1.10's Codex discovery provider is not enabled, and no native OMP user-global AGENTS.md is installed."
+      "no_managed_standing_reason": "OMP 18.1.10's Codex discovery provider is not enabled, and no native OMP user-global AGENTS.md is installed.",
+      "reasoning": "xhigh",
+      "runtime": "omp 18.1.10"
     }
   },
-  "writing_routes": {
-    "routine-chat": {
-      "owner": "skills/conversational-communication",
-      "loading": "on-demand",
-      "scope": "Chat-style calibration and verbose/status reply repair; not a mandatory load for ordinary conversation."
-    },
-    "public-prose": {
-      "owner": "skills/humanizer",
-      "loading": "on-demand",
-      "scope": "Issues, PRs, release notes, email, Slack, posts, and explicit humanization."
-    },
-    "model-facing-instructions": {
-      "owner": "skills/skill-creator",
-      "loading": "on-demand",
-      "scope": "Dense model-facing rules, skills, triggers, references, and proportional behavior evaluation."
-    },
-    "surface-placement": {
-      "owner": "skills/hermes-self-engineering",
-      "loading": "on-demand",
-      "scope": "Resolve unclear Hermes persistence placement; not a prerequisite for known-owner instruction edits."
-    }
-  },
-  "context_policy": {
-    "recovery_loaded_into_prompt": false,
-    "skills": "on-demand",
-    "tools": "host-native-on-demand",
-    "max_standing_bytes": {
-      "hermes": 2048,
-      "codex": 2048,
-      "omp": 2048
-    }
-  },
+  "id": "gpt-6-astra-openai-codex",
   "retest_on": [
     "model-release",
     "provider-changed",
@@ -119,9 +95,33 @@
     "context-policy-changed",
     "instruction-changed"
   ],
-  "evidence": [
-    "evals/results/astra-foreground-observed.json",
-    "evals/results/hermes-continuation-current-artifacts.json",
-    "evals/results/prompt-sentence-review.json"
-  ]
+  "schema_version": 1,
+  "status": "current-observed",
+  "target": {
+    "model": "gpt-6-astra",
+    "provider": "openai-codex",
+    "reasoning": "host-specific"
+  },
+  "writing_routes": {
+    "model-facing-instructions": {
+      "loading": "on-demand",
+      "owner": "skills/skill-creator",
+      "scope": "Dense model-facing rules, skills, triggers, references, and proportional behavior evaluation."
+    },
+    "public-prose": {
+      "loading": "on-demand",
+      "owner": "skills/humanizer",
+      "scope": "Issues, PRs, release notes, email, Slack, posts, and explicit humanization."
+    },
+    "routine-chat": {
+      "loading": "on-demand",
+      "owner": "skills/conversational-communication",
+      "scope": "Chat-style calibration and verbose/status reply repair; not a mandatory load for ordinary conversation."
+    },
+    "surface-placement": {
+      "loading": "on-demand",
+      "owner": "skills/hermes-self-engineering",
+      "scope": "Resolve unclear Hermes persistence placement; not a prerequisite for known-owner instruction edits."
+    }
+  }
 }

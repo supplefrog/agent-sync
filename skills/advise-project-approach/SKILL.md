@@ -2,7 +2,7 @@
 name: advise-project-approach
 description: Use for project-architecture decisions and reviews, not isolated repairs. Compare credible current, native, external, and clean-sheet approaches against user outcomes and constraints.
 version: 0.6.0
-author: Aarav Kashyap; Agent Signal adaptation
+author: Aarav Kashyap; Agent Sync adaptation
 license: MIT
 compatibility: Requires project evidence and web research when current external facts can change the recommendation.
 metadata:

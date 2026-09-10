@@ -1,0 +1,28 @@
+{
+  "candidate_sha256": "0bb93fc538d0d3ef811e4c8131e944bbd5bb99acb93e646cb5be1f86dc6b4145",
+  "capability": "systematic-debugging",
+  "checks": [
+    "Exact source/candidate file-set and byte identity",
+    "Skill frontmatter and reference validation",
+    "Public-safety validation of both files"
+  ],
+  "claim": "The explicitly approved Hermes debugging procedure is preserved byte-for-byte in one portable source owner.",
+  "files": {
+    "SKILL.md": "0bb93fc538d0d3ef811e4c8131e944bbd5bb99acb93e646cb5be1f86dc6b4145",
+    "references/windows-node-path-shadowing.md": "1286c1fcdb7b0152bb525470ae0ca99ce518ad42e4555a0e7b125ec20cade83c"
+  },
+  "result": {
+    "limitation": "Structural preservation only; no new model-quality or natural-trigger parity claim. Fresh host discovery is checked during fleet deployment.",
+    "passed": true
+  },
+  "schema_version": 1,
+  "selection": {
+    "discarded_behavior": "None",
+    "host_adapter": "None; the shared Agent Skills loader supplies discovery",
+    "portable_winner": "Causal investigation, production-seam verification, containment, and agent-behavior RCA procedure",
+    "retained_reference": "Optional Windows Node/PATH diagnostic procedure",
+    "source": "Existing user-approved Hermes systematic-debugging skill, MIT"
+  },
+  "status": "pass",
+  "suite": "systematic-debugging-deterministic"
+}

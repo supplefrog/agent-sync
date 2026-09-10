@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Public-safe Agent Signal state snapshots and restores.
+"""Public-safe Agent Sync state snapshots and restores.
 
 Only policy-allowlisted declarative values are copied. Secrets, auth state,
 sessions, memory, logs, caches, and arbitrary home-directory content are never

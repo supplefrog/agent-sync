@@ -2,7 +2,7 @@
 
 ## Decision
 
-Adapt the existing Agent Signal evaluation owner with a small contract and deterministic validator. Do not install or make make-no-mistakes, VNVSPEC, GroundEval, or another framework authoritative.
+Adapt the existing Agent Sync evaluation owner with a small contract and deterministic validator. Do not install or make make-no-mistakes, VNVSPEC, GroundEval, or another framework authoritative.
 
 This is a reversible extension of `tools/eval.py` and `tools/eval_gate.py`, not a second evaluation system. The existing harness still owns matched baseline/candidate trials and cross-host aggregation. `contracts/grounded-verification.schema.json` and `tools/grounded_gate.py` add the missing admission boundary: frozen user intent, role separation, access receipts, independent deterministic re-execution, falsification probes, negative controls, teeth testing, and world-state evidence.
 
@@ -50,7 +50,7 @@ Primary sources:
 
 ## Pilot
 
-> **Historical fixture boundary:** This pilot freezes an August 2026 Kanban-sourced acceptance contract so the gate's tamper and scope controls remain reproducible. It is test evidence, not the current Agent Signal architecture or task authority. The `cc-dynamic-workflow` compatibility surface and Kanban-as-global-authority direction are retired in `contracts/ownership.json`; do not use this fixture to reintroduce them.
+> **Historical fixture boundary:** This pilot freezes an August 2026 Kanban-sourced acceptance contract so the gate's tamper and scope controls remain reproducible. It is test evidence, not the current Agent Sync architecture or task authority. The `cc-dynamic-workflow` compatibility surface and Kanban-as-global-authority direction are retired in `contracts/ownership.json`; do not use this fixture to reintroduce them.
 
 The source acceptance contract is `kanban:t_1e0d8e90`; `kanban:t_67bb4407` is only the preserved routing pilot subject. The verifier-rooted receipt preserves the original freeze and binds the complete amendment chain. `DEC-001` adds the board regression, `DEC-002` rejects scope inflation, `DEC-003` adds evolving intent/summary/research-first/no-reminder requirements, and `DEC-004` adds legacy reclassification, ultimate-agent/Prime evidence boundaries, and the fleet omission. The gate detects:
 

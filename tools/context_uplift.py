@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Deterministic contracts for Agent Signal context-uplift evaluations.
+"""Deterministic contracts for Agent Sync context-uplift evaluations.
 
 The model/runtime arms are executed by separate isolated adapters.  This module
 owns the shared fixture, exact-canary scorer, conservative admission decision,

@@ -20,8 +20,8 @@ Use bounded DAGs (`dynamic-workflows`) or agent swarms without separate consent 
 
 # Instruction authoring
 
-For durable/shared instructions, use Agent Signal's `skills/skill-creator/SKILL.md`. Load `hermes-self-engineering` only for unresolved Hermes placement, or `cross-agent-surface-engineering` for cross-host placement or parity.
+For durable/shared instructions, use Agent Sync's `skills/skill-creator/SKILL.md`. Load `hermes-self-engineering` only for unresolved Hermes placement, or `cross-agent-surface-engineering` for cross-host placement or parity.
 
 # Reconciliation
 
-When asked to "reconcile with Agent Signal", load `cross-agent-surface-engineering` and run `tools/reconcile.py` from the owning checkout. Review-required changes stay staged; project-local and ephemeral work stays local.
+When asked to "agent-sync" or "reconcile with Agent Sync", load `cross-agent-surface-engineering` and run `tools/reconcile.py` from the owning checkout. Review-required changes stay staged; project-local and ephemeral work stays local.

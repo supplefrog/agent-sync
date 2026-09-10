@@ -1,17 +1,17 @@
 {
-  "admitted_count": 16,
+  "admitted_count": 17,
   "bindings": {
-    "contracts/change-request.schema.json": "a54d964d47afbffdd050da703739315d51e70a3733f59b3639c46bbcc04c4fed",
-    "contracts/host-deltas.schema.json": "02e96f6b0041ddb4dc911bac68b06212ea9f2fa8c0c3fcd31a30c1518994f698",
-    "contracts/ownership.json": "5f1493c688b55da3c33f94595c8434eccf15ff4ff5920d19175c463423484c77",
+    "contracts/change-request.schema.json": "01c34418a98dfbb8812313428505cf93c1362120e46622345b5232e46fc6fb21",
+    "contracts/host-deltas.schema.json": "18515fc6e65ab19f279f1d19dea732b9d080d7fc2ef7d5b7066fdaba10d1a064",
+    "contracts/ownership.json": "972037b27d24d0754b28c0e7f0f0cc0c0d8e2bc97762147265268e23b3d406af",
     "contracts/surface-matrix.json": "48f57435d06780138ed18c5601b81fd74e5577cf9f60db9f0119b54178f982bb",
-    "host-deltas.json": "22ebcf232af4531087e1e4fd32e8c02b9d1b0a19ad9b140d4a3f85165b2ba227",
-    "recovery/current/manifest.json": "d3769bd0666b66e1c608ef354eae796c7d8593a3c82987031ceba9ee7d67676d",
-    "registry.json": "c8df64cc2609d35fe75b1f7bbc55c80671ae7f2d2cdaf3dfd52cf005628c5d29",
-    "render/fleet/manifest.json": "6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e",
+    "host-deltas.json": "72274709217f2ef0aa0d7d788be457a0430a34734a926e82e1c6df9cfa116584",
+    "recovery/current/manifest.json": "66474ac6788867e06beaa57804efbd29009dc3774fdd4c02f12866d959e875b5",
+    "registry.json": "d3ca18c4edc71113d9a669e3091ff005093c810baecb06abf5e9535633095d8a",
+    "render/fleet/manifest.json": "456e1ee68aec45580627e8a109c31e9c0075c0a5e5ed98483662f2947fe6c30f",
     "tools/audit.py": "9852935d45b7ba8f75dc5b4bd439eedad5e13ea8c08709c9a9255c8370bdaff3",
-    "tools/host_deltas.py": "39e9269f81dc838cd8d240e22dba9b15273c36db21bc46d41c17af76391b40e9",
-    "tools/reconcile.py": "290ac490fbc35d24b9d43884fabf69ce9c4d3e504ea85ae814c3a8280c5c8764",
+    "tools/host_deltas.py": "efdbbd02362794f0e0fc65e89718c12b19bfe05580271b9695c01ee0b59c13f8",
+    "tools/reconcile.py": "9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4",
     "tools/sync_git.py": "ef4039d373ed77998929d86536b9556233f052b338a2daa9112c02c95311bcf2"
   },
   "checks": [
@@ -24,7 +24,7 @@
     "reconciliation plan"
   ],
   "machine": "local-windows",
-  "observed_at": "2026-09-09T14:27:03.978049+00:00",
+  "observed_at": "2026-09-10T14:27:43.388789+00:00",
   "result": {
     "decision": "agent-files-and-governance-verified",
     "limitation": "Local verification before Git publication. Only sync remote readback proves the subsequent push.",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://supplefrog.github.io/agent-signal/contracts/model-profile.schema.json",
-  "title": "Agent Signal model-qualified instruction profile",
+  "title": "Agent Sync model-qualified instruction profile",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "id", "status", "claim", "target", "contracts", "hosts", "writing_routes", "context_policy", "retest_on", "evidence"],

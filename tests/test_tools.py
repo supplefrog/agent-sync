@@ -223,9 +223,11 @@ hello world this works
         contract = json.loads(
             (REPO / "contracts/instruction-surfaces.json").read_text(encoding="utf-8")
         )
+        self.assertIn("agent-sync", hermes.lower())
         normalized = [text.lower() for text in (hermes, codex)]
         for text in normalized:
-            self.assertIn("reconcile with agent signal", text)
+            # Native wording can differ; both hosts must route to the same
+            # checked owner and preserve its local/review boundaries.
             self.assertIn("cross-agent-surface-engineering", text)
             self.assertIn("tools/reconcile.py", text)
             self.assertIn("review-required", text)

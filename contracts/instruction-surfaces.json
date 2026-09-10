@@ -85,7 +85,7 @@
       "target": "${HERMES_HOME}/SOUL.md",
       "model_sensitive": true,
       "backup": "captured",
-      "note": "Includes the Hermes reconciliation trigger for the shared deterministic Agent Signal workflow.",
+      "note": "Includes the Hermes reconciliation trigger for the shared deterministic Agent Sync workflow.",
       "assembly_order": 200
     },
     {

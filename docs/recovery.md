@@ -1,6 +1,6 @@
 # Public-safe recovery
 
-Agent Signal backs up the declarative state needed to rebuild the current Hermes, Codex, and OMP setup without copying an agent home.
+Agent Sync backs up the declarative state needed to rebuild the current Hermes, Codex, and OMP setup without copying an agent home.
 
 ## Fast restore
 
@@ -29,14 +29,14 @@ The current snapshot contains:
 - user-authored Codex hook scripts and their hook declarations;
 - custom MCP declarations that contain no credential values, including OMP MCP declarations;
 - public plugin selections and enablement where the source is reproducible or an external prerequisite is declared;
-- the two thin OMP skill adapters that consume Agent Signal's canonical workflow owners without copying their state machines;
+- the two thin OMP skill adapters that consume Agent Sync's canonical workflow owners without copying their state machines;
 - no OMP `RULES.md`, because OMP already inherits the same Codex output rule and the duplicate delta was retired.
 
 Config restore is a deep merge. Only allowlisted paths are written, while unknown or sensitive fields already present on the target remain untouched. If selected values already match, restore does not rewrite the file merely to normalize TOML/YAML formatting.
 
 Portable path markers use `{{agent-signal:HOME}}`, `{{agent-signal:HERMES_HOME}}`, `{{agent-signal:CODEX_HOME}}`, `{{agent-signal:OMP_HOME}}`, and `{{agent-signal:AGENT_SIGNAL_ROOT}}`. They are intentionally distinct from shell variables such as `${HOME}`, so source code and hook patterns are not rewritten accidentally.
 
-Each host-delta entry records its host, surface, owner, desired state, source identity, version or artifact hash, enablement, external prerequisites, restore method, redaction policy, and deterministic readback. Command readbacks are selected from a fixed Agent Signal allowlist; the manifest cannot introduce executable argv. Fleet binding is derived from tracked `registry.json` plus admitted canonical skill trees, so a fresh clone does not need generated `render/` output before host-delta validation. `python tools/host_deltas.py verify` validates the schema, checks recovery/fleet bindings, and emits one of these statuses:
+Each host-delta entry records its host, surface, owner, desired state, source identity, version or artifact hash, enablement, external prerequisites, restore method, redaction policy, and deterministic readback. Command readbacks are selected from a fixed Agent Sync allowlist; the manifest cannot introduce executable argv. Fleet binding is derived from tracked `registry.json` plus admitted canonical skill trees, so a fresh clone does not need generated `render/` output before host-delta validation. `python tools/host_deltas.py verify` validates the schema, checks recovery/fleet bindings, and emits one of these statuses:
 
 - `restored` — this run wrote the allowlisted state and readback succeeded;
 - `verified` — state already matched and readback succeeded;

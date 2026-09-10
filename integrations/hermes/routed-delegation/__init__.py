@@ -863,14 +863,13 @@ def _private_runtime() -> dict[str, Any]:
         _reasoning_config_for_wire,
     )
     from agent.transports.codex import ResponsesApiTransport
-    from tools.delegate_tool_results import _apply_summary_budget
+    from tools import delegate_tool_results
 
     build = getattr(delegate_tool, "_build_child_preserving_parent_tools", None)
     run = getattr(delegate_tool, "_run_single_child", None)
-    finalize = _native_finalizer(delegate_tool)
-    if (not {"summary_count", "summary_budget_applied"}.issubset(inspect.signature(finalize).parameters)
-            or "summary_count" not in inspect.signature(_apply_summary_budget).parameters):
-        raise RuntimeError("installed Hermes shared summary-budget seam is incompatible")
+    finalize, budget_summary = _summary_runtime_adapter(
+        _native_finalizer(delegate_tool), delegate_tool_results
+    )
     get_max_children = getattr(delegate_tool, "_get_max_concurrent_children", None)
     get_max_depth = getattr(delegate_tool, "_get_max_spawn_depth", None)
     is_paused = getattr(delegate_tool, "is_spawn_paused", None)
@@ -914,7 +913,7 @@ def _private_runtime() -> dict[str, Any]:
         "build": build,
         "run": run,
         "finalize": finalize,
-        "budget_summary": _apply_summary_budget,
+        "budget_summary": budget_summary,
         "get_max_children": get_max_children,
         "get_max_depth": get_max_depth,
         "is_paused": is_paused,
@@ -926,6 +925,106 @@ def _private_runtime() -> dict[str, Any]:
         "validate_request": _install_exact_request_guard,
         "detach": _detach_child,
     }
+
+
+def _summary_runtime_adapter(finalize: Any, native: Any) -> tuple[Any, Any]:
+    """Adapt the known split-native API without changing process-global functions.
+
+    Newer hosts can budget each completion using the launch batch count and skip
+    a second trim during accounting. The current split host exposes the same
+    native operations, but not those options. Compose its accounting primitives
+    only when the *whole* finalizer body matches the known orchestration: an
+    added native obligation must fail closed rather than disappear in this shim.
+    Native helpers still own headroom, spill/footer, memory, hooks, cost and lock.
+    """
+    import ast
+    import textwrap
+
+    from tools.delegate_tool import _load_config
+
+    budget = native._apply_summary_budget
+    try:
+        finalize_parameters = inspect.signature(finalize).parameters
+        budget_parameters = inspect.signature(budget).parameters
+        if ({"summary_count", "summary_budget_applied"}.issubset(finalize_parameters)
+                and "summary_count" in budget_parameters):
+            return finalize, budget
+        if (set(finalize_parameters) != {"results", "task_list", "children", "parent_agent"}
+                or set(budget_parameters) != {"results", "parent_agent"}):
+            raise ValueError("unknown summary interface")
+        for name, args in (
+            ("_parent_summary_char_budget", (None, 1)),
+            ("_trim_summary_with_footer", ("", 1, 0)),
+            ("_parent_finalization_lock", (None,)),
+            ("_notify_memory_manager", ([], [], {}, None)),
+            ("_fire_subagent_stop_hooks", ([], {}, None)),
+            ("_rollup_children_cost", (None, 0)),
+        ):
+            inspect.signature(getattr(native, name)).bind(*args)
+        if not isinstance(native.DEFAULT_MAX_SUMMARY_CHARS, int):
+            raise TypeError("unknown summary ceiling")
+        body = ast.parse(textwrap.dedent(inspect.getsource(finalize))).body[0].body
+        if (body and isinstance(body[0], ast.Expr)
+                and isinstance(body[0].value, ast.Constant)
+                and isinstance(body[0].value.value, str)):
+            body = body[1:]
+        known = ast.parse(textwrap.dedent('''\
+            with _parent_finalization_lock(parent_agent):
+                _apply_summary_budget(results, parent_agent)
+                child_by_index = {index: child for index, _task, child in children}
+                _notify_memory_manager(results, task_list, child_by_index, parent_agent)
+                _rollup_children_cost(parent_agent, _fire_subagent_stop_hooks(results, child_by_index, parent_agent))
+        ''')).body
+        if ([ast.dump(node) for node in body] != [ast.dump(node) for node in known]
+                or any(finalize.__globals__.get(name) is not getattr(native, name)
+                       for name in ("_parent_finalization_lock", "_apply_summary_budget",
+                                    "_notify_memory_manager", "_fire_subagent_stop_hooks",
+                                    "_rollup_children_cost"))):
+            raise ValueError("unknown native finalization obligations")
+    except (AttributeError, TypeError, ValueError, OSError, SyntaxError) as exc:
+        raise RuntimeError("installed Hermes summary/finalization interface is unsupported") from exc
+
+    def shared_budget(results, parent_agent, *, summary_count=None):
+        summaries = [entry for entry in results if isinstance(entry, dict)
+                     and isinstance(entry.get("summary"), str) and entry["summary"]]
+        if not summaries:
+            return
+        count = len(summaries) if summary_count is None else summary_count
+        if isinstance(count, bool) or not isinstance(count, int) or count < len(summaries):
+            raise ValueError("summary_count must cover all presented summaries")
+        # Same static policy as native _apply_summary_budget; only the divisor
+        # differs, reserving a slice even for unfinished/failed launch siblings.
+        try:
+            ceiling = int(_load_config().get("max_summary_chars", native.DEFAULT_MAX_SUMMARY_CHARS))
+        except (TypeError, ValueError):
+            ceiling = native.DEFAULT_MAX_SUMMARY_CHARS
+        candidates = [cap for cap in (ceiling, native._parent_summary_char_budget(parent_agent, count))
+                      if cap and cap > 0]
+        if not candidates:
+            return
+        cap = min(candidates)
+        for entry in summaries:
+            if len(entry["summary"]) <= cap:
+                continue
+            entry["summary"], path = native._trim_summary_with_footer(
+                entry["summary"], cap, entry.get("task_index", -1)
+            )
+            entry["summary_truncated"] = True
+            if path:
+                entry["summary_full_path"] = path
+
+    def shared_finalize(results, task_list, children, parent_agent, *,
+                        summary_count=None, summary_budget_applied=False):
+        with native._parent_finalization_lock(parent_agent):
+            if not summary_budget_applied:
+                shared_budget(results, parent_agent, summary_count=summary_count)
+            child_by_index = {index: child for index, _task, child in children}
+            native._notify_memory_manager(results, task_list, child_by_index, parent_agent)
+            native._rollup_children_cost(
+                parent_agent, native._fire_subagent_stop_hooks(results, child_by_index, parent_agent)
+            )
+
+    return shared_finalize, shared_budget
 
 
 def _native_finalizer(delegate_tool: Any) -> Any:
@@ -2298,7 +2397,34 @@ def _workflow_handle(params: dict[str, Any], **_kwargs: Any) -> str:
         return json.dumps({"success": False, "error": str(exc)}, ensure_ascii=False)
 
 
+def _require_routed_delegation(*, tool_name: str, args: Any = None, **_kwargs: Any) -> dict | None:
+    """Route new workers through the selector; never obstruct existing-worker control.
+
+    Hermes dispatches delegate_task inline, ahead of registry handlers. Its
+    supported pre-tool hook is therefore the ingress boundary, not a tool alias.
+    This is routing policy, not an approval decision or a sandbox boundary.
+    """
+    if tool_name != "delegate_task":
+        return None
+    action = args.get("action") if isinstance(args, dict) else None
+    if action in ("list", "steer", "stop"):
+        return None
+    return {
+        "action": "block",
+        "message": (
+            "New delegation is owned by the task router. Submit this task to "
+            "routed_delegate_task with a V3 route_request (or routed_workflow for a DAG). "
+            "Do not retry native spawn or bypass routing with a subprocess. "
+            "A keep_parent/defer decision is not permission to launch an inherited worker. "
+            "Missing quality evidence may permit a bounded independently verified trial; "
+            "missing callability requires an explicit bounded availability check first. "
+            "Existing worker list/steer/stop controls remain available."
+        ),
+    }
+
+
 def register(ctx: Any) -> None:
+    ctx.register_hook("pre_tool_call", _require_routed_delegation)
     schema = {
         "name": "routed_delegate_task",
         "description": (

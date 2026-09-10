@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Install or verify admitted Agent Signal artifacts across supported hosts."""
+"""Install or verify admitted Agent Sync artifacts across supported hosts."""
 
 from __future__ import annotations
 

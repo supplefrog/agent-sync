@@ -6,3 +6,5 @@ kind: standalone
 provides_tools:
   - routed_delegate_task
   - routed_workflow
+provides_hooks:
+  - pre_tool_call

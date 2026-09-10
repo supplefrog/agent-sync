@@ -2,7 +2,7 @@
 
 ## Product contract
 
-Agent Signal accepts a desired persistent behavior and produces the smallest verified portable implementation:
+Agent Sync accepts a desired persistent behavior and produces the smallest verified portable implementation:
 
 1. compile the request into observable outcomes, triggers, regressions, target hosts, and acceptable deltas;
 2. inventory the portable surface and each host's current native mechanisms;
@@ -41,7 +41,7 @@ This is the first vertical slice of the capability librarian, not autonomous pro
 
 ## Unified reconciliation
 
-The phrase “reconcile with Agent Signal” is a shared, explicit ingress from Hermes, Codex, and OMP. Host instructions route it to admitted `cross-agent-surface-engineering`, which calls `tools/reconcile.py`; no host owns a competing governance receipt store.
+The phrase “reconcile with Agent Sync” is a shared, explicit ingress from Hermes, Codex, and OMP. Host instructions route it to admitted `cross-agent-surface-engineering`, which calls `tools/reconcile.py`; no host owns a competing governance receipt store.
 
 The coordinator creates one bounded change request, inventories the canonical tree, rendered fleet, live managed state, recovery snapshot, and typed host deltas, then classifies the change before mutation. Its safe automatic cases are deliberately narrow:
 
@@ -66,7 +66,7 @@ Keep useful knowledge discoverable, preserve meaningful triggers and procedures,
 
 On the current Hermes installation, `curator.enabled: false` and `curator.consolidate: false` stop unattended lifecycle transitions and LLM rewriting. Native usage telemetry, inspection, pinning, and archive/restore facilities remain available; archiving is an explicit reviewed action, not a consequence of inactivity. The configured auxiliary curator model remains dormant while disabled. Do not run a whole-library consolidation pass as a substitute for semantic review.
 
-The original `capability-curator` was included in Agent Signal's founding design. Its [cross-host admission report](../evals/results/capability-curator-cross-host-sol-ultra.json) is inconclusive with harness failures on both hosts; it is neither an admitted service nor evidence of general uselessness. Borrow its useful evidence principles through the existing owners, without activating the full staged procedure.
+The original `capability-curator` was included in Agent Sync's founding design. Its [cross-host admission report](../evals/results/capability-curator-cross-host-sol-ultra.json) is inconclusive with harness failures on both hosts; it is neither an admitted service nor evidence of general uselessness. Borrow its useful evidence principles through the existing owners, without activating the full staged procedure.
 
 ## Staged context-integrity validation
 
@@ -100,7 +100,7 @@ The shared layer specifies outcomes. It does not emulate these mechanisms unless
 
 ## Model-triggered instruction retirement
 
-Skills and global agent files are model inputs, not permanent capabilities. When a changed model stack is selected for an active route, Agent Signal performs a bounded inverse-admission pass:
+Skills and global agent files are model inputs, not permanent capabilities. When a changed model stack is selected for an active route, Agent Sync performs a bounded inverse-admission pass:
 
 1. remove deterministic duplicates and dead mappings without model calls;
 2. reopen only model-sensitive generic steering, not stable commands, local procedures, or protected guarantees;

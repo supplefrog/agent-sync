@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Fail-closed integrity verification for one Agent Signal evaluation report."""
+"""Fail-closed integrity verification for one Agent Sync evaluation report."""
 
 from __future__ import annotations
 

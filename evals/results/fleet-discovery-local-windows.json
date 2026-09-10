@@ -1,5 +1,5 @@
 {
-  "admitted_count": 16,
+  "admitted_count": 17,
   "admitted_skills": [
     "advise-project-approach",
     "answer-key-gauntlet",
@@ -16,7 +16,8 @@
     "neuroarxiv",
     "openai-delegation-route-research",
     "outcome-first-workflow-design",
-    "skill-creator"
+    "skill-creator",
+    "systematic-debugging"
   ],
   "checks": [
     "recovery snapshot",
@@ -27,10 +28,10 @@
     "host deltas",
     "reconciliation plan"
   ],
-  "fleet_manifest_sha256": "6dbfee270701c0a215b49044ee1e6cfbd645f45ece38186a29acdc9a2c1d454e",
+  "fleet_manifest_sha256": "456e1ee68aec45580627e8a109c31e9c0075c0a5e5ed98483662f2947fe6c30f",
   "machine": "local-windows",
-  "observed_at": "2026-09-09T14:27:03.977037+00:00",
-  "registry_sha256": "c8df64cc2609d35fe75b1f7bbc55c80671ae7f2d2cdaf3dfd52cf005628c5d29",
+  "observed_at": "2026-09-10T14:27:43.386786+00:00",
+  "registry_sha256": "d3ca18c4edc71113d9a669e3091ff005093c810baecb06abf5e9535633095d8a",
   "result": {
     "decision": "configured-agent-roots-verified",
     "limitation": "Readback of configured shared roots and typed native settings; not a new natural-trigger or model-behavior evaluation.",

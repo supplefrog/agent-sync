@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Plan and transactionally reconcile persistent agent changes with Agent Signal."""
+"""Plan and transactionally reconcile persistent agent changes with Agent Sync."""
 
 from __future__ import annotations
 

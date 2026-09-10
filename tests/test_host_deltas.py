@@ -332,9 +332,20 @@ class HostDeltaTests(unittest.TestCase):
                 and item["readback"]["kind"] == "file"
                 and "sha256" in item["readback"]
             }
+            required_missing = {
+                item["id"] for item in manifest["entries"]
+                if item["id"] in missing_native and item["required"]
+            }
+            optional_missing = missing_native - required_missing
             failed = {item["id"] for item in report["entries"] if item["status"] == "failed"}
-            self.assertEqual(missing_native, failed, report)
-            self.assertEqual(not missing_native, report["passed"], report)
+            unresolved = {
+                item["id"] for item in report["entries"]
+                if item["status"] == "prerequisite-missing"
+            }
+            self.assertEqual(required_missing, failed, report)
+            self.assertEqual(optional_missing, unresolved, report)
+            self.assertEqual(missing_native, failed | unresolved, report)
+            self.assertEqual(not required_missing, report["passed"], report)
             statuses = {item["status"] for item in report["entries"]}
             self.assertIn("restored", statuses)
             self.assertIn("verified", statuses)

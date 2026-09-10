@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "host-deltas.schema.json",
-  "title": "Agent Signal public-safe host delta manifest",
+  "title": "Agent Sync public-safe host delta manifest",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "machine", "public_safe", "entries", "exclusions"],

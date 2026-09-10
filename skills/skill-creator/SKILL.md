@@ -87,6 +87,6 @@ Record only decision-changing evidence: prompt, active stack, observable result,
 
 ## Completion
 
-For approved changes owned by Agent Signal, finish the checked sync through `cross-agent-surface-engineering`, including local commit and remote push, as part of the same job unless the user requested draft-only or no publication. Do not leave routine commit/push steps for the user.
+For approved changes owned by Agent Sync, finish the checked sync through `cross-agent-surface-engineering`, including local commit and remote push, as part of the same job unless the user requested draft-only or no publication. Do not leave routine commit/push steps for the user.
 
 Report the selected owner, what was added/removed, verification results, and unresolved risk or restart requirement. If files changed, link the owning skill and any supporting artifacts.
