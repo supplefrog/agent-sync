@@ -66,7 +66,7 @@
       "kind": "runtime-native",
       "scope": "runtime",
       "status": "external",
-      "owner": "NousResearch/hermes-agent@0.21.1",
+      "owner": "NousResearch/hermes-agent@0.21.2",
       "target": "Hermes prompt builder",
       "model_sensitive": true,
       "backup": "reinstall-runtime",

@@ -1,5 +1,5 @@
 {
-  "_config_version": 42,
+  "_config_version": 44,
   "agent": {
     "api_max_retries": 3,
     "clarify_timeout": 600,
@@ -170,7 +170,7 @@
     "wrap_response": true
   },
   "curator": {
-    "archive_after_days": 90,
+    "archive_after_days": 30,
     "backup": {
       "enabled": true,
       "keep": 5
@@ -180,7 +180,7 @@
     "interval_hours": 168,
     "min_idle_hours": 2,
     "prune_builtins": true,
-    "stale_after_days": 30
+    "stale_after_days": 14
   },
   "delegation": {
     "api_mode": "",
@@ -474,6 +474,8 @@
   "skills": {
     "creation_nudge_interval": 15,
     "disabled": [
+      "action-item-extraction",
+      "adversarial-ux-test",
       "airtable",
       "antigravity-cli",
       "apple-ecosystem-automation",
@@ -490,12 +492,14 @@
       "claude-design",
       "comfyui",
       "competitor-news-monitor",
+      "creative-production-workflows",
       "dspy",
       "email-inbox-triage",
       "evaluating-llms-harness",
       "excalidraw",
       "fine-tuning-with-trl",
       "gif-search",
+      "github",
       "godmode",
       "google-workspace",
       "heartmula",
@@ -504,6 +508,8 @@
       "himalaya",
       "huggingface-hub",
       "hyperframes",
+      "jupyter-live-kernel",
+      "kanban-video-orchestrator",
       "linear",
       "llama-cpp",
       "llm-wiki",
@@ -514,6 +520,7 @@
       "obliteratus",
       "one-three-one-rule",
       "openhue",
+      "osint-investigation",
       "outlines",
       "petdex",
       "pixel-art",
@@ -533,13 +540,7 @@
       "unsloth",
       "weights-and-biases",
       "xurl",
-      "yuanbao",
-      "jupyter-live-kernel",
-      "osint-investigation",
-      "adversarial-ux-test",
-      "github",
-      "creative-production-workflows",
-      "action-item-extraction"
+      "yuanbao"
     ],
     "external_dirs": [
       "{{agent-signal:HOME}}\\.agents\\skills"

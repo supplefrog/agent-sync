@@ -2,7 +2,7 @@
   "$schema": "contracts/recovery-snapshot.schema.json",
   "artifacts": [
     {
-      "bytes": 5278,
+      "bytes": 5279,
       "format": "toml",
       "host": "codex",
       "id": "settings",
@@ -30,7 +30,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "c46ffc2e8c76d0f7361616e8a2a0baca72f093ac03edf1401a9e6c3e98efce63",
+      "sha256": "18e868cc3158e217e1adca7a7aaed790c8151fd22da3628dc583a9b9fcfbf090",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
@@ -114,7 +114,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16412,
+      "bytes": 16447,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -313,7 +313,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "932a51cc4665af397af9498de3a46da921f399e9134f0963ef88c0f2313e3cf9",
+      "sha256": "03e398a0ee13aed6afa91dc5d201f28eb52548c4c53d9207fff560fa07af04fb",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"

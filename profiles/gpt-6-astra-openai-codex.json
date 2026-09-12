@@ -69,7 +69,7 @@
         "hermes.execution"
       ],
       "reasoning": "low",
-      "runtime": "Hermes Agent 0.21.1"
+      "runtime": "Hermes Agent 0.21.2"
     },
     "omp": {
       "artifact_sha256": [],

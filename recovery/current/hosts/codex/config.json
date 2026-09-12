@@ -117,7 +117,7 @@
       "enabled": false
     },
     "hermes-image-guidance@personal": {
-      "enabled": true
+      "enabled": false
     },
     "hyperframes@openai-curated": {
       "enabled": true
