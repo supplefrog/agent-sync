@@ -28,9 +28,9 @@
     "host deltas",
     "reconciliation plan"
   ],
-  "fleet_manifest_sha256": "456e1ee68aec45580627e8a109c31e9c0075c0a5e5ed98483662f2947fe6c30f",
+  "fleet_manifest_sha256": "f5a52540121644169fe44402d4d03a4f27d40c7bc4ae31d8aadc12860f1f2fd7",
   "machine": "local-windows",
-  "observed_at": "2026-09-10T14:27:43.386786+00:00",
+  "observed_at": "2026-09-12T15:43:24.754769+00:00",
   "registry_sha256": "d3ca18c4edc71113d9a669e3091ff005093c810baecb06abf5e9535633095d8a",
   "result": {
     "decision": "configured-agent-roots-verified",

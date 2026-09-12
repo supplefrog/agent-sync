@@ -28,11 +28,11 @@ The two `.wayfinder` files are the durable source of truth across context compre
 - Work one coherent phase or task frontier at a time. Start fresh contexts for independent builders and critics rather than carrying their exploration into the parent.
 - Compact or hand off at a phase boundary, not during an unresolved decision round or shared-contract change.
 - After resuming, verify repository state and recorded evidence before trusting statuses written in an earlier context.
-- Update the map when a real decision changes. Never silently let implementation drift become the new specification.
+- Update the map when a real decision changes; if acceptance changes, use the governed revision path below. Never silently let implementation drift become the new specification.
 
 ## Protected invariants
 
-- Freeze the answer key before implementation. Builders and critics may not weaken, delete, or reinterpret checks to pass.
+- Freeze each answer-key version before implementing against it. Builders and critics may not weaken, delete, or reinterpret checks to pass; legitimate changes require the governed revision path below.
 - Facts are the agent's job to inspect or research. Ask the user only for product decisions, preferences, and authority boundaries.
 - Every material requirement maps to an observable check; every check maps back to a recorded decision or constraint.
 - Critics judge only. They do not implement fixes. The integrating agent independently verifies consequential claims.
@@ -65,6 +65,18 @@ Use [references/artifact-contract.md](references/artifact-contract.md). Preserve
 
 ## Phase 3: Build the task graph
 
+### Governed revisions after freezing
+
+Use this only for a user-authorized scope change or an independently validated error in the acceptance oracle, not merely because a check fails.
+
+1. Pause affected work. Preserve the old map, frozen key, statuses, and evidence in version control or a versioned project archive; do not overwrite the only copy.
+2. Record the changed requirement/check IDs, before/after rules, rationale, and authority in the map. Product scope or value changes need user authorization. A factual oracle correction needs independent evidence and integrator verification; unresolved product meaning goes back to the user. Builders and critics may propose, but may not approve their own relaxation.
+3. Create a new key version linked to its predecessor and the change record. Re-run Phase 2 and the artifact contract's traceability gate before freezing it; preserve unchanged IDs and record replacements or retirements explicitly.
+4. Mark affected checks and dependent aggregates `UNRUN`, retaining their old evidence only as historical. Carry a pass forward only when the integrator verifies its requirement, implementation dependencies, and evidence remain applicable.
+5. Give workers the new map/key identity, resume only the newly authorized scope, and rerun affected checks and integration coverage. A new key does not reset the failed-revision budget unless the authorized scope genuinely changed; otherwise retain the blocker and existing cycle count.
+
+### Task graph
+
 1. Use the host's delegation or task-agent workflow when available.
 2. Derive work packages from map decisions and answer-key coverage, not arbitrary layers.
 3. Validate required tools before fan-out.
@@ -88,7 +100,7 @@ Cap a check at three builder/critic cycles. If findings are not shrinking, stop 
 ## Phase 5: Final gauntlet
 
 - Run every answer-key check from the integrating context, including applicable integration, negative, persistence/reload, visual/accessibility, and regression checks.
-- Update only status and evidence fields; never change the requirement or pass rule after the build.
+- Within a frozen version, update only status and evidence fields. A legitimate requirement or pass-rule change must create a new version through the governed revision path, not turn an old failure into a pass.
 - Finalize only when all required checks pass. Report optional failures separately and blocked required checks as incomplete.
 - Keep the map and completed answer key as the handoff. Remove disposable branches, worktrees, and evaluation artifacts after verified integration.
 

@@ -1,0 +1,71 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "c22cb11b85d70067ae96db8766514db717e8a0d10780a3fa1afd24445c49d901",
+      "before_sha256": "c22cb11b85d70067ae96db8766514db717e8a0d10780a3fa1afd24445c49d901",
+      "owner": "answer-key-gauntlet",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "ae2e740ea7c9c60aef8a7ab3f49e4330f2d833f0f4067580eb46a21c92c55dcc",
+      "before_sha256": "ae2e740ea7c9c60aef8a7ab3f49e4330f2d833f0f4067580eb46a21c92c55dcc",
+      "owner": "outcome-first-workflow-design",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "answer-key-gauntlet",
+    "outcome-first-workflow-design"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "skipped"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "52c6014326bf983aea9981d76596d0a0b7665b94dbac8fd8945170da73416505",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

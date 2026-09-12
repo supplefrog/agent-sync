@@ -42,12 +42,14 @@ A blocker is acceptable only when inspection, research, and a reversible default
 
 ## `.wayfinder/answer-key.md`
 
-The requirement and pass rule are immutable after implementation starts. Only `Status` and `Evidence` may change.
+Within a frozen key version, only `Status` and `Evidence` may change. A user-authorized scope change or independently validated oracle error uses the [governed revision path](../SKILL.md#governed-revisions-after-freezing): preserve the predecessor and its evidence, record authority and check-level differences, validate and freeze a successor, and invalidate affected checks and dependent aggregates. Never edit a frozen rule in place to pass a failing build.
 
 ```markdown
 # Answer Key: <effort>
 
 Source map: [map.md](map.md)
+Key version: <version identity>
+Predecessor and change record: <none for initial key; preserved key and map decision links otherwise>
 Frozen before implementation: <timestamp or commit/tree identity>
 
 | ID | Required | Source | Requirement | Verification | Pass rule | Status | Evidence |
@@ -55,7 +57,7 @@ Frozen before implementation: <timestamp or commit/tree identity>
 | AK-001 | yes | D-001 | ... | `<command>` or exact manual procedure | observable binary rule | UNRUN | |
 ```
 
-Allowed statuses: `UNRUN`, `PASS`, `FAIL`, `BLOCKED`, `N/A`. `N/A` requires an explicit pre-build optional condition; it is not an escape hatch for a difficult check.
+Allowed statuses: `UNRUN`, `PASS`, `FAIL`, `BLOCKED`, `N/A`. `N/A` requires an optional condition recorded before implementing against the current frozen version; it is not an escape hatch for a difficult check. Changed checks and dependent aggregates start `UNRUN`; historical evidence stays attached to the predecessor. Retired checks need explicit change records, not silent deletion or an invented `N/A`.
 
 ## Check quality rules
 
