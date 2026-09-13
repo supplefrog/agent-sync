@@ -479,6 +479,13 @@ _V3_BUDGET = _v3_object({"objective": {"enum": ["api_usd", "quota"]}, "api_remai
                         "attempt_cap": {"type": "integer", "minimum": 1, "maximum": 2},
                         "attempts_used": {"type": "integer", "minimum": 0},
                         "fallback_route_id": {"type": ["string", "null"]}, "fallback_route_sha256": {"oneOf": [{"type": "null"}, _V3_HASH]}})
+# Optional opt-in; legacy requests and their receipts retain their old policy.
+_V3_BUDGET["properties"]["evidence_trial"] = _v3_object({
+    "authorized": {"type": "boolean"},
+    "max_requests": {"type": "integer", "minimum": 1, "maximum": 32},
+    "placement_reason": _V3_TEXT,
+    "accept_unknown_quota": {"type": "boolean"},
+})
 V3_TASK_SCHEMA = _v3_object({"schema_version": {"const": 3}, "task_id": _V3_TEXT, "task_class": _V3_TEXT,
                             "input_sha256": _V3_HASH,
                             "as_of": _V3_TIME, "requirements": _V3_REQUIREMENTS, "verifier": _V3_VERIFIER,
@@ -544,6 +551,26 @@ def _v3_scope_admissible(task):
     return not needs_effect_coverage or task["verifier"]["scope"] == "artifact-effects"
 
 
+EVIDENCE_TOOLS = frozenset({"read_file", "search_files"})
+
+
+def evidence_trial_admissible(task):
+    """Only the verified direct consumer enforces this opt-in request bound."""
+    budget, required, verifier = task["budget"], task["requirements"], task["verifier"]
+    trial = budget.get("evidence_trial")
+    return bool(trial and trial["authorized"]
+        and required.get("host") == "hermes" and required.get("transport") == "hermes-delegate"
+        and task["effects"] == "none" and task["failure_cost"] == "low"
+        and set(required["tools"]).issubset(EVIDENCE_TOOLS)
+        and verifier["kind"] == "independent-review" and verifier["independent"]
+        and verifier["coverage"] == "complete" and _v3_scope_admissible(task)
+        and budget["parent_available"] and budget["attempt_cap"] == 1
+        and budget["attempts_used"] == 0 and task["continuation"] is None
+        and budget["fallback_route_id"] is None and budget["fallback_route_sha256"] is None
+        and not budget["allow_api_spend"] and budget["unknown_cost_policy"] == "explicit_preference"
+        and len(budget["preference_order"]) == 1)
+
+
 def _v3_resource(candidate, task):
     """No conversion between API price, distinct quota buckets or unknown costs."""
     cost, budget = candidate["cost"], task["budget"]
@@ -570,8 +597,14 @@ def _v3_resource(candidate, task):
             reasons.append("api_reserve_would_be_spent")
     if quota is not None:
         pool = budget["quotas"].get(quota["bucket"])
-        if pool is None or pool["unit"] != quota["unit"] or pool["remaining"] is None:
+        permit_unknown = (evidence_trial_admissible(task) and cost["billing"] == "subscription"
+                          and budget["evidence_trial"]["accept_unknown_quota"]
+                          and all(p["reserve"] == 0 for p in budget["quotas"].values()))
+        if pool is not None and pool["unit"] != quota["unit"]:
             reasons.append("quota_state_unknown_or_incomparable")
+        elif pool is None or pool["remaining"] is None:
+            if not permit_unknown:
+                reasons.append("quota_state_unknown_or_incomparable")
         elif pool["remaining"] <= pool["reserve"]:
             reasons.append("quota_reserve_reached")
         elif units is not None and units > pool["remaining"] - pool["reserve"]:
@@ -715,7 +748,11 @@ def decide_route_v3(catalog, task, *, catalog_locator=None):
             and budget["unknown_cost_policy"] == "explicit_preference"
             and budget["preference_order"] == [candidate["id"]]
         )
-        provisional = deterministic_trial or parent_review_trial
+        evidence_trial = (evidence_trial_admissible(task)
+                          and budget["preference_order"] == [candidate["id"]])
+        if budget.get("evidence_trial") and not evidence_trial:
+            reasons.append("evidence_trial_contract_not_admissible")
+        provisional = deterministic_trial or parent_review_trial or evidence_trial
         if not qualified and not provisional:
             reasons.append("no_matching_task_qualification_or_complete_low_risk_verifier")
         if continuation is not None:
@@ -731,7 +768,10 @@ def decide_route_v3(catalog, task, *, catalog_locator=None):
         if reasons:
             excluded[candidate["id"]] = reasons
         else:
-            eligible.append((candidate, "qualified" if qualified else ("provisional-parent-review-trial" if parent_review_trial else "provisional-complete-verifier"), costs, evidence))
+            qualification = ("qualified" if qualified else "provisional-evidence-trial" if evidence_trial
+                             else "provisional-parent-review-trial" if parent_review_trial
+                             else "provisional-complete-verifier")
+            eligible.append((candidate, qualification, costs, evidence))
     if not eligible:
         return finish(fallback, "no_eligible_delegation_route", excluded)
     keys = {tuple(item[2]["comparison_key"] or []) for item in eligible}

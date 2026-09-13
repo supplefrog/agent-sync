@@ -8,6 +8,16 @@ The router selects an executor from task-specific evidence before execution. Mis
 
 Keep native `delegation.model`, `provider`, and `reasoning_effort` empty, with `fallback_providers: []`, as the compatibility baseline rather than a global cheaper-model pin. These settings alone do not invoke the selector. Without the enabled plugin, ordinary delegation retains Hermes-native behavior. V2 fields remain compatible for existing runs, but are not the default for new work and cannot be combined with `route_request`.
 
+## Bounded evidence workers
+
+Use `task_request.evidence_review_template` for an authorized local source-inspection or review child. It derives the routine V3 fields from the candidate, outcome protocol and parent acceptance record. Supply actual quota/reserve declarations, a request cap, and a placement reason (for example, isolating a source-heavy stage from parent context). Do not declare a semantic check deterministic.
+
+The optional `budget.evidence_trial` contains `authorized`, `max_requests` (1–32), `placement_reason`, and `accept_unknown_quota`. It permits one low-risk, no-effect, parent-reviewed trial on the Hermes direct consumer, with only `read_file` and `search_files` (or no tools), an explicit single-route preference, and no paid API fallback. The adapter narrows the constructed child's actual tools; request `toolsets: ["file"]`, not shell access labeled read-only. The parent persists the returned findings and checks every material claim.
+
+Unknown quota may be accepted only through this explicit authorization with no declared protected reserve. Known exhaustion, mismatched quota units, protected reserves, unavailable capabilities and matching regressions still block. The execution-request construction cap starts after the separate non-sending compatibility probe; it does not measure subscription consumption or bound internal HTTP retries. Emitted tool schemas (including parameters, descriptions, and strictness) are compared with a frozen projection of the narrowed native schemas; child-schema mutation and native tool overrides are rejected before the request leaves the guard. Freeze expectations before invoking the builder, not from its first output. No cheapest-route claim follows. Requests without this option keep their existing policy. DAG evidence trials are not admitted until that consumer has equivalent enforcement.
+
+The native context check uses model metadata when LCM intentionally leaves an auxiliary child's window unbound at zero; it does not modify LCM state or ignore a positive undersized window. Plugin changes require a fresh process: disk evidence does not establish that an active chat hot-reloaded the adapter.
+
 ## Native compatibility
 
 The plugin accepts the extended shared-budget API or adapts the tested split-native finalizer. The adapter keeps a batch-wide budget and invokes native memory, completion hooks, cost rollup, and locking once without global monkeypatches. Full results remain separate from bounded parent summaries. A changed finalizer body fails closed until reviewed; formatting and comments alone do not change its structural comparison. This temporary coupling is tracked [upstream](https://github.com/NousResearch/hermes-agent/pull/90870#issuecomment-5619573754).

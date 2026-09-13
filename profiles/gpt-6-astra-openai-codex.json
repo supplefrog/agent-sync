@@ -68,6 +68,8 @@
         "hermes.reconciliation",
         "hermes.execution"
       ],
+      "model": "upstage/solar-pro4:free",
+      "provider": "nous",
       "reasoning": "low",
       "runtime": "Hermes Agent 0.21.2"
     },

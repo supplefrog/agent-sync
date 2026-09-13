@@ -720,19 +720,76 @@ def _validate_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) ->
     names = getattr(child, "valid_tool_names", None)
     if names is None or set(names) != set(required["tools"]):
         raise RuntimeError("actual native tools differ from the v3 declared tools")
-    capacity = getattr(getattr(child, "context_compressor", None), "context_length", None)
+    if pin["request"].get("budget", {}).get("evidence_trial"):
+        schemas = {tool["function"]["name"] for tool in child.tools}
+        if schemas != set(required["tools"]):
+            raise RuntimeError("evidence trial tool schemas differ from declared tools")
+    compressor = getattr(child, "context_compressor", None)
+    capacity = getattr(compressor, "context_length", None)
+    # External engines can intentionally leave auxiliary-child state unbound.
+    # Resolve the same native metadata used at initialization, never a catalog guess.
+    if capacity == 0 and getattr(compressor, "name", None) == "lcm":
+        from agent.model_metadata import get_model_context_length
+        capacity = get_model_context_length(
+            child.model, base_url=child.base_url, api_key=getattr(child, "api_key", ""),
+            config_context_length=getattr(child, "_config_context_length", None),
+            provider=child.provider,
+        )
     if not isinstance(capacity, int) or capacity < required["context_tokens"]:
         raise RuntimeError("native context capacity does not meet the pinned requirement")
 
 
 def _guard_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) -> None:
+    trial = pin["request"].get("budget", {}).get("evidence_trial")
+    if trial is not None:
+        # Narrow the constructed child, never global toolsets or parent permissions.
+        required = set(pin["request"]["requirements"]["tools"])
+        if not trial["authorized"] or not required.issubset({"read_file", "search_files"}):
+            raise RuntimeError("evidence trial requires read-only native tools")
+        actual = {tool["function"]["name"] for tool in child.tools}
+        if not required.issubset(actual & set(child.valid_tool_names)):
+            raise RuntimeError("evidence trial requested unavailable native tools")
+        child.tools = [tool for tool in child.tools if tool["function"]["name"] in required]
+        child.valid_tool_names = required
     _validate_v3_child(child, task, pin)
     original = child._build_api_kwargs
     # Freeze the controller's expected envelope; later task mutation cannot move it.
     frozen_task, frozen_pin = _safe_json(task), _safe_json(pin)
+    request_cap = trial["max_requests"] if trial is not None else None
+    if trial is not None:
+        frozen_tools = _safe_json(child.tools)
+        # Supported Codex Responses serialization: freeze before invoking the
+        # builder, rather than trusting its first output as the expected schema.
+        frozen_wire_tools = [
+            {"type": "function", "name": tool["function"]["name"],
+             "description": tool["function"].get("description", ""), "strict": False,
+             "parameters": tool["function"].get("parameters", {"type": "object", "properties": {}})}
+            for tool in frozen_tools
+        ]
+    requests = 0
     def checked(*args: Any, **kwargs: Any) -> Any:
+        nonlocal requests
         _validate_v3_child(child, frozen_task, frozen_pin)
-        return original(*args, **kwargs)
+        if request_cap is not None:
+            if child.tools != frozen_tools:
+                raise RuntimeError("evidence trial native tool schemas changed")
+            if requests >= request_cap:
+                raise RuntimeError("evidence trial model request cap reached")
+            requests += 1
+        request = original(*args, **kwargs)
+        if request_cap is not None:
+            _validate_v3_child(child, frozen_task, frozen_pin)
+            extra = request.get("extra_body") or {}
+            if not isinstance(extra, dict) or "tools" in extra:
+                raise RuntimeError("evidence trial rejects native tool overrides")
+            emitted = request.get("tools") or []
+            names = [tool.get("function", tool).get("name") for tool in emitted
+                     if isinstance(tool, dict) and tool.get("type") == "function"]
+            if len(names) != len(emitted) or len(names) != len(set(names)) or set(names) != required:
+                raise RuntimeError("evidence trial emitted tools differ from declared tools")
+            if child.tools != frozen_tools or emitted != frozen_wire_tools:
+                raise RuntimeError("evidence trial emitted tool schemas differ from frozen native schemas")
+        return request
     child._build_api_kwargs = checked
 
 

@@ -76,7 +76,7 @@ For code tasks, give the repository path and tell the child whether it may edit.
 
 - **One direct tool call:** do not spawn a child.
 - **Several mechanical calls with processing:** use `execute_code`.
-- **Independent reasoning/inspection tasks:** use one `routed_delegate_task` call when available; use `delegate_task` only for a homogeneous fallback batch.
+- **Independent reasoning/inspection tasks:** use `routed_delegate_task` with the current route owner's V3 contract. Native delegation is available only when the router is not governing new launches; a router rejection is not permission to bypass it.
 - **Durable or long-running work:** use tracked background processes, cron, or an explicit external agent—not ephemeral delegation.
 - **Interactive work:** keep it in the parent or use an appropriate PTY/external-agent workflow.
 
@@ -86,11 +86,11 @@ Treat child contexts as temporary. A returned final summary or stopped process d
 
 ## 5. Model/routing discipline
 
-For every new routed task, use `routed_delegate_task` when available. Classify only the minimum intelligence tier, whether latency blocks the user, and failure cost; the tool invokes `openai-delegation-route-research`, selects the qualifying exact provider/model/reasoning tuple, disables route fallback, and pins the receipt by parent session plus task ID. Reuse a task ID only for an identical retry. Cost is the default priority after the intelligence floor; task time wins only for latency-sensitive work. Do not choose a model manually unless the user explicitly overrides it.
+For new routed tasks, follow `openai-delegation-route-research` for the V3 request and current evidence-worker option. State the outcome, acceptance check, tools, resource authorization, and why separate context or parallel work helps. Do not infer task fitness from a model tier or claim savings without comparable observations. A direct task ID owns one attempt; repeating it does not launch a retry.
 
-The routed tool is a version-guarded user plugin over Hermes's native child builder/finalizer. If its host seam, selector, provider, receipt, or task binding cannot be verified, it fails closed without rewriting shared config. Built-in `delegate_task` remains the rollback path and still uses one configured route for every child, so use it only for homogeneous tasks supported by that route. Never mutate global config between child launches to imitate per-task routing.
+The routed tool binds the exact native route and execution input. If its host seam, provider, receipt, or task binding cannot be verified, diagnose the mismatch and preserve its safeguards. Do not substitute native delegation or change global configuration between launches to evade a rejection. Existing runs retain their pinned policy.
 
-Verify live account availability before changing defaults. Preserve the incumbent or fail closed when no candidate meets the intelligence floor or the target surface cannot enforce the selected route. Auxiliary assignments remain purpose-specific and outside the delegation catalogue.
+Verify live account availability before changing defaults. Auxiliary assignments remain purpose-specific and outside the worker-selection catalogue.
 
 Do not silently change delegation config during unrelated work.
 

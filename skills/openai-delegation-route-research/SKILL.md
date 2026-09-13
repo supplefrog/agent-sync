@@ -14,9 +14,17 @@ Choose a route that meets the actual task's quality requirement with lower total
 
 Read [the selection contract](references/selection-contract.md) for request and dispatch semantics, and [source policy](references/source-policy.md) when adding evidence. This owner selects routes; native workers and `dynamic-workflows` own execution and lifecycle.
 
-For Hermes direct tool calls, use [the V3 consumer contract](references/hermes-direct-v3.md), which also describes the shared request materializer. Existing V2 DAG runs retain their current policy.
+For Hermes direct tool calls, use [the V3 consumer contract](references/hermes-direct-v3.md), including its bounded read-only evidence-worker option and `evidence_review_template` helper. That option separates unknown quota from exhaustion, records why context isolation helps, and retains native capability checks and parent acceptance. Existing V2 DAG runs retain their current policy.
 
 For qualified three-question source-review tasks, use [the bounded review Q&A contract](references/review-qa.md) and its deterministic `scripts/review_qa.py` verifier. Admission still requires the bound parent review and heldout gate.
+
+## Bounded auxiliary comparisons
+
+For requests comparing summarizers, title generators, or other auxiliary transformations, first inspect the effective task routes and reuse relevant evidence. Before quality trials, inspect the intended credential pool through runtime accessors and identify the account/plan selected by the probe; singleton auth and pool selection can differ. With multiple authorized accounts, an unsupported-model error applies only to the tested account: check the relevant entitled account before declaring the candidate unavailable. Pin both candidates to the same account without changing global account priority, and use minimal no-fallback requests; a catalog listing is not callability. Keep tokens, account IDs, and personal identifiers out of receipts. If the candidate remains unsupported on the intended eligible account, report an access blocker rather than a quality loss; do not switch providers or spend paid inference without authorization.
+
+If both candidates are callable, use matched task inputs, prompts, reasoning settings, and output budgets; retain outputs and timings. Judge summaries on source fidelity, omissions, corrections, uncertainty, and continuity constraints; judge titles separately on specificity, brevity, and unsupported claims. Readiness-probe timing is not task latency, and synthetic short cases do not establish long-context compression fitness. Keep active configuration unchanged for comparison-only requests.
+
+These bounded direct transformation probes do not require worker-selection receipts or a DAG. The following selector contract applies when actually selecting and dispatching a new model worker; it is not a prerequisite for every model comparison.
 
 ## New tasks
 

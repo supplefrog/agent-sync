@@ -1,0 +1,78 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "68de23cc4e8ad1d5b29bc3ff451702577a01a027edc6b2c9d6bd8ef0e6133c95",
+      "before_sha256": "68de23cc4e8ad1d5b29bc3ff451702577a01a027edc6b2c9d6bd8ef0e6133c95",
+      "owner": "openai-delegation-route-research",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "b869c33ca7bc865bbd236cb834d13371b58b4183817a6b3b80cf157901636c90",
+      "before_sha256": "b869c33ca7bc865bbd236cb834d13371b58b4183817a6b3b80cf157901636c90",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "222e9b16e79c6cbe59a963710d879052c86eb9cc08d86b049e7cb75b13cabaf0",
+      "before_sha256": "222e9b16e79c6cbe59a963710d879052c86eb9cc08d86b049e7cb75b13cabaf0",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "openai-delegation-route-research",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "0fb151def2702e372d39477e9eb4f72e6aa6f485d641cf4a46a88a8314932ff1",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

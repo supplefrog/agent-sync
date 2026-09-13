@@ -288,6 +288,33 @@
               "pattern": "^[a-f0-9]{64}$"
             }
           ]
+        },
+        "evidence_trial": {
+          "type": "object",
+          "properties": {
+            "authorized": {
+              "type": "boolean"
+            },
+            "max_requests": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 32
+            },
+            "placement_reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "accept_unknown_quota": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "authorized",
+            "max_requests",
+            "placement_reason",
+            "accept_unknown_quota"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

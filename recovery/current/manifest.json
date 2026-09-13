@@ -113,7 +113,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16831,
+      "bytes": 16823,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -318,7 +318,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "5fef36496e51fbed723b1b423f6ceafcd205c2026f78ce84555dc528a57051fe",
+      "sha256": "993acd288ff75deaee46de743dce4e9a7ba37fe5e75aae910bc059ff4ae4bd76",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
@@ -752,14 +752,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 9831,
+      "bytes": 9476,
       "format": "text",
       "host": "hermes",
       "id": "native-c245cc964d3b5ea52612",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "0145f86d71c49065a2832c0993a7638bfac906fd01ab0541bc6eb5fa9786bf59",
+      "sha256": "9381ee9408db341843b1f5716baf406a3b1eb4efa389f1ab46c62c96b9d06208",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/delegation-workflows/SKILL.md",
       "source": "skills/autonomous-ai-agents/delegation-workflows/SKILL.md",
       "strategy": "replace-if-absent"

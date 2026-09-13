@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "catalog_version": "2026-09-13-native-tool-availability",
+  "catalog_version": "2026-09-13-reviewed-evidence-consumer",
   "candidates": [
     {
       "id": "hermes-sol-low-inline",
@@ -62,19 +62,29 @@
         "model": "gpt-6-astra",
         "reasoning_effort": "medium",
         "runtime": "hermes-delegate/native-source-v1",
-        "contract_sha256": "28618fef3715318a0c1a13789b720903499d1af30ce367b10e31b5879972ce2a"
+        "contract_sha256": "28a997964f42d8bc3ff3f4bb1c571b8a521aabb3d7531b5583ebb12128610f41"
       },
       "availability": {
         "status": "verified",
         "observed_at": "2026-09-13T07:27:36.661710+00:00",
         "valid_until": "2026-09-14T07:27:36.661710+00:00",
-        "route_sha256": "2a29740ad6593ddf7d9cb5d446f172848a2af31dcec97e55e534c8a631adb656",
+        "route_sha256": "9d159468894c2415fb0604cece2e665c7304e1152272cf33085114e9169d1bcc",
         "context_tokens": 272000,
-        "tools_verified": ["patch", "process_manage", "read_file", "search_files", "terminal", "write_file"],
-        "allowed_effects": ["none", "reversible"],
+        "tools_verified": [
+          "patch",
+          "process_manage",
+          "read_file",
+          "search_files",
+          "terminal",
+          "write_file"
+        ],
+        "allowed_effects": [
+          "none",
+          "reversible"
+        ],
         "evidence": {
-          "locator": "references/evidence/hermes-astra-medium-tools.json",
-          "sha256": "ae8cbb78120ee4fb5776b20d9057e4c92e4f085a3b18ddd1bcf212ac12df1ca3"
+          "locator": "references/evidence/hermes-astra-evidence-compatibility.json",
+          "sha256": "c5b9c628b2bfe1bcf6dda11cb12a87508267305367b7f2969ea902f61e338c3f"
         }
       },
       "quality": [],
@@ -85,11 +95,19 @@
         "task_contract_sha256": null,
         "verifier_sha256": null,
         "route_sha256": null,
-        "api_usd": {"generation": null, "verification": null, "fallback": null},
+        "api_usd": {
+          "generation": null,
+          "verification": null,
+          "fallback": null
+        },
         "quota": {
           "bucket": "codex-main",
           "unit": "percentage-points",
-          "parts": {"generation": null, "verification": null, "fallback": null}
+          "parts": {
+            "generation": null,
+            "verification": null,
+            "fallback": null
+          }
         },
         "evidence": null
       }

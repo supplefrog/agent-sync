@@ -56,7 +56,7 @@
       "timeout": 30
     },
     "mcp": {
-      "model": "stepfun/step-3.7-flash:free",
+      "model": "upstage/solar-pro4:free",
       "provider": "nous",
       "timeout": 30
     },
@@ -77,13 +77,13 @@
       "timeout": 30
     },
     "skills_hub": {
-      "model": "stepfun/step-3.7-flash:free",
+      "model": "upstage/solar-pro4:free",
       "provider": "nous",
       "timeout": 30
     },
     "title_generation": {
       "language": "",
-      "model": "stepfun/step-3.7-flash:free",
+      "model": "upstage/solar-pro4:free",
       "provider": "nous",
       "timeout": 30
     },
@@ -380,8 +380,8 @@
     "write_approval": false
   },
   "model": {
-    "default": "gpt-6-astra",
-    "provider": "openai-codex",
+    "default": "upstage/solar-pro4:free",
+    "provider": "nous",
     "request_overrides": {
       "extra_body": {
         "text": {
