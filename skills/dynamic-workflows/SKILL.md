@@ -16,6 +16,8 @@ A workflow persists its immutable plan, task state, exact route receipts, prompt
 
 Use a DAG when work has real parallel units, durable intermediate artifacts, dependency gates, or an independently useful verification stage. Use one agent or one bounded native batch when persistence and dependencies add no value.
 
+`max_workers` defaults to 8 as a ceiling, not a target. Choose a lower plan limit when useful; create only genuinely independent workstreams, never extra tasks to fill slots. Hermes also clamps concurrency to its native `delegation.max_concurrent_children` limit. Existing runs retain their pinned plan limits.
+
 ## Plan contract
 
 Start new task-aware plans from [`assets/templates/workflow-v3.json`](assets/templates/workflow-v3.json). Every task selects exactly one plan mode:
@@ -126,4 +128,4 @@ Retired `cc-dynamic-workflows` behaviors are accounted for explicitly:
 
 The state helper provides immutable normalized plans, atomic JSON state, bounded context injection, route pinning, retry/resume state, dependency blocking, stop intent, and handle-closure gates. Routed runs pin the catalog and selector snapshots and execute only the exact verified selector bytes. Hermes adds an external manifest binding, run-level execution lock, and exact native close witnesses. This is not a reboot-surviving supervisor, token-accounting service, or universal permissions layer. Host-native capability and authorization remain authoritative.
 
-Read `references/runtime-contract.md` before modifying the state machine. Run `python scripts/test_workflow_state.py` and validate every shipped template before promotion.
+Read `references/runtime-contract.md` before modifying the state machine. Set `AGENT_SIGNAL_ROOT` to the owning Agent Sync checkout, run `python scripts/test_workflow_state.py`, and validate every shipped template before promotion. Lifecycle tests use synthetic availability windows; never extend real route evidence expiry merely to make tests pass.

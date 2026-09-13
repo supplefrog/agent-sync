@@ -22,12 +22,12 @@ Use this umbrella for repository-wide inspection, measurement, compliance, evide
 
 ## Shared workflow
 
-1. Define the inventory or contract and authoritative repository scope.
-2. Exclude generated, dependency, cache, and build trees where they would distort results.
+1. Define the inventory or contract and authoritative repository scope. For manifest-driven capture, independently enumerate the current owner trees before comparing declared files; a clean manifest diff cannot reveal newly installed packages or previously excluded paths whose content and license changed. Classify additions, removals, and exclusions before refreshing hashes.
+2. Exclude generated, dependency, cache, and build trees during traversal, before collecting or printing paths; filtering only after enumeration floods review with installed dependencies.
 3. Inspect test setup and cleanup before running unfamiliar migration/updater suites: search for `git init`, `git config`, commits, checkout/reset, and deletion paths. Run repository-mutating fixtures in an isolated copy with its own `.git`, not the user's working checkout; path-string comparisons can misclassify the real repository as a fixture. Canonicalize both paths before comparing Git's toplevel with the process cwd. Then build a complete valid baseline fixture before mutating one rule per negative test.
 4. Prefer exact source paths, schema versions, artifact hashes, and live CLI output.
-5. Distinguish absent, stale, configured, passing, and runtime-verified evidence.
-6. Run the real production command and verify generated snapshots/reports are reproducible.
+5. Distinguish absent, stale, configured, passing, and runtime-verified evidence. For recovery audits, separate captured source from installable capability: inspect local-file dependencies in manifests and lockfiles, and identify required artifacts omitted by capture policy before claiming the restored route works.
+6. Run the real production command and verify generated snapshots/reports are reproducible. Compare fresh source and restored discovery sets, not just counts or declared-file hashes; equal counts can hide a missing package replaced by an unexpected one.
 
 Keep metric inventory separate from compliance verdicts unless the contract explicitly connects them.
 

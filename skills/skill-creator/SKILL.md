@@ -83,6 +83,12 @@ Do not force a fixed benchmark, subagent fan-out, viewer, exact wording assertio
 
 Use baseline/candidate runs when model behavior or trigger selection is genuinely uncertain. Keep the model/runtime/tool context equivalent. Deterministic checks should enforce artifacts or true invariants, not paraphrasable prose. Use independent review only when complexity, risk, or author bias makes it materially useful.
 
+Before spending inference on a workflow comparison, check whether the experiment can change the intended decision. Inspect the candidate's actual mechanism and the effective baseline first. Preserve normal discovery, available tools, and orchestration unless the question explicitly isolates a different variable; injected guides test injected guides, and a leaf worker cannot test a workflow whose mechanism requires independent workers. Reject an incompatible runner rather than silently simplifying the candidate.
+
+Choose tasks that exercise the claimed advantage at the intended model's capability. Give product outcomes and necessary constraints, not the design, algorithm, or solution-order hints being evaluated. Keep those distinctions in parent-owned acceptance checks. For architecture, identify credible competing shapes and a follow-on change that could expose a bad choice; for reusable verification, measure subsequent use as well as creation. Synthetic cases remain useful for mechanism checks, not automatic evidence of workflow fitness.
+
+Before candidate launch, record the adoption decision, mechanism-to-task fit, baseline fidelity, decisive checks, resource ceiling, and stop condition in the existing evaluation owner. Challenge the design for solution leakage, disabled mechanisms, and an obvious correctness ceiling; use a separate critique when substantial spend or author bias warrants it. A completed checklist is not proof of discrimination. Run only the cheapest runtime smoke needed for readiness, separately from quality trials. If these checks fail, repair the design before running or making comparative claims—not as caveats afterward.
+
 Record only decision-changing evidence: prompt, active stack, observable result, verification, and remaining uncertainty. Remove temporary eval sessions/workspaces after preserving required evidence unless the user asked to retain them.
 
 ## Completion

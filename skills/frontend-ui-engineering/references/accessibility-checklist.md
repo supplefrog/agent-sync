@@ -13,7 +13,7 @@ Quick reference for WCAG 2.1 AA compliance. Use alongside the `frontend-ui-engin
 ## Essential Checks
 
 ### Keyboard Navigation
-- [ ] All interactive elements focusable via Tab key
+- [ ] All controls keyboard reachable; composite widgets use the established Tab/arrow-key pattern
 - [ ] Focus order follows visual/logical order
 - [ ] Focus is visible (outline/ring on focused elements)
 - [ ] Custom widgets have keyboard support (Enter to activate, Escape to close)
@@ -27,11 +27,11 @@ Quick reference for WCAG 2.1 AA compliance. Use alongside the `frontend-ui-engin
 - [ ] Buttons and links have descriptive text (not "Click here")
 - [ ] Icon-only buttons have `aria-label`
 - [ ] Page has one `<h1>` and headings don't skip levels
-- [ ] Dynamic content changes announced (`aria-live` regions)
+- [ ] Important status changes announced appropriately, without announcing every update
 - [ ] Tables have `<th>` headers with scope
 
 ### Visual
-- [ ] Text contrast ≥ 4.5:1 (normal text) or ≥ 3:1 (large text, 18px+)
+- [ ] Text contrast ≥ 4.5:1 (normal text) or ≥ 3:1 (large text: at least 18pt regular or 14pt bold; not 18px regular)
 - [ ] UI components contrast ≥ 3:1 against background
 - [ ] Color is not the only way to convey information
 - [ ] Text resizable to 200% without breaking layout
@@ -49,7 +49,7 @@ Quick reference for WCAG 2.1 AA compliance. Use alongside the `frontend-ui-engin
 - [ ] Language declared (`<html lang="en">`)
 - [ ] Page has a descriptive `<title>`
 - [ ] Links distinguish from surrounding text (not by color alone)
-- [ ] Touch targets ≥ 44x44px on mobile
+- [ ] Prefer touch targets ≥ 44x44 CSS px on mobile; this comfort target is not the WCAG 2.1 AA minimum. When targeting WCAG 2.2 AA, verify SC 2.5.8's 24x24 CSS px or applicable spacing/other exception.
 - [ ] Meaningful empty states (not blank screens)
 
 ## Common HTML Patterns
@@ -97,7 +97,8 @@ Quick reference for WCAG 2.1 AA compliance. Use alongside the `frontend-ui-engin
 <!-- Alert messages -->
 <div role="alert">Error: Title is required</div>
 
-<!-- Modal dialogs -->
+<!-- Modal dialog markup; open with showModal() or a proven modal primitive.
+     aria-modal alone does not implement modality or focus management. -->
 <dialog aria-modal="true" aria-labelledby="dialog-title">
   <h2 id="dialog-title">Confirm Delete</h2>
   ...
@@ -121,6 +122,8 @@ Quick reference for WCAG 2.1 AA compliance. Use alongside the `frontend-ui-engin
 ```
 
 ## Testing Tools
+
+These checks are not a complete conformance audit. Verify against the project's target standard. Canonical details: [text contrast](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), [target size](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html), and [native modal behavior](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal).
 
 ```bash
 # Automated CLI audit against a running page

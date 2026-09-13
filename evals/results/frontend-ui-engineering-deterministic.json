@@ -2,6 +2,8 @@
   "schema_version": 1,
   "suite": "frontend-ui-engineering",
   "capability": "frontend-ui-engineering",
+  "record_scope": "Historical admission and structural-consolidation receipt; later source revisions and their limits are recorded separately.",
+  "follow_up_evidence": ["evals/results/frontend-design-synthesis-2026-09-13.json"],
   "status": "pass",
   "claim": "One portable frontend owner preserves production engineering, accessibility, responsive behavior, subject-grounded visual direction, conservative resource intake, and real-browser verification.",
   "candidate_sha256": "3fa08c7f8af5c5ad329e2a6213108370968efd6e55b8f1b781d5255d8f5eb74f",

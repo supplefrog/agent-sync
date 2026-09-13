@@ -1,0 +1,98 @@
+{
+  "observed_at": "2026-09-13T07:27:36.661710+00:00",
+  "purpose": "explicit bounded tool availability check",
+  "route": {
+    "host": "hermes",
+    "transport": "hermes-delegate",
+    "provider": "openai-codex",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "medium",
+    "runtime": "hermes-delegate/native-source-v1",
+    "contract_sha256": "28618fef3715318a0c1a13789b720903499d1af30ce367b10e31b5879972ce2a"
+  },
+  "native_contract": {
+    "runtime": "hermes-delegate/native-source-v1",
+    "sources": {
+      "run_agent.py": "11cc45fad98fd6e345f1895c54a8ff2277b46f89ea10a5c95a47a221d117b3d6",
+      "tools/delegate_tool.py": "d26cafcb5f90a5f544618d4db03467790b2c98d1e104bcebb975895a3cfed607",
+      "tools/delegate_tool_config.py": "6d5d799be6021232ea352ede62f912642f0174654079bd42a99e40daab9f597c",
+      "tools/delegate_tool_toolsets.py": "a1967a15c535dbbd100a812bfa5d43dd26459f1775ded775d59716faa1acfbe2",
+      "tools/delegate_tool_progress.py": "88e8a1eb8dd19321792d808c5af8b270aa492cb5ff6d60b4b901249726cd83ca",
+      "tools/delegate_tool_child_run.py": "58243a492c3d26aa36a36c31d335f652ac02ff72c067640b6b8057cbfe7f7543",
+      "tools/delegate_tool_results.py": "bbd8517b4e49d7fa55ffed36fdabf898c2a41292619be4777af55060b19440c5",
+      "agent/agent_init.py": "67f9aef648bafc50a01c7974daf5d618f2fa53d1255c96b9973e4b185ea4cbb4",
+      "agent/system_prompt.py": "20a6b326816fc6924ed0b5f4407281b38b9254f7b43465acff10fae09be3114f",
+      "agent/prompt_builder.py": "d50d0459cbb483d53947390cfa7842cedac612746e1f6104489c33b29334d873",
+      "agent/chat_completion_helpers.py": "ce696bc0145ca80c2ae4b06f27e7899f7b8add01143e0ecf2ecde20c19fbdae7",
+      "agent/transports/codex.py": "1b4d48515c0ddac7db53b3446e69da92dcdc773a5e59dd80b2bec17d49c65103"
+    }
+  },
+  "context_tokens": 272000,
+  "exposed_tools": [
+    "patch",
+    "process_manage",
+    "read_file",
+    "search_files",
+    "terminal",
+    "write_file"
+  ],
+  "role": "leaf",
+  "request_guard": {
+    "source": "native-request-construction",
+    "provider_resolved_identity_verified": false,
+    "provider": "openai-codex",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "medium"
+  },
+  "quality_qualification": null,
+  "provider_resolved_identity_verified": false,
+  "active_children_remaining": 0,
+  "tool_results": [
+    {
+      "name": "read_file",
+      "success": true,
+      "result_sha256": "d320f6660f0aedb66605d74bd601ca58b337bf58377bdc13a2d885a82867d5b2"
+    },
+    {
+      "name": "write_file",
+      "success": true,
+      "result_sha256": "b803f172e6ce0e1319fc5d283bdb407f9c11e3dff1735f4aadd05cc5b5995d2d"
+    },
+    {
+      "name": "patch",
+      "success": true,
+      "result_sha256": "6138317c73cb6d1588c87ab47943a84165353730905a5cc6da6af44f216ffabe"
+    },
+    {
+      "name": "search_files",
+      "success": true,
+      "result_sha256": "95469add63f3c65285f36c91dbbb69d7cb8d95e3f7af47378efafb7421efc4d8"
+    },
+    {
+      "name": "process_manage",
+      "success": true,
+      "result_sha256": "b584e9f4ff454f5552a4900a3c68fea2b67b0293233904ddf8dac8bbfef1a1ac"
+    },
+    {
+      "name": "terminal",
+      "success": true,
+      "result_sha256": "8da03a1f112b49697db17a9c2fa8ff788b387a3d5807ff71be77261ac94e95c4"
+    }
+  ],
+  "parent_check": {
+    "exit_code": 0,
+    "stdout": "artifact-check-passed\n",
+    "stderr": ""
+  },
+  "native_status": "completed",
+  "api_calls": 7,
+  "seconds": 34.921000000002095,
+  "cleanup": {
+    "isolated_state_removed_after_process_exit": true,
+    "active_children_remaining": 0
+  },
+  "limitations": [
+    "Synthetic file and command smoke test only; no quality qualification, provider-resolved identity, command sandbox, foreground MCP inheritance, or savings claim.",
+    "Context capacity is native configuration, not an exercised full-context workload."
+  ]
+}

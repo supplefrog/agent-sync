@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-design-source-synthesis",
+  "capability": "frontend-ui-engineering",
+  "date": "2026-09-13",
+  "status": "source-checked-deployment-pending",
+  "claim": "A source-backed instruction synthesis adds surface-specific visual judgment and delegated-choice handling while retaining production engineering. It is not a demonstrated visual-quality or personal-taste improvement.",
+  "artifacts": {
+    "candidate_sha256": "bfe70260d5da400241388a484b967fdb3f46a161ec77ae266af23314885d9bed",
+    "baseline_sha256": "be1c57c7586fec3e3ab31328bc599470e8e106b6fdf26a816ebdd6b122e9323a",
+    "identity_method": "tools/fleet.py directory_record",
+    "baseline_repository_commit": "def7460e2d5caaab7cd7caf2cc4425bf488f413c",
+    "candidate_entrypoint_sha256": "97ce063d17b2e61d5bca3c39e91f7f88b2770c2ca0b9b13d0a7fd386e0f54d4b",
+    "baseline_entrypoint_sha256": "ae6e016c74eae2f1d58dabb41fe33ff9b6b16f93209570cdf83755f46a264a95",
+    "design_judgment_sha256": "81d935db76d6f3e7b13bc482ea61b3b03c13a77dd410dbd57a7cc0dd9691c8b1",
+    "comparison": "skills/frontend-ui-engineering/references/provenance.md",
+    "comparison_sha256": "12947f7de14805348420961141aebcbb5eae0959703ba84b427d6e1101cc6a10"
+  },
+  "sources": [
+    {
+      "repo": "anthropics/skills",
+      "revision": "34040c9c568585f6929bedeaad110ad08f079624",
+      "license": "Apache-2.0"
+    },
+    {
+      "repo": "pbakaus/impeccable",
+      "revision": "cb56ed6c19a07329a9fa0cd4e657bee040156593",
+      "license": "Apache-2.0"
+    },
+    {
+      "repo": "Nutlope/hallmark",
+      "revision": "13ac0ec7e148655948100b6396439e481361d690",
+      "license": "MIT"
+    }
+  ],
+  "decision_probes": {
+    "kind": "explicit-bundle read-only plan probes; not rendered builds or natural-trigger tests",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "runtime": "hermes-delegate",
+    "runtime_sha256": "de1ed4cf29807ec4a881be3e648cc18c1725fa20190266d2756e1aeb0962f175",
+    "billing": "included",
+    "baseline_decision_id": "9ea924621fe8feab27ddbd68a0a58d0b3b37e96e79057e833d72eaf4d1a68b3d",
+    "candidate_decision_id": "2e9d55d7a83843bc6c4bc9990e6c4b4cfdbd69046c8569fd88ea074c9876d82d",
+    "method": "Same four requests, same goal and context except exact bundle path; separate child contexts. Read-only, no implementation or other agents; at most 120 words requested per decision. Parent assessed returned decisions. Relevant references selected by each child differed, as expected for the changed bundle.",
+    "shared_instruction": "Read the supplied frontend skill bundle and apply it to each fictional request. For each return your immediate action, visual/structural choices, whether you would ask anything or create design artifacts, and verification. Do not compare skills, edit files, run servers, generate images, or use other agents. Do not infer a personal taste not in the scenario.",
+    "cases": [
+      {
+        "id": "local-retry",
+        "request": "Add a retry control beside the failed-sync message in our existing dense admin UI. No DESIGN.md exists. Keep the rest unchanged.",
+        "baseline_excerpt": "I would not ask questions or create `DESIGN.md`; this bounded component change does not justify a design artifact.",
+        "candidate_excerpt": "Add a native **Retry** button immediately beside the message, matching current size, spacing, typography, and focus treatment; preserve every unrelated element.",
+        "assessment": "Both preserve the incumbent UI and avoid whole-page design work. Candidate also names duplicate-click prevention and no optimistic success. No meaningful regression observed in the decisions."
+      },
+      {
+        "id": "same-brand-different-jobs",
+        "request": "Create an API guide and a marketing homepage for the same observability tool. Existing brand tokens and components must stay. For the homepage show a real trace example; API docs should help readers make their first request. Pick the rest; I cannot review alternatives.",
+        "baseline_excerpt": "Because this is coordinated multi-page work, I would create or expand `DESIGN.md` with shared normative rules and rationale.",
+        "candidate_excerpt": "I would choose one direction internally—no alternatives review—and record only a short working visual thesis, not automatically create `DESIGN.md`.",
+        "assessment": "Both differentiate guide and homepage content. Candidate explicitly optimizes each surface separately and avoids treating multiple pages alone as permission for a new design-system document."
+      },
+      {
+        "id": "approved-style-exception",
+        "request": "Build a campaign page with our supplied purple-to-cyan palette, symmetric layout and italic serif headline. These choices are approved. Preserve them.",
+        "baseline_excerpt": "Treat the supplied palette, symmetry, and italic serif headline as binding design authority, not defaults to “correct.”",
+        "candidate_excerpt": "Treat the palette, symmetry, and italic serif headline as binding design authority.",
+        "assessment": "Both preserve all three approved choices despite anti-template guidance. Decision-level tie; no evidence that the baseline actually violated this boundary."
+      },
+      {
+        "id": "delegated-unknown-taste",
+        "request": "Design a new ceramics catalog. Use my usual taste, you pick; no time for a visual quiz. I have supplied product photos and descriptions but no evidence of my prior visual preferences, prices, customers or sales metrics. Do not wait for assets we do not have.",
+        "baseline_excerpt": "Acknowledge that “usual taste” is unavailable evidence, then proceed without pretending otherwise.",
+        "candidate_excerpt": "choose one provisional, task-first direction without claiming it reflects the user’s “usual taste.”",
+        "assessment": "Both proceed without a quiz and avoid fabricated proof. Baseline suggests tactile neutrals and conditional editorial asymmetry; candidate leads with catalog tasks and supplied photos. This is a difference in stated direction, not a verified aesthetic win."
+      }
+    ],
+    "limits": "Single sample per arm, tightly constrained prompts, text plans only, no blind human judgment, no rendered artifact, no statistical quality claim. The prompt itself prohibits invented taste, so this does not isolate that behavior as a skill-caused gain. Tool paths and selected references differ; natural discovery and cross-host behavior were not tested.",
+    "tested_candidate_sha256": "4b4111da8a51d09b732e4e3d6871a7fddc0a8c733d68c07e44a4bf8dd6c994bc"
+  },
+  "verification": {
+    "skill_validation": "python tools/validate.py skills/frontend-ui-engineering: PASS, 1/1 valid",
+    "public_safety": "python tools/public_check.py: PASS",
+    "whitespace": "git diff --check: exit 0",
+    "render": "python tools/fleet.py render: completed; frontend update identified, no frontend live write performed",
+    "instruction_artifact": "python tools/instruction_profile.py --artifact-only: completed",
+    "full_instruction_profile": "Blocked by pre-existing live recovery mismatch in Hermes repository-inspection-audits",
+    "structural_audit": "Blocked: host deltas manifest is invalid or not public-safe",
+    "live_discovery": "Not claimed for the new candidate; deployment remains subject to checked reconciliation",
+    "preserved": [
+      "primary upstream MIT license",
+      "SOURCE.json",
+      "motion-design reference",
+      "existing frontend trigger and throwaway-prototype exclusion"
+    ],
+    "scope": "Only frontend source and its evidence are authored by this task. Concurrent route-catalog changes are not selected or modified.",
+    "local_invariants": "Verified candidate/baseline package identities, unchanged trigger and protected files, all six support-file routes, local reference targets, four probe cases, three sources, and ownership evidence link.",
+    "reconcile": "Attempted checked sync with native recovery capture disabled; returned review-required for host-deltas manifest and existing Hermes repository-inspection-audits recovery conflict. No deployment or publication claimed."
+  },
+  "result": {
+    "source_checks_passed": true,
+    "decision_probe_regression_observed": false,
+    "visual_quality_improvement_proven": false,
+    "personal_taste_match_proven": false,
+    "deployment_complete": false
+  },
+  "post_probe_clarification": {
+    "basis": "Explicit user correction: the design language can mix these skills or other influences; parameters to tune depend on the frontend engineer's taste.",
+    "change": "Removed the remaining single-lineage restriction; added open-ended taste dimensions, independent-axis feedback handling, and distinction between aesthetic tuning and usability requirements.",
+    "evaluation_scope": "The earlier decision probes apply to tested_candidate_sha256, not this wording revision. This clarification is checked structurally and against the explicit request, without a new visual-quality claim."
+  }
+}

@@ -1166,6 +1166,9 @@ def artifact_hashes(candidate: Path, baseline: Path | None, suite: Path, *,
 
 
 def main() -> int:
+    if sys.argv[1:2] == ["artifact-pilot"]:
+        from evaluation_artifact_pilot import main as artifact_main
+        return artifact_main(sys.argv[2:])
     parser = argparse.ArgumentParser()
     parser.add_argument("suite", type=Path)
     parser.add_argument("--candidate", type=Path, required=True)

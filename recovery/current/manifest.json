@@ -113,7 +113,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16830,
+      "bytes": 16831,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -318,7 +318,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "63578a68aa8df61814a30ca904963c2f887b6ec27af165cd7430613e6ca5a810",
+      "sha256": "5fef36496e51fbed723b1b423f6ceafcd205c2026f78ce84555dc528a57051fe",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
@@ -11518,14 +11518,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 14793,
+      "bytes": 15593,
       "format": "text",
       "host": "hermes",
       "id": "native-f24fde821846cbec20ff",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "30ee059222a24d8d2d939e80fe60c907a5faf18cd9dfacd4aab4307fabc06d51",
+      "sha256": "3b8ffefe7b11a1dfef9d6fc581a36e27e2e31441792142fcc627d2744cc65637",
       "snapshot": "hosts/hermes/skills/software-development/repository-inspection-audits/SKILL.md",
       "source": "skills/software-development/repository-inspection-audits/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11882,7 +11882,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 10127,
+      "bytes": 10445,
       "format": "text",
       "host": "hermes",
       "id": "native-ea4fe2cdcc8976469fc0",
@@ -11892,7 +11892,7 @@
       "replace_sha256": [
         "573d8fc0d6699eaf5308e742402bc02c883152ffeebe14607f164c6c538495c2"
       ],
-      "sha256": "bcba73c0e6126ddae75f4e7e6f17c1b60e33d3d5456997721cd08f56f0fd5522",
+      "sha256": "5a5ef945c1f75e7a425cd423e39acfc46555d24ff86e55c851d49d0f2a0c9232",
       "snapshot": "hosts/hermes/skills/software-development/spike/SKILL.md",
       "source": "skills/software-development/spike/SKILL.md",
       "strategy": "replace-if-absent"

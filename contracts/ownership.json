@@ -77,9 +77,10 @@
       "status": "admitted",
       "selection_state": "selected",
       "selection_evidence": [
-        "evals/results/frontend-ui-engineering-deterministic.json"
+        "evals/results/frontend-ui-engineering-deterministic.json",
+        "evals/results/frontend-design-synthesis-2026-09-13.json"
       ],
-      "selection_reason": "The shared and Codex bundles were byte-identical; Agent Sync preserves all behavior and support references while binding upstream MIT provenance and fleet management."
+      "selection_reason": "Original admission preserved the byte-identical shared/Codex engineering baseline and MIT provenance. The source revision integrates bounded Anthropic, Impeccable, and Hallmark design-judgment findings without adding frontend owners; source and decision-probe evidence does not establish visual-quality, personal-taste, or cross-host behavioral superiority. Candidate deployment status is recorded in the follow-up receipt."
     },
     {
       "id": "surface-convergence",

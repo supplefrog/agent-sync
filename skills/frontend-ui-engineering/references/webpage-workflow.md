@@ -18,7 +18,9 @@ Videos, talks, demos, and essays normally belong in the research record, not thi
 
 ## 2. Set a coherent visual direction
 
-Write a one-sentence visual thesis grounded in the product's subject and audience. Decide the hierarchy, typography role, palette role, density, geometry, image treatment, and motion character. Take one meaningful aesthetic risk only when it supports the product.
+Use `design-judgment.md` when choosing or substantially revising a visual direction. Distinguish task, reading, decision, and exploration surfaces; choose priorities per surface, not by industry. Write a short visual thesis with concrete hierarchy, typography roles, palette roles, density, geometry, image treatment, and motion character. Take an aesthetic risk only when it supports the product; ordinary controls need no mandatory signature treatment.
+
+When design choices are delegated, choose one considered result without requiring mockup comparisons or a taste questionnaire. Mix influences from reviewed skills, other sources, and original decisions as appropriate; coherence does not require a single design lineage. Select and tune the relevant taste dimensions using `design-judgment.md`, keeping unsupported values provisional. Current instructions and explicit approvals outrank inferred preferences; preserve an established identity even without a design document. A redesign may replace the authorized visual layer, not silently discard product facts, routes, behavior, or unrelated work.
 
 Preserve an existing design system unless the user asks to change it. Create or expand a project `DESIGN.md` only when the user requests it or when the in-scope task establishes a multi-page or reusable design system. A bounded component or page change does not authorize a new project artifact. Prefer Google's current DESIGN.md structure: normative tokens plus human-readable rationale. Because the format is alpha, inspect the current specification before strict validation or automation.
 
@@ -34,7 +36,9 @@ A useful `DESIGN.md` records:
 
 ## 3. Plan structure and assets
 
-Resolve content order and responsive transformations before visual polish. Specify loading, empty, error, success, focus, hover, disabled, and overflow behavior where relevant.
+Resolve content order and responsive transformations before visual polish. Choose structure from the relationships between content, not a default hero-feature-CTA sequence. Reuse repeated layouts for genuinely comparable items and vary density when priority changes. Specify loading, empty, error, success, focus, hover, disabled, and overflow behavior where relevant.
+
+Use real product facts. Clearly distinguish demonstration data from evidence; never fabricate commercial metrics, prices, endorsements, or capabilities to complete a proof section. When required facts are missing, request them or change the structure rather than disguising placeholders as truth.
 
 Inventory existing assets first. Prefer authentic project assets over generic stock. If custom imagery, video, or frame sequences would materially improve the result, plan them after the layout direction is stable. Do not generate, purchase, upload, or fetch account-bound assets without authorization.
 
@@ -57,7 +61,7 @@ Animation should explain change, preserve context, or reinforce the visual thesi
 
 ## 5. Render, compare, and refine
 
-Run the real page and inspect it in a browser. Capture relevant desktop and mobile widths and exercise interaction states. Compare against the brief and references by hierarchy, rhythm, typography, composition, behavior, and emotional tone rather than superficial resemblance.
+Run the real page and inspect it in a browser. Batch relevant desktop and mobile captures, including the user's actual viewport when known, and exercise interaction states. Confirm captures show the right route and state with fonts and assets loaded; settle entrance motion before diagnosing invisible content as a defect. Compare against the brief and references by hierarchy, rhythm, typography, composition, behavior, and emotional tone rather than superficial resemblance.
 
 Refine in this order:
 
@@ -68,7 +72,7 @@ Refine in this order:
 5. imagery, icons, and motion;
 6. decorative detail.
 
-Replace only the weak sections. Avoid full-page churn when a targeted component change will close the gap.
+Replace only the weak sections. Distinguish observed defects from optional aesthetic alternatives. Batch material fixes and confirm the affected views; avoid full-page churn or indefinite polishing. Stop when the requested behavior and named quality checks hold, not when a self-score says the page is good. An unresolved functional or accessibility failure remains a blocker, not a taste preference.
 
 ## 6. Validate and deliver
 

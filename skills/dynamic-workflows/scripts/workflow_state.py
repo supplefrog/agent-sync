@@ -344,7 +344,7 @@ def validate_plan(raw: Any, source: Path) -> dict[str, Any]:
     description = raw.get("description", "")
     if not isinstance(description, str):
         raise PlanError("Plan description must be a string")
-    max_workers = raw.get("max_workers", 4)
+    max_workers = raw.get("max_workers", 8)
     if isinstance(max_workers, bool) or not isinstance(max_workers, int) or not 1 <= max_workers <= MAX_WORKERS:
         raise PlanError(f"max_workers must be an integer from 1 to {MAX_WORKERS}")
     items = raw.get("tasks")

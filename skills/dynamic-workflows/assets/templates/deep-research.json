@@ -1,7 +1,7 @@
 {
   "name": "deep-research",
   "description": "Independent evidence collection, adversarial checking, and synthesis.",
-  "max_workers": 3,
+  "max_workers": 8,
   "tasks": [
     {
       "id": "source-map",

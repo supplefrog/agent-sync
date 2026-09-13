@@ -13,6 +13,7 @@ import threading
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import redirect_stdout
+from datetime import datetime, timedelta, timezone
 from io import StringIO
 from pathlib import Path
 from unittest import mock
@@ -100,6 +101,13 @@ class WorkflowStateTests(unittest.TestCase):
         self.temp.cleanup()
         self.default_v3_router_patcher.stop()
         self.default_router_patcher.stop()
+
+    def test_worker_ceiling_defaults_to_eight_and_preserves_explicit_limit(self) -> None:
+        raw = base_plan()
+        raw.pop("max_workers")
+        self.assertEqual(ws.validate_plan(raw, self.plan_path)["max_workers"], 8)
+        raw["max_workers"] = 2
+        self.assertEqual(ws.validate_plan(raw, self.plan_path)["max_workers"], 2)
 
     def init(self) -> Path:
         return ws.init_run(
@@ -1198,9 +1206,17 @@ class WorkflowStateTests(unittest.TestCase):
         source, _selector, _materializer = self.v3_paths()
         catalog = ws.load_json(source)
         if workflow_transport:
-            route = catalog["candidates"][0]["route"]
+            # Lifecycle fixtures do not attest live route availability. Keep
+            # their synthetic model route valid independently of catalog age.
+            candidate = next(item for item in catalog["candidates"]
+                             if item["id"] == "hermes-sol-low-inline")
+            catalog["candidates"] = [candidate]
+            now = datetime.now(timezone.utc)
+            candidate["availability"]["observed_at"] = (now - timedelta(days=1)).isoformat()
+            candidate["availability"]["valid_until"] = (now + timedelta(days=1)).isoformat()
+            route = candidate["route"]
             route["transport"] = "hermes-workflow"
-            catalog["candidates"][0]["availability"]["route_sha256"] = ws.receipt_digest(route)
+            candidate["availability"]["route_sha256"] = ws.receipt_digest(route)
         return write_json(self.root / ("v3-model.json" if workflow_transport else "v3-parent.json"), catalog)
 
     def init_v3(self, tasks: list[dict], *, workflow_transport: bool = False) -> Path:

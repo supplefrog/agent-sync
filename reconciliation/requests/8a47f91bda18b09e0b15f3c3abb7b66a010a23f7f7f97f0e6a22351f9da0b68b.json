@@ -1,0 +1,99 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "e0003deae55a2ade64e89ec9f148f4309fbee3c0339953f9c6f39de3c3605ccb",
+      "before_sha256": "e0003deae55a2ade64e89ec9f148f4309fbee3c0339953f9c6f39de3c3605ccb",
+      "owner": "dynamic-workflows",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "bfe70260d5da400241388a484b967fdb3f46a161ec77ae266af23314885d9bed",
+      "before_sha256": "bfe70260d5da400241388a484b967fdb3f46a161ec77ae266af23314885d9bed",
+      "owner": "frontend-ui-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "792ad13ecc92d78aa4394056783cb91cb2f4b7ab7979b6a93310d2a8f0766182",
+      "before_sha256": "792ad13ecc92d78aa4394056783cb91cb2f4b7ab7979b6a93310d2a8f0766182",
+      "owner": "openai-delegation-route-research",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "4f0db238e3e8fd9c1b46094a81f3d5e59057c8aa021908be69dbeee66e26f78a",
+      "before_sha256": "4f0db238e3e8fd9c1b46094a81f3d5e59057c8aa021908be69dbeee66e26f78a",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "468f45892ac70a0b708f347b9f77023130422b358353aa365904eb720ccbde08",
+      "before_sha256": "468f45892ac70a0b708f347b9f77023130422b358353aa365904eb720ccbde08",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "9673d1b36378ecf953bb3719fdcc117dddd2902497273767d11b9fb42bf4d912",
+      "before_sha256": "9673d1b36378ecf953bb3719fdcc117dddd2902497273767d11b9fb42bf4d912",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "dynamic-workflows",
+    "frontend-ui-engineering",
+    "openai-delegation-route-research",
+    "skill-creator",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "8a47f91bda18b09e0b15f3c3abb7b66a010a23f7f7f97f0e6a22351f9da0b68b",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

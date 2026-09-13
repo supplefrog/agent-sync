@@ -332,7 +332,7 @@
       ],
       "command": "cmd.exe",
       "connect_timeout": 20,
-      "enabled": true,
+      "enabled": false,
       "env": {
         "CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS": "1",
         "PROGRAMFILES": "C:\\Program Files",

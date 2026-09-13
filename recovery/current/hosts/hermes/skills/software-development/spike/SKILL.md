@@ -51,6 +51,8 @@ Break the user's idea into **2-5 independent feasibility questions**. Each quest
 - **standard** — one approach answering one question
 - **comparison** — same question, different approaches (shared number, letter suffix `a`/`b`/`c`)
 
+Before spending inference on an agent/workflow comparison, use `skill-creator`'s evaluation preflight. Check the intended decision against the actual task, baseline discovery, and candidate capabilities; reject a runner that removes the mechanism being tested. A readiness smoke is not a workflow-quality comparison.
+
 For comparison spikes, keep the axis fixed. If testing a harness, workflow, prompt overlay, or agent scaffold, hold model/provider/reasoning effort constant unless the user explicitly asks for a model comparison. Start with the user's daily-driver model; otherwise you are benchmarking model choice, not the approach. If the goal is cost optimization while preserving repair quality, compare the lean candidate directly against the baseline (`mini_only` vs `focus_plain`), not an additive condition that obviously increases prompt/tool overhead (`focus + overlay`). See `references/agent-harness-benchmarking.md` for an agent-harness benchmark recipe, including temp-home isolation and Hermes `state.db` usage accounting; see `references/mini-only-vs-focus-cost-benchmark.md` for the Hermes mini-only vs focus GPT-5.5 low/medium results and interpretation.
 
 **Good spike questions:** specific feasibility with observable output.

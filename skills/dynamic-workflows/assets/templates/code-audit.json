@@ -1,7 +1,7 @@
 {
   "name": "code-audit",
   "description": "Parallel code audit with adversarial consolidation.",
-  "max_workers": 3,
+  "max_workers": 8,
   "tasks": [
     {
       "id": "scope-map",
