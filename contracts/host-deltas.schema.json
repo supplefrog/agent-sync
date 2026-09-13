@@ -57,7 +57,9 @@
           "additionalProperties": false,
           "required": ["kind"],
           "properties": {
-            "kind": {"enum": ["command", "recovery-artifact", "fleet", "file", "none"]},
+            "kind": {"enum": ["command", "recovery-artifact", "fleet", "file", "config-empty", "none"]},
+            "key": {"type": "string", "minLength": 1},
+            "format": {"enum": ["yaml", "json", "toml"]},
             "argv": {
               "type": "array",
               "enum": [
@@ -88,6 +90,10 @@
                 "required": ["kind"]
               },
               "then": {"required": ["argv"]}
+            },
+            {
+              "if": {"properties": {"kind": {"const": "config-empty"}}, "required": ["kind"]},
+              "then": {"required": ["path", "key", "format"]}
             }
           ]
         },

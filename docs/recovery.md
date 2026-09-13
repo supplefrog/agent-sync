@@ -4,15 +4,19 @@ Agent Sync backs up the declarative state needed to rebuild the current Hermes, 
 
 ## Fast restore
 
-From a fresh clone on the Windows machine:
+From a clone outside live skill-discovery directories, select the agent you want:
 
 ```bash
 python tools/recovery.py verify
-python tools/recovery.py bootstrap          # dry-run: state + admitted skill fleet
-python tools/recovery.py bootstrap --apply  # apply and run postflight verification
+python tools/recovery.py bootstrap --host hermes          # dry-run
+python tools/recovery.py bootstrap --host hermes --apply  # selected target + postflight
 ```
 
-`bootstrap` performs a complete preflight, renders the admitted fleet, rejects skill collisions or instruction conflicts, applies admitted skills and allowlisted state, then verifies the fleet, recovery diff, current instruction profile, and typed host-delta readback. It does not install the three runtimes or authenticate accounts; reinstall those and sign in first.
+Use `--host codex` or `--host omp` for the other supported agents. Supply `--root HOST=PATH` to select an explicit target home rather than the platform default. Selecting a host scopes live reads, writes, skill destinations, and native prerequisite/readback checks; it does not select a model provider. The whole public snapshot is still integrity-checked before selecting effects.
+
+Omitting `--host` retains the original full configured-machine recovery. Use that only when all declared hosts and shared skill destinations are intended. A friend's install should use bootstrap, not the source-publishing reconciliation command.
+
+`bootstrap` performs preflight, renders the admitted fleet, rejects skill collisions or instruction conflicts, applies admitted skills and allowlisted state, then verifies the fleet, recovery diff, and typed host-delta readback. Selected-host mode checks required native prerequisites before target writes and skips the global multi-host instruction profile; full-machine mode retains that check. It does not install runtimes or authenticate accounts; install only the selected runtime and its declared prerequisites locally.
 
 Before fleet apply, bootstrap also rejects a retired skill or an admitted skill that still exists in a host-local discovery root. Remove a retired artifact or migrate an admitted old copy first; otherwise a stale implementation can return or Hermes/Codex/OMP can see two owners for the same skill name even when their bytes happen to match.
 
@@ -29,12 +33,15 @@ The current snapshot contains:
 - user-authored Codex hook scripts and their hook declarations;
 - custom MCP declarations that contain no credential values, including OMP MCP declarations;
 - public plugin selections and enablement where the source is reproducible or an external prerequisite is declared;
+- complete reviewed Hermes-local [native skill packages](native-skill-recovery.md), with support files and parked-package enablement preserved separately;
 - the two thin OMP skill adapters that consume Agent Sync's canonical workflow owners without copying their state machines;
 - no OMP `RULES.md`, because OMP already inherits the same Codex output rule and the duplicate delta was retired.
 
 Config restore is a deep merge. Only allowlisted paths are written, while unknown or sensitive fields already present on the target remain untouched. If selected values already match, restore does not rewrite the file merely to normalize TOML/YAML formatting.
 
 Portable path markers use `{{agent-signal:HOME}}`, `{{agent-signal:HERMES_HOME}}`, `{{agent-signal:CODEX_HOME}}`, `{{agent-signal:OMP_HOME}}`, and `{{agent-signal:AGENT_SIGNAL_ROOT}}`. They are intentionally distinct from shell variables such as `${HOME}`, so source code and hook patterns are not rewritten accidentally.
+
+Codex Desktop's `notify` executable is not portable declarative state: its path contains a generated runtime-cache build identifier. It is excluded from capture and the receiving Desktop installation owns it. Restore leaves any existing target notification setting untouched.
 
 Each host-delta entry records its host, surface, owner, desired state, source identity, version or artifact hash, enablement, external prerequisites, restore method, redaction policy, and deterministic readback. Command readbacks are selected from a fixed Agent Sync allowlist; the manifest cannot introduce executable argv. Fleet binding is derived from tracked `registry.json` plus admitted canonical skill trees, so a fresh clone does not need generated `render/` output before host-delta validation. `python tools/host_deltas.py verify` validates the schema, checks recovery/fleet bindings, and emits one of these statuses:
 
@@ -56,7 +63,7 @@ The snapshot never includes:
 - generated `render/`, worktrees, test caches, raw evaluation runs, or backup copies;
 - project-local instruction files, which stay owned by their project and are only discovered dynamically.
 
-Secret-like values, absolute user-home paths, blocked filenames, path traversal, symlinks, and Windows reparse-point crossings fail the snapshot before any output is written.
+Secret-like values, absolute user-home paths, blocked filenames, path traversal, and unreviewed symlink/reparse-point crossings fail capture. Exact content-bound public example reviews and explicitly declared read-only `capture_mount` entries are the narrow exceptions; neither grants restore writes through a link.
 
 ## Updating the reviewed snapshot
 
@@ -80,7 +87,7 @@ git diff -- recovery.json recovery/current contracts/recovery*.json
 - Each file write is atomic.
 - If a later target-file write fails, the file-restore phase rolls back every earlier target it changed.
 - Config restore preserves non-allowlisted state.
-- Text restore is replace-if-absent unless `--force-text` is supplied.
+- Text restore accepts an absent target, an equal target, or an exact reviewed stock-text `replace_sha256`; unrelated differences remain conflicts.
 - Fleet apply rejects unmanaged same-name collisions and modified managed skills.
 - Reconciliation rollback covers every fleet action selected by preflight, including removal of a previously managed skill whose canonical owner was retired.
 - Postflight requires zero recovery changes/conflicts, an exact fleet manifest, a valid current instruction profile, and successful required host-delta readback.

@@ -1,0 +1,24 @@
+{
+  "name": "advanced",
+  "version": "1.0.0",
+  "description": "Advanced PptxGenJS authoring for Hermes PowerPoint",
+  "private": true,
+  "main": "examples/advanced-authoring-probe.js",
+  "directories": {
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "build:probe": "node examples/advanced-authoring-probe.js && python scripts/normalize_svg_fallbacks.py output/advanced-authoring-probe.pptx",
+    "verify:probe": "python tests/verify_probe.py output/advanced-authoring-probe.pptx",
+    "test:security": "node --test tests/dependency-security.test.js",
+    "test": "npm run test:security && npm run build:probe && npm run verify:probe"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "pptxgenjs": "file:vendor/pptxgenjs-4.0.1-no-image-size.tgz"
+  }
+}

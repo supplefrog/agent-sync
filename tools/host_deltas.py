@@ -9,6 +9,7 @@ import json
 import os
 import shutil
 import subprocess
+import tempfile
 import sys
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
@@ -217,10 +218,10 @@ def _resolve_argv(argv: Sequence[str]) -> list[str]:
     return resolved
 
 
-def _run(argv: list[str]) -> tuple[int, str]:
+def _run(argv: list[str], *, env: Mapping[str, str] | None = None) -> tuple[int, str]:
     try:
         completed = subprocess.run(
-            _resolve_argv(argv), capture_output=True, text=True, check=False, timeout=45
+            _resolve_argv(argv), capture_output=True, text=True, check=False, timeout=45, env=env
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
         return 127, type(exc).__name__
@@ -262,6 +263,7 @@ def verify(
     skill_roots: Sequence[str | Path] | None = None,
     fleet_snapshot: str | Path | None = None,
     restored_ids: set[str] | None = None,
+    hosts: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Read back each declared delta without returning private command output.
 
@@ -272,7 +274,15 @@ def verify(
 
     repo = Path(repo).resolve()
     manifest = load_manifest(manifest_path, repo)
+    supplied_runner = runner
     runner = runner or _run
+    if hosts is not None:
+        if not hosts or set(hosts) - {"hermes", "codex", "omp"}:
+            raise RuntimeError("invalid host selection")
+        selected = set(hosts)
+        manifest = dict(manifest)
+        manifest["entries"] = [item for item in manifest["entries"] if item["host"] in selected]
+        manifest["exclusions"] = [item for item in manifest["exclusions"] if item["host"] in selected]
     restored_ids = restored_ids or set()
     resolved_roots: Mapping[str, str | Path] = roots or recovery._default_roots()
     recovery_plan: Mapping[str, Any] | None = None
@@ -283,6 +293,7 @@ def verify(
             resolved_roots,
             apply=False,
             repo_root=repo,
+            **({"hosts": list(hosts)} if hosts is not None else {}),
         )
 
     fleet_findings: list[dict[str, str]] | None = None
@@ -295,7 +306,19 @@ def verify(
         available = True
         if kind == "command":
             argv = list(readback.get("argv", []))
-            code, output = runner(argv)
+            if hosts is not None and supplied_runner is None:
+                env = dict(os.environ)
+                env[item["host"].upper() + "_HOME"] = str(resolved_roots[item["host"]])
+                if argv[1:] == ["--version"]:
+                    # Hermes CLI initialization writes SOUL/update markers even
+                    # for --version. Runtime identity does not need user state.
+                    with tempfile.TemporaryDirectory(prefix="agent-sync-version-") as scratch:
+                        env[item["host"].upper() + "_HOME"] = scratch
+                        code, output = _run(argv, env=env)
+                else:
+                    code, output = _run(argv, env=env)
+            else:
+                code, output = runner(argv)
             available = code not in {126, 127}
             success = code == 0
             if "contains" in readback:
@@ -329,6 +352,10 @@ def verify(
                     for finding in fleet.verify_snapshot(snapshot, destination)
                 ]
             success = not fleet_findings
+        elif kind == "config-empty":
+            target = recovery._safe_join(resolved_roots[item["host"]], str(readback["path"]), must_exist=False)
+            config = recovery._read_config(target, str(readback["format"])) if target.is_file() else {}
+            success = not config.get(str(readback["key"]))
         elif kind == "file":
             raw = str(readback.get("path", ""))
             if raw.startswith("repo:"):

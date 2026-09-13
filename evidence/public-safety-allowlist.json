@@ -1,96 +1,663 @@
 {
-  "schema_version": 1,
   "findings": [
     {
-      "path": "integrations/hermes/native-patches/guidance/recovery/baseline/agent/prompt_builder.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 816,
-      "rule": "windows-user-path",
       "line_sha256": "022debabad67aca5fe752d20d585c86ed998ea1ff8c08ddf873a52682e85cffd",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
+      "path": "integrations/hermes/native-patches/guidance/recovery/baseline/agent/prompt_builder.py",
+      "rule": "windows-user-path"
     },
     {
-      "path": "integrations/hermes/native-patches/guidance/recovery/baseline/agent/prompt_builder.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 820,
-      "rule": "windows-user-path",
       "line_sha256": "16dff49bff43ca70439e225f6a488d898d26411e3bc9932189d0a9d5e8d23037",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
-    },
-    {
       "path": "integrations/hermes/native-patches/guidance/recovery/baseline/agent/prompt_builder.py",
+      "rule": "windows-user-path"
+    },
+    {
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 945,
-      "rule": "windows-user-path",
       "line_sha256": "4a0ed6a6e00c9ac741af6c0e5ec26f1f6d3135b4512bd53a45d79152e81fd878",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
+      "path": "integrations/hermes/native-patches/guidance/recovery/baseline/agent/prompt_builder.py",
+      "rule": "windows-user-path"
     },
     {
-      "path": "integrations/hermes/native-patches/guidance/recovery/candidate/agent/prompt_builder.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 805,
-      "rule": "windows-user-path",
       "line_sha256": "022debabad67aca5fe752d20d585c86ed998ea1ff8c08ddf873a52682e85cffd",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
+      "path": "integrations/hermes/native-patches/guidance/recovery/candidate/agent/prompt_builder.py",
+      "rule": "windows-user-path"
     },
     {
-      "path": "integrations/hermes/native-patches/guidance/recovery/candidate/agent/prompt_builder.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 809,
-      "rule": "windows-user-path",
       "line_sha256": "16dff49bff43ca70439e225f6a488d898d26411e3bc9932189d0a9d5e8d23037",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
-    },
-    {
       "path": "integrations/hermes/native-patches/guidance/recovery/candidate/agent/prompt_builder.py",
+      "rule": "windows-user-path"
+    },
+    {
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 934,
-      "rule": "windows-user-path",
       "line_sha256": "4a0ed6a6e00c9ac741af6c0e5ec26f1f6d3135b4512bd53a45d79152e81fd878",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
+      "path": "integrations/hermes/native-patches/guidance/recovery/candidate/agent/prompt_builder.py",
+      "rule": "windows-user-path"
     },
     {
-      "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/baseline/agent/prompt_builder.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 838,
-      "rule": "windows-user-path",
       "line_sha256": "022debabad67aca5fe752d20d585c86ed998ea1ff8c08ddf873a52682e85cffd",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
+      "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/baseline/agent/prompt_builder.py",
+      "rule": "windows-user-path"
     },
     {
-      "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/baseline/agent/prompt_builder.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 842,
-      "rule": "windows-user-path",
       "line_sha256": "16dff49bff43ca70439e225f6a488d898d26411e3bc9932189d0a9d5e8d23037",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
-    },
-    {
       "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/baseline/agent/prompt_builder.py",
+      "rule": "windows-user-path"
+    },
+    {
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 962,
-      "rule": "windows-user-path",
       "line_sha256": "4a0ed6a6e00c9ac741af6c0e5ec26f1f6d3135b4512bd53a45d79152e81fd878",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
+      "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/baseline/agent/prompt_builder.py",
+      "rule": "windows-user-path"
     },
     {
-      "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/candidate/agent/prompt_builder.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 828,
-      "rule": "windows-user-path",
       "line_sha256": "022debabad67aca5fe752d20d585c86ed998ea1ff8c08ddf873a52682e85cffd",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
+      "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/candidate/agent/prompt_builder.py",
+      "rule": "windows-user-path"
     },
     {
-      "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/candidate/agent/prompt_builder.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
       "line": 832,
-      "rule": "windows-user-path",
       "line_sha256": "16dff49bff43ca70439e225f6a488d898d26411e3bc9932189d0a9d5e8d23037",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
-    },
-    {
       "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/candidate/agent/prompt_builder.py",
-      "line": 952,
-      "rule": "windows-user-path",
-      "line_sha256": "4a0ed6a6e00c9ac741af6c0e5ec26f1f6d3135b4512bd53a45d79152e81fd878",
-      "disposition": "Upstream generic Windows path example; no concrete private username"
+      "rule": "windows-user-path"
     },
     {
-      "path": "integrations/hermes/routed-delegation/test_plugin.py",
+      "disposition": "Upstream generic Windows path example; no concrete private username",
+      "line": 952,
+      "line_sha256": "4a0ed6a6e00c9ac741af6c0e5ec26f1f6d3135b4512bd53a45d79152e81fd878",
+      "path": "integrations/hermes/native-patches/guidance-rebase-820106d/recovery/candidate/agent/prompt_builder.py",
+      "rule": "windows-user-path"
+    },
+    {
+      "disposition": "Reviewed offline fake credential; intercepted native test, no provider call",
       "line": 1237,
-      "rule": "credential-assignment",
       "line_sha256": "60559e70e6200fea2a569d4e25b563f78b318d38d8ca0e77ac581509302570f1",
-      "disposition": "Reviewed offline fake credential; intercepted native test, no provider call"
+      "path": "integrations/hermes/routed-delegation/test_plugin.py",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 8,
+      "line_sha256": "83563efadbca35a7beb580423f57b219123587dbbe0a95d210c572f816daa7cf",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/references/external-coding-agent-clis/references/codex/codex-plugin-evaluation.md",
+      "rule": "windows-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 145,
+      "line_sha256": "042a949b23b479fc3b46a8ca03ae516f391df4436cc27255d4417abeec5e54a1",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 254,
+      "line_sha256": "fde48b41f48ad404819646e513fea48fd871d6f95e7303362d2abb3811969908",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 268,
+      "line_sha256": "7340bfe659143aa163853b99e6c1aa3c579ef123183c0d86cab0d783b1778961",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 268,
+      "line_sha256": "7340bfe659143aa163853b99e6c1aa3c579ef123183c0d86cab0d783b1778961",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "token-prefix"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 268,
+      "line_sha256": "7340bfe659143aa163853b99e6c1aa3c579ef123183c0d86cab0d783b1778961",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "recovery-secret-like-value"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 281,
+      "line_sha256": "bb3f8441623c8a8ab4479c48f7a365be612b26a2b4244e11d1fa43d1005d3999",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "token-prefix"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 281,
+      "line_sha256": "bb3f8441623c8a8ab4479c48f7a365be612b26a2b4244e11d1fa43d1005d3999",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "recovery-secret-like-value"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 303,
+      "line_sha256": "7340bfe659143aa163853b99e6c1aa3c579ef123183c0d86cab0d783b1778961",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 303,
+      "line_sha256": "7340bfe659143aa163853b99e6c1aa3c579ef123183c0d86cab0d783b1778961",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "token-prefix"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 303,
+      "line_sha256": "7340bfe659143aa163853b99e6c1aa3c579ef123183c0d86cab0d783b1778961",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "recovery-secret-like-value"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 308,
+      "line_sha256": "bb3f8441623c8a8ab4479c48f7a365be612b26a2b4244e11d1fa43d1005d3999",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "token-prefix"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 308,
+      "line_sha256": "bb3f8441623c8a8ab4479c48f7a365be612b26a2b4244e11d1fa43d1005d3999",
+      "path": "recovery/current/hosts/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "rule": "recovery-secret-like-value"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 159,
+      "line_sha256": "25ffc2d6db1a9584abd6392c402b0d5bd6cda5b14285c4b66e7def2b45b0f981",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/comfyui/SKILL.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 327,
+      "line_sha256": "3f3b45c4ae55ff736141e9ada8b709e7ee97349fee88012c37884197e32d7dad",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/comfyui/SKILL.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 45,
+      "line_sha256": "cdb49230f29aa4f7bae81f659f64d35f768c1248c5d3387b26a98bc6a64524f9",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/comfyui/scripts/_common.py",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 29,
+      "line_sha256": "3f9a09f695e355d76ad9b49385181957604cb5d7a25790a300bcbd7ec43aa708",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/comfyui/scripts/run_workflow.py",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 13,
+      "line_sha256": "cbeee8231c5fe1b0fc84c630f03de018b092bc23d913b70d67362cd9f4b34483",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/comfyui/tests/README.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 17,
+      "line_sha256": "9d8c7b05b60fc3d9a4e94ef61466cd73f3b4ada56dc2a51e0caed58bbc8dbba9",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/comfyui/tests/README.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 192,
+      "line_sha256": "6cf20f9a0d5968826b964be501077dd2a01fce4f1bf6dbe09a79b47a76c3ba21",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/comfyui/tests/test_run_workflow.py",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 35,
+      "line_sha256": "25ffc2d6db1a9584abd6392c402b0d5bd6cda5b14285c4b66e7def2b45b0f981",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/comfyui/workflows/README.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 43,
+      "line_sha256": "81bdaa581fd28faf11cd95cec88c4e0f04cbadf7b40f38f3ec02c50bb66a31d6",
+      "path": "recovery/current/hosts/hermes/skills/creative/creative-production-workflows/references/popular-web-designs/templates/apple.md",
+      "rule": "recovery-secret-like-value"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 118,
+      "line_sha256": "e90e10899945ded3141a05239ac789482d6e149887f1bebc59ee06dcb9b5bb0a",
+      "path": "recovery/current/hosts/hermes/skills/devops/external-skill-intake/SKILL.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 121,
+      "line_sha256": "9d1eda93cddc5774afdc562062bba821373af41bceb1d66deb359a74ba718277",
+      "path": "recovery/current/hosts/hermes/skills/devops/external-skill-intake/SKILL.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 65,
+      "line_sha256": "375483505cc3e23cad09fae56c87dde14465472a680d3a942b6847245cea4959",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-engineering-operations/references/desktop-operations/references/hermes-provider-stall-triage/wsl-provider-stall-triage.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 35,
+      "line_sha256": "1e3a3e809e3c01cebb4cf4088a2cc09f5bb9a17b15858ea176c25909c95496a1",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-engineering-operations/references/desktop-operations/references/windows-desktop-model-route-and-fnm-browser-2026-07.md",
+      "rule": "windows-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 5,
+      "line_sha256": "c155a97d8fd410518897c20b7f10125032f8ac79ea795064d8a72c868fdf36be",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-engineering-operations/references/desktop-operations/references/windows-powershell-hermes-shim-and-codex-oauth-labels-2026-06.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 13,
+      "line_sha256": "27769bc975d941dabe3f424974babe4dbddb1af1e36283bcbba6246659cb07a5",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-engineering-operations/references/desktop-operations/references/windows-powershell-hermes-shim-and-codex-oauth-labels-2026-06.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 12,
+      "line_sha256": "3beb5a8d23acd3b77a637288bbf10c9f6ac02d34b83d4759c6a5b5e339ede326",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-engineering-operations/references/desktop-operations/references/windows-wsl-desktop-migration-2026-06.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 57,
+      "line_sha256": "14aa7b8d277a23d88ed85dcd3ea465bf94d3148b9e67b8e0e508793549f4ecc2",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-engineering-operations/references/desktop-operations/references/windows-wsl-desktop-migration-2026-06.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 99,
+      "line_sha256": "cc8fbc0b54ac91e1f02fa3eaaf1ec39b316d3316b32a8db3f16d331f2abee0f2",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-local-operations/SKILL.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 102,
+      "line_sha256": "6e21c9062bbc3e30ee1ba6b62ebc20df70c13dc159fe24263e90a2e669b7f3a9",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-local-operations/SKILL.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 53,
+      "line_sha256": "10aec998a136d9a1604d78685c71083ab1cd0d3d4575dfb5540c42ff2a5c8597",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-local-operations/references/hermes-wsl-operations.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 19,
+      "line_sha256": "953b57936f16a22d26e4df406fb8c9718e03bd5ae6507e127b50629eb35a2795",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-local-operations/references/windows-desktop-wsl-home-migration.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 27,
+      "line_sha256": "0441904c91896255d2217b76f50c5451c3ca5341b0f9f766e64e91b63b855464",
+      "path": "recovery/current/hosts/hermes/skills/devops/hermes-local-operations/references/windows-desktop-wsl-home-migration.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 302,
+      "line_sha256": "09f3410859e3ffed5a2cdc29bcd653e870308aeac8e71273a2abfff7013bba6c",
+      "path": "recovery/current/hosts/hermes/skills/mlops/evaluation/lm-evaluation-harness/references/api-evaluation.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 387,
+      "line_sha256": "614b76c9ec9fdea4858c004585ee7bd434ab4acbe1163e2fd90d7fb9dcd87d91",
+      "path": "recovery/current/hosts/hermes/skills/mlops/inference/outlines/references/backends.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 399,
+      "line_sha256": "75c2eeeaee233d3f1bbb639f275a953e28f8ed577f689f97e79e556f9e35c01e",
+      "path": "recovery/current/hosts/hermes/skills/mlops/inference/outlines/references/backends.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 338,
+      "line_sha256": "068cf53e30ccc8205e5b0c75e5d1c0f36750dacd3e8da3cd4d32cc4168b636ce",
+      "path": "recovery/current/hosts/hermes/skills/mlops/llm-operations/references/llama-cpp/references/troubleshooting.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 296,
+      "line_sha256": "359a0c757fdda1d4439f8507fd6ac51ee6768d70deb19edef26c0061c8104efd",
+      "path": "recovery/current/hosts/hermes/skills/mlops/research/dspy/SKILL.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 308,
+      "line_sha256": "a2741398877c5dc9c97bc2384a7d2ffab1b737bd0405735484539886cd1f7870",
+      "path": "recovery/current/hosts/hermes/skills/mlops/research/dspy/SKILL.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 1095,
+      "line_sha256": "cc98af9d8da0dd88da5615d3aec135c2403f8c07e57e2db32b7ca10e7bf03239",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 1132,
+      "line_sha256": "a5584e7ed329fc700d0867df8498701ef919739d1dc0f4538b98a617eb6f9493",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 1140,
+      "line_sha256": "d38351f791ff0dd80139e0fde32d0c4c7facb4e1273043cadf1fa9aa8935e785",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 1142,
+      "line_sha256": "ffbc65b450bc82e77d66f8482faa34cbcadc991063362c3a7883cb49fcde0326",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 1205,
+      "line_sha256": "d38351f791ff0dd80139e0fde32d0c4c7facb4e1273043cadf1fa9aa8935e785",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 1207,
+      "line_sha256": "ffbc65b450bc82e77d66f8482faa34cbcadc991063362c3a7883cb49fcde0326",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 1257,
+      "line_sha256": "cc98af9d8da0dd88da5615d3aec135c2403f8c07e57e2db32b7ca10e7bf03239",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4821,
+      "line_sha256": "cc98af9d8da0dd88da5615d3aec135c2403f8c07e57e2db32b7ca10e7bf03239",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4858,
+      "line_sha256": "a5584e7ed329fc700d0867df8498701ef919739d1dc0f4538b98a617eb6f9493",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4866,
+      "line_sha256": "d38351f791ff0dd80139e0fde32d0c4c7facb4e1273043cadf1fa9aa8935e785",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4868,
+      "line_sha256": "ffbc65b450bc82e77d66f8482faa34cbcadc991063362c3a7883cb49fcde0326",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4916,
+      "line_sha256": "d38351f791ff0dd80139e0fde32d0c4c7facb4e1273043cadf1fa9aa8935e785",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4918,
+      "line_sha256": "ffbc65b450bc82e77d66f8482faa34cbcadc991063362c3a7883cb49fcde0326",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 14682,
+      "line_sha256": "01ba80a83a0bdc90735b9a89425af8e4478e71d2ba7c0ecf27475402099adbe1",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 15615,
+      "line_sha256": "b2f714a01ba67f67a94852ac215a6001df3852b87ea9b7e701832d558bdd9025",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 15865,
+      "line_sha256": "587e2ac0dc62f83a31c5d1ece471ec1a3756e303cb23ebb11463fa89d4becda7",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "rule": "windows-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 929,
+      "line_sha256": "cc98af9d8da0dd88da5615d3aec135c2403f8c07e57e2db32b7ca10e7bf03239",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 2425,
+      "line_sha256": "b2f714a01ba67f67a94852ac215a6001df3852b87ea9b7e701832d558bdd9025",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 3594,
+      "line_sha256": "587e2ac0dc62f83a31c5d1ece471ec1a3756e303cb23ebb11463fa89d4becda7",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "windows-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4134,
+      "line_sha256": "d38351f791ff0dd80139e0fde32d0c4c7facb4e1273043cadf1fa9aa8935e785",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4136,
+      "line_sha256": "ffbc65b450bc82e77d66f8482faa34cbcadc991063362c3a7883cb49fcde0326",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4687,
+      "line_sha256": "a5584e7ed329fc700d0867df8498701ef919739d1dc0f4538b98a617eb6f9493",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4697,
+      "line_sha256": "cc98af9d8da0dd88da5615d3aec135c2403f8c07e57e2db32b7ca10e7bf03239",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4707,
+      "line_sha256": "d38351f791ff0dd80139e0fde32d0c4c7facb4e1273043cadf1fa9aa8935e785",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 4709,
+      "line_sha256": "ffbc65b450bc82e77d66f8482faa34cbcadc991063362c3a7883cb49fcde0326",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 9875,
+      "line_sha256": "d38351f791ff0dd80139e0fde32d0c4c7facb4e1273043cadf1fa9aa8935e785",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 9877,
+      "line_sha256": "ffbc65b450bc82e77d66f8482faa34cbcadc991063362c3a7883cb49fcde0326",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 11772,
+      "line_sha256": "a5584e7ed329fc700d0867df8498701ef919739d1dc0f4538b98a617eb6f9493",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "posix-user-path"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 11782,
+      "line_sha256": "cc98af9d8da0dd88da5615d3aec135c2403f8c07e57e2db32b7ca10e7bf03239",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 11792,
+      "line_sha256": "d38351f791ff0dd80139e0fde32d0c4c7facb4e1273043cadf1fa9aa8935e785",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 11794,
+      "line_sha256": "ffbc65b450bc82e77d66f8482faa34cbcadc991063362c3a7883cb49fcde0326",
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-txt.md",
+      "rule": "credential-assignment"
+    },
+    {
+      "disposition": "Reviewed source documentation: generic container/example path, illustrative/redacted credential, environment-variable name or offline test literal; no live credential or personal home identifier",
+      "line": 76,
+      "line_sha256": "68a67217415f2437b1ee3b89830938b5a9fd4eb433198a9796d57d29d7c7b5ed",
+      "path": "recovery/current/hosts/hermes/skills/software-development/github/references/auth.md",
+      "rule": "recovery-secret-like-value"
+    },
+    {
+      "path": "tests/test_recovery_public_review.py",
+      "line": 22,
+      "rule": "posix-user-path",
+      "line_sha256": "3c84475015f04af5543781ba4242a4891ba24fde3f3c0e28e7b9d36a7cb58733",
+      "disposition": "Reviewed offline test fixture for rejection/redaction, not a private path or live credential"
+    },
+    {
+      "path": "tests/test_recovery_public_review.py",
+      "line": 33,
+      "rule": "posix-user-path",
+      "line_sha256": "57c3ff37d38f27c607639716ef6856cba708a63ef2d22775e3bea266e2d57f8d",
+      "disposition": "Reviewed offline test fixture for rejection/redaction, not a private path or live credential"
+    },
+    {
+      "path": "tests/test_recovery_public_review.py",
+      "line": 37,
+      "rule": "posix-user-path",
+      "line_sha256": "19f68bf7a2309b30393a10a71ff9b8cdee2eaac470a0468df5f61ab13a540d56",
+      "disposition": "Reviewed offline test fixture for rejection/redaction, not a private path or live credential"
+    },
+    {
+      "path": "tests/test_route_eval.py",
+      "line": 71,
+      "rule": "recovery-secret-like-value",
+      "line_sha256": "db593e3cc462d4c1726c126c9ee8a7318731b551036f9c75f17b4982e4a59b30",
+      "disposition": "Reviewed offline test fixture for rejection/redaction, not a private path or live credential"
+    },
+    {
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "line": 7744,
+      "line_sha256": "652c10e88d4f53169b2260a17847d24744614e2ad1c994c897cc122e9e42df8e",
+      "rule": "recovery-secret-like-value",
+      "disposition": "Existing reviewed no-key-required literal in loopback-server example; added comment explicitly identifies the dummy placeholder. Not a credential."
+    },
+    {
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "line": 8234,
+      "line_sha256": "652c10e88d4f53169b2260a17847d24744614e2ad1c994c897cc122e9e42df8e",
+      "rule": "recovery-secret-like-value",
+      "disposition": "Existing reviewed no-key-required literal in loopback-server example; added comment explicitly identifies the dummy placeholder. Not a credential."
+    },
+    {
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "line": 7744,
+      "line_sha256": "652c10e88d4f53169b2260a17847d24744614e2ad1c994c897cc122e9e42df8e",
+      "rule": "credential-assignment",
+      "disposition": "Existing reviewed no-key-required literal in loopback-server example; added comment explicitly identifies the dummy placeholder. Not a credential."
+    },
+    {
+      "path": "recovery/current/hosts/hermes/skills/mlops/training/unsloth/references/llms-full.md",
+      "line": 8234,
+      "line_sha256": "652c10e88d4f53169b2260a17847d24744614e2ad1c994c897cc122e9e42df8e",
+      "rule": "credential-assignment",
+      "disposition": "Existing reviewed no-key-required literal in loopback-server example; added comment explicitly identifies the dummy placeholder. Not a credential."
     }
-  ]
+  ],
+  "schema_version": 1
 }

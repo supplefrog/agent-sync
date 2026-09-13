@@ -83,10 +83,6 @@
   },
   "model": "gpt-5.6-sol",
   "model_reasoning_effort": "low",
-  "notify": [
-    "{{agent-signal:HOME}}\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\e7fe122ad3cbcd58\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
-    "turn-ended"
-  ],
   "personality": "pragmatic",
   "plugins": {
     "agent-ops@local-agent-skills": {

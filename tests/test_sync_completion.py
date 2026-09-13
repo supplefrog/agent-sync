@@ -81,6 +81,23 @@ class CompleteSyncTests(unittest.TestCase):
             self.assertEqual('', self.git(repo, 'status', '--porcelain'))
             self.assertFalse((live / 'notes.md').exists())
 
+    def test_large_reviewed_file_set_avoids_windows_command_limit(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote = self.setup_git(Path(temp))
+            paths = [f'reviewed/{i:04d}-' + 'x' * 80 + '.md' for i in range(450)]
+            paths.append('reviewed/literal [x] ü.md')
+            self.assertGreater(len(subprocess.list2cmdline(['git', 'add', '--', *paths])), 32767)
+            (repo / 'reviewed').mkdir()
+            for name in paths:
+                (repo / name).write_text('reviewed public source\n', encoding='utf-8')
+            report = self.run_sync(repo, live, include=paths)
+            self.assertEqual('synced', report['result'], report)
+            self.assertEqual('', self.git(repo, 'status', '--porcelain'))
+            self.assertEqual(self.git(repo, 'rev-parse', 'HEAD'),
+                             self.git(remote, 'rev-parse', 'refs/heads/main'))
+            tracked = set(self.git(repo, 'ls-files', '-z').split('\0'))
+            self.assertTrue(set(paths).issubset(tracked))
+
     def test_push_failure_is_incomplete_and_retry_reuses_commit(self):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))

@@ -12,8 +12,8 @@
       ]
     },
     "codex": {
-      "cli_version": "0.153.4",
-      "source_revision": "unknown; installed binary reports 0.153.4",
+      "cli_version": "0.154.0-alpha.6.2",
+      "source_revision": "unknown; installed binary reports 0.154.0-alpha.6.2",
       "sources": [
         "https://developers.openai.com/codex/",
         "https://github.com/openai/codex"

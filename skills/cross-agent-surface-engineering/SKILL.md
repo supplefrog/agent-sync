@@ -86,4 +86,10 @@ After promotion, rerun recovery/profile/fleet verification and one real target b
 
 ## Safety boundaries
 
+For a request to clone one agent from this hub, use the existing recovery bootstrap's `--host` selection and target-local roots; do not introduce an installer framework or apply the whole source-machine fleet. Read `docs/recovery.md` for the selected-host contract. Verify the selected agent's recovered files, discovery, and prerequisites; never call another host's successful checks proof of readiness.
+
+When preserving a curated host, inventory skill and plugin packages, support files, native patches, enablement, and origin metadata; review licensing before extending `recovery.json`. Capture native customizations without promoting them into the shared fleet. Follow `docs/native-skill-recovery.md`; a passing allowlist does not prove complete coverage. Exercise a disposable target and fresh discovery, including dry-run filesystem invariance: nominally read-only native CLI commands may initialize a profile.
+
+Automatic learning is an intended capability, not drift merely because it spends inference or proposes frequent updates. Distinguish enforced ownership/approval/rollback boundaries from uncertain output quality; reproduce a safeguard failure before recommending a restriction on that basis. Curator, background review, and notification settings are separate controls.
+
 Never copy credentials, sessions, memories, logs, caches, private user data, or provider-hidden prompts into Agent Sync. Do not modify another profile without explicit authorization. Do not infer parity from identical files, and do not lower one host to the weakest common mechanism.

@@ -57,6 +57,14 @@ Runtime-specific support, limitations, and evidence are recorded in the [surface
 
 ## Set up or recover
 
+You can ask an agent:
+
+> Clone this hub outside live skill-discovery directories and restore only Hermes on this machine. Inspect prerequisites and conflicts first, preserve my credentials and private state, then verify the selected setup. Do not configure Codex or OMP.
+
+Use `--host hermes` with the existing recovery bootstrap; `--host codex` or `--host omp` selects those agents instead. This is a selection on the existing recovery path, not a separate installer. The agent still needs to install/authenticate its runtime through the runtime's supported flow when absent.
+
+Reviewed [native skill packages](docs/native-skill-recovery.md) now travel with the settings snapshot, including the local MCP/arXiv consolidation and the disabled LLM Operations package. Shared admitted skills retain their separate canonical source. A clone reproduces the declared, reviewed inventory—not every file in the author's live agent home.
+
 Clone outside an agent's live skill-discovery directories. In particular, do not clone into `~/.agents`: that can expose staged skills before they have been approved.
 
 This repository contains a configured machine inventory and allowlisted recovery snapshot, not universal defaults. Review [fleet setup](docs/fleet.md) and [recovery](docs/recovery.md) before applying them to another machine. Install the required agent runtimes and authenticate separately; Agent Sync does not restore credentials or private conversation state.
@@ -65,16 +73,18 @@ To inspect recovery before applying it:
 
 ```bash
 python tools/recovery.py verify
-python tools/recovery.py bootstrap  # dry-run
+python tools/recovery.py bootstrap --host hermes  # dry-run; selected agent only
 ```
 
 After reviewing the proposed changes and satisfying the reported prerequisites:
 
 ```bash
-python tools/recovery.py bootstrap --apply
+python tools/recovery.py bootstrap --host hermes --apply
 ```
 
 Restore merges only allowlisted settings and preserves unknown or sensitive fields. Conflicting instruction or hook files require explicit review. A verified restore covers the declared recoverable state, not a full disk image.
+
+Omit `--host` only when intentionally recovering the complete configured source-machine fleet. See [recovery](docs/recovery.md) for explicit target roots and prerequisite reporting. Never run `reconcile.py sync` as a substitute for installing a friend's copy: sync publishes reviewed source changes; bootstrap restores a selected target.
 
 ## Find the implementation
 

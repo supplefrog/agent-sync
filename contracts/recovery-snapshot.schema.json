@@ -49,6 +49,8 @@
             "uniqueItems": true
           },
           "portable_paths": {"type": "boolean"},
+          "capture_mount": {"type": "string", "minLength": 1},
+          "replace_sha256": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}},
           "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
           "bytes": {"type": "integer", "minimum": 0}
         }

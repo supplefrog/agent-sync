@@ -30,7 +30,7 @@
     },
     {
       "category": "runtime",
-      "desired_state": "Codex CLI 0.153.4 installed",
+      "desired_state": "Codex CLI 0.154.0-alpha.6.2 installed",
       "enablement": "installed",
       "host": "codex",
       "id": "codex-runtime",
@@ -43,7 +43,7 @@
           "codex",
           "--version"
         ],
-        "contains": "0.153.4",
+        "contains": "0.154.0-alpha.6.2",
         "kind": "command"
       },
       "redaction": "metadata-only",
@@ -53,7 +53,7 @@
         "reference": "install the declared Codex runtime"
       },
       "source_identity": "prerequisite:install the declared Codex runtime",
-      "version_or_hash": "version:0.153.4"
+      "version_or_hash": "version:0.154.0-alpha.6.2"
     },
     {
       "category": "runtime",
@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "settings",
@@ -126,7 +126,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "settings",
@@ -149,7 +149,7 @@
         "reference": "omp:settings"
       },
       "source_identity": "recovery-artifact:omp:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "instructions",
@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "instructions",
@@ -229,7 +229,7 @@
     },
     {
       "category": "hook",
-      "desired_state": "no competing global mutation hook; explicit reconciliation uses the shared workflow",
+      "desired_state": "No configured shell hooks; inspect the selected config without CLI startup writes.",
       "enablement": "absent",
       "host": "hermes",
       "id": "hermes-hook-state",
@@ -238,13 +238,10 @@
         "hermes runtime 0.21.1 is installed"
       ],
       "readback": {
-        "argv": [
-          "hermes",
-          "hooks",
-          "list"
-        ],
-        "contains": "No shell hooks",
-        "kind": "command"
+        "format": "yaml",
+        "key": "hooks",
+        "kind": "config-empty",
+        "path": "config.yaml"
       },
       "redaction": "metadata-only",
       "required": true,
@@ -276,7 +273,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "hook",
@@ -351,7 +348,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "plugin",
@@ -374,7 +371,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "plugin",
@@ -425,7 +422,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "mcp-tool",
@@ -448,7 +445,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "mcp-tool",
@@ -471,7 +468,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "native-skill",
@@ -494,7 +491,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:f5a52540121644169fe44402d4d03a4f27d40c7bc4ae31d8aadc12860f1f2fd7"
+      "version_or_hash": "sha256:e677175e53f21ee8626fa183b31834e61b2af2f6d2512026be66661798e7f39b"
     },
     {
       "category": "native-skill",
@@ -517,7 +514,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:f5a52540121644169fe44402d4d03a4f27d40c7bc4ae31d8aadc12860f1f2fd7"
+      "version_or_hash": "sha256:e677175e53f21ee8626fa183b31834e61b2af2f6d2512026be66661798e7f39b"
     },
     {
       "category": "native-skill",
@@ -540,7 +537,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:f5a52540121644169fe44402d4d03a4f27d40c7bc4ae31d8aadc12860f1f2fd7"
+      "version_or_hash": "sha256:e677175e53f21ee8626fa183b31834e61b2af2f6d2512026be66661798e7f39b"
     },
     {
       "category": "curator",
@@ -553,13 +550,8 @@
         "hermes runtime 0.21.1 is installed"
       ],
       "readback": {
-        "argv": [
-          "hermes",
-          "curator",
-          "status"
-        ],
-        "contains": "curator: DISABLED",
-        "kind": "command"
+        "kind": "recovery-artifact",
+        "reference": "hermes:settings"
       },
       "redaction": "metadata-only",
       "required": true,
@@ -568,7 +560,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:93a8d9e0826dd6fed4a2e5a13cefbddf8535b9c8c15df9da2764f83598986832"
+      "version_or_hash": "sha256:b2028370cd638fa242d6fb3a15abadbac5cf4c519e3b4983a0729282671b8efd"
     },
     {
       "category": "curator",
@@ -618,101 +610,92 @@
     },
     {
       "category": "plugin",
-      "desired_state": "Reviewed LCM assertion_store.py bytes are installed",
+      "desired_state": "Reviewed LCM source is installed, with portable paths and canonical text line endings; original patch byte hashes remain in the patch record.",
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-lcm-patch-assertion-store",
       "owner": "hermes-lcm native source",
       "prerequisites": [
-        "native LCM base revision b8c5170affa4ef0ca89c20cc1986943b4ad1e85a and its dependencies are installed",
-        "apply the recorded source patch after exact preconditions pass"
+        "compatible Hermes runtime and LCM Python dependencies are installed; no private database is copied"
       ],
       "readback": {
-        "kind": "file",
-        "path": "hermes:plugins/hermes-lcm/assertion_store.py",
-        "sha256": "9a6990b1e64fa50f568d9a401d4d1fb69c85eb02fdcd904c11cba74250c6e7c4"
+        "kind": "recovery-artifact",
+        "reference": "hermes:lcm-runtime-assertion-store-py"
       },
       "redaction": "public-artifact",
       "required": true,
       "restore": {
-        "kind": "manual-prerequisite",
-        "reference": "integrations/hermes/native-patches/lcm-session-transactions/README.md"
+        "kind": "recovery-artifact",
+        "reference": "hermes:lcm-runtime-assertion-store-py"
       },
       "source_identity": "repository:integrations/hermes/native-patches/lcm-session-transactions/manifest.json",
       "version_or_hash": "sha256:c4ba605ad6ced60ccc82c7dd4b5ffa342aaf760fde1af41490f62aa89b18c640"
     },
     {
       "category": "plugin",
-      "desired_state": "Reviewed LCM engine.py bytes are installed",
+      "desired_state": "Reviewed LCM source is installed, with portable paths and canonical text line endings; original patch byte hashes remain in the patch record.",
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-lcm-patch-engine",
       "owner": "hermes-lcm native source",
       "prerequisites": [
-        "native LCM base revision b8c5170affa4ef0ca89c20cc1986943b4ad1e85a and its dependencies are installed",
-        "apply the recorded source patch after exact preconditions pass"
+        "compatible Hermes runtime and LCM Python dependencies are installed; no private database is copied"
       ],
       "readback": {
-        "kind": "file",
-        "path": "hermes:plugins/hermes-lcm/engine.py",
-        "sha256": "221487f41c56be97d786ec51d748b18a0afd66829666b003989435c6932156d8"
+        "kind": "recovery-artifact",
+        "reference": "hermes:lcm-runtime-engine-py"
       },
       "redaction": "public-artifact",
       "required": true,
       "restore": {
-        "kind": "manual-prerequisite",
-        "reference": "integrations/hermes/native-patches/lcm-session-transactions/README.md"
+        "kind": "recovery-artifact",
+        "reference": "hermes:lcm-runtime-engine-py"
       },
       "source_identity": "repository:integrations/hermes/native-patches/lcm-session-transactions/manifest.json",
       "version_or_hash": "sha256:c4ba605ad6ced60ccc82c7dd4b5ffa342aaf760fde1af41490f62aa89b18c640"
     },
     {
       "category": "plugin",
-      "desired_state": "Reviewed LCM __init__.py hook-ownership bytes are installed",
+      "desired_state": "Reviewed LCM source is installed, with portable paths and canonical text line endings; original patch byte hashes remain in the patch record.",
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-lcm-hook-owner-init",
       "owner": "hermes-lcm native source",
       "prerequisites": [
-        "native LCM base revision b8c5170affa4ef0ca89c20cc1986943b4ad1e85a and its dependencies are installed",
-        "current Hermes PluginContext register_hook contract matches the recorded native prerequisite",
-        "apply this additive patch after exact preconditions pass"
+        "compatible Hermes runtime and LCM Python dependencies are installed; no private database is copied"
       ],
       "readback": {
-        "kind": "file",
-        "path": "hermes:plugins/hermes-lcm/__init__.py",
-        "sha256": "7495d5879083c1ccf747ba6fec59788d30909dd3b19704f696478a7b0cdfa131"
+        "kind": "recovery-artifact",
+        "reference": "hermes:lcm-runtime---init---py"
       },
       "redaction": "public-artifact",
       "required": true,
       "restore": {
-        "kind": "manual-prerequisite",
-        "reference": "integrations/hermes/native-patches/lcm-hook-ownership/README.md"
+        "kind": "recovery-artifact",
+        "reference": "hermes:lcm-runtime---init---py"
       },
       "source_identity": "repository:integrations/hermes/native-patches/lcm-hook-ownership/manifest.json",
       "version_or_hash": "sha256:73d611357c607ba0e9e18cb3a20351769717742a9a03da0bc8a3f893d644ab7c"
     },
     {
       "category": "plugin",
-      "desired_state": "Reviewed LCM plugin.yaml factual description bytes are installed",
+      "desired_state": "Reviewed LCM source is installed, with portable paths and canonical text line endings; original patch byte hashes remain in the patch record.",
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-lcm-manifest-description",
       "owner": "hermes-lcm native source",
       "prerequisites": [
-        "native LCM base revision b8c5170affa4ef0ca89c20cc1986943b4ad1e85a and its dependencies are installed",
-        "apply this additive patch after exact preconditions pass"
+        "compatible Hermes runtime and LCM Python dependencies are installed; no private database is copied"
       ],
       "readback": {
-        "kind": "file",
-        "path": "hermes:plugins/hermes-lcm/plugin.yaml",
-        "sha256": "39fcbdcdc9ca726ef0ce332868fef940549d60c8b24b22e6d2da29d1871c32d9"
+        "kind": "recovery-artifact",
+        "reference": "hermes:lcm-runtime-plugin-yaml"
       },
       "redaction": "public-artifact",
       "required": true,
       "restore": {
-        "kind": "manual-prerequisite",
-        "reference": "integrations/hermes/native-patches/lcm-hook-ownership/README.md"
+        "kind": "recovery-artifact",
+        "reference": "hermes:lcm-runtime-plugin-yaml"
       },
       "source_identity": "repository:integrations/hermes/native-patches/lcm-hook-ownership/manifest.json",
       "version_or_hash": "sha256:73d611357c607ba0e9e18cb3a20351769717742a9a03da0bc8a3f893d644ab7c"

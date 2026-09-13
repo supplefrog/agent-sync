@@ -61,7 +61,9 @@
         "snapshot": {"$ref": "#/$defs/relativePath"},
         "format": {"const": "text"},
         "strategy": {"const": "replace-if-absent"},
-        "portable_paths": {"type": "boolean"}
+        "portable_paths": {"type": "boolean"},
+        "capture_mount": {"$ref": "#/$defs/relativePath"},
+        "replace_sha256": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
       }
     },
     "artifact": {

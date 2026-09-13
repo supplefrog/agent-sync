@@ -37,6 +37,9 @@ RULES = {
     "token-prefix": re.compile(
         r"(?<![A-Za-z0-9_-])(?:gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{20,})"
     ),
+    "recovery-secret-like-value": re.compile(
+        r"\b(?:sk-|ghp|github_pat|xox[baprs]|AKIA)[-_A-Za-z0-9]{12,}\b|https?://[^\s/@:]+:[^\s/@]+@"
+    ),
 }
 
 DEFAULT_ALLOWLIST = Path("evidence/public-safety-allowlist.json")

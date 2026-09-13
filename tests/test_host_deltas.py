@@ -3,13 +3,16 @@ from __future__ import annotations
 import importlib.util
 import json
 import shutil
+import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 import jsonschema
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO / "tools"))
 
 
 def load_tool(name: str):
@@ -24,6 +27,52 @@ def load_tool(name: str):
 class HostDeltaTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tool = load_tool("host_deltas")
+
+    def test_selected_host_never_checks_other_hosts(self) -> None:
+        manifest = {
+            "machine": "test",
+            "entries": [
+                {"id": host, "host": host, "category": "runtime", "required": True,
+                 "readback": {"kind": "command", "argv": [host, "--version"]},
+                 "restore": {"kind": "manual-prerequisite"}}
+                for host in ("hermes", "codex", "omp")
+            ],
+            "exclusions": [
+                {"id": host + "-private", "host": host, "category": "private-state"}
+                for host in ("hermes", "codex", "omp")
+            ],
+        }
+        calls = []
+        def runner(argv):
+            calls.append(argv)
+            self.assertEqual(["hermes", "--version"], argv)
+            return 0, "Hermes"
+        with mock.patch.object(self.tool, "load_manifest", return_value=manifest):
+            result = self.tool.verify(REPO / "host-deltas.json", REPO,
+                                      hosts=["hermes"], runner=runner,
+                                      roots={"hermes": Path("unused-test-root")})
+        self.assertTrue(result["passed"])
+        self.assertEqual([["hermes", "--version"]], calls)
+        self.assertEqual(["hermes"], [x["host"] for x in result["entries"]])
+        self.assertEqual(["hermes"], [x["host"] for x in result["exclusions"]])
+
+    def test_selected_host_recovery_readback_is_scoped(self) -> None:
+        manifest = {"machine": "test", "exclusions": [], "entries": [
+            {"id": "settings", "host": "hermes", "category": "settings", "required": True,
+             "readback": {"kind": "recovery-artifact", "reference": "hermes:settings"},
+             "restore": {"kind": "recovery-artifact"}},
+        ]}
+        with mock.patch.object(self.tool, "load_manifest", return_value=manifest), \
+             mock.patch.object(self.tool.recovery, "restore", return_value={"changes": [], "conflicts": []}) as restore:
+            result = self.tool.verify(REPO / "host-deltas.json", REPO,
+                                      hosts=["hermes"], roots={"hermes": Path("unused-test-root")})
+        self.assertTrue(result["passed"])
+        self.assertEqual(["hermes"], restore.call_args.kwargs["hosts"])
+
+    def test_unknown_and_empty_host_selection_fails_closed(self) -> None:
+        for hosts in (["herems"], []):
+            with self.subTest(hosts=hosts), self.assertRaisesRegex(RuntimeError, "host selection"):
+                self.tool.verify(REPO / "host-deltas.json", REPO, hosts=hosts)
 
     def test_repository_manifest_matches_schema_and_is_public_safe(self) -> None:
         manifest = json.loads((REPO / "host-deltas.json").read_text(encoding="utf-8"))
@@ -304,10 +353,10 @@ class HostDeltaTests(unittest.TestCase):
             def runner(argv: list[str]):
                 command = " ".join(argv)
                 outputs = {
-                    "hermes --version": "Hermes Agent 0.21.1",
+                    "hermes --version": "Hermes Agent 0.21.2",
                     "hermes hooks list": "No shell hooks configured",
                     "hermes curator status": "curator: DISABLED",
-                    "codex --version": "codex-cli 0.153.4",
+                    "codex --version": "codex-cli 0.154.0-alpha.6.2",
                     "codex plugin list --json": "[]",
                     "omp --version": "OMP 18.1.10",
                     "omp plugin list": "No plugins installed",

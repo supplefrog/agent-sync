@@ -46,7 +46,7 @@
       "model": "gpt-5.6-sol",
       "provider": "openai-codex",
       "reasoning": "low",
-      "runtime": "codex-cli 0.153.4"
+      "runtime": "codex-cli 0.154.0-alpha.6.2"
     },
     "hermes": {
       "artifact_sha256": [

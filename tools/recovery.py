@@ -17,6 +17,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+from collections.abc import Iterable, Sequence
 from copy import deepcopy
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
@@ -32,6 +33,10 @@ except ImportError:  # pragma: no cover - exercised only on incomplete installs
 
 class RecoveryError(RuntimeError):
     """Raised when snapshot or restore safety cannot be proven."""
+
+
+HOSTS = ("hermes", "codex", "omp")
+_HOST_SET = frozenset(HOSTS)
 
 
 _SECRET_PATH_PART = re.compile(
@@ -125,6 +130,17 @@ def _load_policy(path: Path) -> dict[str, Any]:
     return policy
 
 
+def _blocked_source(source: PurePosixPath, kind: str) -> bool:
+    # Explicitly allowlisted skill documentation/source can describe sessions,
+    # auth or memory without being that private state. Data/credential files
+    # keep the original denylist, as do all paths outside the skills tree.
+    if (kind == "text" and source.parts[0] in {"skills", "plugins"}
+            and len(source.parts) >= 3 and source.suffix.lower() in {".md", ".py", ".js", ".ts", ".sh"}
+            and not any(p.startswith(".") for p in source.parts)):
+        return False
+    return any(_BLOCKED_SOURCE_PARTS.search(part) for part in source.parts)
+
+
 def _validate_policy(policy: Mapping[str, Any]) -> None:
     if policy.get("schema_version") != 1:
         raise RecoveryError("recovery policy schema_version must be 1")
@@ -151,7 +167,13 @@ def _validate_policy(policy: Mapping[str, Any]) -> None:
                 raise RecoveryError(f"duplicate or invalid artifact id: {identity}")
             seen.add(identity)
             source = _canonical_relative(artifact.get("source"), label=f"{identity} source")
-            if any(_BLOCKED_SOURCE_PARTS.search(part) for part in source.parts):
+            if "capture_mount" in artifact:
+                mount = _canonical_relative(artifact["capture_mount"], label=f"{identity} capture mount")
+                if (artifact.get("kind") != "text" or len(mount.parts) < 2
+                        or mount.parts[0] not in {"skills", "plugins"}
+                        or not source.is_relative_to(mount) or source == mount):
+                    raise RecoveryError(f"{identity} has invalid capture mount")
+            if _blocked_source(source, artifact.get("kind")):
                 raise RecoveryError(f"blocked source artifact: {identity} ({source.as_posix()})")
             snapshot_path = _canonical_relative(
                 artifact.get("snapshot"), label=f"{identity} snapshot"
@@ -168,6 +190,11 @@ def _validate_policy(policy: Mapping[str, Any]) -> None:
                 raise RecoveryError(f"{identity} kind must be config or text")
             if artifact.get("strategy") not in {"merge", "replace-if-absent"}:
                 raise RecoveryError(f"{identity} has unsupported strategy")
+            replacements = artifact.get("replace_sha256", [])
+            if (not isinstance(replacements, list)
+                    or any(not isinstance(h, str) or not re.fullmatch(r"[a-f0-9]{64}", h) for h in replacements)
+                    or (replacements and artifact["kind"] != "text")):
+                raise RecoveryError(f"{identity} has invalid reviewed replacement hashes")
             if artifact["kind"] == "config":
                 if artifact.get("format") not in {"json", "yaml", "toml"}:
                     raise RecoveryError(f"{identity} has unsupported config format")
@@ -329,6 +356,81 @@ def _logical_home(roots: Mapping[str, Path]) -> Path:
         return Path.home()
 
 
+def _normalize_hosts(hosts: Iterable[str] | None) -> tuple[str, ...]:
+    """Validate and canonically order an optional host selection."""
+
+    if hosts is None:
+        return HOSTS
+    if isinstance(hosts, str):
+        values = [hosts]
+    else:
+        values = list(hosts)
+    if not values:
+        raise RecoveryError("--host requires at least one host")
+    invalid = [value for value in values if not isinstance(value, str)]
+    unknown = sorted({value for value in values if isinstance(value, str) and value not in _HOST_SET})
+    if invalid:
+        unknown.extend(str(value) for value in invalid)
+    if unknown:
+        raise RecoveryError(
+            f"unknown host(s): {', '.join(str(value) for value in unknown)}; "
+            f"choose from {', '.join(HOSTS)}"
+        )
+    selected = set(values)
+    return tuple(host for host in HOSTS if host in selected)
+
+
+def _selected_roots(
+    roots: Mapping[str, str | Path], hosts: Iterable[str] | None
+) -> tuple[tuple[str, ...], dict[str, Path]]:
+    """Return only selected roots, validating their filesystem boundaries."""
+
+    selected_hosts = _normalize_hosts(hosts)
+    selected_roots: dict[str, Path] = {}
+    for host in selected_hosts:
+        if host not in roots:
+            raise RecoveryError(f"missing host root: {host}")
+        root = Path(roots[host])
+        _assert_no_reparse_ancestors(root, label=f"{host} root")
+        selected_roots[host] = root
+    return selected_hosts, selected_roots
+
+
+def _target_home(roots: Mapping[str, Path], hosts: Sequence[str]) -> Path:
+    """Infer a target home without inspecting any unselected host root."""
+
+    selected = {host: Path(roots[host]) for host in hosts}
+    if len(selected) > 1:
+        return _logical_home(selected)
+    host, root = next(iter(selected.items()))
+    root = Path(os.path.abspath(root))
+    # The standard roots are ``<home>/.codex``, ``<home>/.hermes`` (or
+    # ``<home>/AppData/Local/hermes``), and ``<home>/.omp/agent``.  Explicit
+    # target roots in tests and clone workflows use the same one-directory
+    # host-home shape, so the parent is the least surprising target scope.
+    if host == "omp" and root.name.casefold() == "agent" and root.parent.name.casefold() == ".omp":
+        return root.parent.parent
+    if (
+        host == "hermes"
+        and root.name.casefold() == "hermes"
+        and root.parent.name.casefold() == "local"
+        and root.parent.parent.name.casefold() == "appdata"
+    ):
+        return root.parent.parent.parent
+    return root.parent
+
+
+def _target_local_skill_root(roots: Mapping[str, Path], hosts: Sequence[str]) -> Path:
+    """Return the target's standard shared-skill scope, never the source scope."""
+
+    target_home = _target_home(roots, hosts)
+    candidate = target_home / ".agents" / "skills"
+    # Derive exclusively from selected target roots. The receiving user's
+    # normal home is valid; fleet.json's source-machine destination is not
+    # consulted. Existing unmanaged collisions still fail fleet preflight.
+    return _assert_no_reparse_ancestors(candidate, label="target-local skill root")
+
+
 def _path_replacements(roots: Mapping[str, Path], repo_root: Path | None = None) -> list[tuple[str, str]]:
     replacements: list[tuple[str, str]] = []
     placeholders = {
@@ -373,19 +475,31 @@ def _normalize(value: Any, replacements: list[tuple[str, str]]) -> Any:
     return value
 
 
-def _expand(value: Any, roots: Mapping[str, Path], repo_root: Path | None = None) -> Any:
-    home = _logical_home(roots)
+def _expand(
+    value: Any,
+    roots: Mapping[str, Path],
+    repo_root: Path | None = None,
+    *,
+    home: Path | None = None,
+) -> Any:
+    home = home or _logical_home(roots)
+    # References to other hosts may occur in a selected skill's documentation.
+    # Rebase those strings without touching or requiring the other homes.
+    hermes_default = home / "AppData/Local/hermes" if os.name == "nt" else home / ".hermes"
     replacements = {
         _PORTABLE_PLACEHOLDERS["HOME"]: str(home),
-        _PORTABLE_PLACEHOLDERS["HERMES_HOME"]: str(roots.get("hermes", "")),
-        _PORTABLE_PLACEHOLDERS["CODEX_HOME"]: str(roots.get("codex", "")),
-        _PORTABLE_PLACEHOLDERS["OMP_HOME"]: str(roots.get("omp", "")),
+        _PORTABLE_PLACEHOLDERS["HERMES_HOME"]: str(roots.get("hermes", hermes_default)),
+        _PORTABLE_PLACEHOLDERS["CODEX_HOME"]: str(roots.get("codex", home / ".codex")),
+        _PORTABLE_PLACEHOLDERS["OMP_HOME"]: str(roots.get("omp", home / ".omp/agent")),
         _PORTABLE_PLACEHOLDERS["AGENT_SIGNAL_ROOT"]: str(repo_root or ""),
     }
     if isinstance(value, dict):
-        return {key: _expand(child, roots, repo_root) for key, child in value.items()}
+        return {
+            key: _expand(child, roots, repo_root, home=home)
+            for key, child in value.items()
+        }
     if isinstance(value, list):
-        return [_expand(child, roots, repo_root) for child in value]
+        return [_expand(child, roots, repo_root, home=home) for child in value]
     if isinstance(value, str):
         result = value
         for placeholder, target in replacements.items():
@@ -409,6 +523,34 @@ def _assert_public_safe(data: bytes, *, label: str) -> None:
         text,
     ):
         raise RecoveryError(f"public-safety violation in {label}: absolute home path")
+
+
+def _assert_artifact_public_safe(data: bytes, relative: str, repo: Path) -> None:
+    """Honor only exact, content-bound documentation reviews, never wildcards.
+
+    The same reviewed findings are checked by public_check before publication.
+    Validate proposed bytes directly so newly captured files can be reviewed
+    before they exist on disk. This does not exempt manifest/config metadata.
+    """
+    review_file = repo / "evidence/public-safety-allowlist.json"
+    if not review_file.is_file():
+        return _assert_public_safe(data, label=relative)
+    review = json.loads(review_file.read_text(encoding="utf-8"))
+    if review.get("schema_version") != 1 or not isinstance(review.get("findings"), list):
+        raise RecoveryError("invalid public-safety review inventory")
+    lines = data.decode("utf-8").splitlines()
+    reviewed: set[int] = set()
+    for item in review["findings"]:
+        if item.get("path") != "recovery/current/" + relative:
+            continue
+        line = item.get("line")
+        if (not isinstance(line, int) or not 1 <= line <= len(lines)
+                or _sha256(lines[line - 1].encode("utf-8")) != item.get("line_sha256")
+                or not item.get("disposition")):
+            raise RecoveryError(f"stale public-safety review: {relative}")
+        reviewed.add(line)
+    checked = "\n".join(value for number, value in enumerate(lines, 1) if number not in reviewed)
+    _assert_public_safe(checked.encode("utf-8"), label=relative)
 
 
 def _atomic_write_impl(path: Path, data: bytes) -> None:
@@ -462,9 +604,14 @@ def snapshot(
     for host, artifact in _policy_artifacts(policy):
         identity = f"{host}:{artifact['id']}"
         source_rel = artifact["source"]
-        if any(_BLOCKED_SOURCE_PARTS.search(part) for part in PurePosixPath(source_rel).parts):
+        if _blocked_source(PurePosixPath(source_rel), artifact["kind"]):
             raise RecoveryError(f"blocked source artifact: {identity} ({source_rel})")
-        source = _safe_join(resolved_roots[host], source_rel, must_exist=True)
+        if artifact.get("capture_mount"):
+            mount = resolved_roots[host] / artifact["capture_mount"]
+            relative = PurePosixPath(source_rel).relative_to(artifact["capture_mount"]).as_posix()
+            source = _safe_join(mount.resolve(strict=True), relative, must_exist=True)
+        else:
+            source = _safe_join(resolved_roots[host], source_rel, must_exist=True)
         if artifact["kind"] == "config":
             config = _read_config(source, artifact["format"])
             fragment: dict[str, Any] = {}
@@ -482,8 +629,11 @@ def snapshot(
             if artifact.get("portable_paths"):
                 text = _normalize(text, replacements)
             data = _canonical_newlines(text).encode("utf-8")
-        _assert_public_safe(data, label=identity)
         snapshot_rel = str(_canonical_relative(artifact["snapshot"], label=f"{identity} snapshot"))
+        if artifact["kind"] == "text":
+            _assert_artifact_public_safe(data, snapshot_rel, repo)
+        else:
+            _assert_public_safe(data, label=identity)
         prepared[snapshot_rel] = data
         records.append(
             {
@@ -498,6 +648,8 @@ def snapshot(
                 "portable_paths": bool(artifact.get("portable_paths", False)),
                 "sha256": _sha256(data),
                 "bytes": len(data),
+                **({"replace_sha256": artifact["replace_sha256"]} if artifact.get("replace_sha256") else {}),
+                **({"capture_mount": artifact["capture_mount"]} if artifact.get("capture_mount") else {}),
             }
         )
 
@@ -583,13 +735,20 @@ def verify_snapshot(policy_path: str | Path, output_dir: str | Path) -> dict[str
             raise RecoveryError(f"snapshot include mismatch for {identity}")
         if record.get("portable_paths", False) != bool(artifact.get("portable_paths", False)):
             raise RecoveryError(f"snapshot portable-path metadata mismatch for {identity}")
+        if record.get("replace_sha256", []) != artifact.get("replace_sha256", []):
+            raise RecoveryError(f"snapshot replacement-hash metadata mismatch for {identity}")
+        if record.get("capture_mount") != artifact.get("capture_mount"):
+            raise RecoveryError(f"snapshot capture-mount metadata mismatch for {identity}")
         path = _safe_join(output_dir, record["snapshot"], must_exist=True)
         data = path.read_bytes()
         if _sha256(data) != record.get("sha256"):
             raise RecoveryError(f"snapshot hash mismatch: {record['snapshot']}")
         if len(data) != record.get("bytes"):
             raise RecoveryError(f"snapshot byte count mismatch: {record['snapshot']}")
-        _assert_public_safe(data, label=record["snapshot"])
+        if record["kind"] == "text":
+            _assert_artifact_public_safe(data, record["snapshot"], Path(policy_path).parent)
+        else:
+            _assert_public_safe(data, label=record["snapshot"])
     _assert_public_safe(manifest_path.read_bytes(), label="manifest")
     return manifest
 
@@ -639,31 +798,46 @@ def restore(
     apply: bool = False,
     force_text: bool = False,
     repo_root: str | Path | None = None,
+    hosts: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Plan or apply a restore. Dry-run is the default."""
 
     policy_path = Path(policy_path)
     snapshot_dir = Path(snapshot_dir)
     policy = _load_policy(policy_path)
+    selected_hosts = _normalize_hosts(policy["hosts"] if hosts is None else hosts)
+    # Verify every policy artifact and every manifest record before narrowing
+    # the effect scope.  A selected restore must not hide a damaged artifact
+    # belonging to another host.
     manifest = verify_snapshot(policy_path, snapshot_dir)
-    resolved_roots = {host: Path(root) for host, root in roots.items()}
-    missing = sorted(set(policy["hosts"]) - set(resolved_roots))
-    if missing:
-        raise RecoveryError(f"missing host roots: {', '.join(missing)}")
+    _, resolved_roots = _selected_roots(roots, selected_hosts)
     repo = Path(repo_root) if repo_root is not None else policy_path.parent
     records = {(item["host"], item["id"]): item for item in manifest["artifacts"]}
     writes: dict[Path, bytes] = {}
     changes: list[dict[str, Any]] = []
     conflicts: list[dict[str, Any]] = []
+    selected_set = set(selected_hosts)
+    target_home = _target_home(resolved_roots, selected_hosts)
 
     # Complete preflight before the first mutation.
     for host, artifact in _policy_artifacts(policy):
+        if host not in selected_set:
+            continue
         record = records[(host, artifact["id"])]
         source_data = _safe_join(snapshot_dir, record["snapshot"], must_exist=True).read_bytes()
-        target = _safe_join(resolved_roots[host], artifact["source"], must_exist=False)
+        read_only_mount = False
+        mount = resolved_roots[host] / artifact.get("capture_mount", "")
+        if artifact.get("capture_mount") and _is_reparse_point(mount):
+            # Capture may follow this explicitly declared native owner. Restore
+            # may read it for parity, but never overwrite through the link.
+            relative = PurePosixPath(artifact["source"]).relative_to(artifact["capture_mount"]).as_posix()
+            target = _safe_join(mount.resolve(strict=True), relative, must_exist=False)
+            read_only_mount = True
+        else:
+            target = _safe_join(resolved_roots[host], artifact["source"], must_exist=False)
         if artifact["kind"] == "config":
             fragment = json.loads(source_data.decode("utf-8"))
-            fragment = _expand(fragment, resolved_roots, repo)
+            fragment = _expand(fragment, resolved_roots, repo, home=target_home)
             current = _read_config(target, artifact["format"]) if target.exists() else {}
             current_fragment: dict[str, Any] = {}
             selected_matches = target.is_file()
@@ -681,7 +855,9 @@ def restore(
                 desired = _serialize_config(merged, artifact["format"])
         else:
             if artifact.get("portable_paths"):
-                desired = _expand(source_data.decode("utf-8"), resolved_roots, repo).encode("utf-8")
+                desired = _expand(
+                    source_data.decode("utf-8"), resolved_roots, repo, home=target_home
+                ).encode("utf-8")
             else:
                 desired = source_data
             existing = target.read_bytes() if target.is_file() else None
@@ -693,7 +869,9 @@ def restore(
                     text_matches = False
             if text_matches and existing is not None:
                 desired = existing
-            elif existing is not None and not force_text:
+            elif (existing is not None and not force_text
+                  and _sha256(existing.replace(b"\r\n", b"\n").replace(b"\r", b"\n"))
+                  not in artifact.get("replace_sha256", [])):
                 conflicts.append(
                     {
                         "host": host,
@@ -705,6 +883,10 @@ def restore(
                 continue
         current_data = target.read_bytes() if target.is_file() else None
         if current_data != desired:
+            if read_only_mount:
+                conflicts.append({"host": host, "id": artifact["id"], "target": artifact["source"],
+                                  "reason": "linked native source is read-only; edit its owner instead"})
+                continue
             writes[target] = desired
             changes.append(
                 {
@@ -715,7 +897,12 @@ def restore(
                 }
             )
 
-    plan = {"apply": apply, "changes": changes, "conflicts": conflicts}
+    plan = {
+        "apply": apply,
+        "hosts": list(selected_hosts),
+        "changes": changes,
+        "conflicts": conflicts,
+    }
     if apply and conflicts:
         names = ", ".join(f"{item['host']}:{item['id']}" for item in conflicts)
         raise RecoveryError(f"text conflict prevents restore: {names}")
@@ -743,9 +930,14 @@ def restore(
 
 def _default_roots() -> dict[str, Path]:
     home = Path.home()
-    local_appdata = Path(os.environ.get("LOCALAPPDATA", home / "AppData" / "Local"))
+    if os.name == "nt":
+        hermes_default = Path(
+            os.environ.get("LOCALAPPDATA", home / "AppData" / "Local")
+        ) / "hermes"
+    else:
+        hermes_default = home / ".hermes"
     return {
-        "hermes": Path(os.environ.get("HERMES_HOME", local_appdata / "hermes")),
+        "hermes": Path(os.environ.get("HERMES_HOME", hermes_default)),
         "codex": Path(os.environ.get("CODEX_HOME", home / ".codex")),
         "omp": Path(os.environ.get("OMP_HOME", home / ".omp" / "agent")),
     }
@@ -757,7 +949,7 @@ def _parse_roots(values: list[str]) -> dict[str, Path]:
         if "=" not in value:
             raise RecoveryError(f"--root must be HOST=PATH: {value}")
         host, raw_path = value.split("=", 1)
-        if not host or not raw_path:
+        if host not in _HOST_SET or not raw_path:
             raise RecoveryError(f"--root must be HOST=PATH: {value}")
         roots[host] = Path(raw_path)
     return roots
@@ -798,8 +990,12 @@ def _local_skill_files(root: Path) -> list[Path]:
 
 
 def find_admitted_local_skill_collisions(
-    repo: Path, roots: Mapping[str, str | Path]
+    repo: Path,
+    roots: Mapping[str, str | Path],
+    *,
+    hosts: Iterable[str] | None = None,
 ) -> dict[str, list[str]]:
+    selected_hosts, selected_roots = _selected_roots(roots, hosts)
     try:
         registry = json.loads((repo / "registry.json").read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -824,8 +1020,8 @@ def find_admitted_local_skill_collisions(
             if len(source.parts) >= 3 and source.parts[0] == "skills" and source.name == "SKILL.md":
                 allowed_adapters.add((str(host), PurePosixPath(*source.parts[1:-1]).as_posix()))
     collisions: dict[str, list[str]] = {}
-    for host in ("hermes", "codex", "omp"):
-        root = Path(roots[host]) / "skills"
+    for host in selected_hosts:
+        root = selected_roots[host] / "skills"
         for skill_file in _local_skill_files(root):
             name = _skill_name(skill_file)
             if name not in admitted:
@@ -838,8 +1034,12 @@ def find_admitted_local_skill_collisions(
 
 
 def find_retired_local_skills(
-    repo: Path, roots: Mapping[str, str | Path]
+    repo: Path,
+    roots: Mapping[str, str | Path],
+    *,
+    hosts: Iterable[str] | None = None,
 ) -> dict[str, list[str]]:
+    selected_hosts, selected_roots = _selected_roots(roots, hosts)
     try:
         ownership = json.loads(
             (repo / "contracts" / "ownership.json").read_text(encoding="utf-8")
@@ -853,8 +1053,8 @@ def find_retired_local_skills(
         and str(item.get("path", "")).startswith("integrations/")
     }
     found: dict[str, list[str]] = {}
-    for host in ("hermes", "codex", "omp"):
-        root = Path(roots[host]) / "skills"
+    for host in selected_hosts:
+        root = selected_roots[host] / "skills"
         for skill_file in _local_skill_files(root):
             name = _skill_name(skill_file)
             if name not in retired_names:
@@ -862,6 +1062,220 @@ def find_retired_local_skills(
             relative = skill_file.parent.relative_to(root).as_posix()
             found.setdefault(name, []).append(f"{host}:{relative}")
     return {name: sorted(paths) for name, paths in sorted(found.items())}
+
+
+def _selected_fleet_module(repo: Path):
+    tools_dir = str(repo / "tools")
+    if tools_dir not in sys.path:
+        sys.path.insert(0, tools_dir)
+    try:
+        import fleet
+    except (ImportError, OSError) as exc:
+        raise RecoveryError(f"cannot load fleet tool for selected bootstrap: {exc}") from exc
+    return fleet
+
+
+def _fleet_plan_report(
+    planned: Sequence[tuple[Path, list[dict[str, str]]]]
+) -> list[dict[str, Any]]:
+    return [
+        {"destination": str(destination), "actions": actions}
+        for destination, actions in planned
+    ]
+
+
+def _selected_bootstrap(
+    repo: Path,
+    policy_path: Path,
+    snapshot_dir: Path,
+    roots: Mapping[str, str | Path],
+    *,
+    hosts: Iterable[str],
+    machine: str,
+    apply: bool,
+    force_text: bool,
+) -> dict[str, Any]:
+    """Run bootstrap against only selected host roots and a target-local fleet."""
+
+    selected_hosts, selected_roots = _selected_roots(roots, hosts)
+    # Validate the complete snapshot before inspecting any target-local host
+    # state.  Scope narrowing belongs to the effect/readback phase, not to
+    # snapshot integrity verification.
+    preflight = restore(
+        policy_path,
+        snapshot_dir,
+        roots,
+        apply=False,
+        force_text=force_text,
+        repo_root=repo,
+        hosts=selected_hosts,
+    )
+    if preflight["conflicts"]:
+        names = ", ".join(f"{item['host']}:{item['id']}" for item in preflight["conflicts"])
+        raise RecoveryError(f"restore preflight has conflicts: {names}")
+
+    skill_root = _target_local_skill_root(selected_roots, selected_hosts)
+    retired = find_retired_local_skills(repo, selected_roots, hosts=selected_hosts)
+    if retired:
+        details = ", ".join(
+            f"{name} ({'; '.join(paths)})" for name, paths in retired.items()
+        )
+        raise RecoveryError(f"retired skills remain in host-local discovery roots: {details}")
+    collisions = find_admitted_local_skill_collisions(
+        repo, selected_roots, hosts=selected_hosts
+    )
+    if collisions:
+        details = ", ".join(
+            f"{name} ({'; '.join(paths)})" for name, paths in collisions.items()
+        )
+        raise RecoveryError(
+            "admitted skills already exist in host-local discovery roots; "
+            f"retire or migrate the duplicate copies before fleet apply: {details}"
+        )
+
+    fleet = _selected_fleet_module(repo)
+    try:
+        fleet_config = fleet.load_fleet(repo)
+        machine_config = fleet_config["machines"].get(machine)
+        if not isinstance(machine_config, Mapping):
+            raise RecoveryError(f"unknown fleet machine: {machine}")
+        declared_hosts = set(machine_config.get("hosts", []))
+        undeclared = sorted(set(selected_hosts) - declared_hosts)
+        if undeclared:
+            raise RecoveryError(
+                f"selected host(s) are not declared for fleet machine {machine}: "
+                f"{', '.join(undeclared)}"
+            )
+    except RecoveryError:
+        raise
+    except (KeyError, OSError, ValueError, RuntimeError) as exc:
+        raise RecoveryError(f"cannot validate selected fleet machine: {exc}") from exc
+
+    tools_dir = str(repo / "tools")
+    if tools_dir not in sys.path:
+        sys.path.insert(0, tools_dir)
+    try:
+        import host_deltas
+    except (ImportError, OSError) as exc:
+        raise RecoveryError(f"cannot load host-delta tool for selected bootstrap: {exc}") from exc
+
+    # Fleet insists that rendered output stays in the repository.  Keep that
+    # output in a disposable in-repository directory; the destination remains
+    # the target-local scope derived above, never fleet's live shared root.
+    with tempfile.TemporaryDirectory(prefix="recovery-selected-fleet-", dir=repo) as temp:
+        fleet_snapshot = Path(temp) / "snapshot"
+        try:
+            rendered = fleet.render_snapshot(repo, fleet_snapshot)
+            planned = fleet.preflight_destinations(fleet_snapshot, [skill_root])
+        except (OSError, KeyError, ValueError, RuntimeError) as exc:
+            raise RecoveryError(f"selected fleet preflight failed: {exc}") from exc
+        fleet_conflicts = [
+            f"{destination}:{item['name']}"
+            for destination, actions in planned
+            for item in actions
+            if item["action"] == "conflict"
+        ]
+        if fleet_conflicts:
+            raise RecoveryError(
+                "selected fleet preflight has conflicts: " + ", ".join(fleet_conflicts)
+            )
+
+        result: dict[str, Any] = {
+            "apply": apply,
+            "hosts": list(selected_hosts),
+            "fleet_skill_root": str(skill_root),
+            "recovery_preflight": preflight,
+            "fleet_render": rendered,
+            "fleet_diff": _fleet_plan_report(planned),
+        }
+        delta_manifest = host_deltas.load_manifest(repo / "host-deltas.json", repo)
+        changed_references = {
+            f"{item['host']}:{item['id']}" for item in preflight["changes"]
+        }
+        restored_ids = {
+            str(item["id"])
+            for item in delta_manifest["entries"]
+            if str(item["host"]) in selected_hosts
+            and item["restore"]["kind"] == "recovery-artifact"
+            and str(item["restore"]["reference"]) in changed_references
+        }
+
+        result["state_report"] = host_deltas.verify(
+            repo / "host-deltas.json", repo, roots=selected_roots,
+            skill_roots=[skill_root], fleet_snapshot=fleet_snapshot, hosts=selected_hosts,
+        )
+        required_native = {
+            item["id"] for item in delta_manifest["entries"]
+            if item["host"] in selected_hosts and item["required"]
+            and item["restore"]["kind"] in {"prerequisite", "manual-prerequisite"}
+        }
+        missing_native = [
+            item["id"] for item in result["state_report"]["entries"]
+            if item["id"] in required_native and item["status"] != "verified"
+        ]
+        if apply and missing_native:
+            raise RecoveryError("selected host prerequisite(s) missing before restore: " + ", ".join(missing_native))
+        if not apply:
+            result["profile"] = {
+                "status": "skipped-selected-hosts",
+                "hosts": list(selected_hosts),
+                "reason": "global instruction profile verification is outside the selected scope",
+            }
+            return result
+
+        try:
+            fleet_applied = fleet.apply_snapshot(fleet_snapshot, skill_root)
+        except (OSError, KeyError, ValueError, RuntimeError) as exc:
+            raise RecoveryError(f"selected fleet apply failed: {exc}") from exc
+        result["fleet_apply"] = [
+            {"destination": str(skill_root), "actions": fleet_applied}
+        ]
+        result["recovery_apply"] = restore(
+            policy_path,
+            snapshot_dir,
+            selected_roots,
+            apply=True,
+            force_text=force_text,
+            repo_root=repo,
+            hosts=selected_hosts,
+        )
+        try:
+            fleet_findings = fleet.verify_snapshot(fleet_snapshot, skill_root)
+        except (OSError, KeyError, ValueError, RuntimeError) as exc:
+            raise RecoveryError(f"selected fleet postflight failed: {exc}") from exc
+        result["fleet_verify"] = fleet_findings
+        if fleet_findings:
+            raise RecoveryError("selected fleet postflight is not clean")
+
+        postflight = restore(
+            policy_path,
+            snapshot_dir,
+            selected_roots,
+            apply=False,
+            force_text=False,
+            repo_root=repo,
+            hosts=selected_hosts,
+        )
+        if postflight["changes"] or postflight["conflicts"]:
+            raise RecoveryError("recovery postflight is not clean")
+        result["profile"] = {
+            "status": "skipped-selected-hosts",
+            "hosts": list(selected_hosts),
+            "reason": "global instruction profile verification is outside the selected scope",
+        }
+        result["postflight"] = postflight
+        result["state_report"] = host_deltas.verify(
+            repo / "host-deltas.json",
+            repo,
+            roots=selected_roots,
+            skill_roots=[skill_root],
+            fleet_snapshot=fleet_snapshot,
+            restored_ids=restored_ids,
+            hosts=selected_hosts,
+        )
+        if not result["state_report"]["passed"]:
+            raise RecoveryError("host-delta postflight is not clean")
+        return result
 
 
 def bootstrap(
@@ -873,12 +1287,24 @@ def bootstrap(
     machine: str = "local-windows",
     apply: bool = False,
     force_text: bool = False,
+    hosts: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Preflight and optionally restore declarative state plus admitted skills."""
 
     repo = Path(repo).resolve()
     policy_path = Path(policy_path)
     snapshot_dir = Path(snapshot_dir)
+    if hosts is not None:
+        return _selected_bootstrap(
+            repo,
+            policy_path,
+            snapshot_dir,
+            roots,
+            hosts=hosts,
+            machine=machine,
+            apply=apply,
+            force_text=force_text,
+        )
     retired = find_retired_local_skills(repo, roots)
     if retired:
         details = ", ".join(
@@ -994,6 +1420,14 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--policy", default="recovery.json")
     parser.add_argument("--snapshot", default="recovery/current")
     parser.add_argument("--root", action="append", default=[], metavar="HOST=PATH")
+    parser.add_argument(
+        "--host",
+        action="append",
+        choices=HOSTS,
+        default=None,
+        metavar="HOST",
+        help="scope restore, diff, or bootstrap to one or more hosts",
+    )
     parser.add_argument("--apply", action="store_true", help="apply restore; default is dry-run")
     parser.add_argument("--force-text", action="store_true", help="replace conflicting instruction files")
     parser.add_argument("--machine", default="local-windows", help="fleet machine id")
@@ -1004,8 +1438,10 @@ def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
     policy = Path(args.policy)
     snapshot_dir = Path(args.snapshot)
-    roots = _parse_roots(args.root)
     try:
+        if args.host and args.command not in {"diff", "restore", "bootstrap"}:
+            raise RecoveryError("--host is supported only for diff, restore, and bootstrap")
+        roots = _parse_roots(args.root)
         if args.command == "snapshot":
             result = snapshot(policy, snapshot_dir, roots, repo_root=policy.resolve().parent)
         elif args.command == "verify":
@@ -1019,6 +1455,7 @@ def main(argv: list[str] | None = None) -> int:
                 machine=args.machine,
                 apply=args.apply,
                 force_text=args.force_text,
+                hosts=args.host,
             )
         else:
             result = restore(
@@ -1028,6 +1465,7 @@ def main(argv: list[str] | None = None) -> int:
                 apply=args.command == "restore" and args.apply,
                 force_text=args.force_text,
                 repo_root=policy.resolve().parent,
+                hosts=args.host,
             )
             if args.command == "diff":
                 result["apply"] = False

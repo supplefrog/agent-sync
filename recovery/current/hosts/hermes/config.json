@@ -50,6 +50,11 @@
       "reasoning_effort": "low",
       "timeout": 600
     },
+    "foreground_context_routing": {
+      "model": "gpt-5.6-luna",
+      "provider": "openai-codex",
+      "timeout": 30
+    },
     "mcp": {
       "model": "stepfun/step-3.7-flash:free",
       "provider": "nous",
@@ -185,6 +190,7 @@
   "delegation": {
     "api_mode": "",
     "child_timeout_seconds": 1800,
+    "fallback_providers": [],
     "inherit_mcp_toolsets": true,
     "max_concurrent_children": 8,
     "max_iterations": 40,
@@ -434,6 +440,12 @@
       "security-guidance"
     ],
     "entries": {
+      "foreground-context-router": {
+        "allow_tool_override": false
+      },
+      "hermes-lcm": {
+        "allow_tool_override": false
+      },
       "routed-delegation": {
         "allow_tool_override": false
       }
@@ -480,6 +492,7 @@
       "antigravity-cli",
       "apple-ecosystem-automation",
       "architecture-diagram",
+      "arxiv",
       "ascii-art",
       "ascii-video",
       "audiocraft-audio-generation",
@@ -490,6 +503,7 @@
       "box",
       "claude-code",
       "claude-design",
+      "collective-wisdom-install",
       "comfyui",
       "competitor-news-monitor",
       "creative-production-workflows",
@@ -512,6 +526,7 @@
       "kanban-video-orchestrator",
       "linear",
       "llama-cpp",
+      "llm-operations",
       "llm-wiki",
       "manim-video",
       "maps",

@@ -14,9 +14,9 @@ class SyncBlocked(RuntimeError):
     pass
 
 
-def git(repo: Path, *args: str, env=None) -> str:
+def git(repo: Path, *args: str, env=None, input=None) -> str:
     result = subprocess.run(['git', '-C', str(repo), *args], capture_output=True,
-                            text=True, encoding='utf-8', env=env, timeout=120)
+                            text=True, encoding='utf-8', env=env, input=input, timeout=120)
     if result.returncode:
         # Do not persist remote URLs, credential-helper output, or hook secrets.
         raise SyncBlocked('git ' + args[0] + ' failed; inspect the repository or remote')
@@ -178,7 +178,10 @@ def publish(repo: Path, pending, *, verify, readback=lambda: None):
                     env = dict(os.environ, GIT_INDEX_FILE=str(Path(directory) / 'index'))
                     git(repo, 'read-tree', 'HEAD', env=env)
                     paths = sorted(pending['files'])
-                    git(repo, '--literal-pathspecs', 'add', '-A', '--', *paths, env=env)
+                    # NUL-delimited stdin preserves exact paths without an
+                    # argv proportional to snapshot size (Windows limit).
+                    git(repo, '--literal-pathspecs', 'add', '-A', '--pathspec-from-file=-',
+                        '--pathspec-file-nul', env=env, input=''.join(p + '\0' for p in paths))
                     pending['tree'] = git(repo, 'write-tree', env=env)
                     save_pending(repo, pending)
                     git(repo, 'commit', '-m', pending['message'], env=env)
@@ -196,7 +199,8 @@ def publish(repo: Path, pending, *, verify, readback=lambda: None):
             if not committed_paths <= set(pending['files']):
                 raise SyncBlocked('commit contains unreviewed paths')
             # HEAD moved using an isolated index; update only our entries in the real index.
-            git(repo, '--literal-pathspecs', 'reset', '-q', 'HEAD', '--', *sorted(pending['files']))
+            git(repo, '--literal-pathspecs', 'reset', '-q', 'HEAD', '--pathspec-from-file=-',
+                '--pathspec-file-nul', input=''.join(p + '\0' for p in sorted(pending['files'])))
             pending['index_reconciled'] = True
             save_pending(repo, pending)
         if changed(repo) or git(repo, 'diff', '--cached', '--name-only', '-z'):
