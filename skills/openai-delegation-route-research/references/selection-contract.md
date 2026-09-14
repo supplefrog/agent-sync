@@ -2,7 +2,13 @@
 
 New requests use `route-task-v3.schema.json`, `gpt-route-catalog-v3.schema.json`, and `route-decision-v3.schema.json`. V2 schemas/catalogs remain readable under their original policy. The selector is a deterministic policy function over trusted, frozen inputs; it does not acquire evidence, verify external artifact bytes, launch workers, or edit configuration.
 
-## Inputs and responsibility
+## Task-first direct ingress
+
+Hermes direct `work` requests use the internal V3 schema without requiring the caller to choose a candidate. The consumer preserves plain-text acceptance, constructs input/protocol identities and requests `task_preference` with model/effort unset and an empty preference list. The catalog owns a reviewed per-task-class order and its rationale/evidence. This order is a provisional prior, not a global intelligence tier or comparative quality proof. The current automatic lane admits only low-risk read-only source review; unsupported classes/effects return a parent decision. Native approvals and one-attempt execution still apply.
+
+Callability, regression and resource exclusions beat the preferred order. Complete comparable observed costs retain their existing selection semantics; otherwise the receipt says `reviewed_task_preference_unmeasured`. Parent identity is not a selection input. Explicit caller preferences remain separately labeled overrides. Neither historical callability nor a benchmark score qualifies a new task's output.
+
+## Inputs and responsibility for explicit V3 requests
 
 The parent supplies the actual task class, stable outcome-protocol hash, separate exact `input_sha256`, required host/transport/tools/context, effects, failure cost, independent verifier, resource snapshot, and attempt policy. The protocol defines success criteria and the workload envelope covered by qualification; a broad label such as coding cannot replace it. Exact input hashes protect replay, retries and artifact reuse without preventing protocol evidence from applying to a new input in its admitted scope. The parent checks referenced evidence and artifact hashes before admitting a catalog or task request. Worker-authored success claims are not trusted qualification records.
 

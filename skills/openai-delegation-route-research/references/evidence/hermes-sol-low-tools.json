@@ -1,0 +1,44 @@
+{
+  "purpose": "Explicit availability test; not task quality or comparative routing evidence",
+  "observed_at": "2026-09-14T01:49:36.937504+00:00",
+  "route": {
+    "host": "hermes",
+    "transport": "hermes-delegate",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "runtime": "hermes-delegate/native-source-v1",
+    "contract_sha256": "28a997964f42d8bc3ff3f4bb1c571b8a521aabb3d7531b5583ebb12128610f41"
+  },
+  "native_contract": {
+    "runtime": "hermes-delegate/native-source-v1",
+    "sources": {
+      "run_agent.py": "059a09bc729942ffd462720104f4e67cfa2ef44af1901e0d5884e2de7a0fc499",
+      "tools/delegate_tool.py": "d26cafcb5f90a5f544618d4db03467790b2c98d1e104bcebb975895a3cfed607",
+      "tools/delegate_tool_config.py": "6d5d799be6021232ea352ede62f912642f0174654079bd42a99e40daab9f597c",
+      "tools/delegate_tool_toolsets.py": "a1967a15c535dbbd100a812bfa5d43dd26459f1775ded775d59716faa1acfbe2",
+      "tools/delegate_tool_progress.py": "88e8a1eb8dd19321792d808c5af8b270aa492cb5ff6d60b4b901249726cd83ca",
+      "tools/delegate_tool_child_run.py": "58243a492c3d26aa36a36c31d335f652ac02ff72c067640b6b8057cbfe7f7543",
+      "tools/delegate_tool_results.py": "bbd8517b4e49d7fa55ffed36fdabf898c2a41292619be4777af55060b19440c5",
+      "agent/agent_init.py": "b64195a84942304a53125d7b04d61ef20589f793d5a95e45b615b74296aed0c2",
+      "agent/system_prompt.py": "20a6b326816fc6924ed0b5f4407281b38b9254f7b43465acff10fae09be3114f",
+      "agent/prompt_builder.py": "586ea363fa1e70bb0fdd5426af40758976a16c54f07efeb7a1b4f3fe0ad99309",
+      "agent/chat_completion_helpers.py": "6605690526e0b082a85877f7810caeb786f8a5daf8d096333e84e8fde6a0b060",
+      "agent/transports/codex.py": "1b4d48515c0ddac7db53b3446e69da92dcdc773a5e59dd80b2bec17d49c65103"
+    }
+  },
+  "context_tokens": 272000,
+  "tools_exercised": [
+    "search_files",
+    "read_file"
+  ],
+  "accepted": true,
+  "native_status": "completed",
+  "exit_reason": "completed",
+  "summary": "native-tool-roundtrip-confirmed",
+  "model_calls": 3,
+  "seconds": 11.27,
+  "provider_resolved_identity": "not exposed by native result",
+  "paid_api_spend_allowed": false,
+  "fallback_enabled": false
+}

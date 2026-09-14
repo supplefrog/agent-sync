@@ -442,6 +442,16 @@ def _initialize_workflow(
 def _normalize_task(raw: Any) -> dict[str, Any]:
     if not isinstance(raw, dict):
         raise ValueError("each task must be an object")
+    original_work = raw.get("work")
+    if "work" in raw:
+        conflicting = {"route_request", "intelligence_tier", "latency_sensitive", "failure_cost", "task_class", "verifier_plan"}
+        if conflicting.intersection(raw):
+            raise ValueError("work cannot be combined with route pins or legacy policy fields")
+        work = raw["work"]
+        template = _task_request_module().work_template(work)
+        raw = {key: value for key, value in raw.items() if key != "work"}
+        raw["route_request"] = template
+        raw.setdefault("toolsets", ["file"] if work["tools"] else ["none"])
     allowed = {
         "id", "goal", "context", "toolsets", "role", "intelligence_tier",
         "latency_sensitive", "failure_cost", "task_class", "verifier_plan",
@@ -483,6 +493,9 @@ def _normalize_task(raw: Any) -> dict[str, Any]:
         "toolsets": toolsets,
         "role": role,
     }
+    if original_work is not None:
+        normalized["_work"] = json.loads(json.dumps(original_work))
+        normalized["context"] = (context or "") + "\n\nAcceptance criteria (parent verifies):\n" + original_work["acceptance"]
     if has_route_request:
         required = {
             "schema_version", "task_class", "requirements", "verifier", "effects",
@@ -661,6 +674,8 @@ def _v3_input_descriptor(task: dict[str, Any], max_iterations: int) -> dict[str,
     }
     if "_native_envelope" in task:
         descriptor["native_envelope"] = task["_native_envelope"]
+    if "_work" in task:
+        descriptor["work"] = task["_work"]
     return descriptor
 
 
@@ -2261,6 +2276,7 @@ def _handle(params: dict[str, Any], **_kwargs: Any) -> str:
                     "acceptance_required": {
                         "owner": "parent",
                         "verifier": pin["request"]["verifier"],
+                        **({"criteria": task["_work"]["acceptance"]} if "_work" in task else {}),
                         "message": "The parent must run the declared independent acceptance check; native completion is not task-quality qualification.",
                     },
                 }
@@ -2477,7 +2493,7 @@ def _require_routed_delegation(*, tool_name: str, args: Any = None, **_kwargs: A
         "action": "block",
         "message": (
             "New delegation is owned by the task router. Submit this task to "
-            "routed_delegate_task with a V3 route_request (or routed_workflow for a DAG). "
+            "routed_delegate_task with a task-first work description (or routed_workflow for an existing DAG contract). "
             "Do not retry native spawn or bypass routing with a subprocess. "
             "A keep_parent/defer decision is not permission to launch an inherited worker. "
             "Missing quality evidence may permit a bounded independently verified trial; "
@@ -2492,7 +2508,7 @@ def register(ctx: Any) -> None:
     schema = {
         "name": "routed_delegate_task",
         "description": (
-            "Delegate 1-4 independent tasks. Use route_request for task-aware V3; legacy tier fields retain V2. "
+            "Delegate 1-4 independent tasks. Describe new bounded source reviews with work; no model pin required. "
             "The tool deterministically "
             "selects and pins each exact provider/model/reasoning route. A task id owns one execution "
             "attempt; repeated calls with that id are blocked."
@@ -2513,7 +2529,7 @@ def register(ctx: Any) -> None:
                         "oneOf": [
                             {
                                 "required": ["intelligence_tier", "latency_sensitive"],
-                                "not": {"required": ["route_request"]},
+                                "not": {"anyOf": [{"required": ["route_request"]}, {"required": ["work"]}]},
                             },
                             {
                                 "required": ["route_request"],
@@ -2524,6 +2540,7 @@ def register(ctx: Any) -> None:
                                         {"required": ["failure_cost"]},
                                         {"required": ["task_class"]},
                                         {"required": ["verifier_plan"]},
+                                        {"required": ["work"]},
                                     ]
                                 },
                             },
@@ -2539,6 +2556,11 @@ def register(ctx: Any) -> None:
                             "verifier_plan": {"type": "object"},
                             "toolsets": {"type": "array", "items": {"type": "string", "minLength": 1}},
                             "role": {"enum": sorted(_ROLES)},
+                            "work": {**_task_request_module().WORK_SCHEMA, "description":
+                                "Task-first description. Low-risk local read-only review only; unknown task classes "
+                                "or consequential work return parent actions. Tools are read_file/search_files, not upstream web access. "
+                                "Acceptance is the parent's planned source check, not evidence that it passed. "
+                                "No API spend or fallback; unknown quota requires explicit acceptance."},
                             "route_request": {"type": "object", "description":
                                 "Task-aware V3 template from openai-delegation-route-research/references/"
                                 "hermes-direct-v3.md. Requires schema_version, task_class, requirements, "
@@ -2553,6 +2575,10 @@ def register(ctx: Any) -> None:
             },
         },
     }
+    schema["parameters"]["properties"]["tasks"]["items"]["oneOf"].append({
+        "required": ["work"], "not": {"anyOf": [
+            {"required": [field]} for field in ("route_request", "intelligence_tier", "latency_sensitive",
+                                                "failure_cost", "task_class", "verifier_plan")]}})
     ctx.register_tool(
         name="routed_delegate_task",
         toolset="routed_delegation",

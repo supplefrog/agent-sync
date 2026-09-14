@@ -491,7 +491,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:b1dcf8ea384503ae504557d625ef0424ed54cd1ee397d45fbf13cfb3d1be0622"
+      "version_or_hash": "sha256:a956ad632acbcf39c27e8c9d9413898f0cbdf318bea163b11933e69bd6cb1fc2"
     },
     {
       "category": "native-skill",
@@ -514,7 +514,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:b1dcf8ea384503ae504557d625ef0424ed54cd1ee397d45fbf13cfb3d1be0622"
+      "version_or_hash": "sha256:a956ad632acbcf39c27e8c9d9413898f0cbdf318bea163b11933e69bd6cb1fc2"
     },
     {
       "category": "native-skill",
@@ -537,7 +537,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:b1dcf8ea384503ae504557d625ef0424ed54cd1ee397d45fbf13cfb3d1be0622"
+      "version_or_hash": "sha256:a956ad632acbcf39c27e8c9d9413898f0cbdf318bea163b11933e69bd6cb1fc2"
     },
     {
       "category": "curator",
@@ -713,7 +713,7 @@
       "readback": {
         "kind": "file",
         "path": "hermes:plugins/routed-delegation/__init__.py",
-        "sha256": "0ba66f9bdb132b557f293ac052f06010dc40c0593a0f4918811edfbec1e8602e"
+        "sha256": "104fcc98d4bceba458139362e8ed5a6d59570491af85f7261806b257f5898b17"
       },
       "redaction": "public-artifact",
       "required": true,
@@ -722,7 +722,7 @@
         "reference": "skills/openai-delegation-route-research/references/hermes-direct-v3.md"
       },
       "source_identity": "repository:integrations/hermes/routed-delegation/__init__.py",
-      "version_or_hash": "sha256:0ba66f9bdb132b557f293ac052f06010dc40c0593a0f4918811edfbec1e8602e"
+      "version_or_hash": "sha256:104fcc98d4bceba458139362e8ed5a6d59570491af85f7261806b257f5898b17"
     },
     {
       "category": "runtime",

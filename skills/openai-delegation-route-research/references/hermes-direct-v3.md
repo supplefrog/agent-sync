@@ -2,13 +2,29 @@
 
 ## Router-owned delegation
 
-With the `routed-delegation` plugin enabled, send every new worker request through `routed_delegate_task` with a V3 `route_request`, or through `routed_workflow` for a DAG. Its `pre_tool_call` hook blocks ordinary `delegate_task` spawning and directs the caller to the router; it is not transparent redispatch. Existing-worker `list`, `steer`, and `stop` controls remain available. Do not bypass the gate with subprocesses or legacy V2 requests.
+With the `routed-delegation` plugin enabled, send bounded local source reviews through `routed_delegate_task` with `work` below. Existing explicit V3 requests and `routed_workflow` retain their contracts. The pre-tool hook blocks ordinary worker spawning; existing-worker list/steer/stop controls remain available. Do not bypass a routing decision with native spawn, subprocesses or legacy V2 requests.
 
 The router selects an executor from task-specific evidence before execution. Missing evidence permits a bounded trial only for low-risk independently verifiable work with established callability. `keep_parent`, parent, deterministic, and defer decisions return parent actions, not permission to start an inherited worker. The parent verifies worker output; task failure does not authorize an unbounded retry ladder.
 
 Keep native `delegation.model`, `provider`, and `reasoning_effort` empty, with `fallback_providers: []`, as the compatibility baseline rather than a global cheaper-model pin. These settings alone do not invoke the selector. Without the enabled plugin, ordinary delegation retains Hermes-native behavior. V2 fields remain compatible for existing runs, but are not the default for new work and cannot be combined with `route_request`.
 
-## Bounded evidence workers
+## Task-first local source reviews
+
+Pass `id`, `goal`, optional `context`, and a `work` object containing:
+
+- `task_class: "bounded-source-evidence-review"`, actual `tools` (read_file/search_files or none), and required `context_tokens`;
+- plain-text `acceptance`, retained in the worker context, frozen input and parent handoff;
+- actual `effects` and `failure_cost` (only none/low permits this provisional lane);
+- `authorized`, `max_requests` (1–32), `placement_reason`, and `accept_unknown_quota`;
+- optional `quotas` with actual bucket/unit/remaining/reserve declarations. Missing telemetry stays unknown, never unlimited.
+
+`authorized` is the caller's scoped trial declaration, not proof of user permission or an approval bypass. It must be true only within the user's authorization. No paid API route or fallback is allowed here. Do not label consequential work low-risk to force admission. This lane cannot query upstream issues: its tools are local-only. Fetch upstream evidence with the parent's appropriate tools or retain that task with the parent.
+
+The controller builds the internal V3 binding with **no model/effort pin and no caller preference list**. The selector filters candidates by callable route, tools/context/effects, matching regressions and resources, then applies the catalog's reviewed `task_preferences[task_class]` when comparable measured costs are absent. An unknown class returns `keep_parent`; it never clones the parent silently. `reviewed_task_preference_unmeasured` is a transparent provisional prior, not a quality qualification or cheapest-route claim. Refresh stale availability with a bounded explicit capability check; do not extend timestamps without observation. A capability probe does not establish useful-work acceptance.
+
+The direct consumer preserves one attempt, exact native model/effort, frozen tool schemas and native lifecycle. This task-first interface is not yet supported by DAG plans or other hosts. Existing pins are not rewritten; changed source identities can require explicit reconciliation, never silent rerouting. A fresh process is required after plugin changes.
+
+## Legacy explicit bounded evidence workers
 
 Use `task_request.evidence_review_template` for an authorized local source-inspection or review child. It derives the routine V3 fields from the candidate, outcome protocol and parent acceptance record. Supply actual quota/reserve declarations, a request cap, and a placement reason (for example, isolating a source-heavy stage from parent context). Do not declare a semantic check deterministic.
 

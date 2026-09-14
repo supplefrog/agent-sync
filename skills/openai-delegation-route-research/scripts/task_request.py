@@ -81,6 +81,55 @@ def materialize(template: dict[str, Any], *, task_id: str, host: str, transport:
     return task
 
 
+WORK_SCHEMA = {
+    "type": "object", "additionalProperties": False,
+    "properties": {
+        "task_class": {"type": "string", "minLength": 1},
+        "acceptance": {"type": "string", "minLength": 1, "maxLength": 8000},
+        "placement_reason": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "tools": {"type": "array", "uniqueItems": True,
+                  "items": {"enum": ["read_file", "search_files"]}},
+        "context_tokens": {"type": "integer", "minimum": 1},
+        "max_requests": {"type": "integer", "minimum": 1, "maximum": 32},
+        "accept_unknown_quota": {"type": "boolean"},
+        "authorized": {"type": "boolean", "description": "Caller declares scoped trial permission; never bypasses native approval."},
+        "quotas": _VALIDATOR.schema["properties"]["budget"]["properties"]["quotas"],
+        "effects": {"enum": ["none", "reversible", "irreversible"]},
+        "failure_cost": {"enum": ["low", "medium", "high"]},
+    },
+    "required": ["task_class", "acceptance", "placement_reason", "tools", "context_tokens",
+                 "max_requests", "accept_unknown_quota", "authorized", "effects", "failure_cost"],
+}
+
+
+def work_template(work: dict[str, Any]) -> dict[str, Any]:
+    """Describe work without choosing its executor. V3 binding stays internal.
+
+    Acceptance describes the parent's planned check, not a completed verification.
+    Only low-risk read-only work can be provisionally admitted by this consumer.
+    Other risk/effect declarations produce a parent decision rather than lowering
+    the work's stated risk to fit a worker lane.
+    """
+    _json_value(work)
+    errors = list(jsonschema.Draft202012Validator(WORK_SCHEMA).iter_errors(work))
+    if errors:
+        raise ValueError("Invalid work description: " + errors[0].message)
+    if not all(work[key].strip() for key in ("task_class", "acceptance", "placement_reason")):
+        raise ValueError("Work descriptions must not be blank")
+    template = evidence_review_template(
+        candidate={"id": "unused", "route": {"model": None, "reasoning_effort": None}},
+        protocol={"task_class": work["task_class"], "acceptance": work["acceptance"]},
+        acceptance={"locator": "inline:parent-acceptance/" + input_digest(work["acceptance"]),
+                    "sha256": input_digest(work["acceptance"])},
+        context_tokens=work["context_tokens"], placement_reason=work["placement_reason"],
+        max_requests=work["max_requests"], authorized=work["authorized"],
+        accept_unknown_quota=work["accept_unknown_quota"], quotas=work.get("quotas", {}))
+    template.update(task_class=work["task_class"], effects=work["effects"], failure_cost=work["failure_cost"])
+    template["requirements"]["tools"] = work["tools"][:]
+    template["budget"].update(unknown_cost_policy="task_preference", preference_order=[])
+    return template
+
+
 def evidence_review_template(*, candidate: dict[str, Any], protocol: str,
                              acceptance: dict[str, str], context_tokens: int,
                              placement_reason: str, max_requests: int,

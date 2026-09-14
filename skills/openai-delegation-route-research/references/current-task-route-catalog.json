@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "catalog_version": "2026-09-13-reviewed-evidence-consumer",
+  "catalog_version": "2026-09-14-task-first-source-review",
   "candidates": [
     {
       "id": "hermes-sol-low-inline",
@@ -111,6 +111,73 @@
         },
         "evidence": null
       }
+    },
+    {
+      "id": "hermes-sol-low-tools",
+      "route": {
+        "host": "hermes",
+        "transport": "hermes-delegate",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "low",
+        "runtime": "hermes-delegate/native-source-v1",
+        "contract_sha256": "28a997964f42d8bc3ff3f4bb1c571b8a521aabb3d7531b5583ebb12128610f41"
+      },
+      "availability": {
+        "status": "verified",
+        "observed_at": "2026-09-14T01:49:36.937504+00:00",
+        "valid_until": "2026-09-15T01:49:36.937504+00:00",
+        "route_sha256": "710cb3a044bc460f041073c1691034d5219a5bb0682a02a030a03609536b6f65",
+        "context_tokens": 272000,
+        "tools_verified": [
+          "read_file",
+          "search_files"
+        ],
+        "allowed_effects": [
+          "none"
+        ],
+        "evidence": {
+          "locator": "references/evidence/hermes-sol-low-tools.json",
+          "sha256": "965beb21f17ec4c9dddd2fa1607d4b878fa995097934b67c1653c2e9d202c4e3"
+        }
+      },
+      "quality": [],
+      "benchmark_priors": [],
+      "cost": {
+        "billing": "subscription",
+        "basis": "unknown",
+        "task_contract_sha256": null,
+        "verifier_sha256": null,
+        "route_sha256": null,
+        "api_usd": {
+          "generation": null,
+          "verification": null,
+          "fallback": null
+        },
+        "quota": {
+          "bucket": "codex-main",
+          "unit": "percentage-points",
+          "parts": {
+            "generation": null,
+            "verification": null,
+            "fallback": null
+          }
+        },
+        "evidence": null
+      }
     }
-  ]
+  ],
+  "task_preferences": {
+    "bounded-source-evidence-review": {
+      "route_ids": [
+        "hermes-sol-low-tools",
+        "hermes-astra-medium-tools"
+      ],
+      "rationale": "Provisional bounded source-review placement: Sol low has a previously parent-accepted source Q&A and a fresh native read/search roundtrip. Try it before Astra medium when both meet hard capabilities. This is a reviewed prior, not comparative quality, speed or quota evidence; consequential and unmapped work stays parent-owned.",
+      "evidence": {
+        "locator": "references/evidence/hermes-sol-low-current-source.json",
+        "sha256": "d499e08cd9f6b402310af9c50d7ced753526148f52e21e1634575100ee09ffe3"
+      }
+    }
+  }
 }

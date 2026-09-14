@@ -3,6 +3,21 @@
   "schema_version": 1,
   "records": [
     {
+      "id": "task-first-source-review-selection",
+      "topic": "lifecycle-update",
+      "claim": "The Hermes direct work interface can select and execute a bounded source review without caller model/effort pins, preserving acceptance text through the native handoff.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/task-first-routing.json",
+          "supports": true
+        }
+      ],
+      "implication": "Use task-first local source review instead of constructing a preselected evidence template. Do not generalize this narrow result to complete routing redesign or measured optimization.",
+      "observed_at": "2026-09-14T02:00:27.721646+00:00"
+    },
+    {
       "id": "portable-agent-skills",
       "topic": "skills-procedures",
       "claim": "Agent Skills directories are the strongest current portable procedure format shared by Hermes and Codex.",

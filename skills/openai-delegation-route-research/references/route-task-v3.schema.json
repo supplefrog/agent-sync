@@ -248,6 +248,7 @@
         "unknown_cost_policy": {
           "enum": [
             "explicit_preference",
+            "task_preference",
             "keep_parent",
             "defer"
           ]

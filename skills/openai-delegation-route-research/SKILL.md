@@ -14,7 +14,7 @@ Choose a route that meets the actual task's quality requirement with lower total
 
 Read [the selection contract](references/selection-contract.md) for request and dispatch semantics, and [source policy](references/source-policy.md) when adding evidence. This owner selects routes; native workers and `dynamic-workflows` own execution and lifecycle.
 
-For Hermes direct tool calls, use [the V3 consumer contract](references/hermes-direct-v3.md), including its bounded read-only evidence-worker option and `evidence_review_template` helper. That option separates unknown quota from exhaustion, records why context isolation helps, and retains native capability checks and parent acceptance. Existing V2 DAG runs retain their current policy.
+For new Hermes bounded local source reviews, use the task-first `work` input in [the direct consumer contract](references/hermes-direct-v3.md). Describe the task, acceptance, tools and bounded trial permission; do not preselect a model or construct proof hashes. The selector applies a reviewed task-specific preference only after capability and resource checks. Unmapped or consequential work stays parent-owned. This is provisional placement, not measured optimization or a general coding/web/DAG router. Existing explicit requests and DAG pins retain their contracts.
 
 For qualified three-question source-review tasks, use [the bounded review Q&A contract](references/review-qa.md) and its deterministic `scripts/review_qa.py` verifier. Admission still requires the bound parent review and heldout gate.
 
@@ -26,7 +26,7 @@ If both candidates are callable, use matched task inputs, prompts, reasoning set
 
 These bounded direct transformation probes do not require worker-selection receipts or a DAG. The following selector contract applies when actually selecting and dispatching a new model worker; it is not a prerequisite for every model comparison.
 
-## New tasks
+## Advanced explicit requests and other consumers
 
 1. Identify the outcome protocol, exact input hash, required tools/context, allowed effects, failure cost, and independent acceptance check. Keep protocol qualification separate from an individual input. A JSON schema or an output file's existence does not establish content correctness.
 2. Use the v3 task and catalog schemas in `references/`. Record actual callable host/transport/model/effort tuples, task evidence, resource state and unknown costs. Use a complete deterministic handler when available. For bounded reversible work with complete independent verification, an explicitly preferred candidate may be tried provisionally; this is not an established quality or savings claim.

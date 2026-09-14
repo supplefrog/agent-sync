@@ -10,6 +10,22 @@
       "type": "string",
       "minLength": 1
     },
+    "task_preferences": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "route_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "rationale": {"type": "string", "minLength": 1},
+          "evidence": {
+            "type": "object",
+            "properties": {"locator": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}},
+            "required": ["locator", "sha256"], "additionalProperties": false
+          }
+        },
+        "required": ["route_ids", "rationale", "evidence"], "additionalProperties": false
+      }
+    },
     "candidates": {
       "type": "array",
       "items": {

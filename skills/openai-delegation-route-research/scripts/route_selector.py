@@ -459,6 +459,9 @@ _V3_CANDIDATE = _v3_object({"id": _V3_TEXT, "route": _V3_ROUTE, "availability": 
                            "benchmark_priors": {"type": "array", "items": {"type": "object"}}})
 V3_CATALOG_SCHEMA = _v3_object({"schema_version": {"const": 3}, "catalog_version": _V3_TEXT,
                                "candidates": {"type": "array", "items": _V3_CANDIDATE}})
+V3_CATALOG_SCHEMA["properties"]["task_preferences"] = {
+    "type": "object", "additionalProperties": _v3_object({
+        "route_ids": {**_V3_STRINGS, "minItems": 1}, "rationale": _V3_TEXT, "evidence": _V3_REF})}
 _V3_REQUIREMENTS = _v3_object({"host": _V3_TEXT, "transport": _V3_TEXT, "tools": _V3_STRINGS,
                               "context_tokens": {"type": "integer", "minimum": 0}, "task_contract_sha256": _V3_HASH,
                               "model": {"type": ["string", "null"]}, "reasoning_effort": {"type": ["string", "null"]}})
@@ -474,7 +477,7 @@ _V3_QUOTA = _v3_object({"unit": _V3_TEXT, "remaining": _V3_NUMBER, "reserve": {"
 _V3_BUDGET = _v3_object({"objective": {"enum": ["api_usd", "quota"]}, "api_remaining": _V3_NUMBER,
                         "api_reserve": {"type": "number", "minimum": 0}, "allow_api_spend": {"type": "boolean"},
                         "quotas": {"type": "object", "additionalProperties": _V3_QUOTA},
-                        "unknown_cost_policy": {"enum": ["explicit_preference", "keep_parent", "defer"]},
+                        "unknown_cost_policy": {"enum": ["explicit_preference", "task_preference", "keep_parent", "defer"]},
                         "preference_order": _V3_STRINGS, "parent_available": {"type": "boolean"},
                         "attempt_cap": {"type": "integer", "minimum": 1, "maximum": 2},
                         "attempts_used": {"type": "integer", "minimum": 0},
@@ -567,8 +570,10 @@ def evidence_trial_admissible(task):
         and budget["parent_available"] and budget["attempt_cap"] == 1
         and budget["attempts_used"] == 0 and task["continuation"] is None
         and budget["fallback_route_id"] is None and budget["fallback_route_sha256"] is None
-        and not budget["allow_api_spend"] and budget["unknown_cost_policy"] == "explicit_preference"
-        and len(budget["preference_order"]) == 1)
+        and not budget["allow_api_spend"]
+        and ((budget["unknown_cost_policy"] == "explicit_preference" and len(budget["preference_order"]) == 1)
+             or (budget["unknown_cost_policy"] == "task_preference" and not budget["preference_order"]
+                 and required["model"] is None and required["reasoning_effort"] is None)))
 
 
 def _v3_resource(candidate, task):
@@ -654,6 +659,9 @@ def validate_catalog_v3(catalog):
     ids = [item["id"] for item in catalog["candidates"]]
     if len(ids) != len(set(ids)):
         raise RouteSelectionError("duplicate v3 candidate id")
+    for preference in catalog.get("task_preferences", {}).values():
+        if not set(preference["route_ids"]).issubset(ids):
+            raise RouteSelectionError("task preference references an unknown candidate")
     for candidate in catalog["candidates"]:
         if _v3_time(candidate["availability"]["observed_at"]) > _v3_time(candidate["availability"]["valid_until"]):
             raise RouteSelectionError("availability expires before its observation")
@@ -689,6 +697,16 @@ def decide_route_v3(catalog, task, *, catalog_locator=None):
 
     def finish(outcome, basis, excluded=None, **kwargs):
         return _v3_receipt(catalog, task, outcome, basis, excluded or {}, catalog_locator=catalog_locator, **kwargs)
+
+    automatic = budget["unknown_cost_policy"] == "task_preference"
+    preference = catalog.get("task_preferences", {}).get(task["task_class"])
+    if automatic:
+        if requirement["model"] is not None or requirement["reasoning_effort"] is not None or budget["preference_order"]:
+            raise RouteSelectionError("task selection cannot contain a caller model pin or preference")
+        if preference is None:
+            return finish(fallback, "no_reviewed_task_preference")
+        if not evidence_trial_admissible(task):
+            return finish(fallback, "task_selection_outside_bounded_review_scope")
 
     scope_admissible = _v3_scope_admissible(task)
     complete_check = (verifier["independent"] and verifier["coverage"] == "complete"
@@ -749,7 +767,8 @@ def decide_route_v3(catalog, task, *, catalog_locator=None):
             and budget["preference_order"] == [candidate["id"]]
         )
         evidence_trial = (evidence_trial_admissible(task)
-                          and budget["preference_order"] == [candidate["id"]])
+                          and (candidate["id"] in preference["route_ids"] if automatic
+                               else budget["preference_order"] == [candidate["id"]]))
         if budget.get("evidence_trial") and not evidence_trial:
             reasons.append("evidence_trial_contract_not_admissible")
         provisional = deterministic_trial or parent_review_trial or evidence_trial
@@ -779,6 +798,11 @@ def decide_route_v3(catalog, task, *, catalog_locator=None):
     if comparable:
         selected = min(eligible, key=lambda item: (item[2]["total"], item[0]["id"]))
         basis = "minimum_observed_total"
+    elif automatic:
+        selected = next((item for route_id in preference["route_ids"] for item in eligible if item[0]["id"] == route_id), None)
+        if selected is None:
+            return finish(fallback, "no_eligible_task_preference", excluded)
+        basis = "reviewed_task_preference_unmeasured"
     elif budget["unknown_cost_policy"] == "explicit_preference":
         selected = next((item for route_id in budget["preference_order"] for item in eligible if item[0]["id"] == route_id), None)
         if selected is None:
@@ -789,6 +813,8 @@ def decide_route_v3(catalog, task, *, catalog_locator=None):
         return finish(outcome, "cost_unknown_or_incomparable", excluded)
     candidate, qualification, costs, local = selected
     evidence = [candidate["availability"]["evidence"], verifier["evidence"], *[item["evidence"] for item in local]]
+    if automatic:
+        evidence.append(preference["evidence"])
     if candidate["cost"]["evidence"] is not None:
         evidence.append(candidate["cost"]["evidence"])
     return finish("selected_model", basis, excluded, selected=candidate, qualification=qualification, costs=costs, evidence=evidence)

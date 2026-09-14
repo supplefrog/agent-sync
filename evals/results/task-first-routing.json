@@ -1,0 +1,38 @@
+{
+  "scope": "Hermes direct task-first bounded local source review only",
+  "requested_model": null,
+  "requested_effort": null,
+  "caller_preferences": [],
+  "selected_route": {
+    "host": "hermes",
+    "transport": "hermes-delegate",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "runtime": "hermes-delegate/native-source-v1",
+    "contract_sha256": "28a997964f42d8bc3ff3f4bb1c571b8a521aabb3d7531b5583ebb12128610f41"
+  },
+  "selection_basis": "reviewed_task_preference_unmeasured",
+  "decision_id": "8424c211e7085293a55939aef362a021e9d7ac2fe5fc3479b1ab61bbd39c86aa",
+  "native_status": "completed",
+  "native_finalization": "returned",
+  "acceptance_text_returned": true,
+  "observed_at": "2026-09-14T02:00:27.721646+00:00",
+  "parent_acceptance": {
+    "preservation_mechanism": "Original work retained in pinned descriptor; literal acceptance is in worker context and parent handoff. Source inspection and deterministic regression agree with the actual returned field.",
+    "initial_review": "Useful source review identified discarded acceptance text and hardcoded trial permission; regression/fix applied before final use.",
+    "scope": "One useful source review and a targeted follow-up; not workload qualification."
+  },
+  "checks": {
+    "task_tests": 49,
+    "route_tests": 21,
+    "native_integration_tests": 63
+  },
+  "limits": [
+    "No general coding, web, DAG or cross-host routing claim.",
+    "No comparative quality, latency or quota savings result.",
+    "Availability is a dated cache; expiry still returns parent until refreshed.",
+    "Existing source-identity changes can block old replay; pins are not silently migrated.",
+    "Active chat hot reload is not established."
+  ]
+}
