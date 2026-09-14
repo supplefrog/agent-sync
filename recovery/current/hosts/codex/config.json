@@ -136,9 +136,6 @@
     "research-tools@local-agent-skills": {
       "enabled": true
     },
-    "sites@openai-bundled": {
-      "enabled": true
-    },
     "spreadsheets@openai-primary-runtime": {
       "enabled": true
     },

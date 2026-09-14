@@ -30,6 +30,21 @@ class EvidenceBoundaryTests(unittest.TestCase):
                 self.child._build_api_kwargs()
             self.assertEqual(original.call_count, 2)
 
+    def test_native_refresh_cannot_widen_evidence_snapshot(self):
+        from tools.mcp_tool_agent import _publish_tool_snapshot
+        from tools.registry import registry
+        with mock.patch.object(self.plugin, '_validate_v3_child'):
+            self.plugin._guard_v3_child(self.child, {}, self.pin)
+            for content_aware in (False, True):
+                _publish_tool_snapshot(
+                    self.child, [{'function': {'name': 'terminal'}}], {'terminal'},
+                    snapshot_generation=registry._generation,
+                    staged_engine_names=set(), content_aware=content_aware,
+                    prefix_registered=None)
+                self.assertEqual(self.child.valid_tool_names, {'read_file', 'search_files'})
+            self.assertTrue(self.child._skip_mcp_refresh)
+            self.child._build_api_kwargs()
+
     def test_compatibility_probe_precedes_execution_request_budget(self):
         self.child.provider = 'openai-codex'
         self.child.api_mode = 'codex_responses'

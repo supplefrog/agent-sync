@@ -719,7 +719,10 @@ def _validate_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) ->
     required = pin["request"]["requirements"]
     names = getattr(child, "valid_tool_names", None)
     if names is None or set(names) != set(required["tools"]):
-        raise RuntimeError("actual native tools differ from the v3 declared tools")
+        raise RuntimeError(
+            f"actual native tools differ from the v3 declared tools: "
+            f"expected={sorted(required['tools'])}, actual={sorted(names or [])}, "
+            f"refresh_frozen={getattr(child, '_skip_mcp_refresh', False)}")
     if pin["request"].get("budget", {}).get("evidence_trial"):
         schemas = {tool["function"]["name"] for tool in child.tools}
         if schemas != set(required["tools"]):
@@ -751,6 +754,10 @@ def _guard_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) -> No
             raise RuntimeError("evidence trial requested unavailable native tools")
         child.tools = [tool for tool in child.tools if tool["function"]["name"] in required]
         child.valid_tool_names = required
+        # Native turn/compaction refreshes otherwise rebuild the broad file toolset.
+        # Use the native frozen-fork convention; keep request/schema guards below.
+        child._skip_mcp_refresh = True
+        child._tool_snapshot_generation = 2_147_483_647
     _validate_v3_child(child, task, pin)
     original = child._build_api_kwargs
     # Freeze the controller's expected envelope; later task mutation cannot move it.

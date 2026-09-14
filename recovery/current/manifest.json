@@ -2,7 +2,7 @@
   "$schema": "contracts/recovery-snapshot.schema.json",
   "artifacts": [
     {
-      "bytes": 5077,
+      "bytes": 5018,
       "format": "toml",
       "host": "codex",
       "id": "settings",
@@ -29,7 +29,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "a9afc74134176c968aa96fe834257173c4cb2bfdd570464fa67f7e3507200bb0",
+      "sha256": "6ef12491537cccfc7d261b9ad37012ce02e5068d78ecbb7344ef024204570b88",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
@@ -7132,14 +7132,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 12770,
+      "bytes": 12494,
       "format": "text",
       "host": "hermes",
       "id": "native-75c499f6ebee6629bf35",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "cbea1f523c630d403a4729f8dd134c65f0506edfd480baf2fe8915201cf8c394",
+      "sha256": "83f18002cc8d3b735ae604ecb2167fff616330590345988c5c437fcfef5faabd",
       "snapshot": "hosts/hermes/skills/devops/kanban-worker/SKILL.md",
       "source": "skills/devops/kanban-worker/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11557,14 +11557,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 1450,
+      "bytes": 1315,
       "format": "text",
       "host": "hermes",
       "id": "native-214445a793b81cc115d8",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "75ae727cd814317c452d9e9a686341ab5a56709b350de55b4c3b68de7f14a9c1",
+      "sha256": "a6176b50e3cc9a4cb784e0553c3af47c0d0dbb2f394c537e942d5c165f9f71aa",
       "snapshot": "hosts/hermes/skills/software-development/repository-inspection-audits/references/delegated-kanban-handoff.md",
       "source": "skills/software-development/repository-inspection-audits/references/delegated-kanban-handoff.md",
       "strategy": "replace-if-absent"

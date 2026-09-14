@@ -26,10 +26,7 @@ Your workspace kind determines how you should behave inside `$HERMES_KANBAN_WORK
 
 ## Tenant isolation
 
-If `$HERMES_TENANT` is set, the task belongs to a tenant namespace. When reading or writing persistent memory, prefix memory entries with the tenant so context doesn't leak across tenants:
-
-- Good: `business-a: Acme is our biggest customer`
-- Bad (leaks): `Acme is our biggest customer`
+If `$HERMES_TENANT` is set, keep task records and queries in that namespace. A prefix in globally injected memory is not an isolation boundary. Keep tenant-specific task facts in the task system; persistent memory retains its normal narrow scope.
 
 ## Good summary + metadata shapes
 
@@ -48,28 +45,23 @@ kanban_complete(
 )
 ```
 
-**Coding task that needs human review (review-required):**
+**Coding task that needs review:**
 
-For most code-changing tasks, the work isn't truly *done* until a human reviewer has eyes on it. Block instead of complete, with `reason` prefixed `review-required: ` so the dashboard surfaces the row as needing review. Drop the structured metadata (changed files, test counts, diff/PR url) into a comment first, since `kanban_block` only carries the human-readable reason — comments are the durable annotation channel. Reviewer either approves and runs `hermes kanban unblock <id>` (which re-spawns you with the comment thread for any follow-ups) or asks for changes via another comment.
+Inspect any child cards before choosing the terminal action. A pre-created review, QA, or release child depending on this task => `kanban_complete(summary=..., metadata=...)` releases that lane; do not also request same-card review. Otherwise, when review is required, use `kanban_request_review` with the structured handoff. A reviewer approves with `kanban_complete` or returns actionable rework with `kanban_request_changes`. Reserve `kanban_block` for genuine dependencies, missing input/access, or transient failures, not review.
 
 ```python
-import json
-
-kanban_comment(
-    body="review-required handoff:\n" + json.dumps({
+kanban_request_review(
+    summary="Rate limiter implemented; 14 tests passed. Review user_id/IP fallback before merging.",
+    metadata={
         "changed_files": ["rate_limiter.py", "tests/test_rate_limiter.py"],
         "tests_run": 14,
         "tests_passed": 14,
-        "diff_path": "/path/to/worktree",  # or PR url if pushed
         "decisions": ["user_id primary, IP fallback for unauthenticated requests"],
-    }, indent=2),
-)
-kanban_block(
-    reason="review-required: rate limiter shipped, 14/14 tests pass — needs eyes on the user_id/IP fallback choice before merging",
+    },
 )
 ```
 
-Use `kanban_complete` only when the task is genuinely terminal — e.g. a one-line typo fix, a docs change with no functional consequences, or a research task where the artifact IS the writeup itself.
+Completion means the assigned phase is finished, including implementation that releases an explicit downstream review lane. The task graph—not the size or type of change—determines who reviews next.
 
 **Research task:**
 ```python
@@ -83,7 +75,7 @@ kanban_complete(
 )
 ```
 
-**Review task:**
+**Independent audit task:**
 ```python
 kanban_complete(
     summary="reviewed PR #123; 2 blocking issues found (SQL injection in /search, missing CSRF on /settings)",

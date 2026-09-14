@@ -1,21 +1,11 @@
 # Delegated Kanban audit handoff
 
-Use this when a read-only repository audit is running inside a delegated Kanban worker and the parent expects a terminal board transition.
+Use only when an audit has an assigned board task. A missing task ID in an ordinary chat does not imply a broken board.
 
-## Safe preflight
+1. Inspect the assigned task with `kanban_show`; inspect any review/QA/release children before choosing the terminal action. Use native `kanban_*` tools, not the CLI or direct SQLite writes.
+2. Finished assigned phase with a downstream review child => `kanban_complete(summary=..., metadata=...)` releases the child. Otherwise use `kanban_request_review` when same-card review is required; do not block for review.
+3. Reviewer approval => `kanban_complete`; actionable rework => `kanban_request_changes`. Genuine missing input, access, dependency, or transient failure => typed `kanban_block`.
+4. Deliverable files belong in top-level `artifacts` on completion, not only in metadata. State verification and board transition separately.
+5. If the native tool is unavailable or rejects child authority, return the exact refusal, verified evidence and artifact paths to the parent. Do not try CLI syntax, direct persistence, or an equivalent mutation to bypass it. The parent owns the transition.
 
-1. Treat board mutation as a separate operation from repository verification.
-2. Inspect supported syntax without mutating the board:
-   - `hermes kanban --help`
-   - `hermes kanban complete --help`
-   - `hermes kanban block --help`
-3. If useful, make one read-only task inspection attempt (`hermes kanban show <task-id>`), but a child-context guard may reject even database initialization.
-
-## Terminal handoff
-
-- If the child context is authorized and the audit is complete, use the supported CLI once:
-  `hermes kanban complete <task-id> --summary '<verified handoff>' --metadata '{"artifacts":[...],"verdict":"PASS"}'`
-- If the audit is genuinely blocked and the child context is authorized, use one supported block operation with a typed reason.
-- If the command reports a delegated-child mutation guard, stop. Do not retry alternate syntax, direct SQLite writes, equivalent persistence calls, or repeated complete/block attempts. Return the exact refusal, verified evidence, artifact paths, and state that the parent/orchestrator must close the task.
-
-A plain review result is still the correct repository deliverable when board closure is prohibited by the child-context guard; the refusal is an operational handoff blocker, not a repository finding.
+A board refusal is an operational handoff limit, not a repository defect. A read-only audit must not manufacture repository edits just to create a terminal receipt.
