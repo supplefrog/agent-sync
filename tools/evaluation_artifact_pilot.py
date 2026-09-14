@@ -78,6 +78,41 @@ def prepare(spec, out):
     return plan
 
 
+def validate_jobs(plan):
+    """Check the entire launch set before runtime discovery or any trial starts.
+
+    This is consistency validation, not a signature over a hostile controller's
+    plan and not evidence that an experiment can distinguish workflows.
+    """
+    spec = plan['spec']
+    cases = {case['id']: case for case in spec['cases']}
+    expected = {(arm['id'], case) for arm in spec['arms'] for case in cases}
+    jobs = plan['jobs']
+    if len(jobs) != len(expected):
+        raise ValueError('Prepared trial count differs from the declared suite')
+    seen_pairs, seen_ids = set(), set()
+    workroot = Path(spec['workspace_root']).resolve()
+    for item in jobs:
+        pair = (item['arm'], item['case'])
+        ident = item['id']
+        if pair not in expected or pair in seen_pairs:
+            raise ValueError('Prepared arm/case membership changed')
+        if not isinstance(ident, str) or len(ident) != 32 or any(c not in '0123456789abcdef' for c in ident) or ident in seen_ids:
+            raise ValueError('Prepared trial identity is invalid or duplicated')
+        seen_pairs.add(pair)
+        seen_ids.add(ident)
+        fixture = Path(item['fixture']).resolve()
+        if fixture != workroot / ident or not fixture.is_dir():
+            raise ValueError('Prepared fixture location changed')
+        prompt = cases[item['case']]['prompt'] + '\n\nProject: ' + item['fixture'] + '\nWork only in this project. Do not delegate, use network services, or modify parent directories.'
+        if item['prompt'] != prompt:
+            raise ValueError('Prepared prompt differs from the declared case')
+        if item['instructions'] != plan['candidate_snapshots'][item['arm']]['prompt_text']:
+            raise ValueError('Prepared instructions differ from the frozen candidate')
+        if tree(fixture) != item['initial_tree']:
+            raise ValueError('Prepared fixture contents changed')
+
+
 def run(plan, out):
     import os
     spec = plan['spec']
@@ -86,6 +121,7 @@ def run(plan, out):
         raise ValueError('Frozen oracle changed')
     if sha(__file__) != plan['controller_sha256'] or sha(Path(__file__).with_name('evaluation_artifact_worker.py')) != plan['worker_sha256']:
         raise ValueError('Frozen execution code changed')
+    validate_jobs(plan)
     python, native = native_hermes_runtime(native_executable('hermes'))
     owner = str(hermes_owner_home(dict(os.environ)))
     source = str(Path(__file__).resolve().parents[1])
