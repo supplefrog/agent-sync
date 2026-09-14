@@ -132,6 +132,11 @@ validation means the recorded evidence is internally consistent, not authentic.
         require(stack.get("tool_policy") in ("none", "safe", "full"), "invalid generation tool policy")
         runtime_lane = stack.get("runtime_lane")
         require(runtime_lane in (None, "inline-text-no-tools-v1"), "unsupported producer runtime lane")
+        if runtime_lane == "inline-text-no-tools-v1":
+            same(stack.get("context_policy"), "fresh-session-per-output", "context_policy differs from producer execution")
+            same(stack.get("prompt_assembly"),
+                 "isolated-anonymous-artifact-v3" if schema == 3 else "isolated-explicit-artifact-v2",
+                 "prompt_assembly differs from producer execution")
         judge_policy = "none" if runtime_lane == "inline-text-no-tools-v1" else "safe"
         same(stack.get("judge_tool_policy"), judge_policy, "judge tool policy differs from producer plan")
         if runtime_lane and status == "complete":

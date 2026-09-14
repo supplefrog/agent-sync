@@ -3,6 +3,21 @@
   "schema_version": 1,
   "records": [
     {
+      "id": "inline-evaluator-execution-label-boundary",
+      "topic": "lifecycle-update",
+      "claim": "The current inline-text evaluator rejects unsupported prompt/context execution labels before candidate freezing; its evidence consumer rejects contradictory relabelling of current-lane reports.",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "evaluation",
+          "reference": "evals/results/execution-label-boundary.json",
+          "supports": true
+        }
+      ],
+      "implication": "This closes producer/consumer metadata inconsistency, not semantic study discrimination or natural-discovery capability. Existing historical evidence is not relabelled or rerun.",
+      "observed_at": "2026-09-14T02:15:04.306932+00:00"
+    },
+    {
       "id": "task-first-source-review-selection",
       "topic": "lifecycle-update",
       "claim": "The Hermes direct work interface can select and execute a bounded source review without caller model/effort pins, preserving acceptance text through the native handoff.",

@@ -1192,8 +1192,8 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=600)
     parser.add_argument("--full-tools", action="store_true")
     parser.add_argument("--tool-policy", choices=("none", "safe", "full"), default="none")
-    parser.add_argument("--prompt-assembly", default="isolated-explicit-artifact-v2")
-    parser.add_argument("--context-policy", default="fresh-session-per-output")
+    parser.add_argument("--prompt-assembly", choices=("isolated-explicit-artifact-v2", "isolated-anonymous-artifact-v3"), default="isolated-explicit-artifact-v2")
+    parser.add_argument("--context-policy", choices=("fresh-session-per-output",), default="fresh-session-per-output")
     parser.add_argument("--equivalence-group", required=True, help="Cross-host effective-stack equivalence group")
     parser.add_argument("--irreducible-difference", action="append", default=[])
     parser.add_argument("--rollback", required=True, help="Concrete rollback action if promotion/retirement regresses")
@@ -1253,6 +1253,8 @@ def main() -> int:
                 "schema v3 trial bounds must exactly match stability.trials "
                 f"({stability_trials})"
             )
+    elif args.prompt_assembly != "isolated-explicit-artifact-v2":
+        parser.error("schema v2 requires isolated-explicit-artifact-v2 prompt assembly")
     runs_per_case = 5 if is_v3 else 4
     minimum_runs = len(cases) * runs_per_case * args.min_trials
     if args.max_agent_runs < minimum_runs:

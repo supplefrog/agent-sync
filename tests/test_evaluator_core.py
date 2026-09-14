@@ -103,7 +103,7 @@ class EvaluatorCoreTests(unittest.TestCase):
         result = evaluator.attempt_result({"output": "answer", "api_key": "synthetic-secret", "attempt": 1, "attempts": []})
         self.assertEqual(result, {"output": "answer"})
 
-    def run_v2_main(self, root, *, judge_ok=True, judge_suffix="", mutate_inputs=False, drift=False):
+    def run_v2_main(self, root, *, judge_ok=True, judge_suffix="", mutate_inputs=False, drift=False, extra_args=()):
         suite = {"schema_version": 2, "name": "core-regression", "cases": [
             {"id": kind, "kind": kind, "prompt": "ORIGINAL TASK"}
             for kind in ("representative", "near-miss", "adversarial", "held-out")
@@ -136,7 +136,7 @@ class EvaluatorCoreTests(unittest.TestCase):
         argv = ["eval.py", str(suite_path), "--candidate", str(candidate), "--baseline-candidate", str(baseline),
                 "--agent", "codex", "--model", "test-model", "--provider", "test-provider", "--reasoning", "high",
                 "--min-trials", "1", "--max-trials", "1", "--max-agent-runs", "16",
-                "--equivalence-group", "test", "--rollback", "restore fixture", "--out", str(out)]
+                "--equivalence-group", "test", "--rollback", "restore fixture", "--out", str(out), *extra_args]
         with mock.patch.object(evaluator, "run_agent", side_effect=fake_run), \
              mock.patch.object(evaluator, "command_version", return_value="test"), \
              mock.patch.object(evaluator.HermesSessionLifecycle, "cleanup", return_value={"created": [], "deleted": [], "remaining": []}), \

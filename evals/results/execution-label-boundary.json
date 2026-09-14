@@ -1,0 +1,44 @@
+{
+  "model_calls": 0,
+  "scope": "Actual CLI rejects unsupported execution labels before candidate read/runtime discovery.",
+  "results": [
+    {
+      "args": [
+        "--prompt-assembly",
+        "natural-discovery"
+      ],
+      "exit_code": 2,
+      "error": "eval.py: error: argument --prompt-assembly: invalid choice: 'natural-discovery' (choose from 'isolated-explicit-artifact-v2', 'isolated-anonymous-artifact-v3')",
+      "report_created": false,
+      "expected_rejection": true
+    },
+    {
+      "args": [
+        "--context-policy",
+        "resumed-conversation"
+      ],
+      "exit_code": 2,
+      "error": "eval.py: error: argument --context-policy: invalid choice: 'resumed-conversation' (choose from 'fresh-session-per-output')",
+      "report_created": false,
+      "expected_rejection": true
+    },
+    {
+      "args": [
+        "--prompt-assembly",
+        "isolated-anonymous-artifact-v3"
+      ],
+      "exit_code": 2,
+      "error": "eval.py: error: schema v2 requires isolated-explicit-artifact-v2 prompt assembly",
+      "report_created": false,
+      "expected_rejection": true
+    }
+  ],
+  "limits": "Positive-path producer and report validation are exercised separately with fake inference.",
+  "observed_at": "2026-09-14T02:15:04.306932+00:00",
+  "tests": {
+    "execution_label_tests": 3,
+    "evaluator_tests": 106,
+    "report_verifier_tests": 13
+  },
+  "reproduction": "Before repair, unsupported CLI labels reached candidate freezing and both v2/v3 report consumers accepted relabelled production-shaped reports. After repair, valid inline reports remain accepted and incompatible labels are rejected."
+}
