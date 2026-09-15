@@ -1,27 +1,29 @@
 ---
 name: learn-from-youtube
-description: Turn a YouTube source into faithful, verified teaching notes
+description: Learn from any video or triage mixed learning sources. Build source-faithful lessons with audiovisual coverage, verified context, and retrieval practice.
 license: MIT
-compatibility: Requires transcript access; visual material may require frame inspection.
+compatibility: Source access determines achievable coverage; local media tools are optional and authorization-bound.
 metadata:
   author: supplefrog
-  version: "1.1.0"
+  version: "1.2.0"
   hermes:
     tags: [youtube, learning, research, transcripts]
     related_skills: [youtube-content]
 ---
 
-# Learn From YouTube
+# Learn From Video and Learning Sources
 
-Use when the user wants to learn from a YouTube source without watching the full video: comprehensive knowledge extraction, timestamped study notes, concept teaching, claim checking, prerequisites, or an information-dense lesson. Use `youtube-content` for simple transcript extraction, brief summaries, chapters, threads, blogs, or quotes. Do not use for media downloads or simple translation.
+Use for source-based learning from YouTube, other hosted videos, local recordings, lectures with slides, or a mixed learning collection. The existing skill identifier is retained for compatibility; YouTube is not a requirement. Use `youtube-content` for simple transcript extraction, brief summaries, chapters, threads, blogs, or quotes. Do not use for media downloads, simple translation, or general research without a learning goal.
+
+For several sources or a choice of what to study, read [references/source-triage.md](references/source-triage.md) before deep extraction. Triage may be deliberately partial; a finished lesson must account for its selected scope. Do not turn a preview of every source into a claim to have studied the collection.
 
 **AI LABS exception:** when the channel is AI LABS and the user wants a workflow, automation, prompt pattern, or paywalled resource reconstructed from public material, read [references/ai-labs-workflow-extraction.md](references/ai-labs-workflow-extraction.md). That focused mode replaces the normal teaching artifact and full-coverage requirement.
 
-Produce a faithful teaching artifact, not a lossy recap. Prove transcript coverage before compressing.
+Produce a usable lesson, not an orientation to watching the material. Establish coverage separately for transcript, slides, recording visuals and audio listening; a complete transcript inventory proves none of the other channels.
 
 ## Core contract
 
-- Read the complete available source before synthesizing.
+- Review the selected scope before final synthesis; keep inaccessible or unreviewed portions explicit rather than reconstructing them.
 - Separate **what the video says**, **externally verified context**, and **inference**.
 - Preserve every load-bearing concept, distinction, condition, example, warning, number, and named reference.
 - Remove repetition, filler, sponsor copy, and verbal scaffolding only when they add no learning value.
@@ -35,15 +37,15 @@ Produce a faithful teaching artifact, not a lossy recap. Prove transcript covera
 
 ### 1. Inspect the source
 
-Collect the canonical URL, title, channel, duration, description, upload date, chapters, caption languages, and whether the lesson depends on visuals.
+Collect the source URL or local locator, title, creator, duration, available date, chapters, languages and companion material. Mark unknown metadata as unknown. Read [references/source-fidelity.md](references/source-fidelity.md) when recordings, ASR, slides, diagrams or embedded clips carry the lesson.
 
 Use an available transcript extractor such as `yt-dlp --skip-download --list-subs`. Prefer creator-provided captions in the original language, then original auto-captions, then translated captions. If captions are absent, use authorized speech-to-text when available or explain the limitation.
 
-For a visual tutorial, demo, chart, or slide deck, inspect relevant frames at chapter boundaries and whenever meaning exists only on screen. A transcript alone is insufficient for visual evidence.
+For visual meaning, inspect source pages and relevant recording states. Chapter-boundary frames alone can miss demonstrations between them. Surveying transitions identifies review candidates, not watched content. Use selected sequences for meaningful change; a thumbnail, link or still does not prove a clip played or establish its dialogue.
 
 ### 2. Acquire and normalize the transcript
 
-Download captions to a temporary directory unless the user requests a saved artifact. Prefer JSON3; VTT is an acceptable fallback.
+Reuse available captions or transcripts before new extraction. For hosted captions, prefer JSON3; VTT is an acceptable fallback. Local media stays read-only; use authorized existing tools and bounded temporary audio if transcription is needed. Do not download models, copy/transcode entire recordings, spend on inference or launch redundant workers without the applicable authorization. Check temporary storage needs, not just final output size.
 
 For VTT captions, run:
 
@@ -51,7 +53,7 @@ For VTT captions, run:
 python scripts/clean_vtt.py <captions.vtt> --format markdown
 ```
 
-Treat extraction failure as a blocker to faithful coverage. Do not substitute the description or comments for the video.
+Treat extraction failure as a limitation on the affected channel. Check companion evidence before declaring the concept unrecoverable, but never substitute a description, comment or slide for verified speech. Flag repaired timelines and invalid segment bounds; resampling can align a clock but cannot restore missing words.
 
 ### 3. Build a coverage ledger
 
@@ -61,8 +63,9 @@ Divide the source by creator chapters. If absent, use coherent topic changes or 
 - distinct claims, concepts, examples, warnings, and references;
 - destination in the final lesson, or an explicit exclusion reason;
 - uncertainty or visual evidence still needed.
+- evidence channel and locator: source ID, original clock/page, native object or reviewed frame; distinguish requested seek time from exact timing.
 
-Do not write the final lesson until every segment is accounted for.
+Every selected segment needs a destination, explicit exclusion or unresolved-gap entry. Partial delivery is valid when clearly scoped; an unresolved central dependency prevents claiming a standalone replacement.
 
 ### 4. Reconstruct the model
 
@@ -76,7 +79,7 @@ Identify:
 - examples and what each demonstrates;
 - actionable procedures and required feedback signals.
 
-Resolve transcription errors from context. Flag unresolved names, numbers, or terms instead of guessing.
+Resolve consequential transcription errors against the original or corroborating evidence; context suggests candidates, not recovered speech. Flag unresolved names, numbers or terms. Reinspect originals when reviews disagree; delegated descriptions and existing ledgers are not independent proof.
 
 ### 5. Research only where it improves understanding
 
@@ -99,9 +102,13 @@ Before delivery, verify:
 - source claims, research, and inference cannot be confused;
 - each paragraph adds distinct understanding;
 - the learner can explain, choose, and apply the ideas afterward.
+- source figures are legible at reader size, captions match visible labels, and any new schematic is clearly an addition rather than recovered data;
+- if delivering an interface, real navigation, answer controls and source-image loading work; automated consistency checks do not certify comprehension, audiovisual fidelity or taste.
 
 ## Long-source token control
 
 Process transcript chunks into the coverage ledger first, then synthesize from that ledger while retaining timestamps. Run a final global pass against the full ledger. Never recursively summarize summaries without checking the source; omissions compound.
 
 Save transcripts or ledgers only when requested or needed as durable artifacts. Otherwise use a temporary directory and leave the project untouched.
+
+Reusable workflow improvements belong in this canonical skill or its existing references, not only in the current project's status file. Preserve source-specific evidence with its project; apply `skill-creator` for checked procedural updates during the work.

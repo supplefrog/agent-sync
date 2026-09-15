@@ -7,6 +7,7 @@ This file is a non-injected reference, not another prompt body. The effective ho
 | Standing communication, judgment, artifact links, and orchestration consent | Host overlays; preserve necessary native differences |
 | Chat-style calibration and consequential design updates | `skills/conversational-communication` |
 | Instruction content, triggers, sentence-level intent, and evaluation | `skills/skill-creator` |
+| Automatic checked improvements from reusable workflows during work | `skills/skill-creator`; thin standing reminders in the effective host overlays |
 | Unresolved Hermes placement | `skills/hermes-self-engineering` |
 | Cross-host placement, parity, deployment, and recovery | `skills/cross-agent-surface-engineering` |
 | Unresolved workflow design | `skills/outcome-first-workflow-design` |

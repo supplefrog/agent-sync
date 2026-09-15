@@ -2,14 +2,14 @@
 
 ## Required output
 
-1. **Source card** — title, creator, duration, link, transcript type, and extraction/visual limitations.
+1. **Source card** — source ID, title, creator, duration where applicable, URL/local locator, transcript type and separate channel limitations. For collections, state which sources were only screened versus deeply studied.
 2. **Orientation** — the problem, thesis, and why the lesson matters in one dense paragraph.
 3. **Conceptual model** — definitions and relationships; use a compact table when it clarifies comparison.
-4. **Complete walkthrough** — section-by-section teaching notes with timestamps. Preserve load-bearing claims, examples, caveats, and procedures.
+4. **Selected-scope walkthrough** — teach the concepts themselves with source timestamps/pages, mechanisms and examples; do not merely tell the learner what the recordings discuss. Preserve load-bearing claims, caveats and procedures. Put meaningful native diagrams inline with explanations instead of relegating them all to evidence links.
 5. **Decision framework** — when to use each approach, preconditions, feedback signal, cost, risks, and stop condition.
 6. **Corrections and extensions** — label external verification, disputed claims, missing nuance, and prerequisites.
 7. **Application playbook** — next steps, smallest safe experiment, and evidence of success or failure.
-8. **Retention layer** — concise memory anchors plus 3–7 retrieval or teach-back questions; include answers separately when useful.
+8. **Retention layer** — short checks after difficult concepts, plus a small set of final retrieval/application questions with separate answers. When helpful: concept → mechanism → concrete analogy → where it breaks → transfer question. An analogy does not replace the literal explanation.
 9. **Coverage note** — exclusions such as sponsor segments and any source gaps.
 
 Adapt headings when needed, but preserve their functions.
@@ -18,7 +18,7 @@ Adapt headings when needed, but preserve their functions.
 
 Use plain labels where ambiguity is possible:
 
-- **Video:** faithful paraphrase of the source.
+- **Video / Source:** faithful paraphrase, naming the source and channel when needed.
 - **Verified:** supported by an external primary source.
 - **Inference:** reasoned conclusion not explicitly stated.
 - **Uncertain:** transcript or evidence is insufficient.
@@ -40,13 +40,4 @@ Use plain labels where ambiguity is possible:
 
 ## Quality gate
 
-Target at least 90/100:
-
-- Coverage: 30
-- Fidelity and provenance: 20
-- Conceptual teaching: 20
-- Information density: 15
-- Verification and uncertainty: 10
-- Practical usability: 5
-
-A missing central claim, invented timestamp, source/research confusion, or unmarked uncertainty is a critical failure regardless of score.
+Verify coverage against the ledger, claims against evidence, and the actual reading/application path. Self-assigned scores do not establish quality. A missing central claim, invented timestamp, source/research confusion or unmarked uncertainty is a critical failure. Report checked channels and unresolved limitations separately, without converting structural PASS results into fidelity or learning certification.

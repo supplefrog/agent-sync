@@ -18,7 +18,7 @@ Videos, talks, demos, and essays normally belong in the research record, not thi
 
 ## 2. Set a coherent visual direction
 
-Use `design-judgment.md` when choosing or substantially revising a visual direction. Distinguish task, reading, decision, and exploration surfaces; choose priorities per surface, not by industry. Write a short visual thesis with concrete hierarchy, typography roles, palette roles, density, geometry, image treatment, and motion character. Take an aesthetic risk only when it supports the product; ordinary controls need no mandatory signature treatment.
+Use `design-judgment.md` when it helps choose or revise a visual direction. Distinguish task, reading, decision and exploration surfaces. Capture only the decisions that distinguish this direction; inherited or irrelevant dimensions need no separate thesis. Use `taste-selection.md` for unresolved user taste before expensive implementation. Ordinary controls need no signature treatment.
 
 When design choices are delegated, choose one considered result without requiring mockup comparisons or a taste questionnaire. Mix influences from reviewed skills, other sources, and original decisions as appropriate; coherence does not require a single design lineage. Select and tune the relevant taste dimensions using `design-judgment.md`, keeping unsupported values provisional. Current instructions and explicit approvals outrank inferred preferences; preserve an established identity even without a design document. A redesign may replace the authorized visual layer, not silently discard product facts, routes, behavior, or unrelated work.
 
@@ -63,7 +63,7 @@ Animation should explain change, preserve context, or reinforce the visual thesi
 
 Run the real page and inspect it in a browser. Batch relevant desktop and mobile captures, including the user's actual viewport when known, and exercise interaction states. Confirm captures show the right route and state with fonts and assets loaded; settle entrance motion before diagnosing invisible content as a defect. Compare against the brief and references by hierarchy, rhythm, typography, composition, behavior, and emotional tone rather than superficial resemblance.
 
-Refine in this order:
+Prioritize the observed bottleneck and functional/accessibility blockers. Use these areas as a diagnostic guide, not a fixed order:
 
 1. content and information hierarchy;
 2. layout and responsive behavior;

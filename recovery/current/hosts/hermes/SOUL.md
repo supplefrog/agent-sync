@@ -20,7 +20,7 @@ Use bounded DAGs (`dynamic-workflows`) or agent swarms without separate consent 
 
 # Instruction authoring
 
-For durable/shared instructions, use Agent Sync's `skills/skill-creator/SKILL.md`. Load `hermes-self-engineering` only for unresolved Hermes placement, or `cross-agent-surface-engineering` for cross-host placement or parity.
+Use Agent Sync's `skills/skill-creator/SKILL.md` for shared instructions and automatic, checked skill improvements from reusable workflows developed during work. Load placement guides only when ownership or cross-host placement is unclear.
 
 # Reconciliation
 

@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Use when authoring or auditing durable instructions or skills. Owns sentence-level intent, triggers, supporting resources, and proportional evaluation; placement guides are conditional.
+description: Use when authoring instructions or preserving reusable workflows. Owns skill improvements during work, triggers, supporting resources, and proportional verification.
 version: 2.0.0
 author: Hermes Agent
 license: MIT
@@ -24,6 +24,12 @@ Use this to author or review durable instructions. Resolve placement only when i
 - Repeated task procedure => one owning skill.
 
 Patch an existing owner when it already covers the task. Create a new skill only when no owner can be extended coherently. Reference adjacent owners; do not copy their procedures.
+
+## Improve skills during collaborative work
+
+When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work; do not wait for a separate save request or leave the only copy in a project diary. Review after a meaningful correction or verified flow, not after every tool call. Preserve task data and incident evidence locally; distill the portable decision rule rather than copying the history.
+
+Use the existing authorization for ordinary reversible skill improvements. Check the affected behavior and a nearby valid case, preserve rollback, and complete authorized synchronization. Do not duplicate an existing rule or create a new skill for a narrow addition. Speculative causal/model-quality claims remain candidates until suitable evidence supports them; automatic improvement is not automatic acceptance, paid evaluation, a new background watcher, or permission to weaken safeguards.
 
 ## Instruction modality
 

@@ -1,5 +1,9 @@
 # Canonical Source Provenance
 
+## Current taste-selection policy
+
+The later user-selected workflow supersedes the historical delegated-taste default below: when a new direction's taste is unresolved, offer a small interactive visual comparison with explore-more links; skip it for approved designs, repairs or explicitly delegated choices. `taste-selection.md` owns that procedure. The current practitioner review is recorded in Agent Sync's `docs/frontend-taste-evidence.md`: a first-person Astra comparison preferred a no-skill version, while other reports differ. This supports retaining a minimal comparison baseline, not claiming a universal skill benefit or harm. No local Astra quality experiment established this update; it implements explicit user control and removes compulsory method wording.
+
 Retrieved on 2026-08-03 unless noted otherwise. This ledger contains persistent first-party or canonical references that may need to be consulted again. Explanatory videos and demos were decomposed into workflow behavior and remain only in the research and promotion records. This ledger does not certify every third-party component or community design kit.
 
 | Source | Revision or scope reviewed | Contribution used | Limit |

@@ -22,4 +22,4 @@ This is a routing catalog, not an automatic install list. Recheck live terms, li
 
 ## Selection rule
 
-Start with the project's current system and the engineer's stated taste. This catalog is evidence, not a closed list of design influences. Mix useful principles across sources or introduce new ones; judge the resulting hierarchy, visual relationships, and behavior rather than enforcing a single lineage. Keep repeated component/icon roles consistent and the dependency footprint proportionate to the desired result.
+Start with the project's current system and the user's expressed taste. This catalog is a discovery aid, not a closed style menu or evidence that a skill improves the current model. For unresolved taste, use `taste-selection.md`: small comparable visual options plus links to explore. Mix principles or introduce new ones; judge the result rather than enforcing a lineage. Keep component roles consistent and dependencies proportionate.

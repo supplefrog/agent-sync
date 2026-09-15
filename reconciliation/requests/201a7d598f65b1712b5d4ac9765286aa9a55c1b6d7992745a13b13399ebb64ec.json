@@ -1,0 +1,92 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "afcabe2f279597c4774e34dddb3a1936cdd40af8e0895dfbc03ec9c37b83d7d7",
+      "before_sha256": "afcabe2f279597c4774e34dddb3a1936cdd40af8e0895dfbc03ec9c37b83d7d7",
+      "owner": "frontend-ui-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "24d2804b800a6f73b485bc56109c103c4e0783338e3b005ef4187300b9169e2d",
+      "before_sha256": "24d2804b800a6f73b485bc56109c103c4e0783338e3b005ef4187300b9169e2d",
+      "owner": "learn-from-youtube",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "c0feb132816e89868252042cfd9a3b0330ca12135eaad8d67450c8685c8b0b1a",
+      "before_sha256": "c0feb132816e89868252042cfd9a3b0330ca12135eaad8d67450c8685c8b0b1a",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "fe3924087e2ce2303a9a6f347d0a2259274683b07257e4e5b6d2c23b94bae8e1",
+      "before_sha256": "fe3924087e2ce2303a9a6f347d0a2259274683b07257e4e5b6d2c23b94bae8e1",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "677add7a87bdd28a6bb1b9f81038b03edc5d3c4ed206147661ba8f3f0fccd043",
+      "before_sha256": "677add7a87bdd28a6bb1b9f81038b03edc5d3c4ed206147661ba8f3f0fccd043",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "frontend-ui-engineering",
+    "learn-from-youtube",
+    "skill-creator",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "201a7d598f65b1712b5d4ac9765286aa9a55c1b6d7992745a13b13399ebb64ec",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

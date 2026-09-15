@@ -4,7 +4,7 @@ Use for a new visual direction, a substantial redesign, or a critique of composi
 
 ## Tune taste without restricting the design language
 
-Anthropic frontend-design, Impeccable, Hallmark, and the other reviewed sources supply ideas and evidence, not the boundaries of the result. Mix influences when they help express the engineer's taste; use other sources or original decisions when they fit better. Resolve conflicts in hierarchy, semantics, and component behavior rather than rejecting a combination merely because it has multiple lineages.
+Anthropic frontend-design, Impeccable, Hallmark, and other reviewed sources supply ideas, not boundaries or proof of better model output. Mix influences when they fit the user's expressed taste. Use other sources or original decisions when they fit better. Resolve conflicts in hierarchy, semantics and behavior rather than rejecting multiple lineages.
 
 Choose the taste dimensions relevant to the work. Possible dimensions include information density and whitespace; type character, scale contrast, and weight; palette temperature, saturation, and color coverage; radii, border weight, and elevation; symmetry, alignment, and rhythm; texture and ornament; imagery and icon treatment; motion energy and pacing; and conventional versus experimental presentation. This list is illustrative, not a required parameter schema, numerical slider system, or set of permanent defaults. A request may introduce a different dimension entirely.
 
@@ -16,7 +16,7 @@ The surface's job constrains usability, not taste to a genre: expressive color c
 
 Start from the surface's task and the design authority in `SKILL.md`. Inspect actual content and assets before choosing the page shape. A useful thesis explains what leads, what supports it, and why that relationship belongs to this product. “Clean, modern, premium” describes neither a composition nor a decision.
 
-For an open brief, compare a few genuinely different structures internally rather than producing color variants of one template. Choose by task clarity, content fit, continuity with the product, feasible assets, accessibility, and implementation cost. Familiar patterns can win on those grounds; novelty is not a separate requirement. Only show alternatives when requested or when a consequential unresolved choice needs the user.
+For an open brief, consider genuinely different structures rather than color variants of one template. When taste remains uncertain, use `taste-selection.md` to make a few directions tangible; if selection was delegated, compare internally and choose. Task clarity, content fit, continuity, feasible assets, accessibility and implementation cost constrain the choices. Familiar patterns can win; novelty is not a separate requirement.
 
 Translate subject cues selectively. A scientific product might benefit from clear notation and comparative data, not a decorative laboratory grid. An arts publication might use the work's own palette and scale, not automatically cream paper and italic serifs. Use cultural and material references to explain relationships, tone, or content—not to turn every app into a physical-object imitation.
 

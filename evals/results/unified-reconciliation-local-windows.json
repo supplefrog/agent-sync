@@ -5,10 +5,10 @@
     "contracts/host-deltas.schema.json": "f575fe641fcf6acdb0c2c18ff5723c926b146db5e5fcc8a78911c4a4a4b3b50a",
     "contracts/ownership.json": "4c5f351c3a84b01c8ab9930819518386d3adcdfb56abba73c9edb6b3b0887a47",
     "contracts/surface-matrix.json": "80409fa3b1e8fbd4e10299b315cc568d5354958f4dc3f57a8fc7c3f2daa80173",
-    "host-deltas.json": "8ad331ffd0fccd9a51ab92d37b1bc52a77c0a8e192cd92a73129394ca1170f44",
-    "recovery/current/manifest.json": "69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d",
+    "host-deltas.json": "677add7a87bdd28a6bb1b9f81038b03edc5d3c4ed206147661ba8f3f0fccd043",
+    "recovery/current/manifest.json": "56a58637f50b4464b52f2eeed6f0484bccd6b6a5bff28a0a98b213bba8a0905c",
     "registry.json": "d3ca18c4edc71113d9a669e3091ff005093c810baecb06abf5e9535633095d8a",
-    "render/fleet/manifest.json": "9721411ce1bf2faea42c1e3b8e16b18fce6231bc795d2765fabb4836ce7f395e",
+    "render/fleet/manifest.json": "d8e9e5dac87b80e886a3a8d60f55ca97315343237cdeb768af48b171499fb0cb",
     "tools/audit.py": "9852935d45b7ba8f75dc5b4bd439eedad5e13ea8c08709c9a9255c8370bdaff3",
     "tools/host_deltas.py": "aa79fb01da113e037be2dd946b91b5665b4336b973ac7c8a23c10ff73ce76a5a",
     "tools/reconcile.py": "7ab0ac1ce6d43a44ad117a3b446b0c27f57f9f1b53b0b6a904b38a5515f8c10d",
@@ -24,7 +24,7 @@
     "reconciliation plan"
   ],
   "machine": "local-windows",
-  "observed_at": "2026-09-15T03:47:06.112926+00:00",
+  "observed_at": "2026-09-15T16:26:14.097736+00:00",
   "result": {
     "decision": "agent-files-and-governance-verified",
     "limitation": "Local verification before Git publication. Only sync remote readback proves the subsequent push.",
