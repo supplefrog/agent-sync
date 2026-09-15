@@ -1,0 +1,85 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "983b010a17f596c85296cad15b4902f64935bc0922d4a38b99a23d29d2541a81",
+      "before_sha256": "983b010a17f596c85296cad15b4902f64935bc0922d4a38b99a23d29d2541a81",
+      "owner": "conversational-communication",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "fc2da4ab8676dd19389eb26bb6422c3d1ba6a66da91f306e76aae9b22de94191",
+      "before_sha256": "fc2da4ab8676dd19389eb26bb6422c3d1ba6a66da91f306e76aae9b22de94191",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "f9a6e9f8d577405db00c23a1bc4c5d4744ad3f384e6a8ca951e125202fa39904",
+      "before_sha256": "f9a6e9f8d577405db00c23a1bc4c5d4744ad3f384e6a8ca951e125202fa39904",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "14acc687443f7a4ed3f14bbb9071b37c60869ed86bfc0ca7772a75d70fc090a2",
+      "before_sha256": "14acc687443f7a4ed3f14bbb9071b37c60869ed86bfc0ca7772a75d70fc090a2",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "conversational-communication",
+    "skill-creator",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "37f72b37e8b4721a6f06e5ad1140449623cccc9f170024508671eb2cde751590",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

@@ -27,7 +27,7 @@ Patch an existing owner when it already covers the task. Create a new skill only
 
 ## Improve skills during collaborative work
 
-When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work; do not wait for a separate save request or leave the only copy in a project diary. Review after a meaningful correction or verified flow, not after every tool call. Preserve task data and incident evidence locally; distill the portable decision rule rather than copying the history.
+When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work; do not wait for a separate save request or leave the only copy in a project diary. Review after a meaningful correction or verified flow, not after every tool call. Preserve task data and incident evidence locally.
 
 Use the existing authorization for ordinary reversible skill improvements. Check the affected behavior and a nearby valid case, preserve rollback, and complete authorized synchronization. Do not duplicate an existing rule or create a new skill for a narrow addition. Speculative causal/model-quality claims remain candidates until suitable evidence supports them; automatic improvement is not automatic acceptance, paid evaluation, a new background watcher, or permission to weaken safeguards.
 
@@ -47,7 +47,7 @@ Write model-facing instructions in plain, human-readable language. Density shoul
 When writing durable instructions:
 
 1. For each sentence, name the intended behavioral difference and its basis: user preference, required boundary, or observed failure. Remove generic identity/aspiration without a wanted distinction; do not invent a retrospective rationale. Test uncertain benefit rather than treating a plausible story as evidence.
-2. Remove repeated formulations, narrative, and examples that do not disambiguate. Keep rationale only when it changes implementation or exposes a boundary.
+2. State the desired behavior directly rather than preserving the wording or history of a correction. Remove repetition and incidental contrasts; keep detail, examples and rationale only when they change a decision or boundary.
 3. Keep each procedure in one owner. Retain short, frequently needed rules inline when that avoids a larger skill load; defer substantial conditional detail. Judge economy by actually loaded context and induced tool work, not repository word count.
 4. Preserve user intent, scope, safety, governance, authorization boundaries, and capability; approval for one task does not authorize adjacent external action; brevity never overrides these.
 5. For retrying or externally mutating workflows, encode a stopping condition proportional to risk.

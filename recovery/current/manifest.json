@@ -10392,14 +10392,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 11483,
+      "bytes": 12543,
       "format": "text",
       "host": "hermes",
       "id": "native-df62610b16f6c6463d00",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "ee05b8f2b17e4301358269820709b33cde227ef7c7fdebee4f5f353ac213c2eb",
+      "sha256": "8f56900e8d3127cbb34859161b5bc3ecbcacc601e22f39eeec4ed07af330c602",
       "snapshot": "hosts/hermes/skills/research/iterative-blind-research/SKILL.md",
       "source": "skills/research/iterative-blind-research/SKILL.md",
       "strategy": "replace-if-absent"

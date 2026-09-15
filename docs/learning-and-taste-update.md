@@ -33,6 +33,14 @@ Source-level routing review, not a model benchmark:
 
 These reviews establish explicit contract coverage. They are not naturally triggered multi-host model trials or evidence of improved Astra output. The browser tests establish the actual template mechanism; no paid model evaluation was run.
 
+## Research and visibility follow-up
+
+The existing Hermes-native [iterative research owner](../recovery/current/hosts/hermes/skills/research/iterative-blind-research/SKILL.md) now requires direct investigation of a user's reported failure, exact model/version matching, practitioner evidence plus counterevidence, and an explicit distinction between source audits and output-quality comparisons. A narrow/failed search cannot establish absence of evidence. The native change was reviewed and applied through Hermes's existing skill-approval queue before recovery capture; it was not installed as a duplicate shared research skill.
+
+The shared [communication owner](../skills/conversational-communication/SKILL.md) calls for brief pre-action visibility without repetitive tool narration, and style suited to the user and context. Explicit deliverable requirements take precedence over conversational tone. The [authoring owner](../skills/skill-creator/SKILL.md) directs writers to distill corrections into behavioral rules, retaining details only when they change a decision or boundary.
+
+The user confirmed that messages were visible in Desktop. Installed-runtime commentary callback tests passed: three selected tests, with sixty deselected. This work corrects communication instructions, not a demonstrated rendering defect; no runtime/config patch was made.
+
 ## Boundaries
 
 This update does not implement a new notebook app, activate the existing research loop's live collectors, store personal learner profiles, or redesign an existing coursebook. An existing source/evidence system should remain the backend rather than be duplicated by a teaching skill. No session or source-media history was removed.

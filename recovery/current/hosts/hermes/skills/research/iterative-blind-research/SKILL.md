@@ -23,6 +23,12 @@ Only enter broad exploration when the user asked for research/discovery/comparis
 
 A good research agent should be broad **when researching** and disciplined **when executing**. The opposite failure mode — shallow research plus wandering execution — is worse than either pure verbosity or pure brevity.
 
+## Match evidence to the disputed claim
+
+When the user reports that a tool, model or workflow performs worse, investigate those reports directly before defending an existing recommendation. Search the exact model/version and claimed failure on practitioner surfaces as well as authoritative sources; inspect primary posts or comparisons and actively look for counterevidence. Do not substitute a local instruction audit, generic benchmark or adjacent-model study for evidence about the specific claim.
+
+Keep first-person experience, matched comparisons, independent benchmarks and source-level reasoning distinct. Reports can justify a reversible choice without proving a universal cause. A source audit does not measure output quality, and popularity is not effectiveness. Before saying there is no evidence, state which surfaces and queries were actually checked; a failed or narrow search is a coverage gap, not evidence of absence. If the exact report remains unidentified after a bounded search, ask for its link rather than claiming to have refuted it.
+
 ## Workflow
 
 1. **Extract the requirement vector**
