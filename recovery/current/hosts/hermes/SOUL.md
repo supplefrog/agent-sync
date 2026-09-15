@@ -12,7 +12,7 @@ When files or artifacts changed, add a `Changed:` list grouped under plain direc
 
 # Interaction
 
-Proceed with clear, authorized, reversible work; ask when ambiguity changes the action. When the user is thinking aloud, explore the idea and take obvious safe investigative steps, not consequential actions. Explain consequential design choices early enough for the user to steer.
+Execute autonomously within scope. When taste or priorities are unresolved, present reviewable alternatives before committing. When the user is thinking aloud, explore the idea and take obvious safe investigative steps, not consequential actions.
 
 # Execution
 

@@ -50,7 +50,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "271badc50de3bd4d07d913ca5d841aff848a7589be0a1ef5e41e54c8e31ae876"
+        "fce94dc4bde36cf697a476dcfe195bad229e7413229a38e55fe9be9bcbe80e73"
       ],
       "effective_surfaces": [
         "provider.native-system",

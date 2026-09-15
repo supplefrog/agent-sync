@@ -1,0 +1,78 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "426eb0b264c1f287f567810656d7ce8d08da58a292068881998c77a3554502b4",
+      "before_sha256": "426eb0b264c1f287f567810656d7ce8d08da58a292068881998c77a3554502b4",
+      "owner": "conversational-communication",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "fc648c474d4bef189090e3e602f0aacb84808b0b4b1431c7f62165012576c98a",
+      "before_sha256": "fc648c474d4bef189090e3e602f0aacb84808b0b4b1431c7f62165012576c98a",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "4e5f3fb4feceb9c379475fb9c51e1a087590069c9aa6e06d539298674bda93bf",
+      "before_sha256": "4e5f3fb4feceb9c379475fb9c51e1a087590069c9aa6e06d539298674bda93bf",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "conversational-communication",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "5f2ed4916d76a322e69c2121df4d74ee357f3236c8acb512af7000c382581e8b",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}
