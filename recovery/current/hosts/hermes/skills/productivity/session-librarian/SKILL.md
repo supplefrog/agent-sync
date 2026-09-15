@@ -39,6 +39,7 @@ always shows the plan before touching anything.
 |---|---|
 | Find sessions by topic, read content, summarize decisions | `session_search` tool (FTS5 over the message store) |
 | List/filter by metadata (age, source, cost, tokens, workspace) | `hermes sessions list` / `stats` via terminal |
+| Move an existing thread into a Desktop project | Native `session.workspace.move`; see [Desktop session operations](references/desktop-session-api.md) |
 | Rename | `hermes sessions rename <session_id> <title...>` |
 | Bulk soft-hide (reversible) | `hermes sessions archive <filters>` |
 | Delete (destructive) | `hermes sessions delete` / `hermes sessions prune <filters>` |

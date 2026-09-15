@@ -11,16 +11,24 @@ Use for an authorized fresh thread, session resume, or continuation. These are D
 | Connect another client to an already-live owner | `discover_attach_url` / cooperative attachment when that owner advertises it | Create, resume or continue |
 | Agent sends work to an exact existing Desktop session | Exposed `desktop_continue_session`, with agent attribution and its native consent/lifecycle handling | New thread creation, anonymous `prompt.submit`, or consent |
 | Submit the authorized initial turn in a newly created session | `prompt.submit` using the returned runtime ID | Persisting a seed or proof of completion |
+| Move a stored thread into a project | `session.workspace.move` with exact stored `session_key`, destination `cwd`, and explicit `profile` | `desktop_project switch` (current chat only), filesystem moves, or GUI clicks |
+| Read project membership | `projects.list` and `projects.project_sessions` | Session search results or a workspace-filtered CLI list with insufficient candidate coverage |
 | Show/focus a tab or verify its appearance | Desktop UI control, if no suitable native presentation tool exists | Backend creation/persistence |
 
 An attachment refusal only describes attachment. Missing discovery metadata, lease conflicts, authentication failures, unknown methods, stale connections and invalid arguments are different failure classes. Identify which occurred before changing code. Never delete a lease, manufacture credentials, or switch API/UI after a denied/expired approval. An uncertain write requires readback, not resend.
 
 ## Reuse the authenticated local connection
 
-1. Confirm the active profile/home and current Desktop backend process. Use the frontend's actual endpoint or the current session owner's process identity and its listening sockets, not an old port from a transcript. Only inspect the known owner's loopback listeners; do not scan arbitrary ports or other profiles. `HERMES_RPC_SOCKET` is the tool runner's RPC socket, not automatically Desktop's `/api/ws` endpoint.
+1. Confirm the active profile/home and current Desktop backend. Resolve its endpoint from the frontend connection or current `serve` startup announcement, then verify it with a read. Process ancestry and an open socket do not identify the protocol: the same process can also host tool-runner RPC listeners. `Invalid RPC request` from an HTTP probe is a protocol mismatch, not evidence that Desktop's API is unavailable. Recheck the endpoint with an independent read-only client before considering GUI fallback. Do not scan unrelated ports, reuse stale endpoints, or treat `HERMES_RPC_SOCKET` as Desktop's `/api/ws` endpoint.
 2. Prefer an exposed session-creation tool if one exists and matches this contract. Otherwise use Desktop's existing authenticated `/api/ws` JSON-RPC interface. Its local bootstrap is owned by `apps/desktop/electron/dashboard-token.ts`: read the verified backend's `/` page and consume its `window.__HERMES_SESSION_TOKEN__` in memory. The native server accepts it on `/api/ws?token=…`. Do not print, persist or include the token/URL in errors. Do not read OAuth stores or credential files for this operation. A gated deployment without the local bootstrap needs its supported login/ticket flow; absence is not permission to fabricate credentials.
 3. Use the same backend's authenticated read to confirm reachability, then `session.active_list`/`session.list` to verify expected identities and profile before mutation. HTTP readiness alone is not proof of the right backend. Disable proxy inheritance and redirects for local bootstrap; never send its credentials off-origin.
 4. Each WebSocket request is `{jsonrpc: "2.0", id: <unique id>, method: <exact method>, params: {...}}`. Match the response ID; consume notifications without treating them as responses or automatically answering approvals. Use bounded timeouts. Reconnect for a read-only check after a stale socket, but never replay a possibly accepted write automatically.
+
+## Move existing sessions
+
+Read `projects.list` to resolve the destination and its primary folder, and `session.list` / `session.active_list` to verify exact stored identities on the intended backend/profile. Send `session.workspace.move` once per authorized target with `{session_key, cwd, profile}`. This native operation updates stored workspace/git identity and re-anchors a live owner; do not replace it with direct database edits or a separate runtime that cannot see that owner.
+
+Read back `projects.project_sessions` for the destination and any project that must remain unchanged. Verify target membership and preserve titles/messages. Project membership changes do not copy source files or merge conversation histories. An ambiguous write result requires readback, never automatic resend. A tool schema that only moves the current chat is not evidence that the native API lacks a stored-session operation.
 
 ## Create once and verify
 

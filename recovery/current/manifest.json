@@ -126,14 +126,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5964,
+      "bytes": 7484,
       "format": "text",
       "host": "hermes",
       "id": "native-67c506eb26491eb307b3",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "120f691192bebe5dc034edeb2fd957db36c2fe9b7ed1d7798ec5dc3d24d409b9",
+      "sha256": "7f16ff84eab3b11b87a7af0f880f3c3d1802cb61d22295899c58940ccaf4fbcb",
       "snapshot": "hosts/hermes/skills/productivity/session-librarian/references/desktop-session-api.md",
       "source": "skills/productivity/session-librarian/references/desktop-session-api.md",
       "strategy": "replace-if-absent"
@@ -10049,14 +10049,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 6308,
+      "bytes": 6462,
       "format": "text",
       "host": "hermes",
       "id": "native-f09bae301475fffdb011",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "84f7577bf88472a9ef42ce3b73a481230bc5b7b89d6fd550667ea130a8c0c189",
+      "sha256": "fdacc4fc58175a3804fe5dd8243f4274384975a596ceab9601fc2bb88cac04dd",
       "snapshot": "hosts/hermes/skills/productivity/session-librarian/SKILL.md",
       "source": "skills/productivity/session-librarian/SKILL.md",
       "strategy": "replace-if-absent"
