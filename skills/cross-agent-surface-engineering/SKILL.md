@@ -92,4 +92,6 @@ When preserving a curated host, inventory skill and plugin packages, support fil
 
 Automatic learning is an intended capability, not drift merely because it spends inference or proposes frequent updates. Distinguish enforced ownership/approval/rollback boundaries from uncertain output quality; reproduce a safeguard failure before recommending a restriction on that basis. Curator, background review, and notification settings are separate controls.
 
+Hermes skill proposals use its existing write-approval queue, not live edits. During reconciliation, review `skill-proposals` findings with `skill-creator`; use `tools/hermes_skill_review.py show ID` for the private payload and review token. Approve checked native changes through that helper; promote shared/new owners from canonical source, then discard the proposal. Rejected or unresolved candidates stay out of live discovery; unrelated sync is not approval. Commands and limits: `docs/hermes-skill-proposals.md` in the owning checkout. Do not publish proposal bodies.
+
 Never copy credentials, sessions, memories, logs, caches, private user data, or provider-hidden prompts into Agent Sync. Do not modify another profile without explicit authorization. Do not infer parity from identical files, and do not lower one host to the weakest common mechanism.

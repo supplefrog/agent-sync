@@ -135,14 +135,7 @@ See ``references/orchestration-lifecycle-review-probes.md`` for compact reproduc
 
 ## Output
 
-For each blocking finding, report:
-
-- path and line;
-- concrete impact;
-- traced input/state/interleaving or real repro output;
-- smallest complete fix.
-
-End with one verdict: **ship**, **fix then ship**, **rework**, or **reject**. If clean, state the paths tested and the important untested scope.
+Use [code-change-verification's output and acceptance contract](../../../code-change-verification/SKILL.md#output-and-acceptance). Lifecycle evidence must identify the traced input/state/interleaving or real repro output.
 
 ## Pitfalls
 

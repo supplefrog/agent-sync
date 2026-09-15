@@ -20,6 +20,12 @@ Build a credible hiring story from the user's desired work and demonstrated capa
 6. **Draft claims with evidence attached.** Use implemented behavior and measured outcomes. Never promote rejected claims from an old AI-written resume into the factual source of truth. Verify each achievement independently; one tested contribution does not justify calling an entire portfolio test-backed. Preserve uncertainty about authorship, deployment, adoption, and metrics.
 7. **Recommend the smallest next improvement.** Prefer a clear demo, reproducible setup, regression tests, or a concise explanation of existing work when those close the hiring gap. Propose a new project only for a specific missing requirement and in a domain the user actually wants to pursue. Future exploration remains future work until artifacts exist.
 
+## Deferred improvements and target research
+
+When the user asks to defer a career-workflow idea, locate the project's existing task list and record the missing capability, scope and acceptance checks there; if none exists, create a small backlog in its user-data layer. Do not implement the idea, create an active automation job, or pause unrelated authorized work for another approval—the requested outcome is a durable deferred task.
+
+Before proposing a research pipeline, inspect existing company-research and interview-preparation modes. Extend only demonstrated gaps. Prefer a reusable company/team/role brief that changes apply/skip decisions, truthful evidence selection, interview questions or offer diligence over generic summaries. Record sources, dates, uncertainty and refresh needs. Recruiter research should use explicit public professional hiring signals, not inferred personality or private preferences; company research must never become evidence of the candidate's accomplishments.
+
 ## Resume comparison
 
 Preserve original source bundles, but do not confuse preserving originals with retaining every formatting macro in generated variants. LaTeX command names are not ATS credentials; evaluate the resulting document.

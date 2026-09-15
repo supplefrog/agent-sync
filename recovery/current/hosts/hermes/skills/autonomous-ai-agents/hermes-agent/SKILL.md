@@ -40,7 +40,8 @@ The locally supported agent roster is **Hermes, Codex, and OMP**. Provider integ
 
 ## Route by task
 
-- Setup, config, models/providers, profiles, tools/skills, sessions, dashboard, gateway, cron, voice, or process spawning => [Operations](references/operations.md)
+- Create a fresh Desktop thread, resume/continue a session, or organize sessions => load `session-librarian` for the native operation map and connection recipe before choosing a tool. Creation, attachment and continuation are different operations; a failure in one does not establish failure in another.
+- Setup, config, models/providers, profiles, tools/skills, dashboard, gateway, cron, voice, or process spawning => [Operations](references/operations.md)
 - Host/frontend-specific failure or stale behavior => [Platform troubleshooting](references/platform-troubleshooting.md)
 - Approval, redaction, privacy, network/tool restriction, or security diagnosis => [Security diagnostics](references/security-diagnostics.md)
 - Source change, architecture, tool/slash-command work, or tests => [Contributor guide](references/contributing.md)

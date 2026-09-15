@@ -1327,6 +1327,7 @@ class RoutedDelegationTests(unittest.TestCase):
     def test_native_spawn_requires_router_but_controls_remain_available(self) -> None:
         registered_hooks = {}
         ctx = types.SimpleNamespace(
+            get_config=lambda key, default=None: default,
             register_tool=lambda **kwargs: None,
             register_hook=lambda name, callback: registered_hooks.update({name: callback}),
         )
@@ -1344,9 +1345,24 @@ class RoutedDelegationTests(unittest.TestCase):
         for name in ("routed_delegate_task", "routed_workflow", "terminal", "memory"):
             self.assertIsNone(gate(tool_name=name, args={}))
 
+    def test_router_policy_can_be_disabled_without_removing_explicit_tools(self) -> None:
+        for value in (False, True, None, "false"):
+            with self.subTest(value=value):
+                hooks, tools = {}, []
+                ctx = types.SimpleNamespace(
+                    get_config=lambda key, default=None: value,
+                    register_tool=lambda **kwargs: tools.append(kwargs),
+                    register_hook=lambda name, callback: hooks.update({name: callback}),
+                )
+                self.plugin.register(ctx)
+                self.assertEqual("pre_tool_call" in hooks, value is not False)
+                self.assertEqual({item["name"] for item in tools},
+                                 {"routed_delegate_task", "routed_workflow"})
+
     def test_register_exposes_both_routed_tools(self) -> None:
         registered = []
         ctx = types.SimpleNamespace(
+            get_config=lambda key, default=None: default,
             register_tool=lambda **kwargs: registered.append(kwargs),
             register_hook=lambda *args: None,
         )

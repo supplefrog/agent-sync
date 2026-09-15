@@ -10,6 +10,14 @@ Use this reference for long-running capability, instruction-retirement, and cros
 - Before retrying, enumerate from the recorded native process identity and prove the whole descendant tree is inactive. Unknown liveness fails closed and blocks relaunch.
 - Count every observed physical model attempt from completed, interrupted, discarded, retried, and orphaned runs against the original episode cap. Never infer attempt count from the wrapper state or one visible session alone.
 
+## When qualifying changed execution machinery
+
+Keep the installed coordinator separate from candidate code under active workers. A review through the old runtime does not qualify the replacement's lifecycle. If the evaluator disables the changed mechanism, use a supported native trial or scope a minimal consumer extension; do not claim behavioral qualification from static review alone.
+
+For a bounded closure pass, preserve failed/inconclusive receipts and run only missing or invalidated checks. Before a replacement launch, reserve remaining prerequisite, review and integration maxima against actual consumption. Count HTTP sends, inference-bearing attempts and agent constructions separately where the trial contract caps them; zero-request refusals and inert parents may still consume invocation identities. Determine consumption from claims and receipts, not from whether inference occurred.
+
+Bind the protocol, fixtures, source/skill snapshots, launcher, verifier and preservation manifest with its contents before review; recheck relevant identities at admission and after execution. Review waits can stale route evidence: use a separately authorized capped native callability probe and task-local catalog rather than extending old timestamps or erasing refusals. Request only a necessary ceiling amendment; do not reopen already-sufficient scope. A known-good/known-bad control qualifies a check, not model quality.
+
 ## Cancellation and cleanup
 
 1. Persist the current run identity and known native handles before requesting cancellation.

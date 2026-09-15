@@ -4,7 +4,7 @@ Agent Sync can preserve reviewed host-local skill customizations without promoti
 
 ## Captured Hermes packages
 
-The explicit text-artifact allowlist now covers the inventoried Hermes catalogue: 101 packages and 859 package files, plus bundled-origin metadata. [The inventory](../recovery/hermes-local-inventory.json) records every included file and exclusion. Examples include:
+The explicit text-artifact allowlist now covers the inventoried Hermes catalogue: 101 packages and 861 package files, plus bundled-origin metadata. [The inventory](../recovery/hermes-local-inventory.json) records every included file and exclusion. Examples include:
 
 - `mcp/native-mcp`: narrowed server setup and connection troubleshooting.
 - `research/research-source-operations`: paper lookup, source acquisition, supporting scripts and references.

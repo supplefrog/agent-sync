@@ -1,6 +1,6 @@
 ---
 name: dynamic-workflows
-description: Run persisted routed DAGs across Codex, Hermes, and OMP. Use for broad parallel work, durable multi-agent workflows, or explicit DAG requests; not ordinary one-agent tasks or a small one-shot batch.
+description: Use only for explicitly requested routed DAGs or existing pinned runs. Legacy persisted state and host adapters; not an automatic prerequisite for parallel work or review.
 version: 3.0.0
 author: Local User
 license: UNLICENSED
@@ -8,13 +8,13 @@ license: UNLICENSED
 
 # Dynamic Workflows
 
-This is the definitive cross-host DAG contract. The portable state machine lives in `scripts/workflow_state.py`; hosts provide only native worker launch, cancellation, and result adapters.
+This is the legacy routed DAG contract, retained for explicit use and existing pinned runs. It is not the default coordinator workflow. The portable state machine lives in `scripts/workflow_state.py`; hosts provide native worker launch, cancellation, and result adapters.
 
 A workflow persists its immutable plan, task state, exact route receipts, prompts, and outputs outside the parent conversation. It does not retry through progressively higher reasoning efforts.
 
 ## Use it when
 
-Use a DAG when work has real parallel units, durable intermediate artifacts, dependency gates, or an independently useful verification stage. Use one agent or one bounded native batch when persistence and dependencies add no value.
+Use this implementation only when the user explicitly selects its routed contract or when inspecting/resuming an existing pinned run. Dependencies or review alone do not require this router. Prefer native bounded delegation for ordinary work; do not launch catalog/admission refreshes just to make this workflow usable.
 
 `max_workers` defaults to 8 as a ceiling, not a target. Choose a lower plan limit when useful; create only genuinely independent workstreams, never extra tasks to fill slots. Hermes also clamps concurrency to its native `delegation.max_concurrent_children` limit. Existing runs retain their pinned plan limits.
 
@@ -101,7 +101,7 @@ The current admitted V3 catalog has no `omp-workflow` cell, and the V2 installer
 
 ### Hermes
 
-Use `routed_workflow` for persisted DAGs and keep `routed_delegate_task` for ordinary one-shot routed delegation. `routed_workflow` exposes `init`, `run`, `status`, `resume`, and `complete-parent`; it consumes this state owner rather than implementing another scheduler or router.
+For explicitly selected routed DAGs, use `routed_workflow`; `routed_delegate_task` is for explicitly selected one-shot routed contracts, not ordinary delegation. `routed_workflow` exposes `init`, `run`, `status`, `resume`, and `complete-parent`; it consumes this state owner rather than implementing another scheduler or router.
 
 The adapter accepts routed tasks only, requires `workdir: "."`, and launches native Hermes leaf children with the exact receipt provider/model/reasoning tuple and fallback disabled. It binds each run manifest in a separate trusted store under `HERMES_HOME`, serializes run/resume with an execution lock, persists native results and outputs under each task, and records authoritative close witnesses outside the mutable run directory. An explicit reported model mismatch fails the task; a missing model echo is accepted only because the exact launch route was already verified.
 

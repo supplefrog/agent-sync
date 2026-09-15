@@ -1,7 +1,7 @@
 ---
 name: spike
 description: "Throwaway experiments to validate an idea before build."
-version: 1.0.0
+version: 1.0.1
 author: Hermes Agent (adapted from gsd-build/get-shit-done)
 license: MIT
 platforms: [linux, macos, windows]
@@ -20,8 +20,8 @@ Load this when the user says things like "let me try this", "I want to see if X 
 ## When NOT to use this
 
 - The answer is knowable from docs or reading code — just do research, don't build
-- The work is production path — use the `plan` skill instead
-- The idea is already validated — jump straight to implementation
+- The user wants a production implementation plan — load our local `plan` skill with `skill_view(name="plan")`, not Hermes' built-in `/plan` prompt. The local skill owns grounded, risk-scaled planning and plan revisions.
+- The user requests implementation of an already validated idea — implement within that authorization; do not force a plan document or a spike. Validation alone does not authorize implementation.
 
 ## If the user has the full GSD system installed
 

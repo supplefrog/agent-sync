@@ -90,6 +90,24 @@
     "hermes": {
       "artifacts": [
         {
+          "format": "text",
+          "id": "native-de11caa8730d194bd7f9",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/devops/hermes-engineering-operations/references/approval-boundary-review.md",
+          "source": "skills/devops/hermes-engineering-operations/references/approval-boundary-review.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-67c506eb26491eb307b3",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/productivity/session-librarian/references/desktop-session-api.md",
+          "source": "skills/productivity/session-librarian/references/desktop-session-api.md",
+          "strategy": "replace-if-absent"
+        },
+        {
           "format": "yaml",
           "id": "settings",
           "include": [

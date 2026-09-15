@@ -2504,7 +2504,10 @@ def _require_routed_delegation(*, tool_name: str, args: Any = None, **_kwargs: A
 
 
 def register(ctx: Any) -> None:
-    ctx.register_hook("pre_tool_call", _require_routed_delegation)
+    # This optional policy does not own approvals or explicit-route integrity.
+    # Only an explicit boolean false disables it; existing runs keep their pins.
+    if ctx.get_config("require_router", True) is not False:
+        ctx.register_hook("pre_tool_call", _require_routed_delegation)
     schema = {
         "name": "routed_delegate_task",
         "description": (

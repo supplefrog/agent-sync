@@ -1,0 +1,64 @@
+{
+  "purpose": "Current native tool callability only; not task quality or admission",
+  "model": "gpt-5.6-sol",
+  "effort": "low",
+  "request_cap": 5,
+  "http": [
+    {
+      "request": 1,
+      "status": 200
+    },
+    {
+      "request": 2,
+      "status": 200
+    },
+    {
+      "request": 3,
+      "status": 200
+    }
+  ],
+  "paid_fallback": false,
+  "catalog_modified": false,
+  "status": "completed",
+  "route": {
+    "host": "hermes",
+    "transport": "hermes-delegate",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "runtime": "hermes-delegate/native-source-v1",
+    "contract_sha256": "db0677e50eb6a576dc3fcf28c7964c3439efeefec1986cc29f05f802f9092515"
+  },
+  "native_contract": {
+    "runtime": "hermes-delegate/native-source-v1",
+    "sources": {
+      "run_agent.py": "a939a719c91ca860249166303adc91fa475b9dab6f8e3512e48d1eaca0d4729e",
+      "tools/delegate_tool.py": "8d2d684eda36dfa2b8371da814522d9b08c686105969eef366d265ae6f9e50f2",
+      "tools/delegate_tool_config.py": "6d5d799be6021232ea352ede62f912642f0174654079bd42a99e40daab9f597c",
+      "tools/delegate_tool_toolsets.py": "a1967a15c535dbbd100a812bfa5d43dd26459f1775ded775d59716faa1acfbe2",
+      "tools/delegate_tool_progress.py": "88e8a1eb8dd19321792d808c5af8b270aa492cb5ff6d60b4b901249726cd83ca",
+      "tools/delegate_tool_child_run.py": "42768b0fb5b816339665f492fdfffe0471f18557a33d88ad0acea03b653c8c1c",
+      "tools/delegate_tool_results.py": "bbd8517b4e49d7fa55ffed36fdabf898c2a41292619be4777af55060b19440c5",
+      "agent/agent_init.py": "81630166ba0c0119e676ac5e01fb0cc45de2e9d4a9ae52e5f56faf872905f194",
+      "agent/system_prompt.py": "20a6b326816fc6924ed0b5f4407281b38b9254f7b43465acff10fae09be3114f",
+      "agent/prompt_builder.py": "586ea363fa1e70bb0fdd5426af40758976a16c54f07efeb7a1b4f3fe0ad99309",
+      "agent/chat_completion_helpers.py": "e45f9480d4143c898c9bf091521f52563c72d1bdb40ddcd2bb2e143db014f23a",
+      "agent/transports/codex.py": "1b4d48515c0ddac7db53b3446e69da92dcdc773a5e59dd80b2bec17d49c65103"
+    }
+  },
+  "actual_tools": [
+    "read_file",
+    "search_files"
+  ],
+  "exit_reason": "completed",
+  "summary": "native-tool-roundtrip-confirmed",
+  "tools_exercised": [
+    "search_files",
+    "read_file"
+  ],
+  "model_calls": 3,
+  "accepted": true,
+  "active_children_remaining": 0,
+  "observed_at": "2026-09-15T00:26:32.606640+00:00",
+  "provider_resolved_identity": "not exposed by native result"
+}

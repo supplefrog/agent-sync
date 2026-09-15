@@ -1,6 +1,6 @@
 ---
 name: session-librarian
-description: "Organize sessions by prompt: find, rename, archive, prune."
+description: "Create, continue, find and organize Hermes sessions. Uses the native backend before GUI control; distinguishes creation, resume, attachment and continuation."
 version: 1.0.0
 author: Hermes Agent + Teknium
 license: MIT
@@ -26,6 +26,7 @@ always shows the plan before touching anything.
 
 ## When to Use
 
+- "Open a fresh thread/coordinator" / "spawn a Desktop session" / "continue that session."
 - "What sessions do I have about X?" / "What did we decide about X?"
 - "Rename these sessions to something meaningful."
 - "Clean up my session library" / "archive the stale ones."
@@ -61,7 +62,7 @@ one-line outcome.
 plan table first: which sessions get renamed to what, which get archived,
 which are proposed for deletion and why (duplicate of which keeper, stale,
 empty). Wait for the user's go-ahead. Exception: a single rename the user
-explicitly dictated can be done directly.
+explicitly dictated can be done directly. A clearly authorized single fresh-thread creation can also proceed through the native workflow below without repeating the consent question; normal tool approval gates still apply.
 
 ④ **Act with the safest primitive.**
 - Prefer `archive` (reversible soft-hide) over `delete`/`prune`.
@@ -76,7 +77,7 @@ anything exported, anything skipped and why.
 
 ## Creating a focused continuation
 
-- User authorizes a new interactive thread => inspect the live frontend's session tool/API before using computer use. Desktop's backend exposes `session.create` and `prompt.submit` over its authenticated `/api/ws` JSON-RPC transport; verify current parameters, authentication, persistence and disconnect behavior before calling. A backend-created session is not proof that a renderer tab opened. Do not substitute a one-shot worker for an interactive continuation.
+- Before Desktop creation/resume/continuation, load [Native Desktop session operations](references/desktop-session-api.md). It owns the operation map, authenticated connection recipe, route pins, readback and stop conditions. Use the existing backend before Computer Use; only repair a reproduced failure of the requested operation. A backend-created session is not proof that a renderer tab opened. Do not substitute a one-shot worker for an interactive continuation.
 - Seed only the selected workstream's goal, necessary evidence, constraints and next action. Keep unrelated approvals, memory maintenance and other workstreams in the originating thread; do not copy an omnibus history handoff or duplicate standing instructions.
 - Record the exact created ID and read back its seed/persistence before claiming success. If an authorized continuation already exists, reuse it; do not spawn test or replacement threads merely to validate the API. An unavailable or authentication-blocked API is a blocker to report, not a reason to guess endpoints or bypass authentication.
 

@@ -90,6 +90,12 @@ Record independently of embedded JSON:
 
 Keep “current run passed” separate from “the verification mechanism would reject a false result.”
 
+## Execution layers and approval boundaries
+
+For concurrency-corrected pilots, verify three claims separately: one-process regression tests, repeated same-conversation ingress/completion through the real runtime seam, and multi-process/shared-checkpointer behavior. Do not promote the first to either of the others. Label multi-process persistence unverified unless separate runtime instances/processes sharing production persistence were exercised.
+
+If a required command is blocked before execution by an approval boundary or unavailable runtime, record it as not executed. Do not infer output or reissue the same action through another tool. Keep this verification gap separate from code defects, while withholding a full-ship verdict when the requested gate did not run.
+
 ## Mutable-tag and gate-completeness probes
 
 A winner receipt that records an image digest after running a mutable tag is not an image-identity proof. Before execution, resolve the tag and compare it to the immutable digest in the build receipt and the task’s expected digest; preferably run the workload by digest. Re-check the digest after execution and treat any drift as a blocker. If the build receipt itself changes during review, preserve both observations and investigate concurrent rebuilds rather than accepting the newest receipt.

@@ -113,7 +113,33 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16823,
+      "bytes": 8283,
+      "format": "text",
+      "host": "hermes",
+      "id": "native-de11caa8730d194bd7f9",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "7a164adb404c896e20ef185d8d2eede24c40549ca6490395122a403c0dd61205",
+      "snapshot": "hosts/hermes/skills/devops/hermes-engineering-operations/references/approval-boundary-review.md",
+      "source": "skills/devops/hermes-engineering-operations/references/approval-boundary-review.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 5964,
+      "format": "text",
+      "host": "hermes",
+      "id": "native-67c506eb26491eb307b3",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "120f691192bebe5dc034edeb2fd957db36c2fe9b7ed1d7798ec5dc3d24d409b9",
+      "snapshot": "hosts/hermes/skills/productivity/session-librarian/references/desktop-session-api.md",
+      "source": "skills/productivity/session-librarian/references/desktop-session-api.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 16886,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -318,7 +344,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "993acd288ff75deaee46de743dce4e9a7ba37fe5e75aae910bc059ff4ae4bd76",
+      "sha256": "def304c9fa960235d51cc4d22d571ef4346e8560fc43f6915a79d9942416f636",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
@@ -366,14 +392,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16851,
+      "bytes": 11631,
       "format": "text",
       "host": "hermes",
       "id": "native-71bda44c932a64c934a4",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "0459a7ec821bfeba45b5a785203bde20d718b67466d4430316b3dac1dc402f5a",
+      "sha256": "371694b7ad002354e0c70607e955bcebee4d2103b61c7e251b559350f7dde70f",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/SKILL.md",
       "source": "skills/autonomous-ai-agents/agent-orchestration-operations/SKILL.md",
       "strategy": "replace-if-absent"
@@ -483,14 +509,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 4074,
+      "bytes": 8300,
       "format": "text",
       "host": "hermes",
       "id": "native-1d348cfdec1c13bd35f3",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "6e07c7f9a3acb0d33f7cfb63050609154297e5de3580b870ca0e260a93d3f5f5",
+      "sha256": "57b0948f14f24c8ac9fdbeebc504bf9e14d3b1f20561ac3b755a0edcc6861ee2",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/references/conversational-os-control-plane.md",
       "source": "skills/autonomous-ai-agents/agent-orchestration-operations/references/conversational-os-control-plane.md",
       "strategy": "replace-if-absent"
@@ -752,20 +778,20 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 9476,
+      "bytes": 10373,
       "format": "text",
       "host": "hermes",
       "id": "native-c245cc964d3b5ea52612",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "9381ee9408db341843b1f5716baf406a3b1eb4efa389f1ab46c62c96b9d06208",
+      "sha256": "010fad582819bef5f6aa045507e5d0ed2d10b65356b60b783c31e173eb3daadf",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/delegation-workflows/SKILL.md",
       "source": "skills/autonomous-ai-agents/delegation-workflows/SKILL.md",
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5810,
+      "bytes": 6104,
       "format": "text",
       "host": "hermes",
       "id": "native-833bca24675af28bef5e",
@@ -775,7 +801,7 @@
       "replace_sha256": [
         "a111466ce81ccdad8bccc7f670c7946df9d9f8b639399f28bd2958f5bce92c56"
       ],
-      "sha256": "158b39128cc463d0f7cccefb651fb48081e9c83d98461694a309a5888c0f1f2f",
+      "sha256": "bd5493ddfdbc7e74b7c4301d8acd5470918e2410628333657c222af21cab827e",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/hermes-agent/SKILL.md",
       "source": "skills/autonomous-ai-agents/hermes-agent/SKILL.md",
       "strategy": "replace-if-absent"
@@ -5884,14 +5910,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 13562,
+      "bytes": 14013,
       "format": "text",
       "host": "hermes",
       "id": "native-5feeb3939be551e15847",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "9ff1c0748a5a229f2baa739f47513b272cb8eb8d9f281c52a18e62310c4e3a4a",
+      "sha256": "4581260d50786c93b558460d48ca13d5f138bdb4fab98864cd7a5fc32455fc1a",
       "snapshot": "hosts/hermes/skills/devops/agent-capability-engineering/SKILL.md",
       "source": "skills/devops/agent-capability-engineering/SKILL.md",
       "strategy": "replace-if-absent"
@@ -6053,14 +6079,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 3114,
+      "bytes": 4544,
       "format": "text",
       "host": "hermes",
       "id": "native-0d818b4c39ae659e70e3",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "26c3d2f8df0cc077a48cc0a5ab1a2a13f18bd19b8cdfb7d6c2ca28aff558271c",
+      "sha256": "9a7b4f3127c3ca6dc2fdf6f693d68312eff20a388f254461e28ef47af9de2ce1",
       "snapshot": "hosts/hermes/skills/devops/agent-capability-engineering/references/evaluator-process-evidence-lifecycle.md",
       "source": "skills/devops/agent-capability-engineering/references/evaluator-process-evidence-lifecycle.md",
       "strategy": "replace-if-absent"
@@ -6339,14 +6365,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 6442,
+      "bytes": 5429,
       "format": "text",
       "host": "hermes",
       "id": "native-d45f0a3866dcc734d16d",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "546b789ba5510270874e5eca70ad80d0059e55c60412f01784be3c247a8f5ede",
+      "sha256": "225c1927421223554d6f2f4d6a5cfa9ed047e7eadda027a0446d63a7276e442f",
       "snapshot": "hosts/hermes/skills/devops/hermes-engineering-operations/SKILL.md",
       "source": "skills/devops/hermes-engineering-operations/SKILL.md",
       "strategy": "replace-if-absent"
@@ -6794,14 +6820,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 2527,
+      "bytes": 4049,
       "format": "text",
       "host": "hermes",
       "id": "native-b950ffc2daf3ec752de1",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "233576e3e695aa6008837d1379a96fa52514846e84bf2ca1fc4bd4640e0a18d7",
+      "sha256": "91044d853bfabe288b4a4624fe764077c3bf32840a90109396b0847e6f47066a",
       "snapshot": "hosts/hermes/skills/devops/hermes-engineering-operations/references/live-desktop-probes.md",
       "source": "skills/devops/hermes-engineering-operations/references/live-desktop-probes.md",
       "strategy": "replace-if-absent"
@@ -10023,14 +10049,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5933,
+      "bytes": 6308,
       "format": "text",
       "host": "hermes",
       "id": "native-f09bae301475fffdb011",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "a1b5ce7d9863b4f615e981d5a98861ba616c16d4ae30cd3652420fb67428373b",
+      "sha256": "84f7577bf88472a9ef42ce3b73a481230bc5b7b89d6fd550667ea130a8c0c189",
       "snapshot": "hosts/hermes/skills/productivity/session-librarian/SKILL.md",
       "source": "skills/productivity/session-librarian/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11133,14 +11159,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 8146,
+      "bytes": 8748,
       "format": "text",
       "host": "hermes",
       "id": "native-c4f149368b50facd9644",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "8fc9f4d534e3cda925c4caee3881f6cf2d1f0e45e9e8aa9ff3155698b6a0a169",
+      "sha256": "6e10d6f22fa119d631415f1a154e1d95205138c8630afa00099a279adb1ab143",
       "snapshot": "hosts/hermes/skills/software-development/code-change-verification/SKILL.md",
       "source": "skills/software-development/code-change-verification/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11505,27 +11531,27 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5070,
+      "bytes": 6397,
       "format": "text",
       "host": "hermes",
       "id": "native-cca83afdaad05753335c",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "baaf8013a595c4c3918c102d5e38557108ac0766c95556ecd9b29743431d81f0",
+      "sha256": "b147fdd3456adc4a5026602a1ce134b6c319b6cccd1cade1f2fd291c6914f378",
       "snapshot": "hosts/hermes/skills/software-development/plan/SKILL.md",
       "source": "skills/software-development/plan/SKILL.md",
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 15593,
+      "bytes": 4829,
       "format": "text",
       "host": "hermes",
       "id": "native-f24fde821846cbec20ff",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "3b8ffefe7b11a1dfef9d6fc581a36e27e2e31441792142fcc627d2744cc65637",
+      "sha256": "c0625abc6001a205621ef161a406f75b6203c21ee5008a489614384e53cd7d9f",
       "snapshot": "hosts/hermes/skills/software-development/repository-inspection-audits/SKILL.md",
       "source": "skills/software-development/repository-inspection-audits/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11583,14 +11609,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 2150,
+      "bytes": 4726,
       "format": "text",
       "host": "hermes",
       "id": "native-91613d3fc5dbb3424ef8",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "84953fd505ebf5a1a142958f388b650b2eca4e4700115edfd7d83aee93f1c04a",
+      "sha256": "31d13dc7ae7cc0f9146ad36cdf794b4dc9f4d7fba0833f002550ce3b08027941",
       "snapshot": "hosts/hermes/skills/software-development/repository-inspection-audits/references/grounded-verification-adversarial-probes.md",
       "source": "skills/software-development/repository-inspection-audits/references/grounded-verification-adversarial-probes.md",
       "strategy": "replace-if-absent"
@@ -11648,14 +11674,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 6442,
+      "bytes": 7218,
       "format": "text",
       "host": "hermes",
       "id": "native-1c10fba1cf0a42194e6b",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "b3af00c67e22da8b0903206cc9036e5dbd81070e6d37613b16bb0d5c975f0655",
+      "sha256": "23309ead0b0574c5514ba897279dec01bba789f74f4c9676e873ee64ff9251bf",
       "snapshot": "hosts/hermes/skills/software-development/repository-inspection-audits/references/winner-pilot-verification.md",
       "source": "skills/software-development/repository-inspection-audits/references/winner-pilot-verification.md",
       "strategy": "replace-if-absent"
@@ -11700,27 +11726,27 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 2931,
+      "bytes": 4754,
       "format": "text",
       "host": "hermes",
       "id": "native-7401540a0061e4ace2d2",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "5a5c195fd83cfb357e6a43bbe78ab1ab099257e777a9e337f99e0a15503f301d",
+      "sha256": "ade031fc1bc53b06dbeccfadb91e5ca493e66424e89c544a8b5a37669167f4ae",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/SKILL.md",
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 6045,
+      "bytes": 6638,
       "format": "text",
       "host": "hermes",
       "id": "native-69489e7b15567d196cdc",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "4980a1daeeea2d95250b10f364fc821df6d3e3ce93c2d55ac7db79e70543f08c",
+      "sha256": "54df6acd5470aeecf00d2e88ae506f3e6e64bd9db7061115193fd79e966b2bb3",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/event-driven-integration-review/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/references/event-driven-integration-review/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11739,14 +11765,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 13604,
+      "bytes": 13527,
       "format": "text",
       "host": "hermes",
       "id": "native-6e544026419c61a168d0",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "8c95e7e457b597b2ae90bfc22d65c401336d7f7d863e66bca902e33341113b75",
+      "sha256": "8c0137ece47a63c5c954b163d8f47d8b0fdbda5875e1a2cfdbdeca78d3e343ba",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/persistence-lifecycle-review/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/references/persistence-lifecycle-review/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11856,14 +11882,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 11633,
+      "bytes": 13124,
       "format": "text",
       "host": "hermes",
       "id": "native-bea77552c06e50ef7357",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "ea4ef06d2a310e720a399329035031a46280839d3f9a918a195a3b77b2aaaf5d",
+      "sha256": "575a7be86a977ca1e4a068a29d7aa02648e24f21cf2cfea7776e60b7447bcbab",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/structured-contract-verification/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/references/structured-contract-verification/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11882,7 +11908,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 10445,
+      "bytes": 10735,
       "format": "text",
       "host": "hermes",
       "id": "native-ea4fe2cdcc8976469fc0",
@@ -11892,7 +11918,7 @@
       "replace_sha256": [
         "573d8fc0d6699eaf5308e742402bc02c883152ffeebe14607f164c6c538495c2"
       ],
-      "sha256": "5a5ef945c1f75e7a425cd423e39acfc46555d24ff86e55c851d49d0f2a0c9232",
+      "sha256": "a3e34bc36716ca8023ed3dfa666001ddc26680657c5da1eb32eae465cdcd92cd",
       "snapshot": "hosts/hermes/skills/software-development/spike/SKILL.md",
       "source": "skills/software-development/spike/SKILL.md",
       "strategy": "replace-if-absent"
@@ -13280,14 +13306,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 4268,
+      "bytes": 5272,
       "format": "text",
       "host": "hermes",
       "id": "native-0de41087d8ac0f26d4a8",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "2f4e1f14f0ecfb32f1ab8f7077e26728fd244acbd168069589f6f38e3ee0e77e",
+      "sha256": "cc7a1c2e036628ec6748f2972b6ecfc9a253696e91d5f5b114ed6fbda24460d6",
       "snapshot": "hosts/hermes/skills/productivity/career-portfolio-positioning/SKILL.md",
       "source": "skills/productivity/career-portfolio-positioning/SKILL.md",
       "strategy": "replace-if-absent"
@@ -13377,7 +13403,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "dbee0013011535be3b8ba0bf6691c149af8938aea495a6cbec67780ad0660261",
+  "policy_sha256": "05f711d1fe66a0eae0a46faaa84847a234eb2569e24205022bd15f11d1d7929b",
   "public_safe": true,
   "schema_version": 1
 }

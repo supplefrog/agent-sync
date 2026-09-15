@@ -106,32 +106,23 @@ Classify proposed fixes:
 
 ### 7. Use independent review only when it pays
 
-A fresh reviewer is useful when the diff is nontrivial and one of these is true:
+Use a fresh reviewer when requested or when a nontrivial diff changes security/auth/provider/config/persistence/lifecycle behavior, involves ambiguous judgment, or makes author bias material. Give the intended behavior, current implementation diff, repository path and check evidence. Review that diff, not the whole system again unless a named regression or unmet requirement warrants it. The parent checks findings; do not launch automatic fix-agent loops or require reviewers for tiny unambiguous edits.
 
-- security/auth/provider/config/persistence/lifecycle code changed;
-- the implementation involved ambiguous judgment;
-- the diff is broad enough that author bias is a material risk;
-- the user explicitly asks for independent review.
+## Output and acceptance
 
-Give the reviewer the intended behavior, diff, repository path, and verification output. Ask for evidence-backed blocking findings, not generic suggestions. The parent verifies the findings and owns the final judgment.
+Report blockers with file/line, concrete impact, traced input/state or reproduction evidence, and smallest complete fix. Falsify them against existing guards and a control case; distinguish baseline failures from regressions. Do not manufacture findings.
 
-Do not require independent reviewers for tiny changes, and do not launch automatic fix-agent loops for issues the parent can correct and verify directly.
+Record commands, exits/results, artifact links and limitations once; reuse evidence links in handoffs. Acceptance binds the diff/artifact, criteria, checks and any reviewer output identities (revision/hash). For delegated work, include the route/task/attempt receipt; ordinary local reviews need no delegation record. Recheck evidence affected by changed inputs; worker completion alone is not acceptance.
 
-## Output
+Separate the review verdict (**ship**, **fix then ship**, **rework**, **reject**) from each work item's state:
 
-For each blocking finding, report:
+- **completed:** the scoped work finished; identify whether parent acceptance passed or remains pending;
+- **blocked:** a required prerequisite is unavailable;
+- **awaiting approval:** the next action requires ungranted authority;
+- **failed:** an attempted check or execution failed; preserve that result.
 
-- **Finding:** specific defect with file/line when available.
-- **Impact:** concrete failure or risk.
-- **Evidence:** traced path, input, or test exposing it.
-- **Smallest complete fix:** correction that addresses the mechanism.
-
-End with one verdict: **ship**, **fix then ship**, **rework**, or **reject**. If clean, state what path was traced, what commands passed, and the important untested scope.
+Give each item's next action and exact evidence; report untested scope. **Ship** recommends within reviewed scope, not release/deployment/publication permission. Host/task owners retain lifecycle commands; ordinary reviews do not use Kanban.
 
 ## Pitfalls
 
-- Code inspection alone is not verification when execution is available.
-- A mock-only test may prove the mock, not production behavior.
-- A smaller diff is not better if it preserves the bug’s real cause.
-- A cleanup pass is not permission to redesign unrelated code.
-- Tool output and reviewer summaries are evidence to check, not authority.
+Inspection is not execution; mock-only passes do not prove production behavior. Check reviewer claims against source or execution evidence; do not accept summaries on authority or expand an authorized fix into unrelated cleanup.

@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "catalog_version": "2026-09-14-task-first-source-review",
+  "catalog_version": "2026-09-15-current-native-sol-tools-002632Z",
   "candidates": [
     {
       "id": "hermes-sol-low-inline",
@@ -121,14 +121,14 @@
         "model": "gpt-5.6-sol",
         "reasoning_effort": "low",
         "runtime": "hermes-delegate/native-source-v1",
-        "contract_sha256": "28a997964f42d8bc3ff3f4bb1c571b8a521aabb3d7531b5583ebb12128610f41"
+        "contract_sha256": "db0677e50eb6a576dc3fcf28c7964c3439efeefec1986cc29f05f802f9092515"
       },
       "availability": {
         "status": "verified",
-        "observed_at": "2026-09-14T01:49:36.937504+00:00",
-        "valid_until": "2026-09-15T01:49:36.937504+00:00",
-        "route_sha256": "710cb3a044bc460f041073c1691034d5219a5bb0682a02a030a03609536b6f65",
-        "context_tokens": 272000,
+        "observed_at": "2026-09-15T00:26:32.606640+00:00",
+        "valid_until": "2026-09-16T00:26:32.606640+00:00",
+        "route_sha256": "0670ac8e0ea7a4c95215c6a3024bf8df6094122374a13cc44914dd1ee68574ba",
+        "context_tokens": 32000,
         "tools_verified": [
           "read_file",
           "search_files"
@@ -137,8 +137,8 @@
           "none"
         ],
         "evidence": {
-          "locator": "references/evidence/hermes-sol-low-tools.json",
-          "sha256": "965beb21f17ec4c9dddd2fa1607d4b878fa995097934b67c1653c2e9d202c4e3"
+          "locator": "references/evidence/hermes-sol-low-tools-20260915T002632Z.json",
+          "sha256": "d340aeafddb2b8c68c6690eb5c0053f995abf12a0389721db3fcee6c3b73e01c"
         }
       },
       "quality": [],

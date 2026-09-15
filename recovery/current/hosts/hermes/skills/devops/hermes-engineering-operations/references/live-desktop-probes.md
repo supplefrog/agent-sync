@@ -2,11 +2,21 @@
 
 Use when validating Hermes Desktop behavior that may route, branch, delegate, compress, or create visible sessions.
 
+## Select the session operation before testing or repairing it
+
+1. Load `session-librarian` and its `references/desktop-session-api.md` for operation selection, authentication, route pins and exact readback. Recheck source only when that recipe conflicts with the installed contract; an unrelated helper's failure does not justify another API repair.
+2. For a fresh coordinator, carry the current outcome, authorization, changed controls, evidence pointers and next task—not the old transcript or stale task list.
+3. Distinguish backend activation from a clean conversation context. An existing session recipe is not permission to run extra live probes.
+
+A user-authorized session operation is not itself a request for another API repair, routing benchmark or admission campaign. Investigate only a reproduced failure of the requested operation.
+
 ## Before a live probe
+
+For staged skill edits, first use a fresh process with a probe-local `HERMES_HOME` and `skills.external_dirs` pointing only to the staged tree. Confirm discovered names, returned source paths and content without changing live discovery. Load nested reference packages through `skill_view(owner, file_path="references/.../SKILL.md")`, not as standalone names. Cover an ordinary load, unknown name and traversal refusal. Loader compatibility does not prove natural triggering or model quality; these checks need no inference or visible test session.
 
 1. Inspect existing sessions and prior evidence. Do not rerun a cross-thread smoke because its result is absent from the current context.
 2. Treat session-list changes as user-facing side effects. Get explicit approval before a probe can create, route, branch, or delegate into another visible session.
-3. Prefer deterministic tests and logs. A live probe is an admission gate, not a substitute for unit coverage.
+3. For a behavior change, use existing logs and the cheapest check that exercises the changed boundary. Do not substitute option-setting tests for the reported UX outcome, or add a test campaign before an ordinary supported operation.
 4. Make the probe bounded and non-delegating: no whole-repository audits, broad research, implementation work, or prompts likely to spawn workers. Prohibit tools and delegation when they are not under test.
 5. Record the origin and every destination/child ID when created. Submit once; after an ambiguous submit, read live state before any retry.
 

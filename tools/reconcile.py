@@ -18,18 +18,20 @@ from typing import Any, Mapping, Sequence
 import jsonschema
 
 try:
+    import hermes_skill_review
     import capability_intake
     import fleet
     import host_deltas
     import recovery
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import hermes_skill_review  # type: ignore
     import capability_intake  # type: ignore
     import fleet  # type: ignore
     import host_deltas  # type: ignore
     import recovery  # type: ignore
 
-SURFACES = ["recovery", "fleet", "instructions", "governance", "host-deltas"]
+SURFACES = ["recovery", "fleet", "instructions", "governance", "host-deltas", "skill-proposals"]
 LIVE_MUTATION_ACTIONS = {"add", "adopt", "materialize", "repair", "update", "remove"}
 
 
@@ -181,6 +183,9 @@ def plan(
 
     findings.extend(_instruction_findings(repo))
     findings.extend(_governance_findings(repo))
+    roots = recovery._default_roots() if recovery_roots is None else recovery_roots
+    if roots.get("hermes"):
+        findings.extend(_with_id(item) for item in hermes_skill_review.pending_findings(Path(roots["hermes"])))
     manifest = repo / "host-deltas.json"
     schema = repo / "contracts" / "host-deltas.schema.json"
     if manifest.is_file() and schema.is_file():
@@ -814,6 +819,8 @@ def complete_sync(
             findings = plan(repo, machine=machine, recovery_roots=recovery_roots, skill_roots=skill_roots)["findings"]
             blocked = []
             for item in findings:
+                if item["surface"] == "skill-proposals":
+                    continue  # Remain staged; unrelated checked sync is not proposal approval.
                 if item["surface"] == "fleet" and item["target"] in names and item.get("source_action") not in {"remove", "forget"}:
                     continue  # _skill_state has already proved one unambiguous admitted owner.
                 if item["surface"] == "recovery" and capture and item.get("source_action") != "conflict":

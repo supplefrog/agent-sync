@@ -1,7 +1,7 @@
 ---
 name: plan
 description: Use when the user explicitly wants an implementation plan instead of execution, invokes plan mode, or needs a durable multi-step handoff before coding. Inspect read-only context, write one actionable markdown plan under .hermes/plans/, and do not implement. Do not trigger merely because a coding task has multiple steps.
-version: 3.0.0
+version: 3.1.0
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -13,16 +13,18 @@ metadata:
 
 # Plan Mode
 
-Use this when the deliverable is a plan, not working code.
+Use this when the deliverable is a plan, not working code. Models load this local skill with `skill_view(name="plan")`; Hermes' built-in `/plan` command uses a separate prompt and does not load this skill.
 
 ## Boundaries
 
-For this turn:
+For this planning request, including its clarification and revision turns:
 
 - Inspect the repository and relevant evidence with read-only tools.
 - Do not implement, mutate project files, install packages, commit, push, or perform external side effects.
 - The only file you may create or edit is the requested plan document.
 - If the user explicitly supplied another output path, use it. Otherwise save under `.hermes/plans/` in the active workspace.
+
+Continue planning until the user requests implementation or changes the task. Answering a clarification or agreeing with a design choice is not execution authorization. These are instruction-level boundaries, not a runtime write gate.
 
 Do not force plan mode onto ordinary implementation requests. The parent can keep a short internal/todo plan while executing without creating a durable plan document.
 
@@ -42,7 +44,9 @@ Ask only when missing information changes the plan. Otherwise inspect and state 
 
 ### 2. Inspect enough of the real system
 
-Locate the likely entry points, call paths, state/persistence boundaries, tests, project conventions, and build commands. Prefer exact paths supported by inspection. Do not invent line numbers, APIs, files, or code that have not been checked.
+Locate the likely entry points, call paths, state/persistence boundaries, tests, project conventions, and build commands. Distinguish existing paths verified by inspection, proposed new paths consistent with project conventions, and discovery targets whose location is unresolved. Do not present proposed files, APIs, or code as existing facts, or invent line numbers.
+
+Stop inspecting when the approach, relevant interfaces, principal risks, and verification path are grounded. Carry non-blocking uncertainty as labeled assumptions; use a bounded discovery task with a decision criterion for uncertainty that cannot be resolved read-only. Do not prescribe dependent implementation as settled before that decision.
 
 For bug work, identify the reproduction and likely diagnostic phase before prescribing a fix. A plan should not turn an unverified hypothesis into implementation fact.
 
@@ -53,7 +57,7 @@ Break work into coherent, independently verifiable tasks. A task should produce 
 For each task include, when relevant:
 
 - **Outcome:** what becomes true.
-- **Files/components:** exact known paths; label uncertain paths as discovery targets.
+- **Files/components:** verified existing paths, proposed new paths, or labeled discovery targets.
 - **Changes:** behavior and interfaces to add, remove, or preserve.
 - **Verification:** exact test/probe and expected evidence.
 - **Dependencies:** what must be completed or learned first.
@@ -112,13 +116,15 @@ Use only sections that add value:
 
 ## Save and report
 
-Default path:
+Revise the existing document for the same task; create a separate version only for a distinct alternative or an explicit request. When resuming or revising, recheck the repository evidence underlying affected steps rather than assuming the old plan still applies. Mark plans with unresolved blocking decisions as drafts, naming the decision and affected tasks.
+
+Default path for a new plan:
 
 ```text
 .hermes/plans/YYYY-MM-DD_HHMMSS-<slug>.md
 ```
 
-Use the active workspace and backend-aware file tools. After writing, read back enough to verify the file and then report the saved path plus the plan’s approach in one or two sentences.
+Use the active workspace and backend-aware file tools. After writing, read back enough to verify the file and then report the saved path, the plan’s approach, and any blocking decision in one or two sentences.
 
 ## Pitfalls
 

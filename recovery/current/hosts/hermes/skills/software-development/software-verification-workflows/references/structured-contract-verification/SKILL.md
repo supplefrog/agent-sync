@@ -54,6 +54,8 @@ Inspect every production caller (CLI, gateway watcher, dashboard/plugin) and sea
 
 A passing candidate-trial or terminal-child artifact is evidence only for the scope declared by its immutable contract. It cannot satisfy candidate-comparison, architecture-selection, or promotion scope by implication.
 
+Distinguish execution completion, artifact acceptance and release authorization at the actual consumers. Permit unaccepted evidence to inform a disposable draft within separately granted bounded authority; it cannot expand permissions or authorize publication. Persist an explicit parent or verifier verdict bound to the actual result, output and upstream artifacts reviewed; reject missing verdicts or changed identities. Never infer semantic acceptance from a case ID or create a fresh affirmative verdict merely by hashing the current output: recomputing identity is not re-review. Apply this at consequential acceptance boundaries rather than adding semantic verification before every dependency. Test the binding with a correct reviewed output, a wrong-but-well-formed replacement, a changed upstream input and a missing verdict.
+
 For each broader decision scope, assert all three boundaries through externally observable behavior:
 
 1. the immutable contract explicitly declares the broader scope;
@@ -67,10 +69,10 @@ Use a black-box acceptance check with a legitimate passing child receipt submitt
 For evidence-gated verification reports, add a deterministic receipt matrix rather than trusting summary prose:
 
 1. Count acceptance criteria and flatten every criterion-to-scope mapping. Require every criterion to appear exactly once; reject unknown, omitted, and duplicate IDs.
-2. For each declared scope, require one typed evidence artifact whose `scope_id`, decision type, contract binding, and declared lane set match the immutable scope. Verify every lane's path exists, digest matches the bytes on disk, and both the lane and artifact result are `pass`.
+2. For each declared scope, require one typed evidence artifact whose `scope_id`, decision type, contract binding, and declared lane set match the immutable scope. Verify every lane's path exists, digest matches the bytes on disk, and both the lane and artifact result are `pass`. For a review-gated launch, require the complete expected binding set—authorization plan, trial matrix, launcher, worker and verifier—not merely whichever hashes the gate happens to provide. Validate preservation-manifest identity and its referenced artifacts, and check frozen skill/input snapshots before claiming execution and again afterward; a valid manifest hash alone does not prove its contents remain intact.
 3. Exercise representative mutations for omitted required lanes, missing required verdict gates, duplicate evidence records/lanes, wrong-scope artifacts, stale hashes, unknown scopes, and stale or substituted trust-root receipts. Assert rejection at the CLI boundary, not only from a helper.
 4. Run the valid CLI with every verifier-supplied external trust root. Run it again with roots omitted and with a stale root; all must reject. A provisional label is a reporting state, not a technical blocker, but it must not be silently treated as final approval.
-5. Recompute every artifact hash claimed by each current report independently. Compare the reports' counts, scope coverage, runtimes, and verdict fields to live execution output. Record any optional live-environment drift separately from the contract verdict.
+5. Hash fixture bytes after materialization, not only the source strings used to write them; platform newline conversion can otherwise invalidate a supposedly frozen identity. Label canonical-text hashes separately from raw-file hashes. Recompute every artifact hash claimed by each current report independently. Compare the reports' counts, scope coverage, runtimes, and verdict fields to live execution output. Record any optional live-environment drift separately from the contract verdict.
 
 For a pilot/world-state gate, derive blockers from the evidence fixture and compare the derived blocker set, non-regression set, and route-change flag to the persisted report. Never certify a claimed pilot count from report prose alone.
 

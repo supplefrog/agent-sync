@@ -128,10 +128,27 @@ class ReconcileTests(unittest.TestCase):
             self.assertEqual(before, digest(Path(temp)))
             self.assertFalse(report["mutation_performed"])
             self.assertEqual(
-                {"recovery", "fleet", "instructions", "governance", "host-deltas"},
+                {"recovery", "fleet", "instructions", "governance", "host-deltas", "skill-proposals"},
                 set(report["surfaces"]),
             )
             self.assertEqual(len(report["findings"]), len({item["finding_id"] for item in report["findings"]}))
+
+    def test_plan_includes_native_queue_without_copying_payload(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            repo, live = self.fixture(root)
+            home = root / "home"
+            pending = home / "pending/skills/0123abcd.json"
+            pending.parent.mkdir(parents=True)
+            pending.write_text('{"payload": "PRIVATE PROPOSAL"}')
+            before = digest(root)
+            with patch.object(self.reconcile.capability_intake, "scan", return_value={"findings": []}):
+                report = self.reconcile.plan(repo, machine="test", recovery_roots={"hermes": home}, skill_roots=[live])
+            proposals = [item for item in report["findings"] if item["surface"] == "skill-proposals"]
+            self.assertEqual(len(proposals), 1)
+            self.assertEqual(proposals[0]["pending_id"], "0123abcd")
+            self.assertNotIn("PRIVATE PROPOSAL", json.dumps(report))
+            self.assertEqual(before, digest(root))
 
     def test_sync_adopts_single_origin_existing_owner_transactionally_and_is_idempotent(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

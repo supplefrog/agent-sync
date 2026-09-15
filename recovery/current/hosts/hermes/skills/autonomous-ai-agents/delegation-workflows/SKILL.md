@@ -40,6 +40,8 @@ A strong parent may still delegate bounded evidence gathering for a high-risk de
 
 ## 2. Partition by ownership, not arbitrary size
 
+Identify the current thread's user-assigned purpose before taking on substantial work. If a new task would overflow that purpose or consume the coordinator with implementation, research, or review detail, move that task into a separate bounded thread or delegated context without waiting for a reminder. Keep routine integration and short checks in the parent; context separation is not permission for extra scope or paid inference. Advance dependency-ready authorized work after reconciling completion; pause for real decisions or explicit approval blockers, not routine acknowledgements.
+
 Good child boundaries produce independent artifacts or findings:
 
 - inspect separate subsystems;
@@ -76,7 +78,7 @@ For code tasks, give the repository path and tell the child whether it may edit.
 
 - **One direct tool call:** do not spawn a child.
 - **Several mechanical calls with processing:** use `execute_code`.
-- **Independent reasoning/inspection tasks:** use `routed_delegate_task` with the current route owner's V3 contract. Native delegation is available only when the router is not governing new launches; a router rejection is not permission to bypass it.
+- **Independent bounded tasks:** use native delegation when its actual model, effort, tools and lifecycle meet the task. The custom routed selector is not a prerequisite for ordinary work. Use routed tools only for an explicitly requested routed contract or an existing pinned run; a rejection under that contract is not permission to bypass it.
 - **Durable or long-running work:** use tracked background processes, cron, or an explicit external agent—not ephemeral delegation.
 - **Interactive work:** keep it in the parent or use an appropriate PTY/external-agent workflow.
 
@@ -86,9 +88,11 @@ Treat child contexts as temporary. A returned final summary or stopped process d
 
 ## 5. Model/routing discipline
 
-For new routed tasks, follow `openai-delegation-route-research` for the V3 request and current evidence-worker option. State the outcome, acceptance check, tools, resource authorization, and why separate context or parallel work helps. Do not infer task fitness from a model tier or claim savings without comparable observations. A direct task ID owns one attempt; repeating it does not launch a retry.
+The controller owns intent, task boundaries, dispatch, permissions and acceptance. Use capable models for difficult planning and fresh substantive review; cheaper workers get explicit bounded implementation and escalate surprises. Do not infer suitability from route admission or price. Keep instructions short and source-grounded.
 
-The routed tool binds the exact native route and execution input. If its host seam, provider, receipt, or task binding cannot be verified, diagnose the mismatch and preserve its safeguards. Do not substitute native delegation or change global configuration between launches to evade a rejection. Existing runs retain their pinned policy.
+Check the actual native model/provider/effort before launch. Inheritance is not per-task selection: do not claim an override the tool cannot express, mutate global settings between children, or silently fall back. If the needed route is unavailable, return the specific gap to the controller rather than starting a catalog-refresh or review campaign.
+
+For an explicitly requested routed task or existing pinned run only, follow `openai-delegation-route-research`. Preserve its exact route, request, resource and retry checks; disabling compulsory routing for new ordinary work does not relax an existing run's contract.
 
 Verify live account availability before changing defaults. Auxiliary assignments remain purpose-specific and outside the worker-selection catalogue.
 

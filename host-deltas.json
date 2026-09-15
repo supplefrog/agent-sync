@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "settings",
@@ -126,7 +126,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "settings",
@@ -149,7 +149,7 @@
         "reference": "omp:settings"
       },
       "source_identity": "recovery-artifact:omp:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "instructions",
@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "instructions",
@@ -273,7 +273,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "hook",
@@ -302,7 +302,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4"
+      "version_or_hash": "sha256:7ab0ac1ce6d43a44ad117a3b446b0c27f57f9f1b53b0b6a904b38a5515f8c10d"
     },
     {
       "category": "hook",
@@ -325,7 +325,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4"
+      "version_or_hash": "sha256:7ab0ac1ce6d43a44ad117a3b446b0c27f57f9f1b53b0b6a904b38a5515f8c10d"
     },
     {
       "category": "plugin",
@@ -348,7 +348,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "plugin",
@@ -371,7 +371,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "plugin",
@@ -422,7 +422,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "mcp-tool",
@@ -445,7 +445,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "mcp-tool",
@@ -468,7 +468,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "native-skill",
@@ -491,7 +491,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:a956ad632acbcf39c27e8c9d9413898f0cbdf318bea163b11933e69bd6cb1fc2"
+      "version_or_hash": "sha256:9721411ce1bf2faea42c1e3b8e16b18fce6231bc795d2765fabb4836ce7f395e"
     },
     {
       "category": "native-skill",
@@ -514,7 +514,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:a956ad632acbcf39c27e8c9d9413898f0cbdf318bea163b11933e69bd6cb1fc2"
+      "version_or_hash": "sha256:9721411ce1bf2faea42c1e3b8e16b18fce6231bc795d2765fabb4836ce7f395e"
     },
     {
       "category": "native-skill",
@@ -537,7 +537,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:a956ad632acbcf39c27e8c9d9413898f0cbdf318bea163b11933e69bd6cb1fc2"
+      "version_or_hash": "sha256:9721411ce1bf2faea42c1e3b8e16b18fce6231bc795d2765fabb4836ce7f395e"
     },
     {
       "category": "curator",
@@ -560,7 +560,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:6bf62fbc82962c19d85be6512d745765db65f30e4800e94d2498a32149fa3c49"
+      "version_or_hash": "sha256:69dd515f90447aa2564b790bd43d79a9a39b2992c6ac84bb85866d9dd654ab8d"
     },
     {
       "category": "curator",
@@ -583,7 +583,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4"
+      "version_or_hash": "sha256:7ab0ac1ce6d43a44ad117a3b446b0c27f57f9f1b53b0b6a904b38a5515f8c10d"
     },
     {
       "category": "curator",
@@ -606,7 +606,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:9ec1e11578cc04b05fefa801d366eef060083d0c672ab389d60da7236d7c84b4"
+      "version_or_hash": "sha256:7ab0ac1ce6d43a44ad117a3b446b0c27f57f9f1b53b0b6a904b38a5515f8c10d"
     },
     {
       "category": "plugin",
@@ -713,7 +713,7 @@
       "readback": {
         "kind": "file",
         "path": "hermes:plugins/routed-delegation/__init__.py",
-        "sha256": "104fcc98d4bceba458139362e8ed5a6d59570491af85f7261806b257f5898b17"
+        "sha256": "e68b707f9a9b62d29329eab59d92070fb3326c632ae3d4807d736d34e6a4eda2"
       },
       "redaction": "public-artifact",
       "required": true,
@@ -722,7 +722,7 @@
         "reference": "skills/openai-delegation-route-research/references/hermes-direct-v3.md"
       },
       "source_identity": "repository:integrations/hermes/routed-delegation/__init__.py",
-      "version_or_hash": "sha256:104fcc98d4bceba458139362e8ed5a6d59570491af85f7261806b257f5898b17"
+      "version_or_hash": "sha256:e68b707f9a9b62d29329eab59d92070fb3326c632ae3d4807d736d34e6a4eda2"
     },
     {
       "category": "runtime",

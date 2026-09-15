@@ -1,6 +1,6 @@
 ---
 name: openai-delegation-route-research
-description: Use when selecting a GPT route for a task or refreshing task-specific routing evidence.
+description: Use for explicitly requested route-catalog research or existing pinned route receipts. Not ordinary worker selection, delegation, or an automatic prerequisite to useful work.
 license: MIT
 compatibility: Requires current native route availability and the repository's existing jsonschema dependency.
 metadata:
@@ -9,6 +9,8 @@ metadata:
 ---
 
 # Task-aware GPT routing
+
+The custom selector is opt-in, not the default coordinator policy. Do not invoke this workflow merely because a task needs a worker. Its contracts below apply only to explicit routing research, explicitly selected routed tasks, and existing pinned runs. Preserve historical evidence and all existing pins; a disabled compulsory router is not permission to bypass a run's integrity or resource checks.
 
 Choose a route that meets the actual task's quality requirement with lower total resource use. Use existing code when it already completes the work. Keep consequential judgment with the current quality route unless relevant verified task evidence supports delegation.
 

@@ -25,7 +25,7 @@
     "destructive_slash_confirm": true,
     "mcp_reload_confirm": true,
     "mode": "smart",
-    "timeout": 60
+    "timeout": 120
   },
   "auxiliary": {
     "approval": {
@@ -204,7 +204,7 @@
   "display": {
     "background_process_notifications": "concise",
     "bell_on_complete": true,
-    "busy_input_mode": "interrupt",
+    "busy_input_mode": "steer",
     "cli_refresh_interval": 1,
     "compact": false,
     "copy_shortcut": "auto",
@@ -447,7 +447,10 @@
         "allow_tool_override": false
       },
       "routed-delegation": {
-        "allow_tool_override": false
+        "allow_tool_override": false,
+        "settings": {
+          "require_router": false
+        }
       }
     }
   },
@@ -564,7 +567,7 @@
     "inline_shell": false,
     "inline_shell_timeout": 10,
     "template_vars": true,
-    "write_approval": false
+    "write_approval": true
   },
   "streaming": {
     "buffer_threshold": 24,
