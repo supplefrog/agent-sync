@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "settings",
@@ -126,7 +126,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "settings",
@@ -149,7 +149,7 @@
         "reference": "omp:settings"
       },
       "source_identity": "recovery-artifact:omp:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "instructions",
@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "instructions",
@@ -273,7 +273,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "hook",
@@ -348,7 +348,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "plugin",
@@ -371,7 +371,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "plugin",
@@ -422,7 +422,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "mcp-tool",
@@ -445,7 +445,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "mcp-tool",
@@ -468,7 +468,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "native-skill",
@@ -560,7 +560,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:8800031caa2979d23393028a4ac6381148132d80977b3411ec2043b1100daaf4"
+      "version_or_hash": "sha256:1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c"
     },
     {
       "category": "curator",

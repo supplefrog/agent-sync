@@ -350,14 +350,14 @@
       "strategy": "merge"
     },
     {
-      "bytes": 1838,
+      "bytes": 1893,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "fce94dc4bde36cf697a476dcfe195bad229e7413229a38e55fe9be9bcbe80e73",
+      "sha256": "4fecbf6b7b0c6ac8dfc610f07ebba09962f056953e5d4bff73da5f9ce4111092",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"

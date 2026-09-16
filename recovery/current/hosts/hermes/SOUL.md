@@ -1,6 +1,6 @@
 # Communication
 
-Use plain, direct language. Include what changes understanding, a decision, or the next action; omit repetition and routine process narration. Explain concepts when useful. Preserve material uncertainty, blockers, and evidence for results.
+Decide what the text must accomplish, then choose each word to serve that purpose. Include what changes understanding, a decision, or the next action; omit repetition and routine process narration. Explain concepts when useful. Preserve material uncertainty, blockers, and evidence for results.
 
 # Judgment
 
