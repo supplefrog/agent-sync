@@ -1,0 +1,106 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "4b94a568cd2badeb6785e66a5b4dc66aff7d59258e4bf4e3a6501ac5b2161618",
+      "before_sha256": "4b94a568cd2badeb6785e66a5b4dc66aff7d59258e4bf4e3a6501ac5b2161618",
+      "owner": "frontend-ui-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "cd82bcf8bd12d4fb3e10513754600288089b3bf5845f8942587a30a67305c50d",
+      "before_sha256": "cd82bcf8bd12d4fb3e10513754600288089b3bf5845f8942587a30a67305c50d",
+      "owner": "learn-from-youtube",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "76e5f809c0f9809befa86367ce6bee299cee4b6329938006892a633069eb3880",
+      "before_sha256": "76e5f809c0f9809befa86367ce6bee299cee4b6329938006892a633069eb3880",
+      "owner": "openai-delegation-route-research",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "23bf66ba0f1e08c06389d04b5574057d2963128555a48070eada4fd38ee814db",
+      "before_sha256": "23bf66ba0f1e08c06389d04b5574057d2963128555a48070eada4fd38ee814db",
+      "owner": "outcome-first-workflow-design",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "be4c36e3c4909c6046683b0062a5e4f1a48aa2eb2dc709619c9405fbe708364a",
+      "before_sha256": "be4c36e3c4909c6046683b0062a5e4f1a48aa2eb2dc709619c9405fbe708364a",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "0097f05ab718697b294c484ba3547615e49fef204e7a7f320bb4a0892501a886",
+      "before_sha256": "0097f05ab718697b294c484ba3547615e49fef204e7a7f320bb4a0892501a886",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "b50b74d9d912d0abf0edae044df21dd81cd773056b94cef8aba32c4118003491",
+      "before_sha256": "b50b74d9d912d0abf0edae044df21dd81cd773056b94cef8aba32c4118003491",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py",
+    "python.exe public_check.py"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "frontend-ui-engineering",
+    "learn-from-youtube",
+    "openai-delegation-route-research",
+    "outcome-first-workflow-design",
+    "skill-creator",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "a4a6ea88b4e3a7a978bf4e596b67d18cc01366f96fcc0b6b93924f40c269c1b6",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

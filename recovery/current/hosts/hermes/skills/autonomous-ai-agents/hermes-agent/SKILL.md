@@ -22,6 +22,7 @@ Use this skill for Hermes setup, configuration, operation, troubleshooting, exte
 3. **Active Hermes home and profile:** prefer runtime-provided state, `HERMES_HOME`, the selected profile, and the current product's settings over assumed paths. Generic `~/.hermes` examples do not override an observed active home, including native Windows app-data locations. Never modify another profile unless explicitly requested.
 4. **Install and version:** establish whether this is Desktop-managed, package-installed, or a source checkout. Before retaining or running a command, check the installed CLI's relevant `--help` and current docs.
 5. **Scope:** distinguish read-only diagnosis from an authorized configuration, state, installation, or source change.
+6. **Before a source fix:** check current upstream documentation, issues, and PRs, even for a local-only repair. If an applicable existing solution covers the observed behavior, report or validate it instead of creating a parallel fix. Compare actual coverage and status, not titles; implement only an evidenced gap or an explicitly requested local implementation. Read-only diagnosis may proceed first; routine configuration changes do not require this check.
 
 ## Authority
 

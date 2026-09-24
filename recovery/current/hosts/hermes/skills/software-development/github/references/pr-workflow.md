@@ -202,6 +202,10 @@ When CI fails, diagnose and fix. This loop works with either auth method.
 
 ### Step 1: Get Failure Details
 
+For scratch files, set `TMPDIR` in the executing shell to the runtime-advertised
+scratch directory if it is unset or points elsewhere. On native Windows use an
+absolute native path, not an MSYS `/c/...` path; do not derive it from `~/.hermes`.
+
 **With gh:**
 
 ```bash
@@ -228,12 +232,13 @@ for r in runs:
     print(f\"Run {r['id']}: {r['name']} - {r['conclusion'] or r['status']}\")"
 
 # Get failed job logs (download as zip, extract, read)
+: "${TMPDIR:?Set TMPDIR to the runtime-advertised scratch directory}"
 RUN_ID=<run_id>
 curl -s -L \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs \
-  -o /tmp/ci-logs.zip
-cd /tmp && unzip -o ci-logs.zip -d ci-logs && cat ci-logs/*.txt
+  -o "$TMPDIR/ci-logs.zip"
+cd "$TMPDIR" && unzip -o ci-logs.zip -d ci-logs && cat ci-logs/*.txt
 ```
 
 ### Step 2: Fix and Push

@@ -30,7 +30,7 @@ The current snapshot contains:
 
 - selected behavior, model, tool, display, safety, routing, retention, and context/compression settings, including the native LCM threshold;
 - Hermes `SOUL.md` and Codex `AGENTS.md`;
-- user-authored Codex hook scripts and their hook declarations;
+- the independent Codex PreToolUse destructive-command guard and its declaration; deliberately retired GSD update hooks are excluded;
 - custom MCP declarations that contain no credential values, including OMP MCP declarations;
 - public plugin selections and enablement where the source is reproducible or an external prerequisite is declared;
 - complete reviewed Hermes-local [native skill packages](native-skill-recovery.md), with support files and parked-package enablement preserved separately;

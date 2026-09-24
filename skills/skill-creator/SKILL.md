@@ -27,7 +27,9 @@ Patch an existing owner when it already covers the task. Create a new skill only
 
 ## Improve skills during collaborative work
 
-When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work; do not wait for a separate save request or leave the only copy in a project diary. Review after a meaningful correction or verified flow, not after every tool call. Preserve task data and incident evidence locally.
+When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work; do not wait for a separate save request or leave the only copy in a project diary. Review after a meaningful correction or verified flow and before closing substantial work, not after every tool call. Preserve task data and incident evidence locally.
+
+Extract the reusable decision rule, its triggering conditions, and the nearby case it must not change. Project-specific taste and content stay in project context; a correction to the method belongs in the task's skill. Reconcile the rule with existing guidance rather than appending a competing instruction. If no durable lesson is supported or the owner already covers it, make no edit. Keep the standing trigger in the effective host instruction surface and the procedure here; verify that the trigger is available before the learning checkpoint, not only after this skill is manually loaded. Report checked source changes separately from live deployment; a blocked sync remains pending, not active across future threads.
 
 Use the existing authorization for ordinary reversible skill improvements. Check the affected behavior and a nearby valid case, preserve rollback, and complete authorized synchronization. Do not duplicate an existing rule or create a new skill for a narrow addition. Speculative causal/model-quality claims remain candidates until suitable evidence supports them; automatic improvement is not automatic acceptance, paid evaluation, a new background watcher, or permission to weaken safeguards.
 

@@ -10,7 +10,7 @@ metadata:
 
 # Outcome-First Workflow Design
 
-Use this before creating or materially changing a workflow, automation, reusable procedure, or persistent agent behavior. It owns intent reconstruction and solution choice; implementation-specific skills own execution.
+Use this before creating or materially changing a workflow, automation, reusable procedure, or persistent agent behavior. It owns intent reconstruction and solution choice; implementation-specific skills own execution. When explicit user constraints and verified evidence settle the mechanism, route execution to its existing owner without repeating solution selection; new evidence of a constraint conflict warrants reconsideration.
 
 ## Contract
 
@@ -43,9 +43,10 @@ For each candidate, explain the mechanism that could satisfy the outcome. Compar
 Externalize the decision path while work is live so later context loss cannot turn an assumption into an unexplained architecture:
 
 - Record the outcome, material constraints, evidence, live alternatives, recommendation, decisive tradeoff, assumptions, and the condition that would reopen the choice. Reuse the project's existing plan or ADR owner; otherwise keep the compact trace in the handoff instead of inventing a new ledger format.
-- When explicit user constraints fix the choice, or evidence supports a reversible default, record that basis and proceed; an existing implementation alone does not fix an architecture decision.
+- When explicit user constraints fix the choice, or evidence supports a reversible default, record that basis and proceed within the user's authorized scope without general intake; an existing implementation alone does not fix an architecture decision.
 - When evidence supports one option, present that recommendation and proceed within the user's authorized scope; do not convert option comparison into a questionnaire.
-- Stop only before implementing a choice that is both material and hard to reverse and remains undecidable after evidence because alternatives encode different user values. Present the recommendation and the smallest unresolved branch, then request selection or approval of that branch—not a general interview.
+- When material taste or priorities remain unresolved after evidence, present reviewable alternatives and a recommendation before committing, even when the choice is reversible. For unresolved hard-to-reverse choices, request focused selection or approval of the smallest unresolved branch—not a general interview.
+- Safety and authorization gates apply separately; a supported choice does not bypass them.
 - Do not let workers choose an unresolved material architecture implicitly. Fix shared contracts before fan-out, then let independent work run in parallel only where ownership and dependencies do not collide.
 - Treat unresolved, blocked, or abandoned branches as first-class outcomes with reasons and impact. Never hide them in a completion summary.
 

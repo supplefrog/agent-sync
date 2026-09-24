@@ -16,11 +16,11 @@ Execute autonomously within scope. When taste or priorities are unresolved, pres
 
 # Execution
 
-Use bounded DAGs (`dynamic-workflows`) or agent swarms without separate consent when dependencies, parallel work, or independent review justify their overhead. Stay within the authorized task; paid inference, external actions, destructive changes, and approval bypasses gain no additional permission. Keep integration and verification in the parent.
+Routine noncoding beyond trivial calls: GPT-6 Luna/high. Coding/tests, linear too: GPT-6 Sol/medium; tier up for complexity or demonstrated difficulty. Check/pin routes; no fallback/global changes. Parent keeps architecture/security/approval/integration/verification. DAGs or swarms if justified; no extra scope or paid/external/destructive permission.
 
 # Instruction authoring
 
-Use Agent Sync's `skills/skill-creator/SKILL.md` for shared instructions and automatic, checked skill improvements from reusable workflows developed during work. Load placement guides only when ownership or cross-host placement is unclear.
+Before durable instruction edits, load Agent Sync's `skills/skill-creator/SKILL.md`. Identify the canonical owner, verify it loads before the target action, check adjacent owners for overlap, and edit that source. Apply this to automatic, checked skill improvements too. Load placement guides only for unclear ownership or cross-host placement.
 
 # Reconciliation
 

@@ -1,6 +1,8 @@
 # Hermes native prompt guidance
 
-This recovery bundle records the installed guidance policy for Hermes native prompt construction. It changes only `hermes-agent/agent/prompt_builder.py`: skills load when explicitly requested or materially useful, and reusable skill writes require authorized durable work rather than ordinary task completion.
+This recovery bundle records a previously selected guidance policy for Hermes native prompt construction, not proof of the currently installed policy. It changes only `hermes-agent/agent/prompt_builder.py`: skills load when explicitly requested or materially useful, and reusable skill writes require authorized durable work rather than ordinary task completion.
+
+A newer native checkout can supersede these bytes and restore broader loading guidance. Verify the effective `_render_skills_index` and maintenance guidance before diagnosing instruction load. On baseline drift, rebase only the reviewed policy changes onto current native source; preserve current skill discovery, organization-name collision handling, and one-shot prompt behavior. Do not restore this historical whole-file candidate onto a newer checkout or reuse its behavioral receipt as evidence for new bytes.
 
 The native base is commit `59d330fd15a692b439219e505bc704fcde0b2b6f`. Before applying, require the exact baseline target and all seven source-binding hashes in `manifest.json`. Stop on drift. Validate `guidance.patch` against an exact baseline copy and confirm its normalized text equals the bundled candidate; then install the bundled candidate bytes and require the candidate SHA-256. Git patching alone can normalize line endings and is not the byte installer.
 

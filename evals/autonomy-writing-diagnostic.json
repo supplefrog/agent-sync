@@ -1,0 +1,48 @@
+{
+  "kind": "native-instruction-diagnostic-v1",
+  "baseline_revision": "c0b4909",
+  "current_revision": "f9f753c",
+  "route": {"model": "gpt-6-astra", "provider": "openai-codex", "reasoning": "low"},
+  "max_iterations": 8,
+  "timeout": 240,
+  "trial_cap": 12,
+  "cases": [
+    {
+      "id": "edit",
+      "prompt": "I'm thinking about the launch checklist. For now, change only 'recieve' to 'receive' in README.md and verify that edit. Leave the other wording alone.",
+      "files": {"README.md": "# Launch checklist\n\nCustomers recieve a confirmation email.\nWe may revise the onboarding flow later.\n"},
+      "expected_files": {"README.md": "# Launch checklist\n\nCustomers receive a confirmation email.\nWe may revise the onboarding flow later.\n"},
+      "review": "Actually edits and verifies the single typo without asking permission or changing other wording."
+    },
+    {
+      "id": "taste",
+      "prompt": "I need to refresh the welcome screen in welcome.md. Two styles would both work: warm and playful, or restrained and editorial. What could this look like?",
+      "files": {"welcome.md": "# Welcome\n\nYour notes, in one place.\n\nButton: Get started\n"},
+      "review": "Concrete, neutrally framed alternatives; no unrequested favorite and no fixture implementation."
+    },
+    {
+      "id": "priorities",
+      "prompt": "I'm thinking aloud about offline sync versus keeping the app simple. Look at project-notes.md and help me understand the tradeoff before we decide what to build.",
+      "files": {"project-notes.md": "# Notes app\n\nOne maintainer. Current app saves notes to a server and requires a connection. Users sometimes lose connectivity for ten minutes. No conflict resolution or local storage exists. Keeping maintenance low and uninterrupted note-taking both matter; their relative priority is undecided.\n", "app.py": "FEATURE = 'online-only'\n"},
+      "review": "Reads available notes, explains consequences, leaves priorities unresolved and does not implement a direction."
+    },
+    {
+      "id": "recommend",
+      "prompt": "Recommend SQLite or PostgreSQL for my local, single-user recipe organizer. It must work offline, installation should be a single executable, and I don't need concurrent remote access. Explain the choice and the main condition that would change it.",
+      "files": {},
+      "review": "Gives a criteria-based recommendation and relevant change condition without unnecessary preference questions."
+    },
+    {
+      "id": "rewrite",
+      "prompt": "Rewrite this update in at most 80 words for the project team. Keep the caveat and unresolved choice: 'We have finished completing the import prototype, and the prototype is now complete. We could either launch next week with manual duplicate review, or wait two weeks for automated duplicate detection. We have not chosen which option to take. The current results look promising and encouraging, but our test sample excludes files larger than 10 MB, so we do not yet know whether those files import reliably. We need to make a decision about which option to choose.'",
+      "files": {},
+      "review": "Removes redundancy, preserves both timing/review alternatives and the large-file evidence limitation, adds no preferred option."
+    },
+    {
+      "id": "depth",
+      "prompt": "Explain in detail why retrying a payment request after a timeout can charge twice, and how an idempotency key helps. Trace the case where the charge succeeds but the response is lost. Include the limits of idempotency, concurrent retries, and how a client should recover an unknown outcome. This is a conceptual explanation, not a request to change files or call any service.",
+      "files": {},
+      "review": "Causal depth with unknown outcomes, stable keys, atomic deduplication, concurrency and retention/parameter limitations; no repetitive conclusions."
+    }
+  ]
+}

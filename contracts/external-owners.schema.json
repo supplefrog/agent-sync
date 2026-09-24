@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reviewed external package observations (not fleet admission)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "packages"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"type": "integer", "const": 1},
+    "packages": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "owner", "machine", "skill_root", "marker_sha256"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+          "owner": {"const": "paseo"},
+          "machine": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+          "skill_root": {"type": "string", "minLength": 1},
+          "marker_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    }
+  }
+}

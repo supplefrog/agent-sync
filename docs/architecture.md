@@ -39,6 +39,40 @@ The convergence target is equivalent useful behavior. Mechanisms may differ, and
 
 This is the first vertical slice of the capability librarian, not autonomous promotion. A deterministic, reversible fleet action for an already admitted owner can be marked eligible only after checks. New or unmanaged capabilities, staged owners, content conflicts, retirement, recovery adoption, cross-host changes, safety-sensitive changes, and ambiguous changes remain review-only. Future Hermes or host hooks must remain thin adapters over this classifier and require separate admission evidence.
 
+### Reviewed externally owned packages
+
+`contracts/external-owners.json` is a separate typed coexistence record, not
+`registry.json` admission or recovery policy. The reviewed Paseo packages remain
+owned and installed by Paseo: `paseo`, `paseo-advisor`, `paseo-committee`,
+`paseo-handoff`, `paseo-help`, and `paseo-plugin`. Agent Sync does not copy their
+bodies, deploy them to other roots, install missing packages, or remove them.
+
+Each record binds an exact package ID, machine, configured skill-root template,
+and SHA-256 of `.paseo-managed-files.json`. `tools/external_owners.py` validates
+the pinned marker and its content hash, exact package inventory and frontmatter
+name. The supported Paseo v1 shape is deliberately only the marker plus
+`SKILL.md`; added support files need a separate review. Markers alone are not
+authentication or an exception for other unmanaged packages. All six remain
+visible as `reviewed-external-owner` / `no-action` findings with external owner
+and content identities; neither automatic eligibility flag becomes true.
+
+Changed/missing markers or content, additional files, links/reparse points,
+traversal, malformed or duplicate records, and collisions with canonical,
+registry, rendered, or managed ownership fail closed. Unknown packages and
+same-name packages at another machine/root remain ordinary review findings.
+Both recovery-enabled and skills-only reconciliation use this intake. A valid
+observation alone does not block unrelated checked sync; it never relaxes fleet
+conflicts, retirement, or recovery restore rules.
+
+Migration is additive and read-only: old checkouts without this contract grant
+no exceptions. Removing a record restores ordinary unmanaged review, not
+deletion. A product update that changes marker bytes or content requires review
+and an explicit new pin; do not auto-refresh pins from a live scan. Removing a
+package through its product owner does not trigger reinstallation. Structural
+audit checks contract shape and canonical collisions; live intake additionally
+checks the installed identity. Run `python -m pytest tests/test_external_owners.py`
+for the contract, negative cases, and read-only integration probes.
+
 ## Unified reconciliation
 
 The phrase “reconcile with Agent Sync” is a shared, explicit ingress from Hermes, Codex, and OMP. Host instructions route it to admitted `cross-agent-surface-engineering`, which calls `tools/reconcile.py`; no host owns a competing governance receipt store.

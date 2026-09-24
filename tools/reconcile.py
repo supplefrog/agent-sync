@@ -35,6 +35,36 @@ SURFACES = ["recovery", "fleet", "instructions", "governance", "host-deltas", "s
 LIVE_MUTATION_ACTIONS = {"add", "adopt", "materialize", "repair", "update", "remove"}
 
 
+def nonblocking_observation_kind(item: Any) -> str | None:
+    """Classify validated plan output, never grant admission or approve a proposal.
+
+    External pins are checked by plan and rechecked before writes/readback.
+    Keep this shared with audit so visible no-action records are not conflicts.
+    """
+    if not isinstance(item, Mapping) or item.get("auto_apply_eligible") is not False:
+        return None
+
+    def digest(key: str) -> bool:
+        value = item.get(key)
+        return isinstance(value, str) and len(value) == 64 and all(c in "0123456789abcdef" for c in value)
+
+    if (item.get("surface") == "skill-proposals" and item.get("host") == "hermes"
+            and item.get("disposition") == "review-required"
+            and isinstance(item.get("pending_id"), str) and item["pending_id"]
+            and item.get("target") == item["pending_id"] and digest("sha256")):
+        return "staged-skill-proposal"
+    owner = item.get("external_owner")
+    if (item.get("surface") == "fleet" and item.get("source_action") == "observe-external"
+            and item.get("change_class") == "reviewed-external-owner"
+            and item.get("disposition") == "no-action" and item.get("eligible_after_checks") is False
+            and isinstance(owner, str) and owner and item.get("owner") == f"external:{owner}"
+            and isinstance(item.get("destination"), str) and item["destination"]
+            and isinstance(item.get("target"), str) and item["target"]
+            and digest("content_sha256") and digest("marker_sha256")):
+        return "reviewed-external-owner"
+    return None
+
+
 def _json_bytes(value: Any) -> bytes:
     return (json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
 
@@ -173,13 +203,9 @@ def plan(
         )
         findings.extend(_with_id(item) for item in scan["findings"])
     else:
-        snapshot = _snapshot(repo)
-        registry = fleet.registry(repo)
-        for destination_id, destination in _destinations(repo, machine, skill_roots):
-            for action in fleet.plan_snapshot(snapshot, destination):
-                if action["action"] == "unchanged":
-                    continue
-                findings.append(_with_id(capability_intake.classify_fleet_action(action, registry.get(action["name"]), destination_id=destination_id)))
+        findings.extend(_with_id(item) for item in capability_intake.fleet_findings(
+            repo, machine=machine, skill_roots=skill_roots,
+        ))
 
     findings.extend(_instruction_findings(repo))
     findings.extend(_governance_findings(repo))
@@ -768,7 +794,13 @@ def complete_sync(
                 [sys.executable, str(repo / "tools/instruction_profile.py")],
             ]
 
+            def check_external_owners():
+                current = capability_intake.fleet_findings(repo, machine=machine, skill_roots=skill_roots)
+                if any(item.get("source_action") == "unmanaged" for item in current):
+                    raise RuntimeError("unmanaged or external-owner content requires review")
+
             def readback():
+                check_external_owners()
                 if checked_agents is not None and _agent_identities(destinations) != checked_agents:
                     raise RuntimeError("agent content changed during sync; re-review required")
                 snapshot = _snapshot(repo)
@@ -819,8 +851,8 @@ def complete_sync(
             findings = plan(repo, machine=machine, recovery_roots=recovery_roots, skill_roots=skill_roots)["findings"]
             blocked = []
             for item in findings:
-                if item["surface"] == "skill-proposals":
-                    continue  # Remain staged; unrelated checked sync is not proposal approval.
+                if nonblocking_observation_kind(item) is not None:
+                    continue  # Visible and untouched; never admission or proposal approval.
                 if item["surface"] == "fleet" and item["target"] in names and item.get("source_action") not in {"remove", "forget"}:
                     continue  # _skill_state has already proved one unambiguous admitted owner.
                 if item["surface"] == "recovery" and capture and item.get("source_action") != "conflict":
@@ -845,6 +877,7 @@ def complete_sync(
             if (_agent_identities(destinations) != agents_before
                     or sync_git.identities(repo, selected) != approved or sync_git.changed(repo) != before):
                 raise sync_git.SyncBlocked("files changed during prerequisite checks")
+            check_external_owners()  # Revalidate pins before writes, including plan-to-baseline races.
             if names or capture:
                 result = sync(repo, machine=machine, adopt=sorted(names), recovery_roots=recovery_roots,
                               skill_roots=skill_roots, capture_recovery=capture)

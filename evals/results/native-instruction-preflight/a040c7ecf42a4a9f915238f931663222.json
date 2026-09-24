@@ -1,0 +1,48 @@
+{
+  "artifacts": {
+    "392b3157db5d443ca5a8da2edc439ad5/job.json": "59b5865f9d55bc986d555ad8f014818238d400c726f59d274e276579f1b830c0",
+    "392b3157db5d443ca5a8da2edc439ad5/process-start.json": "b45ff6e396911390c0182f58a5bd27f899ab6b3876795aec22eee16b21fd0ea1",
+    "392b3157db5d443ca5a8da2edc439ad5/process.json": "d76a32ab2caa072500431c108c18de77b57fe894846c67dfa45ae86ed7b65995",
+    "392b3157db5d443ca5a8da2edc439ad5/result.json": "601660728f26b6d7f32fe977cd3e320246772d380dcb9dab8ae14902abe3266a",
+    "392b3157db5d443ca5a8da2edc439ad5/worker.json": "bcd59fa398813d40ee3c4f729e44cf82e73957637b6675603ff7d5e0e7b70610",
+    "attempts/baseline.json": "941869520c60095ec3c44d593c22cfdf515f56ecfcbf44e84cc77321eb9f4c41",
+    "candidate-diff.json": "491bd3256770e100ec0e0f710a653742f94aa4070e4d3e2c5570c78464c4d601",
+    "manifest-binding.json": "3b509385a8853bb716700c22f0a00be55a27ef6549dd58d8ecbec60527519b30",
+    "manifest.json": "275f60470a3eae510a6d08059dbe67e7c527831bed79981e301b4f804c9719ea",
+    "owner.json": "1694bdca61ca0052d76eedbb0974379085d427fa25a28fa34d489b587db3a104",
+    "private-report.json": "54eb1e94feffba13003f78fb6f395cacfbe736b397a9a6c91db3e3100896ec53",
+    "probe-started.json": "943f3eafcec83a3842a112a1bbe07d7eae6a1664c6bf172623fdc6f7db36e82c",
+    "suite.json": "186656812b94c21ee3f2734be7b6f351e623f70dace90a5d9f0b6ce055699c4c"
+  },
+  "authority": {
+    "admission": false,
+    "cache": false,
+    "retirement": false
+  },
+  "behavioral_trials": 0,
+  "blockers": [
+    "complete-per-request-provenance-not-attested",
+    "desktop-plugin-and-connector-initialization-not-attested",
+    "live-profile-and-personal-context-not-attested",
+    "model-tool-effect-containment-not-attested",
+    "native-assembly-incomplete",
+    "native-authenticated-route-not-attested"
+  ],
+  "cleanup_ok": true,
+  "kind": "native-instruction-preflight-v1",
+  "launch_permitted": false,
+  "model_requests": 0,
+  "observations": [
+    {
+      "arm": "baseline",
+      "assembled": false,
+      "boundary_reason": "subprocess-attempt",
+      "error_type": "ProbeBoundary",
+      "process_reaped": true,
+      "runtime_removed": true
+    }
+  ],
+  "run_id": "a040c7ecf42a4a9f915238f931663222",
+  "schema_version": 1,
+  "status": "blocked-before-inference"
+}

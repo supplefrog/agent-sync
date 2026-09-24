@@ -120,12 +120,17 @@ a utility class; override on the shared class, not at each usage.
 
 When there is no port, or you must not disturb the user's window:
 
+For scratch files, set `TMPDIR` in the executing shell to the runtime-advertised
+scratch directory if it is unset or points elsewhere. On native Windows use an
+absolute native path, not an MSYS `/c/...` path; do not derive it from `~/.hermes`.
+
 ```bash
 cd apps/desktop
-HERMES_HOME=/tmp/cdp-probe-home \
+: "${TMPDIR:?Set TMPDIR to the runtime-advertised scratch directory}"
+HERMES_HOME="$TMPDIR/cdp-probe-home" \
 HERMES_DESKTOP_DEV_SERVER=http://127.0.0.1:5174 \
 HERMES_DESKTOP_CDP_PORT=9333 \
-  npx electron . --user-data-dir=/tmp/cdp-probe-userdata
+  npx electron . --user-data-dir="$TMPDIR/cdp-probe-userdata"
 ```
 
 The separate `--user-data-dir` dodges Electron's single-instance lock, so it

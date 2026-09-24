@@ -16,4 +16,6 @@ Fresh Codex prompt inspection, Hermes native skill loading, and OMP RPC discover
 
 The inline evaluator's current native lane is `inline-text-no-tools-v1`. It tests the supplied instruction-text projection, not packaged scripts or unrestricted tool behavior. Explicit injection does not test natural triggering. Public summaries derive machine decisions from validated evidence and preserve scope; editorial labels cannot manufacture admission. Historical recorded-only summaries remain unvalidated records.
 
+The separate [native instruction diagnostic checkpoint](native-instruction-diagnostic.md) records an assembly-only adapter and its unresolved runtime boundaries. It has no inference command and grants no admission/retirement authority; blocked preflight evidence must not be called a full-stack comparison or an instruction-health result.
+
 For a mechanism fix, replay the failure and relevant valid cases. For a claimed model-quality improvement, compare the affected current runtime and hold out cases from development. Keep missing-host evidence, uncertainty, and rollback explicit. Existing governance and budget choices remain reviewable within the authorized task.

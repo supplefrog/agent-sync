@@ -2,7 +2,7 @@
   "$schema": "contracts/recovery-snapshot.schema.json",
   "artifacts": [
     {
-      "bytes": 5018,
+      "bytes": 4679,
       "format": "toml",
       "host": "codex",
       "id": "settings",
@@ -12,7 +12,6 @@
         "desktop",
         "features",
         "hooks.PreToolUse",
-        "hooks.SessionStart",
         "mcp_servers.claude-context.args",
         "mcp_servers.claude-context.command",
         "mcp_servers.parallel.bearer_token_env_var",
@@ -29,7 +28,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "6ef12491537cccfc7d261b9ad37012ce02e5068d78ecbb7344ef024204570b88",
+      "sha256": "24fc5b6caa3dd9cbfb78045e57fef8f91b3e5f2e06df6b58b0bc0499d703a066",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
@@ -45,58 +44,6 @@
       "sha256": "11d38803b75dd625966f81939fcfb4f04699f52cca0b4beecf91f2c077908778",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
-      "strategy": "replace-if-absent"
-    },
-    {
-      "bytes": 683,
-      "format": "text",
-      "host": "codex",
-      "id": "session-start-hook",
-      "include": [],
-      "kind": "text",
-      "portable_paths": true,
-      "sha256": "4bb5fa944103bcaf09fae93233777ee2bc37741abf5b4645f88ec86a5b430271",
-      "snapshot": "hosts/codex/hooks/run-gsd-check-update.ps1",
-      "source": "hooks/run-gsd-check-update.ps1",
-      "strategy": "replace-if-absent"
-    },
-    {
-      "bytes": 2504,
-      "format": "text",
-      "host": "codex",
-      "id": "update-hook",
-      "include": [],
-      "kind": "text",
-      "portable_paths": true,
-      "sha256": "72bfb5607f54a3cd18b0660d79891caa3711bdc9350292d9eaa20aaf4ac8e1ac",
-      "snapshot": "hosts/codex/hooks/gsd-check-update.js",
-      "source": "hooks/gsd-check-update.js",
-      "strategy": "replace-if-absent"
-    },
-    {
-      "bytes": 4858,
-      "format": "text",
-      "host": "codex",
-      "id": "update-hook-worker",
-      "include": [],
-      "kind": "text",
-      "portable_paths": true,
-      "sha256": "ad6f523e9a6e0a6349171fc8e2e7781edc840877b8415bcd8fb46811e71b68f6",
-      "snapshot": "hosts/codex/hooks/gsd-check-update-worker.js",
-      "source": "hooks/gsd-check-update-worker.js",
-      "strategy": "replace-if-absent"
-    },
-    {
-      "bytes": 1527,
-      "format": "text",
-      "host": "codex",
-      "id": "managed-hook-registry",
-      "include": [],
-      "kind": "text",
-      "portable_paths": true,
-      "sha256": "1d955ec5d64e8a5fbddc69831df2c9af9d84c77e9a327b953af49b1d0385bfa3",
-      "snapshot": "hosts/codex/hooks/managed-hooks-registry.cjs",
-      "source": "hooks/managed-hooks-registry.cjs",
       "strategy": "replace-if-absent"
     },
     {
@@ -139,7 +86,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16886,
+      "bytes": 16899,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -344,20 +291,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "def304c9fa960235d51cc4d22d571ef4346e8560fc43f6915a79d9942416f636",
+      "sha256": "98255ed003c65086cf5eb6a0875d4ef33e5c22277ae98c49f95172c4924328ff",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
     },
     {
-      "bytes": 1893,
+      "bytes": 2001,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "4fecbf6b7b0c6ac8dfc610f07ebba09962f056953e5d4bff73da5f9ce4111092",
+      "sha256": "24afe3566d3e3e1bd6dbd80a2e90d3f239fb468856bb3ad49bdb7b87a6326f3d",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -778,20 +725,20 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 10373,
+      "bytes": 11054,
       "format": "text",
       "host": "hermes",
       "id": "native-c245cc964d3b5ea52612",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "010fad582819bef5f6aa045507e5d0ed2d10b65356b60b783c31e173eb3daadf",
+      "sha256": "0524c4879ab36745b50ee0d6e1b1b1009e41a2af7b182cc29fef13e530ae1e27",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/delegation-workflows/SKILL.md",
       "source": "skills/autonomous-ai-agents/delegation-workflows/SKILL.md",
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 6104,
+      "bytes": 6565,
       "format": "text",
       "host": "hermes",
       "id": "native-833bca24675af28bef5e",
@@ -801,7 +748,7 @@
       "replace_sha256": [
         "a111466ce81ccdad8bccc7f670c7946df9d9f8b639399f28bd2958f5bce92c56"
       ],
-      "sha256": "bd5493ddfdbc7e74b7c4301d8acd5470918e2410628333657c222af21cab827e",
+      "sha256": "c686c9cb8d81005f7b5ec560fb9698fcaaf6d32b46a78976429018cdd5cd3af3",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/hermes-agent/SKILL.md",
       "source": "skills/autonomous-ai-agents/hermes-agent/SKILL.md",
       "strategy": "replace-if-absent"
@@ -7297,7 +7244,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 4057,
+      "bytes": 5447,
       "format": "text",
       "host": "hermes",
       "id": "native-b3e82035b094214279e2",
@@ -7307,7 +7254,7 @@
       "replace_sha256": [
         "cd57ccc9d563b5186012b41d6bbf52e96c2837c5b8e79d524e8e5e6a44af6021"
       ],
-      "sha256": "cd57ccc9d563b5186012b41d6bbf52e96c2837c5b8e79d524e8e5e6a44af6021",
+      "sha256": "deeade1bb70f8835b2f3158980030b8aa41bb1ea6f798631451c89cfd632bcc8",
       "snapshot": "hosts/hermes/skills/email/email-inbox-triage/SKILL.md",
       "source": "skills/email/email-inbox-triage/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11217,7 +11164,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 4879,
+      "bytes": 5209,
       "format": "text",
       "host": "hermes",
       "id": "native-9d98f2cbe5ad4d4efc38",
@@ -11227,7 +11174,7 @@
       "replace_sha256": [
         "c72b2301e9b85c545c4960722dbd4c0d49c5d883e6d86438e932bd47b1d8eee0"
       ],
-      "sha256": "c72b2301e9b85c545c4960722dbd4c0d49c5d883e6d86438e932bd47b1d8eee0",
+      "sha256": "ed40533dfe79a045075f7c486fd0f6588588b97bbfc791236b45633586bcfb57",
       "snapshot": "hosts/hermes/skills/software-development/github/references/ci-troubleshooting.md",
       "source": "skills/software-development/github/references/ci-troubleshooting.md",
       "strategy": "replace-if-absent"
@@ -11313,7 +11260,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 9708,
+      "bytes": 10033,
       "format": "text",
       "host": "hermes",
       "id": "native-8601e764bcb9cddbe727",
@@ -11323,13 +11270,13 @@
       "replace_sha256": [
         "0be42677bf500fe292c221468c2f9c48b4c8326dad508b8ef3287c010364adc8"
       ],
-      "sha256": "0be42677bf500fe292c221468c2f9c48b4c8326dad508b8ef3287c010364adc8",
+      "sha256": "59a530cabfd9a40ba9fcf81859d90c20928af9750671ed0082f99e96df403774",
       "snapshot": "hosts/hermes/skills/software-development/github/references/pr-workflow.md",
       "source": "skills/software-development/github/references/pr-workflow.md",
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 13378,
+      "bytes": 13703,
       "format": "text",
       "host": "hermes",
       "id": "native-fd91d8955a3cb38da9f1",
@@ -11339,7 +11286,7 @@
       "replace_sha256": [
         "c74500946263f6bdb4925d4de96aa09dcd49146c9e918bf73863f0b6186e0543"
       ],
-      "sha256": "c74500946263f6bdb4925d4de96aa09dcd49146c9e918bf73863f0b6186e0543",
+      "sha256": "18c0417791971aa5a928b87250105c11ab8c8e73c41bf6b3f50093ed93cd8e02",
       "snapshot": "hosts/hermes/skills/software-development/github/references/repo-management.md",
       "source": "skills/software-development/github/references/repo-management.md",
       "strategy": "replace-if-absent"
@@ -11489,7 +11436,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 6204,
+      "bytes": 6529,
       "format": "text",
       "host": "hermes",
       "id": "native-b8924810462757045ef7",
@@ -11499,7 +11446,7 @@
       "replace_sha256": [
         "a78a5f8d277a1d6d39fccd5ecf1e76ce519a1ace831f06078dfcc91cb54a3399"
       ],
-      "sha256": "a78a5f8d277a1d6d39fccd5ecf1e76ce519a1ace831f06078dfcc91cb54a3399",
+      "sha256": "fcba852b396a58e3c157bbbb7bea6adb9f2756c80660c4f8a9d7564064cd1750",
       "snapshot": "hosts/hermes/skills/software-development/inspecting-hermes-desktop-dom/SKILL.md",
       "source": "skills/software-development/inspecting-hermes-desktop-dom/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11992,7 +11939,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5156,
+      "bytes": 5476,
       "format": "text",
       "host": "hermes",
       "id": "native-fac0ad44123e6942f680",
@@ -12002,7 +11949,7 @@
       "replace_sha256": [
         "7f7d321f177399ca928e11ab38942cfa76d6e931a82d887671c50661fb411d51"
       ],
-      "sha256": "7f7d321f177399ca928e11ab38942cfa76d6e931a82d887671c50661fb411d51",
+      "sha256": "d947beb7fc66d9a16844f2af8567fdb95ba9633b6088d859c82008baed360b64",
       "snapshot": "hosts/hermes/skills/web/blocked-page-recovery/SKILL.md",
       "source": "skills/web/blocked-page-recovery/SKILL.md",
       "strategy": "replace-if-absent"
@@ -12086,7 +12033,7 @@
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "25ddf5c89ec6bfaa8951935c6e95ab68d1625bf75626d229646f56328e7202c3",
+      "sha256": "a8c18e587bfe3702ed60e1dddac559f4e54f3cd3ccf8eec58c4fd52ae897c8fd",
       "snapshot": "hosts/hermes/skills/.bundled_manifest",
       "source": "skills/.bundled_manifest",
       "strategy": "replace-if-absent"
@@ -13340,7 +13287,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "fb2c86d025cb765ba39d0f0f6c0b30a7863fde54e37efd83adbd57dd4ad6c8dd",
+      "sha256": "bb8e76ee1784d6ae2639c6ec6f43e41d82bc50e7b4c4ccb5eff22345f5f87543",
       "snapshot": "hosts/omp/config.json",
       "source": "config.yml",
       "strategy": "merge"
@@ -13403,7 +13350,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "05f711d1fe66a0eae0a46faaa84847a234eb2569e24205022bd15f11d1d7929b",
+  "policy_sha256": "4e94e74f333158d7df102d3e0306fd0253ef69fe43dc1c45488bbf897494488a",
   "public_safe": true,
   "schema_version": 1
 }

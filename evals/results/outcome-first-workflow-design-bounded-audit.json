@@ -1,0 +1,108 @@
+{
+  "suite": "outcome-first-workflow-design-bounded-audit",
+  "scope": "Source corrections and candidate instruction-boundary probes; not comparative workflow fitness or natural-trigger evaluation.",
+  "decision": "Canonical fixes checked; promotion blocked by unrelated repository and native-recovery findings.",
+  "review_disposition": {
+    "trigger": "Partially supported; preserved broad trigger and added settled-design execution shortcut instead of narrowing discovery.",
+    "clarification": "Confirmed inconsistent boundary; corrected reversible material preferences and retained supported-default autonomy.",
+    "evidence": "Confirmed overstatement; qualified selection reason and historical applicability without changing recorded checks or admission state.",
+    "handoff": "Speculative failure; no change because evidence reuse already exists."
+  },
+  "worker": {
+    "provider_requested": "openai-codex",
+    "model_requested": "gpt-6-astra",
+    "reasoning_requested": "low",
+    "model_observed": "gpt-6-astra",
+    "transport": "hermes chat",
+    "toolsets": "file",
+    "max_turns": 12,
+    "run_budget_seconds": 240,
+    "exit_code": 0,
+    "parent_integration": "Removed duplicate reminder; restored recommend-and-proceed rule."
+  },
+  "candidate_identity": {
+    "path": "skills/outcome-first-workflow-design/SKILL.md",
+    "hash_encoding": "UTF-8 with LF line endings",
+    "baseline_sha256": "1a9ba2a5e0f4da72491ac531e7abf5ea4943578411788889f0c38b16d7b5ca3b",
+    "candidate_sha256": "15a9b5ac662fa67cf16a3fc2bfd9739ef9cdee077ae6f78c04ed361109fe55a4"
+  },
+  "probe": {
+    "provider_requested": "openai-codex",
+    "model_observed": "gpt-6-astra",
+    "reasoning_requested": "low",
+    "toolsets": "none",
+    "max_turns": 2,
+    "run_budget_seconds": 120,
+    "exit_code": 0,
+    "prompt_sha256": "5be03687ec4820edf029c62de7c223455a47b0e951b96e4541c7b2285da5eb9a",
+    "context": "Candidate instructions explicitly supplied; no-tools hypothetical next-action requests, not executed implementations.",
+    "cases": [
+      {
+        "id": "A",
+        "next_action": "Route to the existing implementation owner and implement the approved stdlib workflow, then validate against the agreed schema and acceptance cases.",
+        "reason": "Explicit constraints and verified evidence settle the mechanism; repeating architecture selection or external research would add no value.",
+        "prompt": "Build a local CSV-to-Markdown weekly report using the attached agreed schema and Python stdlib. We already approved this architecture, the sample inputs pass the specified mapping, and no external service is allowed.",
+        "parent_contract_check": "passed"
+      },
+      {
+        "id": "B",
+        "next_action": "Recover existing reports, process evidence, and prior decisions; define observable success criteria, inspect the baseline, and compare retain/adapt/replace options before recommending a mechanism.",
+        "reason": "The reporting problems are established, but the intended workflow and solution remain undecided; evidence-led discovery should precede implementation.",
+        "prompt": "Improve our weekly reporting process. Reports arrive in inconsistent formats, people miss discrepancies, and we have not chosen how it should work.",
+        "parent_contract_check": "passed"
+      },
+      {
+        "id": "C",
+        "next_action": "Route the scoped schedule edit to its existing owner, preserve the scheduler's timezone and other settings, and verify weekday execution at 10:00.",
+        "reason": "This is a narrow configuration change to a working mechanism, not a reason to reopen workflow design.",
+        "prompt": "Our scheduler works. Change its cron expression from weekdays at 09:00 to weekdays at 10:00; keep everything else unchanged.",
+        "parent_contract_check": "passed"
+      },
+      {
+        "id": "D",
+        "next_action": "Present severity-first and account-name-first defaults for review, recommend explicit joint agreement before setting either, and leave the default uncommitted pending resolution.",
+        "reason": "The choice depends on unresolved stakeholder priorities. Equal evidence and reversibility do not authorize silently choosing a material default.",
+        "prompt": "Implement the team report's default ordering. Engineers explicitly prioritize severity, managers explicitly prioritize account name, neither has authority to settle the disagreement, and both orders are equally supported and easy to switch later. No default has been approved.",
+        "parent_contract_check": "passed"
+      },
+      {
+        "id": "E",
+        "next_action": "Present the privacy and recovery alternatives with their migration consequences, recommend deferring commitment, and seek focused selection of the unresolved priority before implementation.",
+        "reason": "Evidence cannot resolve this user-owned value tradeoff, and either architecture creates a hard-to-reverse commitment.",
+        "prompt": "Implement a private family-journal workflow. We have not resolved on-device-only privacy versus permanent cloud recovery; either architecture would materially constrain later migration. The available evidence does not resolve our priorities.",
+        "parent_contract_check": "passed"
+      },
+      {
+        "id": "F",
+        "next_action": "Block the noncompliant package, reopen only the affected mechanism choice, and evaluate offline alternatives against the no-network constraint before implementation and validation.",
+        "reason": "New verification evidence contradicts a hard constraint, so prior architecture approval no longer settles the choice.",
+        "prompt": "Build the agreed offline report workflow. During verification, its chosen package is shown to require sending report content to a remote service, violating the explicit no-network constraint.",
+        "parent_contract_check": "passed"
+      }
+    ]
+  },
+  "verification": {
+    "skill_validation": "passed",
+    "candidate_public_safety_scan": "passed",
+    "scoped_git_diff_check": "passed",
+    "canonical_matches_reviewed_candidate": "passed",
+    "frontmatter_and_trigger_unchanged": "passed",
+    "historical_result_checks_limits_preserved": "passed",
+    "ownership_only_selection_reason_changed": "passed",
+    "historical_full_receipt_unchanged": "passed",
+    "live_copy_remains_baseline": "passed"
+  },
+  "limits": [
+    "No baseline/candidate behavioral comparison or cross-host natural-trigger claim.",
+    "Provider and effort are invocation pins; JSONL initialization confirms model, not independent wire-level effort attestation.",
+    "Global public-safety check failed on unrelated pre-existing working-tree files; structural audit failed on host-deltas manifest.",
+    "Reconcile sync returned review-required for native recovery conflicts/settings and host-deltas; no deployment, commit or push performed."
+  ],
+  "rollback": "Revert only this task's hunks in the canonical skill, ownership selection reason, and historical applicability note; preserve unrelated work.",
+  "reevaluate_when": [
+    "Unresolved material preferences are silently committed.",
+    "Approved evidence-backed designs trigger repeated solution selection.",
+    "New constraint conflicts fail to reopen the affected choice.",
+    "Unrelated reconciliation blockers are resolved; rerun scoped reconciliation and fresh discovery before claiming deployment."
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "owner": "Hermes native skill selection",
+  "repository": "https://github.com/NousResearch/hermes-agent",
+  "native_base_revision": "9fe737aef2dd18a351dff3c4de608d63879a6524",
+  "runtime_observed": "0.21.4",
+  "targets": {
+    "agent/prompt_builder.py": {
+      "before_sha256": "a14a71dc2d4687dac6405136f841cb421d818d9115c84341e8d178de3f34df67",
+      "after_sha256": "9325b3b18c855241e72293a708ad1538df1f01eabeef6bf77e2d7b222fa43a87"
+    },
+    "tests/agent/test_oneshot_footprint.py": {
+      "before_sha256": "8d9280d7a71fb5ad29865aea17f6b503c4b977dbf3680b23fdc13df7d4bbe1fd",
+      "after_sha256": "16241d9593189e7421ceb4d9cb0aa0eca249c49f7f08adb124d3e1e5ea533964"
+    }
+  },
+  "artifacts": {
+    "selector.patch": "25760d963062f4edf77d1ab1546b5cae4b81beaf33442a66500c55e7ef7ecbcb",
+    "README.md": "4256185f8d6953e484b43609d5164ad7419583a2ed20597cd0ff4eda2eaf350b"
+  },
+  "license": {
+    "spdx": "MIT",
+    "source": "../LICENSE",
+    "sha256": "e29dfaf6905a8d396a58ea4bd84ad27057756bbd9599b5bec0971ae34d2a2118"
+  },
+  "lifecycle": "manual reviewed native prerequisite; not updater enrollment",
+  "mechanism_verification": {
+    "native_targeted_tests": 67,
+    "baseline_and_candidate_passed": true,
+    "public_entry_point_comparison": "passed; parent rerun candidate",
+    "copy_apply_reverse_and_exact_target_hashes": "passed with core.autocrlf=false"
+  },
+  "limits": [
+    "No inference or model-quality claim",
+    "Broader prompt-builder test file fails baseline Windows collection",
+    "Restart not performed",
+    "Historical bundles are not current-source installers"
+  ]
+}

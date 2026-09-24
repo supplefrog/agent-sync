@@ -12,7 +12,6 @@
             "desktop",
             "features",
             "hooks.PreToolUse",
-            "hooks.SessionStart",
             "mcp_servers.claude-context.args",
             "mcp_servers.claude-context.command",
             "mcp_servers.parallel.bearer_token_env_var",
@@ -38,42 +37,6 @@
           "kind": "text",
           "snapshot": "hosts/codex/AGENTS.md",
           "source": "AGENTS.md",
-          "strategy": "replace-if-absent"
-        },
-        {
-          "format": "text",
-          "id": "session-start-hook",
-          "kind": "text",
-          "portable_paths": true,
-          "snapshot": "hosts/codex/hooks/run-gsd-check-update.ps1",
-          "source": "hooks/run-gsd-check-update.ps1",
-          "strategy": "replace-if-absent"
-        },
-        {
-          "format": "text",
-          "id": "update-hook",
-          "kind": "text",
-          "portable_paths": true,
-          "snapshot": "hosts/codex/hooks/gsd-check-update.js",
-          "source": "hooks/gsd-check-update.js",
-          "strategy": "replace-if-absent"
-        },
-        {
-          "format": "text",
-          "id": "update-hook-worker",
-          "kind": "text",
-          "portable_paths": true,
-          "snapshot": "hosts/codex/hooks/gsd-check-update-worker.js",
-          "source": "hooks/gsd-check-update-worker.js",
-          "strategy": "replace-if-absent"
-        },
-        {
-          "format": "text",
-          "id": "managed-hook-registry",
-          "kind": "text",
-          "portable_paths": true,
-          "snapshot": "hosts/codex/hooks/managed-hooks-registry.cjs",
-          "source": "hooks/managed-hooks-registry.cjs",
           "strategy": "replace-if-absent"
         },
         {

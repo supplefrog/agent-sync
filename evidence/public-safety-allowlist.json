@@ -657,6 +657,13 @@
       "line_sha256": "652c10e88d4f53169b2260a17847d24744614e2ad1c994c897cc122e9e42df8e",
       "rule": "credential-assignment",
       "disposition": "Existing reviewed no-key-required literal in loopback-server example; added comment explicitly identifies the dummy placeholder. Not a credential."
+    },
+    {
+      "path": "tests/test_native_preflight.py",
+      "line": 43,
+      "rule": "recovery-secret-like-value",
+      "line_sha256": "90a5f2580c6174749db0402ded650be9f3fb87f62a80a27d38363638f7e9d15f",
+      "disposition": "Reviewed synthetic proxy.invalid URL in an offline environment-filter regression; literal fixture-user and fixture-password are not live credentials and no network request is made."
     }
   ],
   "schema_version": 1

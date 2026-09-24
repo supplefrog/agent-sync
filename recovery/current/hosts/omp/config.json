@@ -19,7 +19,7 @@
       "tavily"
     ]
   },
-  "setupVersion": 1,
+  "setupVersion": 2,
   "shellPath": "C:\\Program Files\\Git\\bin\\bash.exe",
   "symbolPreset": "nerd",
   "textVerbosity": "low",

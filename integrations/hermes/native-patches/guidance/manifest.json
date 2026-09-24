@@ -10,7 +10,7 @@
   },
   "artifacts": {
     "LICENSE": "e29dfaf6905a8d396a58ea4bd84ad27057756bbd9599b5bec0971ae34d2a2118",
-    "README.md": "bac5d3021b14705e0b806d76e1e629bd2cd8b946de4ac434e266a7b6ed9a45c9",
+    "README.md": "546dccb7e1eda95334ecf35f09db983e9fef8cc6e31ea446b053d406ea6ccee4",
     "guidance.patch": "bd5963dc3753da2980d4732f047fa6215d96f67d6ff55dabb5f248b674e991f5",
     "recovery/baseline/agent/prompt_builder.py": "15971a1a450558da904c67881193b8688db20cfdb50c2e7264dc0a63ffece3bb",
     "recovery/candidate/agent/prompt_builder.py": "eca63c5ae6ce7b2c40b0dce7fe407a39d39c0bd8d1ef5d9ae441beaf707f500e"

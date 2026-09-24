@@ -5,7 +5,7 @@ license: MIT
 compatibility: Source access determines achievable coverage; local media tools are optional and authorization-bound.
 metadata:
   author: supplefrog
-  version: "1.2.0"
+  version: "1.3.0"
   hermes:
     tags: [youtube, learning, research, transcripts]
     related_skills: [youtube-content]
@@ -21,6 +21,8 @@ For several sources or a choice of what to study, read [references/source-triage
 
 Produce a usable lesson, not an orientation to watching the material. Establish coverage separately for transcript, slides, recording visuals and audio listening; a complete transcript inventory proves none of the other channels.
 
+For saved evidence or an offline reader, use [references/portable-tools.md](references/portable-tools.md). It supplies source validation, bounded visual capture, optional rendering and browser checks from this skill's own directory. A new video needs its own sources and workspace, not an earlier project's scripts, artifacts or conversation history.
+
 ## Core contract
 
 - Review the selected scope before final synthesis; keep inaccessible or unreviewed portions explicit rather than reconstructing them.
@@ -31,9 +33,21 @@ Produce a usable lesson, not an orientation to watching the material. Establish 
 - Teach missing prerequisites when necessary to understand or apply the material.
 - Use `primary-source-research` for external verification when available.
 - Paraphrase rather than reproducing the transcript; quote only short essential excerpts.
-- Keep source-bounded tasks source-bounded. Add general best practice only when it materially helps, and label each addition as **Inference** at the point of use. Never describe the whole artifact as a source paraphrase if it contains added guidance.
+- Keep source-bounded tasks source-bounded. Make added reasoning distinguishable from recovered source content through attribution or local notes; do not pass it off as the creator's claim.
 
 ## Workflow
+
+Before selecting a bounded excerpt, inspect the source's opening and overall structure. Identify whether it teaches a reproducible procedure, explains a concept, argues a position or demonstrates an experiment; choose the learner and useful outcome accordingly. Recover the setup that gives an excerpt meaning. Teach the subject and its transferable ideas; interface details matter when they explain those ideas or a demonstrated procedure.
+
+### 0. Parent-owned source readiness before delegation
+
+Before launching a lesson-building worker, the parent must acquire and validate the media needed for its assigned scope. A URL, metadata, captions, format listing or successful extractor exit is not a media-readiness check. Resolve acquisition errors in the parent; do not spend a lesson worker's budget discovering or repairing them.
+
+For a bounded local clip, run [scripts/source_ready.py](scripts/source_ready.py) with the expected duration, required image height, audio requirement and receipt path. It checks streams, duration, full decoding and source identity, returning nonzero on failure and invalidating stale readiness. For a long read-only local recording, validate bounded packets rather than copying or decoding the whole course. Inspect representative decoded frames for usable content; validate captions/audio separately as required by the task. Silent demonstrations need no invented audio prerequisite. Caption-only tasks belong to `youtube-content`, not a silently degraded visual lesson.
+
+Dispatch only after required channels pass. Give the worker verified local paths, source-to-clip timestamp mapping, checks/limitations and a readiness receipt; keep acquisition outside its assignment. Changed input, truncation, missing assets or a newly discovered central access gap => stop dependent synthesis and return to parent recovery. A readiness pass permits work; it does not certify lesson fidelity. For hosted-fetch failures or stalled seeks, read the acquisition notes in [references/source-fidelity.md](references/source-fidelity.md).
+
+When changing the readiness helper, run [scripts/test_source_ready.py](scripts/test_source_ready.py) and a real source packet; synthetic checks alone do not establish hosted-video access.
 
 ### 1. Inspect the source
 
@@ -85,7 +99,7 @@ Resolve consequential transcription errors against the original or corroborating
 
 Verify current facts, named methods, tools, papers, and prerequisites against upstream sources. External research may correct, qualify, or extend the video, but must remain visibly distinct from the creator's claims.
 
-Apply provenance labels to the specific statement they qualify; a global disclaimer does not repair mixed source and inferred claims.
+Attribute consequential claims where they occur; a global disclaimer does not repair mixed source and inferred claims.
 
 Do not inflate the lesson with generic background. Add context only when it closes a real comprehension or application gap.
 

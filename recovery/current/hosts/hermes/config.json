@@ -1,5 +1,5 @@
 {
-  "_config_version": 44,
+  "_config_version": 46,
   "agent": {
     "api_max_retries": 3,
     "clarify_timeout": 600,
@@ -25,7 +25,7 @@
     "destructive_slash_confirm": true,
     "mcp_reload_confirm": true,
     "mode": "smart",
-    "timeout": 120
+    "timeout": 600
   },
   "auxiliary": {
     "approval": {
@@ -39,9 +39,9 @@
       "timeout": 120
     },
     "compression": {
-      "model": "gpt-5.6-luna-900k",
+      "model": "gpt-6-luna-900k",
       "provider": "openai-codex",
-      "reasoning_effort": "medium",
+      "reasoning_effort": "high",
       "timeout": 120
     },
     "curator": {
@@ -66,7 +66,7 @@
       "timeout": 60
     },
     "profile_describer": {
-      "model": "stepfun/step-3.7-flash:free",
+      "model": "upstage/solar-pro4:free",
       "provider": "nous",
       "timeout": 60
     },
@@ -88,7 +88,7 @@
       "timeout": 30
     },
     "triage_specifier": {
-      "model": "stepfun/step-3.7-flash:free",
+      "model": "upstage/solar-pro4:free",
       "provider": "nous",
       "timeout": 120
     },
@@ -380,8 +380,8 @@
     "write_approval": false
   },
   "model": {
-    "default": "upstage/solar-pro4:free",
-    "provider": "nous",
+    "default": "gpt-6-astra",
+    "provider": "openai-codex",
     "request_overrides": {
       "extra_body": {
         "text": {
@@ -411,10 +411,11 @@
       "clarify",
       "code_execution",
       "computer_use",
+      "connections",
+      "context_engine",
       "delegation",
       "file",
       "image_gen",
-      "kanban",
       "memory",
       "routed_delegation",
       "session_search",

@@ -1,0 +1,23 @@
+# Personal design defaults
+
+These are this user's cross-project preferences, explicitly requested to persist. Apply them before proposing or delegating frontend design. A newer request or an established project's approved identity takes precedence; do not require the user to restate these defaults, and do not turn them into a single house theme.
+
+## Visual character
+
+- Avoid cream/beige/tinted-paper as the automatic background. Liking elegant typography or newspaper character does not imply liking aged paper. Choose the palette deliberately with the user; neither dark mode nor neon is the automatic replacement.
+- Favor character that feels authored: meaningful symbols, small discoveries, playful HTML-era interactions, culturally specific voice and details with a setup/payoff. A modest effect can be memorable. Do not manufacture personality through generic quirky slogans or forced jokes.
+- Treat typography, color fields, backgrounds, accents, symbols, composition and transitions as a coherent whole. Expressive typography and useful diagrams are welcome, but no specific font or illustration style is a universal requirement.
+- Give content breathing room through considered gutters, grouping and rhythm. Large empty regions do not compensate for text crowded against an edge. Dividers, boxes, labels and split layouts need an explained role rather than functioning as automatic editorial decoration.
+- Keep exploration open: expressive homepages, practical reference pages and experimental portfolios may have different needs. Related pages can differ in treatment while retaining recognizable connections. Do not force every project into restrained documentation styling or every reading page into a spectacle.
+
+## Interaction and collaboration
+
+- Make unresolved visual decisions easy to see and try: prefer small visual comparisons over prose-only descriptions, with interactive controls when useful. Use side-by-side samples, before/after views, toggles, sliders or another fitting format; neither sliders nor a fixed number of options are mandatory. Follow [taste-selection.md](taste-selection.md) for comparable content, reset and keyboard behavior. This is a collaboration preference, not a universal aesthetic or a reason to reopen approved choices.
+- Put useful actions where their context is understood. For teaching, associate practice with the actual concept/example and carry its state into the exercise. Name search/explanation actions by their benefit rather than defaulting to vague `?` or `Help` chrome. These preferences do not establish that all help buttons or separate workspaces are unusable.
+- Explain consequential aesthetic and interaction choices, their purpose and tradeoff before substantial implementation; seek review rather than silently bundling unapproved choices with an approved reference. Purpose includes curiosity and delight, not only task efficiency. Routine repairs inside an approved system need no new approval round. Explicit delegation can authorize provisional choices.
+- Do the reference filtering. Use a small relevant selection and explain transferable qualities; do not assign broad browsing or bookmark-sorting homework. Learn from designers' stated reasoning, not just screenshots, and distinguish source principles from evidence of this user's taste.
+- For useful generated assets, prefer the user's authenticated Codex app or CLI. Verify the actual backend route/default and current support; model selection belongs there, not in the artwork prompt. This permission does not authorize credential extraction, an API-key/paid fallback, or publication. Generated textures and other taste-bearing assets still need rendered review before replacing approved assets.
+
+## Scope boundaries
+
+Keep project-specific content, assets, exact colors, jokes, selected fonts and runtime budgets in that project's context. A project's rejected feature or implementation does not become a global prohibition.

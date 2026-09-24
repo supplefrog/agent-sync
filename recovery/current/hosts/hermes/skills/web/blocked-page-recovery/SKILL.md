@@ -77,9 +77,14 @@ never-crawled URLs, JS-only SPAs (snapshots don't render).
 User-submitted archives — often has paywalled news articles Wayback lacks.
 Rate-limits aggressively (429) and rotates domains, so iterate:
 
+For scratch files, set `TMPDIR` in the executing shell to the runtime-advertised
+scratch directory if it is unset or points elsewhere. On native Windows use an
+absolute native path, not an MSYS `/c/...` path; do not derive it from `~/.hermes`.
+
 ```bash
+: "${TMPDIR:?Set TMPDIR to the runtime-advertised scratch directory}"
 for d in archive.ph archive.md archive.li archive.is; do
-  curl -sL --max-time 20 "https://$d/newest/{URL}" -o /tmp/page.html \
+  curl -sL --max-time 20 "https://$d/newest/{URL}" -o "$TMPDIR/page.html" \
     -w "%{http_code}" && break
 done
 ```

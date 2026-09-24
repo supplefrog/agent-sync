@@ -3,15 +3,15 @@
   "bindings": {
     "contracts/change-request.schema.json": "01c34418a98dfbb8812313428505cf93c1362120e46622345b5232e46fc6fb21",
     "contracts/host-deltas.schema.json": "f575fe641fcf6acdb0c2c18ff5723c926b146db5e5fcc8a78911c4a4a4b3b50a",
-    "contracts/ownership.json": "4c5f351c3a84b01c8ab9930819518386d3adcdfb56abba73c9edb6b3b0887a47",
-    "contracts/surface-matrix.json": "80409fa3b1e8fbd4e10299b315cc568d5354958f4dc3f57a8fc7c3f2daa80173",
-    "host-deltas.json": "8f1a1c6d0a2ab761c5a518eebec040babbd6f36caccc5dd839471ea318e29332",
-    "recovery/current/manifest.json": "1fb5582b462571a3a0aba0522136341ec3aaae19193dafc20bd242bc3baeac3c",
+    "contracts/ownership.json": "96be165599088f7adefd42a4a9770be165003ab9d7b11a6cacecfafaa9299548",
+    "contracts/surface-matrix.json": "c53d3e93fbb4917fb1d7a5bd2c2036a274e80acc5c9083ce36bf2c13c5caca18",
+    "host-deltas.json": "ccebc4b4925e3ea7882a21d992f406cd4125d2a23728a9cde233530531535edf",
+    "recovery/current/manifest.json": "be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906",
     "registry.json": "d3ca18c4edc71113d9a669e3091ff005093c810baecb06abf5e9535633095d8a",
-    "render/fleet/manifest.json": "90595f73eb277d3681309bbc96303db4a7be78069d18fdfafa8f2a6b00c71798",
-    "tools/audit.py": "9852935d45b7ba8f75dc5b4bd439eedad5e13ea8c08709c9a9255c8370bdaff3",
+    "render/fleet/manifest.json": "73951f163f47bcc8e30e30caa1cb2915b57d245d0e9e411048f51e27a69dd321",
+    "tools/audit.py": "5bf87a55c70f6abbf0b1a055f4745b634fed9372b5352bb138346559f24e4021",
     "tools/host_deltas.py": "aa79fb01da113e037be2dd946b91b5665b4336b973ac7c8a23c10ff73ce76a5a",
-    "tools/reconcile.py": "7ab0ac1ce6d43a44ad117a3b446b0c27f57f9f1b53b0b6a904b38a5515f8c10d",
+    "tools/reconcile.py": "d48bab08e956ccb5c54190e9a626ec616a24e885ede2fe6302c9a93be66b8837",
     "tools/sync_git.py": "a526a4193f9c9bcd721ecd86c091b2a0ced4406b13aebeec668a598f40e021e7"
   },
   "checks": [
@@ -24,10 +24,16 @@
     "reconciliation plan"
   ],
   "machine": "local-windows",
-  "observed_at": "2026-09-15T23:59:59.593213+00:00",
+  "observed_at": "2026-09-24T13:57:31.539134+00:00",
+  "plan_observations": {
+    "blocking": 0,
+    "reviewed-external-owner": 6,
+    "staged-skill-proposal": 39,
+    "total": 45
+  },
   "result": {
     "decision": "agent-files-and-governance-verified",
-    "limitation": "Local verification before Git publication. Only sync remote readback proves the subsequent push.",
+    "limitation": "Local verification before Git publication. Pending proposals remain unapproved and reviewed external packages remain unmanaged by this fleet. Only sync remote readback proves the subsequent push.",
     "passed": true
   },
   "schema_version": 1,

@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "status": "blocked-before-inference",
+  "observed_at": "2026-09-16T00:10:54.345159+00:00",
+  "scope": "Prerequisite inspection for a six-case paired autonomy and writing comparison; no behavioral qualification.",
+  "reviewed_revision": "f9f753c471c016fd5309369c6534f825cb0539f1",
+  "native_source_revision": "5eb99eb2844b22ebb723711b8e6a0bbb80bb5f04",
+  "bindings": {
+    "tools/evaluation_hermes_worker.py": "98b9cc112c51c64c46fd31400fac3d22d991003ae9aee7d237935c0afd5b10dc",
+    "tools/evaluation_artifact_worker.py": "7c3d741a32a2d3e68189778d6167cf0425ad209306303b3bee7553a1ff6dd1dd",
+    "tools/evaluation_artifact_pilot.py": "859137a01406f009fb853e611c3a6e053acdd061179807205bf825e80d59925f",
+    "tools/evaluation_runtime.py": "80db7e9bf336ad41a9aa653e0b1ea21f48bf0ab3dcec7bcfd9d9b9461a663d06",
+    "recovery/current/hosts/hermes/SOUL.md": "4fecbf6b7b0c6ac8dfc610f07ebba09962f056953e5d4bff73da5f9ce4111092",
+    "skills/conversational-communication/SKILL.md": "8e2fb89424401e30e6cb572a69a5432be48e37656011acb13af2760fb4941d07"
+  },
+  "checks": [
+    {
+      "source": "tools/evaluation_hermes_worker.py:25-49",
+      "finding": "Native text worker disables tools, SOUL, normal context files, memory and background review. It cannot exercise actual task execution or the normal effective instruction stack."
+    },
+    {
+      "source": "tools/evaluation_artifact_worker.py:60-86",
+      "finding": "Artifact worker has terminal/file tools but uses injected leaf-worker instructions and skips normal SOUL, memory and context loading."
+    },
+    {
+      "source": "tools/evaluation_artifact_pilot.py:32-35,59-76",
+      "finding": "Existing pilot supports runtime-smoke and injected-instruction-study purposes, not natural discovery or full-stack equivalence."
+    },
+    {
+      "source": "hermes chat --help",
+      "exit_code": 0,
+      "finding": "CLI has per-run route, query, workspace, iteration and time-budget controls, but no advertised per-run replacement SOUL and skill-source pair. Ignore-rules/safe-mode remove other context as well."
+    },
+    {
+      "source": "native:tui_gateway/methods_session.py:300-350",
+      "finding": "Inspected Desktop creation overrides pin model/provider/reasoning/service tier and profile/workspace, not an isolated SOUL/skill pair."
+    },
+    {
+      "source": "native:agent/prompt_builder.py:1458-1487; agent/system_prompt.py:488-517",
+      "finding": "SOUL loads from the agent's home; tool availability also changes system guidance. Adding baseline text to a task or removing tools would not reproduce the requested controlled comparison."
+    }
+  ],
+  "decision": "Use the plan's stop condition: no inspected existing lane establishes the required controlled full-stack comparison without additional setup/adapter work. Do not silently substitute a reduced-stack study.",
+  "model_attempts": 0,
+  "case_outputs": 0,
+  "sessions_created": 0,
+  "instruction_changes": 0,
+  "trials_remaining_initial_cap": 12,
+  "trial_cleanup_required": false,
+  "limits": [
+    "No provider call, model callability test, or quality trial was made.",
+    "This is a limitation of the inspected comparison paths, not proof that Hermes cannot support such a trial.",
+    "Existing patches remain deployed; their behavioral benefit remains unverified."
+  ],
+  "next_options": [
+    "Authorize a one-use native comparison adapter/setup that stages the two instruction versions and verifies equivalent surrounding prompts/tools before inference; retain the original case and output caps.",
+    "Narrow the claim to an injected-instruction study using the existing artifact runner, explicitly excluding normal Desktop behavior and natural skill discovery."
+  ]
+}

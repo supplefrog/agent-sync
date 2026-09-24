@@ -1,0 +1,48 @@
+{
+  "$schema": "external-owners.schema.json",
+  "schema_version": 1,
+  "packages": [
+    {
+      "name": "paseo",
+      "owner": "paseo",
+      "machine": "local-windows",
+      "skill_root": "{SHARED_SKILLS_HOME}",
+      "marker_sha256": "827639cdd94e2217dbed12553628beecd3b43db6094b66b6bb07d28700046708"
+    },
+    {
+      "name": "paseo-advisor",
+      "owner": "paseo",
+      "machine": "local-windows",
+      "skill_root": "{SHARED_SKILLS_HOME}",
+      "marker_sha256": "f07af35c989111e7cdadfbe2cae4d7f067d49ec0f10b693faf1ad39d50afa236"
+    },
+    {
+      "name": "paseo-committee",
+      "owner": "paseo",
+      "machine": "local-windows",
+      "skill_root": "{SHARED_SKILLS_HOME}",
+      "marker_sha256": "a1582d3579ea6fe77c1bd9bedd32bbe104c62c5d8e7e476f37a96aa54798714b"
+    },
+    {
+      "name": "paseo-handoff",
+      "owner": "paseo",
+      "machine": "local-windows",
+      "skill_root": "{SHARED_SKILLS_HOME}",
+      "marker_sha256": "c89459741fd8c1e0ba7d3a16b00163a94acc73906632ff79c3db8fd0786ae48f"
+    },
+    {
+      "name": "paseo-help",
+      "owner": "paseo",
+      "machine": "local-windows",
+      "skill_root": "{SHARED_SKILLS_HOME}",
+      "marker_sha256": "1f6c37e3065cc6177456ed271b9e25ed8d66c1cb2652a376a28783f12a08f27b"
+    },
+    {
+      "name": "paseo-plugin",
+      "owner": "paseo",
+      "machine": "local-windows",
+      "skill_root": "{SHARED_SKILLS_HOME}",
+      "marker_sha256": "39c4c583a70dfafd00095c8755a52a32aa51904c24a633bea4e6f122cc69aba9"
+    }
+  ]
+}

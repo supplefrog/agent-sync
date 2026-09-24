@@ -1,0 +1,58 @@
+diff --git a/agent/prompt_builder.py b/agent/prompt_builder.py
+index 5f330639129c..9647d6b675f9 100644
+--- a/agent/prompt_builder.py
++++ b/agent/prompt_builder.py
+@@ -1355,8 +1355,6 @@ def _render_skills_index(
+         "context, so their descriptions are omitted — the skills work "
+         "normally and load with skill_view(name) as usual.)"
+     ) if demoted else ""
+-    # Don't name web_search when the session has no web tools (dangling reference).
+-    _basic_tools = "terminal" if available_tools is not None and "web_search" not in available_tools else "web_search or terminal"
+     index_lines = []
+     for category in sorted(skills_by_category):
+         entries = skills_by_category[category]
+@@ -1379,23 +1377,14 @@ def _render_skills_index(
+         )
+     return (
+         "## Skills\n"
+-        "Before replying, scan the skills below. If a skill matches or is even partially relevant to your "
+-        "task, you MUST load it with skill_view(name) and follow its instructions. Err on the side of "
+-        "loading — it is always better to have context you don't need than to miss critical steps, pitfalls, "
+-        "or established workflows. Skills contain specialized knowledge — API endpoints, tool-specific "
+-        "commands, and proven workflows that outperform general-purpose approaches. Load the skill "
+-        f"even if you think you could handle the task with basic tools like {_basic_tools}. "
+-        "Skills also encode the user's preferred approach, conventions, and quality standards for tasks like "
+-        "code review, planning, and testing — load them even for tasks you already know how to do, because "
+-        "the skill defines how it should be done here.\n"
+-        "If a skill has issues, fix it with skill_manage(action='patch').\n"
+-        "After difficult/iterative tasks, offer to save as a skill. If a skill you loaded was missing steps, "
+-        "had wrong commands, or needed pitfalls you discovered, update it before finishing.\n"
+-        "\n"
++        "Use the descriptions below to select skills for this task. Load a skill with skill_view(name) "
++        "when the user requests it or it provides specialist procedures, local conventions, or references "
++        "that materially help complete the task. A keyword match or partial topic overlap alone does not "
++        "require loading. Apply the skill within the current task's scope. Use skills_list when a concrete "
++        "gap calls for further discovery.\n\n"
+         "<available_skills>\n"
+         + "\n".join(index_lines) + "\n"
+         "</available_skills>\n\n"
+-        "Only proceed without loading a skill if genuinely none are relevant to the task."
+         + hidden_note
+     )
+ 
+diff --git a/tests/agent/test_oneshot_footprint.py b/tests/agent/test_oneshot_footprint.py
+index ecc8d16b0335..3b9bc77b8a56 100644
+--- a/tests/agent/test_oneshot_footprint.py
++++ b/tests/agent/test_oneshot_footprint.py
+@@ -32,7 +32,10 @@ def test_oneshot_hides_skill_manage_and_skill_authoring_coaching(oneshot, intera
+     prompt = build_skills_system_prompt(available_tools={"skill_view", "skills_list"}, skills_dir_override=_skills_dir(tmp_path))
+     assert "demo-skill" in prompt and "skill_view" in prompt
+     assert "skill_manage" not in prompt and "offer to save as a skill" not in prompt
+-    assert "skill_manage" in interactive_prompt and "offer to save as a skill" in interactive_prompt
++    # Both modes keep the same discoverable skill; authoring guidance has its
++    # own tool-guidance owner rather than being repeated in the catalog.
++    assert "demo-skill" in interactive_prompt and "skill_view" in interactive_prompt
++    assert prompt != interactive_prompt
+ 
+ 
+ def _skills_dir(tmp_path):

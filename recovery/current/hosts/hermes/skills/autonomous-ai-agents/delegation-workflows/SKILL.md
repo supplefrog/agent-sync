@@ -1,6 +1,6 @@
 ---
 name: delegation-workflows
-description: Design and run Hermes subagent workflows when independent tasks benefit from parallelism, isolation, or fresh review context. Covers parent-vs-child risk routing, task partitioning, bounded prompts, concurrency, integration, and verification. Use for deliberate multi-agent execution; do not trigger for simple linear work or as a reason to delegate judgment the parent should keep.
+description: Use when routing bounded coding implementation or tests to a Hermes worker, or when independent tasks warrant parallelism, isolation, or fresh review. Covers parent-vs-child risk routing, task partitioning, bounded prompts, integration, and verification; not for an obvious one-call fix.
 version: 1.3.0
 author: Hermes Agent
 license: MIT
@@ -13,13 +13,13 @@ metadata:
 
 # Delegation Workflows
 
-Delegation is useful when it reduces wall time, isolates context, or obtains an independent check. It is harmful when it fragments one coherent task, delegates high-risk judgment to a weaker route, or creates review theater.
+Routine noncoding delegation beyond an obvious one-call task defaults to Luna-high. Bounded coding or tests, including linear work, default to Sol-medium; tier up only when task complexity or demonstrated difficulty warrants it. Other delegation is useful when it reduces wall time, isolates context, or obtains an independent check. It is harmful when it fragments one coherent task, delegates high-risk judgment to a weaker route, or creates review theater.
 
 The parent owns decomposition, risk, integration, and verification.
 
 ## 1. Decide whether to delegate
 
-Delegate when most of these are true:
+For other work, delegate when most of these are true:
 
 - tasks are independent or have a clear dependency boundary;
 - each child can receive complete, bounded context;
@@ -40,7 +40,7 @@ A strong parent may still delegate bounded evidence gathering for a high-risk de
 
 ## 2. Partition by ownership, not arbitrary size
 
-Identify the current thread's user-assigned purpose before taking on substantial work. If a new task would overflow that purpose or consume the coordinator with implementation, research, or review detail, move that task into a separate bounded thread or delegated context without waiting for a reminder. Keep routine integration and short checks in the parent; context separation is not permission for extra scope or paid inference. Advance dependency-ready authorized work after reconciling completion; pause for real decisions or explicit approval blockers, not routine acknowledgements.
+Identify the current thread's user-assigned purpose before taking on substantial work. If a new task would overflow that purpose or consume the coordinator with implementation, research, or review detail, move that task into a separate bounded thread or delegated context without waiting for a reminder. Keep integration judgment and brief checks in the parent; context separation is not permission for extra scope or paid inference. Advance dependency-ready authorized work after reconciling completion; pause for real decisions or explicit approval blockers, not routine acknowledgements.
 
 Good child boundaries produce independent artifacts or findings:
 
@@ -76,9 +76,9 @@ For code tasks, give the repository path and tell the child whether it may edit.
 
 ## 4. Choose execution shape
 
-- **One direct tool call:** do not spawn a child.
+- **Obvious one-call correction or check:** do not spawn a child. Routine noncoding delegation beyond that: Luna-high.
 - **Several mechanical calls with processing:** use `execute_code`.
-- **Independent bounded tasks:** use native delegation when its actual model, effort, tools and lifecycle meet the task. The custom routed selector is not a prerequisite for ordinary work. Use routed tools only for an explicitly requested routed contract or an existing pinned run; a rejection under that contract is not permission to bypass it.
+- **Bounded coding implementation or tests (including linear work):** default to native Sol-medium delegation when its actual model, effort, tools and lifecycle meet the task; retain parent verification. The custom routed selector is not a prerequisite for ordinary work. Use routed tools only for an explicitly requested routed contract or an existing pinned run; a rejection under that contract is not permission to bypass it.
 - **Durable or long-running work:** use tracked background processes, cron, or an explicit external agent—not ephemeral delegation.
 - **Interactive work:** keep it in the parent or use an appropriate PTY/external-agent workflow.
 
@@ -88,9 +88,9 @@ Treat child contexts as temporary. A returned final summary or stopped process d
 
 ## 5. Model/routing discipline
 
-The controller owns intent, task boundaries, dispatch, permissions and acceptance. Use capable models for difficult planning and fresh substantive review; cheaper workers get explicit bounded implementation and escalate surprises. Do not infer suitability from route admission or price. Keep instructions short and source-grounded.
+The controller owns intent, task boundaries, dispatch, permissions and acceptance. Routine noncoding uses Luna-high; bounded coding/tests use Sol-medium, including linear work. Use a higher effort/tier only when task complexity or demonstrated difficulty warrants it; record the reason and bound retries. Astra-low remains for harder bounded execution, and Astra-high for planning or fresh substantive review. These are replaceable preferences, not route eligibility rules or controller/chat defaults. Do not infer suitability from price or route admission.
 
-Check the actual native model/provider/effort before launch. Inheritance is not per-task selection: do not claim an override the tool cannot express, mutate global settings between children, or silently fall back. If the needed route is unavailable, return the specific gap to the controller rather than starting a catalog-refresh or review campaign.
+Before launch, check the actual delegation schema and route availability. Pin provider, model and reasoning_effort per task only where supported; never swap global config between children, invent a pin, or silently fall back. If the required route is unavailable, report the specific gap rather than starting a catalogue-refresh campaign. Treat requested arguments, resolved runtime configuration and observed outbound requests as distinct evidence; none alone attests the backend model identity.
 
 For an explicitly requested routed task or existing pinned run only, follow `openai-delegation-route-research`. Preserve its exact route, request, resource and retry checks; disabling compulsory routing for new ordinary work does not relax an existing run's contract.
 

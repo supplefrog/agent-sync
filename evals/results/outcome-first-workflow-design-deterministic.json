@@ -1,6 +1,7 @@
 {
   "suite": "outcome-first-workflow-design",
   "host": "deterministic",
+  "applicability_note": "Historical receipt, not proof of current-version behavior. The checks, result, and limitations below are preserved as recorded. The current instruction uses proportional validation, with held-out cases only where relevant to an actual behavioral risk or uncertain quality claim, rather than the historical held-out promotion gate stated below.",
   "result": {"passed": true},
   "checks": [
     "skill validates under Agent Skills constraints",

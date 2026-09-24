@@ -4,24 +4,24 @@
   "knowledge_ledger": "../evidence/findings.json",
   "hosts": {
     "hermes": {
-      "cli_version": "0.21.2",
-      "source_revision": "3e09e5a15f43e7253abaf4760f0487fece39ff93",
+      "cli_version": "0.21.4",
+      "source_revision": "9fe737aef2dd18a351dff3c4de608d63879a6524 with reviewed local changes; not a pristine revision",
       "sources": [
         "https://hermes-agent.nousresearch.com/docs/",
         "https://github.com/NousResearch/hermes-agent"
       ]
     },
     "codex": {
-      "cli_version": "0.154.0-alpha.6.2",
-      "source_revision": "unknown; installed binary reports 0.154.0-alpha.6.2",
+      "cli_version": "0.155.0-alpha.16.4",
+      "source_revision": "unknown; installed binary reports 0.155.0-alpha.16.4",
       "sources": [
         "https://developers.openai.com/codex/",
         "https://github.com/openai/codex"
       ]
     },
     "omp": {
-      "cli_version": "18.1.10",
-      "source_revision": "v18.1.10",
+      "cli_version": "18.2.6",
+      "source_revision": "unknown; installed CLI reports 18.2.6",
       "sources": [
         "https://github.com/can1357/oh-my-pi",
         "https://github.com/can1357/oh-my-pi/releases/tag/v18.1.10"

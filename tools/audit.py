@@ -67,7 +67,7 @@ def cli_version(name: str) -> str:
     return output.splitlines()[0]
 
 
-def run_live_system_checks(repo: Path) -> list[str]:
+def run_live_system_checks(repo: Path, *, observations: dict[str, int] | None = None) -> list[str]:
     """Exercise every live governed path and return bounded specific failures."""
 
     errors: list[str] = []
@@ -94,9 +94,33 @@ def run_live_system_checks(repo: Path) -> list[str]:
             except json.JSONDecodeError:
                 errors.append(f"{label}: invalid JSON")
                 continue
-            if report.get("findings") or report.get("changes") or report.get("conflicts"):
-                errors.append("reconciliation plan: unresolved findings" if label == "reconciliation plan"
-                              else "recovery live diff: unresolved changes")
+            if not isinstance(report, dict):
+                errors.append(f"{label}: invalid report")
+                continue
+            if label == "reconciliation plan":
+                from reconcile import nonblocking_observation_kind
+
+                findings = report.get("findings")
+                summary = report.get("summary")
+                if not isinstance(findings, list):
+                    errors.append("reconciliation plan: invalid findings inventory")
+                    continue
+                counts = {"total": len(findings), "blocking": 0,
+                          "staged-skill-proposal": 0, "reviewed-external-owner": 0}
+                for item in findings:
+                    kind = nonblocking_observation_kind(item)
+                    counts[kind or "blocking"] += 1
+                if counts["blocking"] or report.get("changes") or report.get("conflicts"):
+                    errors.append("reconciliation plan: unresolved findings")
+                if (not isinstance(summary, dict)
+                        or type(summary.get("total")) is not int
+                        or summary["total"] != len(findings)):
+                    errors.append("reconciliation plan: invalid findings inventory")
+                    continue
+                if observations is not None:
+                    observations.update(counts)
+            elif report.get("findings") or report.get("changes") or report.get("conflicts"):
+                errors.append("recovery live diff: unresolved changes")
     return errors
 
 
@@ -186,6 +210,18 @@ def validate_repo(repo: Path, live: bool = False, *, current_evidence: bool = Tr
             errors.append(f"ownership schema: {location}: {error.message}")
     except Exception as exc:
         errors.append(f"ownership schema: {exc}")
+
+    if os.path.lexists(repo / "contracts/external-owners.json"):
+        try:
+            tools_dir = str(repo / "tools")
+            if tools_dir not in sys.path:
+                sys.path.insert(0, tools_dir)
+            import external_owners
+            import fleet as fleet_tool
+
+            external_owners.load_contract(repo, fleet_tool.load_fleet(repo), fleet_tool.registry(repo))
+        except Exception:
+            errors.append("external owners: contract is invalid or collides with canonical ownership")
 
     request_schema_path = repo / "contracts" / "change-request.schema.json"
     request_root = repo / "reconciliation" / "requests"
@@ -598,7 +634,8 @@ def refresh_current_evidence(repo: Path) -> list[str]:
     These reports prove configured roots/settings, not new model-behavior or
     natural-trigger parity. Historical observations remain in Git history.
     """
-    errors = validate_repo(repo, current_evidence=False) + run_live_system_checks(repo)
+    observations: dict[str, int] = {}
+    errors = validate_repo(repo, current_evidence=False) + run_live_system_checks(repo, observations=observations)
     if errors:
         raise RuntimeError("cannot refresh evidence: " + "; ".join(errors))
     import fleet
@@ -621,8 +658,9 @@ def refresh_current_evidence(repo: Path) -> list[str]:
     unified = {
         'schema_version': 1, 'suite': 'unified-reconciliation-local-windows', 'machine': 'local-windows',
         'status': 'pass', 'admitted_count': len(admitted), 'bindings': bindings, 'checks': checks,
+        'plan_observations': observations,
         'result': {'passed': True, 'decision': 'agent-files-and-governance-verified',
-                   'limitation': 'Local verification before Git publication. Only sync remote readback proves the subsequent push.'},
+                   'limitation': 'Local verification before Git publication. Pending proposals remain unapproved and reviewed external packages remain unmanaged by this fleet. Only sync remote readback proves the subsequent push.'},
     }
     changed = []
     for name, report in [('fleet-discovery-local-windows', discovery), ('unified-reconciliation-local-windows', unified)]:

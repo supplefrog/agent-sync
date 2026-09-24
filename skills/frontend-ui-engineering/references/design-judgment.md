@@ -8,7 +8,7 @@ Anthropic frontend-design, Impeccable, Hallmark, and other reviewed sources supp
 
 Choose the taste dimensions relevant to the work. Possible dimensions include information density and whitespace; type character, scale contrast, and weight; palette temperature, saturation, and color coverage; radii, border weight, and elevation; symmetry, alignment, and rhythm; texture and ornament; imagery and icon treatment; motion energy and pacing; and conventional versus experimental presentation. This list is illustrative, not a required parameter schema, numerical slider system, or set of permanent defaults. A request may introduce a different dimension entirely.
 
-Ground each chosen value in the current brief, approved work, explicit feedback, or a labeled inference. “Less rounded” adjusts geometry; it does not prove a preference for sparse layouts or monochrome. Keep independent dimensions separate, then check their interactions in the render. Preserve working choices when new feedback only changes one axis. With no time for comparisons, make these decisions yourself, keep them reversible, and deliver one considered result rather than handing the tuning task back to the user.
+Ground each chosen value in the current brief, approved work, explicit feedback, or a labeled inference. “Less rounded” adjusts geometry; it does not prove a preference for sparse layouts or monochrome. Keep independent dimensions separate, then check their interactions in the render. Preserve working choices when new feedback only changes one axis. When selection is explicitly delegated or existing design authority resolves the choice, make reversible decisions and deliver one considered result. Time pressure alone does not authorize consequential unresolved choices; keep those pending for review rather than implementing them as approved.
 
 The surface's job constrains usability, not taste to a genre: expressive color can coexist with dense task UI, and an editorial type treatment can coexist with familiar controls. Retain accessibility, legibility, task completion, and factual integrity while tuning the visual language. An established project's binding commitments still apply unless changing them is authorized.
 
@@ -48,6 +48,10 @@ Vary section density and scale when the content changes importance. Repetition s
 Let structural devices carry information. Numbering should indicate an actual sequence or reference system. An eyebrow can clarify category or context; remove it when it merely repeats the heading. Borders and surfaces should establish grouping or state; try proximity and alignment before nesting containers. Use a modal when interruption or contained focus is justified, not because a new form needs somewhere to go.
 
 For expressive surfaces, concentrate emphasis: a compelling artifact, a distinctive type composition, a useful demonstration, or a meaningful interaction. Supporting regions can be quiet without making the whole page visually timid. A task screen can instead be memorable through accuracy, responsiveness, and consistent details.
+
+For interactive explanations, put the action beside the claim or example it tests, and carry that example's state into the interaction. A separate workspace is appropriate when comparison or sustained work benefits from it, not merely because an editor exists. Keep a readable explanation for people who do not interact.
+
+Expressive purpose can include curiosity, surprise and authorial voice, not only task efficiency. Preserve a meaningful discovery's setup and payoff rather than replacing it with generic witty copy. Compose for the web's variable dimensions and changing states rather than forcing a fixed canvas onto it; this does not prohibit print influences, split panes or playful effects.
 
 ## Tune typography and space
 

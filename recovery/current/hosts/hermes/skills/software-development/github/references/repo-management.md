@@ -393,6 +393,10 @@ curl -s -X POST \
 
 ## 9. GitHub Actions Workflows
 
+For scratch files, set `TMPDIR` in the executing shell to the runtime-advertised
+scratch directory if it is unset or points elsewhere. On native Windows use an
+absolute native path, not an MSYS `/c/...` path; do not derive it from `~/.hermes`.
+
 **With gh:**
 
 ```bash
@@ -428,12 +432,13 @@ for r in json.load(sys.stdin)['workflow_runs']:
     print(f\"  Run {r['id']}  {r['name']:30}  {r['conclusion'] or r['status']}\")"
 
 # Download failed run logs
+: "${TMPDIR:?Set TMPDIR to the runtime-advertised scratch directory}"
 RUN_ID=<run_id>
 curl -s -L \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs \
-  -o /tmp/ci-logs.zip
-cd /tmp && unzip -o ci-logs.zip -d ci-logs
+  -o "$TMPDIR/ci-logs.zip"
+cd "$TMPDIR" && unzip -o ci-logs.zip -d ci-logs
 
 # Re-run a failed workflow
 curl -s -X POST \

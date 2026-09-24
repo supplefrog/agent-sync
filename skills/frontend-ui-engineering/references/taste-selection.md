@@ -1,10 +1,16 @@
 # Fast visual taste selection
 
-Use for a new/redesigned surface when taste is unresolved, or when the user asks for inspiration or comparisons. Skip for repairs, an approved direction, or explicitly delegated selection. This is a lightweight way to obtain preferences, not a claim that models cannot design or that a particular skill helps every model.
+Use for a new/redesigned surface when taste is unresolved, or when the user asks for inspiration or comparisons. Repairs, an approved direction, or explicitly delegated selection can skip this taste-selection exercise, not the [visual preview before publication](../SKILL.md#visual-preview-before-publication) gate for appearance changes. This is a lightweight way to obtain preferences, not a claim that models cannot design or that a particular skill helps every model.
 
 ## Make the choice visible
 
-Use the cheapest useful artifact: existing relevant references, a few small treatments of the same real content, or a representative component/viewport. Vary meaningful composition, hierarchy or image treatment—not only accent color. Do not build several complete apps, install style suites, generate assets or run model tournaments just to offer a choice.
+For inspiration requests, do the filtering: start with a small set of specific real projects matched to the site's purpose and known preferences, not gallery homepages or search-result dumps. Name the best starting point and the relevant quality and limitation of each reference. Offer broad discovery resources when the user asks to browse widely; if breadth feels burdensome, narrow the set rather than asking the user to sort bookmarks or explain their taste first. Existing references are optional inputs, not homework or evidence of endorsement. Do not answer a request for discovery by building more invented options.
+
+Inspect the visual evidence supporting a recommendation. When the reference's appeal involves interaction, navigate the actual site with an isolated browser instead of stopping at a gallery screenshot or text extraction. Take a bounded tour of the relevant flow: follow a content route, trigger the distinctive interaction, inspect its open/closed and relevant responsive states, and capture the states that change the design decision. Use the available browser-control workflow; do not disturb the user's browser, sign in, or perform consequential actions merely to inspect inspiration. If access fails, try a non-disruptive alternative, then label the remaining limits. Distinguish observed behavior from controls merely listed by the site and from inferred implementation. Static composition references and routine repairs do not require a whole-site tour.
+
+Extract the transferable interaction and its tradeoff, not a feature requirement: an appealing window can inspire presentation without justifying a terminal, workbench or simulated backend. Preserve meaningful discoveries in the original site by inspecting their actual setup and payoff. Record URLs, paths taken and useful captures in the project, not in the shared skill. Search descriptions alone do not establish visual quality or usability.
+
+When the user requests mockups, supplies references, or has narrowed the qualities to compare, use a few small treatments of the same real content or a representative viewport. Vary meaningful composition, hierarchy or image treatment—not only accent color. Do not build several complete apps, install style suites, generate assets or run model tournaments just to offer a choice.
 
 Keep content and task comparable. Label original mockups versus external inspiration; provide the original links and say which quality each reference illustrates. A gallery is for discovery, not permission to copy branding, assets or code. Prefer a small diverse initial set with a route to explore more, rather than a large fixed theme catalog. The user's own references can replace the entire set.
 
@@ -16,7 +22,7 @@ Offer reactions that change the next step:
 - none of these / explore a different direction;
 - let the agent choose.
 
-A dislike of color does not reject layout. Ask what to keep only when the reaction is ambiguous; avoid design jargon and a compulsory questionnaire. Once a direction is selected, refine it rather than restarting the selection process.
+A dislike of color does not reject layout. Record preferences by quality and page purpose: expressive homepage typography need not become the type used for scanning notes or copying code. Ask what to keep only when the reaction is ambiguous; avoid design jargon and a compulsory questionnaire. Once a direction is selected, refine it rather than restarting the selection process.
 
 ## Make iteration cheap
 

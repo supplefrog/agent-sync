@@ -1,67 +1,94 @@
 {
   "schema_version": 1,
   "suite": "current-model-instruction-profile",
-  "profile": "gpt-5.6-sol-openai-codex",
-  "observed_at": "2026-09-04T18:51:17Z",
+  "profile": "gpt-6-astra-openai-codex",
+  "observed_at": "2026-09-24T12:37:54.194409+00:00",
   "status": "pass",
-  "claim": "The current user-owned instruction overlays are identified, hash-bound, restorable, host-qualified, semantically aligned on the Agent Signal reconciliation route, and below the standing context budget for gpt-5.6-sol on openai-codex.",
-  "target": {
-    "model": "gpt-5.6-sol",
-    "provider": "openai-codex",
-    "reasoning": {
-      "hermes": "medium",
-      "codex": "medium",
-      "omp": "high"
-    }
-  },
+  "claim": "Allowlisted configured model selectors, installed runtime versions, native instruction-unit hashes and standing-byte budgets verified by tools/instruction_profile.py in live mode. No model request or host routing mutation.",
+  "verification_mode": "live",
   "hosts": {
-    "hermes": {
-      "runtime": "Hermes Agent 0.21.0",
-      "standing_bytes": 1869,
-      "budget": 2048,
-      "artifact_sha256": "a02c868eb51ef832cf20dbbce6bb6f05c384376b0db53ea2455b36b40bd1812c",
-      "live_hash_match": true,
-      "reconciliation_unit": "hermes.reconciliation"
-    },
     "codex": {
-      "runtime": "codex-cli 0.153.1",
-      "standing_bytes": 2018,
+      "runtime": "codex-cli 0.155.0-alpha.16.4",
+      "model": "gpt-6-astra",
+      "provider": "openai-codex",
+      "reasoning": "low",
+      "bytes": 2021,
       "budget": 2048,
-      "artifact_sha256": "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b",
-      "live_hash_match": true,
-      "reconciliation_unit": "codex.reconciliation"
+      "units": [
+        "codex.output",
+        "codex.instruction-authoring",
+        "codex.scope",
+        "codex.evidence",
+        "codex.research",
+        "codex.reconciliation",
+        "codex.execution"
+      ],
+      "surfaces": [
+        "provider.native-system",
+        "portable.reconciliation-authority",
+        "codex.runtime-native",
+        "codex.user-global",
+        "codex.project-context"
+      ],
+      "artifact_sha256": [
+        "11d38803b75dd625966f81939fcfb4f04699f52cca0b4beecf91f2c077908778"
+      ]
+    },
+    "hermes": {
+      "runtime": "Hermes Agent 0.21.4",
+      "model": "gpt-6-astra",
+      "provider": "openai-codex",
+      "reasoning": "low",
+      "bytes": 1992,
+      "budget": 2048,
+      "units": [
+        "hermes.style",
+        "hermes.judgment",
+        "hermes.output",
+        "hermes.deliberation",
+        "hermes.instruction-authoring-route",
+        "hermes.reconciliation",
+        "hermes.execution"
+      ],
+      "surfaces": [
+        "provider.native-system",
+        "portable.reconciliation-authority",
+        "hermes.runtime-native",
+        "hermes.user-global",
+        "hermes.project-context"
+      ],
+      "artifact_sha256": [
+        "76c2a54f8495d68cd40895bc80bb9694f90154f00224bb357c3e1e073ed7a530"
+      ]
     },
     "omp": {
-      "runtime": "omp 17.2.13",
-      "standing_bytes": 2018,
+      "runtime": "omp 18.2.6",
+      "model": "gpt-6-astra",
+      "provider": "openai-codex",
+      "reasoning": "xhigh",
+      "bytes": 0,
       "budget": 2048,
-      "inherits": "codex.user-global",
-      "artifact_sha256": "940e6e4fcbe7beeba41d22d7a34f99737df3be6ea5450a1e092b9362e8988a8b",
-      "codex_discovery_provider_enabled": true,
-      "native_agents_file_absent": true,
-      "duplicate_rules_delta": "retired",
-      "live_rules_file_absent": true,
-      "reconciliation_unit": "codex.reconciliation"
+      "units": [],
+      "surfaces": [
+        "provider.native-system",
+        "portable.reconciliation-authority",
+        "omp.runtime-native",
+        "omp.project-context"
+      ],
+      "artifact_sha256": [],
+      "no_managed_standing_reason": "OMP 18.2.6's Codex discovery provider is not enabled (enabledProviders is empty); fresh native get_state omits the managed standing markers, and no native OMP user-global AGENTS.md is installed."
     }
   },
   "verification": {
-    "recovery_snapshot": "pass",
-    "instruction_profile": "pass",
-    "live_runtime_and_state": "pass",
-    "instruction_profile_tests": "11 passed",
-    "instruction_retirement_tests": "13 passed",
-    "recovery_tests": "24 passed, 1 skipped",
-    "reconciliation_and_host_delta_tests": "17 passed, 1 skipped",
-    "repository_tests": "260 passed, 2 skipped",
-    "routed_delegation_tests": "27 passed",
-    "dynamic_workflow_tests": "58 passed",
-    "route_selector_and_tools_tests": "33 passed",
-    "writing_routes": "routine chat, public prose, model-facing instructions, and surface placement each have one on-demand owner",
-    "recovery_loaded_into_prompt": false
+    "command": "python tools/instruction_profile.py",
+    "exit_code": 0,
+    "recovery_live_diff": "zero changes and conflicts",
+    "profile_related_regressions": "84 passed, 87 subtests; instruction profile/retirement, host deltas, native diagnostic/preflight, evaluation evidence",
+    "omp_fresh_discovery": "OMP 18.2.6 config get enabledProviders --json returned []; --mode rpc --no-session get_available_commands and get_state both succeeded. No model request; expected managed standing markers absent."
   },
   "result": {
     "passed": true,
     "decision": "current-observed",
-    "limitation": "This is the definitive current user-owned overlay and inventory, not a claim to reproduce provider-hidden system instructions or to prove every line globally optimal. Model, provider, runtime, prompt assembly, tool schema, context policy, or instruction changes reopen retirement evaluation."
+    "limitation": "Configured selectors are not session-specific or backend model attestation. Existing natural-trigger and model-quality evidence remains historical; this check does not refresh it. Fresh OMP discovery is a configuration/assembly observation, not model-behavior parity."
   }
 }

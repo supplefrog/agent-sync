@@ -108,7 +108,7 @@
       "selection_evidence": [
         "evals/results/organic-architecture-governance-2026-08-25.json"
       ],
-      "selection_reason": "Admitted after held-out workflow-design evaluation and live cross-host usage."
+      "selection_reason": "Retains the recorded admission with stated evaluation limits: structural checks passed, cross-host discovery was partial, and one value-dependent Hermes probe completed. The normal-build probe began implementation but exceeded the harness ceiling; the isolated A/B was inconclusive, and OMP natural-trigger behavior was not sampled. The linked receipt does not establish completed held-out evaluation or cross-host behavioral validation."
     },
     {
       "id": "openai-delegation-route-research",

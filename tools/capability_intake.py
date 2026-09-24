@@ -14,10 +14,12 @@ from typing import Any, Mapping, Sequence
 try:
     import fleet
     import recovery
+    import external_owners
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import fleet  # type: ignore
     import recovery  # type: ignore
+    import external_owners  # type: ignore
 
 SAFE_EXISTING_OWNER_ACTIONS = {
     "add",
@@ -199,11 +201,11 @@ def _destination_specs(
         raw_roots = machine_config.get("skill_roots", [])
         if not isinstance(raw_roots, list) or not raw_roots:
             raise RuntimeError(f"machine has no skill roots: {machine}")
-        roots = [fleet.resolve_template(str(value)) for value in raw_roots]
+        roots = [external_owners.lexical_root(str(value).format_map(fleet.variables())) for value in raw_roots]
     else:
         if not skill_roots:
             raise RuntimeError("skill_roots cannot be empty")
-        roots = [Path(value).expanduser().resolve() for value in skill_roots]
+        roots = [external_owners.lexical_root(value) for value in skill_roots]
 
     unique = sorted({Path(root) for root in roots}, key=lambda value: os.path.normcase(str(value)))
     return [(f"{machine}:skill-root-{index}", root) for index, root in enumerate(unique, start=1)]
@@ -214,18 +216,51 @@ def _unmanaged_skill_names(
     *,
     desired: set[str],
     managed: set[str],
+    reviewed: set[str],
 ) -> list[str]:
-    if not destination.is_dir() or fleet.is_linklike_path(destination):
+    if not destination.is_dir():
         return []
     names: list[str] = []
     for child in destination.iterdir():
-        if child.name.startswith(".") or fleet.is_linklike_path(child) or not child.is_dir():
+        if child.name.startswith("."):
             continue
         if child.name in desired or child.name in managed:
             continue
-        if (child / "SKILL.md").is_file():
+        if (child.name in reviewed or fleet.is_linklike_path(child)
+                or (child.is_dir() and ((child / "SKILL.md").is_file()
+                    or os.path.lexists(child / external_owners.MARKER)))):
             names.append(child.name)
     return sorted(names)
+
+
+def fleet_findings(repo: Path, *, machine: str, skill_roots=None) -> list[dict[str, Any]]:
+    """Use the same unmanaged/external-owner checks with or without recovery."""
+    config = fleet.load_fleet(repo)
+    snapshot = fleet.validated_snapshot_output(repo, repo / str(config["snapshot_root"]))
+    manifest = fleet.load_manifest(snapshot)
+    registry = fleet.registry(repo)
+    records = external_owners.load_contract(repo, config, registry)
+    desired = set(manifest["skills"])
+    findings = []
+    for destination_id, destination in _destination_specs(config, machine, skill_roots):
+        external_owners.reject_link_chain(destination)
+        managed = set(fleet.load_state(destination)["skills"])
+        reviewed = external_owners.for_destination(records, machine, destination, desired, managed)
+        for action_item in fleet.plan_snapshot(snapshot, destination):
+            if action_item.get("action") != "unchanged":
+                findings.append(classify_fleet_action(
+                    action_item, registry.get(str(action_item.get("name", ""))),
+                    destination_id=destination_id,
+                ))
+        for name in _unmanaged_skill_names(destination, desired=desired, managed=managed, reviewed=set(reviewed)):
+            finding = classify_fleet_action(
+                {"name": name, "action": "unmanaged"}, registry.get(name),
+                destination_id=destination_id, ambiguous=True,
+            )
+            if name in reviewed:
+                finding.update(external_owners.observe(destination / name, reviewed[name]))
+            findings.append(finding)
+    return findings
 
 
 def scan(
@@ -264,37 +299,7 @@ def scan(
         key = (str(item.get("host", "")), str(item.get("id", "")))
         findings.append(_classify_recovery_item(item, artifacts.get(key), conflict=True))
 
-    config = fleet.load_fleet(repo)
-    snapshot = fleet.validated_snapshot_output(repo, repo / str(config["snapshot_root"]))
-    manifest = fleet.load_manifest(snapshot)
-    registry = fleet.registry(repo)
-    desired = set(manifest["skills"])
-
-    for destination_id, destination in _destination_specs(config, machine, skill_roots):
-        state = fleet.load_state(destination)
-        managed = set(state["skills"])
-        for action_item in fleet.plan_snapshot(snapshot, destination):
-            if action_item.get("action") == "unchanged":
-                continue
-            name = str(action_item.get("name", ""))
-            findings.append(
-                classify_fleet_action(
-                    action_item,
-                    registry.get(name),
-                    destination_id=destination_id,
-                    checked=False,
-                )
-            )
-        for name in _unmanaged_skill_names(destination, desired=desired, managed=managed):
-            findings.append(
-                classify_fleet_action(
-                    {"name": name, "action": "unmanaged"},
-                    registry.get(name),
-                    destination_id=destination_id,
-                    checked=False,
-                    ambiguous=True,
-                )
-            )
+    findings.extend(fleet_findings(repo, machine=machine, skill_roots=skill_roots))
 
     findings.sort(
         key=lambda item: (

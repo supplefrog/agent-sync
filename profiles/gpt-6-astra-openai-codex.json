@@ -17,6 +17,7 @@
     "units": "contracts/instruction-units.json"
   },
   "evidence": [
+    "evals/results/current-model-instruction-profile-deterministic.json",
     "evals/results/astra-foreground-observed.json",
     "evals/results/hermes-continuation-current-artifacts.json",
     "evals/results/prompt-sentence-review.json"
@@ -31,7 +32,6 @@
         "portable.reconciliation-authority",
         "codex.runtime-native",
         "codex.user-global",
-        "codex.session-start-hook",
         "codex.project-context"
       ],
       "effective_units": [
@@ -43,14 +43,14 @@
         "codex.reconciliation",
         "codex.execution"
       ],
-      "model": "gpt-5.6-sol",
+      "model": "gpt-6-astra",
       "provider": "openai-codex",
       "reasoning": "low",
-      "runtime": "codex-cli 0.154.0-alpha.6.2"
+      "runtime": "codex-cli 0.155.0-alpha.16.4"
     },
     "hermes": {
       "artifact_sha256": [
-        "4fecbf6b7b0c6ac8dfc610f07ebba09962f056953e5d4bff73da5f9ce4111092"
+        "24afe3566d3e3e1bd6dbd80a2e90d3f239fb468856bb3ad49bdb7b87a6326f3d"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -68,10 +68,10 @@
         "hermes.reconciliation",
         "hermes.execution"
       ],
-      "model": "upstage/solar-pro4:free",
-      "provider": "nous",
+      "model": "gpt-6-astra",
+      "provider": "openai-codex",
       "reasoning": "low",
-      "runtime": "Hermes Agent 0.21.2"
+      "runtime": "Hermes Agent 0.21.4"
     },
     "omp": {
       "artifact_sha256": [],
@@ -82,9 +82,9 @@
         "omp.project-context"
       ],
       "effective_units": [],
-      "no_managed_standing_reason": "OMP 18.1.10's Codex discovery provider is not enabled, and no native OMP user-global AGENTS.md is installed.",
+      "no_managed_standing_reason": "OMP 18.2.6's Codex discovery provider is not enabled (enabledProviders is empty); fresh native get_state omits the managed standing markers, and no native OMP user-global AGENTS.md is installed.",
       "reasoning": "xhigh",
-      "runtime": "omp 18.1.10"
+      "runtime": "omp 18.2.6"
     }
   },
   "id": "gpt-6-astra-openai-codex",

@@ -597,3 +597,72 @@ validation means the recorded evidence is internally consistent, not authentic.
     result["operational_errors"] = sorted(set(result["operational_errors"]))
     result["limitations"] = sorted(set(result["limitations"]))
     return result
+
+
+def validate_native_diagnostic(report: Any) -> dict[str, Any]:
+    """Check a bounded native comparison receipt, never an admission decision.
+
+    Hash syntax/equality checks attest receipt consistency only. The producer must
+    preserve raw sources for independent hash recomputation and semantic review.
+    This entry point is intentionally not called by validate_report or eval_gate.
+    """
+    errors: list[str] = []
+
+    def require(condition, message):
+        if not condition:
+            errors.append(message)
+
+    def digest(value):
+        return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+
+    try:
+        require(report['kind'] == 'native-instruction-diagnostic-v1', 'wrong diagnostic kind')
+        require(report['schema_version'] == 1, 'unsupported diagnostic version')
+        require(report['authority'] == dict(admission=False, retirement=False, cache=False),
+                'diagnostic cannot grant governance authority')
+        require(report['status'] == 'complete', 'comparison is incomplete')
+        cases, trials = report['cases'], report['trials']
+        require(isinstance(cases, list) and len(cases) == 6 and len(set(cases)) == 6,
+                'six distinct cases required')
+        require(report['trial_cap'] == 12 and type(report['attempts_started']) is int
+                and report['attempts_started'] == len(trials) == 12, 'physical trial budget mismatch')
+        require(report['cleanup_ok'] is True, 'cleanup unverified')
+        for key in ('suite', 'adapter', 'runtime', 'raw_report'):
+            require(digest(report['artifacts'][key]), f'invalid {key} binding')
+        for arm in ('baseline', 'current'):
+            identity = report['arms'][arm]
+            require(re.fullmatch(r'[0-9a-f]{40}', identity['revision']) is not None,
+                    f'{arm}: invalid revision')
+            for key in ('soul_sha256', 'skill_sha256'):
+                require(digest(identity[key]), f'{arm}: invalid {key}')
+        require(any(report['arms']['baseline'][key] != report['arms']['current'][key]
+                    for key in ('soul_sha256', 'skill_sha256')), 'identical instruction arms')
+        pairs = {(case, arm) for case in cases for arm in ('baseline', 'current')}
+        require([(t['case'], t['arm']) for t in trials].__len__() == len(pairs)
+                and {(t['case'], t['arm']) for t in trials} == pairs, 'case/arm coverage mismatch')
+        routes = set()
+        for trial in trials:
+            label = f"{trial['case']}/{trial['arm']}"
+            require(trial['completed'] is True, f'{label}: execution incomplete')
+            require(trial['cleanup_ok'] is True, f'{label}: cleanup unverified')
+            require(trial['boundary_violations'] == [], f'{label}: scope violation')
+            require(type(trial['api_calls']) is int and trial['api_calls'] > 0,
+                    f'{label}: missing API-call accounting')
+            route = trial['requested_route']
+            require(all(isinstance(route[k], str) and route[k] for k in ('model', 'provider', 'reasoning')),
+                    f'{label}: route incomplete')
+            require(route == trial['observed_route'], f'{label}: route mismatch')
+            routes.add(tuple(route[k] for k in ('model', 'provider', 'reasoning')))
+            for key in ('surrounding_prompt_sha256', 'tools_sha256', 'fixture_before_sha256',
+                        'output_sha256', 'actions_sha256', 'fixture_after_sha256'):
+                require(digest(trial[key]), f'{label}: invalid {key}')
+        require(len(routes) == 1, 'route differs between trials')
+        for case in cases:
+            pair = [t for t in trials if t['case'] == case]
+            if len(pair) == 2:
+                for key in ('surrounding_prompt_sha256', 'tools_sha256', 'fixture_before_sha256'):
+                    require(pair[0][key] == pair[1][key], f'{case}: unequal {key}')
+    except (KeyError, TypeError, ValueError, AttributeError):
+        errors.append('malformed diagnostic evidence')
+    return {'valid': not errors, 'errors': sorted(set(errors)),
+            'admission_eligible': False, 'decision': 'diagnostic-only' if not errors else 'inconclusive'}

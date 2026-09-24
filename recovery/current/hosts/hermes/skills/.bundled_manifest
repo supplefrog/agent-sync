@@ -5,7 +5,7 @@ architecture-diagram:ca5e216b2014eef4f38f0a488eaf3545
 arxiv:06b6666b948852e77545c99ef72139db
 ascii-video:2c8277458b2ef50421ce44debb9d81ad
 baoyu-infographic:53edf7d1b9398d62f4ccb0755e27913e
-blocked-page-recovery:692952333ddaca689047c9b34ebfef17
+blocked-page-recovery:a698aa28fc8c39a1127f26b8d8aa343a
 box:f8f4d45d3813549a00741539b0d495a8
 claude-code:f438d67c46a38dbd05b9626929dc8c7f
 claude-design:a839ed75e38167058cb363f63b64c6a3
@@ -17,10 +17,10 @@ design-md:b40264457352831ab1d06f3ec671b532
 document-to-action-items:f907465e394bca1e4429654d6601d050
 docx:cc69461d2e96b4783d093f56de0f1309
 dogfood:ae6e92c2cd27c3da8a0587f089d19fe3
-email-inbox-triage:454170991ce34a12d2b738d02e3f5ec5
+email-inbox-triage:e1a93e160552107366dd009159e5fa1a
 findmy:3e86ddb7a7aea025a6b11cdea9d33d37
 gif-search:12dbdb5d4a04f05aeb20bebcb7d3f60a
-github:1183b1c0561ace55cc5c353404641922
+github:1015462846c11037cf4cd08ae622e3a8
 google-workspace:95a0ff7299f92be6107d9051ab723e6b
 grounded-citations:7dc6894246516d00bca5c21de126c770
 hermes-agent:fbdbbf78c8b5d3e450784cf3ef1686f6
@@ -28,7 +28,7 @@ hermes-agent-skill-authoring:c3aebbef0762f3a39a2c3433eadb19f6
 himalaya:7ae61574914c25d57a001d1e1efe39bf
 humanizer:6645b341862575f452e86139c5c71ce9
 imessage:6b67771c4ee8ddfcc4fb2ad88792d053
-inspecting-hermes-desktop-dom:a13a3639008c47fa01e01299a3863e07
+inspecting-hermes-desktop-dom:21e5ba257953adbf4e9fd72d04461376
 llm-wiki:e8487d38dcef97498cdc8eb8d2c4f8e1
 manim-video:2ad3d68c3eb5d2675c05138100d3e48b
 maps:75eb39eca308ae4defa6ee2f14499428

@@ -32,6 +32,7 @@ Quick reference for WCAG 2.1 AA compliance. Use alongside the `frontend-ui-engin
 
 ### Visual
 - [ ] Text contrast ≥ 4.5:1 (normal text) or ≥ 3:1 (large text: at least 18pt regular or 14pt bold; not 18px regular)
+- [ ] For text over texture, images or translucent layers, check each affected text role against the actual composited backdrop in relevant themes/states, including small muted captions—not only body text against a flat token. Use nominal glyph color after alpha compositing, not antialiased edge pixels; disclose sampling limits. Scope an ink treatment to intended text rather than fading an ancestor containing controls, focus indicators or images; protect or retune failing roles before adoption.
 - [ ] UI components contrast ≥ 3:1 against background
 - [ ] Color is not the only way to convey information
 - [ ] Text resizable to 200% without breaking layout

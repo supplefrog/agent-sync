@@ -245,7 +245,7 @@ hello world this works
             if surface["id"] == "omp.codex-inherited"
         )
         self.assertEqual("disabled", omp["status"])
-        self.assertEqual("oh-my-pi@18.1.10 Codex discovery provider", omp["owner"])
+        self.assertEqual("oh-my-pi@18.2.6 Codex discovery provider", omp["owner"])
         self.assertEqual(
             "recovery/current/hosts/codex/AGENTS.md", omp["artifact"]
         )

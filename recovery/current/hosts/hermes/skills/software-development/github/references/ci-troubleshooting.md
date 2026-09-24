@@ -4,14 +4,19 @@ Common CI failure patterns and how to diagnose them from the logs.
 
 ## Reading CI Logs
 
+For scratch files, set `TMPDIR` in the executing shell to the runtime-advertised
+scratch directory if it is unset or points elsewhere. On native Windows use an
+absolute native path, not an MSYS `/c/...` path; do not derive it from `~/.hermes`.
+
 ```bash
 # With gh
 gh run view <RUN_ID> --log-failed
 
 # With curl — download and extract
+: "${TMPDIR:?Set TMPDIR to the runtime-advertised scratch directory}"
 curl -sL -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/$GH_OWNER/$GH_REPO/actions/runs/<RUN_ID>/logs \
-  -o /tmp/ci-logs.zip && unzip -o /tmp/ci-logs.zip -d /tmp/ci-logs
+  -o "$TMPDIR/ci-logs.zip" && unzip -o "$TMPDIR/ci-logs.zip" -d "$TMPDIR/ci-logs"
 ```
 
 ## Common Failure Patterns
