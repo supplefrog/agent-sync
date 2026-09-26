@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 
@@ -127,8 +128,9 @@ def destination(repo: Path) -> dict[str, str]:
             'remote_identity': hashlib.sha256(fetch_urls[0].encode()).hexdigest()}
 
 
-def preflight(repo: Path, target):
-    if git(repo, 'diff', '--cached', '--name-only', '-z'):
+def preflight(repo: Path, target, *, files=None, scoped=False):
+    staged = set(git(repo, 'diff', '--cached', '--no-renames', '--name-only', '-z').split('\0')) - {''}
+    if staged and (not scoped or staged & set(files or ())):
         raise SyncBlocked('the Git index already contains staged work; preserve it for review')
     for name in ('MERGE_HEAD', 'CHERRY_PICK_HEAD', 'REVERT_HEAD', 'rebase-merge', 'rebase-apply'):
         if (git_dir(repo) / name).exists():
@@ -141,8 +143,261 @@ def preflight(repo: Path, target):
         raise SyncBlocked('existing unpublished commits need review before sync can publish them')
 
 
+def _raw_git(repo, *args, input=None, env=None):
+    result = subprocess.run(['git', '-C', str(repo), *args], input=input,
+                            capture_output=True, env=env, timeout=120)
+    if result.returncode:
+        raise SyncBlocked('git ' + args[0] + ' failed; inspect the repository or remote')
+    return result.stdout
+
+
+def _tree_entries(repo, tree):
+    entries = {}
+    for entry in _raw_git(repo, 'ls-tree', '-r', '-z', tree).split(b'\0'):
+        if not entry:
+            continue
+        header, name = entry.split(b'\t', 1)
+        mode, kind, oid = header.decode('ascii').split()
+        name = name.decode('utf-8')
+        if mode not in ('100644', '100755') or kind != 'blob':
+            raise SyncBlocked('candidate contains linked or unsupported Git entries')
+        entries[name] = (mode, oid)
+    return entries
+
+
+def _blobs(repo, entries):
+    oids = sorted({oid for _, oid in entries.values()})
+    if not oids:
+        return {}
+    raw = _raw_git(repo, 'cat-file', '--batch', input=('\n'.join(oids) + '\n').encode('ascii'))
+    offset = 0
+    blobs = {}
+    for oid in oids:
+        end = raw.find(b'\n', offset)
+        fields = raw[offset:end].decode('ascii').split()
+        if end < 0 or len(fields) != 3 or fields[:2] != [oid, 'blob']:
+            raise SyncBlocked('candidate blob readback failed')
+        size = int(fields[2])
+        start = end + 1
+        if size < 0 or start + size >= len(raw) or raw[start + size:start + size + 1] != b'\n':
+            raise SyncBlocked('candidate blob readback is incomplete')
+        blobs[oid] = raw[start:start + size]
+        offset = start + size + 1
+    if offset != len(raw):
+        raise SyncBlocked('candidate blob readback has unexpected data')
+    return blobs
+
+
+@contextmanager
+def prepare_candidate(repo: Path, files: dict[str, str], base='HEAD', overrides=None):
+    """Yield (isolated baseline-plus-selection directory, raw-byte Git tree).
+
+    Overrides support prospective edits without modifying canonical source. Their
+    bytes must match files' SHA256 identities (None means 'deleted'). The caller
+    owns rechecking upstream identities before applying prospective edits.
+    """
+    overrides = overrides or {}
+    if set(overrides) - set(files):
+        raise SyncBlocked('candidate overrides must belong to the reviewed selection')
+    base = git(repo, 'rev-parse', '--verify', base + '^{tree}')
+    entries = _tree_entries(repo, base)
+    with tempfile.TemporaryDirectory(prefix='agent-signal-candidate-') as directory:
+        root = Path(directory) / 'source'
+        root.mkdir()
+        env = dict(os.environ, GIT_INDEX_FILE=str(Path(directory) / 'index'))
+        git(repo, 'read-tree', base, env=env)
+        changes = []
+        for name, expected in sorted(files.items()):
+            if safe_path(repo, name) != name:
+                raise SyncBlocked('candidate paths must be normalized repository-relative files')
+            data = overrides[name] if name in overrides else ((repo / name).read_bytes() if (repo / name).is_file() else None)
+            actual = hashlib.sha256(data).hexdigest() if data is not None else 'deleted'
+            if actual != expected:
+                raise SyncBlocked('candidate bytes do not match reviewed file identities')
+            if data is None:
+                entries.pop(name, None)
+                changes.append('0 ' + '0' * len(base) + '\t' + name + '\0')
+            else:
+                oid = _raw_git(repo, 'hash-object', '-w', '--stdin', input=data).decode('ascii').strip()
+                mode = entries.get(name, ('100644', None))[0]
+                entries[name] = (mode, oid)
+                changes.append(mode + ' ' + oid + '\t' + name + '\0')
+        git(repo, 'update-index', '-z', '--index-info', env=env, input=''.join(changes))
+        tree = git(repo, 'write-tree', env=env)
+        # Materialize blobs directly: checkout/archive can consult attributes,
+        # filters, or export rules outside the reviewed tree.
+        materialized = {}
+        blobs = _blobs(repo, entries)
+        for name, (mode, oid) in sorted(entries.items()):
+            parts = name.split('/')
+            if (any(not part or '\\' in part or ':' in part or part.rstrip(' .') != part
+                    or part.split('.')[0].upper() in {'CON', 'PRN', 'AUX', 'NUL',
+                                                     *('COM' + str(i) for i in range(1, 10)),
+                                                     *('LPT' + str(i) for i in range(1, 10))}
+                    for part in parts)):
+                raise SyncBlocked('candidate path cannot be materialized without aliases')
+            for count in range(1, len(parts) + 1):
+                prefix = '/'.join(parts[:count])
+                key = prefix.casefold()
+                if key in materialized and materialized[key] != prefix:
+                    raise SyncBlocked('candidate path cannot be materialized without aliases')
+                materialized[key] = prefix
+            if safe_path(root, name) != name:
+                raise SyncBlocked('unsafe candidate tree path')
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(blobs[oid])
+            if mode == '100755':
+                path.chmod(0o755)
+        yield root, tree
+
+
+def _index_entries(repo):
+    return _raw_git(repo, 'ls-files', '--stage', '-z')
+
+
+def _reconcile_scoped_index(repo, paths, expected):
+    """CAS selected entries while Git's own index lock protects concurrent stage."""
+    index = Path(git(repo, 'rev-parse', '--git-path', 'index'))
+    if not index.is_absolute():
+        index = repo / index
+    lock_path = index.with_name(index.name + '.lock')
+    try:
+        handle = lock_path.open('xb')
+    except FileExistsError as exc:
+        raise SyncBlocked('Git index is locked by another operation') from exc
+    replaced = False
+    try:
+        if _index_entries(repo) != expected:
+            raise SyncBlocked('Git index changed before selected entries were reconciled')
+        with tempfile.TemporaryDirectory(prefix='agent-signal-index-') as directory:
+            isolated = Path(directory) / 'index'
+            shutil.copyfile(index, isolated)
+            env = dict(os.environ, GIT_INDEX_FILE=str(isolated))
+            git(repo, '--literal-pathspecs', 'reset', '-q', 'HEAD', '--pathspec-from-file=-',
+                '--pathspec-file-nul', env=env, input=''.join(p + '\0' for p in sorted(paths)))
+            handle.write(isolated.read_bytes())
+            handle.flush()
+            os.fsync(handle.fileno())
+        handle.close()
+        os.replace(lock_path, index)
+        replaced = True
+    finally:
+        handle.close()
+        if not replaced:
+            lock_path.unlink(missing_ok=True)
+
+
+def _scoped_selection_gate(repo, pending):
+    if identities(repo, pending['files']) != pending['files']:
+        raise SyncBlocked('reviewed files changed after checks; review before retrying')
+    reference = 'HEAD' if pending.get('index_reconciled') else pending['base']
+    staged = set(git(repo, 'diff', '--cached', '--no-renames', '--name-only', '-z', reference).split('\0')) - {''}
+    # Recover a crash after selected entries were reset but before journaling it.
+    if (staged & set(pending['files']) and not pending.get('index_reconciled')
+            and pending.get('tree') and git(repo, 'rev-parse', 'HEAD') != pending['base']
+            and git(repo, 'rev-parse', 'HEAD^{tree}') == pending['tree']
+            and git(repo, 'rev-list', '--parents', '-n', '1', 'HEAD').split()
+            == [git(repo, 'rev-parse', 'HEAD'), pending['base']]):
+        staged = set(git(repo, 'diff', '--cached', '--no-renames', '--name-only', '-z', 'HEAD').split('\0')) - {''}
+    if staged & set(pending['files']):
+        raise SyncBlocked('selected paths overlap staged work; preserve it for review')
+
+
+def _publish_scoped(repo, pending, *, verify, readback):
+    step = 'verify'
+    try:
+        if destination(repo) != pending['target']:
+            raise SyncBlocked('the Git publication destination changed')
+        if not pending.get('tree'):
+            raise SyncBlocked('scoped publication requires the checked candidate tree')
+        import public_check
+        if any(Path(name).parts[:len(prefix)] == prefix
+               for name in pending['files'] for prefix in public_check.EXCLUDED_PREFIXES):
+            raise SyncBlocked('private or generated paths cannot be published by sync')
+        _scoped_selection_gate(repo, pending)
+        index = _index_entries(repo)
+        with prepare_candidate(repo, pending['files'], base=pending['base']) as (candidate, tree):
+            if pending.get('tree') and tree != pending['tree']:
+                raise SyncBlocked('candidate differs from the checked tree')
+            pending['tree'] = tree
+            assert_publishable(candidate, pending['files'])
+            verify()
+            _scoped_selection_gate(repo, pending)
+            if _index_entries(repo) != index:
+                raise SyncBlocked('Git index changed during verification')
+            step = 'commit'
+            base = pending['base']
+            head = git(repo, 'rev-parse', 'HEAD')
+            if 'commit' not in pending:
+                if head != base:
+                    if (git(repo, 'rev-parse', 'HEAD^') != base
+                            or git(repo, 'show', '-s', '--format=%B', 'HEAD') != pending['message']
+                            or git(repo, 'rev-parse', 'HEAD^{tree}') != tree):
+                        raise SyncBlocked('HEAD changed outside this sync')
+                    pending['commit'] = head
+                elif tree != git(repo, 'rev-parse', base + '^{tree}'):
+                    save_pending(repo, pending)
+                    with tempfile.TemporaryDirectory(prefix='agent-signal-index-') as directory:
+                        env = dict(os.environ, GIT_INDEX_FILE=str(Path(directory) / 'index'))
+                        git(repo, 'read-tree', tree, env=env)
+                        git(repo, 'commit', '-m', pending['message'], env=env)
+                    pending['commit'] = git(repo, 'rev-parse', 'HEAD')
+                else:
+                    pending['commit'] = base
+                save_pending(repo, pending)
+            commit = pending['commit']
+            if (git(repo, 'rev-parse', 'HEAD') != commit
+                    or git(repo, 'rev-parse', commit + '^{tree}') != tree
+                    or (commit != base and git(repo, 'rev-list', '--parents', '-n', '1', commit).split() != [commit, base])):
+                raise SyncBlocked('HEAD or a commit hook changed the checked commit')
+            _scoped_selection_gate(repo, pending)
+            if _index_entries(repo) != index:
+                raise SyncBlocked('Git index changed during commit')
+            if commit != base and not pending.get('index_reconciled'):
+                _reconcile_scoped_index(repo, pending['files'], index)
+                pending['index_reconciled'] = True
+                save_pending(repo, pending)
+            index = _index_entries(repo)
+            step = 'verify'
+            verify()
+            _scoped_selection_gate(repo, pending)
+            if _index_entries(repo) != index or git(repo, 'rev-parse', 'HEAD') != commit:
+                raise SyncBlocked('repository changed before publication')
+            step = 'push'
+            target = pending['target']
+            if destination(repo) != target:
+                raise SyncBlocked('the Git publication destination changed')
+            remote = git(repo, 'ls-remote', '--refs', target['remote'], target['ref']).split()
+            if remote not in ([base, target['ref']], [commit, target['ref']]):
+                raise SyncBlocked('remote branch changed outside this sync')
+            if remote != [commit, target['ref']]:
+                # Exactly one parent == base and exact checked tree above prove
+                # this CAS update is fast-forward; never authorize a rewrite.
+                git(repo, 'push', '--force-with-lease=' + target['ref'] + ':' + base,
+                    target['remote'], f"{commit}:{target['ref']}")
+            step = 'remote-readback'
+            if git(repo, 'ls-remote', '--refs', target['remote'], target['ref']).split() != [commit, target['ref']]:
+                raise SyncBlocked('remote branch does not match the committed changes')
+            step = 'published-readback'
+            readback()
+            _scoped_selection_gate(repo, pending)
+            if (_index_entries(repo) != index or git(repo, 'rev-parse', 'HEAD') != commit
+                    or destination(repo) != target):
+                raise SyncBlocked('repository changed before final verification')
+        (git_dir(repo) / 'agent-signal-sync.json').unlink()
+        return {'result': 'synced', 'commit': commit, 'remote': target['remote'],
+                'branch': target['branch'], 'agents_verified': bool(pending.get('agents_verified')),
+                'remote_verified': True}
+    except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
+        return {'result': 'incomplete', 'failed_step': step, 'reason': str(exc),
+                'commit': pending.get('commit'), 'retry': 'run the same sync after resolving the failure'}
+
+
 def publish(repo: Path, pending, *, verify, readback=lambda: None):
     """Resume exact checked content; success requires remote readback and agent checks."""
+    if pending.get('scoped'):
+        return _publish_scoped(repo, pending, verify=verify, readback=readback)
     step = 'verify'
     try:
         if destination(repo) != pending['target']:

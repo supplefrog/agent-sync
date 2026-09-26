@@ -15,7 +15,7 @@ class CompleteSyncTests(unittest.TestCase):
     setUp = fixtures.ReconcileTests.setUp
     fixture = fixtures.ReconcileTests.fixture
     def git(self, repo, *args):
-        return subprocess.check_output(['git', '-C', str(repo), *args], text=True).strip()
+        return subprocess.check_output(['git', '-C', str(repo), *args], text=True, encoding='utf-8').strip()
 
     def setup_git(self, root):
         repo, live = self.fixture(root)
@@ -291,7 +291,7 @@ class CompleteSyncTests(unittest.TestCase):
             head = self.git(repo, 'rev-parse', 'HEAD')
             with patch.object(self.reconcile, '_run_checks', side_effect=check):
                 report = self.reconcile.complete_sync(repo, machine='test', recovery_roots={},
-                                                      skill_roots=[live, other], include=['notes.md'])
+                                                      skill_roots=[live, other], include=['notes.md'], scoped=False)
             self.assertEqual('incomplete', report['result'])
             self.assertEqual(head, self.git(remote, 'rev-parse', 'refs/heads/main'))
 
@@ -324,7 +324,7 @@ class CompleteSyncTests(unittest.TestCase):
             hook = remote / 'hooks/pre-receive'
             hook.write_text('#!/bin/sh\nexit 1\n')
             hook.chmod(0o755)
-            self.assertEqual('incomplete', self.run_sync(repo, live, include=['notes.md'])['result'])
+            self.assertEqual('incomplete', self.run_sync(repo, live, include=['notes.md'], scoped=False)['result'])
             hook.unlink()
             with patch.object(self.reconcile, '_run_checks', return_value=[]):
                 report = self.reconcile.complete_sync(repo, machine='test', skill_roots=[live],

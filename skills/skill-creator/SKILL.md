@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Use when authoring instructions or preserving reusable workflows. Owns skill improvements during work, triggers, supporting resources, and proportional verification.
+description: Use when authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns skill improvements during work, triggers, supporting resources, and proportional verification.
 version: 2.0.0
 author: Hermes Agent
 license: MIT
@@ -12,7 +12,7 @@ metadata:
 
 # Skill Creator
 
-Use this to author or review durable instructions. Resolve placement only when it is unclear; this skill owns content, triggers, and proportional evaluation.
+Use this to author or review durable instructions and model-facing tool descriptions and schemas. Resolve placement only when it is unclear; this skill owns content, triggers, and proportional evaluation. Executable tool contracts and compatibility remain with their domain owner.
 
 ## Owner boundary
 
@@ -42,14 +42,16 @@ Choose form by behavior:
 - Creative, exploratory, research, strategy, synthesis => outcome, context, tensions, heuristics, and optional examples; preserve method freedom.
 - Runtime/self-evolving capability => executable tools/policies and feedback; prose states intent and protected boundaries.
 
-For mixed capabilities, separate protected invariants from judgment-bearing procedure.
+For mixed capabilities, separate protected invariants from judgment-bearing procedure. Leave methods open unless linear work benefits from steps; preserve required safety and verification procedures.
 
 Write model-facing instructions in plain, human-readable language. Density should come from clear condition-to-action structure, not bureaucratic or generated-sounding phrasing. Do not route model-facing instructions through `humanizer`; this skill owns them, while `humanizer` owns public prose.
+
+Apply the standing model preference to instruction writing according to the difficulty and judgment involved; trivial wording repairs do not automatically require escalation.
 
 When writing durable instructions:
 
 1. For each sentence, name the intended behavioral difference and its basis: user preference, required boundary, or observed failure. Remove generic identity/aspiration without a wanted distinction; do not invent a retrospective rationale. Test uncertain benefit rather than treating a plausible story as evidence.
-2. State the desired behavior directly rather than preserving the wording or history of a correction. Remove repetition and incidental contrasts; keep detail, examples and rationale only when they change a decision or boundary.
+2. State desired and undesired outcomes and contraindications directly. Preserve material exclusions while removing correction history, repetition, and incidental contrasts. Do not invent constraints or contraindications. Keep detail, examples, and rationale only when they change a decision or boundary.
 3. Keep each procedure in one owner. Retain short, frequently needed rules inline when that avoids a larger skill load; defer substantial conditional detail. Judge economy by actually loaded context and induced tool work, not repository word count.
 4. Preserve user intent, scope, safety, governance, authorization boundaries, and capability; approval for one task does not authorize adjacent external action; brevity never overrides these.
 5. For retrying or externally mutating workflows, encode a stopping condition proportional to risk.
@@ -74,8 +76,8 @@ Add a supporting file only when `SKILL.md` links it and names its trigger. Remov
 ## Workflow
 
 1. Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome.
-2. State the target behavior and near-miss behavior that must remain unchanged.
-3. Draft the minimum coherent change using the correct modality.
+2. State the target behavior and near-miss behavior that must remain unchanged. Check missing or overly broad triggers and unnecessary skill or tool invocation.
+3. Draft the minimum coherent change using the correct modality. Condense duplicate advice, stale rules, excessive steering, and unnecessary fields while preserving material exceptions, side effects, error behavior, and execution boundaries. Before a removal, name the candidate, reason, dependencies, and possible capability loss; check callers and compatibility before removing schema or API fields.
 4. Edit the canonical source; keep candidates outside live discovery until their checks pass. Use `skill_manage` only when it targets that source or performs authorized deployment.
 5. Verify metadata/frontmatter, linked-file existence, and fresh skill discovery.
 6. Run proportional behavior probes:

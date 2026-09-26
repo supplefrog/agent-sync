@@ -27,16 +27,16 @@ State the observable outcome, trigger, affected hosts and versions, hard failure
 
 ### 2. Inventory the effective surfaces
 
-From the owning checkout, run:
+Inspect the changed owner and affected neighbors first. Use the applicable read-only checks from the owning checkout:
 
 ```text
 python tools/recovery.py diff
 python tools/instruction_profile.py
-python tools/fleet.py render
 python tools/fleet.py diff
+python tools/reconcile.py plan
 ```
 
-Read the affected entries in `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json`, `contracts/ownership.json`, the selected model profile, and `recovery/current/manifest.json`. Inspect the corresponding live discovery and precedence; expand to config, plugins, docs, or source only for unresolved dependencies. Official current host docs beat stale repository prose; reviewed Agent Sync ownership beats live copies and generated caches. Keep unrelated drift out of a scoped deployment.
+Read the affected entries in `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json`, `contracts/ownership.json`, the selected model profile, and `recovery/current/manifest.json`. Inspect the corresponding live discovery and precedence; broaden only for a demonstrated dependency, conflicting evidence, or invalidated assumption. Official current host docs beat stale repository prose; reviewed Agent Sync ownership beats live copies and generated caches. Keep unrelated drift out of a scoped deployment.
 
 ### 3. Compare behaviors, not whole skills
 
@@ -66,13 +66,15 @@ Use the narrowest source owner: portable procedures in an Agent Skill, standing 
 
 Keep unselected candidates outside live discovery roots and preserve license/provenance. Modify the portable owner first, then necessary adapters. Verify mechanism corrections directly; compare model behavior when claiming a quality gain. Record model, provider, reasoning, runtime, and prompt/tool/context identities. Explicit instruction injection does not establish natural triggering. Test every host included in a parity claim; missing or failed host evidence remains an explicit limit.
 
+Reuse source-linked evidence while its relevant source, runtime, and tool identities still match. Revalidate the affected claim when a binding changes; do not require another whole-agent audit for an independent correction. Missing or inconclusive evidence remains explicit.
+
 Structural removal of byte-identical copies needs deterministic identity and fresh-discovery checks, not evaluation theater. A broken unique mechanism is not a winner merely because no other variant implements it.
 
 ### 6. Promote and clean up
 
-For authorized Agent Sync changes or an explicit reconciliation, run `python tools/reconcile.py plan` in the owning checkout; inspect destinations and findings, then run `python tools/reconcile.py sync`. Sync checks and shares eligible changes, commits them locally, pushes to the configured remote branch, and verifies both the agents and remote commit. Do not call a local copy or recovery capture “synced.” A temporary verification hold ends when its named checks pass; continue the already-authorized deployment and publication without asking again. Stop only for a remaining failed check, scope conflict, or explicit no-publication instruction. The agent handles these steps as one authorized job, not separate user reminders.
+For authorized Agent Sync changes or an explicit reconciliation, run `python tools/reconcile.py plan` in the owning checkout; inspect destinations and findings, then run `python tools/reconcile.py sync` for the authorized scope. Sync checks and shares eligible changes, commits them locally, pushes to the configured remote branch, and verifies selected installed content and the remote commit. Scoped readback does not establish native host discovery or behavioral parity. Do not call a local copy or recovery capture “synced.” A temporary verification hold ends when its named checks pass; continue the already-authorized deployment and publication without asking again. Stop only for a remaining failed check, scope conflict, or explicit no-publication instruction. The agent handles these steps as one authorized job, not separate user reminders.
 
-Review additional dirty repository files before naming their exact paths with repeated `--include FILE`; never collect all files blindly. This selects commit content only, not admission or deployment authority. Capture justified native settings without copying them indiscriminately across hosts. Novel, conflicting, unsafe, retirement, or ambiguous findings still require their existing review; project-local and ephemeral work stays local. A failed check, commit, push, or readback is incomplete. Preserve the pending work and rerun the same sync after resolving the cause; never force-push or erase another task's edits.
+For a scoped change, name admitted owners with repeated `--adopt OWNER` and reviewed exact publication files with repeated `--include FILE`; use `--no-capture-recovery` when native settings are outside the authorized change. Explicit selected recovery capture remains review-required until an artifact-level selection contract exists. Broad `--full` retains cohesive recovery capture within existing authorization; the unselected default sync remains broad. `--include` selects commit content only, not admission or deployment authority. Complete independently separable authorized changes while leaving unrelated drift pending. A blocker must identify a dependency, conflict, or authorization boundary. Preserve existing pins unless changing them is authorized. Capture justified native settings without copying them indiscriminately across hosts. Novel, conflicting, unsafe, retirement, or ambiguous findings still require their existing review; project-local and ephemeral work stays local. A failed check, commit, push, or readback is incomplete. Preserve the pending work and rerun the same sync after resolving the cause; never rewrite remote history or erase another task's edits.
 
 Use `fleet-sync` for admitted portable skills. Never force through an unmanaged collision, edit a generated plugin cache, or delete a live variant before preflight. Keep adapters only for runtime discovery, precedence, host command/config format, or an irreducible native protocol.
 
@@ -82,7 +84,7 @@ Host checks:
 - **Codex:** use `codex debug prompt-input` to confirm the effective skill. For local-marketplace plugins, edit source, refresh through the native remove/re-add lifecycle, and verify `codex plugin list --json`; never patch the installed cache.
 - **OMP:** current OMP loads Agent Skills from project walk-up and user-home `.agent/skills` and `.agents/skills`. Verify a fresh `omp --mode rpc --no-session` process with the read-only `get_available_commands` request, then close stdin for clean shutdown. `get_commands` is unsupported and its error may omit the request ID; `omp read skill://...` alone has no initialized skill catalog. Keep a native OMP skill only when it adds real OMP execution or precedence glue rather than copied policy.
 
-After promotion, rerun recovery/profile/fleet verification and one real target behavior. Record the canonical owner, migrated and discarded behaviors, retained native deltas, exact checks, rollback, and restart/reset requirement.
+After promotion, verify the affected installed content and deployment claims; check a real target behavior before making a behavioral claim. Reuse still-bound checks and rerun recovery/profile/fleet verification where the change affects them. Report drafted, checked, locally deployed, and remotely synchronized states separately; include-only publication does not establish host verification. Record the canonical owner, migrated and discarded behaviors, retained native deltas, exact checks, rollback, and restart/reset requirement.
 
 ## Safety boundaries
 

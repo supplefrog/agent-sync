@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "suite": "system-requirements-scoped-implementation",
+  "observed_at": "2026-09-26T19:52:55.708800+00:00",
+  "decision": "extend-existing-owners",
+  "status": "checked-and-locally-deployed",
+  "requirements": {
+    "R04-R06": "authoring procedure made explicit",
+    "R11": "partial: portable/file selection implemented",
+    "R12": "partial: reproduced losses corrected; filesystem CAS limits retained",
+    "R16": "source/installed/publication claims distinguished",
+    "R17": "reuse existing bounded evidence and cache; no new ledger",
+    "R18": "all requirement statuses and owners mapped"
+  },
+  "source_bindings": {
+    "tools/reconcile.py": "0cdcdd7ef8db593ddc790128a8c50e2fcd1a64456d533ff587c173b2c4f97502",
+    "tools/fleet.py": "7b1d5fe3081f4af1d1f426a046ee404d5a12d9547ca1fd2d692cacd48cca1d33",
+    "tools/sync_git.py": "947ef858830afb550a45f1130064ad7f0538d10cb6606aa2e75a006dedcd4928",
+    "tests/test_scoped_reconcile.py": "ab141e7fcca130ca2315e9b887df31fd0c054f3d9ad2ea1245d02df6ef1ccd81",
+    "tests/test_fleet_scoped.py": "f6ecb103bf735694e4b7f9b953b06aff69cdebac036ad3eab8f6a8dcbaca78d2",
+    "tests/test_sync_git_scoped.py": "a498785f576f1a1a32423cf18011d3e1b8fae9bcbf9d1d672df450184d994818",
+    "tests/test_sync_completion.py": "09a589c51947a95acb7f2ddde69d86441276393bfd906f37a4e6d3c9b08ad1ca",
+    "skills/skill-creator/SKILL.md": "ed29063ee1a13d4d7dd13a1c070015db8dfe467613c1dd5aefa63964ecf2018b",
+    "skills/cross-agent-surface-engineering/SKILL.md": "1f753edea26b8c08feae9f59a9d54121e8a9c45f2bcd28a135838fd06113ba59",
+    "docs/architecture.md": "a9ee52a780f94f8559a1a3c859c1cf20d549e921f9cc779fc987db2ea5fe59f7",
+    "docs/requirement-status.md": "10e68876e67a46564b399a63537bca2cdc5df2ba77d4f7a5c84770d88ba81b02",
+    "README.md": "2cc4258dfe81fb2d1426569138b40e8c6199483312bc57d7c267d535a4260b6d",
+    "docs/system-requirements.md": "b8a475f733f6117a963b84d0286f39d5076fc52e6607079c28893e7d7bb1e96c"
+  },
+  "baseline": {
+    "preserved_user_contract": true,
+    "preserved_existing_readme_content": true,
+    "one_existing_test_harness_issue": "UTF-8 filename decoding in the Git fixture was made explicit"
+  },
+  "checks": [
+    {
+      "scope": "initial integrated core regressions",
+      "result": "93 passed, 1 skipped, 30 subtests passed"
+    },
+    {
+      "scope": "review-corrected fleet/reconciliation regressions",
+      "result": "63 passed, 1 skipped, 30 subtests passed"
+    },
+    {
+      "scope": "final selected-scope acceptance",
+      "result": "14 passed"
+    },
+    {
+      "scope": "independent Astra xhigh review",
+      "result": "reproduced data-loss/dependency findings corrected; last backup/apply race closed on narrow recheck"
+    },
+    {
+      "scope": "authoring candidates",
+      "result": "two skills structurally validated; manual intended/nearby-case probes reviewed, not executed model trials"
+    }
+  ],
+  "improvements": [
+    "separable selected work no longer couples to every dirty file/owner",
+    "checked publication candidate excludes unpublished dirty dependencies",
+    "only actual transaction writes are rolled back; concurrent content and recoverable backups survive",
+    "selected managed-state rollback preserves unrelated records",
+    "exact selected bytes/index and direct-child remote lease protect publication races"
+  ],
+  "remaining_gaps": [
+    "artifact-level native recovery selection has no admitted contract",
+    "arbitrary filesystem writers are not protected by an OS atomic compare-and-swap",
+    "scoped materialization supports regular Git files, not linked/submodule baselines",
+    "runtime/model quality and system-wide governance overhead remain unmeasured"
+  ],
+  "claims_not_made": [
+    "whole-fleet behavioral parity",
+    "natural-trigger/model-quality superiority",
+    "remote synchronization before readback"
+  ],
+  "deployment": {
+    "state": "locally-deployed",
+    "selected_owners": [
+      "skill-creator",
+      "cross-agent-surface-engineering"
+    ],
+    "installed_verified": true,
+    "affected_hosts_checked": [
+      "codex",
+      "hermes",
+      "omp"
+    ],
+    "fresh_discovery": {
+      "codex": "prompt-input selected catalog and new descriptor",
+      "hermes": "native skill_view selected bodies and parsed external_dirs list",
+      "omp": "fresh RPC get_available_commands selected catalog"
+    },
+    "behavioral_parity_claimed": false,
+    "remote_synced": false
+  }
+}

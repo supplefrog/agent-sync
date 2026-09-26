@@ -14,6 +14,7 @@ import sys
 import uuid
 from pathlib import Path
 from typing import Any
+from collections.abc import Collection
 
 STATE_FILE = ".agent-signal-fleet.json"
 MANIFEST_FILE = "manifest.json"
@@ -153,21 +154,77 @@ def remove_tree(path: Path) -> None:
         path.unlink()
 
 
-def render_snapshot(repo: Path, output: Path) -> dict[str, Any]:
+def owner_scope(names: Collection[str] | None, available: dict[str, Any]) -> set[str] | None:
+    if names is None:
+        return None
+    if isinstance(names, str):
+        raise RuntimeError("owner scope must be a collection of names")
+    selected = set(names)
+    if any(not isinstance(name, str) or not SKILL_NAME_RE.fullmatch(name) for name in selected):
+        raise RuntimeError("invalid selected skill name")
+    missing = selected - set(available)
+    if missing:
+        raise RuntimeError("selected skills missing or not admitted: " + ", ".join(sorted(missing)))
+    return selected
+
+
+def path_identity(path: Path) -> tuple[Any, ...]:
+    if not os.path.lexists(path):
+        return ("missing",)
+    info = os.lstat(path)
+    if is_linklike_path(path):
+        content = ("link", str(path.resolve()), installed_hash(path))
+    elif path.is_dir():
+        digest = hashlib.sha256()
+        for child in sorted(path.rglob("*")):
+            if is_transient(child, path):
+                continue
+            relative = child.relative_to(path).as_posix()
+            digest.update(relative.encode("utf-8") + b"\0")
+            if is_linklike_path(child):
+                digest.update(b"link\0" + str(child.resolve()).encode("utf-8"))
+            elif child.is_file():
+                digest.update(bytes.fromhex(sha256_file(child)))
+        content = ("directory", digest.hexdigest())
+    else:
+        content = ("file", sha256_file(path))
+    return (info.st_dev, info.st_ino, info.st_mode, info.st_mtime_ns, content)
+
+
+def state_identity(destination: Path) -> tuple[Any, ...]:
+    return path_identity(destination / STATE_FILE)
+
+
+def render_snapshot(repo: Path, output: Path, *, names: Collection[str] | None = None) -> dict[str, Any]:
     """Render admitted repository skills into a deterministic snapshot."""
     repo = repo.resolve()
     output = validated_snapshot_output(repo, output)
+    output_guard = path_identity(output)
     registry_raw = (repo / "registry.json").read_bytes()
     selected = {
         name: item
         for name, item in registry(repo, captured=registry_raw).items()
         if item.get("status") == "admitted"
     }
+    scope = owner_scope(names, selected)
+    previous_manifest = None
+    if scope is not None:
+        if not (output / MANIFEST_FILE).is_file():
+            raise RuntimeError("scoped render requires an existing validated snapshot")
+        previous_manifest = load_manifest(output)
+        selected = {name: selected[name] for name in scope}
     stage = output.with_name(f".{output.name}.stage-{uuid.uuid4().hex}")
     remove_tree(stage)
     (stage / "skills").mkdir(parents=True)
     records: dict[str, dict[str, Any]] = {}
     try:
+        if previous_manifest is not None:
+            for name, record in previous_manifest["skills"].items():
+                if name not in selected:
+                    shutil.copytree(output / "skills" / name, stage / "skills" / name)
+                    if directory_record(stage / "skills" / name) != record:
+                        raise RuntimeError(f"snapshot changed while preserving skill: {name}")
+                    records[name] = record
         for name in sorted(selected):
             source = repo / "skills" / name
             if not source.is_dir():
@@ -188,6 +245,8 @@ def render_snapshot(repo: Path, output: Path) -> dict[str, Any]:
         }
         atomic_json(stage / MANIFEST_FILE, manifest)
         previous = output.with_name(f".{output.name}.old-{uuid.uuid4().hex}")
+        if path_identity(output) != output_guard:
+            raise RuntimeError("snapshot destination changed during rendering")
         if output.exists():
             os.replace(output, previous)
         else:
@@ -246,14 +305,15 @@ def installed_hash(path: Path) -> str | None:
         return None
 
 
-def plan_snapshot(snapshot: Path, destination: Path, *, manifest: dict[str, Any] | None = None) -> list[dict[str, str]]:
+def plan_snapshot(snapshot: Path, destination: Path, *, manifest: dict[str, Any] | None = None, names: Collection[str] | None = None) -> list[dict[str, str]]:
     manifest = load_manifest(snapshot) if manifest is None else manifest
     state = load_state(destination)
     desired: dict[str, dict[str, Any]] = manifest["skills"]
     managed: dict[str, dict[str, Any]] = state["skills"]
     actions: list[dict[str, str]] = []
 
-    for name in sorted(set(desired) | set(managed)):
+    scope = owner_scope(names, desired)
+    for name in sorted(scope if scope is not None else set(desired) | set(managed)):
         target = destination / name
         present = target.exists() or target.is_symlink()
         current = installed_hash(target)
@@ -292,7 +352,7 @@ def plan_snapshot(snapshot: Path, destination: Path, *, manifest: dict[str, Any]
             }
         )
     state_path = destination / STATE_FILE
-    if state_path.exists() and state.get("source_snapshot") != str(snapshot.resolve()):
+    if scope is None and state_path.exists() and state.get("source_snapshot") != str(snapshot.resolve()):
         actions.append(
             {
                 "name": STATE_FILE,
@@ -305,30 +365,42 @@ def plan_snapshot(snapshot: Path, destination: Path, *, manifest: dict[str, Any]
     return actions
 
 
-def apply_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
-    """Apply one snapshot, preserving unmanaged and locally modified skills."""
+def apply_snapshot(snapshot: Path, destination: Path, *, names: Collection[str] | None = None,
+                   expected_state: tuple[Any, ...] | None = None) -> list[dict[str, str]]:
+    """Apply selected owners; guard planned identities and preserve concurrent edits."""
     manifest_raw = (snapshot / MANIFEST_FILE).read_bytes()
     manifest = load_manifest(snapshot, captured=manifest_raw)
+    scope = owner_scope(names, manifest["skills"])
+    if scope == set():
+        return []
     destination.mkdir(parents=True, exist_ok=True)
-    actions = plan_snapshot(snapshot, destination, manifest=manifest)
+    state_guard = state_identity(destination)
+    if expected_state is not None and state_guard != expected_state:
+        raise RuntimeError("destination managed state changed since transaction backup")
+    initial_state = load_state(destination)
+    if state_identity(destination) != state_guard:
+        raise RuntimeError("destination managed state changed while reading")
+    planned_names = scope if scope is not None else set(manifest["skills"]) | set(initial_state["skills"])
+    guards = {name: path_identity(destination / name) for name in planned_names}
+    actions = plan_snapshot(snapshot, destination, manifest=manifest, names=scope)
     conflicts = [item["name"] for item in actions if item["action"] == "conflict"]
     if conflicts:
         raise RuntimeError("managed skill drift or unmanaged collision: " + ", ".join(conflicts))
-
-    state = {
-        "schema_version": 1,
-        "source_snapshot": str(snapshot.resolve()),
-        "manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
-        "skills": {
-            name: {"sha256": record["sha256"]}
-            for name, record in sorted(manifest["skills"].items())
-        },
-    }
+    state = dict(initial_state) if scope is not None else {"schema_version": 1}
+    if scope is None:
+        state.update(source_snapshot=str(snapshot.resolve()),
+                     manifest_sha256=hashlib.sha256(manifest_raw).hexdigest())
+    state["skills"] = dict(initial_state["skills"]) if scope is not None else {}
+    for name in sorted(scope if scope is not None else manifest["skills"]):
+        state["skills"][name] = {"sha256": manifest["skills"][name]["sha256"]}
+        if scope is not None:
+            state["skills"][name].update(source_snapshot=str(snapshot.resolve()),
+                manifest_sha256=hashlib.sha256(manifest_raw).hexdigest())
     stages: dict[str, Path] = {}
-    applied: list[tuple[str, Path, Path | None]] = []
+    applied: list[tuple[Path, Path | None, tuple[Any, ...]]] = []
     committed = False
+    rollback_conflicts: list[str] = []
     try:
-        # Finish every fallible copy before mutating the destination.
         for item in actions:
             if item["action"] not in {"add", "adopt", "materialize", "repair", "update"}:
                 continue
@@ -338,51 +410,61 @@ def apply_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
             shutil.copytree(snapshot / "skills" / name, stage)
             if directory_record(stage) != manifest["skills"][name]:
                 raise RuntimeError(f"snapshot changed while staging skill: {name}")
-
         for item in actions:
             name, action = item["name"], item["action"]
+            if state_identity(destination) != state_guard:
+                raise RuntimeError("destination managed state changed during apply")
+            if name != STATE_FILE and path_identity(destination / name) != guards[name]:
+                raise RuntimeError(f"destination changed during apply: {name}")
             target = destination / name
-            if action in {"add", "adopt", "materialize", "repair", "update"}:
-                old: Path | None = None
-                if target.exists() or target.is_symlink():
+            if action in {"add", "adopt", "materialize", "repair", "update", "remove"}:
+                old = None
+                if os.path.lexists(target):
                     old = destination / f".{name}.fleet-old-{uuid.uuid4().hex}"
                     os.replace(target, old)
-                try:
+                applied.append((target, old, ("missing",)))
+                if action != "remove":
+                    # A concurrent creator must not be overwritten after the old target moved.
+                    if os.path.lexists(target):
+                        raise RuntimeError(f"destination changed during install: {name}")
+                    installed_identity = path_identity(stages[name])
                     os.replace(stages[name], target)
                     del stages[name]
-                except Exception:
-                    if old is not None and old.exists():
-                        os.replace(old, target)
-                    raise
-                applied.append(("replace", target, old))
-            elif action == "remove":
-                old = destination / f".{name}.fleet-old-{uuid.uuid4().hex}"
-                os.replace(target, old)
-                applied.append(("remove", target, old))
-
+                    applied[-1] = (target, old, installed_identity)
+        if state_identity(destination) != state_guard:
+            raise RuntimeError("destination managed state changed before commit")
+        for item in actions:
+            if item["name"] == STATE_FILE:
+                continue
+            target = destination / item["name"]
+            expected = next((identity for path, _, identity in applied if path == target), guards[item["name"]])
+            if path_identity(target) != expected:
+                raise RuntimeError(f"destination changed before state commit: {item['name']}")
         atomic_json(destination / STATE_FILE, state)
         committed = True
     finally:
         if not committed:
-            for kind, target, old in reversed(applied):
-                if kind == "replace":
-                    remove_tree(target)
-                if old is not None and old.exists():
+            for target, old, identity in reversed(applied):
+                if path_identity(target) != identity:
+                    rollback_conflicts.append(str(target))
+                    continue
+                remove_tree(target)
+                if old is not None and os.path.lexists(old):
                     os.replace(old, target)
         for stage in stages.values():
             remove_tree(stage)
-
-    # State is committed; old directories are now disposable, not backups.
-    for _, _, old in applied:
+        if rollback_conflicts:
+            raise RuntimeError("rollback conflict; concurrent edits preserved and backups retained: " + ", ".join(rollback_conflicts))
+    for _, old, _ in applied:
         if old is not None:
             remove_tree(old)
     return actions
 
 
 def preflight_destinations(
-    snapshot: Path, destinations: list[Path]
+    snapshot: Path, destinations: list[Path], *, names: Collection[str] | None = None
 ) -> list[tuple[Path, list[dict[str, str]]]]:
-    planned = [(destination, plan_snapshot(snapshot, destination)) for destination in destinations]
+    planned = [(destination, plan_snapshot(snapshot, destination, names=names)) for destination in destinations]
     conflicts = [
         f"{destination}:{item['name']}"
         for destination, actions in planned
@@ -395,22 +477,25 @@ def preflight_destinations(
 
 
 def apply_destinations(
-    snapshot: Path, destinations: list[Path]
+    snapshot: Path, destinations: list[Path], *, names: Collection[str] | None = None
 ) -> list[tuple[Path, list[dict[str, str]]]]:
     """Preflight every destination before mutating the first one."""
-    preflight_destinations(snapshot, destinations)
-    return [(destination, apply_snapshot(snapshot, destination)) for destination in destinations]
+    preflight_destinations(snapshot, destinations, names=names)
+    return [(destination, apply_snapshot(snapshot, destination, names=names)) for destination in destinations]
 
 
-def verify_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
+def verify_snapshot(snapshot: Path, destination: Path, *, names: Collection[str] | None = None) -> list[dict[str, str]]:
     manifest = load_manifest(snapshot)
     state = load_state(destination)
+    scope = owner_scope(names, manifest["skills"])
     findings: list[dict[str, str]] = []
-    if state.get("source_snapshot") != str(snapshot.resolve()):
+    if scope is None and state.get("source_snapshot") != str(snapshot.resolve()):
         findings.append({"name": STATE_FILE, "status": "source-drift"})
-    if state.get("manifest_sha256") != sha256_file(snapshot / MANIFEST_FILE):
+    if scope is None and state.get("manifest_sha256") != sha256_file(snapshot / MANIFEST_FILE):
         findings.append({"name": STATE_FILE, "status": "manifest-drift"})
     for name, expected in sorted(manifest["skills"].items()):
+        if scope is not None and name not in scope:
+            continue
         current = installed_hash(destination / name)
         if current is None:
             findings.append({"name": name, "status": "missing"})
@@ -418,7 +503,7 @@ def verify_snapshot(snapshot: Path, destination: Path) -> list[dict[str, str]]:
             findings.append({"name": name, "status": "drift"})
         elif state["skills"].get(name, {}).get("sha256") != expected["sha256"]:
             findings.append({"name": name, "status": "untracked"})
-    for name in sorted(set(state["skills"]) - set(manifest["skills"])):
+    for name in sorted(set(state["skills"]) - set(manifest["skills"]) if scope is None else set()):
         findings.append({"name": name, "status": "retired-managed"})
     return findings
 

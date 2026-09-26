@@ -8,8 +8,8 @@ Agent Sync accepts a desired persistent behavior and produces the smallest verif
 2. inventory the portable surface and each host's current native mechanisms;
 3. research the baseline, canonical owner sources, and credible alternatives;
 4. route persistent cross-agent changes through the admitted `cross-agent-surface-engineering` owner and deterministic `tools/reconcile.py` coordinator;
-5. synchronize safe changes to existing admitted owners, while staging novel, unsafe, conflicting, retiring, multi-origin, or ambiguous work for separately evidenced review;
-6. run baseline-versus-candidate, non-trigger, adversarial, and fresh held-out checks on every required current runtime;
+5. synchronize independently separable authorized changes to existing admitted owners, while leaving unrelated drift pending and staging novel, unsafe, conflicting, retiring, multi-origin, or ambiguous work for separately evidenced review;
+6. verify the affected claims with proportional checks; use comparative or held-out behavior checks when uncertain benefit warrants them, and verify fresh discovery on affected hosts;
 7. preserve compact evidence, contradictions, hashes, versions, rollback, and reevaluation triggers; and
 8. expose only admitted artifacts.
 
@@ -23,7 +23,10 @@ The convergence target is equivalent useful behavior. Mechanisms may differ, and
 | Portable procedures | `skills/` | Agent Skills-compatible workflows shared without host assumptions |
 | Shared judgment surface | `surfaces/core.md` | Small, stable behavior and routing policy useful across hosts |
 | Host integration | `adapters/` | Installation targets and discovery mechanisms only |
-| Reconciliation and governance | `tools/reconcile.py`, `contracts/change-request.schema.json`, `reconciliation/requests/` | One deterministic inventory, classification, transaction, receipt, and rollback path used by all supported hosts |
+| Governance | `contracts/ownership.json`, `registry.json`, `tools/capability_intake.py`, `skills/cross-agent-surface-engineering/` | Decide ownership, admission, evidence sufficiency, and proportional review |
+| Authoring | `skills/skill-creator/`, domain/tool owners | Improve instructions and model-facing interfaces while preserving useful behavior and executable contracts |
+| Reconciliation | `tools/reconcile.py`, `contracts/change-request.schema.json`, `reconciliation/requests/` | Resolve observed differences and concrete dependencies into a scoped authorized change set |
+| Sync | `tools/fleet.py`, `tools/recovery.py`, `tools/sync_git.py` | Apply and verify the selected change, preserve concurrent work and recoverable rollback, and verify publication |
 | Host-native delta | `host-deltas.json`, `contracts/host-deltas.schema.json`, `tools/host_deltas.py` | Typed public-safe native state, restore prerequisites, source identity, version/hash, enablement, and readback |
 | Cross-host routing | `skills/cross-agent-surface-engineering/` | Admitted judgment owner that routes persistent changes into the deterministic coordinator |
 | Admission and retirement candidate | `skills/capability-curator/` | Staged evaluation artifact; not a live authority until separately admitted |
@@ -81,9 +84,11 @@ The coordinator creates one bounded change request, inventories the canonical tr
 
 - adopt a single-origin live change into the same existing admitted portable owner, then render, deploy, and verify it transactionally;
 - deploy a canonical-only change for an existing admitted owner; or
-- capture a reviewed allowlisted native change into recovery and the typed delta manifest.
+- capture a reviewed allowlisted native change into recovery and the typed delta manifest through broad sync.
 
-The canonical source, rendered snapshot, live fleet, recovery snapshot, managed-state manifest, and request receipt are rolled back if a later transaction phase fails. A previously managed implementation is removed only when its identity still matches managed state and its replacement verifies. Novel capabilities, staged owners, multi-origin edits, conflicts, unsafe changes, removals/retirements, and ambiguous ownership cannot take the automatic path.
+Scoped sync selects authorized portable owners and publication files, leaving unrelated drift pending. Explicit selected recovery capture remains review-required until an artifact-level selection contract exists; broad `--full` retains cohesive recovery capture within the existing authorization, as does the unselected broad default. Repository-wide visibility blocks a selected change only for an identified dependency, conflict, or authorization boundary. Scoped checks bind candidate source and selected installed-content identities. Scoped completion verifies installed content and Git publication, not native host discovery or behavioral parity: `agents_verified` remains false, `installed_verified` is true only when owners were checked, and `verified_owners` and `limits` state the coverage.
+
+On failure, rollback covers only this attempt's writes that still match its installed identities; concurrent changes are preserved and unresolved rollback is reported with recoverable backup. A previously managed implementation is removed only when its identity still matches managed state and its replacement verifies. Novel capabilities, staged owners, multi-origin edits, conflicts, unsafe changes, removals/retirements, and ambiguous ownership cannot take the automatic path.
 
 This provides a common sync operation, not universal interception. Manual editors and processes can still change files while no agent is running; an explicit host request or direct command performs the inventory and reconciliation. Project-local and ephemeral work is intentionally outside this system.
 
@@ -95,7 +100,7 @@ Keep useful knowledge discoverable, preserve meaningful triggers and procedures,
 
 - Start from a concrete signal: a missed trigger, conflicting instructions, obsolete commands, demonstrated duplication, or an explicit user review request. Inspect only the affected owner and relevant neighbors. Usage and age can suggest inspection, never authorize retirement.
 - Return retain, repair, merge, or retire with source evidence, the distinctions that must survive, and the smallest verification that could change the decision. Prefer no change when the existing owner already meets the need. A broad umbrella is not inherently better than distinct skills.
-- The foreground parent owns ambiguous integration and acceptance of instruction changes; workers may collect evidence or propose edits. The current Hermes foreground is Astra. This is a responsibility boundary, not a model-specific tool sandbox or a claim that Astra has passed a comparative curator evaluation.
+- The foreground parent owns ambiguous integration and acceptance of instruction changes; workers may collect evidence or propose edits. This is a responsibility boundary, not a model-specific tool sandbox or evidence of model quality.
 - Use direct checks for broken commands or links; realistic trigger and near-miss cases for discovery changes; comparative behavioral checks when benefit is uncertain. Reuse existing authorization and reconciliation gates rather than introducing another mandatory review hop. Keep removals recoverable and verify the actual target after applying a scoped change.
 
 On the current Hermes installation, `curator.enabled: false` and `curator.consolidate: false` stop unattended lifecycle transitions and LLM rewriting. Native usage telemetry, inspection, pinning, and archive/restore facilities remain available; archiving is an explicit reviewed action, not a consequence of inactivity. The configured auxiliary curator model remains dormant while disabled. Do not run a whole-library consolidation pass as a substitute for semantic review.
@@ -169,7 +174,7 @@ The matrix deliberately includes unassessed rows. A row advances only when its c
 
 Partial support is a valid staged result. It must remain explicit and cannot be marketed as confirmed convergence.
 
-## Version anchors for the current comparison
+## Preserved historical comparison anchors
 
 - Agent Skills specification: <https://agentskills.io/specification>
 - Codex source/docs revision: `985641272869835d01d025ed2a218fbbce35fa9f`; local CLI `0.153.1`

@@ -6,6 +6,21 @@ Keep **Hermes, Codex, and OMP** working the way you want, without updating each 
 
 The intended experience is simple: ask for a change, let the agent check and share it where appropriate, and receive a verified result—not a list of deployment and Git chores.
 
+## System contract and owners
+
+The [system requirements](docs/system-requirements.md) define expected outcomes for skills, instructions, tools, reconciliation, and deployment. They are a contract to verify, not a claim of current implementation.
+
+| Owner | Responsibility |
+| --- | --- |
+| Governance | Ownership, evidence, authorization, lifecycle, and system value |
+| Authoring | Instruction and interface quality, scope, triggers, and useful brevity |
+| Reconciliation | Drift, conflicts, dependencies, and separable change sets |
+| Sync | Safe application, recovery, actual loading, and publication verification |
+
+Each expected behavior has one accountable owner. Keep these boundaries apparent in the project; reorganize when it improves clarity without duplicating mechanisms.
+
+[Requirement status and evidence](docs/requirement-status.md) maps R01–R18 to their implementation, checks, and remaining gaps. Start maintenance from the affected owner and its still-relevant evidence; the capability ownership registry remains the admission authority.
+
 ## Start with the outcome
 
 An existing workflow is a baseline, not a requirement to preserve. Agent Sync's [outcome-first workflow](skills/outcome-first-workflow-design/SKILL.md) asks what the system should accomplish, checks why the current implementation exists, and compares keeping, simplifying, or replacing it.
@@ -35,7 +50,7 @@ python tools/reconcile.py plan
 python tools/reconcile.py sync
 ```
 
-Sync includes allowlisted recovery capture by default. `--no-capture-recovery` disables capture; unresolved recovery findings can still block the operation. Additional reviewed repository files are selected with repeated `--include FILE` arguments, not a blanket `git add .`. After resolving a failure, rerun sync to resume the checked work. See the [reconciliation contract](docs/architecture.md#unified-reconciliation) for the scope and failure rules.
+Repeated `--adopt OWNER` and `--include FILE` arguments select admitted portable owners and exact reviewed publication files; unrelated work stays pending. `--include` grants no deployment authority. Without selectors—or with `--full`—sync retains broad allowlisted recovery capture. Artifact-scoped native capture remains review-required; use a separately authorized broad recovery operation. `--no-capture-recovery` keeps native settings outside the operation. Rerun the same sync to resume checked work after a failure. See the [reconciliation contract](docs/architecture.md#unified-reconciliation) for dependency, recovery, and verification limits.
 
 This is an explicit operation, not a background watcher. Editing a file does not automatically publish it.
 
@@ -44,7 +59,7 @@ This is an explicit operation, not a background watcher. Editing a file does not
 - **One maintained source per capability.** Shared procedures live here; agent-specific integrations adapt them rather than maintain competing versions.
 - **Native differences.** Settings, permissions, discovery, and runtime features stay with their owning agent. Cross-agent sharing does not mean copying every setting everywhere.
 - **Private and project-local state.** Credentials, memories, conversations, logs, and caches are excluded. Project-specific instructions stay in their project.
-- **Review and recovery.** Staged candidates do not become active merely because they are in the repository. Conflicts are not overwritten, retirement needs review, and sync never force-pushes.
+- **Review and recovery.** Staged candidates do not become active merely because they are in the repository. Conflicts are not overwritten, retirement needs review, and sync never rewrites remote history.
 - **Evidence proportional to the claim.** Broken commands need direct reproduction and verification. Claimed improvements in model behavior need comparative checks on the affected setup, including cases that should remain unchanged.
 
 ## What is active

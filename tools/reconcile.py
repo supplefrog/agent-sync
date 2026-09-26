@@ -265,6 +265,7 @@ def _replace_tree(source: Path, target: Path) -> None:
 def _copy_optional(source: Path, destination: Path) -> bool:
     if not (source.exists() or source.is_symlink()):
         return False
+    initial = _mutation_identity(source)
     if fleet.is_linklike_path(source):
         if not source.is_symlink():
             raise RuntimeError(f"cannot transactionally back up a junction: {source}")
@@ -275,6 +276,8 @@ def _copy_optional(source: Path, destination: Path) -> bool:
     else:
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
+    if _mutation_identity(source) != initial:
+        raise RuntimeError("backup source changed while copying")
     return True
 
 
@@ -446,6 +449,7 @@ def sync(
     skill_roots: Sequence[str | Path] | None = None,
     check_commands: Sequence[Sequence[str] | str] | None = None,
     capture_recovery: bool = False,
+    scoped: bool = False,
 ) -> dict[str, Any]:
     """Reconcile selected owners and optionally capture allowlisted host state."""
 
@@ -586,41 +590,73 @@ def sync(
 
         canonical_existed: dict[str, bool] = {}
         live_existed: dict[tuple[str, str], bool] = {}
-        snapshot_existed = _copy_optional(fleet_snapshot, backup / "snapshot")
-        recovery_existed = _copy_optional(repo / "recovery" / "current", backup / "recovery")
-        host_delta_existed = _copy_optional(host_delta_path, backup / "host-deltas.json")
+        targets = [request_path, *(repo / "skills" / state["name"] for state in states)]
+        if states:
+            targets.append(fleet_snapshot)
+        if capture_recovery:
+            targets.extend([repo / "recovery" / "current", host_delta_path])
+        prewrite = {target: _mutation_identity(target) for target in targets}
+        snapshot_existed = _copy_optional(fleet_snapshot, backup / "snapshot") if states else False
+        recovery_existed = _copy_optional(repo / "recovery" / "current", backup / "recovery") if capture_recovery else False
+        host_delta_existed = _copy_optional(host_delta_path, backup / "host-deltas.json") if capture_recovery else False
         host_delta_before = fleet.sha256_file(host_delta_path) if host_delta_existed else None
         host_delta_after = host_delta_before
         request_existed = _copy_optional(request_path, backup / "request.json")
         for state in states:
             target = repo / "skills" / state["name"]
             canonical_existed[state["name"]] = _copy_optional(target, backup / "canonical" / state["name"])
-        for label, destination in destinations:
+        for label, destination in destinations if states else []:
             key = _backup_key(label)
             _copy_optional(destination / fleet.STATE_FILE, backup / "live" / key / fleet.STATE_FILE)
         committed = False
         checks: list[str] = []
         failed_phase = "preflight"
         failure: Exception | None = None
+        written = []
+        rollback_conflicts = []
+        attempted = set()
+        def before_write(target):
+            if _mutation_identity(target) != prewrite[target]:
+                raise RuntimeError("transaction target changed before mutation")
+            attempted.add(target)
+        installed_state = None
+        def wrote(target, saved, existed, expected_sha=None):
+            if expected_sha is not None and fleet.installed_hash(target) != expected_sha:
+                rollback_conflicts.append(str(target))
+                return
+            written.append((target, saved, existed, _mutation_identity(target)))
         try:
             failed_phase = "canonicalize"
             for state in states:
                 if state["mode"] == "adopt-live":
-                    _replace_tree(state["origin"][1] / state["name"], repo / "skills" / state["name"])
+                    target = repo / "skills" / state["name"]
+                    before_write(target)
+                    if fleet.installed_hash(target) != state["canonical_sha256"]:
+                        raise RuntimeError("canonical origin changed before canonicalization")
+                    if fleet.installed_hash(state["origin"][1] / state["name"]) != state["origin"][2]:
+                        raise RuntimeError("live origin changed before canonicalization")
+                    _replace_tree(state["origin"][1] / state["name"], target)
+                    wrote(target, backup / "canonical" / state["name"], canonical_existed[state["name"]])
             if prepared_recovery is not None:
+                before_write(repo / "recovery" / "current")
+                before_write(host_delta_path)
                 _replace_tree(prepared_recovery, repo / "recovery" / "current")
+                wrote(repo / "recovery" / "current", backup / "recovery", recovery_existed)
                 host_deltas.refresh_bindings(
                     host_delta_path,
                     repo,
                     source_prefixes=("recovery-artifact:",),
                 )
                 host_delta_after = fleet.sha256_file(host_delta_path)
+                wrote(host_delta_path, backup / "host-deltas.json", host_delta_existed)
 
             failed_phase = "render"
             if states:
-                fleet.render_snapshot(repo, fleet_snapshot)
+                before_write(fleet_snapshot)
+                fleet.render_snapshot(repo, fleet_snapshot, names=names if scoped else None)
+                wrote(fleet_snapshot, backup / "snapshot", snapshot_existed)
                 planned = fleet.preflight_destinations(
-                    fleet_snapshot, [path for _, path in destinations]
+                    fleet_snapshot, [path for _, path in destinations], names=names if scoped else None
                 )
                 for _, actions in planned:
                     if any(action["action"] not in {"unchanged", "reconcile"} and action["name"] not in names
@@ -646,12 +682,40 @@ def sync(
 
             failed_phase = "deploy"
             if states:
-                fleet.apply_destinations(fleet_snapshot, [path for _, path in destinations])
+                for state in states:
+                    expected = state["origin"][2] if state.get("origin") else state["canonical_sha256"]
+                    if fleet.installed_hash(repo / "skills" / state["name"]) != expected:
+                        raise RuntimeError("selected canonical owner changed during validation")
+                fleet.preflight_destinations(fleet_snapshot, [path for _, path in destinations], names=names if scoped else None)
+                for label, destination in destinations:
+                    key = _backup_key(label)
+                    saved_state = backup / "live" / key / "state-before-apply.json"
+                    expected_state = fleet.state_identity(destination)
+                    state_existed = _copy_optional(destination / fleet.STATE_FILE, saved_state)
+                    planned_apply = fleet.plan_snapshot(fleet_snapshot, destination, names=names if scoped else None)
+                    live_attempts = [destination / row["name"] for row in planned_apply if row["action"] in LIVE_MUTATION_ACTIONS]
+                    live_attempts.append(destination / fleet.STATE_FILE)
+                    for target in live_attempts:
+                        prewrite[target] = _mutation_identity(target)
+                        attempted.add(target)
+                    actions = fleet.apply_snapshot(fleet_snapshot, destination, names=names if scoped else None,
+                                                   expected_state=expected_state)
+                    installed_manifest = fleet.load_manifest(fleet_snapshot)
+                    for action in actions:
+                        identity = (label, action["name"])
+                        if identity in live_existed and action["action"] in LIVE_MUTATION_ACTIONS:
+                            wanted = installed_manifest["skills"].get(action["name"], {}).get("sha256")
+                            wrote(destination / action["name"], backup / "live" / key / action["name"], live_existed[identity], wanted)
+                    if scoped:
+                        installed_state = {name: {"sha256": installed_manifest["skills"][name]["sha256"],
+                            "source_snapshot": str(fleet_snapshot.resolve()),
+                            "manifest_sha256": fleet.sha256_file(fleet_snapshot / fleet.MANIFEST_FILE)} for name in names}
+                    wrote(destination / fleet.STATE_FILE, saved_state, state_existed)
 
             failed_phase = "verify"
             if states:
                 for _, destination in destinations:
-                    if fleet.verify_snapshot(fleet_snapshot, destination):
+                    if fleet.verify_snapshot(fleet_snapshot, destination, names=names if scoped else None):
                         raise RuntimeError("fleet postflight verification failed")
             if capture_recovery:
                 recovery.verify_snapshot(repo / "recovery.json", repo / "recovery" / "current")
@@ -701,31 +765,51 @@ def sync(
                 "checks": checks,
                 "result": "applied",
             }
+            before_write(request_path)
             _write_request(repo, request)
+            wrote(request_path, backup / "request.json", request_existed)
             committed = True
         except Exception as exc:
             failure = exc
         finally:
             if not committed:
-                for state in states:
-                    _restore_optional(backup / "canonical" / state["name"], repo / "skills" / state["name"], canonical_existed[state["name"]])
-                _restore_optional(backup / "snapshot", fleet_snapshot, snapshot_existed)
-                _restore_optional(backup / "recovery", repo / "recovery" / "current", recovery_existed)
-                _restore_optional(backup / "host-deltas.json", host_delta_path, host_delta_existed)
-                destination_by_label = dict(destinations)
-                for (label, name), existed in live_existed.items():
-                    destination = destination_by_label[label]
-                    key = _backup_key(label)
-                    _restore_optional(
-                        backup / "live" / key / name,
-                        destination / name,
-                        existed,
-                    )
-                for label, destination in destinations:
-                    key = _backup_key(label)
-                    state_backup = backup / "live" / key / fleet.STATE_FILE
-                    _restore_optional(state_backup, destination / fleet.STATE_FILE, state_backup.exists())
-                _restore_optional(backup / "request.json", request_path, request_existed)
+                recorded = {item[0] for item in written}
+                for target in attempted - recorded:
+                    if _mutation_identity(target) != prewrite[target]:
+                        rollback_conflicts.append(str(target))
+                for target, saved, existed, installed in reversed(written):
+                    if scoped and target.name == fleet.STATE_FILE:
+                        # Restore selected records only; independent state added
+                        # before or after our application stays with its writer.
+                        guard = fleet.state_identity(target.parent)
+                        current_state = fleet.load_state(target.parent)
+                        if any(current_state["skills"].get(name) != installed_state[name] for name in names):
+                            rollback_conflicts.append(str(target))
+                            continue
+                        previous_state = json.loads(saved.read_text(encoding="utf-8")) if existed else {"skills": {}}
+                        updated = dict(current_state)
+                        updated["skills"] = dict(current_state["skills"])
+                        for name in names:
+                            if name in previous_state["skills"]:
+                                updated["skills"][name] = previous_state["skills"][name]
+                            else:
+                                updated["skills"].pop(name, None)
+                        if fleet.state_identity(target.parent) != guard:
+                            rollback_conflicts.append(str(target))
+                            continue
+                        fleet.atomic_json(target, updated)
+                        continue
+                    if _mutation_identity(target) != installed:
+                        rollback_conflicts.append(str(target))
+                        continue
+                    _restore_optional(saved, target, existed)
+                if rollback_conflicts or (failure is not None and "rollback conflict" in str(failure)):
+                    durable = repo / ".staging" / "reconcile-backups" / (request_id + "-" + uuid.uuid4().hex)
+                    durable.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copytree(backup, durable)
+                    fleet.atomic_json(durable / "rollback.json", {"request_id": request_id,
+                                      "concurrent_content_preserved": True,
+                                      "targets": [Path(p).name for p in rollback_conflicts]})
         if failure is not None:
             report = _decision_receipt(
                 repo,
@@ -736,7 +820,15 @@ def sync(
                 risk="high",
                 failed_phase=failed_phase,
             )
-            report["reason"] = "transactional reconciliation failed and was rolled back"
+            report["reason"] = "transactional reconciliation failed and own writes were rolled back"
+            if rollback_conflicts or (failure is not None and "rollback conflict" in str(failure)):
+                report.update(result="incomplete", mutation_performed=True,
+                              reason="concurrent content preserved; rollback is incomplete",
+                              rollback_conflicts=[Path(p).name for p in rollback_conflicts],
+                              backup=durable.relative_to(repo).as_posix())
+                # The rejected requested change and incomplete rollback are
+                # distinct; preserve their status with the retained backup.
+                fleet.atomic_json(durable / "outcome.json", report)
             return report
     return {"schema_version": 1, "result": "applied", "mutation_performed": True, "request_id": request_id, "owners": owners}
 
@@ -760,6 +852,214 @@ def _recovery_owned_paths(repo: Path) -> set[str]:
     return {"recovery/current/" + name for name in owned}
 
 
+
+def _mutation_identity(path: Path):
+    """Identity used to avoid restoring over another writer's content."""
+    return fleet.path_identity(path)
+
+
+def _agent_scope_identities(destinations, names):
+    if not names:
+        return {}
+    result = {}
+    for label, root in destinations:
+        state = fleet.load_state(root)
+        result[label] = {
+            name: {"content": fleet.installed_hash(root / name),
+                   "managed": state.get("skills", {}).get(name)}
+            for name in sorted(names)
+        }
+    return result
+
+
+def _scope_dependencies(repo, machine, names, capture=False):
+    entries = fleet.registry(repo) if names else {}
+    dependencies = {
+        "admission": {name: entries.get(name) for name in sorted(names)},
+        "destination": fleet.load_fleet(repo)["machines"].get(machine) if names else None,
+        "snapshot_root": fleet.load_fleet(repo)["snapshot_root"] if names else None,
+    }
+    paths = ["tools/reconcile.py", "tools/fleet.py", "tools/sync_git.py",
+             "tools/public_check.py"]
+    if names:
+        paths.extend(["contracts/change-request.schema.json", "tools/recovery.py"])
+    if capture:
+        paths += ["recovery.json", "host-deltas.json", "tools/recovery.py", "tools/host_deltas.py"]
+    dependencies["execution"] = {name: fleet.sha256_file(repo / name)
+                                 for name in paths if (repo / name).is_file()}
+    return dependencies
+
+
+def _candidate_commands(candidate, names):
+    commands = []
+    if names and (candidate / "tools/validate.py").is_file():
+        command = [sys.executable, str(candidate / "tools/validate.py")]
+        command += [str(candidate / "skills" / name) for name in sorted(names)]
+        commands.append(command)
+    if (candidate / "tools/instruction_profile.py").is_file():
+        commands.append([sys.executable, str(candidate / "tools/instruction_profile.py"), "--repo", str(candidate), "--artifact-only"])
+    if (candidate / "tools/audit.py").is_file():
+        commands.append([sys.executable, str(candidate / "tools/audit.py"), "check", "--repo", str(candidate), "--structural"])
+    return commands
+
+
+def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
+                          capture_recovery, include, message):
+    """Complete one explicit change set; leave independent work pending."""
+    import sync_git
+    repo = Path(repo).resolve()
+    names = set(adopt or ())
+    capture = bool(capture_recovery)
+    try:
+        with sync_git.lock(repo):
+            pending = sync_git.read_pending(repo)
+            needed_owners = set(pending.get("owners", ())) if pending and pending.get("scoped") else names
+            destinations = _destinations(repo, machine, skill_roots) if needed_owners else []
+            needs_recovery = capture or bool(pending and pending.get("capture_recovery"))
+            roots = {host: str(Path(path).resolve()) for host, path in
+                     (recovery_roots if recovery_roots is not None else recovery._default_roots()).items()} if needs_recovery else {}
+            if pending:
+                if not pending.get("scoped"):
+                    raise sync_git.SyncBlocked("a broad sync is pending; resume its original scope")
+                if adopt and set(adopt) != set(pending["owners"]):
+                    raise sync_git.SyncBlocked("pending sync belongs to a different owner selection")
+                if include and not set(include).issubset(pending["files"]):
+                    raise sync_git.SyncBlocked("pending sync belongs to a different publication selection")
+                if pending["machine"] != machine or pending["destinations"] != [str(p) for _, p in destinations]:
+                    raise sync_git.SyncBlocked("pending sync belongs to different agent destinations")
+                if pending.get("recovery_roots") != roots:
+                    raise sync_git.SyncBlocked("pending sync belongs to different settings directories")
+                names = set(pending["owners"])
+                capture = pending["capture_recovery"]
+            elif capture:
+                # Recovery capture is a cohesive allowlisted snapshot operation.
+                # Explicit portable/file selection must not silently capture it.
+                return {"result": "review-required", "reason": "scoped recovery capture needs an explicit artifact contract; use a reviewed broad recovery operation", "owners": sorted(names)}
+            if pending:
+                dependencies = pending["dependencies"]
+            else:
+                dependencies = _scope_dependencies(repo, machine, names)
+            def check_dependencies(candidate=None):
+                if _scope_dependencies(repo, machine, names, capture) != dependencies:
+                    raise sync_git.SyncBlocked("a selected admission, destination, or execution dependency changed")
+                if candidate is not None:
+                    candidate_dependencies = _scope_dependencies(candidate, machine, names, capture)
+                    if candidate_dependencies != dependencies:
+                        raise sync_git.SyncBlocked("selected work depends on unpublished admission, destination, or execution changes; include the reviewed dependency")
+
+            checked_agents = pending.get("agent_identities") if pending else None
+            expected_owners = pending.get("owner_identities", {}) if pending else {}
+            def readback():
+                check_dependencies()
+                if checked_agents is not None and _agent_scope_identities(destinations, names) != checked_agents:
+                    raise sync_git.SyncBlocked("selected agent content or managed identity changed during sync")
+                if names:
+                    snapshot = _snapshot(repo)
+                    for name, expected in expected_owners.items():
+                        if fleet.installed_hash(repo / "skills" / name) != expected:
+                            raise sync_git.SyncBlocked("selected canonical owner changed after verification")
+                    for _, destination in destinations:
+                        if fleet.verify_snapshot(snapshot, destination, names=names):
+                            raise sync_git.SyncBlocked("selected agent owners do not match the checked snapshot")
+
+            def verify():
+                readback()
+                current = sync_git.read_pending(repo) or pending
+                with sync_git.prepare_candidate(repo, current["files"], base=current["base"]) as (candidate, tree):
+                    if current.get("tree") != tree:
+                        raise sync_git.SyncBlocked("publication candidate changed")
+                    check_dependencies(candidate)
+                    sync_git.assert_publishable(candidate, current["files"])
+                    if (candidate / "registry.json").is_file():
+                        fleet.render_snapshot(candidate, _snapshot(candidate))
+                    _run_checks(candidate, _candidate_commands(candidate, names))
+                readback()
+
+            def finish(report, state):
+                report["verified_owners"] = sorted(names)
+                report["installed_verified"] = bool(state.get("installed_verified"))
+                report["pending_files"] = sorted(sync_git.changed(repo) - set(state["files"]))
+                report["verification_scope"] = state["limits"]
+                return report
+
+            if pending:
+                return finish(sync_git.publish(repo, pending, verify=verify, readback=readback), pending)
+            target = sync_git.destination(repo)
+            snapshot = _snapshot(repo) if names else None
+            states = {name: _skill_state(repo, snapshot, destinations, name) for name in names}
+            if any(state["mode"] == "review-required" for state in states.values()):
+                return {"result": "review-required", "reason": "selected owner missing, unadmitted, or conflicting", "owners": sorted(names)}
+            selected = {sync_git.safe_path(repo, name) for name in include}
+            overrides = {}
+            for name, state in states.items():
+                owner = repo / "skills" / name
+                desired = state["origin"][1] / name if state.get("origin") else owner
+                _assert_skill_public_safe(desired, name)
+                desired_files = fleet.directory_record(desired)["files"]
+                tracked = set(sync_git.git(repo, "ls-files", "-z", "--", f"skills/{name}/").split("\0")) - {""}
+                selected.update(tracked)
+                selected.update(f"skills/{name}/{path}" for path in desired_files)
+                for path in selected & (tracked | {f"skills/{name}/{p}" for p in desired_files}):
+                    relative = Path(path).relative_to(Path("skills") / name)
+                    desired_file = desired / relative
+                    if state.get("origin") or not desired_file.is_file():
+                        overrides[path] = desired_file.read_bytes() if desired_file.is_file() else None
+                expected_owners[name] = str(state["origin"][2] if state.get("origin") else state["canonical_sha256"])
+            if not selected and not names:
+                return {"result": "review-required", "reason": "no explicit owner or publication file selected"}
+            sync_git.preflight(repo, target, files=selected, scoped=True)
+            before_files = sync_git.identities(repo, selected)
+            before_agents = _agent_scope_identities(destinations, names)
+            files = dict(before_files)
+            for path, data in overrides.items():
+                files[path] = hashlib.sha256(data).hexdigest() if data is not None else "deleted"
+            base_commit = sync_git.git(repo, "rev-parse", "HEAD")
+            with sync_git.prepare_candidate(repo, files, base=base_commit, overrides=overrides) as (candidate, _):
+                check_dependencies(candidate)
+                sync_git.assert_publishable(candidate, files)
+                if (candidate / "registry.json").is_file():
+                    fleet.render_snapshot(candidate, _snapshot(candidate))
+                commands = _candidate_commands(candidate, names)
+                _run_checks(candidate, commands)
+                if (sync_git.identities(repo, selected) != before_files
+                        or _agent_scope_identities(destinations, names) != before_agents):
+                    raise sync_git.SyncBlocked("selected files or agent owners changed during prerequisite checks")
+                check_dependencies()
+                if names:
+                    result = sync(repo, machine=machine, adopt=sorted(names), recovery_roots=recovery_roots,
+                                  skill_roots=skill_roots, capture_recovery=False,
+                                  check_commands=commands, scoped=True)
+                    if result["result"] not in {"applied", "unchanged"}:
+                        return result
+                    if result.get("request_id"):
+                        selected.add(f"reconciliation/requests/{result['request_id']}.json")
+            checked_agents = _agent_scope_identities(destinations, names)
+            readback()
+            final_files = sync_git.identities(repo, selected)
+            with sync_git.prepare_candidate(repo, final_files, base=base_commit) as (candidate, tree):
+                check_dependencies(candidate)
+                sync_git.assert_publishable(candidate, final_files)
+                if (candidate / "registry.json").is_file():
+                    fleet.render_snapshot(candidate, _snapshot(candidate))
+                _run_checks(candidate, _candidate_commands(candidate, names))
+            if sync_git.identities(repo, selected) != final_files:
+                raise sync_git.SyncBlocked("selected files changed after deployment checks")
+            pending = {"schema_version": 1, "scoped": True, "machine": machine,
+                       "owners": sorted(names), "destinations": [str(p) for _, p in destinations],
+                       "capture_recovery": False, "recovery_roots": roots,
+                       "agent_identities": checked_agents, "owner_identities": expected_owners,
+                       "agents_verified": False, "installed_verified": bool(names), "dependencies": dependencies,
+                       "target": target, "base": base_commit, "message": message,
+                       "files": final_files, "tree": tree,
+                       "checks": "selected candidate structural checks and selected installed owner readback",
+                       "limits": "No whole-fleet, current-runtime, or model-behavior parity claim."}
+            sync_git.save_pending(repo, pending)
+            result = sync_git.publish(repo, pending, verify=verify, readback=readback)
+            return finish(result, pending)
+    except (OSError, RuntimeError, ValueError, KeyError, subprocess.SubprocessError) as exc:
+        return {"result": "incomplete", "failed_step": "scoped-preflight-or-reconcile", "reason": str(exc)}
+
+
 def complete_sync(
     repo: str | Path,
     *,
@@ -770,6 +1070,7 @@ def complete_sync(
     capture_recovery: bool | None = None,
     include: Sequence[str] = (),
     message: str = "chore: reconcile checked agent changes",
+    scoped: bool | None = None,
 ) -> dict[str, Any]:
     """One operator operation: reconcile checked owners, commit, push, read back.
 
@@ -779,6 +1080,17 @@ def complete_sync(
     """
     import sync_git
 
+    selected_scope = bool(adopt or include) if scoped is None else scoped
+    try:
+        existing_pending = sync_git.read_pending(Path(repo).resolve())
+    except (OSError, RuntimeError, subprocess.SubprocessError) as exc:
+        return {"result": "incomplete", "failed_step": "preflight-or-reconcile", "reason": str(exc)}
+    if existing_pending and existing_pending.get("scoped"):
+        selected_scope = True
+    if selected_scope:
+        return _scoped_complete_sync(repo, machine=machine, adopt=adopt,
+                                     recovery_roots=recovery_roots, skill_roots=skill_roots,
+                                     capture_recovery=capture_recovery, include=include, message=message)
     repo = Path(repo).resolve()
     try:
         with sync_git.lock(repo):
@@ -925,6 +1237,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--include", action="append", default=[], metavar="FILE",
                         help="exact additional repository file already reviewed for commit; does not authorize deployment")
     parser.add_argument("--message", default="chore: reconcile checked agent changes")
+    parser.add_argument("--full", action="store_true", help="explicitly retain broad reconciliation when owner/file selectors are present")
     parser.add_argument("--root", action="append", default=[], metavar="HOST=PATH")
     parser.add_argument("--skill-root", action="append", default=[], type=Path)
     args = parser.parse_args(argv)
@@ -934,7 +1247,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         report = complete_sync(args.repo, machine=args.machine, adopt=args.adopt, recovery_roots=roots,
                                skill_roots=args.skill_root or None, capture_recovery=args.capture_recovery,
-                               include=args.include, message=args.message)
+                               include=args.include, message=args.message, scoped=False if args.full else None)
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if args.action == "plan" or report.get("result") == "synced" else 2
 
