@@ -70,8 +70,8 @@
       "url": "https://mcp.tavily.com/mcp"
     }
   },
-  "model": "gpt-6-astra",
-  "model_reasoning_effort": "low",
+  "model": "gpt-6-sol",
+  "model_reasoning_effort": "medium",
   "personality": "pragmatic",
   "plugins": {
     "agent-ops@local-agent-skills": {
@@ -167,10 +167,6 @@
       },
       {
         "enabled": false,
-        "path": "{{agent-signal:CODEX_HOME}}\\skills\\.system\\openai-docs\\SKILL.md"
-      },
-      {
-        "enabled": false,
         "path": "{{agent-signal:CODEX_HOME}}\\skills\\pdf\\SKILL.md"
       },
       {
@@ -188,6 +184,30 @@
       {
         "enabled": false,
         "name": "agent-ops:project-bootstrap"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\paseo\\SKILL.md"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\paseo-help\\SKILL.md"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\paseo-advisor\\SKILL.md"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\paseo-committee\\SKILL.md"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\paseo-handoff\\SKILL.md"
+      },
+      {
+        "enabled": false,
+        "path": "{{agent-signal:CODEX_HOME}}\\skills\\paseo-plugin\\SKILL.md"
       }
     ]
   },

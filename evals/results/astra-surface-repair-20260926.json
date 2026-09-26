@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-09-26",
+  "scope": "native guidance rebase, standing route cleanup, configured-default correction",
+  "native_revision": "d0288be5b3330d2442e3907185b8e9d0958297bb",
+  "targets": {
+    "agent/prompt_builder.py": {
+      "before_sha256": "fcbe56ff59edecf1ea21f62f34c4a027487b7bd9440360a83175c2e137438fa6",
+      "after_sha256": "5f30637977fddbb6c9462cd18f8e8b5b0bc086918f94f8739a1c46fc99b1bdd1"
+    },
+    "tests/agent/test_oneshot_footprint.py": {
+      "before_sha256": "8d9280d7a71fb5ad29865aea17f6b503c4b977dbf3680b23fdc13df7d4bbe1fd",
+      "after_sha256": "eb70d8db6b56f902ccd02a899c0a6b2ca6527d0b70768969d75ebdd2d6e88f3f"
+    }
+  },
+  "baseline_tests": {
+    "files": 5,
+    "passed": 51,
+    "failed": 0
+  },
+  "candidate_tests": {
+    "files": 5,
+    "passed": 51,
+    "failed": 0
+  },
+  "baseline_probe": {
+    "module": "agent\\prompt_builder.py",
+    "normal_sha256": "da67a60d5222c0239180d99ebee65fd77cdec08a30d707407766c6078f2d0ad3",
+    "oneshot_sha256": "587274823886529da06e01502293624b9f981d2b0b5c118386293096ccad5314",
+    "preserved_sections": {
+      "external_state_verification": "fcd1f059e71c2a0c382f452d34add633ba7fc9a88f0d6bba8ac4297822823d3b",
+      "literal_preservation": "1743066cae4e7293ab5ba3c8cde8e0dac6d865dc8206b72be3abd7d54921492f"
+    },
+    "selective_loading": false,
+    "legacy_force_loading": true,
+    "authoring_coaching_in_catalog": true,
+    "proportional_verification": false,
+    "explicit_material_ambiguity": false
+  },
+  "candidate_probe": {
+    "module": "agent\\prompt_builder.py",
+    "normal_sha256": "9b6b29bb4f0a398555d3a45b5b585f12867788be604ce9323e4d1989c78dc910",
+    "oneshot_sha256": "587274823886529da06e01502293624b9f981d2b0b5c118386293096ccad5314",
+    "preserved_sections": {
+      "external_state_verification": "fcd1f059e71c2a0c382f452d34add633ba7fc9a88f0d6bba8ac4297822823d3b",
+      "literal_preservation": "1743066cae4e7293ab5ba3c8cde8e0dac6d865dc8206b72be3abd7d54921492f"
+    },
+    "selective_loading": true,
+    "legacy_force_loading": false,
+    "authoring_coaching_in_catalog": false,
+    "proportional_verification": true,
+    "explicit_material_ambiguity": true
+  },
+  "overlays": {
+    "codex": {
+      "before_sha256": "11d38803b75dd625966f81939fcfb4f04699f52cca0b4beecf91f2c077908778",
+      "after_sha256": "ac46ce1ce3f4f83bbe848b397cc53d924596396dc5528f6881ecc25c8125fb9e",
+      "bytes": 1970
+    },
+    "hermes": {
+      "before_sha256": "24afe3566d3e3e1bd6dbd80a2e90d3f239fb468856bb3ad49bdb7b87a6326f3d",
+      "after_sha256": "acf90195dee69dde4d96533ffc29dcf3be01245e944e69b9986ce511687681d6",
+      "bytes": 1945
+    }
+  },
+  "codex_duplicate_policy": "disabled six byte-identical Codex-local Paseo copies; retained shared external owners and all files",
+  "default_selectors": {
+    "codex": {
+      "model": "gpt-6-sol",
+      "provider": "openai-codex",
+      "reasoning": "medium",
+      "runtime": "codex-cli 0.158.0-alpha.2.1"
+    },
+    "hermes": {
+      "model": "gpt-6-sol",
+      "provider": "openai-codex",
+      "reasoning": "medium",
+      "runtime": "Hermes Agent 0.21.5+2453.gd0288be.dirty"
+    },
+    "omp": {
+      "model": "gpt-6-astra",
+      "provider": "openai-codex",
+      "reasoning": "xhigh",
+      "runtime": "omp 18.2.6"
+    }
+  },
+  "limits": [
+    "No inference or model-quality comparison",
+    "Active conversations not restarted",
+    "Provider-hidden prompts and private memory not copied",
+    "Pending proposals remain unapproved; separate ongoing work resolved the earlier recovery conflicts"
+  ],
+  "patch_roundtrip": {
+    "apply_checked": true,
+    "after_hashes_match": true,
+    "reverse_checked": true,
+    "before_hashes_restored": true,
+    "native_revision": "d0288be5b3330d2442e3907185b8e9d0958297bb"
+  },
+  "installed_tests": {
+    "files": 5,
+    "passed": 51,
+    "failed": 0
+  },
+  "profile_regressions": {
+    "passed": 15,
+    "failed": 0
+  },
+  "other_shared_contract_tests": {
+    "passed": 47,
+    "skipped": 1,
+    "subtests_passed": 42,
+    "scope": "unchanged recovery, retirement and host-delta cases from the earlier combined run"
+  },
+  "live_profile": "pass",
+  "structural_audit": "pass",
+  "recovery_diff": {
+    "changes": 0,
+    "conflicts": 0
+  },
+  "fresh_codex_catalog_counts": {
+    "paseo": 1,
+    "paseo-help": 1,
+    "paseo-advisor": 1,
+    "paseo-committee": 1,
+    "paseo-handoff": 1,
+    "paseo-plugin": 1
+  }
+}

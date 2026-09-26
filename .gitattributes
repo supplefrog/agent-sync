@@ -10,3 +10,4 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 *.txt text eol=lf
+integrations/hermes/native-patches/guidance/current-selector/selector.patch text eol=lf

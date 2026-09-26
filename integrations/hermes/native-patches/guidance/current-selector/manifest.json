@@ -1,22 +1,22 @@
 {
   "schema_version": 1,
-  "owner": "Hermes native skill selection",
+  "owner": "Hermes native skill selection and execution calibration",
   "repository": "https://github.com/NousResearch/hermes-agent",
-  "native_base_revision": "9fe737aef2dd18a351dff3c4de608d63879a6524",
-  "runtime_observed": "0.21.4",
+  "native_base_revision": "d0288be5b3330d2442e3907185b8e9d0958297bb",
+  "runtime_observed": "0.21.5+2453.gd0288be.dirty",
   "targets": {
     "agent/prompt_builder.py": {
-      "before_sha256": "a14a71dc2d4687dac6405136f841cb421d818d9115c84341e8d178de3f34df67",
-      "after_sha256": "9325b3b18c855241e72293a708ad1538df1f01eabeef6bf77e2d7b222fa43a87"
+      "before_sha256": "fcbe56ff59edecf1ea21f62f34c4a027487b7bd9440360a83175c2e137438fa6",
+      "after_sha256": "5f30637977fddbb6c9462cd18f8e8b5b0bc086918f94f8739a1c46fc99b1bdd1"
     },
     "tests/agent/test_oneshot_footprint.py": {
       "before_sha256": "8d9280d7a71fb5ad29865aea17f6b503c4b977dbf3680b23fdc13df7d4bbe1fd",
-      "after_sha256": "16241d9593189e7421ceb4d9cb0aa0eca249c49f7f08adb124d3e1e5ea533964"
+      "after_sha256": "eb70d8db6b56f902ccd02a899c0a6b2ca6527d0b70768969d75ebdd2d6e88f3f"
     }
   },
   "artifacts": {
-    "selector.patch": "25760d963062f4edf77d1ab1546b5cae4b81beaf33442a66500c55e7ef7ecbcb",
-    "README.md": "4256185f8d6953e484b43609d5164ad7419583a2ed20597cd0ff4eda2eaf350b"
+    "selector.patch": "8944653b2f13d8b7078178c54a33430bfd0b2d33d235def310a31c6ecf30505b",
+    "README.md": "b47f49308b1efbfbe26787dfd1d2357b5302e8f739343488db36102cd0063bbb"
   },
   "license": {
     "spdx": "MIT",
@@ -25,15 +25,29 @@
   },
   "lifecycle": "manual reviewed native prerequisite; not updater enrollment",
   "mechanism_verification": {
-    "native_targeted_tests": 67,
+    "native_targeted_tests": 51,
     "baseline_and_candidate_passed": true,
-    "public_entry_point_comparison": "passed; parent rerun candidate",
-    "copy_apply_reverse_and_exact_target_hashes": "passed with core.autocrlf=false"
+    "public_entry_point_comparison": "passed; identical one-shot output and protected section hashes",
+    "copy_apply_reverse_and_exact_target_hashes": "passed",
+    "installed_native_targeted_tests": 51
+  },
+  "historical_selection": {
+    "native_base_revision": "9fe737aef2dd18a351dff3c4de608d63879a6524",
+    "targets": {
+      "agent/prompt_builder.py": {
+        "before_sha256": "a14a71dc2d4687dac6405136f841cb421d818d9115c84341e8d178de3f34df67",
+        "after_sha256": "9325b3b18c855241e72293a708ad1538df1f01eabeef6bf77e2d7b222fa43a87"
+      },
+      "tests/agent/test_oneshot_footprint.py": {
+        "before_sha256": "8d9280d7a71fb5ad29865aea17f6b503c4b977dbf3680b23fdc13df7d4bbe1fd",
+        "after_sha256": "16241d9593189e7421ceb4d9cb0aa0eca249c49f7f08adb124d3e1e5ea533964"
+      }
+    },
+    "native_targeted_tests": 67
   },
   "limits": [
     "No inference or model-quality claim",
-    "Broader prompt-builder test file fails baseline Windows collection",
-    "Restart not performed",
+    "Active processes not restarted",
     "Historical bundles are not current-source installers"
   ]
 }

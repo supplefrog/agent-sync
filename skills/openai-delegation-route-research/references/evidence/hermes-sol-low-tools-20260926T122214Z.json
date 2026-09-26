@@ -1,0 +1,58 @@
+{
+  "purpose": "Current native read/search callability only; not task quality or DAG admission",
+  "request_cap": 5,
+  "paid_fallback": false,
+  "catalog_modified": false,
+  "accepted": true,
+  "route": {
+    "host": "hermes",
+    "transport": "hermes-delegate",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "runtime": "hermes-delegate/native-source-v1",
+    "contract_sha256": "1c5b3143978521b08d530d272d14dfa4b81656d7401ec8a5b9e08bb13f37e65e"
+  },
+  "native_contract": {
+    "runtime": "hermes-delegate/native-source-v1",
+    "sources": {
+      "run_agent.py": "72f2fe8a2c6113e6c1033f920f00036bc6d757d4f566b376ab8c1a557b70ae1e",
+      "tools/delegate_tool.py": "aa57bebbe1710a9a9753de4cdd4af809bceb042781a8f0d5728e60d5b3db452b",
+      "tools/delegate_tool_config.py": "7f94b7f0d523397229a194ec02ed937f379d82b6b7fa2a0d4d9bffe23e06ac2e",
+      "tools/delegate_tool_toolsets.py": "e540eb4418467c3483ebad4f34d89f6acf6c29892dfa2d0418958491bb5fdd74",
+      "tools/delegate_tool_progress.py": "8113dc37824ea44d75653929582e86c9eb2fb5404b16946753611b92c208c9ea",
+      "tools/delegate_tool_child_run.py": "af9999c04c7704fe4c33a8f1427f410662da7f936db2df116c4a6954991ec170",
+      "tools/delegate_tool_results.py": "bbd8517b4e49d7fa55ffed36fdabf898c2a41292619be4777af55060b19440c5",
+      "agent/agent_init.py": "7b3a4a9f0bbc416223bb9db32b169222c754eb5734624ec1d647c3db05cce630",
+      "agent/system_prompt.py": "650ad693a2b8b163886fc4d15a4921ded391f938bda07d1f7f406219b9c0b75f",
+      "agent/prompt_builder.py": "5f30637977fddbb6c9462cd18f8e8b5b0bc086918f94f8739a1c46fc99b1bdd1",
+      "agent/chat_completion_helpers.py": "dc7b408434e84f0cc7e0436219dc9b5d19d19ba2e7d3c38214d41d27420d89f9",
+      "agent/transports/codex.py": "02b5cb1ba5603bb86fee315947a364f17678333e8f24b57bf4876aa1adcc292b"
+    }
+  },
+  "actual_tools": [
+    "read_file",
+    "search_files"
+  ],
+  "tool_trace": [
+    {
+      "tool": "search_files",
+      "status": "ok"
+    },
+    {
+      "tool": "read_file",
+      "status": "ok"
+    }
+  ],
+  "tools_exercised": [
+    "read_file",
+    "search_files"
+  ],
+  "status": "completed",
+  "exit_reason": "completed",
+  "model_calls": 3,
+  "active_children_remaining": 0,
+  "provider_resolved_identity": "not independently exposed; exact native request construction enforced",
+  "observed_at": "2026-09-26T12:22:14.711029+00:00",
+  "suppressed_diagnostic_characters": 0
+}

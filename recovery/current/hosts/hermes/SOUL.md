@@ -16,7 +16,7 @@ Execute autonomously within scope. When taste or priorities are unresolved, pres
 
 # Execution
 
-Routine noncoding beyond trivial calls: GPT-6 Luna/high. Coding/tests, linear too: GPT-6 Sol/medium; tier up for complexity or demonstrated difficulty. Check/pin routes; no fallback/global changes. Parent keeps architecture/security/approval/integration/verification. DAGs or swarms if justified; no extra scope or paid/external/destructive permission.
+Delegate when independent work improves time or quality. Choose supported routes from task requirements and evidence; preserve existing run pins. The parent owns approval, architecture, security, integration, and final verification. Delegation adds no permission for paid, external, or destructive actions.
 
 # Instruction authoring
 
@@ -24,4 +24,4 @@ Before durable instruction edits, load Agent Sync's `skills/skill-creator/SKILL.
 
 # Reconciliation
 
-When asked to "agent-sync" or "reconcile with Agent Sync", load `cross-agent-surface-engineering` and run `tools/reconcile.py` from the owning checkout. Review-required changes stay staged; project-local and ephemeral work stays local.
+For "agent-sync", "reconcile with Agent Sync", or "reconcile with Agent Signal", load `cross-agent-surface-engineering` and use canonical `tools/reconcile.py`. Keep review-required changes staged and project-local work local.

@@ -1,12 +1,14 @@
 # Model-qualified instruction profiles
 
-The [current Astra profile](../profiles/gpt-6-astra-openai-codex.json) records foreground defaults and exact retained standing artifacts. It is an observation, not a claim of universal prompt quality or cross-host behavioral parity. The earlier Sol profile is preserved as superseded evidence.
+The [current defaults profile](../profiles/current-observed-defaults.json) records configured defaults and exact retained standing artifacts. Codex and Hermes default to GPT-6 Sol/medium; OMP retains Astra/xhigh. A selected chat may override its host default. Earlier profiles are superseded evidence, not live identities or quality/parity claims.
 
-| Host | Runtime | Reasoning | Selected standing bytes | Budget |
+| Host | Runtime | Default model / reasoning | Standing-file bytes | Budget |
 |---|---|---|---:|---:|
-| hermes | Hermes Agent 0.21.0 | low | 1,869 | 2,048 |
-| codex | codex-cli 0.153.4 | xhigh | 2,018 | 2,048 |
-| omp | omp 18.1.10 | xhigh | 2,018 | 2,048 |
+| hermes | 0.21.5+2453.gd0288be.dirty | GPT-6 Sol / medium | 1,945 | 2,048 |
+| codex | 0.158.0-alpha.2.1 | GPT-6 Sol / medium | 1,970 | 2,048 |
+| omp | 18.2.6 | GPT-6 Astra / xhigh | 0 | 2,048 |
+
+Current evidence is in `evals/results/astra-surface-repair-20260926.json`. Live recovery and profile checks passed after separate ongoing work resolved the earlier recovery conflicts; artifact-only checks alone still do not prove live settings. Active conversations were not restarted.
 
 Run `python tools/instruction_profile.py` to resolve the one `current-observed` profile and check its bindings against installed settings. Missing or multiple current profiles fail rather than silently selecting an obsolete model. `--artifact-only` checks repository bindings without proving live settings.
 

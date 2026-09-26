@@ -1,8 +1,50 @@
-diff --git a/agent/prompt_builder.py b/agent/prompt_builder.py
-index 5f330639129c..9647d6b675f9 100644
 --- a/agent/prompt_builder.py
 +++ b/agent/prompt_builder.py
-@@ -1355,8 +1355,6 @@ def _render_skills_index(
+@@ -439,8 +439,8 @@
+     "- Keep calling tools until: (1) the task is complete, AND (2) you have verified the result.\n"
+     "</tool_persistence>\n\n"
+     "<mandatory_tool_use>\n"
+-    "NEVER answer these from memory or mental computation — ALWAYS use a tool:\n"
+-    "- Arithmetic, math, calculations → use terminal or execute_code\n"
++    "Use tools to establish live state, inspect source material, or calculate results whose accuracy affects the task:\n"
++    "- Nontrivial calculations or arithmetic requiring exact results → use terminal or execute_code\n"
+     "- Hashes, encodings, checksums → use terminal (e.g. sha256sum, base64)\n"
+     "- Current time, date, timezone → use terminal (e.g. date)\n"
+     "- System state: OS, CPU, memory, disk, ports, processes → use terminal\n"
+@@ -456,19 +456,19 @@
+     "- 'Is port 443 open?' → check THIS machine (don't ask 'open where?')\n"
+     "- 'What OS am I running?' → check the live system (don't use user profile)\n"
+     "- 'What time is it?' → run `date` (don't guess)\n"
+-    "Only ask for clarification when the ambiguity genuinely changes what tool you would call.\n"
++    "Only ask for clarification when unresolved ambiguity materially changes the requested result.\n"
+     "</act_dont_ask>\n\n"
+     "<prerequisite_checks>\n"
+-    "- Before taking an action, check whether prerequisite discovery, lookup, or context-gathering steps are needed.\n"
+-    "- Do not skip prerequisite steps just because the final action seems obvious.\n"
++    "- Resolve prerequisite discovery or lookup when the action depends on an unverified fact or target.\n"
+     "- If a task depends on output from a prior step, resolve that dependency first.\n"
+     "</prerequisite_checks>\n\n"
+     "<verification>\n"
++    "Scale verification to the affected behavior and required checks. Broaden or repeat it only after a change, failure, or unresolved concern.\n"
+     "Before finalizing your response:\n"
+     "- Correctness: does the output satisfy every stated requirement?\n"
+     "- Grounding: are factual claims backed by tool outputs or provided context?\n"
+     "- Formatting: does the output match the requested format or schema?\n"
+-    "- Safety: if the next step has side effects (file writes, commands, API calls), confirm scope before executing.\n"
++    "- Authorization: carry existing user authorization forward; ask only for an action that still requires approval.\n"
+     "- Completion: 'done' means every named acceptance criterion is verified — never a plausible subset. Completing "
+     "your plan is not itself the answer; the requested output must appear in your response.\n"
+     "</verification>\n\n"
+@@ -490,7 +490,7 @@
+     "- If required context is missing, do NOT guess or hallucinate an answer.\n"
+     "- Use the appropriate permitted lookup tool when missing information is retrievable (search_files, read_file, "
+     "or an available retrieval/search tool).\n"
+-    "- Ask a clarifying question only when the information cannot be retrieved by tools.\n"
++    "- Ask when missing information would materially change the result and cannot be retrieved; otherwise use a reasonable reversible default.\n"
+     "- If you must proceed with incomplete information, label assumptions explicitly.\n"
+     "</missing_context>"
+ )
+@@ -1369,8 +1369,6 @@
          "context, so their descriptions are omitted — the skills work "
          "normally and load with skill_view(name) as usual.)"
      ) if demoted else ""
@@ -11,7 +53,7 @@ index 5f330639129c..9647d6b675f9 100644
      index_lines = []
      for category in sorted(skills_by_category):
          entries = skills_by_category[category]
-@@ -1379,23 +1377,14 @@ def _render_skills_index(
+@@ -1393,23 +1391,14 @@
          )
      return (
          "## Skills\n"
@@ -40,17 +82,13 @@ index 5f330639129c..9647d6b675f9 100644
          + hidden_note
      )
  
-diff --git a/tests/agent/test_oneshot_footprint.py b/tests/agent/test_oneshot_footprint.py
-index ecc8d16b0335..3b9bc77b8a56 100644
 --- a/tests/agent/test_oneshot_footprint.py
 +++ b/tests/agent/test_oneshot_footprint.py
-@@ -32,7 +32,10 @@ def test_oneshot_hides_skill_manage_and_skill_authoring_coaching(oneshot, intera
+@@ -32,7 +32,8 @@
      prompt = build_skills_system_prompt(available_tools={"skill_view", "skills_list"}, skills_dir_override=_skills_dir(tmp_path))
      assert "demo-skill" in prompt and "skill_view" in prompt
      assert "skill_manage" not in prompt and "offer to save as a skill" not in prompt
 -    assert "skill_manage" in interactive_prompt and "offer to save as a skill" in interactive_prompt
-+    # Both modes keep the same discoverable skill; authoring guidance has its
-+    # own tool-guidance owner rather than being repeated in the catalog.
 +    assert "demo-skill" in interactive_prompt and "skill_view" in interactive_prompt
 +    assert prompt != interactive_prompt
  

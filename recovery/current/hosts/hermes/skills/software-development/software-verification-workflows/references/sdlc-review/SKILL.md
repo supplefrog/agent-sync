@@ -56,17 +56,13 @@ A requested-changes transition returns the task to its original implementer. Whe
 
 ## Review Lenses
 
-Vary how you look at the work on each round instead of repeating the same inspection. Decorrelated lenses catch different defect classes: a cold read of the artifact surfaces design and correctness problems that the implementer's narrative would have framed away, execution surfaces claims that do not reproduce, and a strict contract audit surfaces quiet scope drift. Repeating the round-1 lens on round 3 mostly re-finds what round 1 already found.
+Choose the leading lens from the unresolved claim or invalidated evidence, not the review-round number:
 
-Determine the current round from the history the task record already gives you: count the `changes_requested` entries in the "Prior attempts on this task" section of your worker context (also visible as prior runs in `kanban_show`). The current review round is that count plus one. Round 1 therefore shows zero `changes_requested` attempts; round 2 shows one; and so on.
+- **Artifact:** form an initial judgment from requirements and the deliverable before the implementer's defense, then reconcile the handoff and prior findings.
+- **Execution:** exercise a claimed behavior when execution evidence is missing, contradicted or invalidated; do not postpone a necessary runtime check until a later round.
+- **Contract:** trace omissions or scope drift against the original acceptance criteria whenever they are in doubt.
 
-| Round | Lens | How to apply it |
-|---|---|---|
-| 1 | Artifact | Read the diff or deliverable cold, before the implementer's summary. Form an independent judgment, then compare it against the handoff narrative and investigate every mismatch. |
-| 2 | Execution | Check out the work and actually run it via `terminal`: build, test, and exercise the reported behavior yourself. Verify each handoff claim empirically instead of re-reading the artifact. |
-| 3+ | Contract | Re-read the ORIGINAL task body and acceptance criteria, then audit the deliverable strictly against them. Also verify that every item from every prior `kanban_request_changes` round actually landed. |
-
-The baseline duties in the Procedure section still apply on every round; the lens sets which inspection you lead with and weight most heavily.
+The Procedure duties apply on every round. Reuse current identity-bound evidence, recheck affected corrections and regression risks, and issue a verdict when the acceptance evidence is sufficient; another lens is not an extra approval gate.
 
 ### Lens variation for ad-hoc review fan-outs
 

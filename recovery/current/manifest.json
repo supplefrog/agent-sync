@@ -2,7 +2,7 @@
   "$schema": "contracts/recovery-snapshot.schema.json",
   "artifacts": [
     {
-      "bytes": 4679,
+      "bytes": 5273,
       "format": "toml",
       "host": "codex",
       "id": "settings",
@@ -28,20 +28,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "24fc5b6caa3dd9cbfb78045e57fef8f91b3e5f2e06df6b58b0bc0499d703a066",
+      "sha256": "419095b29b2bd8dfb2b25e58888f133203bd8d3fac9c9f85eaec16dbd082f7f9",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
     },
     {
-      "bytes": 2021,
+      "bytes": 1970,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "11d38803b75dd625966f81939fcfb4f04699f52cca0b4beecf91f2c077908778",
+      "sha256": "ac46ce1ce3f4f83bbe848b397cc53d924596396dc5528f6881ecc25c8125fb9e",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -86,7 +86,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16899,
+      "bytes": 17073,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -218,7 +218,6 @@
         "mcp_servers.chrome-devtools.args",
         "mcp_servers.chrome-devtools.command",
         "mcp_servers.chrome-devtools.connect_timeout",
-        "mcp_servers.chrome-devtools.enabled",
         "mcp_servers.chrome-devtools.env",
         "mcp_servers.claude-context.args",
         "mcp_servers.claude-context.command",
@@ -291,20 +290,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "98255ed003c65086cf5eb6a0875d4ef33e5c22277ae98c49f95172c4924328ff",
+      "sha256": "92ebde734f0f514b7bbe206f75afeee5eee707f38506267d74c1796dcc46cfba",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
     },
     {
-      "bytes": 2001,
+      "bytes": 1945,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "24afe3566d3e3e1bd6dbd80a2e90d3f239fb468856bb3ad49bdb7b87a6326f3d",
+      "sha256": "acf90195dee69dde4d96533ffc29dcf3be01245e944e69b9986ce511687681d6",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -10932,14 +10931,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 2919,
+      "bytes": 3117,
       "format": "text",
       "host": "hermes",
       "id": "local-research-source-operations-skill-md",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "28366c2cc445ed4a30a8d2dc84befc702d0314f5ec45e09847e527a22838e6c7",
+      "sha256": "7c99905319c5e35a611ba1f23e3830697a25f5496e1408a74c339187e52fbd8d",
       "snapshot": "hosts/hermes/skills/research/research-source-operations/SKILL.md",
       "source": "skills/research/research-source-operations/SKILL.md",
       "strategy": "replace-if-absent"
@@ -10958,14 +10957,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5282,
+      "bytes": 6694,
       "format": "text",
       "host": "hermes",
       "id": "local-research-source-operations-references-paper-apis-md",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "c43729ad797b241d61664d7d3d63cc1e9af3c1f7bacc31be1861afbfb6ce1fdf",
+      "sha256": "3ec7037bcd5a575e9f1ba56568e30f8c3ce09497671ba29c09883e212ddd90e3",
       "snapshot": "hosts/hermes/skills/research/research-source-operations/references/paper-apis.md",
       "source": "skills/research/research-source-operations/references/paper-apis.md",
       "strategy": "replace-if-absent"
@@ -11790,14 +11789,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 9073,
+      "bytes": 8230,
       "format": "text",
       "host": "hermes",
       "id": "native-2839e05cf81047519118",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "ce90e8a3e145cce69c62880dc85921700110879f9290952d6cec28218503155f",
+      "sha256": "97681148330603e571b756587903cf1ede45d5673bcb87b85d6e8a5fad1a8ce9",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/sdlc-review/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/references/sdlc-review/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11829,14 +11828,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 13124,
+      "bytes": 13253,
       "format": "text",
       "host": "hermes",
       "id": "native-bea77552c06e50ef7357",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "575a7be86a977ca1e4a068a29d7aa02648e24f21cf2cfea7776e60b7447bcbab",
+      "sha256": "b3d499e8b6f2cc1949f2e2d8617069f74ef214403c1b2ca76e069eae95d32129",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/structured-contract-verification/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/references/structured-contract-verification/SKILL.md",
       "strategy": "replace-if-absent"
@@ -13350,7 +13349,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "4e94e74f333158d7df102d3e0306fd0253ef69fe43dc1c45488bbf897494488a",
+  "policy_sha256": "e0c198f668713bc25cc99a7e1330b1e632644c9ed674217c0df1e30fd2346ace",
   "public_safe": true,
   "schema_version": 1
 }

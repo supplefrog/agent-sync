@@ -1,6 +1,6 @@
 {
   "$schema": "../contracts/model-profile.schema.json",
-  "claim": "Observed mixed-host selectors with one shared instruction policy and native adapters. Exact overlay checks are bounded, not universal model quality or cross-host behavioral parity.",
+  "claim": "Observed configured defaults, not active-session model identities or universal behavior parity. Codex and Hermes select Sol/medium; OMP retains Astra/xhigh. Live recovery/profile checks passed; active conversations may retain overrides or assembled prompts.",
   "context_policy": {
     "max_standing_bytes": {
       "codex": 2048,
@@ -17,15 +17,12 @@
     "units": "contracts/instruction-units.json"
   },
   "evidence": [
-    "evals/results/current-model-instruction-profile-deterministic.json",
-    "evals/results/astra-foreground-observed.json",
-    "evals/results/hermes-continuation-current-artifacts.json",
-    "evals/results/prompt-sentence-review.json"
+    "evals/results/astra-surface-repair-20260926.json"
   ],
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "11d38803b75dd625966f81939fcfb4f04699f52cca0b4beecf91f2c077908778"
+        "ac46ce1ce3f4f83bbe848b397cc53d924596396dc5528f6881ecc25c8125fb9e"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -43,14 +40,14 @@
         "codex.reconciliation",
         "codex.execution"
       ],
-      "model": "gpt-6-astra",
+      "model": "gpt-6-sol",
       "provider": "openai-codex",
-      "reasoning": "low",
-      "runtime": "codex-cli 0.155.0-alpha.16.4"
+      "reasoning": "medium",
+      "runtime": "codex-cli 0.158.0-alpha.2.1"
     },
     "hermes": {
       "artifact_sha256": [
-        "24afe3566d3e3e1bd6dbd80a2e90d3f239fb468856bb3ad49bdb7b87a6326f3d"
+        "acf90195dee69dde4d96533ffc29dcf3be01245e944e69b9986ce511687681d6"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -68,10 +65,10 @@
         "hermes.reconciliation",
         "hermes.execution"
       ],
-      "model": "gpt-6-astra",
+      "model": "gpt-6-sol",
       "provider": "openai-codex",
-      "reasoning": "low",
-      "runtime": "Hermes Agent 0.21.4"
+      "reasoning": "medium",
+      "runtime": "Hermes Agent 0.21.5+2453.gd0288be.dirty"
     },
     "omp": {
       "artifact_sha256": [],
@@ -84,10 +81,12 @@
       "effective_units": [],
       "no_managed_standing_reason": "OMP 18.2.6's Codex discovery provider is not enabled (enabledProviders is empty); fresh native get_state omits the managed standing markers, and no native OMP user-global AGENTS.md is installed.",
       "reasoning": "xhigh",
-      "runtime": "omp 18.2.6"
+      "runtime": "omp 18.2.6",
+      "model": "gpt-6-astra",
+      "provider": "openai-codex"
     }
   },
-  "id": "gpt-6-astra-openai-codex",
+  "id": "current-observed-defaults",
   "retest_on": [
     "model-release",
     "provider-changed",
@@ -98,9 +97,9 @@
     "instruction-changed"
   ],
   "schema_version": 1,
-  "status": "superseded",
+  "status": "current-observed",
   "target": {
-    "model": "gpt-6-astra",
+    "model": "gpt-6-sol",
     "provider": "openai-codex",
     "reasoning": "host-specific"
   },

@@ -30,6 +30,10 @@ Make arXiv calls sequentially, with at least a few seconds between requests. On 
 
 ## Read and validate
 
+For a known exact revision, run `python scripts/paper_reader.py --read --id 1706.03762v1` from this skill directory. Use `--pdf-output PATH` to save binary PDF fallback if HTML is unavailable; otherwise the PDF is not persisted. `--id ID` without `--read` does a single-page Atom lookup; `--query TEXT --max 1` does a bounded query, not complete search. Results include fetched-byte SHA-256, source/final URLs, network/cache status, and coverage. Exit 2 means partial, unknown, or blocked, not absence. HTML yields extracted text but not faithful figures/formulas/layout. `pdf_binary` means bytes acquired, **not** readable PDF text: open the saved file with `document-files` before making full-text claims. Verify withdrawal notices on the abstract page and metadata; an unverified notice is not a clean bill of health. Specify the exact version and do not treat a version mismatch as proof of absence.
+
+The helper makes sequential requests at least three seconds apart within its own process, caps responses and retries, honors bounded `Retry-After`, and optionally caches API/HTML for 24 hours with `--cache-dir PATH`. It does **not** coordinate concurrent processes or other tools; schedule aggregate arXiv API traffic to meet arXiv's one-request-per-three-seconds and one-connection limits. Do not restart or switch routes to evade a rate limit. A network failure is unknown, not a negative search result.
+
 - Abstract: `https://arxiv.org/abs/{versioned_id}`.
 - Full content: `https://arxiv.org/html/{versioned_id}` where available, otherwise `https://arxiv.org/pdf/{versioned_id}` via the source reader. For local PDFs use `document-files`.
 - Preserve modern IDs and legacy IDs such as `hep-th/0601001` literally. Validate supplied identifiers rather than silently repairing them.

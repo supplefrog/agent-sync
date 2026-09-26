@@ -4,11 +4,11 @@
     "contracts/change-request.schema.json": "01c34418a98dfbb8812313428505cf93c1362120e46622345b5232e46fc6fb21",
     "contracts/host-deltas.schema.json": "f575fe641fcf6acdb0c2c18ff5723c926b146db5e5fcc8a78911c4a4a4b3b50a",
     "contracts/ownership.json": "96be165599088f7adefd42a4a9770be165003ab9d7b11a6cacecfafaa9299548",
-    "contracts/surface-matrix.json": "c53d3e93fbb4917fb1d7a5bd2c2036a274e80acc5c9083ce36bf2c13c5caca18",
-    "host-deltas.json": "ccebc4b4925e3ea7882a21d992f406cd4125d2a23728a9cde233530531535edf",
-    "recovery/current/manifest.json": "be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906",
+    "contracts/surface-matrix.json": "d31fa939c765e76723952aac5c6a0d13e23a94916e36ce2aaa925c8c201769b1",
+    "host-deltas.json": "09c2d1098898ba7780f01b0ba73d918e11072f34fcf60a84d0708c277b84bcea",
+    "recovery/current/manifest.json": "6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465",
     "registry.json": "d3ca18c4edc71113d9a669e3091ff005093c810baecb06abf5e9535633095d8a",
-    "render/fleet/manifest.json": "73951f163f47bcc8e30e30caa1cb2915b57d245d0e9e411048f51e27a69dd321",
+    "render/fleet/manifest.json": "b96aa883f3f4537ccdf3566ef75dafae94b62235536781ffd18d1950d0ea48ca",
     "tools/audit.py": "5bf87a55c70f6abbf0b1a055f4745b634fed9372b5352bb138346559f24e4021",
     "tools/host_deltas.py": "aa79fb01da113e037be2dd946b91b5665b4336b973ac7c8a23c10ff73ce76a5a",
     "tools/reconcile.py": "d48bab08e956ccb5c54190e9a626ec616a24e885ede2fe6302c9a93be66b8837",
@@ -24,12 +24,12 @@
     "reconciliation plan"
   ],
   "machine": "local-windows",
-  "observed_at": "2026-09-24T13:57:31.539134+00:00",
+  "observed_at": "2026-09-26T13:04:21.298648+00:00",
   "plan_observations": {
     "blocking": 0,
     "reviewed-external-owner": 6,
-    "staged-skill-proposal": 39,
-    "total": 45
+    "staged-skill-proposal": 44,
+    "total": 50
   },
   "result": {
     "decision": "agent-files-and-governance-verified",

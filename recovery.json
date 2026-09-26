@@ -201,7 +201,6 @@
             "mcp_servers.chrome-devtools.args",
             "mcp_servers.chrome-devtools.command",
             "mcp_servers.chrome-devtools.connect_timeout",
-            "mcp_servers.chrome-devtools.enabled",
             "mcp_servers.chrome-devtools.env",
             "mcp_servers.claude-context.args",
             "mcp_servers.claude-context.command",

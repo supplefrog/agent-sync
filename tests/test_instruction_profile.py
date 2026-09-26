@@ -46,7 +46,9 @@ class InstructionProfileTests(unittest.TestCase):
     def test_current_profile_is_bounded_and_excludes_retired_delta(self) -> None:
         report = self.verify(self.profile)
         self.assertEqual("artifact-only", report["verification_mode"])
-        self.assertEqual("gpt-6-astra", report["model"])
+        self.assertEqual("gpt-6-sol", report["model"])
+        self.assertEqual("gpt-6-astra", report["hosts"]["omp"]["model"])
+        self.assertEqual("medium", report["hosts"]["hermes"]["reasoning"])
         self.assertEqual("openai-codex", report["provider"])
         declared = json.loads(self.profile.read_text(encoding="utf-8"))
         for host, settings in declared["hosts"].items():
@@ -119,7 +121,7 @@ class InstructionProfileTests(unittest.TestCase):
 
     def test_current_profile_rejects_model_selector_drift(self) -> None:
         def mutate(data):
-            data["target"]["model"] = "fabricated-current-model"
+            data["hosts"]["hermes"]["model"] = "fabricated-current-model"
 
         with self.assertRaisesRegex(profile_tool.ProfileError, "selector mismatch"):
             self.verify(self.mutated_profile(mutate))

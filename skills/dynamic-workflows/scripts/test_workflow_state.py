@@ -1211,6 +1211,8 @@ class WorkflowStateTests(unittest.TestCase):
             candidate = next(item for item in catalog["candidates"]
                              if item["id"] == "hermes-sol-low-inline")
             catalog["candidates"] = [candidate]
+            # This synthetic catalog contains only the lifecycle route.
+            catalog.pop("task_preferences", None)
             now = datetime.now(timezone.utc)
             candidate["availability"]["observed_at"] = (now - timedelta(days=1)).isoformat()
             candidate["availability"]["valid_until"] = (now + timedelta(days=1)).isoformat()

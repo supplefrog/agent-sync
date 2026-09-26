@@ -4,16 +4,16 @@
   "knowledge_ledger": "../evidence/findings.json",
   "hosts": {
     "hermes": {
-      "cli_version": "0.21.4",
-      "source_revision": "9fe737aef2dd18a351dff3c4de608d63879a6524 with reviewed local changes; not a pristine revision",
+      "cli_version": "0.21.5+2453.gd0288be.dirty",
+      "source_revision": "d0288be5b3330d2442e3907185b8e9d0958297bb with reviewed local changes; not a pristine revision",
       "sources": [
         "https://hermes-agent.nousresearch.com/docs/",
         "https://github.com/NousResearch/hermes-agent"
       ]
     },
     "codex": {
-      "cli_version": "0.155.0-alpha.16.4",
-      "source_revision": "unknown; installed binary reports 0.155.0-alpha.16.4",
+      "cli_version": "0.158.0-alpha.2.1",
+      "source_revision": "unknown; installed binary reports 0.158.0-alpha.2.1",
       "sources": [
         "https://developers.openai.com/codex/",
         "https://github.com/openai/codex"
@@ -47,7 +47,7 @@
         "surfaces/core.md",
         "contracts/instruction-surfaces.json",
         "contracts/instruction-units.json",
-        "profiles/gpt-6-astra-openai-codex.json",
+        "profiles/current-observed-defaults.json",
         "recovery/current/hosts/hermes/SOUL.md",
         "recovery/current/hosts/codex/AGENTS.md"
       ],

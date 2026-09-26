@@ -59,7 +59,7 @@ Distinguish execution completion, artifact acceptance and release authorization 
 For each broader decision scope, assert all three boundaries through externally observable behavior:
 
 1. the immutable contract explicitly declares the broader scope;
-2. the decision record contains every required evidence lane, not merely a passing child receipt. For option selection, check at least baseline, defect detection, execution/context cost, maintenance burden, Windows portability, host neutrality, infrastructure cost, and rollback;
+2. the decision record contains every evidence lane required by the immutable contract, not merely a passing child receipt. For option selection, derive comparison dimensions from the user's outcome, constraints and material risks; platform portability or host neutrality is required only when part of that scope. Report a material gap in the contract rather than silently adding or dropping a required lane;
 3. promotion or authorization remains blocked when either the scope declaration or any required lane is absent, even if the terminal child artifact itself passes.
 
 Use a black-box acceptance check with a legitimate passing child receipt submitted to a broader scope while lanes are omitted. The expected result is narrow-scope recognition without broader acceptance or promotion. Add a falsification matrix that removes one prerequisite at a time; any broader acceptance or promotion in those variants is a load-bearing failure. External-framework claims do not fill local evidence lanes unless the contract explicitly admits and locally verifies superior evidence.

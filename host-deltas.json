@@ -3,7 +3,7 @@
   "entries": [
     {
       "category": "runtime",
-      "desired_state": "Hermes Agent 0.21.4 installed",
+      "desired_state": "Hermes Agent 0.21.5 installed",
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-runtime",
@@ -16,7 +16,7 @@
           "hermes",
           "--version"
         ],
-        "contains": "0.21.4",
+        "contains": "0.21.5",
         "kind": "command"
       },
       "redaction": "metadata-only",
@@ -26,11 +26,11 @@
         "reference": "install the declared Hermes runtime"
       },
       "source_identity": "prerequisite:install the declared Hermes runtime",
-      "version_or_hash": "version:0.21.4"
+      "version_or_hash": "version:0.21.5"
     },
     {
       "category": "runtime",
-      "desired_state": "Codex CLI 0.155.0-alpha.16.4 installed",
+      "desired_state": "Codex CLI 0.158.0-alpha.2.1 installed",
       "enablement": "installed",
       "host": "codex",
       "id": "codex-runtime",
@@ -43,7 +43,7 @@
           "codex",
           "--version"
         ],
-        "contains": "0.155.0-alpha.16.4",
+        "contains": "0.158.0-alpha.2.1",
         "kind": "command"
       },
       "redaction": "metadata-only",
@@ -53,7 +53,7 @@
         "reference": "install the declared Codex runtime"
       },
       "source_identity": "prerequisite:install the declared Codex runtime",
-      "version_or_hash": "version:0.155.0-alpha.16.4"
+      "version_or_hash": "version:0.158.0-alpha.2.1"
     },
     {
       "category": "runtime",
@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "settings",
@@ -126,7 +126,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "settings",
@@ -149,7 +149,7 @@
         "reference": "omp:settings"
       },
       "source_identity": "recovery-artifact:omp:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "instructions",
@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "instructions",
@@ -273,7 +273,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "hook",
@@ -348,7 +348,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "plugin",
@@ -371,7 +371,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "plugin",
@@ -422,7 +422,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "mcp-tool",
@@ -445,7 +445,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "mcp-tool",
@@ -468,7 +468,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "native-skill",
@@ -491,7 +491,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:73951f163f47bcc8e30e30caa1cb2915b57d245d0e9e411048f51e27a69dd321"
+      "version_or_hash": "sha256:b96aa883f3f4537ccdf3566ef75dafae94b62235536781ffd18d1950d0ea48ca"
     },
     {
       "category": "native-skill",
@@ -514,7 +514,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:73951f163f47bcc8e30e30caa1cb2915b57d245d0e9e411048f51e27a69dd321"
+      "version_or_hash": "sha256:b96aa883f3f4537ccdf3566ef75dafae94b62235536781ffd18d1950d0ea48ca"
     },
     {
       "category": "native-skill",
@@ -537,7 +537,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:73951f163f47bcc8e30e30caa1cb2915b57d245d0e9e411048f51e27a69dd321"
+      "version_or_hash": "sha256:b96aa883f3f4537ccdf3566ef75dafae94b62235536781ffd18d1950d0ea48ca"
     },
     {
       "category": "curator",
@@ -560,7 +560,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:be645fe39fd03bc1475bea89dceec146d206990b3710b910e1d27030585ec906"
+      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
     },
     {
       "category": "curator",
@@ -756,16 +756,16 @@
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-native-guidance-prompt-builder",
-      "owner": "Hermes native skill selection",
+      "owner": "Hermes native skill selection and execution calibration",
       "prerequisites": [
-        "Native Hermes HEAD 9fe737aef2dd18a351dff3c4de608d63879a6524 and exact baseline hashes match the current-selector manifest",
+        "Native Hermes HEAD d0288be5b3330d2442e3907185b8e9d0958297bb and exact baseline hashes match the current-selector manifest",
         "Preserve LF bytes and verify apply/reverse on a disposable copy before manual restoration",
         "Do not overwrite unrelated native changes or restart active sessions"
       ],
       "readback": {
         "kind": "file",
         "path": "hermes:hermes-agent/agent/prompt_builder.py",
-        "sha256": "9325b3b18c855241e72293a708ad1538df1f01eabeef6bf77e2d7b222fa43a87"
+        "sha256": "5f30637977fddbb6c9462cd18f8e8b5b0bc086918f94f8739a1c46fc99b1bdd1"
       },
       "redaction": "public-artifact",
       "required": false,
@@ -774,7 +774,7 @@
         "reference": "integrations/hermes/native-patches/guidance/current-selector/README.md"
       },
       "source_identity": "repository:integrations/hermes/native-patches/guidance/current-selector/manifest.json",
-      "version_or_hash": "sha256:5c9319531414e806a1fdbbc9388771227905adf8ef4f18fc787b1cdc6c87c533"
+      "version_or_hash": "sha256:828bba8a71fa9397f452e07b18b9dc5d5568bb53447473f874d1b2e610ec1512"
     },
     {
       "category": "runtime",

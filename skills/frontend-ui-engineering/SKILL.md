@@ -19,7 +19,7 @@ Before choosing or delegating a visual direction, load [references/personal-desi
 
 The current request and explicitly approved references lead. Preserve a coherent existing product system unless redesign is authorized; missing `DESIGN.md` does not erase the identity already present in the UI, assets, and code. Refinement fixes the named weakness, not the whole visual identity. An audit returns evidence and recommendations without editing.
 
-When taste is unresolved for a new or redesigned surface, use [references/taste-selection.md](references/taste-selection.md) for inspiration discovery or requested visual comparisons before substantial implementation. Let the user select or combine qualities without choosing an entire site's style.
+When a material taste decision is unresolved, use [references/taste-selection.md](references/taste-selection.md) to present a viewable visual comparison by default before substantial implementation—not a plain verbal preference question. The user can select or combine qualities without choosing an entire site's style. Delegated selection, an explicit request to skip comparisons, or routine repairs within an approved system may proceed without a comparison.
 
 The design language is open-ended: combine useful influences from reviewed skills, other sources, and original design decisions. The sources are evidence, not an allowed-style menu; coherence describes the finished interface, not allegiance to one lineage. Tune relevant dimensions to the user's expressed taste—density, type, palette, geometry, composition, texture, imagery or motion. These are adjustable dimensions, not a preset or questionnaire. Do not flatten personal taste into a universal “clean/minimal” policy.
 
