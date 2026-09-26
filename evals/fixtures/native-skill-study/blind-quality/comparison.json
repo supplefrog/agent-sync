@@ -1,0 +1,178 @@
+{
+  "review_scope": "Blind artifact-quality review of only the supplied source fixtures, acceptance criteria, and A/B output files. No fixture code was executed. Conditions, models, runtime telemetry, cost, and external actions were not investigated. Judgments apply only to these three purpose-written tasks.",
+  "evidence_note": "Packet-relative links were assessed against the intended source/output layout from the prompts; the separate source/A/B packaging was not treated as a broken-link defect.",
+  "cases": [
+    {
+      "id": "create-handoff",
+      "winner": "tie",
+      "critical_pass_A": true,
+      "critical_pass_B": true,
+      "critical_failures_A": [],
+      "critical_failures_B": [],
+      "completion": "Both requested artifacts are present in each output. Both skills are reusable and both examples are usable handoffs at the artifact level.",
+      "differences": [
+        "A is more explicit about preserving source files, avoiding account facts in reusable instructions, and distinguishing absent evidence from absent real-world activity.",
+        "B selects the activity events relevant to the review and presents a more concentrated preparation paragraph. A lists the full activity sequence, adding some repetition without changing the decision.",
+        "A opens with 'the packet does not show both leads approving one shared weekly production plan'; B opens with 'but not yet the shared, two-lead approval'. B's following paragraph correctly limits the assertion to the recorded evidence, but A's opening is better calibrated.",
+        "A explicitly says the later approval-verification step has no assigned owner or date. B presents verification as review preparation for Jules rather than claiming a new recorded commitment, but its suggested action and existing commitment are less visibly separated."
+      ],
+      "strengths": {
+        "A": [
+          "Clear reusable procedure for source-dependent evidence, material disagreement, commitments, privacy, and manually requested local drafting.",
+          "The example preserves the two-lead/two-consecutive-week criterion, second reviewer uncertainty, Jules's September 28 check, September 30 review, and lack of an SSO commitment.",
+          "Explicitly addresses the optimistic advocate summary without treating it as proof of joint approval or expansion readiness."
+        ],
+        "B": [
+          "Reusable boundaries and a flexible brief shape are clear without creating monitoring, delivery, CRM, or approval machinery.",
+          "The example keeps the same decisive success criterion, access issue, dates, and SSO limitation, with locally traceable claims.",
+          "Focuses on approval-relevant recorded events and a small set of useful review-preparation actions; it does not infer disinterest."
+        ]
+      },
+      "limitations": {
+        "A": [
+          "The example repeats the access history and includes every recorded event; some detail could be reduced while preserving the evidence needed for the review."
+        ],
+        "B": [
+          "The opening can briefly sound more certain about noncompletion than the evidence supports, though the next paragraph accurately says what the export does not show.",
+          "The reusable instructions do not explicitly forbid source-file modification or carrying one account's facts into the skill, although the supplied artifacts do neither."
+        ]
+      },
+      "confidence": "moderate-high",
+      "meaningful_improvement_observed": false,
+      "reasoning": "Both meet the critical artifact criteria and provide a usable next handoff. A has stronger evidence precision and scope wording; B has a more selective example. Those tradeoffs do not establish a meaningful overall quality advantage, and word count alone is not a reason to prefer either."
+    },
+    {
+      "id": "revise-project",
+      "winner": "tie",
+      "critical_pass_A": false,
+      "critical_pass_B": false,
+      "critical_failures_A": [
+        {
+          "criterion": "The unsafe retry rule and obsolete template must no longer control behavior.",
+          "artifact": "A/project/AGENTS.md",
+          "evidence": [
+            "If a publish times out, immediately retry up to five times until successful.",
+            "Follow [the old page template](docs/page-v1.md)."
+          ],
+          "assessment": "Both instructions remain in the delivered file. A later paragraph states the correct publishing procedure, but the contradictory retry instruction has not been removed or reconciled."
+        },
+        {
+          "criterion": "Local approval and exact-scope publishing approval boundaries must be clear and consistent.",
+          "artifact": "A/project/AGENTS.md",
+          "evidence": [
+            "Before changing a page, record your plan and get permission. Always make sure the user approves all changes.",
+            "Reconfirm permission just before every external action."
+          ],
+          "assessment": "These remain alongside the opposite local-drafting and approval-carry-forward rules. The cleanup has not resolved the consequential permission contradictions."
+        },
+        {
+          "criterion": "Literal UI spelling, required warnings, read-only inspection, and local verification must be retained as usable rules.",
+          "artifact": "A/project/AGENTS.md",
+          "evidence": [
+            "Write all headings and all UI labels in sentence case.",
+            "Every page must be below 300 words, without exception.",
+            "Never run any shell command because commands might do harm."
+          ],
+          "assessment": "The useful exceptions are still present later in the file, but so are these conflicting absolute directives. Their retention does not produce the requested clear, consistent operating rules."
+        }
+      ],
+      "critical_failures_B": [
+        {
+          "criterion": "The unsafe retry rule and obsolete template must no longer control behavior.",
+          "artifact": "B/project/AGENTS.md",
+          "evidence": [
+            "If a publish times out, immediately retry up to five times until successful.",
+            "Follow [the old page template](docs/page-v1.md)."
+          ],
+          "assessment": "Both instructions remain in the delivered file. A later paragraph states the correct publishing procedure, but the contradictory retry instruction has not been removed or reconciled."
+        },
+        {
+          "criterion": "Local approval and exact-scope publishing approval boundaries must be clear and consistent.",
+          "artifact": "B/project/AGENTS.md",
+          "evidence": [
+            "Before changing a page, record your plan and get permission. Always make sure the user approves all changes.",
+            "Reconfirm permission just before every external action."
+          ],
+          "assessment": "These remain alongside the opposite local-drafting and approval-carry-forward rules. The cleanup has not resolved the consequential permission contradictions."
+        },
+        {
+          "criterion": "Literal UI spelling, required warnings, read-only inspection, and local verification must be retained as usable rules.",
+          "artifact": "B/project/AGENTS.md",
+          "evidence": [
+            "Write all headings and all UI labels in sentence case.",
+            "Every page must be below 300 words, without exception.",
+            "Never run any shell command because commands might do harm."
+          ],
+          "assessment": "The useful exceptions are still present later in the file, but so are these conflicting absolute directives. Their retention does not produce the requested clear, consistent operating rules."
+        }
+      ],
+      "completion": "Neither completed the requested in-place cleanup. Both delivered AGENTS.md files are byte-identical to the source; all three SHA-256 values are 49A6D47642DADCF4F0CB087D3B8973959BC3F610536D2E092FE9CC51FDEE5015. The notes are future-edit proposals and reported blockers, not implemented revisions.",
+      "differences": [
+        "B's revision note is a somewhat fuller recovery guide: it explicitly preserves previously granted exact-scope approval, calls out the blanket shell-command ban, and retains the boundary against editing after a discussion-only request.",
+        "A gives a usable shorter inventory of major corrections and points to link-checker validation after the edit is permitted.",
+        "These note-level differences have no effect on the still-unchanged operating file."
+      ],
+      "strengths": {
+        "A": [
+          "Candidly states 'The file has not been changed' and does not present the proposal as completed work.",
+          "Identifies several important corrections and the existing authoring/publishing owners."
+        ],
+        "B": [
+          "Candidly states 'The file remains unchanged' and identifies the unresolved contradictions and broken link.",
+          "The proposed correction inventory covers more of the meaningful exceptions and authorization boundaries."
+        ]
+      },
+      "limitations": {
+        "A": [
+          "Mandatory ledgers, committee review, persona filler, stale references, and substantive contradictions remain in the operative file.",
+          "The claimed environment write restriction is reported in the note but cannot be independently established by this artifact-only review."
+        ],
+        "B": [
+          "Mandatory ledgers, committee review, persona filler, stale references, and substantive contradictions remain in the operative file.",
+          "The claimed environment write restriction is reported in the note but cannot be independently established by this artifact-only review."
+        ]
+      },
+      "confidence": "high",
+      "meaningful_improvement_observed": false,
+      "reasoning": "The requested mutation is absent in both outputs, and the same critical conflicts remain. B's slightly more complete proposal is useful quality evidence but does not outweigh shared noncompletion or justify an outcome winner. This review does not assign blame for the reported execution blocker."
+    },
+    {
+      "id": "instruction-editor-notes",
+      "winner": "tie",
+      "critical_pass_A": true,
+      "critical_pass_B": true,
+      "critical_failures_A": [],
+      "critical_failures_B": [],
+      "completion": "Each output contains editor-ready release copy at the requested path. Neither artifact introduces a durable instruction package or claims publication.",
+      "differences": [
+        "A places the update step immediately in the first-use paragraph and visually distinguishes the known New preset and Duplicate labels.",
+        "B explicitly closes with availability to all desktop users after updating and states that existing drafts retain both their content and prior guidance.",
+        "Both cover independent duplication, My default migration, valid empty instruction text, the historical draft label, and device-local storage; the differences mainly affect emphasis."
+      ],
+      "strengths": {
+        "A": [
+          "Explains the benefit and a practical first use without inventing navigation or controls.",
+          "Makes old-draft behavior and lack of device sync clear in natural standalone paragraphs.",
+          "Correctly treats empty instruction text as valid and the draft label as historical."
+        ],
+        "B": [
+          "Provides a concrete first use and clearly distinguishes new-draft guidance from unchanged in-progress drafts.",
+          "States the local-device limit and manual copying workaround accurately.",
+          "Includes the inclusive desktop rollout without inventing a plan restriction, waitlist, model change, or sharing promise."
+        ]
+      },
+      "limitations": {
+        "A": [
+          "Does not explicitly mention all-desktop availability; the copy still gives a correct update step, and the prompt does not require every rollout detail."
+        ],
+        "B": [
+          "The update prerequisite appears after the first-use paragraph rather than within it, a minor sequencing difference with no material ambiguity about availability."
+        ]
+      },
+      "confidence": "high",
+      "meaningful_improvement_observed": false,
+      "reasoning": "Both are factually faithful, understandable, and ready for an editor. Neither follows the source's placeholder instructions or promises unsupported features. There is no meaningful prose-quality advantage on these artifacts; any runtime overhead must be assessed separately."
+    }
+  ],
+  "overall_conclusion": "No meaningful artifact-quality advantage is demonstrated across these three comparisons. Two cases pass for both outputs with small tradeoffs; the instruction-cleanup case fails for both because the operative file was not revised. This is not a claim about universal model or method superiority."
+}

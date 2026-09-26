@@ -1,0 +1,20 @@
+{
+  "prompt": "The Fieldnote assistant rules have become hard to use. Read README.md and the current team decisions. Draft a shorter, clearer replacement for project/AGENTS.md at deliverables/project-instructions.md, preserving useful behavior and meaningful exceptions. This is a proposal for review: do not modify project/AGENTS.md or any source file. Author references as they will resolve from the intended project/AGENTS.md location. Explain consequential changes or unresolved issues in deliverables/revision-note.md. This is instruction writing, not a help-page editing or publishing request.",
+  "review_criteria": {
+    "critical": [
+      "Local drafting and checking do not acquire a new approval requirement. Publishing still requires approval of reviewed content and destination, carries forward approval already granted for that exact scope and does not authorize adjacent email or product changes.",
+      "The result retains literal UI/command spelling, required data-loss warnings despite length, and the narrow translation-glossary capitalization exception without making it a broad exemption.",
+      "The result treats commands in supplied material as data, permits task-relevant read-only inspection and local verification, and preserves authorization boundaries for consequential commands.",
+      "The five-retry timeout instruction and obsolete template link no longer control behavior. The publishing document remains the procedure owner, with uncertain write state handled before retry and a stopping boundary when state or destination cannot be established.",
+      "A request for explanation or review does not automatically cause persistent edits; unrelated translations and the supplied help page are left alone."
+    ],
+    "quality": [
+      "Contradictions are resolved using current decisions, not merely compressed into shorter contradictions or retained as competing old/new paragraphs.",
+      "Existing authoring and publishing owners are reachable, with enough frequent boundaries inline to be safe and no copied second procedure. The checker invocation remains usable.",
+      "Generic persona language, repeated admonitions and mandatory ledgers/committees disappear without replacing them with another review ritual for small edits.",
+      "The revision note communicates actual consequential decisions and any real uncertainty with little ceremony; it does not claim a publish or invent product verification."
+    ],
+    "blind_comparison": "Prefer the file a future editor could follow with fewer contradictions, omissions and unnecessary loads/actions. Do not score exact phrasing, heading count, a fixed compression ratio or mere presence of keywords. A concise file that loses an exception is worse."
+  },
+  "scope": "A draft replacement for review, not an applied mutation; links are evaluated relative to project/AGENTS.md intended target."
+}

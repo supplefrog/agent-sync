@@ -1,0 +1,87 @@
+{
+  "checks": [
+    {
+      "case": "create-handoff",
+      "check": "missing outputs fail",
+      "passed": true
+    },
+    {
+      "case": "create-handoff",
+      "check": "invariant-valid but semantically ungraded output passes",
+      "passed": true,
+      "result": {
+        "passed": 10,
+        "failed": 0,
+        "failures": []
+      }
+    },
+    {
+      "case": "create-handoff",
+      "check": "source mutation fails",
+      "passed": true
+    },
+    {
+      "case": "create-handoff",
+      "check": "broken output link fails",
+      "passed": true
+    },
+    {
+      "case": "instruction-editor-notes",
+      "check": "missing outputs fail",
+      "passed": true
+    },
+    {
+      "case": "instruction-editor-notes",
+      "check": "invariant-valid but semantically ungraded output passes",
+      "passed": true,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "failures": []
+      }
+    },
+    {
+      "case": "instruction-editor-notes",
+      "check": "source mutation fails",
+      "passed": true
+    },
+    {
+      "case": "instruction-editor-notes",
+      "check": "broken output link fails",
+      "passed": true
+    },
+    {
+      "case": "instruction-editor-notes",
+      "check": "unrequested durable instruction output fails",
+      "passed": true
+    },
+    {
+      "case": "revise-project",
+      "check": "missing outputs fail",
+      "passed": true
+    },
+    {
+      "case": "revise-project",
+      "check": "invariant-valid but semantically ungraded output passes",
+      "passed": true,
+      "result": {
+        "passed": 15,
+        "failed": 0,
+        "failures": []
+      }
+    },
+    {
+      "case": "revise-project",
+      "check": "source mutation fails",
+      "passed": true
+    },
+    {
+      "case": "revise-project",
+      "check": "broken output link fails",
+      "passed": true
+    }
+  ],
+  "passed": 13,
+  "failed": 0,
+  "scope": "Oracle behavior only; no model quality trials or semantic assertions."
+}

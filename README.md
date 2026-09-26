@@ -50,7 +50,9 @@ python tools/reconcile.py plan
 python tools/reconcile.py sync
 ```
 
-Repeated `--adopt OWNER` and `--include FILE` arguments select admitted portable owners and exact reviewed publication files; unrelated work stays pending. `--include` grants no deployment authority. Without selectors—or with `--full`—sync retains broad allowlisted recovery capture. Artifact-scoped native capture remains review-required; use a separately authorized broad recovery operation. `--no-capture-recovery` keeps native settings outside the operation. Rerun the same sync to resume checked work after a failure. See the [reconciliation contract](docs/architecture.md#unified-reconciliation) for dependency, recovery, and verification limits.
+Repeated `--adopt OWNER` and `--include FILE` arguments select admitted portable owners and exact reviewed publication files; unrelated work stays pending. `--include` grants no deployment authority. Without selectors—or with `--full`—sync retains broad allowlisted recovery capture. Repeated `--capture-artifact HOST:ID` selects exact reviewed native artifacts from an existing valid full snapshot under the same policy. Only selected roots are read and captured; unselected snapshot content is preserved. If shared recovery metadata contains unrelated changes, explicitly review and include the whole shared file before publication. `--no-capture-recovery` keeps native settings outside the operation. Rerun the same sync to resume checked work after a failure. See the [reconciliation contract](docs/architecture.md#unified-reconciliation) for dependency, recovery, and verification limits.
+
+Native evaluation now supports isolated Hermes skill-catalog and tool-bearing artifact probes through the existing evaluation owners. The [remaining-outcomes receipt](evals/results/remaining-outcomes-20260927.json) records the narrow comparison and mechanism evidence; it does not establish a quality gain, Codex readiness, or whole-fleet parity.
 
 This is an explicit operation, not a background watcher. Editing a file does not automatically publish it.
 

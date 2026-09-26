@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:92ebde734f0f514b7bbe206f75afeee5eee707f38506267d74c1796dcc46cfba"
     },
     {
       "category": "settings",
@@ -126,7 +126,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:419095b29b2bd8dfb2b25e58888f133203bd8d3fac9c9f85eaec16dbd082f7f9"
     },
     {
       "category": "settings",
@@ -149,7 +149,7 @@
         "reference": "omp:settings"
       },
       "source_identity": "recovery-artifact:omp:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:bb8e76ee1784d6ae2639c6ec6f43e41d82bc50e7b4c4ccb5eff22345f5f87543"
     },
     {
       "category": "instructions",
@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:acf90195dee69dde4d96533ffc29dcf3be01245e944e69b9986ce511687681d6"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:ac46ce1ce3f4f83bbe848b397cc53d924596396dc5528f6881ecc25c8125fb9e"
     },
     {
       "category": "instructions",
@@ -273,7 +273,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:419095b29b2bd8dfb2b25e58888f133203bd8d3fac9c9f85eaec16dbd082f7f9"
     },
     {
       "category": "hook",
@@ -302,7 +302,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:0cdcdd7ef8db593ddc790128a8c50e2fcd1a64456d533ff587c173b2c4f97502"
+      "version_or_hash": "sha256:26eaccb7c7395cbb78e55715c556a4fe04b2108291b6b3be1e4f1e8301588d8c"
     },
     {
       "category": "hook",
@@ -325,7 +325,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:0cdcdd7ef8db593ddc790128a8c50e2fcd1a64456d533ff587c173b2c4f97502"
+      "version_or_hash": "sha256:26eaccb7c7395cbb78e55715c556a4fe04b2108291b6b3be1e4f1e8301588d8c"
     },
     {
       "category": "plugin",
@@ -348,7 +348,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:92ebde734f0f514b7bbe206f75afeee5eee707f38506267d74c1796dcc46cfba"
     },
     {
       "category": "plugin",
@@ -371,7 +371,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:419095b29b2bd8dfb2b25e58888f133203bd8d3fac9c9f85eaec16dbd082f7f9"
     },
     {
       "category": "plugin",
@@ -422,7 +422,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:92ebde734f0f514b7bbe206f75afeee5eee707f38506267d74c1796dcc46cfba"
     },
     {
       "category": "mcp-tool",
@@ -445,7 +445,7 @@
         "reference": "codex:settings"
       },
       "source_identity": "recovery-artifact:codex:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:419095b29b2bd8dfb2b25e58888f133203bd8d3fac9c9f85eaec16dbd082f7f9"
     },
     {
       "category": "mcp-tool",
@@ -468,7 +468,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:f04a0277d5f25be59fe20800bf09f569767abba00446f013f133b9771eec023b"
     },
     {
       "category": "native-skill",
@@ -491,7 +491,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:93d3cd8eda9266fc566c9555068586216a023442508ff8da96013eb5c3bdb5e8"
+      "version_or_hash": "sha256:6b179f6a64c820ac152f4a94846f88d92ba02ec4460f55fe7bd710f5215384c5"
     },
     {
       "category": "native-skill",
@@ -514,7 +514,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:93d3cd8eda9266fc566c9555068586216a023442508ff8da96013eb5c3bdb5e8"
+      "version_or_hash": "sha256:6b179f6a64c820ac152f4a94846f88d92ba02ec4460f55fe7bd710f5215384c5"
     },
     {
       "category": "native-skill",
@@ -537,7 +537,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:93d3cd8eda9266fc566c9555068586216a023442508ff8da96013eb5c3bdb5e8"
+      "version_or_hash": "sha256:6b179f6a64c820ac152f4a94846f88d92ba02ec4460f55fe7bd710f5215384c5"
     },
     {
       "category": "curator",
@@ -560,7 +560,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:6a84eee9242e514e7ce9545b93451f2058ee5bc140ae19b9faf82bdd9a7ad465"
+      "version_or_hash": "sha256:92ebde734f0f514b7bbe206f75afeee5eee707f38506267d74c1796dcc46cfba"
     },
     {
       "category": "curator",
@@ -583,7 +583,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:0cdcdd7ef8db593ddc790128a8c50e2fcd1a64456d533ff587c173b2c4f97502"
+      "version_or_hash": "sha256:26eaccb7c7395cbb78e55715c556a4fe04b2108291b6b3be1e4f1e8301588d8c"
     },
     {
       "category": "curator",
@@ -606,7 +606,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:0cdcdd7ef8db593ddc790128a8c50e2fcd1a64456d533ff587c173b2c4f97502"
+      "version_or_hash": "sha256:26eaccb7c7395cbb78e55715c556a4fe04b2108291b6b3be1e4f1e8301588d8c"
     },
     {
       "category": "plugin",

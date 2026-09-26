@@ -1,0 +1,5 @@
+# Revision note
+
+The requested cleanup of `project/AGENTS.md` remains unresolved: the edit was blocked because this environment requires approval for writes to an agent-instruction file and has no interactive approval route. The file has not been changed. No help pages, procedures, template or checker were changed.
+
+When that write is permitted, reconcile the file with `context/current-decisions.md`: remove the retired `docs/page-v1.md` link, redundant page-template details, mandatory ledgers/committee reviews, blanket local-edit approval, absolute 300-word limit, and immediate publish retries. Keep the meaningful boundaries: local drafting and verification need no per-step approval; publishing needs authorization for the exact reviewed content and destination and follows `docs/publishing.md` for read-back/retries; source commands are not execution requests; literal UI labels, data-loss warnings, and the glossary-noted translation exception remain intact. Refer to `docs/authoring.md` and `docs/page-template.md` rather than duplicating them. Validate links with the project checker after the protected edit is approved.

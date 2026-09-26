@@ -22,6 +22,8 @@ Before fleet apply, bootstrap also rejects a retired skill or an admitted skill 
 
 Existing instruction or hook files are never replaced silently. A differing text file is a conflict. `--force-text` is an explicit operator decision after reviewing the diff.
 
+Exact native recovery also supports repeated `--artifact HOST:ID` on `snapshot`, `diff`, and `restore`. Each identity must already exist in the reviewed policy; empty, duplicate, wildcard, and path selections fail. Only selected host roots are required. Scoped capture first verifies the entire existing snapshot and preserves unselected records and content; it cannot create a sparse initial snapshot. Full capture and restore remain the default.
+
 ## What is stored
 
 `recovery.json` is the allowlist. `recovery/current/manifest.json` binds every committed artifact to its target, strategy, byte count, SHA-256 digest, and policy digest. `host-deltas.json`, validated by `contracts/host-deltas.schema.json`, is the typed inventory of intentional native differences and recovery outcomes.
@@ -42,6 +44,8 @@ Config restore is a deep merge. Only allowlisted paths are written, while unknow
 Portable path markers use `{{agent-signal:HOME}}`, `{{agent-signal:HERMES_HOME}}`, `{{agent-signal:CODEX_HOME}}`, `{{agent-signal:OMP_HOME}}`, and `{{agent-signal:AGENT_SIGNAL_ROOT}}`. They are intentionally distinct from shell variables such as `${HOME}`, so source code and hook patterns are not rewritten accidentally.
 
 Codex Desktop's `notify` executable is not portable declarative state: its path contains a generated runtime-cache build identifier. It is excluded from capture and the receiving Desktop installation owns it. Restore leaves any existing target notification setting untouched.
+
+Recovery-artifact host-delta bindings use the selected artifact digest rather than the aggregate snapshot-manifest digest. The existing verified legacy binding can migrate only while it still matches the current snapshot; stale bindings fail. Exact capture refreshes selected bindings while preserving unrelated entries.
 
 Each host-delta entry records its host, surface, owner, desired state, source identity, version or artifact hash, enablement, external prerequisites, restore method, redaction policy, and deterministic readback. Command readbacks are selected from a fixed Agent Sync allowlist; the manifest cannot introduce executable argv. Fleet binding is derived from tracked `registry.json` plus admitted canonical skill trees, so a fresh clone does not need generated `render/` output before host-delta validation. `python tools/host_deltas.py verify` validates the schema, checks recovery/fleet bindings, and emits one of these statuses:
 
@@ -78,14 +82,17 @@ python tools/public_check.py
 git diff -- recovery.json recovery/current contracts/recovery*.json
 ```
 
-`diff` must report no changes and no conflicts against the source machine after capture. The manifest is written last, stale files are removed only from its previous managed inventory, and no persistent backup directory is created. When capture runs through `python tools/reconcile.py sync --capture-recovery`, the recovery snapshot and every host-delta recovery-artifact binding are refreshed and validated in the same transaction.
+For exact reviewed recovery, use repeated `--artifact HOST:ID` with `snapshot`, `diff`, or `restore`, and repeated `--capture-artifact HOST:ID` with `reconcile.py sync`. Verify a full existing snapshot under the same policy first; scoped capture cannot initialize a sparse snapshot. The corresponding selected `diff` must be clean; unrelated live drift can remain pending. Shared manifest or host-delta files with unrelated changed fields require explicit whole-file publication review and `--include`; artifact selection does not authorize those unrelated fields.
+
+For full capture, `diff` must report no changes and no conflicts against the source machine after capture. The manifest is written last, stale files are removed only from its previous managed inventory, and no persistent backup directory is created. When capture runs through `python tools/reconcile.py sync --capture-recovery`, the recovery snapshot and every host-delta recovery-artifact binding are refreshed and validated in the same transaction.
 
 ## Restore safety
 
 - Dry-run is the default.
 - All config and text conflicts are preflighted before the first mutation.
 - Each file write is atomic.
-- If a later target-file write fails, the file-restore phase rolls back every earlier target it changed.
+- Mutation holds cooperative OS path locks on the snapshot and selected roots, shared with fleet and reconciliation. Locks release on process death; they are not a compare-and-swap guarantee against arbitrary writers. Target identity is checked during preflight and immediately before each write.
+- If a later target-file write fails, rollback restores only files whose identity and bytes still match this operation. Concurrent edits survive; incomplete rollback retains original bytes and conflict evidence in a reported temporary backup.
 - Config restore preserves non-allowlisted state.
 - Text restore accepts an absent target, an equal target, or an exact reviewed stock-text `replace_sha256`; unrelated differences remain conflicts.
 - Fleet apply rejects unmanaged same-name collisions and modified managed skills.

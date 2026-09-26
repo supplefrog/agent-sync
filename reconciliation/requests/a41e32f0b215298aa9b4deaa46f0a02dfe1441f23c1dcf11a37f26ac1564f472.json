@@ -1,0 +1,72 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "96e6daca0609720ad05a2a5a7cc7c7835aa157619cd2b895dd90e087be4bafdf",
+      "before_sha256": "96e6daca0609720ad05a2a5a7cc7c7835aa157619cd2b895dd90e087be4bafdf",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "86d1b6f8373a43d9d5a3892e9806b35b13aab68f0d754e2ed7902f0a7ba7b57a",
+      "before_sha256": "86d1b6f8373a43d9d5a3892e9806b35b13aab68f0d754e2ed7902f0a7ba7b57a",
+      "owner": "skill-creator",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py cross-agent-surface-engineering skill-creator",
+    "python.exe instruction_profile.py --repo source --artifact-only",
+    "python.exe audit.py check --repo source --structural"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "cross-agent-surface-engineering",
+    "skill-creator"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "skipped"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "a41e32f0b215298aa9b4deaa46f0a02dfe1441f23c1dcf11a37f26ac1564f472",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

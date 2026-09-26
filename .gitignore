@@ -30,3 +30,5 @@ skills/gsd-*/
 Thumbs.db
 .vscode/
 .idea/
+
+.agent-signal-path-*.lock

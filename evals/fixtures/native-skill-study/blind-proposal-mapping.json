@@ -1,0 +1,10 @@
+{
+  "A": {
+    "arm": "shared-owner",
+    "job": "dc99c8c7add041a193f48134b9badc18"
+  },
+  "B": {
+    "arm": "absent-target",
+    "job": "1d0a7b6e56ee4266ba26d1895afc1b2a"
+  }
+}

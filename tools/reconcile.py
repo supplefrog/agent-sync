@@ -12,6 +12,9 @@ import subprocess
 import sys
 import tempfile
 import uuid
+import time
+import contextvars
+from functools import wraps
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -300,15 +303,58 @@ def _backup_key(label: str) -> str:
     return hashlib.sha256(label.encode("utf-8")).hexdigest()[:16]
 
 
+_check_measurements = contextvars.ContextVar("reconciliation_measurements", default=None)
+
+
+def _measure_completion(function):
+    @wraps(function)
+    def wrapped(*args, **kwargs):
+        events = []
+        token = _check_measurements.set(events)
+        started = time.perf_counter()
+        try:
+            result = function(*args, **kwargs)
+            result["measurements"] = {"total_seconds": time.perf_counter() - started,
+                "checks": events, "check_seconds": sum(row["seconds"] for row in events),
+                "billed_cost_usd": None, "cost_status": "not-observed"}
+            return result
+        finally:
+            _check_measurements.reset(token)
+    return wrapped
+
+
+def _transaction_lock(function):
+    @wraps(function)
+    def wrapped(repo, **kwargs):
+        import sync_git
+        repo = Path(repo).resolve()
+        names = kwargs.get("adopt") or ()
+        capture = kwargs.get("capture_recovery", False) or bool(kwargs.get("recovery_artifacts"))
+        paths = [_snapshot(repo), *(root for _, root in _destinations(repo, kwargs.get("machine", "local-windows"), kwargs.get("skill_roots")))] if names else []
+        if capture:
+            paths.extend([repo / "recovery/current", repo / "host-deltas.json"])
+            roots = kwargs.get("recovery_roots") or recovery._default_roots()
+            selected = kwargs.get("recovery_artifacts")
+            hosts = {value.split(":", 1)[0] for value in selected} if selected else set(roots)
+            paths.extend(Path(roots[host]) for host in hosts if host in roots)
+        with sync_git.path_locks(paths):
+            return function(repo, **kwargs)
+    return wrapped
+
+
 def _run_checks(repo: Path, commands: Sequence[Sequence[str] | str]) -> list[str]:
     labels: list[str] = []
     for command in commands:
         argv = [command] if isinstance(command, str) else list(command)
+        started = time.perf_counter()
         completed = subprocess.run(argv, cwd=repo, capture_output=True, text=True, check=False)
         label = " ".join(
             Path(part).name if index == 0 or Path(part).is_absolute() else part
             for index, part in enumerate(argv)
         )
+        measurements = _check_measurements.get()
+        if measurements is not None:
+            measurements.append({"command": label, "seconds": time.perf_counter() - started, "passed": completed.returncode == 0})
         if completed.returncode != 0:
             raise RuntimeError(f"reconciliation check failed: {label}")
         labels.append(label)
@@ -440,6 +486,7 @@ def _decision_receipt(
     }
 
 
+@_transaction_lock
 def sync(
     repo: str | Path,
     *,
@@ -450,11 +497,15 @@ def sync(
     check_commands: Sequence[Sequence[str] | str] | None = None,
     capture_recovery: bool = False,
     scoped: bool = False,
+    recovery_artifacts: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Reconcile selected owners and optionally capture allowlisted host state."""
 
     repo = Path(repo).resolve()
     names = sorted(set(adopt or []))
+    if recovery_artifacts is not None:
+        recovery._select_artifacts(recovery._load_policy(repo / "recovery.json"), recovery_artifacts)
+        capture_recovery = True
     if not names and not capture_recovery:
         report = _decision_receipt(
             repo,
@@ -481,8 +532,8 @@ def sync(
             )
             report["reason"] = "typed host-delta manifest must be valid before recovery capture"
             return report
-    fleet_snapshot = _snapshot(repo)
-    destinations = _destinations(repo, machine, skill_roots)
+    fleet_snapshot = _snapshot(repo) if names else repo / "render/fleet"
+    destinations = _destinations(repo, machine, skill_roots) if names else []
     states = [_skill_state(repo, fleet_snapshot, destinations, name) for name in names]
     if any(state["mode"] == "review-required" for state in states):
         report = _decision_receipt(
@@ -531,11 +582,14 @@ def sync(
         resolved_recovery_roots = dict(recovery_roots) if recovery_roots is not None else recovery._default_roots()
         if capture_recovery:
             prepared_recovery = workspace / "prepared-recovery"
+            if recovery_artifacts is not None:
+                shutil.copytree(repo / "recovery/current", prepared_recovery)
             recovery.snapshot(
                 repo / "recovery.json",
                 prepared_recovery,
                 resolved_recovery_roots,
                 repo_root=repo,
+                artifacts=recovery_artifacts,
             )
             recovery_before = _tree_hash(repo / "recovery" / "current")
             recovery_after = _tree_hash(prepared_recovery)
@@ -624,6 +678,8 @@ def sync(
             if expected_sha is not None and fleet.installed_hash(target) != expected_sha:
                 rollback_conflicts.append(str(target))
                 return
+            # Repeated own writes share one original backup and latest identity.
+            written[:] = [row for row in written if row[0] != target]
             written.append((target, saved, existed, _mutation_identity(target)))
         try:
             failed_phase = "canonicalize"
@@ -640,12 +696,16 @@ def sync(
             if prepared_recovery is not None:
                 before_write(repo / "recovery" / "current")
                 before_write(host_delta_path)
+                # Migrate valid old aggregate hashes before changing one record.
+                host_deltas.migrate_recovery_bindings(host_delta_path, repo)
+                wrote(host_delta_path, backup / "host-deltas.json", host_delta_existed)
                 _replace_tree(prepared_recovery, repo / "recovery" / "current")
                 wrote(repo / "recovery" / "current", backup / "recovery", recovery_existed)
                 host_deltas.refresh_bindings(
                     host_delta_path,
                     repo,
-                    source_prefixes=("recovery-artifact:",),
+                    source_prefixes=("recovery-artifact:",) if recovery_artifacts is None else None,
+                    source_identities=["recovery-artifact:" + value for value in recovery_artifacts] if recovery_artifacts is not None else None,
                 )
                 host_delta_after = fleet.sha256_file(host_delta_path)
                 wrote(host_delta_path, backup / "host-deltas.json", host_delta_existed)
@@ -725,6 +785,7 @@ def sync(
                     resolved_recovery_roots,
                     apply=False,
                     repo_root=repo,
+                    artifacts=recovery_artifacts,
                 )
                 if postflight["changes"] or postflight["conflicts"]:
                     raise RuntimeError("recovery postflight verification failed")
@@ -872,7 +933,44 @@ def _agent_scope_identities(destinations, names):
     return result
 
 
-def _scope_dependencies(repo, machine, names, capture=False):
+def _recovery_metadata_policy(value, manifest, artifacts):
+    """Separate stable metadata from selected generated artifact hashes."""
+    value = json.loads(json.dumps(value))
+    records = {f"{row['host']}:{row['id']}": row for row in manifest["artifacts"]}
+    aggregate = "sha256:" + hashlib.sha256(host_deltas._canonical_json(manifest)).hexdigest()
+    for row in value["entries"]:
+        source = row["source_identity"]
+        if source.startswith("recovery-artifact:"):
+            identity = source.removeprefix("recovery-artifact:")
+            if identity in set(artifacts or ()):
+                row.pop("version_or_hash", None)
+            elif row["version_or_hash"] == aggregate and identity in records:
+                row["version_or_hash"] = "sha256:" + records[identity]["sha256"]
+    return value
+
+
+def _capture_shared_preflight(repo, artifacts, included):
+    """Shared metadata cannot implicitly publish another task's fields."""
+    import sync_git
+    def committed(name):
+        return json.loads(sync_git.git(repo, "show", "HEAD:" + name))
+    baseline_manifest = committed("recovery/current/manifest.json")
+    current_manifest = json.loads((repo / "recovery/current/manifest.json").read_text(encoding="utf-8"))
+    if "recovery/current/manifest.json" not in included:
+        def outside(manifest):
+            result = dict(manifest)
+            result["artifacts"] = [row for row in manifest["artifacts"] if f"{row['host']}:{row['id']}" not in set(artifacts)]
+            return result
+        if outside(current_manifest) != outside(baseline_manifest):
+            raise sync_git.SyncBlocked("unselected recovery manifest records differ; review the exact shared manifest file before publication")
+    if "host-deltas.json" not in included:
+        baseline = _recovery_metadata_policy(committed("host-deltas.json"), baseline_manifest, artifacts)
+        current = _recovery_metadata_policy(json.loads((repo / "host-deltas.json").read_text(encoding="utf-8")), current_manifest, artifacts)
+        if baseline != current:
+            raise sync_git.SyncBlocked("unselected host-delta fields differ; review the exact shared metadata file before publication")
+
+
+def _scope_dependencies(repo, machine, names, capture=False, recovery_artifacts=None):
     entries = fleet.registry(repo) if names else {}
     dependencies = {
         "admission": {name: entries.get(name) for name in sorted(names)},
@@ -884,7 +982,9 @@ def _scope_dependencies(repo, machine, names, capture=False):
     if names:
         paths.extend(["contracts/change-request.schema.json", "tools/recovery.py"])
     if capture:
-        paths += ["recovery.json", "host-deltas.json", "tools/recovery.py", "tools/host_deltas.py"]
+        dependencies["recovery_artifacts"] = sorted(recovery_artifacts or ())
+        paths += ["recovery.json", "tools/recovery.py", "tools/host_deltas.py"]
+        dependencies["recovery_metadata_policy"] = _recovery_metadata_policy(json.loads((repo / "host-deltas.json").read_text(encoding="utf-8")), json.loads((repo / "recovery/current/manifest.json").read_text(encoding="utf-8")), recovery_artifacts)
     dependencies["execution"] = {name: fleet.sha256_file(repo / name)
                                  for name in paths if (repo / name).is_file()}
     return dependencies
@@ -904,12 +1004,15 @@ def _candidate_commands(candidate, names):
 
 
 def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
-                          capture_recovery, include, message):
+                          capture_recovery, include, message, recovery_artifacts=None):
     """Complete one explicit change set; leave independent work pending."""
     import sync_git
     repo = Path(repo).resolve()
     names = set(adopt or ())
-    capture = bool(capture_recovery)
+    capture = bool(capture_recovery) or bool(recovery_artifacts)
+    artifacts = list(recovery_artifacts) if recovery_artifacts is not None else None
+    if artifacts is not None:
+        recovery._select_artifacts(recovery._load_policy(repo / "recovery.json"), artifacts)
     try:
         with sync_git.lock(repo):
             pending = sync_git.read_pending(repo)
@@ -931,19 +1034,22 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                     raise sync_git.SyncBlocked("pending sync belongs to different settings directories")
                 names = set(pending["owners"])
                 capture = pending["capture_recovery"]
-            elif capture:
+                if artifacts is not None and set(artifacts) != set(pending.get("recovery_artifacts") or ()):
+                    raise sync_git.SyncBlocked("pending sync belongs to a different recovery artifact selection")
+                artifacts = pending.get("recovery_artifacts")
+            elif capture and artifacts is None:
                 # Recovery capture is a cohesive allowlisted snapshot operation.
                 # Explicit portable/file selection must not silently capture it.
                 return {"result": "review-required", "reason": "scoped recovery capture needs an explicit artifact contract; use a reviewed broad recovery operation", "owners": sorted(names)}
             if pending:
                 dependencies = pending["dependencies"]
             else:
-                dependencies = _scope_dependencies(repo, machine, names)
+                dependencies = _scope_dependencies(repo, machine, names, capture, artifacts)
             def check_dependencies(candidate=None):
-                if _scope_dependencies(repo, machine, names, capture) != dependencies:
+                if _scope_dependencies(repo, machine, names, capture, artifacts) != dependencies:
                     raise sync_git.SyncBlocked("a selected admission, destination, or execution dependency changed")
                 if candidate is not None:
-                    candidate_dependencies = _scope_dependencies(candidate, machine, names, capture)
+                    candidate_dependencies = _scope_dependencies(candidate, machine, names, capture, artifacts)
                     if candidate_dependencies != dependencies:
                         raise sync_git.SyncBlocked("selected work depends on unpublished admission, destination, or execution changes; include the reviewed dependency")
 
@@ -951,6 +1057,10 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             expected_owners = pending.get("owner_identities", {}) if pending else {}
             def readback():
                 check_dependencies()
+                if capture:
+                    probe = recovery.restore(repo / "recovery.json", repo / "recovery/current", roots, apply=False, repo_root=repo, artifacts=artifacts)
+                    if probe["changes"] or probe["conflicts"]:
+                        raise sync_git.SyncBlocked("selected native recovery changed after capture")
                 if checked_agents is not None and _agent_scope_identities(destinations, names) != checked_agents:
                     raise sync_git.SyncBlocked("selected agent content or managed identity changed during sync")
                 if names:
@@ -978,6 +1088,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             def finish(report, state):
                 report["verified_owners"] = sorted(names)
                 report["installed_verified"] = bool(state.get("installed_verified"))
+                report["verified_recovery_artifacts"] = sorted(state.get("recovery_artifacts") or ())
+                report["capture_verified"] = bool(state.get("capture_recovery"))
                 report["pending_files"] = sorted(sync_git.changed(repo) - set(state["files"]))
                 report["verification_scope"] = state["limits"]
                 return report
@@ -985,6 +1097,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             if pending:
                 return finish(sync_git.publish(repo, pending, verify=verify, readback=readback), pending)
             target = sync_git.destination(repo)
+            if capture:
+                _capture_shared_preflight(repo, artifacts, set(include))
             snapshot = _snapshot(repo) if names else None
             states = {name: _skill_state(repo, snapshot, destinations, name) for name in names}
             if any(state["mode"] == "review-required" for state in states.values()):
@@ -1005,6 +1119,11 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                     if state.get("origin") or not desired_file.is_file():
                         overrides[path] = desired_file.read_bytes() if desired_file.is_file() else None
                 expected_owners[name] = str(state["origin"][2] if state.get("origin") else state["canonical_sha256"])
+            if capture:
+                selected.add("host-deltas.json")
+                selected.add("recovery/current/manifest.json")
+                policy = recovery._load_policy(repo / "recovery.json")
+                selected.update("recovery/current/" + item["snapshot"] for host, item in recovery._policy_artifacts(policy) if f"{host}:{item['id']}" in set(artifacts))
             if not selected and not names:
                 return {"result": "review-required", "reason": "no explicit owner or publication file selected"}
             sync_git.preflight(repo, target, files=selected, scoped=True)
@@ -1025,9 +1144,9 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                         or _agent_scope_identities(destinations, names) != before_agents):
                     raise sync_git.SyncBlocked("selected files or agent owners changed during prerequisite checks")
                 check_dependencies()
-                if names:
+                if names or capture:
                     result = sync(repo, machine=machine, adopt=sorted(names), recovery_roots=recovery_roots,
-                                  skill_roots=skill_roots, capture_recovery=False,
+                                  skill_roots=skill_roots, capture_recovery=capture, recovery_artifacts=artifacts,
                                   check_commands=commands, scoped=True)
                     if result["result"] not in {"applied", "unchanged"}:
                         return result
@@ -1046,12 +1165,12 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 raise sync_git.SyncBlocked("selected files changed after deployment checks")
             pending = {"schema_version": 1, "scoped": True, "machine": machine,
                        "owners": sorted(names), "destinations": [str(p) for _, p in destinations],
-                       "capture_recovery": False, "recovery_roots": roots,
+                       "capture_recovery": capture, "recovery_roots": roots, "recovery_artifacts": artifacts,
                        "agent_identities": checked_agents, "owner_identities": expected_owners,
                        "agents_verified": False, "installed_verified": bool(names), "dependencies": dependencies,
                        "target": target, "base": base_commit, "message": message,
                        "files": final_files, "tree": tree,
-                       "checks": "selected candidate structural checks and selected installed owner readback",
+                       "checks": "selected candidate structural checks, selected installed owner readback, and selected native capture readback" if capture else "selected candidate structural checks and selected installed owner readback",
                        "limits": "No whole-fleet, current-runtime, or model-behavior parity claim."}
             sync_git.save_pending(repo, pending)
             result = sync_git.publish(repo, pending, verify=verify, readback=readback)
@@ -1060,6 +1179,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
         return {"result": "incomplete", "failed_step": "scoped-preflight-or-reconcile", "reason": str(exc)}
 
 
+@_measure_completion
 def complete_sync(
     repo: str | Path,
     *,
@@ -1071,6 +1191,7 @@ def complete_sync(
     include: Sequence[str] = (),
     message: str = "chore: reconcile checked agent changes",
     scoped: bool | None = None,
+    recovery_artifacts: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """One operator operation: reconcile checked owners, commit, push, read back.
 
@@ -1080,7 +1201,11 @@ def complete_sync(
     """
     import sync_git
 
-    selected_scope = bool(adopt or include) if scoped is None else scoped
+    if recovery_artifacts is not None and scoped is False:
+        return {"result": "review-required", "reason": "full scope cannot broaden an exact artifact selection"}
+    if recovery_artifacts is not None and capture_recovery is False:
+        return {"result": "review-required", "reason": "artifact capture conflicts with no-capture-recovery"}
+    selected_scope = bool(adopt or include or recovery_artifacts is not None) if scoped is None else scoped
     try:
         existing_pending = sync_git.read_pending(Path(repo).resolve())
     except (OSError, RuntimeError, subprocess.SubprocessError) as exc:
@@ -1090,7 +1215,7 @@ def complete_sync(
     if selected_scope:
         return _scoped_complete_sync(repo, machine=machine, adopt=adopt,
                                      recovery_roots=recovery_roots, skill_roots=skill_roots,
-                                     capture_recovery=capture_recovery, include=include, message=message)
+                                     capture_recovery=capture_recovery, include=include, message=message, recovery_artifacts=recovery_artifacts)
     repo = Path(repo).resolve()
     try:
         with sync_git.lock(repo):
@@ -1234,6 +1359,7 @@ def main(argv: list[str] | None = None) -> int:
                         help="capture reviewed allowlisted settings (included by default in sync)")
     parser.add_argument("--no-capture-recovery", dest="capture_recovery", action="store_false",
                         help="scope this operation to skills/repository files; do not capture native settings")
+    parser.add_argument("--capture-artifact", action="append", default=None, metavar="HOST:ID", help="capture only an exact existing recovery artifact")
     parser.add_argument("--include", action="append", default=[], metavar="FILE",
                         help="exact additional repository file already reviewed for commit; does not authorize deployment")
     parser.add_argument("--message", default="chore: reconcile checked agent changes")
@@ -1247,7 +1373,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         report = complete_sync(args.repo, machine=args.machine, adopt=args.adopt, recovery_roots=roots,
                                skill_roots=args.skill_root or None, capture_recovery=args.capture_recovery,
-                               include=args.include, message=args.message, scoped=False if args.full else None)
+                               include=args.include, message=args.message, scoped=False if args.full else None, recovery_artifacts=args.capture_artifact)
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if args.action == "plan" or report.get("result") == "synced" else 2
 

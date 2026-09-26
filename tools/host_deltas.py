@@ -10,6 +10,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+from functools import wraps
 import sys
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
@@ -81,7 +82,17 @@ def _bound_artifact_digest(source_identity: str, repo: Path) -> str | None:
         target = repo / "recovery" / "current" / "manifest.json"
         if not target.is_file():
             raise RuntimeError(f"host-delta binding target is missing: {target.relative_to(repo)}")
-        return fleet.sha256_file(target)
+        identity = source_identity.removeprefix("recovery-artifact:")
+        manifest = json.loads(target.read_text(encoding="utf-8"))
+        records = {f"{row['host']}:{row['id']}": row for row in manifest.get("artifacts", [])}
+        if identity not in records:
+            raise RuntimeError(f"recovery artifact binding is missing: {identity}")
+        record = records[identity]
+        artifact = recovery._safe_join(repo / "recovery/current", record["snapshot"], must_exist=True)
+        digest = fleet.sha256_file(artifact)
+        if digest != record["sha256"]:
+            raise RuntimeError(f"recovery artifact binding content differs: {identity}")
+        return digest
     if source_identity.startswith("fleet:"):
         return _canonical_fleet_digest(repo)
     if not source_identity.startswith("repository:"):
@@ -117,6 +128,12 @@ def _validate_bindings(manifest: Mapping[str, Any], repo: Path) -> None:
         expected = f"sha256:{digest}"
         actual = str(item["version_or_hash"])
         if actual != expected:
+            # Accept an existing whole-manifest binding only while it matches
+            # the current snapshot. Migration below freezes each exact artifact.
+            if source_identity.startswith("recovery-artifact:"):
+                legacy = repo / "recovery/current/manifest.json"
+                if actual == "sha256:" + fleet.sha256_file(legacy):
+                    continue
             raise RuntimeError(
                 f"host-delta binding mismatch for {item['id']}: expected {expected}, got {actual}"
             )
@@ -175,26 +192,72 @@ def load_manifest(path: str | Path, repo: str | Path) -> dict[str, Any]:
     return manifest
 
 
+def _binding_lock(function):
+    @wraps(function)
+    def wrapped(path, repo, **kwargs):
+        import sync_git
+        with sync_git.path_locks([Path(path), Path(repo) / "recovery/current"]):
+            return function(path, repo, **kwargs)
+    return wrapped
+
+
+def _write_bound_manifest(path, manifest, expected):
+    if fleet.path_identity(path) != expected:
+        raise RuntimeError("host-delta metadata changed before binding update")
+    fleet.atomic_json(path, manifest)
+
+
+@_binding_lock
 def refresh_bindings(
     path: str | Path,
     repo: str | Path,
     *,
     source_prefixes: Sequence[str] | None = None,
+    source_identities: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Refresh deterministic artifact hashes, then validate the written manifest."""
 
     path = Path(path)
     repo = Path(repo).resolve()
+    expected = fleet.path_identity(path)
     manifest = _load_manifest_unbound(path, repo)
     prefixes = tuple(source_prefixes or ())
+    identities = set(source_identities) if source_identities is not None else None
+    if identities is not None and not identities:
+        raise RuntimeError("binding selection must be nonempty")
     for item in manifest["entries"]:
         source_identity = str(item["source_identity"])
+        if identities is not None and source_identity not in identities:
+            continue
         if prefixes and not source_identity.startswith(prefixes):
             continue
         digest = _bound_artifact_digest(source_identity, repo)
         if digest is not None:
             item["version_or_hash"] = f"sha256:{digest}"
-    fleet.atomic_json(path, manifest)
+    _write_bound_manifest(path, manifest, expected)
+    return load_manifest(path, repo)
+
+
+@_binding_lock
+def migrate_recovery_bindings(path: str | Path, repo: str | Path) -> dict[str, Any]:
+    """Convert valid legacy snapshot bindings to exact artifact identities.
+
+    This one-time metadata migration reads no live host and changes no artifact.
+    It preserves all non-recovery entries and rejects stale legacy bindings.
+    """
+    path, repo = Path(path), Path(repo)
+    expected = fleet.path_identity(path)
+    manifest = load_manifest(path, repo)
+    changed = False
+    for item in manifest["entries"]:
+        source = item["source_identity"]
+        if source.startswith("recovery-artifact:"):
+            desired = "sha256:" + _bound_artifact_digest(source, repo)
+            if item["version_or_hash"] != desired:
+                item["version_or_hash"] = desired
+                changed = True
+    if changed:
+        _write_bound_manifest(path, manifest, expected)
     return load_manifest(path, repo)
 
 

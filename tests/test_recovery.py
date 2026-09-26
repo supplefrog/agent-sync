@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import tempfile
 import unittest
@@ -562,6 +563,9 @@ class RecoveryTests(unittest.TestCase):
         original = "unmanaged:\n  keep: true\n"
         (roots["hermes"] / "config.yaml").write_text(original, encoding="utf-8")
 
+        before_dryrun = sorted(path.relative_to(fresh).as_posix() for path in fresh.rglob("*") if path.is_file())
+        recovery.restore(self.policy, self.snapshot, roots)
+        self.assertEqual(before_dryrun, sorted(path.relative_to(fresh).as_posix() for path in fresh.rglob("*") if path.is_file()))
         real_atomic_write = recovery._atomic_write
         calls = 0
 
@@ -579,7 +583,7 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(original, (roots["hermes"] / "config.yaml").read_text(encoding="utf-8"))
         self.assertEqual(
             ["hermes/config.yaml"],
-            sorted(path.relative_to(fresh).as_posix() for path in fresh.rglob("*") if path.is_file()),
+            sorted(path.relative_to(fresh).as_posix() for path in fresh.rglob("*") if path.is_file() and not re.fullmatch(r"\.agent-signal-path-[a-f0-9]{64}\.lock", path.name)),
         )
 
 

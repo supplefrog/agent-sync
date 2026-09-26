@@ -1,0 +1,7 @@
+# Revision note
+
+- This is a proposal only; `project/AGENTS.md` and the help pages remain unchanged. The README asks for an in-place edit, but the current request explicitly asks for a separate review draft.
+- Replaced conflicting approval rules with the current team boundary: local help edits and checks need no repeated approval; publication needs approval for the exact reviewed content and destination, which carries forward within the task. Publication does not authorize email or product changes.
+- Removed the seven-pass ledger, committee and scorecard requirements, the absolute 300-word limit, the blanket command ban and the automatic publish retries. Kept proportional verification, source/command safety and the stop condition for uncertain remote writes.
+- Deferred page structure and publishing mechanics to their current owners instead of repeating them. All three `docs/...` references in the draft are relative to the intended `project/AGENTS.md` location; the retired `docs/page-v1.md` reference is removed. Preserved the data-loss warning, literal-label and translation-glossary exceptions.
+- The existing `project/AGENTS.md` still contains a link to retired `docs/page-v1.md`. Until a reviewed proposal replaces it, its project link checker will flag that stale link. The checker could not be run here because terminal commands were restricted; the three proposed link targets were checked directly against the existing files. The proposal is not a local help-page change or a live publish.

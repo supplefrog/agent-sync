@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "status": "parent-reviewed-and-frozen-before-trials",
+  "decision": "Determine whether the current shared skill-creator adds enough practical value on bounded instruction-authoring work to justify its normal discovery/load cost, and whether it avoids irrelevant work on a near-miss writing task. Retain, narrow or revise only in proportion to the evidence.",
+  "claim_scope": "Exploratory selected leaf-skill study on Hermes, configured GPT-6 Sol medium, subscription route, native discovery and guarded file/skill/terminal tools; no OS isolation, production workload, architecture delegation or whole-host parity claim.",
+  "mechanism_fit": "Two authoring tasks require preserving nuanced evidence and authorization boundaries while choosing economical instruction structure. Their requested outcome does not dictate the mechanism. A copywriting control discusses instructions as product data. The target is a leaf skill; no independent-worker mechanism is disabled.",
+  "baseline_fidelity": "Both arms receive identical fixture bytes, task prompt, model/reasoning, supported tools, surrounding context and natural skill catalog. The only intended difference is availability of the shared target skill and its own supporting resources. Do not inject the target body, tell the candidate to use it, or remove available neighboring owners from just one arm.",
+  "design_checks": [
+    "Parent reviews task realism, source constraints, possible ceiling effects, method leakage and critical criteria before freezing suite and oracle hashes.",
+    "Keep cases.json review criteria, this decision record and oracle.py outside all model workspaces. Only prompt and fixture directory are model inputs.",
+    "Create cases from product outcomes and source materials rather than copying skill rules into an expected answer. Some stable source boundaries resemble skill principles because the use case needs them; there is no mandated solution layout or ordering.",
+    "If native discovery or tool equivalence is unverified, spend only the cheapest runtime smoke to resolve it. Do not count readiness runs as quality evidence.",
+    "Deterministic checks cover requested artifacts, input preservation, metadata and broken local links. They do not grade paraphrasable guidance, taste, concision or behavioral improvement."
+  ],
+  "resource_ceiling": {
+    "initial_cells": 6,
+    "initial_cases": 3,
+    "arms": 2,
+    "model": "gpt-6-sol",
+    "reasoning": "medium",
+    "maximum_quality_cells": 12,
+    "repeat_rule": "If the initial study is valid but an adoption decision is still ambiguous, use at most one additional held-out task or a matched repeat with predeclared acceptance; never keep sampling until the skill wins. Stop sooner when the decision is clear or the tests have a ceiling.",
+    "paid_fallback": false,
+    "dollar_cost": "unknown unless reliable billing evidence exists; do not convert subscription tokens into fabricated dollar costs",
+    "readiness_cells_already_used": 4,
+    "maximum_quality_cells_this_run": 6,
+    "additional_native_readiness_cells": 1,
+    "maximum_total_native_cells_this_task": 12,
+    "host": "hermes"
+  },
+  "decisive_evidence": [
+    "Per-cell immutable prompt/fixture/skill/catalog/runtime identity, target discovery and load telemetry, artifact output and oracle result.",
+    "Blind independent comparison using hidden arm labels, critical failures and practical utility; reviewers may report ties or no demonstrated benefit. Record the artifact-specific reason rather than assert a win from score totals.",
+    "Separate runtime readiness, artifact correctness, semantic quality and discovery/load outcomes. A passing oracle does not establish model quality.",
+    "Measure trial wall time and available model token usage per arm. Separately record setup, design, review, oracle and integration time; report missing metrics as unknown."
+  ],
+  "stop_conditions": [
+    "Stop comparative inference if runtime equivalence, natural discovery or input isolation cannot be established.",
+    "Stop further trials at the declared quality-cell ceiling or an external quota/resource boundary; preserve incomplete status and limits.",
+    "If both arms meet all material criteria with no useful distinction, report no demonstrated incremental benefit on these cases rather than extrapolate a win.",
+    "If target loading causes avoidable work on the near-miss or authoring quality regresses, narrow the claim and investigate that observed boundary before broader adoption.",
+    "Do not auto-promote from this experiment. Preserve the existing owner and broader working behavior; any resulting source change needs its own proportionate verification."
+  ],
+  "oracle_command": "python oracle.py WORKSPACE CASE_ID",
+  "oracle_contract": {
+    "passed": "positive integer",
+    "failed": "integer",
+    "failures": "list",
+    "exit_0": "all necessary invariants passed"
+  },
+  "oracle_limit": "Does not check semantic exceptions, output privacy paraphrases, helpfulness, unnecessary loads, or quality by word/phrase assertions. Those are independently reviewed.",
+  "parent_review": {
+    "fit": "product source packets and instruction artifacts, no supplied solution or layout, two judgment cases and one near-miss",
+    "limit": "purpose-written realistic tasks, not production sample or full delegation workflow",
+    "decision": "retain owner unless task-specific benefit or regression is supported; no universal superiority claim",
+    "invariants": "artifacts and unchanged inputs; semantic quality judged blind, acceptance outside all model fixtures"
+  }
+}

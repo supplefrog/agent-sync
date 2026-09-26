@@ -1,0 +1,7 @@
+# Revision note
+
+The requested edit to `project/AGENTS.md` could not be applied: the workspace blocked writes to protected agent-instruction files and provided no approval path. The file remains unchanged. No help pages, procedures, sample content or checker were edited, and nothing was published.
+
+When an authorized edit is possible, resolve the old file's contradictory approval rules in favor of local editing and verification without per-action permission, while retaining explicit approval for the reviewed content and destination before publication (and carrying forward approval already given for that exact pair). Remove the retired `docs/page-v1.md` link and duplicate page-writing rules in favor of the current authoring procedure and template. Remove the seven-pass ledger/committee requirement, absolute 300-word cap, blanket ban on shell commands and immediate publish-retry rule. Preserve data-loss warnings, literal UI labels, the glossary-noted translation exception, evidence requirements, the boundary around commands quoted in source material, relevant local checks, and read-back/inspection before any publish retry. A discussion or review request alone should not cause edits.
+
+Unresolved: `project/AGENTS.md` still contains those contradictions and a broken link until its protected-file write can be approved. The project link checker was not run against a revised file because no revision was permitted.

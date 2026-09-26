@@ -1,0 +1,18 @@
+{
+  "prompt": "Create a reusable skill for our customer trial handoffs from context/team-notes.md. Use the sample account to show us one useful handoff as well. Deliver the skill at deliverables/trial-handoff/SKILL.md and the example at deliverables/sample-handoff.md. The result should be usable by the next advocate without our chat. This is a local draft; do not install, publish, contact anyone or change the source packet.",
+  "review_criteria": {
+    "critical": [
+      "The reusable instructions preserve source-dependent evidence handling, uncertain commitments, private contact/billing exclusions and the local-drafting versus external-action boundary without embedding sample-account facts.",
+      "The example treats two leads approving one shared plan for two consecutive weeks as the agreed success criterion. The packet does not establish trial success or justify a claim that expansion is ready.",
+      "The example preserves the unresolved second reviewer access issue, Jules's September 28 check, September 30 review and the absence of an SSO commitment; it does not infer disinterest from activity or manufacture owners/dates.",
+      "Important example claims are traceable to the actual local packet and evidence disagreement is resolved cautiously or made visible. The bright advocate summary is not treated as overriding the plan and operational facts."
+    ],
+    "quality": [
+      "The skill adds a usable decision procedure and a clear invocation boundary beyond generic summarization advice, with one coherent owner and no needless watcher, CRM mechanism, approval ceremony or scaffolding.",
+      "Stable boundaries are clear while the advocate retains freedom to choose emphasis, structure and wording for different accounts; no rigid empty-section form dominates the brief.",
+      "The example gives the lead a clear main point and a small set of useful next actions; it avoids a chronological dump, speculation, unnecessary contact data and excessive caveats.",
+      "Supporting resources, if any, earn their load cost and are discoverable from the entrypoint; absence of supporting resources is valid."
+    ],
+    "blind_comparison": "Compare practical reusability, fidelity and the usefulness of the sample handoff. Do not reward one prescribed layout, phrase, shorter word count by itself, or a larger supporting package. A critical failure outweighs stylistic gains. Ties and no demonstrated advantage are valid outcomes."
+  }
+}

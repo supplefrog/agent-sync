@@ -1,14 +1,16 @@
 """Git completion for reconcile.py; no force-push or implicit broad staging."""
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import threading
 
 
 class SyncBlocked(RuntimeError):
@@ -29,9 +31,9 @@ def git_dir(repo: Path) -> Path:
 
 
 @contextmanager
-def lock(repo: Path):
+def _file_lock(lock_path: Path):
     """OS-released lock: a process crash does not leave a stale lock owner."""
-    handle = (git_dir(repo) / 'agent-signal-sync.lock').open('a+b')
+    handle = lock_path.open('a+b')
     handle.seek(0, 2)
     if handle.tell() == 0:
         handle.write(b'0')
@@ -53,15 +55,64 @@ def lock(repo: Path):
         handle.close()
 
 
+@contextmanager
+def lock(repo: Path):
+    with _file_lock(git_dir(repo) / 'agent-signal-sync.lock'):
+        yield
+
+
+_path_lock_local = threading.local()
+
+
+def _path_key(path: Path) -> str:
+    return os.path.normcase(str(Path(path).resolve()))
+
+
+@contextmanager
+def path_lock(path: Path):
+    """Fail-fast cooperative lock for a mutable root, released by the OS on crash.
+
+    The sibling lock survives root replacement and is never deleted on release.
+    Nested calls in the same thread reuse its lock; other processes contend.
+    """
+    key = _path_key(path)
+    held = getattr(_path_lock_local, 'held', None)
+    if held is None:
+        held = _path_lock_local.held = set()
+    if key in held:
+        yield
+        return
+    root = Path(key)
+    root.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = root.parent / ('.agent-signal-path-' + hashlib.sha256(key.encode('utf-8')).hexdigest() + '.lock')
+    with _file_lock(lock_path):
+        held.add(key)
+        try:
+            yield
+        finally:
+            held.remove(key)
+
+
+@contextmanager
+def path_locks(paths):
+    """Acquire unique roots in stable order, releasing partial acquisition on error."""
+    with ExitStack() as stack:
+        for key in sorted({_path_key(path) for path in paths}):
+            stack.enter_context(path_lock(Path(key)))
+        yield
+
+
 def changed(repo: Path) -> set[str]:
     # -z handles whitespace, Unicode, and literal pathspec metacharacters.
     tracked = git(repo, 'diff', '--name-only', '-z', 'HEAD', '--')
     new = git(repo, 'ls-files', '--others', '--exclude-standard', '-z')
-    return {p for p in (tracked + '\0' + new).split('\0') if p}
+    return {p for p in (tracked + '\0' + new).split('\0') if p and not re.fullmatch(r"\.agent-signal-path-[0-9a-f]{64}\.lock", Path(p).name)}
 
 
 def safe_path(repo: Path, value: str) -> str:
     relative = Path(value)
+    if re.fullmatch(r"\.agent-signal-path-[0-9a-f]{64}\.lock", relative.name):
+        raise SyncBlocked("operational lock files are not publication artifacts")
     if relative.is_absolute() or not relative.parts or '..' in relative.parts or '.git' in {part.casefold() for part in relative.parts}:
         raise SyncBlocked('include requires an exact repository-relative file')
     path = repo / relative

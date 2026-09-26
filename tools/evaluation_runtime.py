@@ -47,6 +47,7 @@ def runtime_environment(source: dict[str, str], root: Path) -> dict[str, str]:
                TEMP=str(scratch), TMP=str(scratch), TMPDIR=str(scratch),
                LOCALAPPDATA=str(home / "AppData" / "Local"), APPDATA=str(home / "AppData" / "Roaming"),
                HERMES_SAFE_MODE="1", HERMES_IGNORE_USER_CONFIG="1", HERMES_IGNORE_RULES="1",
+               HERMES_DISABLE_LAZY_INSTALLS="1",
                PYTHONIOENCODING="utf-8", PYTHONUTF8="1", NO_COLOR="1")
     return env
 
@@ -509,4 +510,232 @@ def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: st
             result["failure"] = {"kind": "cleanup", "source": "runtime-control", "code": "native-runtime-cleanup-failed"}
         result["ok"] = result["execution_ok"] and result["operational_ok"]
         result["seconds"] = round(time.monotonic() - started, 3)
+    return result
+
+
+def skill_study_events(text: str, expected_skills: list[str]) -> dict[str, Any]:
+    """Native typed tools prove reads; answer prose never proves skill use."""
+    rows, errors, calls, loaded, answers = [], [], {}, [], []
+    usage = None
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except ValueError:
+            errors.append("invalid native JSON event")
+            continue
+        rows.append(row)
+        item = row.get("item", {})
+        if row.get("type") == "turn.completed":
+            usage = row.get("usage")
+        if row.get("type") in {"turn.failed", "error"}:
+            errors.append("native execution failed")
+        if row.get("type") == "item.completed" and item.get("type") == "agent_message":
+            answers.append(item.get("text", ""))
+        if item.get("type") == "command_execution":
+            calls[item.get("id")] = item
+            if row.get("type") == "item.completed" and item.get("exit_code") == 0:
+                command = item.get("command", "")
+                # A successful native read command with an exact literal path
+                # is evidence of body loading. Searches, echoes and near-miss
+                # names do not establish that the file was consumed.
+                for path in expected_skills:
+                    normalized = command.replace("\\", "/")
+                    target = path.replace("\\", "/")
+                    literal = re.escape(target)
+                    paths = [r'"' + literal + r'"', "'" + literal + "'"]
+                    if not re.search(r"[\s;&|<>`$\"']", target):
+                        paths.append(literal)
+                    # Shell compounds, quoted examples and wrappers cannot prove
+                    # this particular read succeeded from one command exit code.
+                    read = re.fullmatch(r"\s*(?i:Get-Content|cat|type|more)\s+(?:(?i:-Raw)\s+)?"
+                        r"(?:(?i:-LiteralPath|-Path)\s+)?(?:" + "|".join(paths) + r")(?:\s+(?i:-Raw))?\s*", normalized)
+                    if read:
+                        loaded.append({"path": path, "item_id": item.get("id"), "source": "native-command-execution", "exit_code": 0})
+    completed = (sum(row.get("type") == "turn.completed" for row in rows) == 1
+                 and sum(row.get("type") == "turn.started" for row in rows) == 1
+                 and sum(row.get("type") == "thread.started" for row in rows) == 1
+                 and rows[-1].get("type") == "turn.completed")
+    if not completed or not answers:
+        errors.append("missing native completion evidence")
+    def token(key):
+        value = usage.get(key) if isinstance(usage, dict) else None
+        return value if type(value) is int and value >= 0 else None
+    return {"ok": not errors, "errors": errors, "events": rows,
+            "final_response": answers[-1] if answers else None,
+            "tool_calls_count": len(calls), "loaded_skills": loaded,
+            "tokens": {"input": token("input_tokens"), "cached_input": token("cached_input_tokens"),
+                       "output": token("output_tokens"), "source": "native-turn-completed-usage"},
+            "dollars": None, "cost_status": "subscription-dollar-cost-unavailable"}
+
+
+def skill_study_preflight(exe: str, fixture: Path, env: dict[str, str], source: dict[str, str],
+                          expected_skills: list[str]) -> tuple[list[str], dict[str, Any]]:
+    common = codex_common(fixture, "gpt-6-sol", "medium")
+    common += ["-c", 'default_permissions=":workspace"', "--enable", "shell_tool", "--enable", "code_mode_host"]
+    # Preserve shell tools and native discovery while removing unrelated state.
+    required_features = {"shell_tool", "code_mode_host"}
+    common = [part for index, part in enumerate(common)
+              if not ((part in required_features and index > 0 and common[index-1] == "--disable") or (part == "--disable" and index + 1 < len(common) and common[index + 1] in required_features))]
+    def probe(args):
+        proc = subprocess.run([exe, *args, "debug", "prompt-input", "EVALUATOR_ISOLATION_PROBE"],
+                              cwd=fixture, env=env, text=True, encoding="utf-8", capture_output=True, timeout=60)
+        if proc.returncode:
+            raise ValueError("native skill catalog probe failed")
+        return proc.stdout
+    probe(common)
+    home = Path(source.get("USERPROFILE") or source.get("HOME") or Path.home())
+    roots = [Path(env["CODEX_HOME"]) / "skills", home / ".agents" / "skills", home / ".codex" / "skills"]
+    disabled = sorted({p.resolve().as_posix() for root in roots if root.is_dir() for p in root.rglob("SKILL.md")})
+    settings = [{"path": path, "enabled": False} for path in disabled]
+    settings += [{"path": Path(path).resolve().as_posix(), "enabled": True} for path in expected_skills]
+    # Inline TOML, not JSON object syntax.
+    common += ["-c", "skills.config=[" + ",".join("{path=" + json.dumps(s["path"]) + ",enabled=" + str(s["enabled"]).lower() + "}" for s in settings) + "]"]
+    raw = probe(common)
+    items = json.loads(raw)
+    texts = [part["text"] for item in items for part in item.get("content", []) if isinstance(part.get("text"), str)]
+    combined = "\n".join(texts).replace("\\", "/")
+    if any(marker in combined for marker in CONTEXT_MARKERS if marker != "<skills_instructions>"):
+        raise ValueError("native skill study contains personal instructions")
+    # Catalog paths are emitted by Codex's assembled skill list; bind exact set.
+    aliases = dict(re.findall(r"- `([^`]+)` = `([^`]+)`", combined))
+    catalog = []
+    for reference in re.findall(r"\(file:\s*([^\r\n)]+SKILL\.md)\)", combined):
+        prefix, _, relative = reference.partition("/")
+        expanded = str(Path(aliases[prefix]) / relative) if prefix in aliases else reference
+        catalog.append(Path(expanded).resolve().as_posix())
+    expected = sorted(Path(p).resolve().as_posix() for p in expected_skills)
+    if sorted(catalog) != expected:
+        raise ValueError("native skill catalog differs from staged skills")
+    return common, {"verified": True, "source": "codex-debug-prompt-input", "catalog": catalog,
+                    "sha256": hashlib.sha256(raw.encode()).hexdigest(), "disabled_skill_count": len(disabled)}
+
+
+def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only=False):
+    """Explicit native host adapter; never chooses a route or falls back."""
+    from artifact_hash import freeze_candidate
+    runtime = Path(tempfile.mkdtemp(prefix="agent-signal-hermes-study-"))
+    started = time.monotonic()
+    result = {"ok": False, "tokens": None, "dollars": None, "timings": {},
+              "resource_limits": {"timeout_seconds": timeout, "max_iterations": max_iterations,
+                                  "iteration_limit_enforced": True}}
+    try:
+        source = dict(os.environ)
+        env = runtime_environment(source, runtime)
+        python, native = native_hermes_runtime(native_executable("hermes"))
+        env.update(TERMINAL_ENV="local", TERMINAL_CONTAINER_PERSISTENT="false")
+        catalog = []
+        for skill in expected_skills:
+            skill = Path(skill)
+            frozen = freeze_candidate(skill)
+            text = skill.read_text(encoding="utf-8")
+            if re.search(r"(?m)^deps\s*:|!`|\{\{", text):
+                raise ValueError("Study catalog cannot install dependencies or preprocess dynamic content")
+            destination = Path(env["HERMES_HOME"]) / "skills" / skill.parent.name
+            shutil.copytree(skill.parent, destination)
+            staged = destination / "SKILL.md"
+            if freeze_candidate(staged)["package_sha256"] != frozen["package_sha256"]:
+                raise ValueError("Native Hermes staged package changed")
+            catalog.append({"path": str(staged), "package_sha256": frozen["package_sha256"],
+                            "body_sha256": hashlib.sha256(frozen["prompt_text"].encode()).hexdigest()})
+        env["HERMES_BUNDLED_PLUGINS"] = str(runtime / "no-plugins")
+        job = {"purpose": "native-skill-study", "assembly_only": assembly_only,
+               "native_source": str(native), "credential_owner_home": str(hermes_owner_home(source)),
+               "runtime_home": env["HERMES_HOME"], "fixture": str(fixture), "catalog": catalog,
+               "prompt": prompt, "model": "gpt-6-sol", "reasoning": "medium",
+               "max_iterations": max_iterations, "timeout": timeout}
+        result["timings"]["preflight"] = time.monotonic() - started
+        before = time.monotonic()
+        proc = subprocess.run([str(python), str(Path(__file__).with_name("evaluation_hermes_worker.py"))],
+                              input=json.dumps(job), cwd=fixture, env=env, text=True, encoding="utf-8",
+                              capture_output=True, timeout=timeout + 30)
+        receipts = []
+        for line in proc.stdout.splitlines():
+            try:
+                receipt = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(receipt, dict) and "ok" in receipt:
+                receipts.append(receipt)
+        if len(receipts) != 1:
+            raise ValueError("Native worker did not emit one typed receipt")
+        result.update(receipts[0])
+        result["timings"]["worker"] = time.monotonic() - before
+        result["returncode"] = proc.returncode
+        result["ok"] = result["ok"] and proc.returncode == 0
+    except subprocess.TimeoutExpired as exc:
+        result["failure"] = "TimeoutExpired"
+        diagnostics = exc.stderr or ""
+        if isinstance(diagnostics, bytes):
+            diagnostics = diagnostics.decode("utf-8", errors="replace")
+        result["assembly_phases"] = re.findall(r"(?m)^ASSEMBLY_PHASE:([A-Za-z0-9_]+)$", diagnostics)[-15:]
+        result["assembly_frames"] = [{"file": Path(filename).name, "line": int(line), "function": function}
+            for filename, line, function in re.findall(r'File "([^"]+)", line (\d+) in ([A-Za-z0-9_<>]+)', diagnostics)][-15:]
+    except Exception as exc:
+        result["failure"] = type(exc).__name__
+    finally:
+        before = time.monotonic()
+        result["cleanup"] = cleanup_runtime(runtime, fixture)
+        result["timings"]["cleanup"] = time.monotonic() - before
+        result["timings"]["controller_total"] = time.monotonic() - started
+        result["ok"] = result["ok"] and result["cleanup"]["state_removed"] and not result["cleanup"]["errors"]
+    return result
+
+
+def run_native_skill_study(prompt: str, fixture: Path, timeout: int, expected_skills: list[str], *, agent: str = "codex", max_iterations: int = 24, assembly_only: bool = False) -> dict[str, Any]:
+    if agent == "hermes":
+        return run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only)
+    if agent != "codex" or assembly_only:
+        raise ValueError("Unsupported native study host or probe")
+    started = time.monotonic()
+    runtime = Path(tempfile.mkdtemp(prefix="agent-signal-skill-study-"))
+    source = dict(os.environ)
+    result = {"ok": False, "failure": None, "tokens": None, "dollars": None,
+              "timings": {"preflight": None, "worker": None, "cleanup": None},
+              "resource_limits": {"timeout_seconds": timeout, "max_iterations_requested": max_iterations,
+                                  "max_iterations": None, "iteration_limit_enforced": False},
+              "limits": ["Codex exec supports the wall timeout here, not an iteration ceiling"]}
+    try:
+        exe = native_executable("codex")
+        if not exe:
+            raise ValueError("native Codex unavailable")
+        env = runtime_environment(source, runtime)
+        # This lane must never turn subscription study authorization into API spend.
+        owner = Path(source.get("CODEX_HOME") or Path(source.get("USERPROFILE") or source.get("HOME") or Path.home()) / ".codex")
+        auth = json.loads((owner / "auth.json").read_text(encoding="utf-8-sig"))
+        if not _token_projection(auth.get("tokens")).get("access_token") or auth.get("auth_mode") == "apikey":
+            raise ValueError("native skill study requires subscription authentication")
+        stage_auth("codex", source, env)
+        staged = Path(env["CODEX_HOME"]) / "auth.json"
+        clean_auth = json.loads(staged.read_text(encoding="utf-8"))
+        clean_auth.pop("OPENAI_API_KEY", None)
+        staged.write_text(json.dumps(clean_auth), encoding="utf-8")
+        before = time.monotonic()
+        common, result["catalog_evidence"] = skill_study_preflight(exe, fixture, env, source, expected_skills)
+        result["timings"]["preflight"] = time.monotonic() - before
+        command = [exe, "exec", *common, "--ignore-user-config", "--ignore-rules", "--skip-git-repo-check",
+                   "--ephemeral", "--json", "-"]
+        before = time.monotonic()
+        proc = subprocess.run(command, input=prompt, cwd=fixture, env=env, text=True, encoding="utf-8",
+                              capture_output=True, timeout=timeout)
+        result["timings"]["worker"] = time.monotonic() - before
+        result.update(skill_study_events(proc.stdout, expected_skills))
+        result["returncode"] = proc.returncode
+        # Record public configuration/readiness headers, never raw diagnostics.
+        result["runtime_headers"] = [line for line in proc.stderr.splitlines()
+            if re.match(r"^(model|provider|reasoning effort|sandbox|approval):", line)]
+        result["ok"] = result["ok"] and proc.returncode == 0
+        result["requested_route"] = {"model": "gpt-6-sol", "reasoning": "medium", "provider": "openai-codex"}
+        result["provider_resolved_identity_verified"] = False
+        if not result["ok"]:
+            result["failure"] = "native execution or event evidence failed"
+    except Exception as exc:
+        result["failure"] = type(exc).__name__ + ": " + str(exc)
+    finally:
+        before = time.monotonic()
+        result["cleanup"] = cleanup_runtime(runtime, fixture)
+        result["timings"]["cleanup"] = time.monotonic() - before
+        result["timings"]["controller_total"] = time.monotonic() - started
+        result["ok"] = result["ok"] and result["cleanup"]["credentials_removed"] and result["cleanup"]["state_removed"] and not result["cleanup"]["errors"]
     return result

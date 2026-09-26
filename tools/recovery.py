@@ -19,6 +19,7 @@ import sys
 import tempfile
 from collections.abc import Iterable, Sequence
 from copy import deepcopy
+from functools import wraps
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
 
@@ -580,29 +581,86 @@ def _policy_artifacts(policy: Mapping[str, Any]):
             yield host, artifact
 
 
+def _select_artifacts(policy, artifacts=None, hosts=None):
+    available = {f"{host}:{item['id']}" for host, item in _policy_artifacts(policy)}
+    if artifacts is None:
+        return {value for value in available if hosts is None or value.split(":", 1)[0] in hosts}
+    values = [artifacts] if isinstance(artifacts, str) else list(artifacts)
+    if not values or any(not isinstance(value, str) for value in values) or len(values) != len(set(values)):
+        raise RecoveryError("artifact selection must be nonempty and unique")
+    if any(not isinstance(value, str) or value not in available for value in values):
+        raise RecoveryError("artifact selection requires exact existing host:id identities")
+    if hosts is not None and any(value.split(":", 1)[0] not in hosts for value in values):
+        raise RecoveryError("artifact selection is outside selected hosts")
+    return set(values)
+
+
+def _mutation_lock(function):
+    @wraps(function)
+    def wrapped(policy_path, directory, roots, **kwargs):
+        if function.__name__ == "restore" and not kwargs.get("apply", False):
+            return function(policy_path, directory, roots, **kwargs)
+        tools_dir = str(Path(__file__).resolve().parent)
+        if tools_dir not in sys.path:
+            sys.path.insert(0, tools_dir)
+        import sync_git
+        policy = _load_policy(Path(policy_path))
+        selected = _select_artifacts(policy, kwargs.get("artifacts"), kwargs.get("hosts"))
+        paths = [Path(directory)]
+        # Capture and restore share source/destination root locks so a
+        # cooperating restore cannot alter a capture's native input mid-read.
+        paths.extend(Path(roots[host]) for host in sorted({v.split(":", 1)[0] for v in selected}) if host in roots)
+        try:
+            with sync_git.path_locks(paths):
+                return function(policy_path, directory, roots, **kwargs)
+        except sync_git.SyncBlocked as exc:
+            raise RecoveryError(str(exc)) from exc
+    return wrapped
+
+
+def _file_identity(path):
+    _assert_no_reparse_ancestors(path, label="restore target")
+    try:
+        info = path.stat()
+    except FileNotFoundError:
+        return None
+    if not path.is_file():
+        raise RecoveryError(f"restore target is not a file: {path}")
+    return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, _sha256(path.read_bytes()))
+
+
+@_mutation_lock
+
 def snapshot(
     policy_path: str | Path,
     output_dir: str | Path,
     roots: Mapping[str, str | Path],
     *,
     repo_root: str | Path | None = None,
+    artifacts: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Build a deterministic public-safe snapshot and return its manifest."""
 
     policy_path = Path(policy_path)
     output_dir = Path(output_dir)
     policy = _load_policy(policy_path)
-    resolved_roots = {host: Path(root) for host, root in roots.items()}
-    missing = sorted(set(policy["hosts"]) - set(resolved_roots))
+    selected_ids = _select_artifacts(policy, artifacts)
+    selected_hosts = {value.split(":", 1)[0] for value in selected_ids}
+    old_manifest = verify_snapshot(policy_path, output_dir) if artifacts is not None else None
+    resolved_roots = {host: Path(root) for host, root in roots.items() if host in selected_hosts}
+    missing = sorted(selected_hosts - set(resolved_roots))
     if missing:
         raise RecoveryError(f"missing host roots: {', '.join(missing)}")
     repo = Path(repo_root) if repo_root is not None else policy_path.parent
     replacements = _path_replacements(resolved_roots, repo)
     prepared: dict[str, bytes] = {}
     records: list[dict[str, Any]] = []
+    sources = {}
 
     for host, artifact in _policy_artifacts(policy):
         identity = f"{host}:{artifact['id']}"
+        if identity not in selected_ids:
+            continue
         source_rel = artifact["source"]
         if _blocked_source(PurePosixPath(source_rel), artifact["kind"]):
             raise RecoveryError(f"blocked source artifact: {identity} ({source_rel})")
@@ -612,6 +670,7 @@ def snapshot(
             source = _safe_join(mount.resolve(strict=True), relative, must_exist=True)
         else:
             source = _safe_join(resolved_roots[host], source_rel, must_exist=True)
+        source_identity = _file_identity(source)
         if artifact["kind"] == "config":
             config = _read_config(source, artifact["format"])
             fragment: dict[str, Any] = {}
@@ -629,6 +688,9 @@ def snapshot(
             if artifact.get("portable_paths"):
                 text = _normalize(text, replacements)
             data = _canonical_newlines(text).encode("utf-8")
+        if _file_identity(source) != source_identity:
+            raise RecoveryError(f"capture source changed during read: {identity}")
+        sources[source] = source_identity
         snapshot_rel = str(_canonical_relative(artifact["snapshot"], label=f"{identity} snapshot"))
         if artifact["kind"] == "text":
             _assert_artifact_public_safe(data, snapshot_rel, repo)
@@ -653,6 +715,11 @@ def snapshot(
             }
         )
 
+    if old_manifest is not None:
+        captured = {(item["host"], item["id"]): item for item in records}
+        records = [captured.get((item["host"], item["id"]), item) for item in old_manifest["artifacts"]]
+        for item in records:
+            prepared.setdefault(item["snapshot"], _safe_join(output_dir, item["snapshot"], must_exist=True).read_bytes())
     policy_copy = deepcopy(policy)
     policy_copy.pop("$schema", None)
     manifest = {
@@ -675,10 +742,49 @@ def snapshot(
             old_paths = {item["snapshot"] for item in old.get("artifacts", []) if isinstance(item, dict)}
         except (OSError, json.JSONDecodeError, KeyError):
             old_paths = set()
+    for source, identity in sources.items():
+        if _file_identity(source) != identity:
+            raise RecoveryError(f"capture source changed before commit: {source}")
+    updates = {}
+    selected_paths = {item["snapshot"] for item in records if f"{item['host']}:{item['id']}" in selected_ids}
     for relative, data in prepared.items():
-        destination = _safe_join(output_dir, relative, must_exist=False)
-        _atomic_write(destination, data)
-    _atomic_write(_safe_join(output_dir, "manifest.json", must_exist=False), manifest_data)
+        if old_manifest is not None and relative not in selected_paths:
+            continue
+        updates[_safe_join(output_dir, relative, must_exist=False)] = data
+    updates[_safe_join(output_dir, "manifest.json", must_exist=False)] = manifest_data
+    originals = {path: path.read_bytes() if path.is_file() else None for path in updates}
+    identities = {path: _file_identity(path) for path in updates}
+    written = {}
+    try:
+        for path, data in updates.items():
+            if _file_identity(path) != identities[path]:
+                raise RecoveryError(f"snapshot output changed before commit: {path}")
+            _atomic_write(path, data)
+            written[path] = _file_identity(path)
+            if path.read_bytes() != data:
+                raise RecoveryError(f"snapshot output readback mismatch: {path}")
+    except Exception as exc:
+        incomplete = []
+        for path in reversed(written):
+            try:
+                if _file_identity(path) != written[path] or path.read_bytes() != updates[path]:
+                    raise RecoveryError("snapshot output changed after write")
+                if originals[path] is None:
+                    path.unlink()
+                else:
+                    _atomic_write_impl(path, originals[path])
+            except Exception:
+                incomplete.append(path)
+        if incomplete:
+            backup = Path(tempfile.mkdtemp(prefix="agent-sync-snapshot-conflict-"))
+            evidence = []
+            for number, path in enumerate(incomplete):
+                if originals[path] is not None:
+                    (backup / f"{number}.original").write_bytes(originals[path])
+                evidence.append({"target": str(path), "original_present": originals[path] is not None})
+            (backup / "conflicts.json").write_bytes(_canonical_json(evidence))
+            raise RecoveryError(f"snapshot failed; rollback conflicts preserved at {backup}") from exc
+        raise
     for stale in sorted(old_paths - set(prepared)):
         stale_path = _safe_join(output_dir, stale, must_exist=False)
         if stale_path.is_file() and not _is_reparse_point(stale_path):
@@ -790,6 +896,7 @@ def _semantic_equal(left: Any, right: Any) -> bool:
     return left == right
 
 
+@_mutation_lock
 def restore(
     policy_path: str | Path,
     snapshot_dir: str | Path,
@@ -799,13 +906,15 @@ def restore(
     force_text: bool = False,
     repo_root: str | Path | None = None,
     hosts: Iterable[str] | None = None,
+    artifacts: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Plan or apply a restore. Dry-run is the default."""
 
     policy_path = Path(policy_path)
     snapshot_dir = Path(snapshot_dir)
     policy = _load_policy(policy_path)
-    selected_hosts = _normalize_hosts(policy["hosts"] if hosts is None else hosts)
+    selected_artifacts = _select_artifacts(policy, artifacts, _normalize_hosts(hosts) if hosts is not None else None)
+    selected_hosts = _normalize_hosts({value.split(":", 1)[0] for value in selected_artifacts})
     # Verify every policy artifact and every manifest record before narrowing
     # the effect scope.  A selected restore must not hide a damaged artifact
     # belonging to another host.
@@ -814,6 +923,8 @@ def restore(
     repo = Path(repo_root) if repo_root is not None else policy_path.parent
     records = {(item["host"], item["id"]): item for item in manifest["artifacts"]}
     writes: dict[Path, bytes] = {}
+    identities = {}
+    originals = {}
     changes: list[dict[str, Any]] = []
     conflicts: list[dict[str, Any]] = []
     selected_set = set(selected_hosts)
@@ -821,7 +932,7 @@ def restore(
 
     # Complete preflight before the first mutation.
     for host, artifact in _policy_artifacts(policy):
-        if host not in selected_set:
+        if host not in selected_set or f"{host}:{artifact['id']}" not in selected_artifacts:
             continue
         record = records[(host, artifact["id"])]
         source_data = _safe_join(snapshot_dir, record["snapshot"], must_exist=True).read_bytes()
@@ -835,6 +946,8 @@ def restore(
             read_only_mount = True
         else:
             target = _safe_join(resolved_roots[host], artifact["source"], must_exist=False)
+        before = _file_identity(target)
+        original = target.read_bytes() if before is not None else None
         if artifact["kind"] == "config":
             fragment = json.loads(source_data.decode("utf-8"))
             fragment = _expand(fragment, resolved_roots, repo, home=target_home)
@@ -881,13 +994,17 @@ def restore(
                     }
                 )
                 continue
-        current_data = target.read_bytes() if target.is_file() else None
+        if _file_identity(target) != before:
+            raise RecoveryError(f"restore target changed during preflight: {target}")
+        current_data = original
         if current_data != desired:
             if read_only_mount:
                 conflicts.append({"host": host, "id": artifact["id"], "target": artifact["source"],
                                   "reason": "linked native source is read-only; edit its owner instead"})
                 continue
             writes[target] = desired
+            identities[target] = before
+            originals[target] = original
             changes.append(
                 {
                     "host": host,
@@ -907,23 +1024,38 @@ def restore(
         names = ", ".join(f"{item['host']}:{item['id']}" for item in conflicts)
         raise RecoveryError(f"text conflict prevents restore: {names}")
     if apply:
-        originals = {
-            target: target.read_bytes() if target.is_file() else None
-            for target in writes
-        }
-        applied: list[Path] = []
+        applied = {}
         try:
             for target, data in writes.items():
+                if _file_identity(target) != identities[target]:
+                    raise RecoveryError(f"restore target changed since preflight: {target}")
                 _atomic_write(target, data)
-                applied.append(target)
-        except Exception:
+                applied[target] = _file_identity(target)
+                if target.read_bytes() != data:
+                    raise RecoveryError(f"restore readback mismatch: {target}")
+        except Exception as exc:
+            incomplete = []
             for target in reversed(applied):
-                original = originals[target]
-                if original is None:
-                    if target.is_file() and not _is_reparse_point(target):
+                try:
+                    if _file_identity(target) != applied[target] or target.read_bytes() != writes[target]:
+                        raise RecoveryError("target changed after restore write")
+                    original = originals[target]
+                    if original is None:
                         target.unlink()
-                else:
-                    _atomic_write_impl(target, original)
+                    else:
+                        _atomic_write_impl(target, original)
+                except Exception:
+                    incomplete.append(target)
+            if incomplete:
+                backup = Path(tempfile.mkdtemp(prefix="agent-sync-recovery-conflict-"))
+                evidence = []
+                for number, target in enumerate(incomplete):
+                    original = originals[target]
+                    if original is not None:
+                        (backup / f"{number}.original").write_bytes(original)
+                    evidence.append({"target": str(target), "original_present": original is not None})
+                (backup / "conflicts.json").write_bytes(_canonical_json(evidence))
+                raise RecoveryError(f"restore failed; rollback conflicts preserved at {backup}") from exc
             raise
     return plan
 
@@ -1428,6 +1560,7 @@ def _build_parser() -> argparse.ArgumentParser:
         metavar="HOST",
         help="scope restore, diff, or bootstrap to one or more hosts",
     )
+    parser.add_argument("--artifact", action="append", default=None, metavar="HOST:ID", help="select exact policy artifacts for snapshot, diff, or restore")
     parser.add_argument("--apply", action="store_true", help="apply restore; default is dry-run")
     parser.add_argument("--force-text", action="store_true", help="replace conflicting instruction files")
     parser.add_argument("--machine", default="local-windows", help="fleet machine id")
@@ -1441,9 +1574,11 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.host and args.command not in {"diff", "restore", "bootstrap"}:
             raise RecoveryError("--host is supported only for diff, restore, and bootstrap")
+        if args.artifact is not None and args.command not in {"snapshot", "diff", "restore"}:
+            raise RecoveryError("--artifact is supported only for snapshot, diff, and restore")
         roots = _parse_roots(args.root)
         if args.command == "snapshot":
-            result = snapshot(policy, snapshot_dir, roots, repo_root=policy.resolve().parent)
+            result = snapshot(policy, snapshot_dir, roots, repo_root=policy.resolve().parent, artifacts=args.artifact)
         elif args.command == "verify":
             result = verify_snapshot(policy, snapshot_dir)
         elif args.command == "bootstrap":
@@ -1466,6 +1601,7 @@ def main(argv: list[str] | None = None) -> int:
                 force_text=args.force_text,
                 repo_root=policy.resolve().parent,
                 hosts=args.host,
+                artifacts=args.artifact,
             )
             if args.command == "diff":
                 result["apply"] = False

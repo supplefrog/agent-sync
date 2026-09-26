@@ -1,0 +1,26 @@
+{
+  "create-handoff-A": {
+    "arm": "absent-target",
+    "job": "f7d186dc577c497ca38cf5e87305036a"
+  },
+  "create-handoff-B": {
+    "arm": "shared-owner",
+    "job": "5aeac595f8e742e785de69e4510cfe56"
+  },
+  "revise-project-A": {
+    "arm": "absent-target",
+    "job": "9b5f9927833d47e7b83a656479be27d4"
+  },
+  "revise-project-B": {
+    "arm": "shared-owner",
+    "job": "8595e067ddc74081b6774d5e3a4c4760"
+  },
+  "instruction-editor-notes-A": {
+    "arm": "absent-target",
+    "job": "b1308bc4126a4297947f6af1b2fc84be"
+  },
+  "instruction-editor-notes-B": {
+    "arm": "shared-owner",
+    "job": "2d857c6f19c94e67bdd74fcd97529535"
+  }
+}

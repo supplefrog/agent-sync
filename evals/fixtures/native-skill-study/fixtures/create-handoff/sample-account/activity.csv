@@ -1,0 +1,7 @@
+record_id,date,event,actor,detail
+EV-01,2026-09-21,plan_created,Mira,Art week 39
+EV-02,2026-09-22,plan_approved,Mira,Art week 39
+EV-03,2026-09-23,export_created,Mira,Art week 39
+EV-04,2026-09-23,export_created,Mira,Art week 39
+EV-05,2026-09-24,share_opened,Noor,Art week 39
+EV-06,2026-09-25,invite_corrected,Noor,Operations reviewer address

@@ -366,7 +366,7 @@ class ReconcileTests(unittest.TestCase):
             self.assertNotEqual(old_recovery_hash, new_recovery_hash)
             delta = json.loads((repo / "host-deltas.json").read_text(encoding="utf-8"))
             self.assertEqual(
-                f"sha256:{new_recovery_hash}",
+                "sha256:" + self.fleet.sha256_file(repo / "recovery/current/hosts/hermes/config.json"),
                 delta["entries"][0]["version_or_hash"],
             )
             load_tool("host_deltas").load_manifest(repo / "host-deltas.json", repo)

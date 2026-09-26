@@ -30,9 +30,14 @@ def tree(root):
 
 
 def validate(spec):
-    if spec.get('purpose') not in ('runtime-smoke', 'injected-instruction-study'):
-        raise ValueError('Explicit purpose required: runtime-smoke or injected-instruction-study. '
-                         'This leaf/inline runner cannot evaluate natural discovery or architecture workflows.')
+    if spec.get('purpose') not in ('runtime-smoke', 'injected-instruction-study', 'native-skill-study'):
+        raise ValueError('Explicit purpose required: runtime-smoke, injected-instruction-study or native-skill-study. '
+                         'This leaf runner cannot evaluate architecture or delegation workflows.')
+    if spec['purpose'] == 'native-skill-study':
+        if (spec.get('agent') not in ('codex', 'hermes') or spec.get('provider') != 'openai-codex' or spec.get('model') != 'gpt-6-sol' or spec.get('reasoning') != 'medium'):
+            raise ValueError('Native skill study requires an explicit codex or hermes host/openai-codex/gpt-6-sol/medium')
+        if len(spec['arms']) != 2 or sum(a.get('instructions') is None for a in spec['arms']) != 1:
+            raise ValueError('Native study requires one absent-target baseline and one candidate')
     if spec['purpose'] == 'runtime-smoke' and len(spec['arms']) * len(spec['cases']) != 1:
         raise ValueError('A runtime smoke is limited to one trial, not a workflow comparison')
     if not 1 <= len(spec['arms']) * len(spec['cases']) <= 12:
@@ -56,7 +61,12 @@ def prepare(spec, out):
     out.mkdir(parents=True, exist_ok=True)
     workroot = Path(spec['workspace_root']).resolve()
     workroot.mkdir(parents=True, exist_ok=True)
-    frames = {a['id']: freeze_candidate(Path(a['instructions'])) for a in spec['arms']}
+    frames = {a['id']: freeze_candidate(Path(a['instructions'])) if a.get('instructions') else None for a in spec['arms']}
+    source_trees = {}
+    common_catalog = {}
+    if spec['purpose'] == 'native-skill-study':
+        source_trees = {case['id']: tree(Path(case['fixture'])) for case in spec['cases']}
+        common_catalog = {str(Path(source)): freeze_candidate(Path(source)) for source in spec.get('catalog', [])}
     jobs = []
     for index, case in enumerate(spec['cases']):
         # Rotate ordering without changing any case/prompt across arms.
@@ -65,15 +75,55 @@ def prepare(spec, out):
             ident = uuid.uuid4().hex
             fixture = workroot / ident
             shutil.copytree(case['fixture'], fixture)
-            instructions = frames[arm['id']]['prompt_text']
+            if spec['purpose'] == 'native-skill-study':
+                if tree(fixture) != source_trees[case['id']]:
+                    raise ValueError('Copied fixture differs from shared frozen source')
+                sources = [(Path(source), common_catalog[str(Path(source))]) for source in spec.get('catalog', [])]
+                if arm.get('instructions'):
+                    sources.append((Path(arm['instructions']), frames[arm['id']]))
+                catalog = []
+                catalog_frames = {}
+                for source, frozen_catalog in sources:
+                    if source.name != 'SKILL.md':
+                        raise ValueError('Native discovery requires a SKILL.md package')
+                    destination = fixture / '.agents' / 'skills' / source.parent.name
+                    if destination.exists():
+                        raise ValueError('Catalog package name collision')
+                    destination.mkdir(parents=True)
+                    for relative, digest in frozen_catalog['files'].items():
+                        origin = source.parent / relative
+                        if sha(origin) != digest:
+                            raise ValueError('Catalog source changed before staging')
+                        target = destination / relative
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        target.write_bytes(origin.read_bytes())
+                    staged_skill = destination / 'SKILL.md'
+                    if freeze_candidate(staged_skill)['package_sha256'] != frozen_catalog['package_sha256']:
+                        raise ValueError('Catalog source changed while staging')
+                    catalog_frames[str(staged_skill)] = frozen_catalog['package_sha256']
+                    catalog.append(str(staged_skill))
+                instructions = None
+            else:
+                catalog = []
+                catalog_frames = {}
+                instructions = frames[arm['id']]['prompt_text']
             prompt = case['prompt'] + '\n\nProject: ' + str(fixture) + '\nWork only in this project. Do not delegate, use network services, or modify parent directories.'
-            jobs.append({'id': ident, 'arm': arm['id'], 'case': case['id'],
+            if spec['purpose'] == 'native-skill-study':
+                prompt = case['prompt']
+            jobs.append({'catalog_frames': catalog_frames, 'catalog': catalog, 'id': ident, 'arm': arm['id'], 'case': case['id'],
                          'fixture': str(fixture), 'initial_tree': tree(fixture),
                          'instructions': instructions, 'prompt': prompt})
     plan = {'spec': spec, 'jobs': jobs, 'candidate_snapshots': frames,
             'oracle_sha256': sha(spec['oracle']), 'controller_sha256': sha(__file__),
             'worker_sha256': sha(Path(__file__).with_name('evaluation_artifact_worker.py')),
-            'kind': spec['purpose'], 'workflow_comparison_supported': False}
+            'native_hermes_worker_sha256': sha(Path(__file__).with_name('evaluation_hermes_worker.py')),
+            'runtime_sha256': sha(Path(__file__).with_name('evaluation_runtime.py')),
+            'kind': spec['purpose'], 'workflow_comparison_supported': False,
+            'resource_limits': {'timeout_seconds': spec['timeout'],
+                                'max_iterations': spec['max_iterations'] if spec.get('agent') == 'hermes' else None,
+                                'iteration_limit_enforced': spec.get('agent') == 'hermes'}}
+    if spec['purpose'] == 'native-skill-study':
+        plan.update(case_source_trees=source_trees, common_catalog_snapshots=common_catalog)
     (out / 'plan.json').write_text(json.dumps(plan, indent=2) + '\n', encoding='utf-8')
     return plan
 
@@ -88,6 +138,11 @@ def validate_jobs(plan):
     cases = {case['id']: case for case in spec['cases']}
     expected = {(arm['id'], case) for arm in spec['arms'] for case in cases}
     jobs = plan['jobs']
+    if spec['purpose'] == 'native-skill-study':
+        if set(plan.get('case_source_trees', {})) != set(cases):
+            raise ValueError('Shared frozen fixture inventory changed')
+        if set(plan.get('common_catalog_snapshots', {})) != {str(Path(source)) for source in spec.get('catalog', [])}:
+            raise ValueError('Shared frozen catalog inventory changed')
     if len(jobs) != len(expected):
         raise ValueError('Prepared trial count differs from the declared suite')
     seen_pairs, seen_ids = set(), set()
@@ -105,9 +160,36 @@ def validate_jobs(plan):
         if fixture != workroot / ident or not fixture.is_dir():
             raise ValueError('Prepared fixture location changed')
         prompt = cases[item['case']]['prompt'] + '\n\nProject: ' + item['fixture'] + '\nWork only in this project. Do not delegate, use network services, or modify parent directories.'
+        if spec['purpose'] == 'native-skill-study':
+            prompt = cases[item['case']]['prompt']
+            arm = next(a for a in spec['arms'] if a['id'] == item['arm'])
+            sources = [(Path(source), plan['common_catalog_snapshots'][str(Path(source))]) for source in spec.get('catalog', [])]
+            if arm.get('instructions'):
+                sources.append((Path(arm['instructions']), plan['candidate_snapshots'][item['arm']]))
+            expected_tree = dict(plan['case_source_trees'][item['case']])
+            declared_catalog = {}
+            for source, frozen in sources:
+                relative_root = '.agents/skills/' + source.parent.name + '/'
+                staged = str(fixture / relative_root / 'SKILL.md')
+                if staged in declared_catalog or any(relative.startswith(relative_root) for relative in expected_tree):
+                    raise ValueError('Catalog package name collision')
+                declared_catalog[staged] = frozen['package_sha256']
+                expected_tree.update({relative_root + relative: digest for relative, digest in frozen['files'].items()})
+            expected_catalog = sorted(str(p) for p in (fixture / '.agents' / 'skills').glob('*/SKILL.md'))
+            if sorted(item.get('catalog', [])) != expected_catalog or expected_catalog != sorted(declared_catalog):
+                raise ValueError('Prepared native catalog changed')
+            if item['catalog_frames'] != declared_catalog:
+                raise ValueError('Staged native catalog differs from shared frozen package')
+            for skill_path, frozen_hash in item['catalog_frames'].items():
+                if skill_path not in expected_catalog or freeze_candidate(Path(skill_path))['package_sha256'] != frozen_hash:
+                    raise ValueError('Staged native catalog differs from frozen package')
+            if item['initial_tree'] != expected_tree:
+                raise ValueError('Prepared fixture differs from shared frozen source and catalog')
+            if item['instructions'] is not None:
+                raise ValueError('Native study cannot inject instructions')
         if item['prompt'] != prompt:
             raise ValueError('Prepared prompt differs from the declared case')
-        if item['instructions'] != plan['candidate_snapshots'][item['arm']]['prompt_text']:
+        if spec['purpose'] != 'native-skill-study' and item['instructions'] != plan['candidate_snapshots'][item['arm']]['prompt_text']:
             raise ValueError('Prepared instructions differ from the frozen candidate')
         if tree(fixture) != item['initial_tree']:
             raise ValueError('Prepared fixture contents changed')
@@ -122,6 +204,12 @@ def run(plan, out):
     if sha(__file__) != plan['controller_sha256'] or sha(Path(__file__).with_name('evaluation_artifact_worker.py')) != plan['worker_sha256']:
         raise ValueError('Frozen execution code changed')
     validate_jobs(plan)
+    if spec['purpose'] == 'native-skill-study':
+        if sha(Path(__file__).with_name('evaluation_runtime.py')) != plan['runtime_sha256']:
+            raise ValueError('Frozen native runtime changed')
+        if spec['agent'] == 'hermes' and sha(Path(__file__).with_name('evaluation_hermes_worker.py')) != plan['native_hermes_worker_sha256']:
+            raise ValueError('Frozen native Hermes worker changed')
+        return run_native_plan(plan, out)
     python, native = native_hermes_runtime(native_executable('hermes'))
     owner = str(hermes_owner_home(dict(os.environ)))
     source = str(Path(__file__).resolve().parents[1])
@@ -203,6 +291,49 @@ def run(plan, out):
               'results': results, 'seconds': time.monotonic() - started,
               'completed_trials': len(results), 'expected_trials': len(plan['jobs']), 'admission': False}
     (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+    return report
+
+
+
+def run_native_plan(plan, out):
+    from evaluation_runtime import run_native_skill_study
+    spec = plan['spec']
+    def one(item):
+        path = out / item['id']
+        if path.exists():
+            raise ValueError('Trial output exists: implicit reruns forbidden')
+        path.mkdir()
+        fixture = Path(item['fixture'])
+        result = {'id': item['id'], 'arm': item['arm'], 'case': item['case'], 'ok': False, 'oracle_seconds': None}
+        started = time.monotonic()
+        worker = run_native_skill_study(item['prompt'], fixture, spec['timeout'], item['catalog'],
+                                       agent=spec['agent'], max_iterations=spec['max_iterations'])
+        (path / 'worker.json').write_text(json.dumps(worker, indent=2)+'\n', encoding='utf-8')
+        result['native'] = worker
+        try:
+            if sha(spec['oracle']) != plan['oracle_sha256']:
+                raise ValueError('Frozen oracle changed during execution')
+            before = time.monotonic()
+            oracle = subprocess.run([sys.executable, spec['oracle'], str(fixture), item['case']], text=True, capture_output=True, timeout=90)
+            result['oracle_seconds'] = time.monotonic() - before
+            (path / 'oracle-output.txt').write_text(oracle.stdout + oracle.stderr, encoding='utf-8')
+            checked = json.loads(oracle.stdout)
+            result['oracle'] = checked
+            result['oracle_exit_code'] = oracle.returncode
+            result['ok'] = bool(worker['ok'] and oracle.returncode == 0 and type(checked.get('passed')) is int and checked['passed'] > 0 and type(checked.get('failed')) is int and checked['failed'] == 0 and checked.get('failures') == [])
+        except Exception as exc:
+            result['error'] = type(exc).__name__ + ': ' + str(exc)
+        result['seconds_including_verification'] = time.monotonic() - started
+        result['final_tree'] = tree(fixture)
+        (path / 'result.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
+        return result
+    started = time.monotonic()
+    with ThreadPoolExecutor(max_workers=spec['max_workers']) as pool:
+        results = list(pool.map(one, plan['jobs']))
+    report = {'kind': 'native-skill-study', 'workflow_comparison_supported': False, 'admission': False,
+              'results': results, 'seconds': time.monotonic()-started, 'completed_trials': len(results), 'expected_trials': len(plan['jobs']),
+              'limits': ['selected leaf skill only', 'provider resolved model identity unverified', 'subscription dollar cost unavailable']}
+    (out / 'report.json').write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
     return report
 
 

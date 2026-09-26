@@ -195,7 +195,27 @@ def state_identity(destination: Path) -> tuple[Any, ...]:
     return path_identity(destination / STATE_FILE)
 
 
+def _path_locks(paths):
+    try:
+        import sync_git
+    except ModuleNotFoundError:
+        from tools import sync_git
+    return sync_git.path_locks(paths)
+
+
 def render_snapshot(repo: Path, output: Path, *, names: Collection[str] | None = None) -> dict[str, Any]:
+    output = validated_snapshot_output(repo.resolve(), output)
+    with _path_locks([output]):
+        return _render_snapshot_unlocked(repo, output, names=names)
+
+
+def apply_snapshot(snapshot: Path, destination: Path, *, names: Collection[str] | None = None,
+                   expected_state: tuple[Any, ...] | None = None) -> list[dict[str, str]]:
+    with _path_locks([snapshot, destination]):
+        return _apply_snapshot_unlocked(snapshot, destination, names=names, expected_state=expected_state)
+
+
+def _render_snapshot_unlocked(repo: Path, output: Path, *, names: Collection[str] | None = None) -> dict[str, Any]:
     """Render admitted repository skills into a deterministic snapshot."""
     repo = repo.resolve()
     output = validated_snapshot_output(repo, output)
@@ -365,7 +385,7 @@ def plan_snapshot(snapshot: Path, destination: Path, *, manifest: dict[str, Any]
     return actions
 
 
-def apply_snapshot(snapshot: Path, destination: Path, *, names: Collection[str] | None = None,
+def _apply_snapshot_unlocked(snapshot: Path, destination: Path, *, names: Collection[str] | None = None,
                    expected_state: tuple[Any, ...] | None = None) -> list[dict[str, str]]:
     """Apply selected owners; guard planned identities and preserve concurrent edits."""
     manifest_raw = (snapshot / MANIFEST_FILE).read_bytes()
@@ -480,8 +500,9 @@ def apply_destinations(
     snapshot: Path, destinations: list[Path], *, names: Collection[str] | None = None
 ) -> list[tuple[Path, list[dict[str, str]]]]:
     """Preflight every destination before mutating the first one."""
-    preflight_destinations(snapshot, destinations, names=names)
-    return [(destination, apply_snapshot(snapshot, destination, names=names)) for destination in destinations]
+    with _path_locks([snapshot, *destinations]):
+        preflight_destinations(snapshot, destinations, names=names)
+        return [(destination, apply_snapshot(snapshot, destination, names=names)) for destination in destinations]
 
 
 def verify_snapshot(snapshot: Path, destination: Path, *, names: Collection[str] | None = None) -> list[dict[str, str]]:

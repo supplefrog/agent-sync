@@ -1,0 +1,1343 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-27",
+  "state": "source-checked; deployment/publication completed by separate coordinator receipt",
+  "claim": "Bounded native leaf quality evidence and selective recovery/concurrency mechanisms; no fleet parity certificate",
+  "quality": {
+    "decision": "No demonstrated incremental skill-quality gain on three valid task pairs. Keep existing owner and useful lifecycle behavior; do not extrapolate retirement or model ranking.",
+    "tasks": "Purpose-written realistic synthetic scenarios, one paired sample per task",
+    "comparisons": [
+      {
+        "case": "create-handoff",
+        "winner": "tie",
+        "both_critical_pass": true
+      },
+      {
+        "case": "instruction-editor-notes",
+        "winner": "tie",
+        "both_critical_pass": true
+      },
+      {
+        "case": "revise-project-proposal",
+        "winner": "absent-target",
+        "margin": "small",
+        "both_critical_pass": true
+      }
+    ],
+    "cells": [
+      {
+        "case": "create-handoff",
+        "arm": "absent-target",
+        "job": "f7d186dc577c497ca38cf5e87305036a",
+        "lane": "valid-leaf-quality",
+        "prompt_sha256": "94e268c47dbd85f1d81c4d3ea9ac1d7a28d307eb4e5672a9322a89e2086a4348",
+        "oracle": {
+          "passed": 17,
+          "failed": 0,
+          "failures": []
+        },
+        "input_tokens": 20107,
+        "output_tokens": 2229,
+        "cached_input_tokens": null,
+        "billed_cost_usd": null,
+        "api_calls": 8,
+        "native_seconds": 76.14100000000326,
+        "total_seconds_including_verification": 87.36000000000058,
+        "timings": {
+          "preflight": 0.01600000000325963,
+          "worker": 87.21899999999732,
+          "cleanup": 0.014999999999417923,
+          "controller_total": 87.25
+        },
+        "catalog_exact": true,
+        "native_catalog_names": [],
+        "verified_skill_reads": [],
+        "fixture_initial_tree": {
+          "context/team-notes.md": "69d91dc07406929fbcac27b225ddb096c40b97bb21087f91bd825f662f86f9ce",
+          "sample-account/activity.csv": "966b36d8a575ebee3f78f02a6594ba8300c19c81fe824a51d3331646554ab763",
+          "sample-account/call-notes.md": "aa38f32cda5d84e53be00d96a8855e217c37217c0ee0f25fc9b578a59bba9770",
+          "sample-account/success-plan.md": "5cf8e97a25b452259dd175fd2984ddb05117a970d8fa7de66c6618c876bb784f"
+        },
+        "final_deliverables": {
+          "deliverables/sample-handoff.md": "7f2019fdc5676206b75a82d86642339ea33edfde3cebb83b4f8b9e22f0e9ac9c",
+          "deliverables/trial-handoff/SKILL.md": "d32054e5a6d9074ce62e80f7b501006234ca2f299e7fffc02ec10678d00d84ae"
+        },
+        "requested_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "agent_observed_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "provider_resolved_identity_verified": false,
+        "cleanup": {
+          "credentials_removed": true,
+          "state_removed": true,
+          "errors": []
+        }
+      },
+      {
+        "case": "create-handoff",
+        "arm": "shared-owner",
+        "job": "5aeac595f8e742e785de69e4510cfe56",
+        "lane": "valid-leaf-quality",
+        "prompt_sha256": "94e268c47dbd85f1d81c4d3ea9ac1d7a28d307eb4e5672a9322a89e2086a4348",
+        "oracle": {
+          "passed": 18,
+          "failed": 0,
+          "failures": []
+        },
+        "input_tokens": 25107,
+        "output_tokens": 2079,
+        "cached_input_tokens": null,
+        "billed_cost_usd": null,
+        "api_calls": 7,
+        "native_seconds": 65.93800000000192,
+        "total_seconds_including_verification": 76.73500000000058,
+        "timings": {
+          "preflight": 0.031000000002677552,
+          "worker": 76.5789999999979,
+          "cleanup": 0.0,
+          "controller_total": 76.61000000000058
+        },
+        "catalog_exact": true,
+        "native_catalog_names": [
+          "skill-creator"
+        ],
+        "verified_skill_reads": [
+          {
+            "package_sha256": "d365d44839a26826f0c7f71b5de656bf384c2ecb020215cf4c657a9d741b4284",
+            "body_sha256": "e0831e3e0032a1abd31851b7cb8ad45ba549f69adbfb2f371f0fed09cbd51a13",
+            "source": "successful-native-skill_view"
+          }
+        ],
+        "fixture_initial_tree": {
+          "context/team-notes.md": "69d91dc07406929fbcac27b225ddb096c40b97bb21087f91bd825f662f86f9ce",
+          "sample-account/activity.csv": "966b36d8a575ebee3f78f02a6594ba8300c19c81fe824a51d3331646554ab763",
+          "sample-account/call-notes.md": "aa38f32cda5d84e53be00d96a8855e217c37217c0ee0f25fc9b578a59bba9770",
+          "sample-account/success-plan.md": "5cf8e97a25b452259dd175fd2984ddb05117a970d8fa7de66c6618c876bb784f"
+        },
+        "final_deliverables": {
+          "deliverables/sample-handoff.md": "263c6e076f0afbfd76d4723a48d9ec5f59c8c1017331e662f7cc5aa5968da6f9",
+          "deliverables/trial-handoff/SKILL.md": "b2a46fb9c45a56c31dfac0c7803555b5258a682726b5d9bad55631f99c546859"
+        },
+        "requested_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "agent_observed_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "provider_resolved_identity_verified": false,
+        "cleanup": {
+          "credentials_removed": true,
+          "state_removed": true,
+          "errors": []
+        }
+      },
+      {
+        "case": "revise-project",
+        "arm": "shared-owner",
+        "job": "8595e067ddc74081b6774d5e3a4c4760",
+        "lane": "incompatible-protected-file",
+        "prompt_sha256": "3b36f0ef8fa9528d8e487caaa62162691494d751bb676186107643221721bead",
+        "oracle": {
+          "passed": 13,
+          "failed": 2,
+          "failures": [
+            "AGENTS.md was not revised",
+            "Broken local link in project/AGENTS.md: docs/page-v1.md"
+          ]
+        },
+        "input_tokens": 13025,
+        "output_tokens": 2292,
+        "cached_input_tokens": null,
+        "billed_cost_usd": null,
+        "api_calls": 6,
+        "native_seconds": 66.7190000000046,
+        "total_seconds_including_verification": 77.625,
+        "timings": {
+          "preflight": 0.031000000002677552,
+          "worker": 77.46899999999732,
+          "cleanup": 0.014999999999417923,
+          "controller_total": 77.51499999999942
+        },
+        "catalog_exact": true,
+        "native_catalog_names": [
+          "skill-creator"
+        ],
+        "verified_skill_reads": [],
+        "fixture_initial_tree": {
+          "context/current-decisions.md": "011afea5f08f7f308e3e28aeb9c8818891aae1331464ecad3c3f04437485b716",
+          "project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+          "project/docs/authoring.md": "ac9c6b7e74ade26969d5b41b85f59301497cf7a87d96afd0fd23d1628039f073",
+          "project/docs/export-notes.md": "4664db602ec546008ce757ab178846314281872ab2ffd1e3f119858fb83063ef",
+          "project/docs/page-template.md": "af0cff79b8b909825ff870f0d461becc6b781a2469ecad40517ae4d71e61f167",
+          "project/docs/publishing.md": "4182bc8c9ab09308ac6952a2b72b37ad71a5900d28b0e989e507f57f3ceba9c2",
+          "project/scripts/check_docs.py": "63fe60f2ff77176175f8ea016b82977610612b5b3cf72957a0aabd280d67280e",
+          "README.md": "460788dcaaa4884e0cd380ca4319bf81996eef57dc1531e5ef34a5053d1c633f"
+        },
+        "final_deliverables": {
+          "deliverables/revision-note.md": "dec07ebda60150a615f3aa0f8be394c2fce495f41b5c05705b8f31fce7c4016e"
+        },
+        "requested_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "agent_observed_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "provider_resolved_identity_verified": false,
+        "cleanup": {
+          "credentials_removed": true,
+          "state_removed": true,
+          "errors": []
+        }
+      },
+      {
+        "case": "revise-project",
+        "arm": "absent-target",
+        "job": "9b5f9927833d47e7b83a656479be27d4",
+        "lane": "incompatible-protected-file",
+        "prompt_sha256": "3b36f0ef8fa9528d8e487caaa62162691494d751bb676186107643221721bead",
+        "oracle": {
+          "passed": 13,
+          "failed": 2,
+          "failures": [
+            "AGENTS.md was not revised",
+            "Broken local link in project/AGENTS.md: docs/page-v1.md"
+          ]
+        },
+        "input_tokens": 22424,
+        "output_tokens": 2445,
+        "cached_input_tokens": null,
+        "billed_cost_usd": null,
+        "api_calls": 7,
+        "native_seconds": 99.14099999999598,
+        "total_seconds_including_verification": 109.84300000000076,
+        "timings": {
+          "preflight": 0.014999999999417923,
+          "worker": 109.71899999999732,
+          "cleanup": 0.0,
+          "controller_total": 109.73399999999674
+        },
+        "catalog_exact": true,
+        "native_catalog_names": [],
+        "verified_skill_reads": [],
+        "fixture_initial_tree": {
+          "context/current-decisions.md": "011afea5f08f7f308e3e28aeb9c8818891aae1331464ecad3c3f04437485b716",
+          "project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+          "project/docs/authoring.md": "ac9c6b7e74ade26969d5b41b85f59301497cf7a87d96afd0fd23d1628039f073",
+          "project/docs/export-notes.md": "4664db602ec546008ce757ab178846314281872ab2ffd1e3f119858fb83063ef",
+          "project/docs/page-template.md": "af0cff79b8b909825ff870f0d461becc6b781a2469ecad40517ae4d71e61f167",
+          "project/docs/publishing.md": "4182bc8c9ab09308ac6952a2b72b37ad71a5900d28b0e989e507f57f3ceba9c2",
+          "project/scripts/check_docs.py": "63fe60f2ff77176175f8ea016b82977610612b5b3cf72957a0aabd280d67280e",
+          "README.md": "460788dcaaa4884e0cd380ca4319bf81996eef57dc1531e5ef34a5053d1c633f"
+        },
+        "final_deliverables": {
+          "deliverables/revision-note.md": "516d81670d8e366b1503696f147a4902acb358b7fc6419352a793e1176a50bf5"
+        },
+        "requested_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "agent_observed_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "provider_resolved_identity_verified": false,
+        "cleanup": {
+          "credentials_removed": true,
+          "state_removed": true,
+          "errors": []
+        }
+      },
+      {
+        "case": "instruction-editor-notes",
+        "arm": "absent-target",
+        "job": "b1308bc4126a4297947f6af1b2fc84be",
+        "lane": "valid-leaf-quality",
+        "prompt_sha256": "887aac644fcba990f4f3f7861aea92d2c3436217e7a10e4f925d084df43a50f8",
+        "oracle": {
+          "passed": 4,
+          "failed": 0,
+          "failures": []
+        },
+        "input_tokens": 9551,
+        "output_tokens": 763,
+        "cached_input_tokens": null,
+        "billed_cost_usd": null,
+        "api_calls": 5,
+        "native_seconds": 31.89100000000326,
+        "total_seconds_including_verification": 42.48399999999674,
+        "timings": {
+          "preflight": 0.014999999999417923,
+          "worker": 42.36000000000058,
+          "cleanup": 0.0,
+          "controller_total": 42.375
+        },
+        "catalog_exact": true,
+        "native_catalog_names": [],
+        "verified_skill_reads": [],
+        "fixture_initial_tree": {
+          "context/release-notes.md": "3d2276975e50bb8d31522edc3fe85d98f70fdf01122ca8bcf274fc12dd1d9af4"
+        },
+        "final_deliverables": {
+          "deliverables/release-note.md": "ad210cdd002b710e3ed625276a5986d3e60c85b7581e0e6fa2e9fc4ac17e929f"
+        },
+        "requested_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "agent_observed_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "provider_resolved_identity_verified": false,
+        "cleanup": {
+          "credentials_removed": true,
+          "state_removed": true,
+          "errors": []
+        }
+      },
+      {
+        "case": "instruction-editor-notes",
+        "arm": "shared-owner",
+        "job": "2d857c6f19c94e67bdd74fcd97529535",
+        "lane": "valid-leaf-quality",
+        "prompt_sha256": "887aac644fcba990f4f3f7861aea92d2c3436217e7a10e4f925d084df43a50f8",
+        "oracle": {
+          "passed": 4,
+          "failed": 0,
+          "failures": []
+        },
+        "input_tokens": 16393,
+        "output_tokens": 620,
+        "cached_input_tokens": null,
+        "billed_cost_usd": null,
+        "api_calls": 5,
+        "native_seconds": 29.81300000000192,
+        "total_seconds_including_verification": 40.18699999999808,
+        "timings": {
+          "preflight": 0.014999999999417923,
+          "worker": 40.06300000000192,
+          "cleanup": 0.014999999999417923,
+          "controller_total": 40.09300000000076
+        },
+        "catalog_exact": true,
+        "native_catalog_names": [
+          "skill-creator"
+        ],
+        "verified_skill_reads": [],
+        "fixture_initial_tree": {
+          "context/release-notes.md": "3d2276975e50bb8d31522edc3fe85d98f70fdf01122ca8bcf274fc12dd1d9af4"
+        },
+        "final_deliverables": {
+          "deliverables/release-note.md": "4fe6586b8ab11c385e2e577bd1e5ce7d933094db03326a0fc40c87be1c862437"
+        },
+        "requested_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "agent_observed_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "provider_resolved_identity_verified": false,
+        "cleanup": {
+          "credentials_removed": true,
+          "state_removed": true,
+          "errors": []
+        }
+      },
+      {
+        "case": "revise-project-proposal",
+        "arm": "absent-target",
+        "job": "1d0a7b6e56ee4266ba26d1895afc1b2a",
+        "lane": "valid-leaf-quality",
+        "prompt_sha256": "0ea07a2fb83e2ed281e6567d8661d37a602773d77171a25df6c7bd0007a5d63d",
+        "oracle": {
+          "passed": 15,
+          "failed": 0,
+          "failures": []
+        },
+        "input_tokens": 17640,
+        "output_tokens": 1689,
+        "cached_input_tokens": null,
+        "billed_cost_usd": null,
+        "api_calls": 8,
+        "native_seconds": 61.437000000005355,
+        "total_seconds_including_verification": 72.34399999999732,
+        "timings": {
+          "preflight": 0.01599999999598367,
+          "worker": 72.15600000000268,
+          "cleanup": 0.0,
+          "controller_total": 72.17199999999866
+        },
+        "catalog_exact": true,
+        "native_catalog_names": [],
+        "verified_skill_reads": [],
+        "fixture_initial_tree": {
+          "context/current-decisions.md": "011afea5f08f7f308e3e28aeb9c8818891aae1331464ecad3c3f04437485b716",
+          "project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+          "project/docs/authoring.md": "ac9c6b7e74ade26969d5b41b85f59301497cf7a87d96afd0fd23d1628039f073",
+          "project/docs/export-notes.md": "4664db602ec546008ce757ab178846314281872ab2ffd1e3f119858fb83063ef",
+          "project/docs/page-template.md": "af0cff79b8b909825ff870f0d461becc6b781a2469ecad40517ae4d71e61f167",
+          "project/docs/publishing.md": "4182bc8c9ab09308ac6952a2b72b37ad71a5900d28b0e989e507f57f3ceba9c2",
+          "project/scripts/check_docs.py": "63fe60f2ff77176175f8ea016b82977610612b5b3cf72957a0aabd280d67280e",
+          "README.md": "460788dcaaa4884e0cd380ca4319bf81996eef57dc1531e5ef34a5053d1c633f"
+        },
+        "final_deliverables": {
+          "deliverables/project-instructions.md": "a60d02aa115a2be7e704e453178a1bd5734def0d76d711d9cb509bfe03e7a0b4",
+          "deliverables/revision-note.md": "6289e8677ebc762fd19f0cdb72ba0ae77af5bc543b96e53935de18b45366181a"
+        },
+        "requested_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "agent_observed_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "provider_resolved_identity_verified": false,
+        "cleanup": {
+          "credentials_removed": true,
+          "state_removed": true,
+          "errors": []
+        }
+      },
+      {
+        "case": "revise-project-proposal",
+        "arm": "shared-owner",
+        "job": "dc99c8c7add041a193f48134b9badc18",
+        "lane": "valid-leaf-quality",
+        "prompt_sha256": "0ea07a2fb83e2ed281e6567d8661d37a602773d77171a25df6c7bd0007a5d63d",
+        "oracle": {
+          "passed": 15,
+          "failed": 0,
+          "failures": []
+        },
+        "input_tokens": 12938,
+        "output_tokens": 1718,
+        "cached_input_tokens": null,
+        "billed_cost_usd": null,
+        "api_calls": 9,
+        "native_seconds": 79.14100000000326,
+        "total_seconds_including_verification": 90.25,
+        "timings": {
+          "preflight": 0.0319999999992433,
+          "worker": 90.0460000000021,
+          "cleanup": 0.0,
+          "controller_total": 90.07800000000134
+        },
+        "catalog_exact": true,
+        "native_catalog_names": [
+          "skill-creator"
+        ],
+        "verified_skill_reads": [
+          {
+            "package_sha256": "d365d44839a26826f0c7f71b5de656bf384c2ecb020215cf4c657a9d741b4284",
+            "body_sha256": "e0831e3e0032a1abd31851b7cb8ad45ba549f69adbfb2f371f0fed09cbd51a13",
+            "source": "successful-native-skill_view"
+          }
+        ],
+        "fixture_initial_tree": {
+          "context/current-decisions.md": "011afea5f08f7f308e3e28aeb9c8818891aae1331464ecad3c3f04437485b716",
+          "project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+          "project/docs/authoring.md": "ac9c6b7e74ade26969d5b41b85f59301497cf7a87d96afd0fd23d1628039f073",
+          "project/docs/export-notes.md": "4664db602ec546008ce757ab178846314281872ab2ffd1e3f119858fb83063ef",
+          "project/docs/page-template.md": "af0cff79b8b909825ff870f0d461becc6b781a2469ecad40517ae4d71e61f167",
+          "project/docs/publishing.md": "4182bc8c9ab09308ac6952a2b72b37ad71a5900d28b0e989e507f57f3ceba9c2",
+          "project/scripts/check_docs.py": "63fe60f2ff77176175f8ea016b82977610612b5b3cf72957a0aabd280d67280e",
+          "README.md": "460788dcaaa4884e0cd380ca4319bf81996eef57dc1531e5ef34a5053d1c633f"
+        },
+        "final_deliverables": {
+          "deliverables/project-instructions.md": "6c3c7d58c26afc8334426e214d52b4b457c173d248e061392a7c51c02b60c37e",
+          "deliverables/revision-note.md": "e82f311c3e767fbe74a31a58f436b13f0dae6957362051dc1b3e47772277065e"
+        },
+        "requested_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "agent_observed_route": {
+          "model": "gpt-6-sol",
+          "provider": "openai-codex",
+          "reasoning": "medium"
+        },
+        "provider_resolved_identity_verified": false,
+        "cleanup": {
+          "credentials_removed": true,
+          "state_removed": true,
+          "errors": []
+        }
+      }
+    ],
+    "runtime_identity": {
+      "controller_sha256": "e35608aca9fa9356c90adae875b66d052a02af8220f5e0d95bdfdd7206fe8d75",
+      "worker_sha256": "7c3d741a32a2d3e68189778d6167cf0425ad209306303b3bee7553a1ff6dd1dd",
+      "native_hermes_worker_sha256": "3a4d5bb27bc310675b06710cfdb6d04cb60fb7a2d7a979db099fa8d93c5f8e9c",
+      "runtime_sha256": "383433bd75b80a0011ba34fa543ee6dd9f339b965179a741c0a44db7b8821c0c"
+    },
+    "evaluated_owner_file_sha256": "ed29063ee1a13d4d7dd13a1c070015db8dfe467613c1dd5aefa63964ecf2018b",
+    "evaluated_owner_package_sha256": "d365d44839a26826f0c7f71b5de656bf384c2ecb020215cf4c657a9d741b4284",
+    "readiness": {
+      "codex": "Four native turns completed, none produced requested file; exact catalog exposed but write readiness unresolved. Model reports are not proof of an automatic approval-review rejection.",
+      "hermes": "Native simple-file readiness succeeded; original instruction-file writes rejected by native protection without an interactive approval channel. Guard retained; draft path supported.",
+      "native_cells": 13,
+      "quality_cells": 8,
+      "readiness_cells": 5,
+      "total_ceiling_amendment": "Prospective compatibility amendment: max native cells13, quality8; no repeated sampling until a win, no paid fallback."
+    },
+    "study_limits": [
+      "Bounded catalog contains only target skill in candidate and none in baseline; not full-fleet prompt equivalence.",
+      "Native fixture tool guard is not OS isolation; trusted local test code only. Both arms experienced terminal restrictions.",
+      "Successful skill_view proves body read in positive candidate tasks; unrecorded read_file paths prevent a claim that near-miss body was not consumed.",
+      "Provider-resolved model snapshot, cached Hermes tokens, billed dollars and design/review/operator time unobserved.",
+      "Protected in-place pair excluded from quality comparison; draft pair was prospectively amended, not retroactively regraded.",
+      "No production sample, repetitions, statistical superiority, higher-versus-lower model ranking or architecture/delegation workflow tested.",
+      "The later minimal standing instruction wording is structurally checked separately; not included in this frozen quality study.",
+      "Historical native runtime/controller raw byte snapshots were not retained; their launch-bound digests are recorded, not a complete reproducible source snapshot. Worker raw bytes were preserved and match."
+    ],
+    "post_run_equivalence": {
+      "historical_execution_sha256": {
+        "evaluation_artifact_worker.py": "7c3d741a32a2d3e68189778d6167cf0425ad209306303b3bee7553a1ff6dd1dd",
+        "evaluation_hermes_worker.py": "3a4d5bb27bc310675b06710cfdb6d04cb60fb7a2d7a979db099fa8d93c5f8e9c"
+      },
+      "completed_trial_equivalence": [
+        {
+          "case": "create-handoff",
+          "identical_product_input_hashes": true,
+          "inputs_preserved_after_trials": true,
+          "identical_original_prompt": true,
+          "target_not_injected": true,
+          "catalog_difference": "only frozen target package"
+        },
+        {
+          "case": "instruction-editor-notes",
+          "identical_product_input_hashes": true,
+          "inputs_preserved_after_trials": true,
+          "identical_original_prompt": true,
+          "target_not_injected": true,
+          "catalog_difference": "only frozen target package"
+        },
+        {
+          "case": "revise-project",
+          "identical_product_input_hashes": true,
+          "inputs_preserved_after_trials": true,
+          "identical_original_prompt": true,
+          "target_not_injected": true,
+          "catalog_difference": "only frozen target package"
+        },
+        {
+          "case": "revise-project-proposal",
+          "identical_product_input_hashes": true,
+          "inputs_preserved_after_trials": true,
+          "identical_original_prompt": true,
+          "target_not_injected": true,
+          "catalog_difference": "only frozen target package"
+        }
+      ],
+      "historical_snapshot_limit": "Only byte-matching historical sources archived; recorded native runtime identity alone is not a complete reproducible snapshot.",
+      "scope": "Independent post-run byte check. Fixes frozen shared maps for future trials; does not rerun/regrade completed native observations."
+    },
+    "resource_limits": {
+      "hermes_iterations": 24,
+      "hermes_timeout_seconds": 420,
+      "workers": 2,
+      "retries": 0,
+      "codex": "Wall timeout enforced; native iteration ceiling unavailable and now explicitly reported."
+    }
+  },
+  "governance": {
+    "schema_version": 1,
+    "measurement": "matched local fixture runtime, five independent repetitions per arm",
+    "repository_revision": "0674784690b3246b59be8d70d752131a165edd85",
+    "source_bindings": {
+      "tools/reconcile.py": "26eaccb7c7395cbb78e55715c556a4fe04b2108291b6b3be1e4f1e8301588d8c",
+      "tools/recovery.py": "920ef5b78469512a46278a01719ec12d1a95fa4ff1047b0f307848b4d2ec89af",
+      "tools/host_deltas.py": "dfa9d605504e3212eef54ca6d4c2fe0a45e14a1d04c837be07e41b8c45c3cc6e",
+      "tools/sync_git.py": "5a4f0e4cf9df99e4d6dda65ad37403149cebb34fe49fa77844c293878da92d7f",
+      "tests/test_selected_capture_completion.py": "8a2afe6326dcdce28c8932d317cfbe6c82d7fc06625d5fcab21133d44402da16"
+    },
+    "selected_artifacts": [
+      "hermes:settings"
+    ],
+    "arms": {
+      "direct": "recovery.snapshot(... artifacts=['hermes:settings']) + host_deltas.refresh_bindings(... selected source identity)",
+      "coordinated": "reconcile.sync(capture_recovery=True, recovery_artifacts=['hermes:settings'], scoped=True, check_commands=[])"
+    },
+    "setup_and_verification_in_timed_region": false,
+    "clock_info": {
+      "wall": {
+        "implementation": "QueryPerformanceCounter()",
+        "advertised_resolution_seconds": 1e-07
+      },
+      "process_cpu": {
+        "implementation": "GetProcessTimes()",
+        "advertised_resolution_seconds": 1e-07
+      },
+      "observed_nonzero_cpu_readings_seconds": [
+        0.015625,
+        0.03125,
+        0.046875,
+        0.0625
+      ]
+    },
+    "run_order": [
+      "direct",
+      "coordinated",
+      "coordinated",
+      "direct",
+      "direct",
+      "coordinated",
+      "coordinated",
+      "direct",
+      "direct",
+      "coordinated"
+    ],
+    "runs": [
+      {
+        "order_index": 0,
+        "arm": "direct",
+        "wall_seconds": 0.0598383999968064,
+        "process_cpu_seconds": 0.0,
+        "result": "selected snapshot + selected binding refresh",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-9ffa539d80bc6eb72c310b7a1e4115aa38d192f3e27ea3c45e5cccf15c7abeeb.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 1913,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 0,
+        "arm": "coordinated",
+        "wall_seconds": 0.1441153999985545,
+        "process_cpu_seconds": 0.03125,
+        "result": "applied",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-c3e2cb9985eaaffdc22ee551e630bef980b590c152ade95e331d902642c97caf.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "reconciliation/requests/3a641ee506c73db19a3a7d9b622f8a57201c5c23165b42891420930dc8241999.json",
+            "before_bytes": null,
+            "after_bytes": 1534,
+            "change": "added"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 3447,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 1,
+        "arm": "coordinated",
+        "wall_seconds": 0.13802880000002915,
+        "process_cpu_seconds": 0.03125,
+        "result": "applied",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-6c3e3a11105306cc3646d80f04f02d3d517f082e30c743ee7cea32629830b279.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "reconciliation/requests/3a641ee506c73db19a3a7d9b622f8a57201c5c23165b42891420930dc8241999.json",
+            "before_bytes": null,
+            "after_bytes": 1534,
+            "change": "added"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 3447,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 1,
+        "arm": "direct",
+        "wall_seconds": 0.04891390000557294,
+        "process_cpu_seconds": 0.03125,
+        "result": "selected snapshot + selected binding refresh",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-ee6e4f928f08dc7686145a87463df58fd15402142f50b2fb6da2e82a0fcf7f9a.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 1913,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 2,
+        "arm": "direct",
+        "wall_seconds": 0.0500642000042717,
+        "process_cpu_seconds": 0.015625,
+        "result": "selected snapshot + selected binding refresh",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-7b27a47e92eadbf6e2a2a101e99fce1128e01a2406dfa24df0e497246624ca58.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 1913,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 2,
+        "arm": "coordinated",
+        "wall_seconds": 0.13989289999881294,
+        "process_cpu_seconds": 0.046875,
+        "result": "applied",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-9ee86ddc760385cf59d5ea973025a8f40a2e0523090ff77af3d84c8001c54f52.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "reconciliation/requests/3a641ee506c73db19a3a7d9b622f8a57201c5c23165b42891420930dc8241999.json",
+            "before_bytes": null,
+            "after_bytes": 1534,
+            "change": "added"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 3447,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 3,
+        "arm": "coordinated",
+        "wall_seconds": 0.1378571999957785,
+        "process_cpu_seconds": 0.03125,
+        "result": "applied",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-9b3111351733d8513017fa678cdcb73e5ef70c7e3970f2611d7d158616d58eb5.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "reconciliation/requests/3a641ee506c73db19a3a7d9b622f8a57201c5c23165b42891420930dc8241999.json",
+            "before_bytes": null,
+            "after_bytes": 1534,
+            "change": "added"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 3447,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 3,
+        "arm": "direct",
+        "wall_seconds": 0.048654799997166265,
+        "process_cpu_seconds": 0.0625,
+        "result": "selected snapshot + selected binding refresh",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-138b11739c6a34f37781e22bccbc29fde9f02d3388ed48ac9eaefd5390018ffe.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 1913,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 4,
+        "arm": "direct",
+        "wall_seconds": 0.05044560000533238,
+        "process_cpu_seconds": 0.046875,
+        "result": "selected snapshot + selected binding refresh",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-08a9bbb92111668d56f74d827b6a6dc09f349cc665d6fcd0386ca03494f4707e.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 1913,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      },
+      {
+        "order_index": 4,
+        "arm": "coordinated",
+        "wall_seconds": 0.14235529999859864,
+        "process_cpu_seconds": 0.046875,
+        "result": "applied",
+        "changed_files": [
+          {
+            "path": ".agent-signal-path-9638d2ff68fc91db1e819744aaf0f1b300c95fe125d43b73a7d4738b56765ea1.lock",
+            "before_bytes": null,
+            "after_bytes": 1,
+            "change": "added"
+          },
+          {
+            "path": "host-deltas.json",
+            "before_bytes": 879,
+            "after_bytes": 879,
+            "change": "modified"
+          },
+          {
+            "path": "reconciliation/requests/3a641ee506c73db19a3a7d9b622f8a57201c5c23165b42891420930dc8241999.json",
+            "before_bytes": null,
+            "after_bytes": 1534,
+            "change": "added"
+          },
+          {
+            "path": "recovery/current/hosts/hermes/config.json",
+            "before_bytes": 21,
+            "after_bytes": 21,
+            "change": "modified"
+          },
+          {
+            "path": "recovery/current/manifest.json",
+            "before_bytes": 1012,
+            "after_bytes": 1012,
+            "change": "modified"
+          }
+        ],
+        "changed_file_after_bytes_total": 3447,
+        "checks": {
+          "snapshot_selected_hash_matches": true,
+          "selected_host_delta_binding_matches": true,
+          "unselected_snapshot_bytes_preserved": true,
+          "snapshot_valid": true,
+          "host_deltas_valid": true
+        }
+      }
+    ],
+    "summary": {
+      "direct": {
+        "wall_seconds": {
+          "median": 0.0500642000042717,
+          "mean": 0.05158338000182994,
+          "min": 0.048654799997166265,
+          "max": 0.0598383999968064
+        },
+        "process_cpu_seconds": {
+          "median": 0.03125,
+          "mean": 0.03125,
+          "min": 0.0,
+          "max": 0.0625
+        },
+        "changed_file_after_bytes_total": {
+          "median": 1913,
+          "mean": 1913,
+          "min": 1913,
+          "max": 1913
+        }
+      },
+      "coordinated": {
+        "wall_seconds": {
+          "median": 0.13989289999881294,
+          "mean": 0.14044991999835474,
+          "min": 0.1378571999957785,
+          "max": 0.1441153999985545
+        },
+        "process_cpu_seconds": {
+          "median": 0.03125,
+          "mean": 0.0375,
+          "min": 0.03125,
+          "max": 0.046875
+        },
+        "changed_file_after_bytes_total": {
+          "median": 3447,
+          "mean": 3447,
+          "min": 3447,
+          "max": 3447
+        }
+      }
+    },
+    "gate_probe": {
+      "blocked_result": "review-required",
+      "blocked_reason": "typed host-delta manifest must be valid before recovery capture",
+      "blocked_wall_seconds": 0.0060219000006327406,
+      "blocked_process_cpu_seconds": 0.0,
+      "native_artifacts_mutated_while_blocked": false,
+      "decision_receipt_bytes": 1090,
+      "ephemeral_lock_files_excluded": true,
+      "single_retry_result": "applied",
+      "retry_wall_seconds": 0.13925630000449019,
+      "retry_process_cpu_seconds": 0.0625,
+      "blocked_plus_retry_wall_seconds": 0.14527820000512293,
+      "blocked_plus_retry_process_cpu_seconds": 0.0625,
+      "retry_changed_files": [
+        {
+          "path": "host-deltas.json",
+          "before_bytes": 879,
+          "after_bytes": 879,
+          "change": "modified"
+        },
+        {
+          "path": "reconciliation/requests/3a641ee506c73db19a3a7d9b622f8a57201c5c23165b42891420930dc8241999.json",
+          "before_bytes": null,
+          "after_bytes": 1534,
+          "change": "added"
+        },
+        {
+          "path": "recovery/current/hosts/hermes/config.json",
+          "before_bytes": 21,
+          "after_bytes": 21,
+          "change": "modified"
+        },
+        {
+          "path": "recovery/current/manifest.json",
+          "before_bytes": 1012,
+          "after_bytes": 1012,
+          "change": "modified"
+        }
+      ],
+      "preserved_while_blocked": true,
+      "retry_checks": {
+        "snapshot_selected_hash_matches": true,
+        "selected_host_delta_binding_matches": true,
+        "unselected_snapshot_bytes_preserved": true,
+        "snapshot_valid": true,
+        "host_deltas_valid": true
+      }
+    },
+    "cost": {
+      "local_process_cpu_seconds_observed": true,
+      "dollar_cost": null,
+      "model_or_api_calls": 0,
+      "note": "No model/API calls were executed; dollar cost was not measured and is null."
+    },
+    "scope_note": "Local source/runtime measurement only. No complete live governance, approval, deployment, or network cost claim."
+  },
+  "recovery": {
+    "selectors": "Existing policy exact host:id; partial capture requires complete valid current snapshot same policy",
+    "effects": "Selected native roots and artifacts; full snapshot integrity checked; unselected records and private fields retained",
+    "bindings": "Exact artifact hash; verified matching legacy aggregate binding migration before selected capture",
+    "publication": "Unrelated fields in shared JSON require explicit reviewed whole-file selection; no general hunk projection",
+    "actual_selected_native_probe": {
+      "state": "verified",
+      "selected_artifacts": [
+        "codex:global-instructions"
+      ],
+      "source_roots_used": [
+        "codex"
+      ],
+      "full_snapshot_integrity": true,
+      "unselected_snapshot_files_preserved": 941,
+      "changed_snapshot_files": [
+        "hosts/codex/AGENTS.md",
+        "manifest.json"
+      ],
+      "live_source_unchanged": true,
+      "live_global_instruction_sha256": "fe3d8e44e62856b8e084ddd10ac1f3d44ecf922a878441e490d11235a04a3f8c",
+      "selected_dry_run_changes": 0,
+      "selected_dry_run_conflicts": 0,
+      "seconds": 14.809730699998909,
+      "scope": "Read actual selected native instructions into disposable snapshot only; no live restore, no canonical recovery capture or unrelated native adoption."
+    }
+  },
+  "concurrency": {
+    "mechanism": "Existing OS crash-release resource locks shared by fleet/recovery/coordinator; canonical stable identity, nonblocking acquisition, ordered multi-root locks",
+    "limits": "Cooperating writers only; noncooperating native apps still require identity/write/readback/rollback guards; no arbitrary-writer atomic CAS or crash-atomic composed deployment claim",
+    "actual_managed_root_probe": {
+      "state": "verified",
+      "real_managed_root": true,
+      "contending_process_blocked_before_mutation": true,
+      "selected_live_content_unchanged": true,
+      "managed_state_unchanged": true,
+      "seconds": 0.17408619999332586,
+      "failure_type": "SyncBlocked",
+      "scope": "Cooperating direct fleet writer refused while actual managed root locked. Crash release and independent retry/preservation are tested on fixtures; arbitrary native writers are not serialized."
+    }
+  },
+  "links_and_submodules": {
+    "needed": false,
+    "evidence": "Git index modes120000/160000 absent and .gitmodules absent at reviewed base",
+    "revisit_when": "A real selected dependency needs linked/submodule content; current candidate/publication fail closed"
+  },
+  "claude_mechanisms": {
+    "adopted": [
+      "matched with/without trials",
+      "blind independent comparison allowing ties",
+      "separate semantic quality and necessary assertions",
+      "observed time/tokens and variance/limits"
+    ],
+    "not_inherited": [
+      "host-specific CLI/viewer rituals",
+      "forced winner",
+      "unobserved metrics as zero",
+      "mandatory benchmark/review fan-out"
+    ],
+    "sources": [
+      "https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md",
+      "https://github.com/anthropics/skills/blob/main/skills/skill-creator/agents/comparator.md",
+      "https://github.com/anthropics/skills/blob/main/skills/skill-creator/scripts/aggregate_benchmark.py",
+      "https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills"
+    ]
+  },
+  "source_bindings": {
+    ".gitignore": "ceeb53dad4eac3f3d1c7c0cd21cb1c45fbc2de52a794f67d26cfa1ebd371ae83",
+    "README.md": "1f974754a8696f9c97d0e3b0cc5fca30873f20196de93aaab6098feeccf6c57e",
+    "docs/architecture.md": "7fa710ead0eb3cdd88eb9f255b1d5876bcb08ef6503cdb132a9e5ad8575b69dd",
+    "docs/recovery.md": "fac1573a8fc2a4703d8d7b207629d2c0730dc92e2ed9a50282735842b960065f",
+    "docs/requirement-status.md": "3222e8139772ec957f2139803de5fb71e99dbc6eff969bdd34b18e60f34140be",
+    "skills/cross-agent-surface-engineering/SKILL.md": "d34afb65fa1f5a5203b8b9f7decb901cd2266d34a83e1f0f8aa5b6d3916d94e9",
+    "skills/skill-creator/SKILL.md": "63c20b2e973f319c10f5c1bf626f12980a38de623f11fc73efd49ef3d299d09c",
+    "tests/test_fleet_locking.py": "c1729848eee892e09d106e1e550bb6af86588a7af73891d5a206863da006f5f7",
+    "tests/test_host_deltas.py": "437f183a25d33bc5e69c42270f30710b8d013f0fcf0bc257e1f6d3eed7bfd5d2",
+    "tests/test_native_skill_study.py": "db503b4417e1ae3cb737f6e7df9ef2935f2dd7b357b4c4851a4a9fde147ef778",
+    "tests/test_reconcile.py": "c681e24c42e959d87dcf5d9ebc26be1551d0389b98aab567770af3fadfb00ebe",
+    "tests/test_recovery.py": "7e30c12b367dbc698afc1a89b3c1b56c561b799697ae0fb78c8fa9fcda08100a",
+    "tests/test_recovery_scoped.py": "b2d3439005ed0a08bd7892649749b23c2c07dc1f507923bbe7b1fca5892c5779",
+    "tests/test_selected_capture_completion.py": "8a2afe6326dcdce28c8932d317cfbe6c82d7fc06625d5fcab21133d44402da16",
+    "tools/evaluation_artifact_pilot.py": "088ab4631e6192e26755a19b06cf0df26db2d8d450abc97f8fde6579376a7eff",
+    "tools/evaluation_hermes_worker.py": "3a4d5bb27bc310675b06710cfdb6d04cb60fb7a2d7a979db099fa8d93c5f8e9c",
+    "tools/evaluation_runtime.py": "de29f278632d6a80902a30c29c9989ca145a7ceebfaf811f132f44794fa42814",
+    "tools/fleet.py": "453b626470890e7c9f28e489a26a573382bece372b4dbdd99842aa3842427f1e",
+    "tools/host_deltas.py": "dfa9d605504e3212eef54ca6d4c2fe0a45e14a1d04c837be07e41b8c45c3cc6e",
+    "tools/reconcile.py": "26eaccb7c7395cbb78e55715c556a4fe04b2108291b6b3be1e4f1e8301588d8c",
+    "tools/recovery.py": "920ef5b78469512a46278a01719ec12d1a95fa4ff1047b0f307848b4d2ec89af",
+    "tools/sync_git.py": "5a4f0e4cf9df99e4d6dda65ad37403149cebb34fe49fa77844c293878da92d7f"
+  },
+  "deterministic_checks": {
+    "state": "passed",
+    "pytest_result": "...................................................................... [ 31%]\n..............................s.........................................s............s............... [ 78%]\n................................................                     [100%]\n216 passed, 3 skipped, 121 subtests passed in 321.58s (0:05:21)",
+    "pytest_seconds": 322.19051500000205,
+    "structural_checks": [
+      "owner validation",
+      "instruction profile artifact-only",
+      "repository structural audit",
+      "public-safety scan"
+    ],
+    "existing_dependency": "Installed native Hermes psutil reused for the pre-existing timeout check; no dependency installed",
+    "prior_failure_record": "Local retained first-run log; stale declared-runtime test inputs corrected, optional test dependency supplied"
+  },
+  "deployment": {
+    "state": "reported by separate canonical completion receipt",
+    "owners": [
+      "skill-creator",
+      "cross-agent-surface-engineering"
+    ],
+    "native_recovery_capture": false,
+    "whole_fleet_parity_claimed": false,
+    "remote_synced": false
+  },
+  "independent_review": {
+    "findings_repaired": [
+      "Shared case/common-catalog freeze prevents arm drift beyond target presence",
+      "Codex exact native reads reject echo, compound and partial-read false proofs"
+    ],
+    "completed_native_study_retested": false,
+    "scope": "mechanism corrections checked without inference; completed Hermes input equivalence recomputed separately"
+  },
+  "corpus_bindings": {
+    "evals/fixtures/native-skill-study/blind-proposal-mapping.json": "6128098c0fdee3200cccbf1e0960fe622d10de4b4f9e0e9e38c0d9ccdb2656cb",
+    "evals/fixtures/native-skill-study/blind-quality-mapping.json": "3f58efdf452d2bc9f1129ca2285931e1bddc6c341e779991caf58b058290e767",
+    "evals/fixtures/native-skill-study/cases.json": "f1d4b35e03a999a5dce6bb909763b789d5e5bfe89a513fb7e8124d40c4b175f8",
+    "evals/fixtures/native-skill-study/frozen-design.json": "57673f5f4001162171bf02f6d8632882ffeda1a7a50672948ae7082054fa60e2",
+    "evals/fixtures/native-skill-study/oracle-selfcheck.json": "d86bdf7fc985b07f61e53fa2c0a81e9e18ba0865ff90ac533a0db949af755a44",
+    "evals/fixtures/native-skill-study/oracle.py": "d26bdde22b370431ce5a439b4a2ba3a0ad3cdc82f672466450c8e03e4a8830f8",
+    "evals/fixtures/native-skill-study/proposal-amendment.json": "5b038b4bebcdc84d9632d02859dc1376af3ebd25744297e1ad6da38eb9978250",
+    "evals/fixtures/native-skill-study/proposal_oracle.py": "01c484ccba53e254f93f8523673a1115d78fcc17facc2f9c76d5ffe138c9df48",
+    "evals/fixtures/native-skill-study/README.md": "2a36b8a2e9def42fc51a4c30fa8cd5d4114c29060192f178e5d263587a015093",
+    "evals/fixtures/native-skill-study/blind-proposal/acceptance.json": "ec9723ef1f8955018f01d92a3c2ec0b160eb9643d201071de5078f6dafc0676f",
+    "evals/fixtures/native-skill-study/blind-proposal/comparison.json": "0c8130b9c19487107d21cb68c3e1d4804ee0e9025fbb5e1538d24e35b0aa9b27",
+    "evals/fixtures/native-skill-study/blind-proposal/A/deliverables/project-instructions.md": "6c3c7d58c26afc8334426e214d52b4b457c173d248e061392a7c51c02b60c37e",
+    "evals/fixtures/native-skill-study/blind-proposal/A/deliverables/revision-note.md": "e82f311c3e767fbe74a31a58f436b13f0dae6957362051dc1b3e47772277065e",
+    "evals/fixtures/native-skill-study/blind-proposal/B/deliverables/project-instructions.md": "a60d02aa115a2be7e704e453178a1bd5734def0d76d711d9cb509bfe03e7a0b4",
+    "evals/fixtures/native-skill-study/blind-proposal/B/deliverables/revision-note.md": "6289e8677ebc762fd19f0cdb72ba0ae77af5bc543b96e53935de18b45366181a",
+    "evals/fixtures/native-skill-study/blind-proposal/source/README.md": "460788dcaaa4884e0cd380ca4319bf81996eef57dc1531e5ef34a5053d1c633f",
+    "evals/fixtures/native-skill-study/blind-proposal/source/context/current-decisions.md": "011afea5f08f7f308e3e28aeb9c8818891aae1331464ecad3c3f04437485b716",
+    "evals/fixtures/native-skill-study/blind-proposal/source/project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+    "evals/fixtures/native-skill-study/blind-proposal/source/project/docs/authoring.md": "ac9c6b7e74ade26969d5b41b85f59301497cf7a87d96afd0fd23d1628039f073",
+    "evals/fixtures/native-skill-study/blind-proposal/source/project/docs/export-notes.md": "4664db602ec546008ce757ab178846314281872ab2ffd1e3f119858fb83063ef",
+    "evals/fixtures/native-skill-study/blind-proposal/source/project/docs/page-template.md": "af0cff79b8b909825ff870f0d461becc6b781a2469ecad40517ae4d71e61f167",
+    "evals/fixtures/native-skill-study/blind-proposal/source/project/docs/publishing.md": "4182bc8c9ab09308ac6952a2b72b37ad71a5900d28b0e989e507f57f3ceba9c2",
+    "evals/fixtures/native-skill-study/blind-proposal/source/project/scripts/check_docs.py": "63fe60f2ff77176175f8ea016b82977610612b5b3cf72957a0aabd280d67280e",
+    "evals/fixtures/native-skill-study/blind-quality/comparison.json": "62f332f3e5c3016f1351c3f875896e286b4f4d617deded6cad1a2515427ac19b",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/acceptance.json": "559742481605d5b266f84fd6713390852c93ddf2e1568c3c7110c2e5a7ec59b1",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/A/deliverables/sample-handoff.md": "7f2019fdc5676206b75a82d86642339ea33edfde3cebb83b4f8b9e22f0e9ac9c",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/A/deliverables/trial-handoff/SKILL.md": "d32054e5a6d9074ce62e80f7b501006234ca2f299e7fffc02ec10678d00d84ae",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/B/deliverables/sample-handoff.md": "263c6e076f0afbfd76d4723a48d9ec5f59c8c1017331e662f7cc5aa5968da6f9",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/B/deliverables/trial-handoff/SKILL.md": "b2a46fb9c45a56c31dfac0c7803555b5258a682726b5d9bad55631f99c546859",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/source/context/team-notes.md": "69d91dc07406929fbcac27b225ddb096c40b97bb21087f91bd825f662f86f9ce",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/source/sample-account/activity.csv": "966b36d8a575ebee3f78f02a6594ba8300c19c81fe824a51d3331646554ab763",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/source/sample-account/call-notes.md": "aa38f32cda5d84e53be00d96a8855e217c37217c0ee0f25fc9b578a59bba9770",
+    "evals/fixtures/native-skill-study/blind-quality/create-handoff/source/sample-account/success-plan.md": "5cf8e97a25b452259dd175fd2984ddb05117a970d8fa7de66c6618c876bb784f",
+    "evals/fixtures/native-skill-study/blind-quality/instruction-editor-notes/acceptance.json": "e1a7dedda9f0cf13393d6ad615f7859786f1ac5e82ff020f7dc7ac78ad6f5f28",
+    "evals/fixtures/native-skill-study/blind-quality/instruction-editor-notes/A/deliverables/release-note.md": "ad210cdd002b710e3ed625276a5986d3e60c85b7581e0e6fa2e9fc4ac17e929f",
+    "evals/fixtures/native-skill-study/blind-quality/instruction-editor-notes/B/deliverables/release-note.md": "4fe6586b8ab11c385e2e577bd1e5ce7d933094db03326a0fc40c87be1c862437",
+    "evals/fixtures/native-skill-study/blind-quality/instruction-editor-notes/source/context/release-notes.md": "3d2276975e50bb8d31522edc3fe85d98f70fdf01122ca8bcf274fc12dd1d9af4",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/acceptance.json": "3d1d28d252cb32f5719c69032048c6cf5bdeb5f96f4061b4c9055e4a641db6dd",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/A/deliverables/revision-note.md": "516d81670d8e366b1503696f147a4902acb358b7fc6419352a793e1176a50bf5",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/A/project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/B/deliverables/revision-note.md": "dec07ebda60150a615f3aa0f8be394c2fce495f41b5c05705b8f31fce7c4016e",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/B/project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/source/README.md": "460788dcaaa4884e0cd380ca4319bf81996eef57dc1531e5ef34a5053d1c633f",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/source/context/current-decisions.md": "011afea5f08f7f308e3e28aeb9c8818891aae1331464ecad3c3f04437485b716",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/source/project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/source/project/docs/authoring.md": "ac9c6b7e74ade26969d5b41b85f59301497cf7a87d96afd0fd23d1628039f073",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/source/project/docs/export-notes.md": "4664db602ec546008ce757ab178846314281872ab2ffd1e3f119858fb83063ef",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/source/project/docs/page-template.md": "af0cff79b8b909825ff870f0d461becc6b781a2469ecad40517ae4d71e61f167",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/source/project/docs/publishing.md": "4182bc8c9ab09308ac6952a2b72b37ad71a5900d28b0e989e507f57f3ceba9c2",
+    "evals/fixtures/native-skill-study/blind-quality/revise-project/source/project/scripts/check_docs.py": "63fe60f2ff77176175f8ea016b82977610612b5b3cf72957a0aabd280d67280e",
+    "evals/fixtures/native-skill-study/evaluated-owner/SKILL.md": "ed29063ee1a13d4d7dd13a1c070015db8dfe467613c1dd5aefa63964ecf2018b",
+    "evals/fixtures/native-skill-study/fixtures/create-handoff/context/team-notes.md": "69d91dc07406929fbcac27b225ddb096c40b97bb21087f91bd825f662f86f9ce",
+    "evals/fixtures/native-skill-study/fixtures/create-handoff/sample-account/activity.csv": "966b36d8a575ebee3f78f02a6594ba8300c19c81fe824a51d3331646554ab763",
+    "evals/fixtures/native-skill-study/fixtures/create-handoff/sample-account/call-notes.md": "aa38f32cda5d84e53be00d96a8855e217c37217c0ee0f25fc9b578a59bba9770",
+    "evals/fixtures/native-skill-study/fixtures/create-handoff/sample-account/success-plan.md": "5cf8e97a25b452259dd175fd2984ddb05117a970d8fa7de66c6618c876bb784f",
+    "evals/fixtures/native-skill-study/fixtures/instruction-editor-notes/context/release-notes.md": "3d2276975e50bb8d31522edc3fe85d98f70fdf01122ca8bcf274fc12dd1d9af4",
+    "evals/fixtures/native-skill-study/fixtures/revise-project/README.md": "460788dcaaa4884e0cd380ca4319bf81996eef57dc1531e5ef34a5053d1c633f",
+    "evals/fixtures/native-skill-study/fixtures/revise-project/context/current-decisions.md": "011afea5f08f7f308e3e28aeb9c8818891aae1331464ecad3c3f04437485b716",
+    "evals/fixtures/native-skill-study/fixtures/revise-project/project/AGENTS.md": "49a6d47642dadcf4f0cb087d3b8973959bc3f610536d2e092fe9cc51fdee5015",
+    "evals/fixtures/native-skill-study/fixtures/revise-project/project/docs/authoring.md": "ac9c6b7e74ade26969d5b41b85f59301497cf7a87d96afd0fd23d1628039f073",
+    "evals/fixtures/native-skill-study/fixtures/revise-project/project/docs/export-notes.md": "4664db602ec546008ce757ab178846314281872ab2ffd1e3f119858fb83063ef",
+    "evals/fixtures/native-skill-study/fixtures/revise-project/project/docs/page-template.md": "af0cff79b8b909825ff870f0d461becc6b781a2469ecad40517ae4d71e61f167",
+    "evals/fixtures/native-skill-study/fixtures/revise-project/project/docs/publishing.md": "4182bc8c9ab09308ac6952a2b72b37ad71a5900d28b0e989e507f57f3ceba9c2",
+    "evals/fixtures/native-skill-study/fixtures/revise-project/project/scripts/check_docs.py": "63fe60f2ff77176175f8ea016b82977610612b5b3cf72957a0aabd280d67280e"
+  }
+}

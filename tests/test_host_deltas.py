@@ -353,10 +353,10 @@ class HostDeltaTests(unittest.TestCase):
             def runner(argv: list[str]):
                 command = " ".join(argv)
                 outputs = {
-                    "hermes --version": "Hermes Agent 0.21.4",
+                    "hermes --version": "Hermes Agent " + next(item["readback"]["contains"] for item in manifest["entries"] if item["id"] == "hermes-runtime"),
                     "hermes hooks list": "No shell hooks configured",
                     "hermes curator status": "curator: DISABLED",
-                    "codex --version": "codex-cli 0.155.0-alpha.16.4",
+                    "codex --version": "codex-cli " + next(item["readback"]["contains"] for item in manifest["entries"] if item["id"] == "codex-runtime"),
                     "codex plugin list --json": "[]",
                     "omp --version": "OMP 18.2.6",
                     "omp plugin list": "No plugins installed",
