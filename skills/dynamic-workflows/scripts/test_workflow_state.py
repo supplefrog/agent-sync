@@ -383,7 +383,7 @@ class WorkflowStateTests(unittest.TestCase):
     def test_all_shipped_templates_validate(self) -> None:
         templates = Path(__file__).resolve().parents[1] / "assets" / "templates"
         validated = [ws.read_plan(path)["name"] for path in sorted(templates.glob("*.json"))]
-        self.assertEqual(len(validated), 5)
+        self.assertEqual(len(validated), 6)
 
     def test_explicit_difficulties_choose_matching_efforts(self) -> None:
         plan = ws.read_plan(self.plan_path)

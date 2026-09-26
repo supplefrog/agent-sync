@@ -105,6 +105,8 @@ For explicitly selected routed DAGs, use `routed_workflow`; `routed_delegate_tas
 
 The adapter accepts routed tasks only, requires `workdir: "."`, and launches native Hermes leaf children with the exact receipt provider/model/reasoning tuple and fallback disabled. It binds each run manifest in a separate trusted store under `HERMES_HOME`, serializes run/resume with an execution lock, persists native results and outputs under each task, and records authoritative close witnesses outside the mutable run directory. An explicit reported model mismatch fails the task; a missing model echo is accepted only because the exact launch route was already verified.
 
+For bounded read-only V3 worker trials, use [the Hermes read-only template](assets/templates/workflow-v3-readonly.json) and the evidence-trial contract in openai-delegation-route-research/references/hermes-direct-v3.md. It selects the explicit `hermes-sol-low-workflow-readonly` route, allows only read/search or no tools, and preserves one attempt plus the per-node request-construction cap. Parent authorization and independent acceptance remain required; availability is not a quality qualification.
+
 `resume --retry-interrupted` is allowed only after the exact run/task/handle/claim close witness exists and the handle is absent from Hermes's active registry. Interruption waits for the bounded native child call to finish and for normal finalization to close the handle; the adapter does not abandon an in-flight child merely to return early.
 
 Retired `cc-dynamic-workflows` behaviors are accounted for explicitly:

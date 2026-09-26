@@ -1507,7 +1507,9 @@ def _dispatch_workflow_v3(workflow, run_dir, task, trusted_manifest_sha256, pare
     goal, _dependencies = workflow.render_prompt_data(run_dir, task["id"], trusted_manifest_sha256)
     tools = task["route_request"]["requirements"]["tools"]
     envelope = {"id": task["id"], "goal": goal, "context": None,
-                "toolsets": ["none"] if not tools else None, "role": "leaf"}
+                "toolsets": (["none"] if not tools else ["file"]
+                             if task["route_request"]["budget"].get("evidence_trial") else None),
+                "role": "leaf"}
     envelope["_native_envelope"] = _v3_native_envelope(parent, envelope)
     context = {"max_iterations": max_iterations, "native_envelope": envelope["_native_envelope"],
                "toolsets": envelope["toolsets"], "role": "leaf",

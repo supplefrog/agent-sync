@@ -1,0 +1,65 @@
+{
+  "name": "hermes-v3-readonly-inspection",
+  "max_workers": 2,
+  "tasks": [
+    {
+      "id": "inspect",
+      "role": "worker",
+      "risk": "read",
+      "attempts": 1,
+      "prompt": "Inspect only {{var:TARGET}} using read_file/search_files. Return concise source-linked findings and unresolved gaps.",
+      "acceptance": [
+        "Parent compares every returned claim and citation with the declared local source bytes."
+      ],
+      "route_request": {
+        "schema_version": 3,
+        "task_class": "bounded-source-evidence-review",
+        "requirements": {
+          "tools": [
+            "read_file",
+            "search_files"
+          ],
+          "context_tokens": 32000,
+          "task_contract_sha256": "247f808f42b591e9a68b2e082c7a13dd989c0af45336c751045c8742d10f0f4d",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low"
+        },
+        "verifier": {
+          "kind": "independent-review",
+          "coverage": "complete",
+          "independent": true,
+          "scope": "artifact-effects",
+          "evidence": {
+            "locator": "inline:parent-acceptance/readonly-source",
+            "sha256": "737cf2b9baaba91b09d4e63312b54d2a809789cbd0c6750dd962453034f8e2c9"
+          }
+        },
+        "effects": "none",
+        "failure_cost": "low",
+        "deterministic": null,
+        "budget": {
+          "objective": "quota",
+          "api_remaining": null,
+          "api_reserve": 0,
+          "allow_api_spend": false,
+          "quotas": {},
+          "unknown_cost_policy": "explicit_preference",
+          "preference_order": [
+            "hermes-sol-low-workflow-readonly"
+          ],
+          "parent_available": true,
+          "attempt_cap": 1,
+          "attempts_used": 0,
+          "fallback_route_id": null,
+          "fallback_route_sha256": null,
+          "evidence_trial": {
+            "authorized": true,
+            "max_requests": 5,
+            "placement_reason": "Explicit bounded source-inspection worker in a routed DAG",
+            "accept_unknown_quota": true
+          }
+        }
+      }
+    }
+  ]
+}

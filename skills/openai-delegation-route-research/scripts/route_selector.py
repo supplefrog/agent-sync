@@ -558,11 +558,11 @@ EVIDENCE_TOOLS = frozenset({"read_file", "search_files"})
 
 
 def evidence_trial_admissible(task):
-    """Only the verified direct consumer enforces this opt-in request bound."""
+    """Verified Hermes direct and DAG consumers enforce the same opt-in bound."""
     budget, required, verifier = task["budget"], task["requirements"], task["verifier"]
     trial = budget.get("evidence_trial")
     return bool(trial and trial["authorized"]
-        and required.get("host") == "hermes" and required.get("transport") == "hermes-delegate"
+        and required.get("host") == "hermes" and required.get("transport") in {"hermes-delegate", "hermes-workflow"}
         and task["effects"] == "none" and task["failure_cost"] == "low"
         and set(required["tools"]).issubset(EVIDENCE_TOOLS)
         and verifier["kind"] == "independent-review" and verifier["independent"]

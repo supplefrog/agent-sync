@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "observed_at": "2026-09-26T15:43:20.783647+00:00",
+  "scope": "Native V3 workflow capability and independent exact-output acceptance; not general quality qualification",
+  "raw_execution_report_sha256": "1d39debfc20180b6f16a503f93515470ebc55aec44c156ef3748b5a499f5efbb",
+  "harness_correction": "Accounting status returned is valid; authoritative handle_closed_at and closure witnesses establish closure. Original harness expected closed.",
+  "route": {
+    "host": "hermes",
+    "transport": "hermes-workflow",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "runtime": "hermes-delegate/native-source-v1",
+    "contract_sha256": "1c5b3143978521b08d530d272d14dfa4b81656d7401ec8a5b9e08bb13f37e65e"
+  },
+  "actual_outputs": {
+    "alpha": {
+      "value": 17
+    },
+    "beta": {
+      "value": 29
+    },
+    "join": {
+      "sum": 46
+    }
+  },
+  "nodes_succeeded": 3,
+  "waves": [
+    2,
+    1
+  ],
+  "join_started_after_dependencies": true,
+  "times": {
+    "alpha": {
+      "started_at": "2026-09-26T15:36:41+00:00",
+      "finished_at": "2026-09-26T15:36:54+00:00"
+    },
+    "beta": {
+      "started_at": "2026-09-26T15:36:41+00:00",
+      "finished_at": "2026-09-26T15:36:56+00:00"
+    },
+    "join": {
+      "started_at": "2026-09-26T15:36:56+00:00",
+      "finished_at": "2026-09-26T15:37:00+00:00"
+    }
+  },
+  "one_attempt_per_node": true,
+  "all_handles_closed": true,
+  "orphan_claims": 0,
+  "parallel_roots": true,
+  "output_sha256": {
+    "alpha": "650d84b0a3677dac4d2f28661926686e5c304a2ee6c1239242a6e2d13d0c83da",
+    "beta": "24cb5fce9b42b739daa59e1ce86d2de0be81d3bf7c892e68bef11b0d60fdd6ee",
+    "join": "aa1a161873790e8543f1e510900a1411b54460f151bc946bd96fded8c205de81"
+  },
+  "request_construction_cap_per_node": 5,
+  "max_workers": 2,
+  "paid_fallback": false,
+  "native_model_calls": {
+    "alpha": 3,
+    "beta": 3,
+    "join": 1
+  },
+  "tools_exercised": {
+    "alpha": [
+      "search_files",
+      "read_file"
+    ],
+    "beta": [
+      "search_files",
+      "read_file"
+    ],
+    "join": []
+  },
+  "candidate_code_sha256": {
+    "integrations/hermes/routed-delegation/__init__.py": "a8fa0985052240adea33ce3198bf0eb07b10df4ad2301274c1a8e2f57deb62d7",
+    "skills/openai-delegation-route-research/scripts/route_selector.py": "0519cb6fe3428a081f4e38a22dc6047bb440933f43667c3d9a936b6d300a09fe"
+  },
+  "quality_qualification": false,
+  "schema_version": 1,
+  "owner_capability": "dynamic-workflows",
+  "regressions": {
+    "routing": 55,
+    "adapter": 64,
+    "workflow_state": 85
+  },
+  "independent_review": "No actionable source defect; ship after full DAG trial passes",
+  "fresh_canonical_smoke": {
+    "passed": true,
+    "observed_at": "2026-09-26T15:50:41.957453+00:00",
+    "actual_outputs": {
+      "alpha": {
+        "value": 17
+      },
+      "beta": {
+        "value": 29
+      },
+      "join": {
+        "sum": 46
+      }
+    },
+    "active_children_remaining": 0,
+    "orphan_claims": 0,
+    "one_attempt_per_node": true,
+    "exact_route_enforced": true
+  }
+}

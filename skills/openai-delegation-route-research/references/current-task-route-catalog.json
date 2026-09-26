@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "catalog_version": "20260926T122214Z-current-native-sol-tools",
+  "catalog_version": "20260926T153213Z-bounded-hermes-workflow-readonly",
   "candidates": [
     {
       "id": "hermes-sol-low-inline",
@@ -139,6 +139,60 @@
         "evidence": {
           "locator": "references/evidence/hermes-sol-low-tools-20260926T122214Z.json",
           "sha256": "9084a06dd4b3c71504ca58a77f8de09830741170ff7705fe0392ab11366863b1"
+        }
+      },
+      "quality": [],
+      "benchmark_priors": [],
+      "cost": {
+        "billing": "subscription",
+        "basis": "unknown",
+        "task_contract_sha256": null,
+        "verifier_sha256": null,
+        "route_sha256": null,
+        "api_usd": {
+          "generation": null,
+          "verification": null,
+          "fallback": null
+        },
+        "quota": {
+          "bucket": "codex-main",
+          "unit": "percentage-points",
+          "parts": {
+            "generation": null,
+            "verification": null,
+            "fallback": null
+          }
+        },
+        "evidence": null
+      }
+    },
+    {
+      "id": "hermes-sol-low-workflow-readonly",
+      "route": {
+        "host": "hermes",
+        "transport": "hermes-workflow",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "low",
+        "runtime": "hermes-delegate/native-source-v1",
+        "contract_sha256": "1c5b3143978521b08d530d272d14dfa4b81656d7401ec8a5b9e08bb13f37e65e"
+      },
+      "availability": {
+        "status": "verified",
+        "observed_at": "2026-09-26T15:32:13.160331+00:00",
+        "valid_until": "2026-09-27T15:32:13.160331+00:00",
+        "route_sha256": "379f8c3e38208b966dd472290230506e07e138691ceea20894ca5111f6f8dda9",
+        "context_tokens": 32000,
+        "tools_verified": [
+          "read_file",
+          "search_files"
+        ],
+        "allowed_effects": [
+          "none"
+        ],
+        "evidence": {
+          "locator": "references/evidence/hermes-sol-low-workflow-20260926T153213Z.json",
+          "sha256": "f6c1b754c8b525ff7214685863d0f5ef6fbb11000fedff37f78ad0808763a23b"
         }
       },
       "quality": [],
