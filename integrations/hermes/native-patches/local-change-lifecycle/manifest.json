@@ -3,8 +3,13 @@
   "owner": "Hermes native source",
   "repository": "https://github.com/NousResearch/hermes-agent",
   "base_revision": "d0288be5b3330d2442e3907185b8e9d0958297bb",
-  "patch_sha256": "36146135daddc372c1cc57655c1b08a6dd506ec067ae277b99f1f18e2f256d3e",
+  "patch_sha256": "317070d556f1933c6a8055a5fb924f7918e0b8b7b234935b2ca41b1a486f11fc",
   "files": [
+    {
+      "path": "hermes_cli/config_defaults.py",
+      "before_sha256": "a4a5c5bdce5f111a3aeba6ac1e34678df78375f022aa7e1a73ab36b27ece6db1",
+      "after_sha256": "4b932be307cbecefb0562a47a92a1a84330fdf2965a58af290cdabdfbc54b90b"
+    },
     {
       "path": "hermes_cli/subcommands/update.py",
       "before_sha256": "5c5db83b6dc0ddb90a53dcb407816dd6830052d772650ed2486629401a52abf0",
@@ -13,22 +18,12 @@
     {
       "path": "hermes_cli/update_cmd.py",
       "before_sha256": "ebed24c32d1e4ec70e7dc90d68c5b4750e836d9254fe000fd3acad646dadc87d",
-      "after_sha256": "fe3573bdffc81098450c54e3de2ad5cba0cef80a5b9706ca516318e32ea3f7b0"
-    },
-    {
-      "path": "hermes_cli/update_cmd_stash.py",
-      "before_sha256": "138054882bccca2a65fe94db7708f643dad7c5187358ba1bef5c970169bd0b94",
-      "after_sha256": "27df50764cca3958f908fc12a97e35b2e067065a8383aa31b89147dc9186c928"
-    },
-    {
-      "path": "hermes_cli/update_cmd_windows.py",
-      "before_sha256": "e95c626b11b625b6e814502fc55c675e4966f91244337d14f31560db64cce441",
-      "after_sha256": "6c7c8a22de528d83713fac4a0088733c448f772f94e96369f46b63296787bd8c"
+      "after_sha256": "f8771393fe7faae1dc3384902ce12308a23aa523ad46d6f05404cbbd8f20efd4"
     },
     {
       "path": "hermes_cli/update_cmd_patch_lifecycle.py",
       "before_sha256": null,
-      "after_sha256": "36b0bacafb46378f3c1a3d6a9a8ec1cabaec1967fb383e67c5dea1eea3314755"
+      "after_sha256": "e9264e1004b7fd784c9692d61fbd2113e43a7de8e7caf3663932ff481fab827b"
     },
     {
       "path": "hermes_cli/update_cmd_patch_oracle.py",
@@ -41,9 +36,19 @@
       "after_sha256": "dcaf89e5538e2062007e793c3232dc55d6a84d5746070eb6fc67fae1bfb5ea45"
     },
     {
-      "path": "tests/hermes_cli/test_update_autostash.py",
-      "before_sha256": "5dce20755f29446dfc3cd07723e716efbaa5d58846c8e83caeb31af2dc03f366",
-      "after_sha256": "e0c725e1bb7882ec350021217ebd47312576ff1ff2a746fd4404ed545653aecd"
+      "path": "hermes_cli/update_cmd_snapshot.py",
+      "before_sha256": null,
+      "after_sha256": "82c1a892df7cec71dd72a216f4e132dd3d0c5f8a239dd15dba180c0a937dc477"
+    },
+    {
+      "path": "hermes_cli/update_cmd_stash.py",
+      "before_sha256": "138054882bccca2a65fe94db7708f643dad7c5187358ba1bef5c970169bd0b94",
+      "after_sha256": "27df50764cca3958f908fc12a97e35b2e067065a8383aa31b89147dc9186c928"
+    },
+    {
+      "path": "hermes_cli/update_cmd_windows.py",
+      "before_sha256": "e95c626b11b625b6e814502fc55c675e4966f91244337d14f31560db64cce441",
+      "after_sha256": "6c7c8a22de528d83713fac4a0088733c448f772f94e96369f46b63296787bd8c"
     },
     {
       "path": "tests/hermes_cli/test_update_already_current_guard.py",
@@ -51,9 +56,19 @@
       "after_sha256": "7586f45eeea4c940db0a112bb04909399e56775b9794d0a5b452c2d0d3e06604"
     },
     {
+      "path": "tests/hermes_cli/test_update_autostash.py",
+      "before_sha256": "5dce20755f29446dfc3cd07723e716efbaa5d58846c8e83caeb31af2dc03f366",
+      "after_sha256": "e0c725e1bb7882ec350021217ebd47312576ff1ff2a746fd4404ed545653aecd"
+    },
+    {
       "path": "tests/hermes_cli/test_update_cmd_patch_acceptance.py",
       "before_sha256": null,
       "after_sha256": "45fc9425c82220a89fecb3d62b9e75d6c311431bdb820df97b5b3e4e7229bb93"
+    },
+    {
+      "path": "tests/hermes_cli/test_update_engine_selfhost.py",
+      "before_sha256": null,
+      "after_sha256": "44102c7f5393e912dee325ae41213383f9e7bce1022d3505323dbbd355edef95"
     },
     {
       "path": "tests/hermes_cli/test_update_ordinary_continuity.py",
@@ -81,6 +96,26 @@
       "after_sha256": "61c3a629076b5c4d7b683aacf03b4c1a9424dad94e4c24f685d89ec610a3a662"
     },
     {
+      "path": "tests/hermes_cli/test_update_settlement_history.py",
+      "before_sha256": null,
+      "after_sha256": "a337b4fbb620235726b7ed332093ebab007d389f722abaa47a60248e903e7598"
+    },
+    {
+      "path": "tests/hermes_cli/test_update_settlement_publication.py",
+      "before_sha256": null,
+      "after_sha256": "da745e0a8db5282efe5717873b393d908b21a90bae796a9fd95feec42ab35163"
+    },
+    {
+      "path": "tests/hermes_cli/test_update_settlement_registration.py",
+      "before_sha256": null,
+      "after_sha256": "e224ed8a569054ebd8118539b38c38e5ef3b8e1cf32cfcd8039c26d9862b592a"
+    },
+    {
+      "path": "tests/hermes_cli/test_update_source_snapshot.py",
+      "before_sha256": null,
+      "after_sha256": "bfaed70e881dfcd52102a60933576bbbd4fbf35b5f1a6378b257d791956e18fd"
+    },
+    {
       "path": "tests/hermes_cli/test_update_stash_preflight.py",
       "before_sha256": null,
       "after_sha256": "7a6efd241642fa9217aedec2a9dae9623bccf151e49ddc842646f2159cd001f4"
@@ -96,60 +131,71 @@
       "after_sha256": "be764018d6dcc73e075ddca8fee04f5ceca1e1fe8321238ef786baeae886670f"
     },
     {
-      "path": "tests/hermes_cli/test_update_settlement_registration.py",
-      "before_sha256": null,
-      "after_sha256": "e224ed8a569054ebd8118539b38c38e5ef3b8e1cf32cfcd8039c26d9862b592a"
-    },
-    {
-      "path": "tests/hermes_cli/test_update_settlement_publication.py",
-      "before_sha256": null,
-      "after_sha256": "da745e0a8db5282efe5717873b393d908b21a90bae796a9fd95feec42ab35163"
-    },
-    {
-      "path": "tests/hermes_cli/test_update_settlement_history.py",
-      "before_sha256": null,
-      "after_sha256": "a337b4fbb620235726b7ed332093ebab007d389f722abaa47a60248e903e7598"
-    },
-    {
-      "path": "tests/hermes_cli/test_update_engine_selfhost.py",
-      "before_sha256": null,
-      "after_sha256": "651003d9171836e53e9381c91431568509d96814c19a401146169c14399fd2e0"
+      "path": "website/docs/getting-started/updating.md",
+      "before_sha256": "20f9aaa43b9fecfff177f1d30f33ce26e37656a86fcd4483e0391aaeea5fdbf8",
+      "after_sha256": "cc0c6d693e11043c970f674baacb7039aa31072b4f8f1f4053d2406dd08ddebb"
     }
   ],
   "verification": {
-    "exact_base_patch_check": "passed in disposable Git fixture",
-    "exact_after_hashes": "22 of 22 match frozen tested and deployed source bytes",
     "targeted_tests": {
-      "passed": 217,
-      "skipped": 5,
-      "scope": "Final relevant per-file runs across 15 test files"
-    },
-    "self_hosting": {
-      "passed": 7,
-      "scope": "Two real local-only update cycles and fresh completion children",
-      "mocked_boundaries": [
-        "Runtime activation",
-        "Backup and external services",
-        "Runtime inventory",
-        "Package/service completion",
-        "Critical module validation"
-      ]
+      "passed": 16,
+      "skipped": 0,
+      "scope": "Final frozen snapshot and clean-upstream self-host acceptance"
     },
     "adjacent_tests": {
-      "passed": 53,
-      "failed": 23,
-      "skipped": 3,
-      "baseline": "Unchanged-source overlay reproduced the same 23 failure identifiers"
+      "passed": 60,
+      "skipped": 1,
+      "scope": "Existing source/restore regressions with PM activation isolated"
     },
+    "self_hosting": {
+      "cycles": 2,
+      "scope": "Clean upstream source, real native update dispatch, fetch and fresh completion transport",
+      "mocked_boundaries": [
+        "Dependency activation",
+        "Runtime inventory",
+        "Backup and external services",
+        "Package and service completion"
+      ]
+    },
+    "preservation": [
+      "Committed complex fixes",
+      "Staged and unstaged distinction",
+      "Untracked files",
+      "Additions, deletions, modes and binary bytes",
+      "Preexisting stashes"
+    ],
+    "safety": [
+      "Coherent conflict parking",
+      "Concurrent edit guard",
+      "Hard exits after tree, index and HEAD writes",
+      "Post-crash editor changes",
+      "Recoverable original checkout",
+      "Restricted oracle retirement on nonancestor upstream",
+      "Inactive updater policy"
+    ],
+    "lint": "Pinned Ruff 0.15.10 passed",
+    "windows": "Production correction and new snapshot tests passed native footgun checker",
     "model_calls": 0,
-    "provider_calls": 0
+    "provider_calls": 0,
+    "limits": [
+      "Source-update behavior only; dependency installation and service activation were substituted.",
+      "Unsupported Git states refuse before mutation.",
+      "An inactive updater group requires restoration before subsequent updates can use this extension."
+    ],
+    "exact_base_patch_check": "passed in disposable Git fixture",
+    "exact_after_hashes": "26 of 26 match frozen source bytes",
+    "correction_frozen_manifest_sha256": "2179e0af64a7527df666cfa07ba28e2676b4e9fca2c2bc37ad50339a629fa3c5"
   },
   "restore": "Use the exact upstream base, verify each before hash or absence, apply repair.patch with core.autocrlf=false and core.whitespace=cr-at-eol, and verify every after hash. Stop on mismatch. Preserve unrelated local work independently.",
   "limits": [
-    "Native updater source record only; no portable skill, host parity, full installation, or configuration recovery claim.",
-    "One active registration per worktree; existing tracked regular text and restricted pure-function oracle only.",
-    "Complex fixes remain preserved and require separate retirement review.",
-    "Maintained main-channel update_in_place mode is required for this recorded continuity path; release-channel switching and source conflicts need separate reconciliation.",
-    "Original stashes are retained; cleanup requires identity-checked review."
+    "Native updater source recovery record only; no portable skill, host parity, live deployment, full installation, or configuration recovery claim.",
+    "Snapshot continuity requires the explicit update_in_place branch strategy; ordinary switching and release-channel paths retain their own behavior.",
+    "HEAD advances to exact upstream; compatible formerly committed changes become staged rather than remaining local branch commits.",
+    "Conflict, uncertain compatibility, unsupported changed file types, and invalid Python syntax leave the related coherent group inactive with saved originals.",
+    "If the updater engine group is inactive, the next invocation uses the upstream updater until the extension is manually recovered.",
+    "Retirement alone requires one explicit restricted pure-function behavioral-oracle registration; general snapshot preservation does not require registration.",
+    "Unfinished Git operations, unmerged index entries, hidden index flags, sparse checkout, intent-to-add, unverifiable Git environment, and pending native recovery block source mutation.",
+    "Original HEAD/stash refs and previous stashes remain saved; interrupted or uncertain state is not automatically replayed and cleanup needs identity-checked review.",
+    "Final verification is hash-bound to the frozen manifest; mocked runtime/service boundaries are recorded in verification and are not proof of full service restart."
   ]
 }
