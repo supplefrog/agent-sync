@@ -1,0 +1,13 @@
+# Hermes local-change lifecycle
+
+This package records the deployed Hermes native updater contribution: seven production modules and fifteen tests. Hermes remains the source owner. Agent Sync retains a hash-bound recovery patch; this adds no shared skill or cross-host parity claim.
+
+The updater preserves staging and original stashes, checks restoration in disposable Git storage, refuses ambiguous or interrupted restoration, and suppresses automatic gateway resume when restoration is unsafe. Explicit registration supports one active patch per worktree, existing tracked regular text, and a restricted pure-function behavioral oracle. Retirement requires that oracle to prove the clean upstream target fixes the registered failure. Complex fixes remain preserved and require separate retirement review. Completed settlements cannot be replayed.
+
+For recovery, prepare a disposable checkout of the exact upstream `base_revision` in `manifest.json`. Verify every `before_sha256`; a null value requires the file to be absent. Run `git -c core.autocrlf=false -c core.whitespace=cr-at-eol apply --check repair.patch`, then apply with the same options and verify all 22 `after_sha256` values. Stop on any mismatch. Preserve unrelated local contributions independently. Reverse application is appropriate only when the current files still match these after hashes and no later work would be removed.
+
+Normal continuity was verified for a maintained main-channel branch with `updates.parked_branch_strategy: update_in_place`. This package does not set configuration or recreate an installation. An explicit stable/release switch can leave that branch; source conflicts require reconciliation. Fresh CLI/update processes load the engine. Existing gateway/runtime fixes were neither registered nor retired.
+
+Targeted checks passed 217 tests with five platform/capability skips across final relevant per-file runs. Seven self-hosting tests exercised two successive real local-only fetch, merge, autostash, and restore cycles plus fresh completion children. Runtime activation, backup/external services, runtime inventory, package/service completion, and critical-module validation were mocked. All 22 package after hashes match the frozen tested and installed bytes. Adjacent tests had 53 passes, 23 failures, and three skips; an unchanged-source overlay reproduced the same 23 failure identifiers. No model or provider calls were used for these checks.
+
+The package includes no provider settings, credentials, sessions, memories, logs, or unrelated native repairs. The MIT license accompanies the native source. Original stashes remain available; remove them only after identity-checked review.
