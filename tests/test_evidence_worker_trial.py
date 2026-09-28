@@ -19,6 +19,7 @@ class EvidenceTrialTests(unittest.TestCase):
         self.catalog = json.loads((ROOT / 'references/current-task-route-catalog.json').read_text())
         self.c = next(c for c in self.catalog['candidates'] if c['id'] == 'hermes-astra-medium-tools')
         self.catalog['candidates'] = [self.c]
+        self.catalog['task_preferences'] = {}
         self.request = {
             'schema_version': 3, 'task_class': 'source-review',
             'requirements': {'context_tokens': 12000, 'model': self.c['route']['model'], 'reasoning_effort': self.c['route']['reasoning_effort'], 'tools': ['read_file', 'search_files'], 'task_contract_sha256': 'a' * 64},

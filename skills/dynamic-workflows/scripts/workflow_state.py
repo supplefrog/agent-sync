@@ -219,7 +219,7 @@ def load_route_selector_bytes(source: bytes, path: Path):
     return module
 
 
-def load_task_materializer_bytes(source: bytes, path: Path):
+def load_task_materializer_bytes(source: bytes, path: Path, schema: bytes | None = None):
     try:
         text = source.decode("utf-8")
     except UnicodeDecodeError as exc:
@@ -230,6 +230,9 @@ def load_task_materializer_bytes(source: bytes, path: Path):
         exec(compile(text, str(path), "exec"), module.__dict__)
     except (OSError, ValueError, ImportError) as exc:
         raise PlanError(f"Cannot load task materializer: {path}: {exc}") from exc
+    if schema is not None:
+        module._VALIDATOR = module.jsonschema.Draft202012Validator(
+            json.loads(schema), format_checker=module.jsonschema.FormatChecker())
     return module
 
 
@@ -845,7 +848,7 @@ def load_route_selector_snapshot(
 def _admitted_source(expected_hash: str, current: Path, history_dir: str, label: str) -> tuple[bytes, Path]:
     if not re.fullmatch(r"[0-9a-f]{64}", expected_hash):
         raise PlanError(f"Invalid pinned {label} identity")
-    candidates = [current, current.parent / history_dir / f"{expected_hash}.py"]
+    candidates = [current, current.parent / history_dir / f"{expected_hash}{current.suffix}"]
     for candidate in candidates:
         try:
             source = candidate.read_bytes()
@@ -892,14 +895,9 @@ def load_v3_router_snapshot(run_dir: Path, state: dict[str, Any], manifest: dict
         manifest["v3_task_materializer_sha256"], current_materializer, "materializer-history", "V3 materializer"
     )
     current_schema = current_materializer.parent.parent / "references" / "route-task-v3.schema.json"
-    try:
-        admitted_schema_hash = hashlib.sha256(current_schema.read_bytes()).hexdigest()
-    except OSError as exc:
-        raise PlanError("Missing admitted V3 task schema") from exc
-    if admitted_schema_hash != manifest["v3_task_schema_sha256"]:
-        raise PlanError(
-            "Pinned V3 task schema is not admitted by this installation; historical schema data is unavailable"
-        )
+    _admitted_source(
+        manifest["v3_task_schema_sha256"], current_schema, "schema-history", "V3 task schema"
+    )
     return (
         catalog,
         Path(manifest["v3_route_catalog_locator"]),
@@ -1342,7 +1340,8 @@ def _replay_v3_binding_locked(
         run_dir, state, manifest
     )
     selector = load_route_selector_bytes(selector_source, selector_path)
-    materializer = load_task_materializer_bytes(materializer_source, materializer_path)
+    materializer = load_task_materializer_bytes(
+        materializer_source, materializer_path, (run_dir / manifest["v3_task_schema_file"]).read_bytes())
     task_dir = task_artifact_path(run_dir, task_id, "route_task.json").parent
     prompt_path = task_dir / "prompt.md"
     route_task_path = task_dir / "route_task.json"
@@ -1462,7 +1461,8 @@ def task_dispatch(
             run_dir, state, manifest
         )
         selector = load_route_selector_bytes(selector_source, selector_path)
-        materializer = load_task_materializer_bytes(materializer_source, materializer_path)
+        materializer = load_task_materializer_bytes(
+        materializer_source, materializer_path, (run_dir / manifest["v3_task_schema_file"]).read_bytes())
         prompt, dependencies = render_prompt_data(run_dir, task_id, trusted_manifest_sha256)
         descriptor = _v3_input_descriptor(task, prompt, dependencies, execution_context)
         frozen = current.get("dispatch")

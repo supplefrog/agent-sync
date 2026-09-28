@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "catalog_version": "20260926T153213Z-bounded-hermes-workflow-readonly",
+  "catalog_version": "20260928T182423Z-hermes-gpt6-sol-low-execution",
   "candidates": [
     {
       "id": "hermes-sol-low-inline",
@@ -167,32 +167,39 @@
       }
     },
     {
-      "id": "hermes-sol-low-workflow-readonly",
+      "id": "hermes-gpt6-sol-low-workflow-execution",
       "route": {
         "host": "hermes",
         "transport": "hermes-workflow",
         "provider": "openai-codex",
-        "model": "gpt-5.6-sol",
+        "model": "gpt-6-sol",
         "reasoning_effort": "low",
         "runtime": "hermes-delegate/native-source-v1",
-        "contract_sha256": "1c5b3143978521b08d530d272d14dfa4b81656d7401ec8a5b9e08bb13f37e65e"
+        "contract_sha256": "a9463f7e7ddf11643bb810d2ab638a29fe9f627245ec86c6912b26b21efbd841"
       },
       "availability": {
         "status": "verified",
-        "observed_at": "2026-09-26T15:32:13.160331+00:00",
-        "valid_until": "2026-09-27T15:32:13.160331+00:00",
-        "route_sha256": "379f8c3e38208b966dd472290230506e07e138691ceea20894ca5111f6f8dda9",
+        "observed_at": "2026-09-28T18:24:23.751780+00:00",
+        "valid_until": "2026-09-29T18:24:23.751780+00:00",
+        "route_sha256": "5c2a0332f742363f26bcfd966f0ff0c3d1429168b9453f654488b94e16f1c5e3",
         "context_tokens": 32000,
         "tools_verified": [
+          "patch",
           "read_file",
-          "search_files"
+          "search_files",
+          "terminal",
+          "tool_call",
+          "tool_describe",
+          "tool_search",
+          "write_file"
         ],
         "allowed_effects": [
-          "none"
+          "none",
+          "reversible"
         ],
         "evidence": {
-          "locator": "references/evidence/hermes-sol-low-workflow-20260926T153213Z.json",
-          "sha256": "f6c1b754c8b525ff7214685863d0f5ef6fbb11000fedff37f78ad0808763a23b"
+          "locator": "references/evidence/hermes-gpt6-sol-low-workflow-20260928T182423Z.json",
+          "sha256": "3e812b0c26268a23474d3e43f7d46d981cbc9bc2e6d622d3cfc46096a8abace5"
         }
       },
       "quality": [],

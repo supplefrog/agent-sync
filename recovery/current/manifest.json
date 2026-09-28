@@ -2,13 +2,12 @@
   "$schema": "contracts/recovery-snapshot.schema.json",
   "artifacts": [
     {
-      "bytes": 5273,
+      "bytes": 5021,
       "format": "toml",
       "host": "codex",
       "id": "settings",
       "include": [
         "approvals_reviewer",
-        "computer_use",
         "desktop",
         "features",
         "hooks.PreToolUse",
@@ -28,20 +27,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "419095b29b2bd8dfb2b25e58888f133203bd8d3fac9c9f85eaec16dbd082f7f9",
+      "sha256": "f20169ad36e169e27787e726bd1408ee99cfaa2d4a9af28e28d2b3291036881f",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
     },
     {
-      "bytes": 1970,
+      "bytes": 2206,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "ac46ce1ce3f4f83bbe848b397cc53d924596396dc5528f6881ecc25c8125fb9e",
+      "sha256": "fe3d8e44e62856b8e084ddd10ac1f3d44ecf922a878441e490d11235a04a3f8c",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -86,7 +85,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 17073,
+      "bytes": 17161,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -290,20 +289,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "92ebde734f0f514b7bbe206f75afeee5eee707f38506267d74c1796dcc46cfba",
+      "sha256": "364a48d211dd8460c07a3ed1895d703e3d8d35bde7e29bf25feeb83b05bc9a8c",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
     },
     {
-      "bytes": 1945,
+      "bytes": 2244,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "acf90195dee69dde4d96533ffc29dcf3be01245e944e69b9986ce511687681d6",
+      "sha256": "0cf2d450ee702d2f98287c2bcbeec60f6c44c0f8bf52f63744f81e066a4a061b",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -724,14 +723,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 11054,
+      "bytes": 10643,
       "format": "text",
       "host": "hermes",
       "id": "native-c245cc964d3b5ea52612",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "0524c4879ab36745b50ee0d6e1b1b1009e41a2af7b182cc29fef13e530ae1e27",
+      "sha256": "535583654bcde72b8feb2e1104c90ee99eb447ce3879fa01374666ba31c403fc",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/delegation-workflows/SKILL.md",
       "source": "skills/autonomous-ai-agents/delegation-workflows/SKILL.md",
       "strategy": "replace-if-absent"
@@ -10931,14 +10930,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 3117,
+      "bytes": 3898,
       "format": "text",
       "host": "hermes",
       "id": "local-research-source-operations-skill-md",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "7c99905319c5e35a611ba1f23e3830697a25f5496e1408a74c339187e52fbd8d",
+      "sha256": "da42e0e779c22297d4a80cd5f37e952291356a61695c367f80ae32ba7c673147",
       "snapshot": "hosts/hermes/skills/research/research-source-operations/SKILL.md",
       "source": "skills/research/research-source-operations/SKILL.md",
       "strategy": "replace-if-absent"
@@ -13265,6 +13264,32 @@
       "strategy": "replace-if-absent"
     },
     {
+      "bytes": 4159,
+      "format": "text",
+      "host": "hermes",
+      "id": "local-research-source-operations-references-openai-docs-source-md",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "c5305835b0ba3372ed3624726b36855aef4df215aba951428257a455fe1eddc0",
+      "snapshot": "hosts/hermes/skills/research/research-source-operations/references/openai-docs-source.md",
+      "source": "skills/research/research-source-operations/references/openai-docs-source.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 3642,
+      "format": "text",
+      "host": "hermes",
+      "id": "local-research-source-operations-scripts-read-codex-openai-docs-py",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "6d57e93acb776d8bf6465050bdba3cc0bf9b547f7444cbf9afe3aa4f7f315382",
+      "snapshot": "hosts/hermes/skills/research/research-source-operations/scripts/read_codex_openai_docs.py",
+      "source": "skills/research/research-source-operations/scripts/read_codex_openai_docs.py",
+      "strategy": "replace-if-absent"
+    },
+    {
       "bytes": 535,
       "format": "yaml",
       "host": "omp",
@@ -13349,7 +13374,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "e0c198f668713bc25cc99a7e1330b1e632644c9ed674217c0df1e30fd2346ace",
+  "policy_sha256": "abc6706bec987a7bf24d9322a951e3a08fce9d6769c41664a904c9ac2f4173ee",
   "public_safe": true,
   "schema_version": 1
 }

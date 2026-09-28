@@ -1,13 +1,5 @@
 {
-  "approvals_reviewer": "guardian_subagent",
-  "computer_use": {
-    "windows": {
-      "always_allowed_app_ids": {
-        "Chrome": true,
-        "Chrome._crx_cmkncekebbplodngbpllndjkfo": true
-      }
-    }
-  },
+  "approvals_reviewer": "auto_review",
   "desktop": {
     "appearanceTheme": "system",
     "conversationDetailMode": "STEPS_COMMANDS",
@@ -28,11 +20,8 @@
     "selected-avatar-id": "null-signal"
   },
   "features": {
-    "goals": true,
-    "js_repl": false,
     "memories": true,
-    "prevent_idle_sleep": true,
-    "terminal_resize_reflow": true
+    "prevent_idle_sleep": true
   },
   "hooks": {
     "PreToolUse": [

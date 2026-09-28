@@ -489,8 +489,6 @@ _V3_BUDGET["properties"]["evidence_trial"] = _v3_object({
     "placement_reason": _V3_TEXT,
     "accept_unknown_quota": {"type": "boolean"},
 })
-_V3_BUDGET["properties"]["execution_request"] = _V3_BUDGET["properties"]["evidence_trial"]
-
 V3_TASK_SCHEMA = _v3_object({"schema_version": {"const": 3}, "task_id": _V3_TEXT, "task_class": _V3_TEXT,
                             "input_sha256": _V3_HASH,
                             "as_of": _V3_TIME, "requirements": _V3_REQUIREMENTS, "verifier": _V3_VERIFIER,
@@ -578,23 +576,6 @@ def evidence_trial_admissible(task):
                  and required["model"] is None and required["reasoning_effort"] is None)))
 
 
-def execution_request_admissible(task):
-    """Explicit parent-authorized execution; not a task-quality qualification."""
-    budget, required, verifier = task["budget"], task["requirements"], task["verifier"]
-    request = budget.get("execution_request")
-    return bool(request and request["authorized"] and not budget.get("evidence_trial")
-        and required.get("host") == "hermes" and required.get("transport") == "hermes-workflow"
-        and required.get("model") and required.get("reasoning_effort")
-        and task["effects"] in {"none", "reversible"}
-        and verifier["kind"] in {"independent-review", "deterministic"} and verifier["independent"]
-        and verifier["coverage"] == "complete" and verifier["scope"] == "artifact-effects"
-        and budget["parent_available"] and budget["attempt_cap"] == 1
-        and budget["attempts_used"] == 0 and task["continuation"] is None
-        and budget["fallback_route_id"] is None and budget["fallback_route_sha256"] is None
-        and not budget["allow_api_spend"] and budget["unknown_cost_policy"] == "explicit_preference"
-        and len(budget["preference_order"]) == 1)
-
-
 def _v3_resource(candidate, task):
     """No conversion between API price, distinct quota buckets or unknown costs."""
     cost, budget = candidate["cost"], task["budget"]
@@ -621,10 +602,8 @@ def _v3_resource(candidate, task):
             reasons.append("api_reserve_would_be_spent")
     if quota is not None:
         pool = budget["quotas"].get(quota["bucket"])
-        bounded = (budget.get("execution_request") if execution_request_admissible(task)
-                   else budget.get("evidence_trial") if evidence_trial_admissible(task) else None)
-        permit_unknown = (bounded is not None and cost["billing"] == "subscription"
-                          and bounded["accept_unknown_quota"]
+        permit_unknown = (evidence_trial_admissible(task) and cost["billing"] == "subscription"
+                          and budget["evidence_trial"]["accept_unknown_quota"]
                           and all(p["reserve"] == 0 for p in budget["quotas"].values()))
         if pool is not None and pool["unit"] != quota["unit"]:
             reasons.append("quota_state_unknown_or_incomparable")
@@ -792,11 +771,7 @@ def decide_route_v3(catalog, task, *, catalog_locator=None):
                                else budget["preference_order"] == [candidate["id"]]))
         if budget.get("evidence_trial") and not evidence_trial:
             reasons.append("evidence_trial_contract_not_admissible")
-        execution_request = (execution_request_admissible(task)
-                             and budget["preference_order"] == [candidate["id"]])
-        if budget.get("execution_request") and not execution_request:
-            reasons.append("execution_request_contract_not_admissible")
-        provisional = deterministic_trial or parent_review_trial or evidence_trial or execution_request
+        provisional = deterministic_trial or parent_review_trial or evidence_trial
         if not qualified and not provisional:
             reasons.append("no_matching_task_qualification_or_complete_low_risk_verifier")
         if continuation is not None:
@@ -812,7 +787,7 @@ def decide_route_v3(catalog, task, *, catalog_locator=None):
         if reasons:
             excluded[candidate["id"]] = reasons
         else:
-            qualification = ("parent-authorized-execution" if execution_request else "qualified" if qualified else "provisional-evidence-trial" if evidence_trial
+            qualification = ("qualified" if qualified else "provisional-evidence-trial" if evidence_trial
                              else "provisional-parent-review-trial" if parent_review_trial
                              else "provisional-complete-verifier")
             eligible.append((candidate, qualification, costs, evidence))

@@ -21,7 +21,7 @@
           ],
           "context_tokens": 32000,
           "task_contract_sha256": "247f808f42b591e9a68b2e082c7a13dd989c0af45336c751045c8742d10f0f4d",
-          "model": "gpt-5.6-sol",
+          "model": "gpt-6-sol",
           "reasoning_effort": "low"
         },
         "verifier": {
@@ -45,7 +45,7 @@
           "quotas": {},
           "unknown_cost_policy": "explicit_preference",
           "preference_order": [
-            "hermes-sol-low-workflow-readonly"
+            "hermes-gpt6-sol-low-workflow-execution"
           ],
           "parent_available": true,
           "attempt_cap": 1,

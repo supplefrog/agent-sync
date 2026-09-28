@@ -1,7 +1,7 @@
 ---
 name: research-source-operations
-description: Use for arXiv/paper lookup and research-source acquisition.
-version: 1.0.0
+description: Use for OpenAI/Codex docs, models and arXiv/paper research.
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -16,6 +16,7 @@ Use this umbrella for source acquisition and evidence-oriented research across a
 
 ## Route by source
 
+- **OpenAI/Codex docs, model selection, prompting and migration:** Run `python scripts/read_codex_openai_docs.py` from this skill directory to read the current installed procedure. Follow its source order: search and actually fetch current official pages before route references or helpers for narrow requests; preserve its explicit manual-first exception for genuinely broad cross-topic Codex orientation. Select only the reference or helper the task needs. Read [the source and host boundaries](references/openai-docs-source.md) for availability, freshness and fallback. Codex self-knowledge/MCP/manual routes remain about Codex; Hermes self-knowledge stays with its native owners. Loading documentation does not authorize modifying the Codex package or installing a substitute.
 - **arXiv and Semantic Scholar:** This skill owns ordinary paper lookup, metadata, citations, references, recommendations, and BibTeX preparation. Read [paper APIs and citation metadata](references/paper-apis.md). Run `scripts/search_arxiv.py` relative to this skill directory using the host's working Python executable; preserve the exact version suffix read and reject withdrawn/retracted results as ordinary evidence. The helper prints abbreviated abstracts: retrieve full source content before synthesis. For a known versioned ID, use `python scripts/paper_reader.py --read --id 1706.03762v1` to acquire HTML text or PDF bytes; see the bounded reader contract in [paper APIs](references/paper-apis.md). `neuroarxiv` is a separate, gated new-architecture workflow, not the default for paper searches.
 - **YouTube transcripts:** Use `python scripts/fetch_youtube_transcript.py URL --text-only --timestamps`. Retry without a requested language when necessary; state plainly when transcripts are disabled or unavailable.
 - **Technical evidence:** Search canonical source, official docs, issue trackers, and releases in separate lanes. Record exact version/commit, path or URL, quote or line range, and claim strength.

@@ -1,0 +1,71 @@
+{
+  "name": "hermes-gpt6-sol-low-authorized-execution",
+  "max_workers": 2,
+  "tasks": [
+    {
+      "id": "edit-check",
+      "role": "worker",
+      "risk": "write",
+      "attempts": 1,
+      "prompt": "Read and edit only {{var:TARGET}} within {{var:AUTHORIZED_ROOT}} to satisfy {{var:OUTCOME}}. Read the immutable checks declared in {{var:CHECK_PATHS}} and use terminal to run {{var:CHECK_COMMAND}}. Do not modify checks or other files. Follow these applicable workspace instructions: {{var:WORKSPACE_INSTRUCTIONS}}. Return changed paths and check results.",
+      "acceptance": [
+        "Parent independently inspects the target diff, verifies only authorized files changed and checks remain immutable, and reruns the declared checks on the integrated result."
+      ],
+      "route_request": {
+        "schema_version": 3,
+        "task_class": "bounded-authorized-edit-check",
+        "requirements": {
+          "tools": [
+            "patch",
+            "read_file",
+            "search_files",
+            "terminal",
+            "tool_call",
+            "tool_describe",
+            "tool_search",
+            "write_file"
+          ],
+          "context_tokens": 32000,
+          "task_contract_sha256": "633b2ad1a809360b54b024a2edb6a5656e34f5fc6836f1ab4498abef891d9559",
+          "model": "gpt-6-sol",
+          "reasoning_effort": "low"
+        },
+        "verifier": {
+          "kind": "independent-review",
+          "coverage": "complete",
+          "independent": true,
+          "scope": "artifact-effects",
+          "evidence": {
+            "locator": "inline:parent-acceptance/authorized-edit-check",
+            "sha256": "afbe332bbd62ac1d128481b43c27b6a1bb6e0b57cb6cf4bc8925da7af0b0fb1a"
+          }
+        },
+        "effects": "reversible",
+        "failure_cost": "low",
+        "deterministic": null,
+        "budget": {
+          "objective": "quota",
+          "api_remaining": null,
+          "api_reserve": 0,
+          "allow_api_spend": false,
+          "quotas": {},
+          "unknown_cost_policy": "explicit_preference",
+          "preference_order": [
+            "hermes-gpt6-sol-low-workflow-execution"
+          ],
+          "parent_available": true,
+          "attempt_cap": 1,
+          "attempts_used": 0,
+          "fallback_route_id": null,
+          "fallback_route_sha256": null,
+          "execution_request": {
+            "authorized": true,
+            "max_requests": 16,
+            "placement_reason": "User-selected bounded GPT-6 Sol low DAG execution with parent integration and acceptance",
+            "accept_unknown_quota": true
+          }
+        }
+      }
+    }
+  ]
+}

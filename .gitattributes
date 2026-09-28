@@ -12,3 +12,5 @@
 *.txt text eol=lf
 integrations/hermes/native-patches/guidance/current-selector/selector.patch text eol=lf
 skills/openai-delegation-route-research/scripts/selector-history/236447f07963134c965dd870a445ac3d3216349fd5d7d713bd0070b9f8eccad3.py -text
+skills/openai-delegation-route-research/scripts/selector-history/* -text
+skills/openai-delegation-route-research/references/schema-history/* -text

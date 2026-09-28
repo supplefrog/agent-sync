@@ -688,7 +688,7 @@ def _v3_native_contract() -> dict[str, Any]:
         "tools/delegate_tool_toolsets.py", "tools/delegate_tool_progress.py",
         "tools/delegate_tool_child_run.py", "tools/delegate_tool_results.py",
         "agent/agent_init.py", "agent/system_prompt.py", "agent/prompt_builder.py",
-        "agent/chat_completion_helpers.py", "agent/transports/codex.py",
+        "agent/chat_completion_helpers.py", "agent/transports/codex.py", "agent/codex_responses_adapter.py",
     )
     return {"runtime": "hermes-delegate/native-source-v1",
             "sources": {name: _sha((root / name).read_bytes()) for name in files}}
@@ -738,7 +738,8 @@ def _validate_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) ->
             f"actual native tools differ from the v3 declared tools: "
             f"expected={sorted(required['tools'])}, actual={sorted(names or [])}, "
             f"refresh_frozen={getattr(child, '_skip_mcp_refresh', False)}")
-    if pin["request"].get("budget", {}).get("evidence_trial"):
+    if (pin["request"].get("budget", {}).get("evidence_trial")
+            or pin["request"].get("budget", {}).get("execution_request")):
         schemas = {tool["function"]["name"] for tool in child.tools}
         if schemas != set(required["tools"]):
             raise RuntimeError("evidence trial tool schemas differ from declared tools")
@@ -758,7 +759,20 @@ def _validate_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) ->
 
 
 def _guard_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) -> None:
-    trial = pin["request"].get("budget", {}).get("evidence_trial")
+    budget = pin["request"].get("budget", {})
+    trial = budget.get("evidence_trial")
+    execution = budget.get("execution_request")
+    if trial is not None and execution is not None:
+        raise RuntimeError("execution request and evidence trial are mutually exclusive")
+    required = set(pin["request"]["requirements"]["tools"])
+    if execution is not None:
+        if not execution["authorized"]:
+            raise RuntimeError("execution request requires parent authorization")
+        actual = {tool["function"]["name"] for tool in child.tools}
+        if actual != required or set(child.valid_tool_names) != required:
+            raise RuntimeError("execution request declared tools differ from inherited native tools")
+        child._skip_mcp_refresh = True
+        child._tool_snapshot_generation = 2_147_483_647
     if trial is not None:
         # Narrow the constructed child, never global toolsets or parent permissions.
         required = set(pin["request"]["requirements"]["tools"])
@@ -777,40 +791,45 @@ def _guard_v3_child(child: Any, task: dict[str, Any], pin: dict[str, Any]) -> No
     original = child._build_api_kwargs
     # Freeze the controller's expected envelope; later task mutation cannot move it.
     frozen_task, frozen_pin = _safe_json(task), _safe_json(pin)
-    request_cap = trial["max_requests"] if trial is not None else None
-    if trial is not None:
+    bound = trial if trial is not None else execution
+    request_cap = bound["max_requests"] if bound is not None else None
+    if bound is not None:
         frozen_tools = _safe_json(child.tools)
-        # Supported Codex Responses serialization: freeze before invoking the
-        # builder, rather than trusting its first output as the expected schema.
-        frozen_wire_tools = [
-            {"type": "function", "name": tool["function"]["name"],
-             "description": tool["function"].get("description", ""), "strict": False,
-             "parameters": tool["function"].get("parameters", {"type": "object", "properties": {}})}
-            for tool in frozen_tools
-        ]
+        # Derive the wire contract from the source-bound native serializer, before
+        # trusting any builder result. Native aliases preserve the full tool surface.
+        from agent.codex_responses_adapter import _responses_tools
+        from agent.transports.codex import _alias_wire_tools
+        projection_params = {"provider": getattr(child, "provider", "openai-codex"),
+                             "base_url": getattr(child, "base_url", ""), "is_codex_backend": True}
+        def project_tools():
+            return _alias_wire_tools(_responses_tools(_safe_json(frozen_tools)),
+                projection_params, is_xai_responses=False, is_codex_backend=True)
+        frozen_wire_tools, frozen_aliases = project_tools()
     requests = 0
     def checked(*args: Any, **kwargs: Any) -> Any:
         nonlocal requests
         _validate_v3_child(child, frozen_task, frozen_pin)
         if request_cap is not None:
             if child.tools != frozen_tools:
-                raise RuntimeError("evidence trial native tool schemas changed")
+                raise RuntimeError("bounded worker native tool schemas changed")
             if requests >= request_cap:
-                raise RuntimeError("evidence trial model request cap reached")
+                raise RuntimeError("bounded worker model request cap reached")
             requests += 1
         request = original(*args, **kwargs)
         if request_cap is not None:
             _validate_v3_child(child, frozen_task, frozen_pin)
             extra = request.get("extra_body") or {}
             if not isinstance(extra, dict) or "tools" in extra:
-                raise RuntimeError("evidence trial rejects native tool overrides")
+                raise RuntimeError("bounded worker rejects native tool overrides")
             emitted = request.get("tools") or []
-            names = [tool.get("function", tool).get("name") for tool in emitted
-                     if isinstance(tool, dict) and tool.get("type") == "function"]
-            if len(names) != len(emitted) or len(names) != len(set(names)) or set(names) != required:
-                raise RuntimeError("evidence trial emitted tools differ from declared tools")
+            if project_tools() != (frozen_wire_tools, frozen_aliases):
+                raise RuntimeError("bounded worker native tool projection changed")
             if child.tools != frozen_tools or emitted != frozen_wire_tools:
-                raise RuntimeError("evidence trial emitted tool schemas differ from frozen native schemas")
+                raise RuntimeError("bounded worker emitted tool schemas differ from frozen native projection")
+            if execution is not None:
+                transport = child._get_transport()
+                if getattr(transport, "_last_wire_aliases", None) != frozen_aliases:
+                    raise RuntimeError("bounded worker native wire aliases differ from frozen projection")
         return request
     child._build_api_kwargs = checked
 
@@ -2629,3 +2648,5 @@ def register(ctx: Any) -> None:
         description=workflow_schema["description"],
         emoji="🕸️",
     )
+
+

@@ -383,7 +383,7 @@ class WorkflowStateTests(unittest.TestCase):
     def test_all_shipped_templates_validate(self) -> None:
         templates = Path(__file__).resolve().parents[1] / "assets" / "templates"
         validated = [ws.read_plan(path)["name"] for path in sorted(templates.glob("*.json"))]
-        self.assertEqual(len(validated), 6)
+        self.assertEqual(len(validated), 7)
 
     def test_explicit_difficulties_choose_matching_efforts(self) -> None:
         plan = ws.read_plan(self.plan_path)
@@ -1561,7 +1561,7 @@ class WorkflowStateTests(unittest.TestCase):
             schema = references / "route-task-v3.schema.json"
             original_schema = schema.read_bytes()
             schema.write_text("{}", encoding="utf-8")
-            with self.assertRaisesRegex(ws.PlanError, "historical schema data is unavailable"):
+            with self.assertRaisesRegex(ws.PlanError, "Pinned V3 task schema is not admitted"):
                 ws.task_dispatch(run, "new", {})
             schema.write_bytes(original_schema)
             selector_history.unlink()
@@ -1631,3 +1631,4 @@ class WorkflowStateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

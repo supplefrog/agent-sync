@@ -13,7 +13,7 @@ metadata:
 
 # Delegation Workflows
 
-Routine noncoding delegation beyond an obvious one-call task defaults to Luna-high. Bounded coding or tests, including linear work, default to Sol-medium; tier up only when task complexity or demonstrated difficulty warrants it. Other delegation is useful when it reduces wall time, isolates context, or obtains an independent check. It is harmful when it fragments one coherent task, delegates high-risk judgment to a weaker route, or creates review theater.
+Delegation is useful when it reduces wall time, isolates context, or obtains an independent check. It is harmful when it fragments one coherent task, delegates high-risk judgment to a weaker route, or creates review theater.
 
 The parent owns decomposition, risk, integration, and verification.
 
@@ -27,16 +27,15 @@ For other work, delegate when most of these are true:
 - mistakes are reversible and cheap;
 - parallelism or fresh context materially helps.
 
+Keep decisions and acceptance in the parent for architecture, product, security, auth, provider, credential, or persistent-config judgment. A suitably capable model may provide bounded evidence gathering, proposals, or review.
+
 Keep work in the parent when any of these dominate:
 
-- architecture, product, security, auth, provider, credential, or persistent-config judgment;
 - ambiguous root-cause analysis;
 - tightly coupled edits to the same files/state;
 - tasks requiring repeated user interaction;
 - external side effects whose success is difficult to verify;
 - coordination overhead exceeds the work.
-
-A strong parent may still delegate bounded evidence gathering for a high-risk decision, but it should not outsource the decision itself.
 
 ## 2. Partition by ownership, not arbitrary size
 
@@ -64,9 +63,9 @@ Each child prompt should preserve the user's source wording as closely as possib
 
 When additional context is required, keep it factual and source-like:
 
-- **Goal:** the user's bounded outcome, preferably quoted or minimally trimmed.
+- **Goal:** the user's bounded desired and undesired outcomes, preferably quoted or minimally trimmed.
 - **Context:** paths, direct facts, and prior decisions the child cannot retrieve.
-- **Constraints:** actual authorization and safety boundaries, not process preferences invented by the parent.
+- **Constraints:** actual authorization and safety boundaries and known contraindications, not process preferences invented by the parent.
 - **Verification:** concrete output, evidence, or acceptance checks.
 - **Failure behavior:** report missing context rather than guessing.
 
@@ -76,9 +75,9 @@ For code tasks, give the repository path and tell the child whether it may edit.
 
 ## 4. Choose execution shape
 
-- **Obvious one-call correction or check:** do not spawn a child. Routine noncoding delegation beyond that: Luna-high.
+- **Obvious one-call correction or check:** do not spawn a child.
 - **Several mechanical calls with processing:** use `execute_code`.
-- **Bounded coding implementation or tests (including linear work):** default to native Sol-medium delegation when its actual model, effort, tools and lifecycle meet the task; retain parent verification. The custom routed selector is not a prerequisite for ordinary work. Use routed tools only for an explicitly requested routed contract or an existing pinned run; a rejection under that contract is not permission to bypass it.
+- **Bounded coding implementation or tests (including linear work):** use native delegation when the selected model, effort, tools and lifecycle meet the task; retain parent verification. The custom routed selector is not a prerequisite for ordinary work. Use routed tools only for an explicitly requested routed contract or an existing pinned run; a rejection under that contract is not permission to bypass it.
 - **Durable or long-running work:** use tracked background processes, cron, or an explicit external agent—not ephemeral delegation.
 - **Interactive work:** keep it in the parent or use an appropriate PTY/external-agent workflow.
 
@@ -88,7 +87,7 @@ Treat child contexts as temporary. A returned final summary or stopped process d
 
 ## 5. Model/routing discipline
 
-The controller owns intent, task boundaries, dispatch, permissions and acceptance. Routine noncoding uses Luna-high; bounded coding/tests use Sol-medium, including linear work. Use a higher effort/tier only when task complexity or demonstrated difficulty warrants it; record the reason and bound retries. Astra-low remains for harder bounded execution, and Astra-high for planning or fresh substantive review. These are replaceable preferences, not route eligibility rules or controller/chat defaults. Do not infer suitability from price or route admission.
+The controller owns intent, task boundaries, dispatch, permissions and acceptance. Follow the standing model preference; choose supported routes from task requirements and evidence. Record escalation reasons and bound retries. Model preferences do not alter route eligibility or authorize controller/chat default changes. Do not infer suitability from price or route admission.
 
 Before launch, check the actual delegation schema and route availability. Pin provider, model and reasoning_effort per task only where supported; never swap global config between children, invent a pin, or silently fall back. If the required route is unavailable, report the specific gap rather than starting a catalogue-refresh campaign. Treat requested arguments, resolved runtime configuration and observed outbound requests as distinct evidence; none alone attests the backend model identity.
 
@@ -123,7 +122,7 @@ If a child fails:
 - fix the cause before retrying;
 - avoid repeated retries on the same unavailable provider;
 - collapse the task back into the parent when coordination is the problem;
-- escalate context/model only when evidence shows the cheaper path is insufficient.
+- reassess context and model against the standing preference when difficulty or judgment warrants escalation.
 
 Do not convert one transient provider failure into a permanent routing rule.
 

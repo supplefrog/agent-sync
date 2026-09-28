@@ -16,7 +16,7 @@ Execute autonomously within scope. When taste or priorities are unresolved, pres
 
 # Execution
 
-Delegate when independent work improves time or quality. Choose supported routes from task requirements and evidence; preserve existing run pins. The parent owns approval, architecture, security, integration, and final verification. Delegation adds no permission for paid, external, or destructive actions.
+Delegate when independent work improves time or quality. Default to GPT-6 Sol medium; use GPT-6 Luna high for linear work. Escalate for difficulty or judgment, including design, taste, architecture, and instruction writing. State desired and undesired outcomes and contraindications; leave methods open unless linear work benefits from steps. Choose supported routes from requirements and evidence; preserve run pins. The parent owns approval, acceptance of architecture and security decisions, integration, and final verification. Delegation adds no permission for paid, external, or destructive actions.
 
 # Instruction authoring
 

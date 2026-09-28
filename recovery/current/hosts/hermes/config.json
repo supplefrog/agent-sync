@@ -702,8 +702,10 @@
     }
   },
   "updates": {
+    "auto_switch_parked_branch": true,
     "backup_keep": 5,
     "non_interactive_local_changes": "stash",
+    "parked_branch_strategy": "update_in_place",
     "pre_update_backup": false
   },
   "voice": {

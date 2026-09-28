@@ -3,8 +3,8 @@
   "claim": "Observed configured defaults, not active-session model identities or universal behavior parity. Codex and Hermes select Sol/medium; OMP retains Astra/xhigh. Live recovery/profile checks passed; active conversations may retain overrides or assembled prompts.",
   "context_policy": {
     "max_standing_bytes": {
-      "codex": 2048,
-      "hermes": 2048,
+      "codex": 2304,
+      "hermes": 2304,
       "omp": 2048
     },
     "recovery_loaded_into_prompt": false,
@@ -22,7 +22,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "ac46ce1ce3f4f83bbe848b397cc53d924596396dc5528f6881ecc25c8125fb9e"
+        "fe3d8e44e62856b8e084ddd10ac1f3d44ecf922a878441e490d11235a04a3f8c"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -47,7 +47,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "acf90195dee69dde4d96533ffc29dcf3be01245e944e69b9986ce511687681d6"
+        "0cf2d450ee702d2f98287c2bcbeec60f6c44c0f8bf52f63744f81e066a4a061b"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -68,7 +68,7 @@
       "model": "gpt-6-sol",
       "provider": "openai-codex",
       "reasoning": "medium",
-      "runtime": "Hermes Agent 0.21.5+2453.gd0288be.dirty"
+      "runtime": "Hermes Agent 0.21.5+2456.gb7840ef"
     },
     "omp": {
       "artifact_sha256": [],

@@ -8,7 +8,6 @@
           "id": "settings",
           "include": [
             "approvals_reviewer",
-            "computer_use",
             "desktop",
             "features",
             "hooks.PreToolUse",
@@ -9518,6 +9517,24 @@
           "source": "skills/productivity/career-portfolio-positioning/SKILL.md",
           "snapshot": "hosts/hermes/skills/productivity/career-portfolio-positioning/SKILL.md",
           "portable_paths": true
+        },
+        {
+          "format": "text",
+          "id": "local-research-source-operations-references-openai-docs-source-md",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/research/research-source-operations/references/openai-docs-source.md",
+          "source": "skills/research/research-source-operations/references/openai-docs-source.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "local-research-source-operations-scripts-read-codex-openai-docs-py",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/research/research-source-operations/scripts/read_codex_openai_docs.py",
+          "source": "skills/research/research-source-operations/scripts/read_codex_openai_docs.py",
+          "strategy": "replace-if-absent"
         }
       ]
     },

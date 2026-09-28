@@ -4,8 +4,8 @@
   "knowledge_ledger": "../evidence/findings.json",
   "hosts": {
     "hermes": {
-      "cli_version": "0.21.5+2453.gd0288be.dirty",
-      "source_revision": "d0288be5b3330d2442e3907185b8e9d0958297bb with reviewed local changes; not a pristine revision",
+      "cli_version": "0.21.5+2456.gb7840ef",
+      "source_revision": "b7840eff8ee07dd8c8ef134f577b871d1f9f7244",
       "sources": [
         "https://hermes-agent.nousresearch.com/docs/",
         "https://github.com/NousResearch/hermes-agent"
