@@ -9,7 +9,7 @@
     "Map isolated paper reads to Codex or OMP task batches and Hermes delegate_task.",
     "Narrow automatic routing to open, non-trivial, costly-to-redo technical mechanisms.",
     "Remove companion CLI installation instructions and unsupported arXiv authority claim.",
-    "Return bounded prior-art evidence to advise-project-approach when that parent workflow invoked it."
+    "Return bounded prior-art evidence to the requesting task without depending on a separate architecture skill."
   ],
   "scope": "Portable SKILL.md only; companion CLI, Claude Agent SDK, package scripts, hooks, and plugins are excluded.",
   "targets": ["Codex 0.150.0-alpha.12.2", "Hermes Agent 0.20.5", "OMP 17.2.13"]

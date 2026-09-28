@@ -44,22 +44,26 @@
     {
       "id": "neuroarxiv",
       "owner": "skills/neuroarxiv",
+      "status": "retired",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "Consolidated into project-prior-art at user request. The detailed arXiv reading method remains available as an optional reference, without the former novelty gate or mandatory paper fan-out."
+    },
+    {
+      "id": "project-prior-art",
+      "owner": "skills/project-prior-art",
       "status": "admitted",
       "selection_state": "selected",
-      "selection_evidence": [
-        "evals/results/neuroarxiv-deterministic.json"
-      ],
-      "selection_reason": "The Hermes and Codex variants were byte-identical; Agent Sync preserves all behavior and provenance, adds the source-verified OMP task adapter, and remains fail-closed when isolated workers are unavailable."
+      "selection_evidence": ["evals/results/project-prior-art-deterministic.json"],
+      "selection_reason": "User requested reuse-first research for any new project, with GitHub as implementation evidence and arXiv as a source of novel mechanisms. The short owner preserves a conditional paper-reading reference and avoids a fixed research itinerary. Structural checks do not establish output-quality improvement."
     },
     {
       "id": "advise-project-approach",
       "owner": "skills/advise-project-approach",
-      "status": "admitted",
-      "selection_state": "selected",
-      "selection_evidence": [
-        "evals/results/advise-project-approach-deterministic.json"
-      ],
-      "selection_reason": "A behavior-level synthesis preserves project-stage strategy, comparables, cost/vendor reality, one ranked recommendation, failure conditions, and next actions; portable routes remain shared while Hermes-only research/verification owners are optional accelerators with self-contained Codex/OMP fallbacks."
+      "status": "retired",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "Retired by user request: the general architecture checklist adds context and can oversteer capable models. Project decisions remain with the task and relevant domain owners."
     },
     {
       "id": "answer-key-gauntlet",
@@ -184,12 +188,10 @@
     {
       "id": "conversational-communication",
       "owner": "skills/conversational-communication",
-      "status": "admitted",
-      "selection_state": "selected",
-      "selection_evidence": [
-        "evals/results/conversational-communication-deterministic.json"
-      ],
-      "selection_reason": "Selected as the user-confirmed short conversational reply owner; public artifacts remain with humanizer."
+      "status": "retired",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "Retired by user request: standing output guidance covers routine chat; humanizer retains the distinct public-facing prose workflow."
     },
     {
       "id": "hermes-self-engineering",

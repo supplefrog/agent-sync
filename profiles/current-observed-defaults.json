@@ -114,11 +114,6 @@
       "owner": "skills/humanizer",
       "scope": "Issues, PRs, release notes, email, Slack, posts, and explicit humanization."
     },
-    "routine-chat": {
-      "loading": "on-demand",
-      "owner": "skills/conversational-communication",
-      "scope": "Chat-style calibration and verbose/status reply repair; not a mandatory load for ordinary conversation."
-    },
     "surface-placement": {
       "loading": "on-demand",
       "owner": "skills/hermes-self-engineering",

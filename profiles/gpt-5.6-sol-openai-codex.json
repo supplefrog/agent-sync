@@ -76,11 +76,6 @@
     }
   },
   "writing_routes": {
-    "routine-chat": {
-      "owner": "skills/conversational-communication",
-      "loading": "on-demand",
-      "scope": "Short user-facing chat, status, decisions, and completion replies."
-    },
     "public-prose": {
       "owner": "skills/humanizer",
       "loading": "on-demand",

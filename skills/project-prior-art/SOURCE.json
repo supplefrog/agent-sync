@@ -1,0 +1,11 @@
+{
+  "source": "User-requested consolidation of project comparison and arXiv prior-art guidance",
+  "prior_sources": [
+    "skills/advise-project-approach",
+    "skills/neuroarxiv"
+  ],
+  "upstream_arxiv_method": "https://github.com/UditAkhourii/neuroarxiv",
+  "upstream_commit": "b5d20efa12dd1ba177ce890d56809d2e027f8055",
+  "license": "MIT",
+  "scope": "Portable guidance and optional reference only; no CLI, package, hooks, or required parallel inference."
+}

@@ -29,14 +29,21 @@
     },
     {
       "name": "neuroarxiv",
-      "status": "admitted",
+      "status": "retired",
       "license": "MIT",
       "source": "https://github.com/UditAkhourii/neuroarxiv@b5d20efa12dd1ba177ce890d56809d2e027f8055",
       "eval": "evals/results/neuroarxiv-deterministic.json"
     },
     {
-      "name": "advise-project-approach",
+      "name": "project-prior-art",
       "status": "admitted",
+      "license": "MIT",
+      "source": "local-converged-port",
+      "eval": "evals/results/project-prior-art-deterministic.json"
+    },
+    {
+      "name": "advise-project-approach",
+      "status": "retired",
       "license": "MIT",
       "source": "local-converged-port",
       "eval": "evals/results/advise-project-approach-deterministic.json"
@@ -119,7 +126,7 @@
     },
     {
       "name": "conversational-communication",
-      "status": "admitted",
+      "status": "retired",
       "license": "MIT",
       "eval": "evals/results/conversational-communication-deterministic.json"
     },

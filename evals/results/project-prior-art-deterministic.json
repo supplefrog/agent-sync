@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "suite": "project-prior-art",
+  "capability": "project-prior-art",
+  "status": "pass",
+  "claim": "A short project-creation trigger checks existing implementations and relevant research before a new approach; detailed arXiv comparison remains conditional.",
+  "verification": {
+    "user_intent": "New projects should reference existing GitHub projects and arXiv work where relevant, avoiding unnecessary from-scratch invention.",
+    "structural": "Entrypoint, linked reference, provenance, license, registry, ownership, and model-profile checks.",
+    "limits": "No baseline-versus-candidate model-quality trial or cross-host natural-trigger observation is claimed."
+  },
+  "result": {
+    "passed": true
+  }
+}

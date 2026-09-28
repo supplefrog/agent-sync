@@ -1,6 +1,6 @@
 ---
 name: systematic-debugging
-description: Investigate reproducible bugs, test/build failures, performance regressions, integration faults, and unexpected system behavior by gathering evidence, isolating the failing boundary, testing causal hypotheses, and validating the real fix. Also use for RCAs after repro, root cause, fix, and validation are known. Skip the full workflow for straightforward supported operations with an obvious direct check.
+description: Use for hard bugs, regressions, failing tests/builds, and unexpected behavior that needs causal diagnosis. Skip the full workflow for straightforward fixes.
 version: 2.0.0
 author: Hermes Agent
 license: MIT
@@ -26,7 +26,7 @@ Capture the concrete symptom:
 - expected behavior and evidence for that expectation;
 - relevant environment, version, config, and recent changes.
 
-Read complete errors and stack traces. Reproduce with the smallest realistic command when possible. If the failure is intermittent, record frequency and correlated state instead of pretending one non-reproduction disproves it.
+Read complete errors and stack traces. Reproduce with the smallest realistic command when possible. If the failure is intermittent, record frequency and correlated state instead of pretending one non-reproduction disproves it. For a hard failure without a useful reproduction, use [the feedback-loop reference](references/feedback-loop.md) to build one without imposing a fixed debugging phase sequence.
 
 ## 2. Build a causal split
 

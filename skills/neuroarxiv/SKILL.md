@@ -1,6 +1,6 @@
 ---
 name: neuroarxiv
-description: Use only for a genuinely new project-architecture decision after comparing enabled skills and native/existing solutions and finding no adequate approach. Ground that new architecture in real arXiv prior art, isolated paper reads, and one cited recommendation. If an existing skill, reference architecture, comparable project, framework, or established approach fits, route to advise-project-approach or the existing owner instead.
+description: Use only for a genuinely new project-architecture decision after comparing enabled skills and native/existing solutions and finding no adequate approach. Ground that new architecture in real arXiv prior art, isolated paper reads, and one cited recommendation. If an existing skill, reference architecture, comparable project, framework, or established approach fits, use the existing owner or direct project advice instead.
 license: MIT
 ---
 
@@ -14,7 +14,7 @@ This skill is expensive: a real arXiv fetch plus roughly one isolated Agent call
 
 **Gate 1. Existing-solution comparison.**
 
-Inspect enabled skills first. Then check native features, reference architectures, comparable projects, frameworks, libraries, standards, and established approaches relevant to the decision. If an installed skill already owns the task, route to that owner. If an adequate existing approach fits the project constraints, ABORT NeuroArxiv and use `advise-project-approach` to compare or adapt it.
+Inspect enabled skills first. Then check native features, reference architectures, comparable projects, frameworks, libraries, standards, and established approaches relevant to the decision. If an installed skill already owns the task, route to that owner. If an adequate existing approach fits the project constraints, Stop here and compare or adapt the established approach directly.
 
 Do not treat "not already installed locally" as "genuinely new." The architecture is genuinely new only when this comparison finds no adequate existing approach.
 
@@ -26,7 +26,7 @@ Ask all three questions. If the answer to any is no, ABORT.
 2. **Is the architecture genuinely new after Gate 1?** Existing skills and established solutions do not adequately satisfy the project constraints.
 3. **Is the user about to commit real effort while leaving the architecture open?** The decision will be expensive to redo, and the user has not already fixed the architecture or asked for direct implementation.
 
-If all three checks pass, proceed to Phase 1. If any check fails, use the owning skill, `advise-project-approach`, or direct implementation. Do not invent novelty merely to trigger this skill.
+If all three checks pass, proceed to Phase 1. If any check fails, use the owning skill or direct implementation. Do not invent novelty merely to trigger this skill.
 
 ## The loop
 
@@ -64,7 +64,7 @@ if you're confident of it.
 | eess.SP / eess.SY | signal processing / control theory |
 | math.OC | optimization, scheduling, resource allocation |
 
-If the decision is not genuinely new project architecture, ABORT and use the existing owning skill, `advise-project-approach`, or direct implementation. Do not invent an architecture question merely to force an arXiv search.
+If the decision is not genuinely new project architecture, ABORT and use the existing owning skill or direct implementation. Do not invent an architecture question merely to force an arXiv search.
 
 ### Phase 1 — Fetch (real HTTP, no generation)
 
@@ -148,7 +148,7 @@ After all reads return:
 6. **One open thread.** A question the read papers raise but don't
    answer — worth a design-review checkpoint before shipping.
 
-When this workflow follows `advise-project-approach`, the existing-solution comparison has already failed to find an adequate architecture. Return the cited convergence result to the parent workflow. NeuroArxiv recommends the genuinely new project architecture; the parent may still supply broader constraint, cost, vendor, and delivery analysis.
+When an earlier comparison found no adequate existing architecture, return the cited convergence result to the requesting task. Keep broader constraint, cost, vendor, and delivery analysis with that task.
 
 ## Output shape
 
