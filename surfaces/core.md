@@ -10,7 +10,7 @@ This file is a non-injected reference, not another prompt body. The effective ho
 | Unresolved Hermes placement | `skills/hermes-self-engineering` |
 | Cross-host placement, parity, deployment, and recovery | `skills/cross-agent-surface-engineering` |
 | Unresolved workflow design | `skills/outcome-first-workflow-design` |
-| Starting or materially redesigning a project | `skills/project-prior-art` |
+| Starting, redirecting, or reviewing a project's architecture | `skills/project-prior-art` |
 | Model-route research and qualification | `skills/openai-delegation-route-research` |
 | Persisted DAG execution | `skills/dynamic-workflows` |
 
