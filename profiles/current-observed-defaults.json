@@ -22,7 +22,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "fe3d8e44e62856b8e084ddd10ac1f3d44ecf922a878441e490d11235a04a3f8c"
+        "0718abc4b6a4723987b0363025e06d0049bcc2026a93e756d2eea4f651fe999a"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -47,7 +47,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "0cf2d450ee702d2f98287c2bcbeec60f6c44c0f8bf52f63744f81e066a4a061b"
+        "9d2da01151826edcf8e55666505a06ebbe2587ff6532f328b68e0f16cd28266a"
       ],
       "effective_surfaces": [
         "provider.native-system",

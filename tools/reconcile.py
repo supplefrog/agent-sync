@@ -192,6 +192,7 @@ def plan(
     recovery_roots: Mapping[str, str | Path] | None = None,
     skill_roots: Sequence[str | Path] | None = None,
     live: bool = False,
+    review_options: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Aggregate bounded metadata-only findings across every governed surface."""
 
@@ -229,7 +230,7 @@ def plan(
     for item in findings:
         unique[item["finding_id"]] = item
     ordered = sorted(unique.values(), key=lambda item: item["finding_id"])
-    return {
+    report = {
         "schema_version": 1,
         "mode": "live-readback" if live else "read-only-plan",
         "machine": machine,
@@ -238,6 +239,10 @@ def plan(
         "findings": ordered,
         "summary": {"total": len(ordered)},
     }
+    if review_options:
+        import change_review
+        report["authoring_review"] = change_review.review(repo, **review_options)
+    return report
 
 
 def _assert_skill_public_safe(path: Path, name: str) -> None:
@@ -1351,7 +1356,7 @@ def complete_sync(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("plan", "sync"))
+    parser.add_argument("action", choices=("review", "plan", "sync"))
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--machine", default="local-windows")
     parser.add_argument("--adopt", action="append", default=[])
@@ -1366,16 +1371,37 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--full", action="store_true", help="explicitly retain broad reconciliation when owner/file selectors are present")
     parser.add_argument("--root", action="append", default=[], metavar="HOST=PATH")
     parser.add_argument("--skill-root", action="append", default=[], type=Path)
+    parser.add_argument("--target", help="repository-relative authoring target; required for review")
+    parser.add_argument("--candidate", type=Path, help="staged candidate source; never executed")
+    parser.add_argument("--baseline", type=Path, help="saved baseline source")
+    parser.add_argument("--host", action="append", default=[], help="narrow suggested model cells")
+    parser.add_argument("--model", action="append", default=[], help="add an exact session-selected model")
+    parser.add_argument("--evidence", action="append", default=[], type=Path)
+    parser.add_argument("--suite", action="append", default=[], type=Path)
+    parser.add_argument("--reference-skill", action="append", default=[], type=Path)
     args = parser.parse_args(argv)
+    authoring = bool(args.target or args.candidate or args.baseline or args.host or args.model or
+                     args.evidence or args.suite or args.reference_skill)
+    if authoring and (args.action == "sync" or not args.target):
+        parser.error("authoring options require --target and apply only to review or plan")
+    if args.action == "review" and not args.target:
+        parser.error("review requires --target")
+    options = dict(target=args.target, candidate=args.candidate, baseline=args.baseline,
+                   hosts=args.host, models=args.model, reports=args.evidence, suites=args.suite,
+                   reference_skills=args.reference_skill) if args.target else None
     roots = recovery._parse_roots(args.root)
-    if args.action == "plan":
-        report = plan(args.repo, machine=args.machine, recovery_roots=roots, skill_roots=args.skill_root or None, live=True)
+    if args.action == "review":
+        import change_review
+        report = change_review.review(args.repo, **options)
+    elif args.action == "plan":
+        report = plan(args.repo, machine=args.machine, recovery_roots=roots,
+                      skill_roots=args.skill_root or None, live=True, review_options=options)
     else:
         report = complete_sync(args.repo, machine=args.machine, adopt=args.adopt, recovery_roots=roots,
                                skill_roots=args.skill_root or None, capture_recovery=args.capture_recovery,
                                include=args.include, message=args.message, scoped=False if args.full else None, recovery_artifacts=args.capture_artifact)
     print(json.dumps(report, indent=2, sort_keys=True))
-    return 0 if args.action == "plan" or report.get("result") == "synced" else 2
+    return 0 if args.action in {"review", "plan"} or report.get("result") == "synced" else 2
 
 
 if __name__ == "__main__":

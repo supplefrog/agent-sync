@@ -5,6 +5,7 @@ This file is a non-injected reference, not another prompt body. The effective ho
 | Concern | Owner |
 | --- | --- |
 | Standing communication, judgment, artifact links, and orchestration consent | Host overlays; preserve necessary native differences |
+| Model preferences and fresh reviewer dispatch | `surfaces/core.md`; host overlays load this owner before dispatch |
 | Instruction content, triggers, sentence-level intent, and evaluation | `skills/skill-creator` |
 | Automatic checked improvements from reusable workflows during work | `skills/skill-creator`; thin standing reminders in the effective host overlays |
 | Unresolved Hermes placement | `skills/hermes-self-engineering` |
@@ -19,3 +20,30 @@ This file is a non-injected reference, not another prompt body. The effective ho
 Before installing, enabling, creating, replacing, retiring, or materially changing a shared agent capability or persistent behavior surface, use Agent Sync's `tools/reconcile.py` and the admitted `cross-agent-surface-engineering` owner. Existing admitted owners may be adopted or deployed only when deterministic checks prove a single-origin, reversible, non-conflicting change. Novel, staged, ambiguous, safety-sensitive, cross-host, or retirement changes require scoped authorization and recorded baseline/candidate evidence; they are not automatic promotions. Harness failure or missing evidence is inconclusive. Retaining the baseline is valid.
 
 The staged `capability-curator` is not a promotion authority. Native local maintenance cannot admit, replace, or distribute portable capabilities. Project-local and ephemeral work is not promoted into shared ownership merely because an agent performed it.
+
+# Execution contract
+
+This is the single source of user model preferences and reviewer dispatch rules. Standing host instructions and memory point here; they do not maintain their own preference tables. Runtime settings and observed profiles record configuration, not preference authority. A newer explicit user instruction takes precedence; update this owner when asked to persist it.
+
+## Model preferences
+
+- Reviewers, including difficult or judgment-heavy work: GPT-6.1 Sol, high reasoning (`gpt-6.1-sol`, `high`).
+- Default bounded workers: GPT-6.1 Sol, medium reasoning (`gpt-6.1-sol`, `medium`).
+- Linear work: GPT-6 Luna, high reasoning (`gpt-6-luna`, `high`).
+- Hermes default: GPT-6.1 Sol, medium reasoning (`gpt-6.1-sol`, `medium`). This preference does not claim the live setting has been applied.
+
+## Dispatch and review
+
+Use native bounded delegation when separate work or review materially improves the outcome. Use `dynamic-workflows` only for an explicitly selected routed contract or an existing pinned run. Preserve existing run pins; changing preferences does not migrate running tasks.
+
+When the user requests review, or nontrivial work makes difficult judgment, regression risk, or author bias material, spawn a fresh reviewer using the reviewer preference. Tiny unambiguous edits do not require a reviewer unless requested. Each review pass uses a new agent or session, not the author or a reused reviewer; in Codex use `fork_turns="none"` with explicit model and reasoning overrides. On other hosts use the supported fresh-child equivalent. Do not claim a fresh review if the host cannot provide one.
+
+Give the reviewer a self-contained bounded handoff: intended and undesired outcomes, constraints and acceptance criteria, repository/artifact path, exact revision or patch identity, relevant evidence, and a read-only review scope. Let it inspect the artifact before the author's explanation; omit inherited conversation and other reviewers' verdicts. Request actionable findings with locations, evidence and remaining uncertainty. Shared models, instructions and tools still correlate errors; freshness alone is not proof of independence.
+
+The parent checks findings against the current artifact, makes authorized fixes, and verifies acceptance. If a fix changes the reviewed concern, give a new reviewer the updated artifact for a bounded follow-up. Stop when criteria are met; no automatic fix-agent loops or expanding swarms. State desired and undesired outcomes and contraindications; leave methods open unless linear work benefits from steps.
+
+Verify the requested model/reasoning and fresh-context controls are supported before dispatch. If unavailable, report the specific blocker; do not silently substitute a model or call self-review fresh review. Delegation adds no permission for paid inference, external or destructive actions, or approval bypasses. Parent acceptance, deployment and publication authority remain separate from reviewer findings.
+
+## Discovery
+
+Resolve the Agent Sync checkout from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json`: strip the trailing `render/fleet` to get the checkout. Read this file before selecting a worker or reviewer. A missing contract is a dispatch blocker, not a reason to revive a remembered preference table.

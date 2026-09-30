@@ -14,25 +14,27 @@ Use this before creating or materially changing a workflow, automation, reusable
 
 ## Contract
 
-Optimize the user's outcome, not fidelity to the mechanism they named. Treat the request as partial evidence: reconstruct the likely goal, challenge weak mechanism assumptions, inspect what already exists, and proceed on supported reversible defaults. Preserve explicit constraints and safety boundaries. A better result may be to reuse, simplify, adapt, replace, or make no change.
+Optimize the user's outcome, not fidelity to the mechanism they named. Reconstruct the likely goal, challenge weak assumptions, and inspect what already exists. Reversible implementation is still wasted work when the mechanism cannot deliver the outcome. Preserve explicit constraints and safety boundaries. Reuse, simplify, adapt, replace, or make no change as the evidence warrants.
 
 ## Procedure
 
 ### 1. Reconstruct intent and recover evidence
 
-Before generating options or mechanisms, inventory the evidence that already exists: the user's supplied material, prior research and decisions, current artifact and neighboring callers, documentation, tests, evaluations, history, and relevant session records. Reuse verified findings rather than restarting discovery; mark stale, conflicting, or missing evidence explicitly. Separate the desired outcome, trigger, success measures, failure cost, explicit constraints, incidental implementation choices, and guarantees the current design may protect. Mark evidence, inference, and unresolved ambiguity. Do not turn missing detail into an intake interview: infer from evidence, state consequential assumptions, and start useful discovery or implementation. Ask only when the remaining ambiguity would materially change the product and cannot be resolved by evidence because it depends on a user-owned value or hard-to-reverse commitment. New research begins only for gaps that could change the decision.
+Recover existing evidence relevant to the decision: supplied material, prior findings, and the affected implementation or callers. Reuse verified findings; mark stale, conflicting, or missing evidence. Separate the desired outcome, explicit constraints, and load-bearing guarantees from incidental implementation choices. Do not turn missing detail into an intake interview. Infer from evidence and resolve consequential unknowns with the cheapest available check. Ask only when a material user-owned preference or hard-to-reverse commitment cannot be settled by evidence.
 
 ### 2. Describe the outcome contract
 
-Before choosing a mechanism, state observable triggers, measurable results, hard failures, non-goals, cost/latency/maintenance/privacy/reversibility bounds, and checks that would prove the result. Prefer pass probability, latency budget, or recovery guarantees over labels such as simple, smart, fast, or robust.
+State only decision-relevant outcomes, constraints, failure boundaries, and observable checks. Prefer measurable results over labels such as simple, smart, fast, or robust.
 
-### 3. Inspect baseline and rationale
+### 3. Check feasibility before implementation
 
-Trace the live implementation end to end. For existing workflows, inspect source history or decision records when available. Identify what is already solved, what is load-bearing, and the exact mechanism where the claimed gap appears. For scoped implementation work, stop when the baseline meets the requested outcome and another layer would add only overlap or ceremony.
+Inspect the relevant baseline and rationale. Identify what is already solved, what is load-bearing, and where the claimed gap appears. Stop when the baseline already meets the outcome.
+
+For an uncertain capability, trace its required inputs and prerequisites. If a known information or performance limit rules out the intended result, reject or revise the approach before coding. Otherwise test the decisive assumption against the baseline using existing evidence, existing tools, or the smallest disposable probe. Before feasibility is established, build only the minimum disposable code or adapter needed to test that assumption. Build further supporting infrastructure only when existing evidence or that probe supports the intended benefit. Permission to code or delegate supplies authority, not evidence of usefulness. Reuse adequate existing evidence; routine fixes with an established cause do not require a new feasibility study.
 
 ### 4. Research only decision-changing gaps
 
-Audit enabled skills and host-native capabilities before launching a new workflow; if an existing owner already satisfies the outcome, route to it rather than duplicating its procedure. Search externally only for unresolved gaps that could change the decision. Choose implementation and research sources by the unresolved decision, rather than requiring one source type before considering alternatives. Reuse relevant verified research. Use an available research or skill-intake helper when it contributes a needed capability; a host-specific skill name is not a prerequisite for discovery. Inspect any proposed outside skill before adopting it. Compare reference architectures, comparable projects, frameworks, owner docs/source/releases/tests/specifications, maintained standards, and reproducible practitioner evidence. Compare credible finalists, including retain/simplify and replacement when relevant to the user's decision.
+Check relevant existing capabilities; reuse an adequate owner. Load additional design or placement guidance only for a concrete unresolved question in the feasibility check or justified implementation. Search externally only for gaps that could change the decision, using sources suited to that gap. Reuse verified research and inspect a proposed outside implementation before adopting it. Compare credible alternatives, including retain/simplify when relevant; do not require a catalog audit or fixed set of source types.
 
 ### 5. Decide from first principles
 
@@ -43,7 +45,7 @@ For each candidate, explain the mechanism that could satisfy the outcome. Compar
 Externalize the decision path while work is live so later context loss cannot turn an assumption into an unexplained architecture:
 
 - Record the outcome, material constraints, evidence, live alternatives, recommendation, decisive tradeoff, assumptions, and the condition that would reopen the choice. Reuse the project's existing plan or ADR owner; otherwise keep the compact trace in the handoff instead of inventing a new ledger format.
-- When explicit user constraints fix the choice, or evidence supports a reversible default, record that basis and proceed within the user's authorized scope without general intake; an existing implementation alone does not fix an architecture decision.
+- When user constraints fix the choice, record them and proceed within authorization if feasibility is supported. If a known limit rules out the outcome, explain the conflict and identify the smallest constraint or approach change needed. Ask only if resolution requires changing a user-owned constraint.
 - When evidence supports one option, present that recommendation and proceed within the user's authorized scope; do not convert option comparison into a questionnaire.
 - When material taste or priorities remain unresolved after evidence, present reviewable alternatives and a recommendation before committing, even when the choice is reversible. For unresolved hard-to-reverse choices, request focused selection or approval of the smallest unresolved branch—not a general interview.
 - Safety and authorization gates apply separately; a supported choice does not bypass them.

@@ -11,6 +11,10 @@ The architecture uses mechanisms supported by canonical sources rather than mark
 | Keep host-specific enforcement thin | Hooks and prompt files are host mechanisms, while Agent Skills are portable. No canonical universal hook contract exists across the supported agents. |
 | Separate admission from lifecycle cleanup | Hermes Curator uses telemetry, staleness, consolidation, archival, and pruning. Those signals do not test whether a new capability beats the live baseline. |
 
+## Review and installed-source limits
+
+The optional authoring review checks recorded evidence consistency, not whether an experiment ran or a behavior was preserved. Its native-source excerpts are partial. Fresh Hermes catalog and skill-body checks establish adapter visibility and loading, not natural route selection or GPT-6 Sol/medium quality. The OpenAI Docs read-through follows installed files and reports missing source; a package layout change needs an adapter update.
+
 ## What was deliberately rejected
 
 - Installing the highest-ranked marketplace result.

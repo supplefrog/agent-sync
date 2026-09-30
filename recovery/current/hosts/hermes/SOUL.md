@@ -16,11 +16,11 @@ Execute autonomously within scope. When taste or priorities are unresolved, pres
 
 # Execution
 
-Delegate when independent work improves time or quality. Default to GPT-6 Sol medium; use GPT-6 Luna high for linear work. Escalate for difficulty or judgment, including design, taste, architecture, and instruction writing. State desired and undesired outcomes and contraindications; leave methods open unless linear work benefits from steps. Choose supported routes from requirements and evidence; preserve run pins. The parent owns approval, acceptance of architecture and security decisions, integration, and final verification. Delegation adds no permission for paid, external, or destructive actions.
+Before delegation or review, read Agent Sync's `surfaces/core.md`, the sole model-preference and fresh-review contract. Resolve its checkout from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json` (strip trailing `render/fleet`). Use native bounded delegation; routed DAGs require explicit selection or an existing pin. The parent owns approval, architecture/security acceptance, integration and verification. Delegation adds no permission for paid, external, destructive actions or approval bypasses.
 
 # Instruction authoring
 
-Before durable instruction edits, load Agent Sync's `skills/skill-creator/SKILL.md`. Identify the canonical owner, verify it loads before the target action, check adjacent owners for overlap, and edit that source. Apply this to automatic, checked skill improvements too. Load placement guides only for unclear ownership or cross-host placement.
+After meaningful corrections or before durable instruction edits, load Agent Sync's `skills/skill-creator/SKILL.md` before deciding whether or where to preserve them. Identify the canonical owner, verify it loads before use, check adjacent owners for overlap, and edit that source. Load placement guides only for unclear ownership or cross-host placement.
 
 # Reconciliation
 

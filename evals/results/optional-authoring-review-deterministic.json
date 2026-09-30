@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "suite": "optional-authoring-review-rebased-deterministic",
+  "observed_date": "2026-09-29",
+  "published_base": "d039801f24738d1c642095ee80f455aae1fce7e7",
+  "scope": "Optional review restored around newer scoped sync; no behavioral-quality claim",
+  "source_sha256": {
+    "docs/evidence-basis.md": "ac2b9b2d530a00ccadd9e31ef7df1dd7063fcd633e7444672f7e276306d1ce27",
+    "host-deltas.json": "8e2b672675201410505983d0bf21e9fbc64714bc6ea29b3d2bbef6a370cb4c67",
+    "skills/skill-creator/SKILL.md": "a050ee30d5123a77c3d471af73d2d8301a9ef2796b80d198475e3006a2401db7",
+    "skills/skill-creator/references/change-review.md": "c148af47bf1062e0238e2a06d6da109e84b654057ec5b7dc055066546ed1a3ff",
+    "skills/skill-creator/references/useful-behaviors.md": "0ec0c5b3e4339a0061ac5cdd584f0357e44c0834d0ec0f2d1663488e09c096f9",
+    "tools/reconcile.py": "47a90feb5649104dfb84ada45edfdceb7f231b6a33dee936a45866e0c5b4a9c1",
+    "tools/validate.py": "78ad3cf91531e1ecdcdc5e01cbe7d1fe521c55a081604ea49caede6c49935f05",
+    "tools/change_review.py": "2c0509fe487ce741440bffcb84e08d79e2451f9e8f89a375679dba8ffe7c6c57",
+    "tools/useful_behavior.py": "9ba087eabde1525d168cfe16c5785532b65274a450bb4b27cde537020f9edf1a",
+    "tests/test_change_review.py": "2d108fd2011e1b61dc043c3cf079ecdad5ded2f57df0381aa8f3d86d87d36226",
+    "tests/test_useful_behavior.py": "0bad1125fe28a0a4e97c788c024fbd711bc653684a9ff4dc9835b678fe07ba6e",
+    "tests/test_read_codex_openai_docs.py": "6b28eeca0042657c2a9159275c038a1ba0bf8df82dec32c994cb589a10d4f505"
+  },
+  "regressions": {
+    "passed": 56,
+    "skipped": 1,
+    "subtests_passed": 32
+  },
+  "review_plan_same_lens": true,
+  "official_guidance": "Sol-only reviews do not offer Astra-only links; current source retrieval remains required",
+  "reference_count": 1,
+  "model_cells": [
+    {
+      "host": "codex",
+      "model": "gpt-6-sol",
+      "provider": "openai-codex",
+      "reasoning": "medium",
+      "status": "missing-current-comparison"
+    },
+    {
+      "host": "hermes",
+      "model": "gpt-6-sol",
+      "provider": "openai-codex",
+      "reasoning": "medium",
+      "status": "missing-current-comparison"
+    },
+    {
+      "host": "omp",
+      "model": "gpt-6-astra",
+      "provider": "openai-codex",
+      "reasoning": "xhigh",
+      "status": "missing-current-comparison"
+    }
+  ],
+  "inference_performed": false,
+  "deployment_performed": false,
+  "publication_performed": false,
+  "limits": [
+    "Recorded evidence consistency does not authenticate an experiment.",
+    "Reference excerpts are partial and require semantic review.",
+    "Natural trigger selection and GPT-6 Sol/medium quality remain unmeasured.",
+    "Other EOL-only dirty skills are preserved; fleet bindings reflect the current local tree."
+  ]
+}

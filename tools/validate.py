@@ -28,7 +28,7 @@ def frontmatter(text: str) -> tuple[dict[str, str], str]:
     return values, text[end + 5 :]
 
 
-def validate_skill(path: Path) -> list[str]:
+def validate_skill(path: Path, *, expected_name: str | None = None) -> list[str]:
     errors: list[str] = []
     text = path.read_text(encoding="utf-8")
     meta, body = frontmatter(text)
@@ -39,8 +39,9 @@ def validate_skill(path: Path) -> list[str]:
         errors.append("missing frontmatter name")
     elif not NAME_RE.fullmatch(name) or len(name) > 64:
         errors.append("name must be <=64 lowercase kebab-case characters")
-    elif name != path.parent.name:
-        errors.append(f"name '{name}' does not match directory '{path.parent.name}'")
+    elif name != (expected_name or path.parent.name):
+        label = "owner" if expected_name else "directory"
+        errors.append(f"name '{name}' does not match {label} '{expected_name or path.parent.name}'")
 
     if not description:
         errors.append("missing frontmatter description")

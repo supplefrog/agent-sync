@@ -73,6 +73,14 @@ Keep the entrypoint focused. Put substantial conditional detail in linked files:
 
 Add a supporting file only when `SKILL.md` links it and names its trigger. Remove orphan examples, placeholders, copied manuals, and unused scaffolding.
 
+## Optional review before editing
+
+For persistent changes likely to cause ownership, overlap, catalog, or model-evidence rework, use the optional [authoring review](references/change-review.md). `tools/reconcile.py review` and `plan --target` share advisory checks; neither blocks ordinary editing nor grants publication permission. Small known-owner fixes can proceed directly.
+
+When reusing or replacing an existing or native capability, consider the optional [useful-behavior review](references/useful-behaviors.md). Inspect the relevant procedures and explain omissions, alternatives, reasons and limits; a source reference can preserve a procedure without copying it.
+
+For OpenAI model-specific prompt changes, use the installed OpenAI Docs procedure when available or current official model guidance otherwise. Bind comparisons to exact models and affected hosts. Structural checks and tool callability are not behavior measurements.
+
 ## Workflow
 
 1. Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome.
