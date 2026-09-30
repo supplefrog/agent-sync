@@ -44,10 +44,12 @@ The agent handles routine bookkeeping. New capabilities, conflicting edits, remo
 
 For direct operation, run these from the checkout:
 
+`tools/run.py` selects the checkout's `.venv` (or verifies the current Python when no local environment exists) and checks the declared imports before dispatch. It never installs dependencies. Set up `requirements.txt` once if that preflight fails.
+
 ```bash
-python tools/reconcile.py plan
+python tools/run.py reconcile plan
 # Review the findings before proceeding.
-python tools/reconcile.py sync
+python tools/run.py reconcile sync
 ```
 
 Repeated `--adopt OWNER` and `--include FILE` arguments select admitted portable owners and exact reviewed publication files; unrelated work stays pending. `--include` grants no deployment authority. Without selectors—or with `--full`—sync retains broad allowlisted recovery capture. Repeated `--capture-artifact HOST:ID` selects exact reviewed native artifacts from an existing valid full snapshot under the same policy. Only selected roots are read and captured; unselected snapshot content is preserved. If shared recovery metadata contains unrelated changes, explicitly review and include the whole shared file before publication. `--no-capture-recovery` keeps native settings outside the operation. Rerun the same sync to resume checked work after a failure. See the [reconciliation contract](docs/architecture.md#unified-reconciliation) for dependency, recovery, and verification limits.
@@ -55,6 +57,8 @@ Repeated `--adopt OWNER` and `--include FILE` arguments select admitted portable
 Native evaluation now supports isolated Hermes skill-catalog and tool-bearing artifact probes through the existing evaluation owners. The [remaining-outcomes receipt](evals/results/remaining-outcomes-20260927.json) records the narrow comparison and mechanism evidence; it does not establish a quality gain, Codex readiness, or whole-fleet parity.
 
 This is an explicit operation, not a background watcher. Editing a file does not automatically publish it.
+
+For approved configured defaults, use `python tools/run.py reconcile plan --reconcile-defaults`, then the same `sync --reconcile-defaults` selection. `--maintenance-host` narrows native targets; its default comes from [core.md](surfaces/core.md), the sole desired-value owner. Exact Codex/Hermes settings capture also reconciles approved defaults automatically after scoped checks. The adapter preserves provider and other parsed settings, captures the selected settings, and records timestamped observations. It does not change running sessions. `--no-capture-recovery` conflicts with a default-setting operation. OMP retains its setup without an approved default mapping.
 
 ## What stays protected
 
@@ -89,14 +93,14 @@ This repository contains a configured machine inventory and allowlisted recovery
 To inspect recovery before applying it:
 
 ```bash
-python tools/recovery.py verify
-python tools/recovery.py bootstrap --host hermes  # dry-run; selected agent only
+python tools/run.py recovery verify
+python tools/run.py recovery bootstrap --host hermes  # dry-run; selected agent only
 ```
 
 After reviewing the proposed changes and satisfying the reported prerequisites:
 
 ```bash
-python tools/recovery.py bootstrap --host hermes --apply
+python tools/run.py recovery bootstrap --host hermes --apply
 ```
 
 Restore merges only allowlisted settings and preserves unknown or sensitive fields. Conflicting instruction or hook files require explicit review. A verified restore covers the declared recoverable state, not a full disk image.

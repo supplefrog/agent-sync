@@ -59,7 +59,7 @@
       "url": "https://mcp.tavily.com/mcp"
     }
   },
-  "model": "gpt-6-sol",
+  "model": "gpt-6.1-sol",
   "model_reasoning_effort": "medium",
   "personality": "pragmatic",
   "plugins": {
@@ -70,6 +70,9 @@
       "enabled": true
     },
     "chrome@openai-bundled": {
+      "enabled": true
+    },
+    "code-review@openai-bundled": {
       "enabled": true
     },
     "codex-app-tools@openai-bundled": {

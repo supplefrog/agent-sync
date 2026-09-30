@@ -41,16 +41,16 @@ class InstructionProfileTests(unittest.TestCase):
         return Path(temp.name)
 
     def verify(self, profile: Path):
-        return profile_tool.verify_profile(ROOT, profile, live=False)
+        return profile_tool.verify_profile(ROOT, profile, live=False, hosts=("codex", "hermes", "omp"))
 
     def test_current_profile_is_bounded_and_excludes_retired_delta(self) -> None:
         report = self.verify(self.profile)
         self.assertEqual("artifact-only", report["verification_mode"])
-        self.assertEqual("gpt-6-sol", report["model"])
+        declared = json.loads(self.profile.read_text(encoding="utf-8"))
+        self.assertEqual(declared["target"]["model"], report["model"])
         self.assertEqual("gpt-6-astra", report["hosts"]["omp"]["model"])
         self.assertEqual("medium", report["hosts"]["hermes"]["reasoning"])
         self.assertEqual("openai-codex", report["provider"])
-        declared = json.loads(self.profile.read_text(encoding="utf-8"))
         for host, settings in declared["hosts"].items():
             self.assertEqual(settings.get("model", declared["target"]["model"]), report["hosts"][host]["model"])
             self.assertEqual(settings.get("provider", declared["target"]["provider"]), report["hosts"][host]["provider"])
@@ -171,6 +171,41 @@ class InstructionProfileTests(unittest.TestCase):
         ):
             with self.assertRaisesRegex(profile_tool.ProfileError, "live runtime mismatch"):
                 profile_tool.verify_profile(ROOT, self.profile, live=True)
+
+    def test_routine_selector_reads_only_maintained_hosts(self) -> None:
+        observed = profile_tool._selector_observations(ROOT)
+        self.assertEqual({"codex", "hermes"}, set(observed))
+
+    def test_live_optional_omp_checks_inheritance_only_when_claimed(self) -> None:
+        matrix = {"hosts": {"omp": {"cli_version": "fixture-version"}}}
+        clean = {"changes": [], "conflicts": []}
+        absent = {"hosts": {"omp": {"effective_surfaces": ["omp.runtime-native"]}}}
+        inherited = {"hosts": {"omp": {"effective_surfaces": ["omp.codex-inherited"]}}}
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            with patch.object(profile_tool.recovery, "_default_roots", return_value={"omp": root}), \
+                    patch.object(profile_tool.recovery, "restore", return_value=clean), \
+                    patch.object(profile_tool, "_live_runtime_versions", return_value={"omp": "fixture-version"}), \
+                    patch.object(profile_tool.recovery, "_read_config", return_value={"disabledProviders": ["codex"]}) as read:
+                profile_tool._verify_live_environment(ROOT, matrix, hosts=["omp"], profile=absent)
+                read.assert_not_called()
+                with self.assertRaisesRegex(profile_tool.ProfileError, "codex discovery provider is disabled"):
+                    profile_tool._verify_live_environment(ROOT, matrix, hosts=["omp"], profile=inherited)
+                read.return_value = {"enabledProviders": []}
+                with self.assertRaisesRegex(profile_tool.ProfileError, "not enabled for claimed inheritance"):
+                    profile_tool._verify_live_environment(ROOT, matrix, hosts=["omp"], profile=inherited)
+                read.return_value = {"enabledProviders": ["codex"]}
+                profile_tool._verify_live_environment(ROOT, matrix, hosts=["omp"], profile=inherited)
+
+    def test_routine_live_environment_does_not_read_omp_config_or_execute_runtime(self) -> None:
+        matrix = {"hosts": {host: {"cli_version": "fixture-version"} for host in ("codex", "hermes")}}
+        clean = {"changes": [], "conflicts": []}
+        with patch.object(profile_tool.recovery, "restore", return_value=clean) as restore, \
+                patch.object(profile_tool, "_live_runtime_versions", return_value={"codex": "fixture-version", "hermes": "fixture-version"}) as versions, \
+                patch.object(profile_tool.recovery, "_read_config", side_effect=AssertionError("OMP config read")):
+            profile_tool._verify_live_environment(ROOT, matrix)
+            self.assertEqual(("codex", "hermes"), versions.call_args.args[0])
+            self.assertEqual(("codex", "hermes"), restore.call_args.kwargs["hosts"])
 
 
 if __name__ == "__main__":

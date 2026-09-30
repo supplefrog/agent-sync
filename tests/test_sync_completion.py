@@ -27,7 +27,7 @@ class CompleteSyncTests(unittest.TestCase):
         (repo / 'registry.json').write_text(json.dumps(registry))
         self.fleet.render_snapshot(repo, repo / 'render/fleet')
         self.fleet.apply_snapshot(repo / 'render/fleet', live)
-        (repo / '.gitignore').write_text('render/\n')
+        (repo / '.gitignore').write_text('render/\n.agent-signal-path-*.lock\n')
         self.git(repo, 'init', '-b', 'main')
         self.git(repo, 'config', 'user.name', 'Sync Test')
         self.git(repo, 'config', 'user.email', 'sync@example.invalid')
@@ -259,14 +259,13 @@ class CompleteSyncTests(unittest.TestCase):
             repo, live, remote = self.setup_git(Path(temp))
             head = self.git(remote, 'rev-parse', 'refs/heads/main')
             (repo / 'notes.md').write_text('reviewed')
-            count = 0
-            def check(*_):
-                nonlocal count
-                count += 1
-                if count == 3:
+            dependencies = self.reconcile._scope_dependencies
+            def fresh_gate(source, *args, **kwargs):
+                if source == repo and self.git(repo, 'rev-parse', 'HEAD') != head:
                     raise RuntimeError('last gate failed')
-                return []
-            with patch.object(self.reconcile, '_run_checks', side_effect=check):
+                return dependencies(source, *args, **kwargs)
+            with patch.object(self.reconcile, '_run_checks', return_value=[]), patch.object(
+                    self.reconcile, '_scope_dependencies', side_effect=fresh_gate):
                 report = self.reconcile.complete_sync(repo, machine='test', recovery_roots={},
                                                       skill_roots=[live], include=['notes.md'])
             self.assertEqual('incomplete', report['result'])

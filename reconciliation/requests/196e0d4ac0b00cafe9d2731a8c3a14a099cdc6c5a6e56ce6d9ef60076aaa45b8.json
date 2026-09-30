@@ -1,0 +1,96 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "3ef9b920b513b52ac1792d5594a097f81242dcaa84a82503a29ce3ca2a9ae6a4",
+      "before_sha256": "3ef9b920b513b52ac1792d5594a097f81242dcaa84a82503a29ce3ca2a9ae6a4",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "10cab86603ce284cfb9fad8ab11c01b8b0d4c4c37424449a414d1dc669f33375",
+      "before_sha256": "10cab86603ce284cfb9fad8ab11c01b8b0d4c4c37424449a414d1dc669f33375",
+      "owner": "fleet-sync",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "9bf7ac9b8a7926f80d22800f3e68803a476ff80ed5dd9d78ffb8c2b106c1de59",
+      "before_sha256": "9bf7ac9b8a7926f80d22800f3e68803a476ff80ed5dd9d78ffb8c2b106c1de59",
+      "owner": "outcome-first-workflow-design",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "cb8af9e7f977ab6fb79fee1278f6ecfcfecec23d3f29d4ec58fbfb0c6e01f623",
+      "before_sha256": "cb8af9e7f977ab6fb79fee1278f6ecfcfecec23d3f29d4ec58fbfb0c6e01f623",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "e33e9cfaaaea45ae3ea621c30c7331a3a20d50e2c7e6370c9d5e50c7888f68bd",
+      "before_sha256": "e33e9cfaaaea45ae3ea621c30c7331a3a20d50e2c7e6370c9d5e50c7888f68bd",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "2fafed1de82f601a136c5e6f62e4c0fa82e7adc43c010dfeedd762fff1d28d69",
+      "before_sha256": "255bc4abcfa575f823a0e93e12570cd690ed28a0b253d83b54c87d6553c931ee",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "cross-agent-surface-engineering",
+    "fleet-sync",
+    "outcome-first-workflow-design",
+    "skill-creator",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "196e0d4ac0b00cafe9d2731a8c3a14a099cdc6c5a6e56ce6d9ef60076aaa45b8",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

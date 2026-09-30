@@ -20,7 +20,7 @@ Before delegation or review, read Agent Sync's `surfaces/core.md`, the sole mode
 
 # Instruction authoring
 
-After meaningful corrections or before durable instruction edits, load Agent Sync's `skills/skill-creator/SKILL.md` before deciding whether or where to preserve them. Identify the canonical owner, verify it loads before use, check adjacent owners for overlap, and edit that source. Load placement guides only for unclear ownership or cross-host placement.
+After meaningful verified corrections, before durable instruction edits or before closing substantial work, load Agent Sync's `skills/skill-creator/SKILL.md`. Edit a supported existing owner; use placement guides only for unclear ownership. For substantial work, keep a compact handoff via `breadcrumb-records` or the existing project record. On resume, reuse bound evidence and recheck only affected dependencies.
 
 # Reconciliation
 

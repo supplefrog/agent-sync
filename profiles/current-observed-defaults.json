@@ -1,6 +1,6 @@
 {
   "$schema": "../contracts/model-profile.schema.json",
-  "claim": "Observed configured defaults, not active-session model identities or universal behavior parity. Codex and Hermes select Sol/medium; OMP retains Astra/xhigh. Live recovery/profile checks passed; active conversations may retain overrides or assembled prompts.",
+  "claim": "Configured defaults with per-host observation time and source identities; not active-session model identities or universal behavior parity. Unselected host observations retain their recorded or unknown time.",
   "context_policy": {
     "max_standing_bytes": {
       "codex": 2304,
@@ -22,7 +22,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "0718abc4b6a4723987b0363025e06d0049bcc2026a93e756d2eea4f651fe999a"
+        "e006bef2481898d43bea0d3d2b7b742c5fafeb52a42053d36d28fef5b9f56685"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -40,14 +40,23 @@
         "codex.reconciliation",
         "codex.execution"
       ],
-      "model": "gpt-6-sol",
+      "model": "gpt-6.1-sol",
+      "observation": {
+        "kind": "configured-defaults",
+        "native_source_sha256": "926460f570b3049bfa0bfe8e867395b081ce63f61e70823e6436e87f90eee00b",
+        "observed_at": "2026-09-30T22:23:06.492351Z",
+        "preference_sha256": "4a61d421482ae6791904c75e0e823a19496be1bba4474e86815c32422cf0587c",
+        "source": "recovery/current/hosts/codex/config.json",
+        "source_sha256": "7c13a6eac82281bfe08b836d4bc118af93595e25dc1c65bd545e4e660f9e6712",
+        "time_status": "known"
+      },
       "provider": "openai-codex",
       "reasoning": "medium",
       "runtime": "codex-cli 0.158.0-alpha.2.1"
     },
     "hermes": {
       "artifact_sha256": [
-        "9d2da01151826edcf8e55666505a06ebbe2587ff6532f328b68e0f16cd28266a"
+        "541b5e09618fc31c3f5d0f0d38157c9d497df03ac659423259d385781dd43b74"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -65,7 +74,16 @@
         "hermes.reconciliation",
         "hermes.execution"
       ],
-      "model": "gpt-6-sol",
+      "model": "gpt-6.1-sol",
+      "observation": {
+        "kind": "configured-defaults",
+        "native_source_sha256": "eedd63ef985937e53b98dc3b175c0a0f4384bd54f3f83f931ffae4f16e0a379e",
+        "observed_at": "2026-09-30T22:23:06.492351Z",
+        "preference_sha256": "4a61d421482ae6791904c75e0e823a19496be1bba4474e86815c32422cf0587c",
+        "source": "recovery/current/hosts/hermes/config.json",
+        "source_sha256": "2fd71df1c24640b6c02aaf4a0d7ffde712cc7b9283df6e71afacff6d0567af8c",
+        "time_status": "known"
+      },
       "provider": "openai-codex",
       "reasoning": "medium",
       "runtime": "Hermes Agent 0.21.5+2456.gb7840ef"
@@ -79,11 +97,18 @@
         "omp.project-context"
       ],
       "effective_units": [],
-      "no_managed_standing_reason": "OMP 18.2.6's Codex discovery provider is not enabled (enabledProviders is empty); fresh native get_state omits the managed standing markers, and no native OMP user-global AGENTS.md is installed.",
-      "reasoning": "xhigh",
-      "runtime": "omp 18.2.6",
       "model": "gpt-6-astra",
-      "provider": "openai-codex"
+      "no_managed_standing_reason": "OMP 18.2.6's Codex discovery provider is not enabled (enabledProviders is empty); fresh native get_state omits the managed standing markers, and no native OMP user-global AGENTS.md is installed.",
+      "observation": {
+        "kind": "configured-defaults",
+        "observed_at": null,
+        "source": "recovery/current/hosts/omp/config.json",
+        "source_sha256": "bb8e76ee1784d6ae2639c6ec6f43e41d82bc50e7b4c4ccb5eff22345f5f87543",
+        "time_status": "unknown"
+      },
+      "provider": "openai-codex",
+      "reasoning": "xhigh",
+      "runtime": "omp 18.2.6"
     }
   },
   "id": "current-observed-defaults",
@@ -99,9 +124,9 @@
   "schema_version": 1,
   "status": "current-observed",
   "target": {
-    "model": "gpt-6-sol",
+    "model": "gpt-6.1-sol",
     "provider": "openai-codex",
-    "reasoning": "host-specific"
+    "reasoning": "medium"
   },
   "writing_routes": {
     "model-facing-instructions": {

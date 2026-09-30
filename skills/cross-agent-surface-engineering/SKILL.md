@@ -27,13 +27,13 @@ State the observable outcome, trigger, affected hosts and versions, hard failure
 
 ### 2. Inventory the effective surfaces
 
-Inspect the changed owner and affected neighbors first. Use the applicable read-only checks from the owning checkout:
+Inspect the changed owner and affected neighbors first. Use the checkout's `tools/run.py` launcher to resolve its dependency-ready runtime once; it performs no automatic installation. Use the applicable read-only checks:
 
 ```text
-python tools/recovery.py diff
-python tools/instruction_profile.py
-python tools/fleet.py diff
-python tools/reconcile.py plan
+python tools/run.py recovery diff
+python tools/run.py instruction_profile
+python tools/run.py fleet diff
+python tools/run.py reconcile plan
 ```
 
 Read the affected entries in `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json`, `contracts/ownership.json`, the selected model profile, and `recovery/current/manifest.json`. Inspect the corresponding live discovery and precedence; broaden only for a demonstrated dependency, conflicting evidence, or invalidated assumption. Official current host docs beat stale repository prose; reviewed Agent Sync ownership beats live copies and generated caches. Keep unrelated drift out of a scoped deployment.
@@ -72,11 +72,13 @@ Structural removal of byte-identical copies needs deterministic identity and fre
 
 ### 6. Promote and clean up
 
-For authorized Agent Sync changes or an explicit reconciliation, run `python tools/reconcile.py plan` in the owning checkout; inspect destinations and findings, then run `python tools/reconcile.py sync` for the authorized scope. Sync checks and shares eligible changes, commits them locally, pushes to the configured remote branch, and verifies selected installed content and the remote commit. Scoped readback does not establish native host discovery or behavioral parity. Do not call a local copy or recovery capture “synced.” A temporary verification hold ends when its named checks pass; continue the already-authorized deployment and publication without asking again. Stop only for a remaining failed check, scope conflict, or explicit no-publication instruction. The agent handles these steps as one authorized job, not separate user reminders.
+For authorized Agent Sync changes or an explicit reconciliation, run `python tools/run.py reconcile plan` in the owning checkout; inspect destinations and findings, then run `python tools/run.py reconcile sync` for the authorized scope. Sync checks and shares eligible changes, commits them locally, pushes to the configured remote branch, and verifies selected installed content and the remote commit. Scoped readback does not establish native host discovery or behavioral parity. Do not call a local copy or recovery capture “synced.” A temporary verification hold ends when its named checks pass; continue the already-authorized deployment and publication without asking again. Stop only for a remaining failed check, scope conflict, or explicit no-publication instruction. The agent handles these steps as one authorized job, not separate user reminders.
 
 For a scoped change, name admitted owners with repeated `--adopt OWNER` and reviewed exact publication files with repeated `--include FILE`; use `--no-capture-recovery` when native settings are outside the authorized change. Select native recovery artifacts by exact existing policy IDs with repeated `--capture-artifact HOST:ID`; capture verifies the full snapshot and uses only selected source roots. The selector does not authorize publishing unrelated changes in shared recovery metadata; review those dependencies before including the exact shared file. Broad `--full` retains cohesive recovery capture within existing authorization; the unselected default sync remains broad. `--include` selects commit content only, not admission or deployment authority. Complete independently separable authorized changes while leaving unrelated drift pending. A blocker must identify a dependency, conflict, or authorization boundary. Preserve existing pins unless changing them is authorized. Capture justified native settings without copying them indiscriminately across hosts. Novel, conflicting, unsafe, retirement, or ambiguous findings still require their existing review; project-local and ephemeral work stays local. A failed check, commit, push, or readback is incomplete. Preserve the pending work and rerun the same sync after resolving the cause; never rewrite remote history or erase another task's edits. Cooperating writers fail before mutation when a selected root is locked; retry the same selection after the active writer finishes. Source and destination identity checks still apply because native apps and other writers may not use these locks.
 
 Use `fleet-sync` for admitted portable skills. Never force through an unmanaged collision, edit a generated plugin cache, or delete a live variant before preflight. Keep adapters only for runtime discovery, precedence, host command/config format, or an irreducible native protocol.
+
+For supported native defaults, use the same reconciler with `--reconcile-defaults`; `--maintenance-host` selects targets from the canonical maintenance contract. Preview first. Exact Codex/Hermes settings capture also applies the approved defaults after scoped checks, with selected recovery and timestamped observation updates. Do not ask for each supported setting again. Explicit no-capture scope excludes native changes; unsupported mappings stay deferred. Configured defaults do not identify a running session's model.
 
 Host checks:
 

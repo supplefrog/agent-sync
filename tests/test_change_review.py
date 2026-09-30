@@ -24,6 +24,8 @@ class ChangeReviewTests(unittest.TestCase):
         (repo/'skills/neighbor').mkdir()
         (repo/'skills/neighbor/SKILL.md').write_text('---\nname: neighbor\ndescription: Review model instruction boundaries.\nlicense: MIT\n---\nOther procedure.\n')
         (repo/'registry.json').write_text(json.dumps({'schema_version':1,'skills':[{'name':'kept','status':'admitted'}]}))
+        (repo/'fleet.json').write_text(json.dumps({'schema_version':1,'snapshot_root':'render/fleet',
+            'machines':{'local-windows':{'skill_roots':[]}}}))
         (repo/'profiles').mkdir()
         (repo/'profiles/current.json').write_text(json.dumps({'status':'current-observed','target':{'model':'gpt-6-sol','provider':'openai-codex'},'hosts':{'hermes':{'model':'gpt-6-sol','provider':'openai-codex','reasoning':'medium'},'codex':{'model':'gpt-6-astra','reasoning':'low'}}}))
         (repo/'evals/results').mkdir(parents=True)

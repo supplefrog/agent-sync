@@ -25,7 +25,7 @@
         ],
         "evidence": {
           "locator": "references/evidence/hermes-sol-low-current-source.json",
-          "sha256": "d499e08cd9f6b402310af9c50d7ced753526148f52e21e1634575100ee09ffe3"
+          "sha256": "8ca528bbf1fc985ba987fce0586a2b7f92fda9a1057cf79bcf86ac4e7288baaa"
         }
       },
       "quality": [],
@@ -237,7 +237,7 @@
       "rationale": "Provisional bounded source-review placement: Sol low has a previously parent-accepted source Q&A and a fresh native read/search roundtrip. Try it before Astra medium when both meet hard capabilities. This is a reviewed prior, not comparative quality, speed or quota evidence; consequential and unmapped work stays parent-owned.",
       "evidence": {
         "locator": "references/evidence/hermes-sol-low-current-source.json",
-        "sha256": "d499e08cd9f6b402310af9c50d7ced753526148f52e21e1634575100ee09ffe3"
+        "sha256": "8ca528bbf1fc985ba987fce0586a2b7f92fda9a1057cf79bcf86ac4e7288baaa"
       }
     }
   }

@@ -24,12 +24,12 @@ repository or treat a generated snapshot as editable source.
 
 ## Procedure
 
-1. Run `python tools/fleet.py render` in the owning checkout.
-2. Run `python tools/fleet.py diff` and inspect every proposed action and destination; a scoped repair must not carry unrelated staged changes.
+1. Use the checkout's `tools/run.py` launcher for its dependency-ready runtime; it never installs dependencies. Run `python tools/run.py fleet render`.
+2. Run `python tools/run.py fleet diff` and inspect every proposed action and destination; a scoped repair must not carry unrelated staged changes.
 3. For a status or audit request, stop after `diff` and
-   `python tools/fleet.py verify`; do not mutate live roots.
+   `python tools/run.py fleet verify`; do not mutate live roots.
 4. For an explicit sync, propagation, repair, or apply request, use
-   `python tools/reconcile.py plan` followed by `python tools/reconcile.py sync`.
+   `python tools/run.py reconcile plan` followed by `python tools/run.py reconcile sync`.
    Follow `cross-agent-surface-engineering` for review and exact additional commit
    paths. This finishes agent updates, local commit, remote push, and verification
    as one job. `fleet.py apply` is a local maintenance primitive, not a completed sync.

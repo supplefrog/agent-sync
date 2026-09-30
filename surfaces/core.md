@@ -27,10 +27,24 @@ This is the single source of user model preferences and reviewer dispatch rules.
 
 ## Model preferences
 
-- Reviewers, including difficult or judgment-heavy work: GPT-6.1 Sol, high reasoning (`gpt-6.1-sol`, `high`).
-- Default bounded workers: GPT-6.1 Sol, medium reasoning (`gpt-6.1-sol`, `medium`).
-- Linear work: GPT-6 Luna, high reasoning (`gpt-6-luna`, `high`).
-- Hermes default: GPT-6.1 Sol, medium reasoning (`gpt-6.1-sol`, `medium`). This preference does not claim the live setting has been applied.
+This block owns approved desired values. Native adapters read it; observations and running-session overrides remain separate. The Codex default follows the bounded-worker role, and the Hermes default follows its named role. Routine maintenance selects the maintained hosts; optional hosts retain their existing setup unless explicitly selected or required by a dependency. Supported default changes reconcile after scoped checks; they do not migrate running tasks or change provider/authentication.
+
+<!-- agent-sync-preferences -->
+```json
+{
+  "schema_version": 1,
+  "roles": {
+    "reviewer": {"model": "gpt-6.1-sol", "reasoning": "high"},
+    "worker": {"model": "gpt-6.1-sol", "reasoning": "medium"},
+    "linear": {"model": "gpt-6-luna", "reasoning": "high"},
+    "hermes": {"model": "gpt-6.1-sol", "reasoning": "medium"}
+  },
+  "runtime_defaults": {"codex": "worker", "hermes": "hermes"},
+  "maintained_hosts": ["codex", "hermes"],
+  "optional_hosts": ["omp"]
+}
+```
+<!-- /agent-sync-preferences -->
 
 ## Dispatch and review
 

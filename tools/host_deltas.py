@@ -117,11 +117,13 @@ def _bound_artifact_digest(source_identity: str, repo: Path) -> str | None:
     return fleet.sha256_file(target)
 
 
-def _validate_bindings(manifest: Mapping[str, Any], repo: Path) -> None:
+def _validate_bindings(manifest: Mapping[str, Any], repo: Path, *, source_identities=None) -> None:
     """Bind reproducible delta identities to the exact declared artifacts."""
 
     for item in manifest.get("entries", []):
         source_identity = str(item["source_identity"])
+        if source_identities is not None and source_identity not in source_identities:
+            continue
         digest = _bound_artifact_digest(source_identity, repo)
         if digest is None:
             continue
@@ -207,35 +209,68 @@ def _write_bound_manifest(path, manifest, expected):
     fleet.atomic_json(path, manifest)
 
 
-@_binding_lock
-def refresh_bindings(
+def prepare_bindings(
     path: str | Path,
     repo: str | Path,
     *,
     source_prefixes: Sequence[str] | None = None,
     source_identities: Sequence[str] | None = None,
 ) -> dict[str, Any]:
-    """Refresh deterministic artifact hashes, then validate the written manifest."""
+    """Validate a selected repair before any write; defer independent stale hashes."""
 
     path = Path(path)
     repo = Path(repo).resolve()
-    expected = fleet.path_identity(path)
     manifest = _load_manifest_unbound(path, repo)
     prefixes = tuple(source_prefixes or ())
     identities = set(source_identities) if source_identities is not None else None
     if identities is not None and not identities:
         raise RuntimeError("binding selection must be nonempty")
+    available = {str(item["source_identity"]) for item in manifest["entries"]}
+    if identities is not None and identities - available:
+        raise RuntimeError("unknown binding selection: " + ", ".join(sorted(identities - available)))
+    selected = set()
     for item in manifest["entries"]:
         source_identity = str(item["source_identity"])
         if identities is not None and source_identity not in identities:
             continue
         if prefixes and not source_identity.startswith(prefixes):
             continue
+        selected.add(source_identity)
         digest = _bound_artifact_digest(source_identity, repo)
         if digest is not None:
             item["version_or_hash"] = f"sha256:{digest}"
-    _write_bound_manifest(path, manifest, expected)
-    return load_manifest(path, repo)
+    _validate_bindings(manifest, repo, source_identities=selected)
+    deferred = []
+    for item in manifest["entries"]:
+        if item["source_identity"] in selected:
+            continue
+        try:
+            _validate_bindings({"entries": [item]}, repo)
+        except RuntimeError as exc:
+            # Only independently stale or absent artifacts are deferred. Unsafe
+            # paths, schema, command, and recovery content integrity still block.
+            reason = str(exc)
+            missing = reason.startswith(("host-delta binding target is missing:", "recovery artifact binding is missing:"))
+            if not reason.startswith("host-delta binding mismatch") and not missing:
+                raise
+            deferred.append({"id": item["id"], "source_identity": item["source_identity"],
+                             "reason": "unselected artifact dependency is missing" if missing else "unselected artifact binding is stale"})
+    return {"manifest": manifest, "selected": sorted(selected), "deferred": deferred}
+
+
+@_binding_lock
+def refresh_bindings(path: str | Path, repo: str | Path, *,
+                     source_prefixes: Sequence[str] | None = None,
+                     source_identities: Sequence[str] | None = None) -> dict[str, Any]:
+    """Atomically commit a prepared selected repair with an explicit result."""
+    path = Path(path)
+    expected = fleet.path_identity(path)
+    prepared = prepare_bindings(path, repo, source_prefixes=source_prefixes,
+                                source_identities=source_identities)
+    _validate_bindings(prepared["manifest"], Path(repo).resolve(), source_identities=set(prepared["selected"]))
+    _write_bound_manifest(path, prepared["manifest"], expected)
+    return {**prepared["manifest"], "binding_refresh": {
+        "committed": True, "selected": prepared["selected"], "deferred": prepared["deferred"]}}
 
 
 @_binding_lock

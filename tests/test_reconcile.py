@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import json
 import shutil
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -33,6 +34,8 @@ def write_skill(root: Path, name: str, body: str = "body") -> None:
 def digest(root: Path) -> str:
     h = hashlib.sha256()
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
+        if re.fullmatch(r"\.agent-signal-path-[0-9a-f]{64}\.lock", path.name):
+            continue
         h.update(path.relative_to(root).as_posix().encode())
         h.update(b"\0")
         h.update(path.read_bytes())

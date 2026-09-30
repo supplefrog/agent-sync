@@ -11,6 +11,7 @@ import re
 import shutil
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -19,10 +20,12 @@ import jsonschema
 try:
     import instruction_retirement
     import recovery
+    import runtime_defaults
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import instruction_retirement  # type: ignore
     import recovery  # type: ignore
+    import runtime_defaults  # type: ignore
 
 
 class ProfileError(RuntimeError):
@@ -74,29 +77,24 @@ def _hash(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _selector_observations(repo: Path) -> dict[str, dict[str, str]]:
-    hermes = _load(repo / "recovery" / "current" / "hosts" / "hermes" / "config.json")
-    codex = _load(repo / "recovery" / "current" / "hosts" / "codex" / "config.json")
-    omp = _load(repo / "recovery" / "current" / "hosts" / "omp" / "config.json")
-    omp_default = str(omp["modelRoles"]["default"])
-    omp_provider, _, omp_model = omp_default.partition("/")
-    return {
-        "hermes": {
-            "model": str(hermes["model"]["default"]),
-            "provider": str(hermes["model"]["provider"]),
-            "reasoning": str(hermes["agent"]["reasoning_effort"]),
-        },
-        "codex": {
-            "model": str(codex["model"]),
-            "provider": "openai-codex",
-            "reasoning": str(codex["model_reasoning_effort"]),
-        },
-        "omp": {
-            "model": omp_model,
-            "provider": omp_provider,
-            "reasoning": str(omp["defaultThinkingLevel"]),
-        },
-    }
+def _selector_observations(repo: Path, hosts=None, *, snapshot_dir: Path | None = None) -> dict[str, dict[str, str]]:
+    observations = {}
+    for host in runtime_defaults.selected_hosts(repo, hosts):
+        snapshot = snapshot_dir if snapshot_dir is not None else repo / "recovery/current"
+        config = _load(snapshot / "hosts" / host / "config.json")
+        if host == "hermes":
+            observed = {"model": str(config["model"]["default"]),
+                        "provider": str(config["model"]["provider"]),
+                        "reasoning": str(config["agent"]["reasoning_effort"])}
+        elif host == "codex":
+            observed = {"model": str(config["model"]), "provider": "openai-codex",
+                        "reasoning": str(config["model_reasoning_effort"])}
+        else:
+            provider, _, model = str(config["modelRoles"]["default"]).partition("/")
+            observed = {"model": model, "provider": provider,
+                        "reasoning": str(config["defaultThinkingLevel"])}
+        observations[host] = observed
+    return observations
 
 
 def _verify_selector_observations(
@@ -129,14 +127,14 @@ def _version_command(host: str) -> list[str]:
     return [str(executable), "--version"]
 
 
-def _live_runtime_versions() -> dict[str, str]:
+def _live_runtime_versions(hosts=("codex", "hermes")) -> dict[str, str]:
     patterns = {
         "hermes": re.compile(r"Hermes Agent v?([^\s]+)"),
         "codex": re.compile(r"codex-cli\s+([^\s]+)"),
         "omp": re.compile(r"omp[/\s]+([^\s]+)"),
     }
     observed: dict[str, str] = {}
-    for host in ("hermes", "codex", "omp"):
+    for host in hosts:
         try:
             completed = subprocess.run(
                 _version_command(host),
@@ -155,7 +153,9 @@ def _live_runtime_versions() -> dict[str, str]:
     return observed
 
 
-def _verify_live_environment(repo: Path, matrix: dict[str, Any]) -> None:
+def _verify_live_environment(repo: Path, matrix: dict[str, Any], *, hosts=None,
+                             profile: dict[str, Any] | None = None) -> None:
+    selected = runtime_defaults.selected_hosts(repo, hosts)
     roots = recovery._default_roots()
     plan = recovery.restore(
         repo / "recovery.json",
@@ -164,20 +164,25 @@ def _verify_live_environment(repo: Path, matrix: dict[str, Any]) -> None:
         apply=False,
         force_text=False,
         repo_root=repo,
+        hosts=selected,
     )
     if plan["changes"] or plan["conflicts"]:
         raise ProfileError(
             f"live recovery state mismatch: changes={plan['changes']} conflicts={plan['conflicts']}"
         )
-    observed_versions = _live_runtime_versions()
+    observed_versions = _live_runtime_versions(selected)
     expected_versions = {
         host: str(matrix["hosts"][host]["cli_version"])
-        for host in ("hermes", "codex", "omp")
+        for host in selected
     }
     if observed_versions != expected_versions:
         raise ProfileError(
             f"live runtime mismatch: expected={expected_versions} observed={observed_versions}"
         )
+    inheritance_claimed = bool(profile and "omp.codex-inherited" in
+                               profile["hosts"]["omp"]["effective_surfaces"])
+    if "omp" not in selected or not inheritance_claimed:
+        return
     omp_root = roots["omp"]
     native_agents = omp_root / "AGENTS.md"
     if native_agents.is_file() and native_agents.read_text(encoding="utf-8").strip():
@@ -192,6 +197,13 @@ def _verify_live_environment(repo: Path, matrix: dict[str, Any]) -> None:
         )
         if codex_disabled:
             raise ProfileError("live OMP codex discovery provider is disabled")
+    enabled = omp_config.get("enabledProviders", [])
+    codex_enabled = isinstance(enabled, list) and any(
+        item == "codex" or (isinstance(item, dict) and "codex" in item.get("providers", []))
+        for item in enabled
+    )
+    if not codex_enabled:
+        raise ProfileError("live OMP codex discovery provider is not enabled for claimed inheritance")
 
 
 def _unique_by_id(items: list[dict[str, Any]], label: str) -> dict[str, dict[str, Any]]:
@@ -204,10 +216,80 @@ def _unique_by_id(items: list[dict[str, Any]], label: str) -> dict[str, dict[str
     return result
 
 
-def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict[str, Any]:
+def _verify_configured_observation(repo: Path, host: str, observation: dict[str, Any], *,
+                                   snapshot_dir: Path | None = None) -> None:
+    source = _repo_path(repo, observation["source"], "configured observation source")
+    if source != repo / "recovery/current/hosts" / host / "config.json":
+        raise ProfileError(f"unexpected configured observation source: {host}")
+    bound_source = snapshot_dir / "hosts" / host / "config.json" if snapshot_dir is not None else source
+    if _hash(bound_source) != observation["source_sha256"]:
+        raise ProfileError(f"configured observation source identity changed: {host}")
+    timestamp = observation["observed_at"]
+    if timestamp is not None:
+        try:
+            parsed = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+            if parsed.tzinfo is None or parsed.utcoffset() is None:
+                raise ValueError("missing timezone")
+        except (ValueError, AttributeError) as exc:
+            raise ProfileError(f"invalid configured observation timestamp: {host}") from exc
+
+
+def refresh_observed_profile(repo: Path, receipt: dict[str, Any], *, write: bool = False,
+                             snapshot: Path | None = None) -> dict[str, Any]:
+    """Bind actual default readback to selected captured settings, never desired-only values.
+
+    Call after the surrounding reconciler has captured the selected settings.
+    The parent owns rollback/publication of this derived profile with that capture.
+    Default preparation returns path/value/expected identity without writing it.
+    snapshot can name the parent's prepared capture before atomic installation.
+    """
+    repo = Path(repo).resolve()
+    snapshot_dir = Path(snapshot) if snapshot is not None else None
+    path = current_profile(repo)
+    expected = recovery._file_identity(path)
+    profile = _load(path)
+    observations = receipt.get("observations", {})
+    if receipt.get("result") not in {"applied", "unchanged"} or not observations:
+        raise ProfileError("profile refresh requires successful configured-default readback")
+    if receipt.get("core_sha256") != _hash(repo / "surfaces/core.md"):
+        raise ProfileError("preference owner changed since default readback")
+    actual = _selector_observations(repo, observations.keys(), snapshot_dir=snapshot_dir)
+    for host, observed in observations.items():
+        if observed.get("kind") != "configured-defaults" or not observed.get("observed_at"):
+            raise ProfileError(f"missing actual configured observation: {host}")
+        if any(actual[host][key] != observed.get(key) for key in ("model", "provider", "reasoning")):
+            raise ProfileError(f"captured selector differs from live default readback: {host}")
+        source = f"recovery/current/hosts/{host}/config.json"
+        captured_source = snapshot_dir / "hosts" / host / "config.json" if snapshot_dir is not None else repo / source
+        binding = {"kind": "configured-defaults", "observed_at": observed["observed_at"],
+                   "time_status": "known", "source": source, "source_sha256": _hash(captured_source),
+                   "native_source_sha256": observed["source_sha256"],
+                   "preference_sha256": receipt["core_sha256"]}
+        _verify_configured_observation(repo, host, binding, snapshot_dir=snapshot_dir)
+        profile["hosts"][host].update(actual[host], observation=binding)
+    if "codex" in actual:
+        profile["target"]["model"] = actual["codex"]["model"]
+        profile["target"]["provider"] = actual["codex"]["provider"]
+        profile["target"]["reasoning"] = actual["codex"]["reasoning"]
+    profile["claim"] = ("Configured defaults with per-host observation time and source identities; "
+                        "not active-session model identities or universal behavior parity. "
+                        "Unselected host observations retain their recorded or unknown time.")
+    _validate(repo / "contracts/model-profile.schema.json", profile, "model profile")
+    if write:
+        import sync_git
+        with sync_git.path_locks([path]):
+            if recovery._file_identity(path) != expected:
+                raise ProfileError("observed profile changed before refresh")
+            recovery._atomic_write(path, (json.dumps(profile, indent=2) + "\n").encode("utf-8"))
+        return profile
+    return {"path": path.relative_to(repo).as_posix(), "value": profile, "expected_identity": expected}
+
+
+def verify_profile(repo: Path, profile_path: Path, *, live: bool = True, hosts=None) -> dict[str, Any]:
     repo = repo.resolve()
     profile = _load(profile_path)
     _validate(repo / "contracts" / "model-profile.schema.json", profile, "model profile")
+    selected_hosts = runtime_defaults.selected_hosts(repo, hosts)
 
     surfaces_path = _repo_path(repo, profile["contracts"]["surfaces"], "surface contract")
     units_path = _repo_path(repo, profile["contracts"]["units"], "instruction-unit contract")
@@ -249,6 +331,8 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
 
     report_hosts: dict[str, Any] = {}
     for host, host_profile in profile["hosts"].items():
+        if host not in selected_hosts:
+            continue
         selected_surfaces: list[str] = host_profile["effective_surfaces"]
         for surface_id in selected_surfaces:
             surface = surfaces.get(surface_id)
@@ -307,6 +391,10 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
         }
         if no_managed_standing_reason:
             report_host["no_managed_standing_reason"] = no_managed_standing_reason
+        observation = host_profile.get("observation")
+        if observation:
+            _verify_configured_observation(repo, host, observation)
+            report_host["observation"] = observation
         report_hosts[host] = report_host
 
     evidence = profile["evidence"]
@@ -317,11 +405,13 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
             path = _repo_path(repo, rel, "profile evidence")
             if not rel.startswith("evals/results/") or not path.is_file():
                 raise ProfileError(f"missing profile evidence: {rel}")
-        observations = _selector_observations(repo)
+        observations = _selector_observations(repo, selected_hosts)
         _verify_selector_observations(profile, observations)
         matrix = _load(repo / "contracts" / "surface-matrix.json")
         runtime_prefix = {"hermes": "Hermes Agent", "codex": "codex-cli", "omp": "omp"}
         for host, declared in profile["hosts"].items():
+            if host not in selected_hosts:
+                continue
             version = str(matrix["hosts"][host]["cli_version"])
             expected_runtime = f"{runtime_prefix[host]} {version}"
             if declared["runtime"] != expected_runtime:
@@ -329,7 +419,7 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
                     f"runtime mismatch for {host}: declared={declared['runtime']} expected={expected_runtime}"
                 )
         if live:
-            _verify_live_environment(repo, matrix)
+            _verify_live_environment(repo, matrix, hosts=selected_hosts, profile=profile)
 
     return {
         "schema_version": 1,
@@ -340,6 +430,7 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True) -> dict
         "provider": profile["target"]["provider"],
         "reasoning": profile["target"]["reasoning"],
         "hosts": report_hosts,
+        "selected_hosts": list(selected_hosts),
         "writing_routes": profile["writing_routes"],
         "evidence": evidence,
     }
@@ -359,12 +450,14 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="verify repository bindings without checking the installed live runtimes",
     )
+    parser.add_argument("--host", action="append", choices=runtime_defaults.HOSTS,
+                        help="selected host; default uses maintained hosts from core.md")
     args = parser.parse_args(argv)
     repo = args.repo.resolve()
     try:
         profile_path = (args.profile if args.profile.is_absolute() else repo / args.profile) if args.profile else current_profile(repo)
-        report = verify_profile(repo, profile_path, live=not args.artifact_only)
-    except ProfileError as exc:
+        report = verify_profile(repo, profile_path, live=not args.artifact_only, hosts=args.host)
+    except (ProfileError, runtime_defaults.DefaultsError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
     print(json.dumps(report, indent=2, ensure_ascii=False))

@@ -57,8 +57,19 @@ def _file_lock(lock_path: Path):
 
 @contextmanager
 def lock(repo: Path):
-    with _file_lock(git_dir(repo) / 'agent-signal-sync.lock'):
+    key = str(git_dir(repo) / 'agent-signal-sync.lock')
+    held = getattr(_path_lock_local, 'git_held', None)
+    if held is None:
+        held = _path_lock_local.git_held = set()
+    if key in held:
         yield
+        return
+    with _file_lock(Path(key)):
+        held.add(key)
+        try:
+            yield
+        finally:
+            held.remove(key)
 
 
 _path_lock_local = threading.local()

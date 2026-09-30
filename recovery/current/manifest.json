@@ -2,7 +2,7 @@
   "$schema": "contracts/recovery-snapshot.schema.json",
   "artifacts": [
     {
-      "bytes": 5021,
+      "bytes": 5088,
       "format": "toml",
       "host": "codex",
       "id": "settings",
@@ -27,20 +27,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "f20169ad36e169e27787e726bd1408ee99cfaa2d4a9af28e28d2b3291036881f",
+      "sha256": "7c13a6eac82281bfe08b836d4bc118af93595e25dc1c65bd545e4e660f9e6712",
       "snapshot": "hosts/codex/config.json",
       "source": "config.toml",
       "strategy": "merge"
     },
     {
-      "bytes": 2141,
+      "bytes": 2293,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "0718abc4b6a4723987b0363025e06d0049bcc2026a93e756d2eea4f651fe999a",
+      "sha256": "e006bef2481898d43bea0d3d2b7b742c5fafeb52a42053d36d28fef5b9f56685",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -85,7 +85,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 17161,
+      "bytes": 17094,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -289,20 +289,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "364a48d211dd8460c07a3ed1895d703e3d8d35bde7e29bf25feeb83b05bc9a8c",
+      "sha256": "2fd71df1c24640b6c02aaf4a0d7ffde712cc7b9283df6e71afacff6d0567af8c",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
     },
     {
-      "bytes": 2172,
+      "bytes": 2231,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "9d2da01151826edcf8e55666505a06ebbe2587ff6532f328b68e0f16cd28266a",
+      "sha256": "541b5e09618fc31c3f5d0f0d38157c9d497df03ac659423259d385781dd43b74",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"

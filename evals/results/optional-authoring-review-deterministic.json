@@ -56,6 +56,12 @@
     "Recorded evidence consistency does not authenticate an experiment.",
     "Reference excerpts are partial and require semantic review.",
     "Natural trigger selection and GPT-6 Sol/medium quality remain unmeasured.",
-    "Other EOL-only dirty skills are preserved; fleet bindings reflect the current local tree."
+    "Other EOL-only dirty skills are preserved; fleet bindings reflect the current local tree.",
+    "The recorded host-deltas.json hash differs from the committed artifact; this historical receipt is not evidence for the current publication candidate."
+  ],
+  "status": "historical",
+  "source_revision": "d5e5eab769552ed8dcfc7ebe42f8245c311cc56b",
+  "unverified_source_bindings": [
+    "host-deltas.json"
   ]
 }

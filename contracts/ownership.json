@@ -253,7 +253,7 @@
     {
       "path": "recovery/current/hosts/omp/RULES.md",
       "replacement": "recovery/current/hosts/codex/AGENTS.md",
-      "reason": "OMP already inherits the Codex output rule; the native delta duplicated standing context without adding behavior."
+      "reason": "The retired delta duplicated an earlier assumed Codex inheritance route. Current observed OMP discovery does not load that inheritance or a managed user-global overlay; retirement does not claim otherwise."
     }
   ]
 }

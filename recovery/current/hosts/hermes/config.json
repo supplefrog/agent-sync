@@ -1,5 +1,5 @@
 {
-  "_config_version": 46,
+  "_config_version": 49,
   "agent": {
     "api_max_retries": 3,
     "clarify_timeout": 600,
@@ -25,6 +25,14 @@
     "destructive_slash_confirm": true,
     "mcp_reload_confirm": true,
     "mode": "smart",
+    "preferred_reviewer": {
+      "base_url": "https://api.beatapi.io/v1/systemone",
+      "enabled": true,
+      "key_env": "BEATAPI_API_KEY",
+      "model": "jev-1.13-free",
+      "provider": "typesafe-jev",
+      "timeout": 3.0
+    },
     "timeout": 600
   },
   "auxiliary": {
@@ -379,7 +387,7 @@
     "write_approval": false
   },
   "model": {
-    "default": "gpt-6-sol",
+    "default": "gpt-6.1-sol",
     "provider": "openai-codex",
     "request_overrides": {
       "extra_body": {
@@ -429,7 +437,6 @@
     "disabled": [
       "browser/browser_use",
       "foreground-context-router",
-      "hermes-lcm",
       "image_gen/fal",
       "mnemosyne-dashboard",
       "video_gen/fal"
@@ -444,7 +451,8 @@
       "prompt-optimizer",
       "quota",
       "routed-delegation",
-      "security-guidance"
+      "security-guidance",
+      "jev-approvals"
     ],
     "entries": {
       "foreground-context-router": {
@@ -614,23 +622,18 @@
     "container_persistent": true,
     "cwd": "{{agent-signal:HOME}}\\Documents\\Projects",
     "daemon_term_grace_seconds": 2,
-    "daytona_image": "nikolaik/python-nodejs:python3.11-nodejs20",
     "docker_extra_args": [],
     "docker_forward_env": [],
-    "docker_image": "nikolaik/python-nodejs:python3.11-nodejs20",
     "docker_mount_cwd_to_workspace": false,
     "docker_run_as_host_user": false,
     "docker_volumes": [],
     "env_passthrough": [],
     "home_mode": "auto",
     "lifetime_seconds": 300,
-    "modal_image": "nikolaik/python-nodejs:python3.11-nodejs20",
     "modal_mode": "auto",
     "persistent_shell": true,
     "shell_init_files": [],
-    "singularity_image": "docker://nikolaik/python-nodejs:python3.11-nodejs20",
-    "timeout": 180,
-    "vercel_runtime": "node24"
+    "timeout": 180
   },
   "tool_loop_guardrails": {
     "hard_stop_after": {
