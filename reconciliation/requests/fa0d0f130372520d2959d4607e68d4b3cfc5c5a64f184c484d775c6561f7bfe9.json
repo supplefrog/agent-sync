@@ -1,0 +1,75 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "47e3aad966fe90d1f65041fe60725e1d864b9e119f7eb74202622fcf1ac6fd39",
+      "before_sha256": "47e3aad966fe90d1f65041fe60725e1d864b9e119f7eb74202622fcf1ac6fd39",
+      "owner": "project-prior-art",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "74d344cabb9f732d3a86a0df058f352244e27d9396ae7a9840a697ef678def7d",
+      "before_sha256": "74d344cabb9f732d3a86a0df058f352244e27d9396ae7a9840a697ef678def7d",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "67b353fd19bdbf43cc4910da4e21aeb10d563bae06979ecc12e3727255749f08",
+      "before_sha256": "ecdb11e91347538147f5d8c380e920a380ee8344679de716e6523ab5ebbdcb93",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "project-prior-art",
+    "skill-creator",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "fa0d0f130372520d2959d4607e68d4b3cfc5c5a64f184c484d775c6561f7bfe9",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

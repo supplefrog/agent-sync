@@ -9,7 +9,7 @@ metadata:
 
 # Project prior art
 
-Start from what already works. For a new project, material redesign, or architecture review, inspect comparable implementations, reference architectures, and primary documentation before choosing a path. For an existing project, inspect the relevant implementation first. For every new project, check GitHub for existing projects and whether relevant arXiv work could inform the design; a brief check is enough when no research fits. Neither source is a popularity contest or an instruction to copy.
+Start from what already works. For a new project, material redesign, or architecture review, inspect comparable implementations, reference architectures, and primary documentation before choosing a path. For an existing project, inspect the relevant implementation first. Treat old vendor assignments and model choices as prior decisions to reconcile with current user intent, not requirements to retain. When the user selects a replacement, evaluate implementation compatibility rather than reopening that preference through generic tier advice. For every new project, check GitHub for existing projects and whether relevant arXiv work could inform the design; a brief check is enough when no research fits. Neither source is a popularity contest or an instruction to copy.
 
 Keep the search proportional to the decision. State the user's outcome and constraints, find credible examples, and compare what can be reused or adapted with what must be built. Inspect the source, license, maintenance evidence, and relevant behavior of a promising project before treating it as an implementation base. Treat papers as evidence for a mechanism, with limits, rather than proof that it will work here.
 

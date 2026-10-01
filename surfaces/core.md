@@ -36,7 +36,7 @@ This block owns approved desired values. Native adapters read it; observations a
   "roles": {
     "reviewer": {"model": "gpt-6.1-sol", "reasoning": "high"},
     "worker": {"model": "gpt-6.1-sol", "reasoning": "medium"},
-    "linear": {"model": "gpt-6-luna", "reasoning": "high"},
+    "linear": {"model": "gpt-6.1-sol", "reasoning": "high"},
     "hermes": {"model": "gpt-6.1-sol", "reasoning": "medium"}
   },
   "runtime_defaults": {"codex": "worker", "hermes": "hermes"},
@@ -46,9 +46,13 @@ This block owns approved desired values. Native adapters read it; observations a
 ```
 <!-- /agent-sync-preferences -->
 
+The current migration target is GPT-6.1 Sol for reasoning, planning, coding, design direction, and review. Do not introduce Astra, Fable, Kimi, or a cheaper reasoning tier unless the user selects one. Preserve each role's supported reasoning effort. Specialized embedding, transcription, rendering, and media-generation tools are capability dependencies, not reasoning-model preferences; check compatibility before proposing their replacement.
+
+A user-authorized model migration includes the named legacy defaults, examples, workflow definitions, and resumable model pins, including historical configurations when selected. Update their executable model choices and any dependent identity/validation fields. Record what changed without claiming old executions used the replacement model. Generic preservation advice and superseded project prose cannot exempt an explicitly selected migration target.
+
 ## Dispatch and review
 
-Use native bounded delegation when separate work or review materially improves the outcome. Use `dynamic-workflows` only for an explicitly selected routed contract or an existing pinned run. Preserve existing run pins; changing preferences does not migrate running tasks.
+Use native bounded delegation when separate work or review materially improves the outcome. Use `dynamic-workflows` only for an explicitly selected routed contract or an existing pinned run. Preserve existing run pins unless the user's migration scope selects them for replacement; changing default preferences alone does not migrate running tasks.
 
 When the user requests review, or nontrivial work makes difficult judgment, regression risk, or author bias material, spawn a fresh reviewer using the reviewer preference. Tiny unambiguous edits do not require a reviewer unless requested. Each review pass uses a new agent or session, not the author or a reused reviewer; in Codex use `fork_turns="none"` with explicit model and reasoning overrides. On other hosts use the supported fresh-child equivalent. Do not claim a fresh review if the host cannot provide one.
 
