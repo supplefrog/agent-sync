@@ -113,10 +113,10 @@
       "source": "original"
     },
     {
-      "name": "skill-creator",
+      "name": "instruction-authoring",
       "status": "admitted",
       "license": "MIT",
-      "eval": "evals/results/skill-creator-deterministic.json"
+      "eval": "evals/results/instruction-authoring-rename-deterministic.json"
     },
     {
       "name": "humanizer",

@@ -20,7 +20,7 @@ Use when implementing, reviewing, or auditing UI motion. Preserve the project's 
 
 ## Accessibility and performance boundaries
 
-- Honor `prefers-reduced-motion` by removing, reducing, or replacing nonessential motion. Instant state changes are valid; retain a short fade only when helpful and comfortable. Keep focus, announcements, and functionality equivalent.
+- Honor `prefers-reduced-motion` by removing, reducing, or replacing nonessential motion. Instant state changes are valid; retain a short fade only when helpful and comfortable. Keep focus, announcements, and functionality equivalent. Include animated pseudo-elements such as `::backdrop` when relevant. When reduced-motion preference changes or printing begins, verify that in-flight CSS/WAAPI motion stops or reaches a usable static state; a zero-duration rule or empty animation list alone does not establish this.
 - Gate decorative hover motion to hover-capable pointers without removing keyboard focus feedback. Test touch cancellation and pointer capture cleanup for drags; additional fingers must not jump the active gesture. Prefer the component library's gesture handling over a universal velocity threshold.
 - Hardware acceleration depends on properties, browser, animation mechanism, and scene—not merely the presence of CSS or WAAPI. Profile under realistic main-thread load before rewriting Motion shorthand values or claiming a speedup. Layout and paint animations require measurement; blanket GPU guarantees are not evidence.
 - Avoid inherited CSS-variable updates across large subtrees on every animation frame when a local style update suffices. Apply `will-change` selectively and remove temporary hints. Blur is not a default repair for a confusing state transition.

@@ -16,9 +16,9 @@ Codex CLI auth can exist under the user’s Codex home even when `OPENAI_API_KEY
 
 Known locations to inspect when needed:
 
-- `{{agent-signal:CODEX_HOME}}\config.toml`
-- `{{agent-signal:CODEX_HOME}}\AGENTS.md`
-- `{{agent-signal:CODEX_HOME}}\skills\`
+- `%USERPROFILE%\.codex\config.toml`
+- `%USERPROFILE%\.codex\AGENTS.md`
+- `%USERPROFILE%\.codex\skills\`
 
 Treat cached marketplace/plugin files as candidates, not proof a plugin is installed or useful to Hermes.
 
@@ -45,6 +45,12 @@ Provide:
 - whether edits, commits, pushes, or review-only behavior are allowed.
 
 Do not ask Codex to rediscover context Hermes already established.
+
+## wmux visibility and launch
+
+On Windows, distinguish the Codex desktop app from Codex CLI inside a wmux-owned PTY. Inspect process ancestry and wmux's structured pane/surface inventory; an executable name alone does not prove terminal ownership. Check the installed `wmux doctor`, `list-panes --json` and `list-surfaces --json` interfaces before using them.
+
+Resolve the terminal's actual PTY identifier from that inventory and verify which identifier the installed `send`, `send-key` and `read-screen` commands accept. A layout pane identifier may acknowledge delivery without reaching the terminal. Launch with the verified absolute Codex launcher path if a restored shell has stale PATH, then require both a running CLI in wmux's state and visible terminal/process evidence. Do not change global PATH merely to repair one stale shell. Leave workspace and hook trust decisions to the user.
 
 ## Windows toolchain pitfall
 

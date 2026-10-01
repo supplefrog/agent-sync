@@ -8,7 +8,7 @@ Hermes direct `work` requests use the internal V3 schema without requiring the c
 
 Callability, regression and resource exclusions beat the preferred order. Complete comparable observed costs retain their existing selection semantics; otherwise the receipt says `reviewed_task_preference_unmeasured`. Parent identity is not a selection input. Explicit caller preferences remain separately labeled overrides. Neither historical callability nor a benchmark score qualifies a new task's output.
 
-## Inputs and responsibility for explicit V3 requests
+## Inputs and responsibility for selected V3 requests
 
 The parent supplies the actual task class, stable outcome-protocol hash, separate exact `input_sha256`, required host/transport/tools/context, effects, failure cost, independent verifier, resource snapshot, and attempt policy. The protocol defines success criteria and the workload envelope covered by qualification; a broad label such as coding cannot replace it. Exact input hashes protect replay, retries and artifact reuse without preventing protocol evidence from applying to a new input in its admitted scope. The parent checks referenced evidence and artifact hashes before admitting a catalog or task request. Worker-authored success claims are not trusted qualification records.
 
@@ -27,4 +27,4 @@ Catalog evidence is a curated input, not an automatic training pipeline. Retain 
 
 Save the exact task, catalog, selector identity and decision before launch. A resume replays those inputs; it must not silently adopt current availability, budget, scores or prompts. An execution retry keeps the model/effort pin. A failed verifier permits only the predeclared fallback to a distinct exact route, with at most two total model attempts and the original task/verifier/effects contract. Resource state may be refreshed for a new attempt without rewriting the prior receipt. An exhausted cap or insufficient resources stops new model dispatch.
 
-Existing v2 workflow/task adapters preserve their old schema semantics until their v3 consumer path is verified. The standalone v3 policy can be used through an explicit native parent dispatch while that migration proceeds; this does not establish every host's automatic integration.
+Existing v2 workflow/task adapters preserve their old schema semantics until their v3 consumer path is verified. The standalone v3 policy can be used through a native parent dispatch selected under the standing orchestration permission in `surfaces/core.md` while that migration proceeds. Selection must still enforce the current preference, exact supported route, resource limits and parent authorization; it does not establish every host's automatic integration.

@@ -21,9 +21,12 @@ Use this umbrella for Windows application/package diagnosis, privacy-preserving 
 3. Test the exact endpoint and alternate resolver answer without globally changing DNS; apply only the smallest reversible change and restore it in `finally`.
 4. Keep elevation-only network changes separate from normal-user Store licensing operations.
 5. For removal, identify the installation owner before deleting files: query `winget list`, the HKLM/HKCU uninstall registry entries (`UninstallString` / `QuietUninstallString`), and the relevant package provider; invoke that backend first because it owns registration and shared cleanup.
-6. Treat an app-managed portable runtime as directory-owned only after those package checks return no match and its path/metadata identify the owning application. Stop it with its native lifecycle command, remove the isolated runtime root, then verify the path, processes, and listening ports are all absent.
-7. Verify package `Status = Ok`, install location, Start registration, and restored configuration—not merely a success string.
-8. Separate runtime-crash cause from post-crash package damage; a reinstall can repair the consequence without fixing the trigger.
+6. When a developer tool has changed package or repository identity, verify the canonical successor and compare its current release with each live host's recorded version before acting; a redirect or renamed directory does not prove that every installation is obsolete.
+7. Run the current owner's uninstaller against the exact runtime and scope, then audit startup hooks, config registrations, wrapper scripts, and install metadata separately because custom or externally managed launchers can survive native cleanup and point at files the uninstaller removed.
+8. Distinguish live installation surfaces from package caches, quarantines, project history, and recovery snapshots. Remove the live runtime and broken registrations requested by the user; preserve non-live evidence unless cleanup or recovery retirement is explicitly in scope, and report any recovery owner that could recreate the removed surface.
+9. Treat an app-managed portable runtime as directory-owned only after those package checks return no match and its path/metadata identify the owning application. Stop it with its native lifecycle command, remove the isolated runtime root, then verify the path, processes, and listening ports are all absent.
+10. Verify package `Status = Ok`, install location, Start registration, and restored configuration—not merely a success string.
+11. Separate runtime-crash cause from post-crash package damage; a reinstall can repair the consequence without fixing the trigger.
 
 Read `references/windows-app-lifecycle.md` for GPU crash boundaries and privacy-preserving uninstall.
 
@@ -47,3 +50,7 @@ For existing Codex project moves, read `references/codex-workspace-relocation.md
 - Measure profile startup and lazy-load heavyweight modules because discovery/import work on every shell launch is user-visible latency.
 
 Read `references/powershell-completion.md` for acceptance probes and lazy-loading rules.
+
+## Windows remote terminal access
+
+Separate client entitlement, network/transport, SSH authentication and daemon/multiplexer integration. A pairing receipt proves none of the later layers. Read `references/windows-openssh-remote-access.md` before remote-terminal setup or repair; verify the installed interfaces and current client feature boundary.

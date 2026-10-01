@@ -33,14 +33,14 @@
       "strategy": "merge"
     },
     {
-      "bytes": 2293,
+      "bytes": 2266,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "e006bef2481898d43bea0d3d2b7b742c5fafeb52a42053d36d28fef5b9f56685",
+      "sha256": "317457e79d2a6c5d3b205f73b7e6a321fb25f6665e7cdff5b3390bf3022ee95a",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -72,14 +72,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 7484,
+      "bytes": 8104,
       "format": "text",
       "host": "hermes",
       "id": "native-67c506eb26491eb307b3",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "7f16ff84eab3b11b87a7af0f880f3c3d1802cb61d22295899c58940ccaf4fbcb",
+      "sha256": "ae81d5568469f4bdfa0156614c25f55bdb6c2b1c44d4e04210b169b85ca3e772",
       "snapshot": "hosts/hermes/skills/productivity/session-librarian/references/desktop-session-api.md",
       "source": "skills/productivity/session-librarian/references/desktop-session-api.md",
       "strategy": "replace-if-absent"
@@ -295,14 +295,14 @@
       "strategy": "merge"
     },
     {
-      "bytes": 2231,
+      "bytes": 2624,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "541b5e09618fc31c3f5d0f0d38157c9d497df03ac659423259d385781dd43b74",
+      "sha256": "085aef3b0728424e56ba62b9b7b5919127559616b4144721cae3f4db7526ccb8",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -337,14 +337,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 11631,
+      "bytes": 13092,
       "format": "text",
       "host": "hermes",
       "id": "native-71bda44c932a64c934a4",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "371694b7ad002354e0c70607e955bcebee4d2103b61c7e251b559350f7dde70f",
+      "sha256": "ce2e7ca04f233d95e9365c5efdc0a214cbac26d8900968086d3922cda645f382",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/SKILL.md",
       "source": "skills/autonomous-ai-agents/agent-orchestration-operations/SKILL.md",
       "strategy": "replace-if-absent"
@@ -532,14 +532,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 2433,
+      "bytes": 3307,
       "format": "text",
       "host": "hermes",
       "id": "native-4d23e4b4110e4376f1fa",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "3eabfe235a5e38f21ff6b3e8b5fcb673409a4b5e183dce077ac63f3d0138b965",
+      "sha256": "8e3c2d6a0867f627f0e1e27fb1dbcf4d54590c2b68035e5ad013157c60bd5f15",
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/references/external-coding-agent-clis/references/codex.md",
       "source": "skills/autonomous-ai-agents/agent-orchestration-operations/references/external-coding-agent-clis/references/codex.md",
       "strategy": "replace-if-absent"
@@ -5855,14 +5855,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 14013,
+      "bytes": 14347,
       "format": "text",
       "host": "hermes",
       "id": "native-5feeb3939be551e15847",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "4581260d50786c93b558460d48ca13d5f138bdb4fab98864cd7a5fc32455fc1a",
+      "sha256": "72bd99c9c1af237b6e7e9fe3e2c9cbcc1925ee22f5a81e171b32efb64c27d2bf",
       "snapshot": "hosts/hermes/skills/devops/agent-capability-engineering/SKILL.md",
       "source": "skills/devops/agent-capability-engineering/SKILL.md",
       "strategy": "replace-if-absent"
@@ -6310,14 +6310,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5429,
+      "bytes": 5685,
       "format": "text",
       "host": "hermes",
       "id": "native-d45f0a3866dcc734d16d",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "225c1927421223554d6f2f4d6a5cfa9ed047e7eadda027a0446d63a7276e442f",
+      "sha256": "3b23485c13b8a62fd7e1d3691cf64c3e663e6a7e10a1c77929ba8d277d4fed50",
       "snapshot": "hosts/hermes/skills/devops/hermes-engineering-operations/SKILL.md",
       "source": "skills/devops/hermes-engineering-operations/SKILL.md",
       "strategy": "replace-if-absent"
@@ -6336,14 +6336,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 3029,
+      "bytes": 5154,
       "format": "text",
       "host": "hermes",
       "id": "native-1f174cdc5268c86822eb",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "9c0bb30ad8bdc5de61b3f85839a5d937eb9045436ba069bf8ef2a344ef231303",
+      "sha256": "6f5c2088d2374e1cf91fa8b6f60a0d361e7a3a691a448db539f2c22c5fb95a80",
       "snapshot": "hosts/hermes/skills/devops/hermes-engineering-operations/references/behavior-engineering/latency-cost-tuning.md",
       "source": "skills/devops/hermes-engineering-operations/references/behavior-engineering/latency-cost-tuning.md",
       "strategy": "replace-if-absent"
@@ -7129,14 +7129,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5065,
+      "bytes": 6327,
       "format": "text",
       "host": "hermes",
       "id": "native-b1c6ed3997ce1dc527e6",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "ec16fcab42eb4812600aabf7d2d1e2f8dd5bfa1b510f4506be643cdc1330e1a5",
+      "sha256": "6a904f6d14d044c09fe22ddfea6e6a3fe2b888832c1155c18e7ed9aa26052d5d",
       "snapshot": "hosts/hermes/skills/devops/windows-system-operations/SKILL.md",
       "source": "skills/devops/windows-system-operations/SKILL.md",
       "strategy": "replace-if-absent"
@@ -7168,14 +7168,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 11082,
+      "bytes": 12550,
       "format": "text",
       "host": "hermes",
       "id": "native-2c900b82b6fb52373ecd",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "e7e9d6cdab64a896797b154f0be0cf86de9b0e268502c96d7d7f2a3b3f3c1725",
+      "sha256": "fb9de7331770634b7ab31a166d4851512ea822445462d5c39bb1c69cc82814d5",
       "snapshot": "hosts/hermes/skills/devops/windows-system-operations/references/windows-app-lifecycle.md",
       "source": "skills/devops/windows-system-operations/references/windows-app-lifecycle.md",
       "strategy": "replace-if-absent"
@@ -7380,14 +7380,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5996,
+      "bytes": 7446,
       "format": "text",
       "host": "hermes",
       "id": "native-6202ea7d0f5b2d6fa083",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "e3287ffbc3453498e40fda882f2f58aaefb160a95a9b5202bd662a5c2ff3f2b6",
+      "sha256": "6eb02792e388815fe3030e5195e9d59e28a12db7ba9e4485c94e78f0a83cd868",
       "snapshot": "hosts/hermes/skills/github/github-collaboration-workflows/SKILL.md",
       "source": "skills/github/github-collaboration-workflows/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11489,14 +11489,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 4829,
+      "bytes": 5111,
       "format": "text",
       "host": "hermes",
       "id": "native-f24fde821846cbec20ff",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "c0625abc6001a205621ef161a406f75b6203c21ee5008a489614384e53cd7d9f",
+      "sha256": "9b123ca98be2f33eba5c0c74ba8b55dcfa2100d35815c1dcdd1472c7795be7cf",
       "snapshot": "hosts/hermes/skills/software-development/repository-inspection-audits/SKILL.md",
       "source": "skills/software-development/repository-inspection-audits/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11671,14 +11671,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 4754,
+      "bytes": 5779,
       "format": "text",
       "host": "hermes",
       "id": "native-7401540a0061e4ace2d2",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "ade031fc1bc53b06dbeccfadb91e5ca493e66424e89c544a8b5a37669167f4ae",
+      "sha256": "943a1c1f10803f973f4cbb9104e5f03d5ab60b2bbdec34fc2cc5cd6a4afc9d3d",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11710,14 +11710,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 13527,
+      "bytes": 14698,
       "format": "text",
       "host": "hermes",
       "id": "native-6e544026419c61a168d0",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "8c0137ece47a63c5c954b163d8f47d8b0fdbda5875e1a2cfdbdeca78d3e343ba",
+      "sha256": "2add41a19766439635e49a80dd091af60ff0ce89531502536cfde02ca3f2eb82",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/persistence-lifecycle-review/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/references/persistence-lifecycle-review/SKILL.md",
       "strategy": "replace-if-absent"
@@ -13371,10 +13371,75 @@
       "snapshot": "hosts/omp/models.json",
       "source": "models.yml",
       "strategy": "merge"
+    },
+    {
+      "bytes": 791,
+      "format": "text",
+      "host": "hermes",
+      "id": "native-dc10f5c525942512322a",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "46c60bd6a164de5d1f4fe7b0d07fa0c5671cbed6eb099d468dfc899ddc43ee2e",
+      "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/acceptance-boundary-controls.md",
+      "source": "skills/software-development/software-verification-workflows/references/acceptance-boundary-controls.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 3078,
+      "format": "text",
+      "host": "hermes",
+      "id": "native-241169b351cd908aadd5",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "3c19df67976ac5b15960d061fcf3f12546d36a10aee34a90422ccc70b278c074",
+      "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/technical-documentation-verification.md",
+      "source": "skills/software-development/software-verification-workflows/references/technical-documentation-verification.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 1442,
+      "format": "text",
+      "host": "hermes",
+      "id": "native-b24b43ff60713320b504",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "cdcec2af7b153214e95d916bf534c3b754101080199e762b24ea0b12916c845b",
+      "snapshot": "hosts/hermes/skills/github/github-collaboration-workflows/references/github-pages-reader.md",
+      "source": "skills/github/github-collaboration-workflows/references/github-pages-reader.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 2876,
+      "format": "text",
+      "host": "hermes",
+      "id": "native-e45c4f5e920ce5e6ebd7",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "e65e31f67b770f62e736fd4518c87e0665ff4b97dd755816bdc9b5c143271620",
+      "snapshot": "hosts/hermes/skills/devops/windows-system-operations/references/windows-openssh-remote-access.md",
+      "source": "skills/devops/windows-system-operations/references/windows-openssh-remote-access.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 1167,
+      "format": "text",
+      "host": "hermes",
+      "id": "native-c22d1e2fedc156088f3e",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "a332be323d95432fe7475c0b86dbfa95ba3a4f72487f2f0b81be3ced5f5c8e62",
+      "snapshot": "hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/references/user-project-retirement.md",
+      "source": "skills/autonomous-ai-agents/agent-orchestration-operations/references/user-project-retirement.md",
+      "strategy": "replace-if-absent"
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "abc6706bec987a7bf24d9322a951e3a08fce9d6769c41664a904c9ac2f4173ee",
+  "policy_sha256": "c8f04fccac62c1c1416510d1d3982682448d29509b4af56ce2b43a5b6ca16d2c",
   "public_safe": true,
   "schema_version": 1
 }

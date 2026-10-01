@@ -1,6 +1,6 @@
 ---
 name: dynamic-workflows
-description: Use only for explicitly requested routed DAGs or existing pinned runs. Legacy persisted state and host adapters; not an automatic prerequisite for parallel work or review.
+description: Use for dependent or resumable work that benefits from a persisted routed DAG, or existing pinned runs. Native bounded delegation handles ordinary parallel work.
 version: 3.0.0
 author: Local User
 license: UNLICENSED
@@ -8,13 +8,15 @@ license: UNLICENSED
 
 # Dynamic Workflows
 
-This is the legacy routed DAG contract, retained for explicit use and existing pinned runs. It is not the default coordinator workflow. The portable state machine lives in `scripts/workflow_state.py`; hosts provide native worker launch, cancellation, and result adapters.
+This owns persisted routed DAG execution. The portable state machine lives in `scripts/workflow_state.py`; hosts provide native worker launch, cancellation, and result adapters. Native bounded delegation remains the normal choice for separate work and review.
 
 A workflow persists its immutable plan, task state, exact route receipts, prompts, and outputs outside the parent conversation. It does not retry through progressively higher reasoning efforts.
 
 ## Use it when
 
-Use this implementation only when the user explicitly selects its routed contract or when inspecting/resuming an existing pinned run. Dependencies or review alone do not require this router. Prefer native bounded delegation for ordinary work; do not launch catalog/admission refreshes just to make this workflow usable.
+Select this implementation under the standing orchestration permission in `surfaces/core.md` when dependency artifacts, durable route receipts, or interruption/resume materially improve the outcome. The agent may select and record the routed contract without asking the user to choose it again. Keep small tasks local and use native bounded delegation for ordinary independent work; dependencies or review alone do not require persisted state.
+
+Before a new run, verify that the admitted route and host adapter support the current model preference, tools, effects, identity and resource limits. Selection grants no new execution authority. If those checks block a useful DAG, report the concrete blocker and continue separable work locally or through supported native delegation. Refresh affected availability within existing authorization when useful; capability admission remains with `cross-agent-surface-engineering`. Do not rewrite historical evidence, silently substitute a model, or bypass receipt checks. Existing pinned runs retain their contracts unless a separately authorized migration selects them.
 
 `max_workers` defaults to 8 as a ceiling, not a target. Choose a lower plan limit when useful; create only genuinely independent workstreams, never extra tasks to fill slots. Hermes also clamps concurrency to its native `delegation.max_concurrent_children` limit. Existing runs retain their pinned plan limits.
 
@@ -101,11 +103,13 @@ The current admitted V3 catalog has no `omp-workflow` cell, and the V2 installer
 
 ### Hermes
 
-For explicitly selected routed DAGs, use `routed_workflow`; `routed_delegate_task` is for explicitly selected one-shot routed contracts, not ordinary delegation. `routed_workflow` exposes `init`, `run`, `status`, `resume`, and `complete-parent`; it consumes this state owner rather than implementing another scheduler or router.
+For a selected and supported routed DAG, use `routed_workflow`; `routed_delegate_task` handles selected one-shot routed contracts. Selection may come from the agent under standing orchestration permission. Ordinary delegation stays native. `routed_workflow` exposes `init`, `run`, `status`, `resume`, and `complete-parent`; it consumes this state owner rather than implementing another scheduler or router.
 
 The adapter accepts routed tasks only, requires `workdir: "."`, and launches native Hermes leaf children with the exact receipt provider/model/reasoning tuple and fallback disabled. It binds each run manifest in a separate trusted store under `HERMES_HOME`, serializes run/resume with an execution lock, persists native results and outputs under each task, and records authoritative close witnesses outside the mutable run directory. An explicit reported model mismatch fails the task; a missing model echo is accepted only because the exact launch route was already verified.
 
-For explicitly requested full Hermes DAG execution, start from [the execution template](assets/templates/workflow-v3-execution.json) and follow the execution-request contract in `openai-delegation-route-research/references/hermes-direct-v3.md`, section "Explicit full DAG execution". It uses the separate `budget.execution_request` opt-in and pins `gpt-6-sol` / `low` through the sole preference `hermes-gpt6-sol-low-workflow-execution`. Workers may read sources, edit authorized files and run declared checks with the parent's available native tools and unchanged approval behavior. Declare the exact inherited tool names; fail on a mismatch rather than replacing the available tools with a read-only set.
+Full Hermes DAG execution requires the separate `budget.execution_request` contract in `openai-delegation-route-research/references/hermes-direct-v3.md`, section "Explicit full DAG execution". The [execution template](assets/templates/workflow-v3-execution.json) is a compatibility example: it pins `gpt-6-sol` / `low` through `hermes-gpt6-sol-low-workflow-execution`. That admitted route does not satisfy the current `surfaces/core.md` model preference, so do not start a new run from it or relabel its route as a newer model. A matching route needs separately verified admission; retain old receipts and historical evidence unchanged. Supported native delegation remains available while this route dependency is unresolved.
+
+On a supported execution route, workers may read sources, edit authorized files and run declared checks with the parent's available native tools and unchanged approval behavior. Declare the exact inherited tool names; fail on a mismatch rather than replacing the available tools with a read-only set. The agent may populate the scoped execution request from existing authorization; it cannot infer permission for unknown quota, paid inference or effects beyond that authorization.
 
 Each node must carry exact authorized paths, output locations and checks in its task contract and rendered prompt: native children use `skip_context_files`, so implicit workspace instructions are insufficient. Tool inheritance is neither an OS/path sandbox nor additional authority. Keep effects `none` or `reversible`, one attempt, a per-node request-construction cap, and independent parent acceptance of artifacts and effects. No paid API route, fallback or effort ladder is authorized. The parent verifies the combined result before acceptance; route availability and a successful smoke check do not establish general model quality.
 
@@ -135,5 +139,3 @@ Retired `cc-dynamic-workflows` behaviors are accounted for explicitly:
 The state helper provides immutable normalized plans, atomic JSON state, bounded context injection, route pinning, retry/resume state, dependency blocking, stop intent, and handle-closure gates. Routed runs pin the catalog and selector snapshots and execute only the exact verified selector bytes. Hermes adds an external manifest binding, run-level execution lock, and exact native close witnesses. This is not a reboot-surviving supervisor, token-accounting service, or universal permissions layer. Host-native capability and authorization remain authoritative.
 
 Read `references/runtime-contract.md` before modifying the state machine. Set `AGENT_SIGNAL_ROOT` to the owning Agent Sync checkout, run `python scripts/test_workflow_state.py`, and validate every shipped template before promotion. Lifecycle tests use synthetic availability windows; never extend real route evidence expiry merely to make tests pass.
-
-

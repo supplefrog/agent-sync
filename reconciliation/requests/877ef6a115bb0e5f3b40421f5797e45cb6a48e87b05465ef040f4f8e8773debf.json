@@ -1,0 +1,120 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "8b287946c23985e0f919f0643130e012d8caaf9299fb023279641da392e40cfe",
+      "before_sha256": "8b287946c23985e0f919f0643130e012d8caaf9299fb023279641da392e40cfe",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "26be3023756b54272c9c4906a492d53c8b950670352376ddc9b55ec65651b294",
+      "before_sha256": "26be3023756b54272c9c4906a492d53c8b950670352376ddc9b55ec65651b294",
+      "owner": "dynamic-workflows",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "07bf8ceb539462dadfeb174eca9d65b331bb57b8941fa6fc3cb902f376df7e67",
+      "before_sha256": "07bf8ceb539462dadfeb174eca9d65b331bb57b8941fa6fc3cb902f376df7e67",
+      "owner": "frontend-ui-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "a2e5bf0518d068808fc511d31652807a8147ab7b2d0423aeac9a0254f9bb0d16",
+      "before_sha256": "a2e5bf0518d068808fc511d31652807a8147ab7b2d0423aeac9a0254f9bb0d16",
+      "owner": "github-follow-up",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "5ca72342ed5b0274a03ad0f150118c5305a884ef783e05b74ad6ce14570584e8",
+      "before_sha256": "5ca72342ed5b0274a03ad0f150118c5305a884ef783e05b74ad6ce14570584e8",
+      "owner": "humanizer",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "e126cd42a6740d67b18b180d9fb1ccbae1b50948828a4be765dc52030afde76d",
+      "before_sha256": "e126cd42a6740d67b18b180d9fb1ccbae1b50948828a4be765dc52030afde76d",
+      "owner": "openai-delegation-route-research",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "9e9fa45a33cf5454fd620637cde4b598b8457ce779ab7b4cd5a0f2eaeae1d89c",
+      "before_sha256": "9e9fa45a33cf5454fd620637cde4b598b8457ce779ab7b4cd5a0f2eaeae1d89c",
+      "owner": "skill-creator",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "368aaeb5f8d8eff943fe8faa7d27754f68cb7680bdc470f37b9e00e797b0923f",
+      "before_sha256": "368aaeb5f8d8eff943fe8faa7d27754f68cb7680bdc470f37b9e00e797b0923f",
+      "owner": "systematic-debugging",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "61e242321d3c037af6d80cf414e734deaec18ba0ee1d1f4262d31175bd334ba4",
+      "before_sha256": "0e22f6003f628a48b5e84fefd890a016043640cfa904dd41f3b09aa01c47de7a",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [
+    "python.exe validate.py cross-agent-surface-engineering dynamic-workflows frontend-ui-engineering github-follow-up humanizer openai-delegation-route-research skill-creator systematic-debugging",
+    "python.exe audit.py check --repo agent-sync --structural"
+  ],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "cross-agent-surface-engineering",
+    "dynamic-workflows",
+    "frontend-ui-engineering",
+    "github-follow-up",
+    "humanizer",
+    "openai-delegation-route-research",
+    "skill-creator",
+    "systematic-debugging",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "877ef6a115bb0e5f3b40421f5797e45cb6a48e87b05465ef040f4f8e8773debf",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

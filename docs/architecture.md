@@ -24,7 +24,7 @@ The convergence target is equivalent useful behavior. Mechanisms may differ, and
 | Shared judgment surface | `surfaces/core.md` | Small, stable behavior and routing policy useful across hosts |
 | Host integration | `adapters/` | Installation targets and discovery mechanisms only |
 | Governance | `contracts/ownership.json`, `registry.json`, `tools/capability_intake.py`, `skills/cross-agent-surface-engineering/` | Decide ownership, admission, evidence sufficiency, and proportional review |
-| Authoring | `skills/skill-creator/`, domain/tool owners | Improve instructions and model-facing interfaces while preserving useful behavior and executable contracts |
+| Authoring | `skills/instruction-authoring/`, domain/tool owners | Improve instructions and model-facing interfaces while preserving useful behavior and executable contracts |
 | Reconciliation | `tools/reconcile.py`, `contracts/change-request.schema.json`, `reconciliation/requests/` | Resolve observed differences and concrete dependencies into a scoped authorized change set |
 | Sync | `tools/fleet.py`, `tools/recovery.py`, `tools/sync_git.py` | Apply and verify the selected change, preserve concurrent work and recoverable rollback, and verify publication |
 | Host-native delta | `host-deltas.json`, `contracts/host-deltas.schema.json`, `tools/host_deltas.py` | Typed public-safe native state, restore prerequisites, source identity, version/hash, enablement, and readback |
@@ -98,7 +98,7 @@ The effective governance authority is the deterministic contracts/coordinator pl
 
 ### Scoped semantic curation
 
-Keep useful knowledge discoverable, preserve meaningful triggers and procedures, and remove only what has stopped helping through recoverable changes. Reuse `skills/skill-creator` for semantic review and `cross-agent-surface-engineering` for ownership or deployment; no separate background semantic agent or new promotion authority is installed.
+Keep useful knowledge discoverable, preserve meaningful triggers and procedures, and remove only what has stopped helping through recoverable changes. Reuse `skills/instruction-authoring` for semantic review and `cross-agent-surface-engineering` for ownership or deployment; no separate background semantic agent or new promotion authority is installed.
 
 - Start from a concrete signal: a missed trigger, conflicting instructions, obsolete commands, demonstrated duplication, or an explicit user review request. Inspect only the affected owner and relevant neighbors. Usage and age can suggest inspection, never authorize retirement.
 - Return retain, repair, merge, or retire with source evidence, the distinctions that must survive, and the smallest verification that could change the decision. Prefer no change when the existing owner already meets the need. A broad umbrella is not inherently better than distinct skills.

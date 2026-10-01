@@ -646,7 +646,7 @@ def snapshot(
     policy = _load_policy(policy_path)
     selected_ids = _select_artifacts(policy, artifacts)
     selected_hosts = {value.split(":", 1)[0] for value in selected_ids}
-    old_manifest = verify_snapshot(policy_path, output_dir) if artifacts is not None else None
+    old_manifest = _verify_scoped_capture_baseline(policy_path, output_dir, policy, selected_ids) if artifacts is not None else None
     resolved_roots = {host: Path(root) for host, root in roots.items() if host in selected_hosts}
     missing = sorted(selected_hosts - set(resolved_roots))
     if missing:
@@ -717,9 +717,13 @@ def snapshot(
 
     if old_manifest is not None:
         captured = {(item["host"], item["id"]): item for item in records}
-        records = [captured.get((item["host"], item["id"]), item) for item in old_manifest["artifacts"]]
+        old_ids = {(item["host"], item["id"]) for item in old_manifest["artifacts"]}
+        records = [captured.get((item["host"], item["id"]), item) for item in old_manifest["artifacts"]] + [
+            item for identity, item in captured.items() if identity not in old_ids
+        ]
         for item in records:
-            prepared.setdefault(item["snapshot"], _safe_join(output_dir, item["snapshot"], must_exist=True).read_bytes())
+            if item["snapshot"] not in prepared:
+                prepared[item["snapshot"]] = _safe_join(output_dir, item["snapshot"], must_exist=True).read_bytes()
     policy_copy = deepcopy(policy)
     policy_copy.pop("$schema", None)
     manifest = {
@@ -763,6 +767,8 @@ def snapshot(
             written[path] = _file_identity(path)
             if path.read_bytes() != data:
                 raise RecoveryError(f"snapshot output readback mismatch: {path}")
+        if old_manifest is not None:
+            verify_snapshot(policy_path, output_dir)
     except Exception as exc:
         incomplete = []
         for path in reversed(written):
@@ -792,8 +798,40 @@ def snapshot(
     return manifest
 
 
+def _verify_scoped_capture_baseline(
+    policy_path: Path, output_dir: Path, policy: dict[str, Any], selected_ids: set[str]
+) -> dict[str, Any]:
+    """Accept only selected additive rows, bound to the exact prior policy hash."""
+    manifest_path = _safe_join(output_dir, "manifest.json", must_exist=True)
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        records = manifest["artifacts"]
+        if not isinstance(records, list) or any(not isinstance(item, dict) for item in records):
+            raise ValueError("artifact records must be objects")
+        prior_ids = {f"{item['host']}:{item['id']}" for item in records}
+    except (json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
+        raise RecoveryError(f"invalid snapshot manifest: {exc}") from exc
+    current_ids = {f"{host}:{artifact['id']}" for host, artifact in _policy_artifacts(policy)}
+    added = current_ids - prior_ids
+    if not prior_ids <= current_ids or not added <= selected_ids:
+        raise RecoveryError("scoped capture permits only explicitly selected additive policy artifacts")
+    prior_policy = deepcopy(policy)
+    for host, host_policy in prior_policy["hosts"].items():
+        host_policy["artifacts"] = [
+            artifact for artifact in host_policy["artifacts"]
+            if f"{host}:{artifact['id']}" not in added
+        ]
+    # Validation and the exact digest prove that removing the selected new rows
+    # reconstructs the original policy, including every field not in records.
+    _validate_policy(prior_policy)
+    return _verify_snapshot(policy_path, output_dir, prior_policy)
+
+
 def verify_snapshot(policy_path: str | Path, output_dir: str | Path) -> dict[str, Any]:
-    policy = _load_policy(Path(policy_path))
+    return _verify_snapshot(Path(policy_path), Path(output_dir), _load_policy(Path(policy_path)))
+
+
+def _verify_snapshot(policy_path: Path, output_dir: Path, policy: Mapping[str, Any]) -> dict[str, Any]:
     output_dir = Path(output_dir)
     manifest_path = _safe_join(output_dir, "manifest.json", must_exist=True)
     try:

@@ -8,7 +8,7 @@ compatibility: Python 3.11+; one shared private state root accessible to the sup
 metadata:
   hermes:
     tags: [learning, evidence, admission, self-improvement, shadow]
-    related_skills: [capability-curator, skill-creator, github-follow-up, surface-convergence]
+    related_skills: [capability-curator, instruction-authoring, github-follow-up, surface-convergence]
 ---
 
 # Global Learning Intake

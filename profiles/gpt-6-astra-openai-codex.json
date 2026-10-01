@@ -107,7 +107,7 @@
   "writing_routes": {
     "model-facing-instructions": {
       "loading": "on-demand",
-      "owner": "skills/skill-creator",
+      "owner": "skills/instruction-authoring",
       "scope": "Dense model-facing rules, skills, triggers, references, and proportional behavior evaluation."
     },
     "public-prose": {

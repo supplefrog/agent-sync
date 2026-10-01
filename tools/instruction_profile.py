@@ -21,11 +21,13 @@ try:
     import instruction_retirement
     import recovery
     import runtime_defaults
+    import render_instructions
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import instruction_retirement  # type: ignore
     import recovery  # type: ignore
     import runtime_defaults  # type: ignore
+    import render_instructions  # type: ignore
 
 
 class ProfileError(RuntimeError):
@@ -289,6 +291,10 @@ def verify_profile(repo: Path, profile_path: Path, *, live: bool = True, hosts=N
     repo = repo.resolve()
     profile = _load(profile_path)
     _validate(repo / "contracts" / "model-profile.schema.json", profile, "model profile")
+    try:
+        render_instructions.verify(repo)
+    except render_instructions.RenderError as exc:
+        raise ProfileError(str(exc)) from exc
     selected_hosts = runtime_defaults.selected_hosts(repo, hosts)
 
     surfaces_path = _repo_path(repo, profile["contracts"]["surfaces"], "surface contract")

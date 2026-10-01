@@ -11,7 +11,7 @@ Every expected behavior has one accountable owner. Supporting owners exchange ev
 | Owner | Accountable outcome | Current places to inspect, not prescribed final structure |
 | --- | --- | --- |
 | Governance | Decide what belongs, what evidence permits a change, and whether the system improves user outcomes. | `contracts/ownership.json`, `registry.json`, `tools/capability_intake.py`, `skills/cross-agent-surface-engineering/` |
-| Authoring | Improve the owning instruction or tool interface without losing useful behavior. | `skills/skill-creator/`; domain/tool owners for executable contracts; Codex native skill-creator for scaffolding/UI only |
+| Authoring | Improve the owning instruction or tool interface without losing useful behavior. | `skills/instruction-authoring/`; domain/tool owners for executable contracts; Codex native skill-creator for scaffolding/UI only |
 | Reconciliation | Resolve differences and dependencies into a scoped, authorized change set. | `tools/reconcile.py`, `contracts/instruction-surfaces.json`, `contracts/surface-matrix.json` |
 | Sync | Apply the selected changes, preserve recoverability, and verify the installed and published result. | `tools/fleet.py`, `tools/recovery.py`, `tools/sync_git.py`, host adapters |
 

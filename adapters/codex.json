@@ -5,7 +5,7 @@
   "instructions": {
     "source": "recovery/current/hosts/codex/AGENTS.md",
     "target": "{CODEX_HOME}/AGENTS.md",
-    "strategy": "manual-merge",
+    "strategy": "generated",
     "required_markers": [
       "[OUTPUT]",
       "[INSTRUCTION-AUTHORING]",
@@ -14,7 +14,42 @@
       "[RESEARCH]",
       "[EXECUTION]",
       "[RECONCILIATION]"
-    ]
+    ],
+    "projection": {
+      "format": "tagged-lines",
+      "sections": [
+        {
+          "label": "OUTPUT",
+          "shared": "communication",
+          "suffix": "If artifacts changed, add a `Changed:` list with clickable Markdown file links (`[name](/absolute/path)`); for many changes, link one diff or index."
+        },
+        {
+          "label": "INSTRUCTION-AUTHORING",
+          "shared": "authoring",
+          "suffix": "Codex `.system/skill-creator` owns native scaffolding, UI metadata and validation."
+        },
+        {
+          "label": "SCOPE",
+          "shared": "scope"
+        },
+        {
+          "label": "EVIDENCE",
+          "shared": "evidence"
+        },
+        {
+          "label": "RESEARCH",
+          "shared": "research"
+        },
+        {
+          "label": "EXECUTION",
+          "shared": "execution"
+        },
+        {
+          "label": "RECONCILIATION",
+          "shared": "reconciliation"
+        }
+      ]
+    }
   },
   "skills": {
     "source": "skills",

@@ -4,7 +4,7 @@
   "context_policy": {
     "max_standing_bytes": {
       "codex": 2304,
-      "hermes": 2304,
+      "hermes": 2816,
       "omp": 2048
     },
     "recovery_loaded_into_prompt": false,
@@ -22,7 +22,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "e006bef2481898d43bea0d3d2b7b742c5fafeb52a42053d36d28fef5b9f56685"
+        "317457e79d2a6c5d3b205f73b7e6a321fb25f6665e7cdff5b3390bf3022ee95a"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -56,7 +56,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "541b5e09618fc31c3f5d0f0d38157c9d497df03ac659423259d385781dd43b74"
+        "085aef3b0728424e56ba62b9b7b5919127559616b4144721cae3f4db7526ccb8"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -72,7 +72,10 @@
         "hermes.deliberation",
         "hermes.instruction-authoring-route",
         "hermes.reconciliation",
-        "hermes.execution"
+        "hermes.execution",
+        "hermes.scope",
+        "hermes.evidence",
+        "hermes.research"
       ],
       "model": "gpt-6.1-sol",
       "observation": {
@@ -131,7 +134,7 @@
   "writing_routes": {
     "model-facing-instructions": {
       "loading": "on-demand",
-      "owner": "skills/skill-creator",
+      "owner": "skills/instruction-authoring",
       "scope": "Dense model-facing rules, skills, triggers, references, and proportional behavior evaluation."
     },
     "public-prose": {

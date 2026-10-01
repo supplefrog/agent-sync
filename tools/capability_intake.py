@@ -148,10 +148,10 @@ def _classify_recovery_item(
 
     if kind == "config":
         change_class = "host-config"
-        route = "hermes-self-engineering" if host == "hermes" else "skill-creator"
+        route = "hermes-self-engineering" if host == "hermes" else "instruction-authoring"
     elif instruction:
         change_class = "host-instruction"
-        route = "hermes-self-engineering" if host == "hermes" else "skill-creator"
+        route = "hermes-self-engineering" if host == "hermes" else "instruction-authoring"
     else:
         change_class = "host-adapter"
         route = "cross-agent-surface-engineering"

@@ -1235,6 +1235,8 @@ def _scope_dependencies(repo, machine, names, capture=False, recovery_artifacts=
     }
     paths = ["tools/reconcile.py", "tools/fleet.py", "tools/sync_git.py",
              "tools/public_check.py"]
+    paths.extend(["tools/render_instructions.py", "surfaces/core.md",
+                  "adapters/codex.json", "adapters/hermes.json", "adapters/schema.json"])
     if names:
         paths.extend(["contracts/change-request.schema.json", "tools/recovery.py"])
     if binding_identities:
@@ -1271,7 +1273,7 @@ def _candidate_commands(candidate, names, files=(), capture=False):
         command = [sys.executable, str(candidate / "tools/validate.py")]
         command += [str(candidate / "skills" / name) for name in sorted(names)]
         commands.append(command)
-    profile = any(value.startswith(("surfaces/", "profiles/", "recovery/current/hosts/")) or
+    profile = any(value.startswith(("surfaces/", "profiles/", "adapters/", "recovery/current/hosts/")) or
                   value in {"contracts/instruction-surfaces.json", "contracts/instruction-profiles.json", "tools/instruction_profile.py"}
                   for value in files)
     structural = any(value.startswith(("tools/", "contracts/")) or value in {"registry.json", "fleet.json", "recovery.json"}

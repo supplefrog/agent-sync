@@ -24,6 +24,8 @@ Use this umbrella for empirical operation and improvement of the live Hermes pro
 - Approval interruptions or design-only task authorization: `references/approval-boundary-review.md`.
 - Fresh canonical Bot Chat behavior that differs from regular sessions and Bot-Chat-only prompt/tool injection: `references/bot-mode-behavior-parity.md`.
 
+For input-cost or subscription compaction comparisons, read `references/behavior-engineering/latency-cost-tuning.md`. Inspect the current task's actual instruction/tool load first; do not turn cost tuning into an unrequested routing or capability change.
+
 ## Shared workflow
 
 For repeated systemic complaints, show a compact complaint → responsible mechanism → verified status → next action map. Within explicit reset authorization, reversibly disable the obstructing policy or automatic trigger while preserving safety boundaries, execution capabilities and existing-run contracts. Do not make another broad audit a prerequisite for unblocked delivery.

@@ -13,9 +13,7 @@ metadata:
 
 # Systematic Debugging
 
-Debugging is causal work: establish what failed, find where the system diverges from expected behavior, test the cheapest discriminating hypothesis, then fix and verify the mechanism.
-
-Do not turn this into ceremony for simple config edits or known supported operations. The amount of investigation should scale with uncertainty and blast radius.
+Establish the failure, isolate where state or behavior diverges, test a discriminating hypothesis, then fix and verify the mechanism. Scale investigation to uncertainty and blast radius; straightforward config edits and known supported operations need no full workflow.
 
 ## 1. Establish the failure
 
@@ -30,7 +28,7 @@ Read complete errors and stack traces. Reproduce with the smallest realistic com
 
 ## 2. Build a causal split
 
-List plausible causes only when the system has real competing boundaries. For each candidate, identify the cheapest check that would falsify it.
+For real competing causes, name each mechanism, its supporting evidence, and the cheapest check that would disprove it. “Component X is broken” is not a mechanism.
 
 Useful evidence includes:
 
@@ -40,8 +38,6 @@ Useful evidence includes:
 - data entering and leaving component boundaries;
 - comparable working paths;
 - runtime stack/scopes when logs are insufficient.
-
-A useful hypothesis names a mechanism and a disproof condition. “Component X is broken” is not a mechanism.
 
 ## 3. Isolate the failing boundary
 
@@ -82,11 +78,7 @@ For the known Windows Node/fnm pattern, load `references/windows-node-path-shado
 
 ## 4. Test one hypothesis
 
-Form a hypothesis with a mechanism, supporting evidence, and a disproof condition. Use this structure for reasoning, not a mandatory chat template; explain it when it helps the user understand or steer the experiment.
-
-Run the smallest discriminating experiment. Change one relevant variable at a time. A temporary diagnostic edit is acceptable when read-only evidence cannot isolate the boundary, but remove it after the experiment.
-
-If disproved, update the causal split using the new evidence. Do not stack speculative fixes.
+Run the cheapest discriminating check from the causal split, changing one relevant variable at a time. Explain the hypothesis when it helps the user steer the experiment; no chat template is required. If read-only evidence cannot isolate the boundary, use a temporary diagnostic edit and remove it afterward. Update disproved hypotheses with the new evidence rather than stacking speculative fixes.
 
 ## 5. Contain harm, then fix the mechanism
 
@@ -105,7 +97,7 @@ Use `test-driven-development` when a failing automated test can capture the bug.
 
 Verify:
 
-1. the original reproduction now succeeds;
+1. the original reproduction now succeeds; for intermittent failures, compare observed frequency or correlated state rather than claiming resolution from one passing run;
 2. a nearby boundary/regression case still works;
 3. state persists/reloads correctly when relevant;
 4. fallback/error behavior remains valid;
@@ -148,11 +140,3 @@ Write a postmortem only when these are known:
 - **Validation scope**
 
 Use concise sections as relevant: summary, symptom, root cause, why it produced the symptom, fix, discovery, why it escaped, validation, and action items. Preserve concrete identifiers and evidence. Separate confirmed facts from hypotheses; do not invent owners or action items.
-
-## Pitfalls
-
-- A plausible explanation is not evidence.
-- “Try this and see” is useful only when the result discriminates between hypotheses.
-- Reading changed lines without tracing callers/state often finds symptoms, not causes.
-- One passing run does not prove an intermittent bug is fixed; compare rates or state when needed.
-- Process rigor should reduce uncertainty, not maximize steps.

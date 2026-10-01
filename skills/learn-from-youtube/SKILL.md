@@ -125,4 +125,4 @@ Process transcript chunks into the coverage ledger first, then synthesize from t
 
 Save transcripts or ledgers only when requested or needed as durable artifacts. Otherwise use a temporary directory and leave the project untouched.
 
-Reusable workflow improvements belong in this canonical skill or its existing references, not only in the current project's status file. Preserve source-specific evidence with its project; apply `skill-creator` for checked procedural updates during the work.
+Reusable workflow improvements belong in this canonical skill or its existing references, not only in the current project's status file. Preserve source-specific evidence with its project; apply `instruction-authoring` for checked procedural updates during the work.

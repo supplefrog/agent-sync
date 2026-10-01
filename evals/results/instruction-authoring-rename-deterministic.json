@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "suite": "instruction-authoring",
+  "capability": "instruction-authoring",
+  "status": "pass",
+  "claim": "Name-only migration preserves the existing shared instruction-authoring capability; no model-quality claim.",
+  "prior_evidence": "evals/results/skill-creator-deterministic.json",
+  "verification": {
+    "capability_content_preserved": true,
+    "native_scaffolding_name_preserved": true
+  }
+}

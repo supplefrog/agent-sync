@@ -82,7 +82,7 @@
       "scope": "Issues, PRs, release notes, email, Slack, posts, and explicit humanization."
     },
     "model-facing-instructions": {
-      "owner": "skills/skill-creator",
+      "owner": "skills/instruction-authoring",
       "loading": "on-demand",
       "scope": "Dense model-facing rules, skills, triggers, references, and proportional behavior evaluation."
     },

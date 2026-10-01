@@ -1,6 +1,6 @@
 ---
 name: openai-delegation-route-research
-description: Use for explicitly requested route-catalog research or existing pinned route receipts. Not ordinary worker selection, delegation, or an automatic prerequisite to useful work.
+description: Use for route-catalog research, selected routed tasks, or pinned route receipts. Native worker selection and ordinary delegation do not require this selector.
 license: MIT
 compatibility: Requires current native route availability and the repository's existing jsonschema dependency.
 metadata:
@@ -10,13 +10,15 @@ metadata:
 
 # Task-aware GPT routing
 
-The custom selector is opt-in, not the default coordinator policy. Do not invoke this workflow merely because a task needs a worker. Its contracts below apply only to explicit routing research, explicitly selected routed tasks, and existing pinned runs. Preserve historical evidence and all existing pins; a disabled compulsory router is not permission to bypass a run's integrity or resource checks.
+Use this selector for route research, a selected routed task or DAG, and existing pinned runs. The agent may select a routed contract under the standing orchestration permission in `surfaces/core.md` when it materially improves the outcome; the user need not choose it again. Ordinary worker selection uses supported native delegation and the core model preference. Keep small tasks local; do not invoke catalog research merely because work can be delegated.
+
+Check the selected route against the current model preference and admitted host, tool, effect, identity and resource support before dispatch. If no matching route is available, state the concrete blocker and use supported native delegation or parent work for separable tasks. Refresh affected availability within existing authorization when useful; capability admission remains with `cross-agent-surface-engineering`. Selecting a contract grants no permission for paid evaluations, wider effects or approval bypasses. Preserve historical evidence and existing pins unless a separately authorized migration selects them.
 
 Choose a route that meets the actual task's quality requirement with lower total resource use. Use existing code when it already completes the work. Keep consequential judgment with the current quality route unless relevant verified task evidence supports delegation.
 
 Read [the selection contract](references/selection-contract.md) for request and dispatch semantics, and [source policy](references/source-policy.md) when adding evidence. This owner selects routes; native workers and `dynamic-workflows` own execution and lifecycle.
 
-For new Hermes bounded local source reviews, use the task-first `work` input in [the direct consumer contract](references/hermes-direct-v3.md). Describe the task, acceptance, tools and bounded trial permission; do not preselect a model or construct proof hashes. The selector applies a reviewed task-specific preference only after capability and resource checks. Unmapped or consequential work stays parent-owned. This is provisional placement, not measured optimization or a general coding/web/DAG router. Existing explicit requests and DAG pins retain their contracts.
+For Hermes bounded local source reviews whose admitted route satisfies the current model preference, use the task-first `work` input in [the direct consumer contract](references/hermes-direct-v3.md). Describe the task, acceptance, tools and bounded trial permission; do not preselect a model or construct proof hashes. The selector applies a reviewed task-specific preference only after capability and resource checks. Unmapped or consequential work stays parent-owned. This is provisional placement, not measured optimization or a general coding/web/DAG router. Existing requests and DAG pins retain their contracts.
 
 For qualified three-question source-review tasks, use [the bounded review Q&A contract](references/review-qa.md) and its deterministic `scripts/review_qa.py` verifier. Admission still requires the bound parent review and heldout gate.
 
@@ -28,7 +30,7 @@ If both candidates are callable, use matched task inputs, prompts, reasoning set
 
 These bounded direct transformation probes do not require worker-selection receipts or a DAG. The following selector contract applies when actually selecting and dispatching a new model worker; it is not a prerequisite for every model comparison.
 
-## Advanced explicit requests and other consumers
+## Selected routed requests and other consumers
 
 1. Identify the outcome protocol, exact input hash, required tools/context, allowed effects, failure cost, and independent acceptance check. Keep protocol qualification separate from an individual input. A JSON schema or an output file's existence does not establish content correctness.
 2. Use the v3 task and catalog schemas in `references/`. Record actual callable host/transport/model/effort tuples, task evidence, resource state and unknown costs. Use a complete deterministic handler when available. For bounded reversible work with complete independent verification, an explicitly preferred candidate may be tried provisionally; this is not an established quality or savings claim.

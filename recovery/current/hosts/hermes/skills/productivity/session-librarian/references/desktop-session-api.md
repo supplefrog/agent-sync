@@ -11,7 +11,7 @@ Use for an authorized fresh thread, session resume, or continuation. These are D
 | Connect another client to an already-live owner | `discover_attach_url` / cooperative attachment when that owner advertises it | Create, resume or continue |
 | Agent sends work to an exact existing Desktop session | Exposed `desktop_continue_session`, with agent attribution and its native consent/lifecycle handling | New thread creation, anonymous `prompt.submit`, or consent |
 | Submit the authorized initial turn in a newly created session | `prompt.submit` using the returned runtime ID | Persisting a seed or proof of completion |
-| Move a stored thread into a project | `session.workspace.move` with exact stored `session_key`, destination `cwd`, and explicit `profile` | `desktop_project switch` (current chat only), filesystem moves, or GUI clicks |
+| Move a stored thread into a project | If the loaded schema exposes it, `desktop_project(action="move", name=<project>, session_key=<stored ID>)`; otherwise the authenticated `session.workspace.move` API | `desktop_project switch` (current chat only), filesystem moves, or GUI clicks |
 | Read project membership | `projects.list` and `projects.project_sessions` | Session search results or a workspace-filtered CLI list with insufficient candidate coverage |
 | Show/focus a tab or verify its appearance | Desktop UI control, if no suitable native presentation tool exists | Backend creation/persistence |
 
@@ -25,6 +25,10 @@ An attachment refusal only describes attachment. Missing discovery metadata, lea
 4. Each WebSocket request is `{jsonrpc: "2.0", id: <unique id>, method: <exact method>, params: {...}}`. Match the response ID; consume notifications without treating them as responses or automatically answering approvals. Use bounded timeouts. Reconnect for a read-only check after a stale socket, but never replay a possibly accepted write automatically.
 
 ## Move existing sessions
+
+Prefer the native project tool's `move` action when exposed; it targets the caller's profile and leaves the caller's chat/project active. Source installation does not change an already-loaded backend or cached tool schema: verify the live schema rather than assuming the new action exists.
+
+For direct API work, record each endpoint probe's result separately. A failing request inside `print([probe(...) for ...])` suppresses earlier successful results; do not classify every endpoint as failed or retry successful writes because a later sibling failed.
 
 Read `projects.list` to resolve the destination and its primary folder, and `session.list` / `session.active_list` to verify exact stored identities on the intended backend/profile. Send `session.workspace.move` once per authorized target with `{session_key, cwd, profile}`. This native operation updates stored workspace/git identity and re-anchors a live owner; do not replace it with direct database edits or a separate runtime that cannot see that owner.
 

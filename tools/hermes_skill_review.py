@@ -61,13 +61,16 @@ def inspect_pending(home: Path, pid: str, wa, smt) -> dict:
     operations = payload.get("operations") or [payload]
     if not isinstance(operations, list) or not operations:
         raise ValueError("Invalid operations.")
+    # Preflight the complete batch before resolving any package or generating diffs.
+    for op in operations:
+        name = op.get("name") or payload.get("name")
+        if not isinstance(name, str) or not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", name):
+            raise ValueError("Invalid skill name.")
     packages, diffs, native = {}, [], True
     registry = json.loads((Path(__file__).resolve().parents[1] / "registry.json").read_text(encoding="utf-8"))
     managed_names = {item["name"] for item in registry["skills"]}
     for op in operations:
         name = op.get("name") or payload.get("name")
-        if not isinstance(name, str) or not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", name):
-            raise ValueError("Invalid skill name.")
         found = smt._find_skill(name)
         native = native and name not in managed_names
         if found:
@@ -86,7 +89,21 @@ def inspect_pending(home: Path, pid: str, wa, smt) -> dict:
 
 
 def run(action: str, home: Path, pid: str, expected: str | None, wa, smt) -> dict:
-    review = inspect_pending(home, pid, wa, smt)
+    try:
+        review = inspect_pending(home, pid, wa, smt)
+    except ValueError as exc:
+        # A malformed target must not prevent deleting a reviewed queue record.
+        # Never resolve that target or grant approval through this fallback.
+        if str(exc) != "Invalid skill name." or action == "approve":
+            raise
+        validate_id(pid)
+        record = wa.get_pending(wa.SKILLS, pid)
+        if not record or record.get("id") != pid or record.get("subsystem") != wa.SKILLS:
+            raise ValueError("Missing or malformed pending skill record.")
+        review = {"pending_id": pid, "record": record, "diffs": [],
+                  "native_apply_allowed": False, "rejection_only": True,
+                  "inspection_error": str(exc),
+                  "review_token": _digest({"record": record, "rejection_only": True})}
     if action == "show":
         return review
     if not expected or expected != review["review_token"]:

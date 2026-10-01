@@ -2,7 +2,7 @@
 
 Status: experimental, supervised native-Windows lane. This extends `tools/eval.py`; it is not a replacement evaluator, admission gate, sandbox, or production scheduler.
 
-This runner injects instructions and disables child delegation and normal host discovery. It cannot test a full architecture workflow or naturally loaded baseline. Before any model spend, use the owning `skill-creator` evaluation preflight to match the intended claim to the task and execution surface. Passing runtime checks does not validate an experiment's design.
+This runner injects instructions and disables child delegation and normal host discovery. It cannot test a full architecture workflow or naturally loaded baseline. Before any model spend, use the owning `instruction-authoring` evaluation preflight to match the intended claim to the task and execution surface. Passing runtime checks does not validate an experiment's design.
 
 The inline evaluator still accepts only tool-free text. Use an artifact pilot when the question requires editing and actually exercising a local product. It reuses:
 

@@ -1,5 +1,5 @@
 ---
-name: skill-creator
+name: instruction-authoring
 description: Use when authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns skill improvements during work, triggers, supporting resources, and proportional verification.
 version: 2.0.0
 author: Hermes Agent
@@ -10,7 +10,7 @@ metadata:
     related_skills: [hermes-self-engineering, outcome-first-workflow-design]
 ---
 
-# Skill Creator
+# Instruction Authoring
 
 Use this to author or review durable instructions and model-facing tool descriptions and schemas. Resolve placement only when it is unclear; this skill owns content, triggers, and proportional evaluation. Executable tool contracts and compatibility remain with their domain owner.
 
@@ -27,7 +27,7 @@ Patch an existing owner when it already covers the task. Create a new skill only
 
 ## Improve skills during collaborative work
 
-When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work; do not wait for a separate save request or leave the only copy in a project diary. Review after a meaningful correction or verified flow and before closing substantial work, not after every tool call. Preserve task data and incident evidence locally.
+When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work. At substantial completion, check for a supported reusable correction; if none exists, preserve the handoff without loading more authoring guidance or adding a rule. Preserve task data and incident evidence locally.
 
 Keep substantial-task status, decisive reasons, evidence and next safe action in the existing project record, using `breadcrumb-records` when no equivalent record exists. That handoff is distinct from a reusable instruction correction; if no supported lesson exists, preserve the handoff without a skill edit. Follow the host's memory authorization rather than treating a learning checkpoint as permission to write memory.
 
@@ -52,7 +52,7 @@ Apply the standing model preference to instruction writing according to the diff
 
 When writing durable instructions:
 
-1. For each sentence, name the intended behavioral difference and its basis: user preference, required boundary, or observed failure. Remove generic identity/aspiration without a wanted distinction; do not invent a retrospective rationale. Test uncertain benefit rather than treating a plausible story as evidence.
+1. Keep a sentence when it adds a useful decision rule, user preference, or necessary boundary beyond what the task and native instructions already provide. Remove generic reminders and duplication. Ground the difference in the user's intent or observed evidence; test uncertain benefit rather than assuming an instruction helps.
 2. State desired and undesired outcomes and contraindications directly. Preserve material exclusions while removing correction history, repetition, and incidental contrasts. Do not invent constraints or contraindications. Keep detail, examples, and rationale only when they change a decision or boundary.
 3. Keep each procedure in one owner. Retain short, frequently needed rules inline when that avoids a larger skill load; defer substantial conditional detail. Judge economy by actually loaded context and induced tool work, not repository word count.
 4. Preserve user intent, scope, safety, governance, authorization boundaries, and capability; approval for one task does not authorize adjacent external action; brevity never overrides these. For a requested replacement, generic preservation rules do not protect the selected old model, vendor role, or historical configuration. Use the current user decision as the target, retain the capability and truthful execution provenance, and update superseded instructions at their owner.
@@ -88,7 +88,7 @@ For OpenAI model-specific prompt changes, use the installed OpenAI Docs procedur
 1. Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome.
 2. State the target behavior and near-miss behavior that must remain unchanged. Check missing or overly broad triggers and unnecessary skill or tool invocation.
 3. Draft the minimum coherent change using the correct modality. Condense duplicate advice, stale rules, excessive steering, and unnecessary fields while preserving material exceptions, side effects, error behavior, and execution boundaries. Before a removal, name the candidate, reason, dependencies, and possible capability loss; check callers and compatibility before removing schema or API fields.
-4. Edit the canonical source; keep candidates outside live discovery until their checks pass. Use `skill_manage` only when it targets that source or performs authorized deployment.
+4. Edit the canonical source; keep candidates outside live discovery until their checks pass. Shared standing rules belong in `surfaces/core.md`; native formatting and host-only differences belong in `adapters/`. Run `tools/run.py render_instructions render`, then `check`; never patch generated `AGENTS.md` or `SOUL.md`. Use `skill_manage` only when it targets source or performs authorized deployment.
 5. Verify metadata/frontmatter, linked-file existence, and fresh skill discovery.
 6. Run proportional behavior probes:
    - trigger change => realistic positive and near-miss prompts;

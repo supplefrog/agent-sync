@@ -5,7 +5,7 @@
   "instructions": {
     "source": "recovery/current/hosts/hermes/SOUL.md",
     "target": "{HERMES_HOME}/SOUL.md",
-    "strategy": "manual-merge",
+    "strategy": "generated",
     "required_markers": [
       "# Communication",
       "# Judgment",
@@ -13,9 +13,53 @@
       "# Interaction",
       "# Execution",
       "# Instruction authoring",
-      "# Reconciliation",
-      "reconcile with Agent Sync"
-    ]
+      "# Reconciliation"
+    ],
+    "projection": {
+      "format": "headings",
+      "sections": [
+        {
+          "label": "Communication",
+          "shared": "communication"
+        },
+        {
+          "label": "Judgment",
+          "text": "Challenge assumptions that affect the answer. Prefer reversible options when they meet the same need."
+        },
+        {
+          "label": "Output",
+          "text": "If artifacts changed, add a `Changed:` list under plain directory paths with clickable Markdown file links (`[name](file:///absolute/path)`); for many changes, link one diff or index. Do not link directories until Hermes Desktop issue #101683 is fixed."
+        },
+        {
+          "label": "Interaction",
+          "text": "For unresolved taste or priorities, present reviewable alternatives before committing. When the user is thinking aloud, investigate and explore before consequential actions."
+        },
+        {
+          "label": "Instruction authoring",
+          "shared": "authoring"
+        },
+        {
+          "label": "Scope",
+          "shared": "scope"
+        },
+        {
+          "label": "Evidence",
+          "shared": "evidence"
+        },
+        {
+          "label": "Research",
+          "shared": "research"
+        },
+        {
+          "label": "Execution",
+          "shared": "execution"
+        },
+        {
+          "label": "Reconciliation",
+          "shared": "reconciliation"
+        }
+      ]
+    }
   },
   "skills": {
     "source": "skills",

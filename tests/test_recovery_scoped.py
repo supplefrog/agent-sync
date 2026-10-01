@@ -29,6 +29,87 @@ class ScopedRecoveryTests(unittest.TestCase):
         self.policy.write_text(json.dumps({'schema_version': 1, 'machine': 'test', 'public_safe': True, 'hosts': hosts}))
         recovery.snapshot(self.policy, self.snapshot, self.roots)
 
+    def _add_artifact(self, host='hermes', artifact_id='new'):
+        policy = json.loads(self.policy.read_text())
+        source = f'{artifact_id}.md'
+        (self.roots[host] / source).write_text('Reviewed public text.\n')
+        policy['hosts'][host]['artifacts'].append({
+            'id': artifact_id, 'kind': 'text', 'format': 'text',
+            'strategy': 'replace-if-absent', 'source': source, 'snapshot': f'{host}/{source}'})
+        self.policy.write_text(json.dumps(policy))
+
+    def _snapshot_bytes(self):
+        return {path.relative_to(self.snapshot): path.read_bytes()
+                for path in self.snapshot.rglob('*') if path.is_file()}
+
+    def _assert_capture_rejected_without_mutation(self, selection, message):
+        before = self._snapshot_bytes()
+        with patch.object(recovery, '_atomic_write', wraps=recovery._atomic_write) as write:
+            with self.assertRaisesRegex(recovery.RecoveryError, message):
+                recovery.snapshot(self.policy, self.snapshot, self.roots, artifacts=selection)
+            write.assert_not_called()
+        self.assertEqual(before, self._snapshot_bytes())
+
+    def test_additive_selected_capture_verifies_full_old_and_new_snapshot(self):
+        prior = recovery.verify_snapshot(self.policy, self.snapshot)
+        codex = (self.snapshot / 'codex/config.json').read_bytes()
+        self._add_artifact()
+        with self.assertRaisesRegex(recovery.RecoveryError, 'policy hash mismatch'):
+            recovery.verify_snapshot(self.policy, self.snapshot)
+        (self.roots['hermes'] / 'config.json').write_text('{"model":"new"}')
+        result = recovery.snapshot(self.policy, self.snapshot,
+            {'hermes': self.roots['hermes']}, artifacts=['hermes:settings', 'hermes:new'])
+        self.assertEqual(result, recovery.verify_snapshot(self.policy, self.snapshot))
+        self.assertEqual(3, len(result['artifacts']))
+        self.assertEqual(codex, (self.snapshot / 'codex/config.json').read_bytes())
+        prior_codex = next(item for item in prior['artifacts'] if item['host'] == 'codex')
+        self.assertEqual(prior_codex, next(item for item in result['artifacts'] if item['host'] == 'codex'))
+        self.assertEqual('new', json.loads((self.snapshot / 'hermes/config.json').read_text())['model'])
+        self.assertEqual('Reviewed public text.\n', (self.snapshot / 'hermes/new.md').read_text())
+
+    def test_additive_unselected_artifact_refused_without_mutation(self):
+        self._add_artifact()
+        self._assert_capture_rejected_without_mutation(['hermes:settings'], 'explicitly selected')
+
+    def test_additive_mixed_unselected_addition_refused_without_mutation(self):
+        self._add_artifact()
+        self._add_artifact('codex', 'unselected')
+        self._assert_capture_rejected_without_mutation(['hermes:new'], 'explicitly selected')
+
+    def test_additive_policy_metadata_change_refused_without_mutation(self):
+        self._add_artifact()
+        policy = json.loads(self.policy.read_text())
+        policy['machine'] = 'changed'
+        self.policy.write_text(json.dumps(policy))
+        self._assert_capture_rejected_without_mutation(['hermes:new'], 'policy hash mismatch')
+
+    def test_additive_existing_artifact_metadata_change_refused_without_mutation(self):
+        self._add_artifact()
+        policy = json.loads(self.policy.read_text())
+        policy['hosts']['hermes']['artifacts'][0]['include'] = ['private']
+        self.policy.write_text(json.dumps(policy))
+        self._assert_capture_rejected_without_mutation(['hermes:settings', 'hermes:new'], 'policy hash mismatch')
+
+    def test_additive_artifact_removal_refused_without_mutation(self):
+        self._add_artifact()
+        policy = json.loads(self.policy.read_text())
+        policy['hosts']['hermes']['artifacts'].pop(0)
+        self.policy.write_text(json.dumps(policy))
+        self._assert_capture_rejected_without_mutation(['hermes:new'], 'explicitly selected')
+
+    def test_additive_unselected_snapshot_corruption_refused_without_mutation(self):
+        self._add_artifact()
+        (self.snapshot / 'codex/config.json').write_text('{}')
+        self._assert_capture_rejected_without_mutation(['hermes:new'], 'hash mismatch')
+
+    def test_additive_full_postverification_failure_rolls_back(self):
+        before = self._snapshot_bytes()
+        self._add_artifact()
+        with patch.object(recovery, 'verify_snapshot', side_effect=recovery.RecoveryError('postverify failure')):
+            with self.assertRaisesRegex(recovery.RecoveryError, 'postverify failure'):
+                recovery.snapshot(self.policy, self.snapshot, self.roots, artifacts=['hermes:new'])
+        self.assertEqual(before, self._snapshot_bytes())
+
     def test_scoped_capture_preserves_other_record_and_content(self):
         manifest = recovery.verify_snapshot(self.policy, self.snapshot)
         codex = (self.snapshot / 'codex/config.json').read_bytes()

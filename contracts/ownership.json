@@ -12,7 +12,9 @@
       "owner": "skills/breadcrumb-records",
       "status": "admitted",
       "selection_state": "selected",
-      "selection_evidence": ["evals/results/breadcrumb-records-deterministic.json"],
+      "selection_evidence": [
+        "evals/results/breadcrumb-records-deterministic.json"
+      ],
       "selection_reason": "User selected shared on-demand deployment of the tested local helper. Canonical CLI tests and metadata/public-safety checks passed; bounded retrieval supports cautious reuse, not universal reliability or natural triggering. No watcher, provider, memory or standing-overlay change is selected."
     },
     {
@@ -54,7 +56,9 @@
       "owner": "skills/project-prior-art",
       "status": "admitted",
       "selection_state": "selected",
-      "selection_evidence": ["evals/results/project-prior-art-deterministic.json"],
+      "selection_evidence": [
+        "evals/results/project-prior-art-deterministic.json"
+      ],
       "selection_reason": "User requested reuse-first research for any new project, with GitHub as implementation evidence and arXiv as a source of novel mechanisms. The short owner preserves a conditional paper-reading reference and avoids a fixed research itinerary. Structural checks do not establish output-quality improvement."
     },
     {
@@ -166,12 +170,12 @@
       "selection_reason": "The exact v0.1.3 candidate admitted on Hermes but lost one valid Codex comparative case. The final predeclared adaptation cycle is exhausted and evals/results/global-learning-intake-cross-host-sol-ultra.json records a rejection, so the owner remains staged and undeployed."
     },
     {
-      "id": "skill-creator",
-      "owner": "skills/skill-creator",
+      "id": "instruction-authoring",
+      "owner": "skills/instruction-authoring",
       "status": "admitted",
       "selection_state": "selected",
       "selection_evidence": [
-        "evals/results/skill-creator-deterministic.json"
+        "evals/results/instruction-authoring-rename-deterministic.json"
       ],
       "selection_reason": "Selected as the established model-facing instruction author; public prose, placement, and admission remain separate owners."
     },
@@ -254,6 +258,11 @@
       "path": "recovery/current/hosts/omp/RULES.md",
       "replacement": "recovery/current/hosts/codex/AGENTS.md",
       "reason": "The retired delta duplicated an earlier assumed Codex inheritance route. Current observed OMP discovery does not load that inheritance or a managed user-global overlay; retirement does not claim otherwise."
+    },
+    {
+      "path": "skills/skill-creator",
+      "replacement": "skills/instruction-authoring",
+      "reason": "User-selected rename of the shared instruction author; Codex native scaffolding retains its existing identity."
     }
   ]
 }

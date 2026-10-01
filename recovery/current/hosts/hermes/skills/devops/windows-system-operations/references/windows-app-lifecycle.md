@@ -14,7 +14,14 @@ Do not weaken Code Integrity globally. When fallback DLL signing is suspected, i
 
 ## Privacy-preserving uninstall
 
-Inventory process/port, uninstall/package entries, PATH commands, app-owned global auth/config/session/cache/log/updater/temp state, credential-manager target names, registry keys, and shortcuts without printing secrets. Preserve project-owned instructions unless project cleanup is explicit. Stop processes, use the registered uninstaller, remove portable/app-owned global state, then verify every applicable process, port, package, command, data path, credential target, registry key, updater path, and shortcut is absent. Local token deletion is not provider-side revocation or forensic secure erasure; state those boundaries precisely.
+Inventory process/port, uninstall/package entries, PATH commands, app-owned global auth/config/session/cache/log/updater/temp state, credential-manager target names, registry keys, and shortcuts without printing secrets. Preserve project-owned instructions unless project cleanup is explicit. Stop processes, use every product-native integration/hook/service uninstaller before deleting its executable or state root, then remove portable/app-owned global state and verify every applicable process, port, package, command, data path, credential target, registry key, updater path, and shortcut is absent. Local token deletion is not provider-side revocation or forensic secure erasure; state those boundaries precisely.
+
+### Safe environment and privileged-state rollback
+
+1. Snapshot the exact user- and machine-level environment values before changing either; do not reconstruct the user `PATH` from a later process environment because shell launchers and activation layers inject transient entries.
+2. Mutate `PATH` separately from binary/state deletion so a filter failure cannot leave both the application gone and recovery evidence unavailable. Treat a missing user `PATH` as distinct from an empty string, preserve ordering and duplicates unless the task explicitly normalizes them, and remove target entries by exact normalized path comparison rather than regex.
+3. Write the candidate value to a temporary receipt first, validate that unrelated commands and expected path entries survive, then commit the environment change and read it back from the registry/environment owner. If validation or approval fails, stop before deletion; never report a partial rollback as complete.
+4. For elevated cleanup, have the privileged helper write a minimal receipt containing service startup/state, firewall state, protected-file existence, and ACLs or fingerprints when relevant. Verify that receipt from the normal session, then remove it. Disable or delete only rules, services, keys, and files proven to belong to the setup; preserve pre-existing packages when the session changed only their runtime state.
 
 ## Home-folder remnants and misplaced checkouts
 

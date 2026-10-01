@@ -67,6 +67,63 @@ class PendingSkillTests(unittest.TestCase):
             bridge.validate_id("../../memory/12345678")
 
 
+    def test_invalid_target_can_only_be_rejected_with_current_record_token(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        bridge = load_tool()
+        record = {"id": "0123abcd", "subsystem": "skills", "payload": {
+            "action": "patch", "name": "devops:windows-system-operations",
+            "old_string": "old", "new_string": "new"}}
+        wa = SimpleNamespace(SKILLS="skills", get_pending=Mock(return_value=record),
+                             discard_pending=Mock(return_value=True))
+        smt = SimpleNamespace(_find_skill=Mock(), apply_skill_pending=Mock())
+        shown = bridge.run("show", Path("unused"), "0123abcd", None, wa, smt)
+        self.assertTrue(shown["rejection_only"])
+        self.assertFalse(shown["native_apply_allowed"])
+        smt._find_skill.assert_not_called()
+        with self.assertRaises(ValueError):
+            bridge.run("approve", Path("unused"), "0123abcd", shown["review_token"], wa, smt)
+        smt.apply_skill_pending.assert_not_called()
+        wa.discard_pending.assert_not_called()
+        record["payload"]["new_string"] = "concurrent change"
+        with self.assertRaises(ValueError):
+            bridge.run("reject", Path("unused"), "0123abcd", shown["review_token"], wa, smt)
+        wa.discard_pending.assert_not_called()
+        shown = bridge.run("show", Path("unused"), "0123abcd", None, wa, smt)
+        wa.get_pending.side_effect = [record, record, None]
+        result = bridge.run("reject", Path("unused"), "0123abcd", shown["review_token"], wa, smt)
+        self.assertEqual(result["result"], "rejected")
+        wa.discard_pending.assert_called_once_with("skills", "0123abcd")
+
+    def test_malformed_late_batch_target_never_resolves_earlier_valid_target(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        bridge = load_tool()
+        record = {"id": "0123abcd", "subsystem": "skills", "payload": {"operations": [
+            {"action": "patch", "name": "proposal-fixture", "old_string": "old", "new_string": "new"},
+            {"action": "patch", "name": "devops:windows-system-operations", "old_string": "old", "new_string": "new"}]}}
+        wa = SimpleNamespace(SKILLS="skills", get_pending=Mock(return_value=record), skill_pending_diff=Mock(), discard_pending=Mock())
+        smt = SimpleNamespace(_find_skill=Mock(), apply_skill_pending=Mock())
+        shown = bridge.run("show", Path("unused"), "0123abcd", None, wa, smt)
+        self.assertTrue(shown["rejection_only"])
+        smt._find_skill.assert_not_called()
+        wa.skill_pending_diff.assert_not_called()
+        with self.assertRaises(ValueError):
+            bridge.run("approve", Path("unused"), "0123abcd", shown["review_token"], wa, smt)
+        smt._find_skill.assert_not_called()
+        smt.apply_skill_pending.assert_not_called()
+        wa.discard_pending.assert_not_called()
+
+    def test_missing_malformed_record_is_not_hidden_by_rejection_fallback(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        bridge = load_tool()
+        wa = SimpleNamespace(SKILLS="skills", get_pending=Mock(return_value=None), discard_pending=Mock())
+        with self.assertRaises(ValueError):
+            bridge.run("show", Path("unused"), "0123abcd", None, wa, SimpleNamespace())
+        wa.discard_pending.assert_not_called()
+
+
 @unittest.skipUnless(os.environ.get("HERMES_TEST_RUNTIME"), "set HERMES_TEST_RUNTIME for native integration")
 class NativeIntegrationTests(unittest.TestCase):
     def setUp(self):

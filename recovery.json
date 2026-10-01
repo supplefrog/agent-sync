@@ -9535,6 +9535,51 @@
           "snapshot": "hosts/hermes/skills/research/research-source-operations/scripts/read_codex_openai_docs.py",
           "source": "skills/research/research-source-operations/scripts/read_codex_openai_docs.py",
           "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-dc10f5c525942512322a",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/acceptance-boundary-controls.md",
+          "source": "skills/software-development/software-verification-workflows/references/acceptance-boundary-controls.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-241169b351cd908aadd5",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/technical-documentation-verification.md",
+          "source": "skills/software-development/software-verification-workflows/references/technical-documentation-verification.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-b24b43ff60713320b504",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/github/github-collaboration-workflows/references/github-pages-reader.md",
+          "source": "skills/github/github-collaboration-workflows/references/github-pages-reader.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-e45c4f5e920ce5e6ebd7",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/devops/windows-system-operations/references/windows-openssh-remote-access.md",
+          "source": "skills/devops/windows-system-operations/references/windows-openssh-remote-access.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-c22d1e2fedc156088f3e",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/references/user-project-retirement.md",
+          "source": "skills/autonomous-ai-agents/agent-orchestration-operations/references/user-project-retirement.md",
+          "strategy": "replace-if-absent"
         }
       ]
     },

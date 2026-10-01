@@ -17,6 +17,15 @@ from pathlib import Path
 TRANSIENT_NAMES = {"__pycache__", ".pytest_cache", ".pytest-cache"}
 
 
+def verify_generated_instructions(repo: Path, adapters: dict) -> None:
+    if any(adapter["instructions"]["strategy"] == "generated" for adapter in adapters.values()):
+        import render_instructions
+        try:
+            render_instructions.verify(repo)
+        except render_instructions.RenderError as exc:
+            raise RuntimeError(str(exc)) from exc
+
+
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -252,6 +261,7 @@ def doctor(repo: Path, hosts: set[str] | None = None) -> int:
     statuses = registry_statuses(repo)
     hosts = hosts or {"codex", "hermes", "omp"}
     adapters = {host: load_adapter(repo, host) for host in hosts}
+    verify_generated_instructions(repo, adapters)
     roots = {
         host: adapter_path(adapter["skills"]["install_root"]).resolve()
         for host, adapter in adapters.items()
@@ -349,6 +359,7 @@ def main() -> int:
         return doctor(repo, agents)
 
     adapters = {host: load_adapter(repo, host) for host in agents}
+    verify_generated_instructions(repo, adapters)
     statuses = registry_statuses(repo)
     admitted = {name for name, status in statuses.items() if status == "admitted"}
     if any(

@@ -22,7 +22,7 @@
       "artifact": "surfaces/core.md",
       "model_sensitive": true,
       "backup": "not-effective",
-      "note": "Portable intent and retirement source; adapters do not inject this file verbatim.",
+      "note": "Owns shared standing-rule content and model/review preferences. Only the standing section is rendered through host adapters; the full file is not injected.",
       "assembly_order": 0
     },
     {
@@ -80,12 +80,12 @@
       "kind": "user-global",
       "scope": "user-global",
       "status": "active",
-      "owner": "recovery/current/hosts/hermes/SOUL.md",
+      "owner": "surfaces/core.md",
       "artifact": "recovery/current/hosts/hermes/SOUL.md",
       "target": "${HERMES_HOME}/SOUL.md",
       "model_sensitive": true,
       "backup": "captured",
-      "note": "Includes the Hermes reconciliation trigger for the shared deterministic Agent Sync workflow.",
+      "note": "Generated shared standing rules through adapters/hermes.json; tools/render_instructions.py rejects divergent managed overlays.",
       "assembly_order": 200
     },
     {
@@ -129,12 +129,12 @@
       "kind": "user-global",
       "scope": "user-global",
       "status": "active",
-      "owner": "recovery/current/hosts/codex/AGENTS.md",
+      "owner": "surfaces/core.md",
       "artifact": "recovery/current/hosts/codex/AGENTS.md",
       "target": "${CODEX_HOME}/AGENTS.md",
       "model_sensitive": true,
       "backup": "captured",
-      "note": "Codex native global overlay. OMP does not currently inherit it; see omp.codex-inherited. The instruction-authoring owner is skills/skill-creator.",
+      "note": "Generated shared standing rules through adapters/codex.json; tools/render_instructions.py rejects divergent managed overlays.",
       "assembly_order": 200
     },
     {

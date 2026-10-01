@@ -99,7 +99,16 @@ Do not assume deleting messages or orphaning `parent_session_id` removes ownersh
 
 ## 7. Verify with small real reproducers
 
-Run targeted tests, then add tiny production-database probes for each destructive boundary:
+Run targeted tests, then add tiny production-database or disposable-repository probes for each destructive boundary.
+
+For Git-backed restore and rejection cleanup:
+
+1. Exercise the full restore entry point with a stash that applies successfully but fails subsequent validation; apply-only tests miss destructive rejection branches.
+2. Include an untracked saved filename containing Git pathspec metacharacters and a distinct matching unrelated filename, such as `scratch[1].py` and `scratch1.py`. Verify the unrelated file survives cleanup: `--` ends option parsing but does not make Git pathspecs literal.
+3. Inject an unrelated tracked edit and an unrelated untracked file between successful application and rejection. Assert both survive and the saved stash remains; a before/after inventory difference does not establish ownership because editors or validation side effects can create new work.
+4. Report each reached assertion separately. An early missing-file assertion does not prove whether later tracked-state or stash-identity checks passed.
+
+These probes establish preservation defects, not acceptance of a proposed rollback strategy. Verify any replacement through the same entry point and review changes to existing clean-tree recovery expectations.
 
 ### Required hidden-path checks for ephemeral/delegated state
 
