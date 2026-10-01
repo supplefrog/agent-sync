@@ -7863,7 +7863,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 1653,
+      "bytes": 2046,
       "capture_mount": "skills/hermes-lcm",
       "format": "text",
       "host": "hermes",
@@ -7871,7 +7871,7 @@
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "5aa7e0d8a4b288af3274b100ae1420e99c82e8656614485d77db27e9f669576d",
+      "sha256": "16acc7cc7e4dbcd99efc59ae7b45d01d9f14b85a95fe83437a10f7fe091fe27b",
       "snapshot": "hosts/hermes/skills/hermes-lcm/references/configuration.md",
       "source": "skills/hermes-lcm/references/configuration.md",
       "strategy": "replace-if-absent"
@@ -12933,7 +12933,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 1653,
+      "bytes": 2046,
       "capture_mount": "plugins/hermes-lcm",
       "format": "text",
       "host": "hermes",
@@ -12941,7 +12941,7 @@
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "5aa7e0d8a4b288af3274b100ae1420e99c82e8656614485d77db27e9f669576d",
+      "sha256": "16acc7cc7e4dbcd99efc59ae7b45d01d9f14b85a95fe83437a10f7fe091fe27b",
       "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/configuration.md",
       "source": "plugins/hermes-lcm/skills/hermes-lcm/references/configuration.md",
       "strategy": "replace-if-absent"

@@ -29,6 +29,12 @@ The installer exposes both:
 
 It refuses conflicting paths rather than overwriting an existing install.
 
+If `hermes plugins enable hermes-lcm` fails during `uv lock` because the plugin
+workspace member lacks `project.version`, fix the checkout's `pyproject.toml`
+metadata rather than editing PM's generated `plugin-sources` copy or writing
+`plugins.enabled` directly. Retry the CLI enable operation so its dependency
+publication and config selection remain atomic; then verify in a fresh process.
+
 ## High-impact controls
 
 Use `docs/operator-guide.md` as the complete current source. Start with:

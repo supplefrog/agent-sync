@@ -7,7 +7,7 @@
       "owner": "paseo",
       "machine": "local-windows",
       "skill_root": "{SHARED_SKILLS_HOME}",
-      "marker_sha256": "827639cdd94e2217dbed12553628beecd3b43db6094b66b6bb07d28700046708"
+      "marker_sha256": "9307ef0344b095184be91f2a4b92124ed77065b65e450d1502282f438bc94366"
     },
     {
       "name": "paseo-advisor",
@@ -42,7 +42,7 @@
       "owner": "paseo",
       "machine": "local-windows",
       "skill_root": "{SHARED_SKILLS_HOME}",
-      "marker_sha256": "39c4c583a70dfafd00095c8755a52a32aa51904c24a633bea4e6f122cc69aba9"
+      "marker_sha256": "41cad92259944de7e9bff295efa49fe8a8f2f52380a1f383101f45d4260be8cd"
     }
   ]
 }
