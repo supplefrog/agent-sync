@@ -1,0 +1,75 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "47aa2f7388f03a8d479f0f06b5cb83f60a19300008818e96533b02325fd1dcb5",
+      "before_sha256": "47aa2f7388f03a8d479f0f06b5cb83f60a19300008818e96533b02325fd1dcb5",
+      "owner": "github-follow-up",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "0f66e6d9962c1a67520680d1a7034a1d0f75590fd8bfcb97e05bb822f8f0c8d2",
+      "before_sha256": "34f16b2d13408eb2ceb9d5a321732a17c3eee83025d113f4ab1297a6169aeb32",
+      "owner": "recovery-state",
+      "source": "live"
+    },
+    {
+      "after_sha256": "5fe68dc6433c24eb5284276d279fa730fae09b35157f5729de0b5ea2e5669f1a",
+      "before_sha256": "bff4f9a8c2a87d200589b45efa65ab051a93635dfaa9be6f1c58f8ab40586c4e",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "mixed-safe-reconciliation",
+  "owners": [
+    "github-follow-up",
+    "recovery-state",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "500c32093403c6e2e04d9c8cfb996a769943081f26ee9a31eb8b7fb192a05b8b",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "live-hosts",
+    "surface": "mixed"
+  }
+}

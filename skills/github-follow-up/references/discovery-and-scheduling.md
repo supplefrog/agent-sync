@@ -88,7 +88,7 @@ Change `--deliver local` to a configured platform/home target if the report shou
 
 At creation, Hermes snapshots the current default provider/model for an unpinned job. If the global default later changes, the job fails closed and alerts instead of silently spending on the new route; explicitly review and repin the job when changing the global model.
 
-Cron uses the toolsets enabled for the **cron** platform. This workflow needs terminal, file, and skills access. Add delegation only if independent repo work justifies it. Avoid carrying browser or unrelated toolsets by default.
+Cron uses the toolsets enabled for the **cron** platform. This workflow needs terminal, file, and skills access. For multi-thread follow-up, include delegation so independent issue/PR work can run in parallel, including within one repository; apply the thread ownership rules in the entrypoint. Avoid carrying browser or unrelated toolsets by default.
 
 ## Scheduler prerequisite
 

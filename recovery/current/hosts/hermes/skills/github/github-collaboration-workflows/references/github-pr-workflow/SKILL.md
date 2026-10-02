@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: Manage one GitHub pull request from a clean branch through duplicate-PR audit, implementation verification, commit, push, PR creation, CI, review remediation, and merge. Also use when a source bug should be upstreamed instead of left as a local patch. Use github-follow-up for recurring or multi-thread sweeps, github-issues for issue-only work, and github-code-review for reviewing someone else’s PR.
-version: 2.4.0
+version: 2.4.1
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -42,7 +42,7 @@ Do not mix unrelated user changes into the branch. Prefer a dedicated worktree/c
 
 ### One-writer ownership
 
-Before any source edit, commit, push, PR mutation, or review reply, establish one active writer for the target repository, branch, and PR. Inspect current worktrees, branch/head state, and explicit handoffs. If another user or agent is actively writing the same branch or PR, remain read-only until there is an explicit handoff; do not race pushes or independently mutate public state. A handoff is not itself a scope reset. While handoff is the current decision, do not project downstream clean-environment, negative-control, or review requirements into that decision; they are not yet applicable. After an explicit handoff, reconstruct the current base, head, requirements, scope, and evidence before deciding which downstream checks are required instead of continuing a stale plan.
+Before any source edit, commit, push, PR mutation, or review reply, establish one active writer per target branch, PR, or shared working tree—not one writer for the whole repository. Delegate independent issue/PR threads in parallel, including within the same repository, using separate branches/worktrees for source edits. Inspect current worktrees, branch/head state, and explicit handoffs. If another user or agent is actively writing the same branch, PR, or working tree, remain read-only for that target until there is an explicit handoff; continue independent work elsewhere. Coordinate overlapping changes before integration, and do not race pushes or independently mutate the same public target. A handoff is not itself a scope reset. While handoff is the current decision, do not project downstream clean-environment, negative-control, or review requirements into that decision; they are not yet applicable. After an explicit handoff, reconstruct the current base, head, requirements, scope, and evidence before deciding which downstream checks are required instead of continuing a stale plan.
 
 ## 2. Confirm the source-change path
 
