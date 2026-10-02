@@ -1,6 +1,6 @@
 # Fast visual taste selection
 
-Use when a material visual taste decision is unresolved, or when the user asks for inspiration or comparisons. Routine repairs within an approved system, explicitly delegated selection, or a request to skip comparisons can bypass this taste-selection exercise, not the [visual preview before publication](../SKILL.md#visual-preview-before-publication) gate for appearance changes. This is a lightweight way to obtain preferences, not a claim that models cannot design or that a particular skill helps every model.
+Use when a material visual taste decision is unresolved, or when the user asks for inspiration or comparisons. Routine repairs within an approved system, explicitly delegated selection, or a request to skip comparisons can bypass this taste-selection exercise, not the [checks and visual review before commit](../SKILL.md#checks-and-visual-review-before-commit) requirement for appearance changes. This is a lightweight way to obtain preferences, not a claim that models cannot design or that a particular skill helps every model.
 
 ## Make the choice visible
 
