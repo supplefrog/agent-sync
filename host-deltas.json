@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:2fd71df1c24640b6c02aaf4a0d7ffde712cc7b9283df6e71afacff6d0567af8c"
+      "version_or_hash": "sha256:8c703351fea90e86014e4acf7d244a01dfcf2656b26623ff004e3748ceea5714"
     },
     {
       "category": "settings",
@@ -348,7 +348,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:2fd71df1c24640b6c02aaf4a0d7ffde712cc7b9283df6e71afacff6d0567af8c"
+      "version_or_hash": "sha256:8c703351fea90e86014e4acf7d244a01dfcf2656b26623ff004e3748ceea5714"
     },
     {
       "category": "plugin",
@@ -422,7 +422,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:2fd71df1c24640b6c02aaf4a0d7ffde712cc7b9283df6e71afacff6d0567af8c"
+      "version_or_hash": "sha256:8c703351fea90e86014e4acf7d244a01dfcf2656b26623ff004e3748ceea5714"
     },
     {
       "category": "mcp-tool",
@@ -560,7 +560,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:2fd71df1c24640b6c02aaf4a0d7ffde712cc7b9283df6e71afacff6d0567af8c"
+      "version_or_hash": "sha256:8c703351fea90e86014e4acf7d244a01dfcf2656b26623ff004e3748ceea5714"
     },
     {
       "category": "curator",

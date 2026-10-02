@@ -25,14 +25,6 @@
     "destructive_slash_confirm": true,
     "mcp_reload_confirm": true,
     "mode": "smart",
-    "preferred_reviewer": {
-      "base_url": "https://api.beatapi.io/v1/systemone",
-      "enabled": true,
-      "key_env": "BEATAPI_API_KEY",
-      "model": "jev-1.13-free",
-      "provider": "typesafe-jev",
-      "timeout": 3.0
-    },
     "timeout": 600
   },
   "auxiliary": {
@@ -451,8 +443,7 @@
       "prompt-optimizer",
       "quota",
       "routed-delegation",
-      "security-guidance",
-      "jev-approvals"
+      "security-guidance"
     ],
     "entries": {
       "foreground-context-router": {
