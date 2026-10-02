@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: Manage one GitHub pull request from a clean branch through duplicate-PR audit, implementation verification, commit, push, PR creation, CI, review remediation, and merge. Also use when a source bug should be upstreamed instead of left as a local patch. Use github-follow-up for recurring or multi-thread sweeps, github-issues for issue-only work, and github-code-review for reviewing someone else’s PR.
-version: 2.4.1
+version: 2.4.2
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -40,9 +40,9 @@ Read repository guidance and the current PR template. For repeated Hermes Agent 
 
 Do not mix unrelated user changes into the branch. Prefer a dedicated worktree/clone when the installed application tree must remain update-clean. Put that worktree **outside the application's managed state/install root** (`$HERMES_HOME` for Hermes): an updater or stale-artifact cleanup can remove managed subdirectories and destroy uncommitted work. Use a normal project/temp path, then remove it after publishing.
 
-### One-writer ownership
+### Coordinated writer ownership
 
-Before any source edit, commit, push, PR mutation, or review reply, establish one active writer per target branch, PR, or shared working tree—not one writer for the whole repository. Delegate independent issue/PR threads in parallel, including within the same repository, using separate branches/worktrees for source edits. Inspect current worktrees, branch/head state, and explicit handoffs. If another user or agent is actively writing the same branch, PR, or working tree, remain read-only for that target until there is an explicit handoff; continue independent work elsewhere. Coordinate overlapping changes before integration, and do not race pushes or independently mutate the same public target. A handoff is not itself a scope reset. While handoff is the current decision, do not project downstream clean-environment, negative-control, or review requirements into that decision; they are not yet applicable. After an explicit handoff, reconstruct the current base, head, requirements, scope, and evidence before deciding which downstream checks are required instead of continuing a stale plan.
+Before editing or publishing, establish one integration/publication owner per target branch or PR and one active writer per shared working tree—not one writer for the whole repository. Delegate independent issue/PR threads in parallel, including within the same repository. Within one PR, parallelize independent investigation, tests, review, and implementation; give implementation workers disjoint edit scopes in isolated branches/worktrees, then have the owner integrate, verify, and publish their results. Read-only reviewers do not apply fixes. Inspect current worktrees, branch/head state, and explicit handoffs. If another user or agent owns the target and has not coordinated the work, remain read-only for that target until an explicit handoff or bounded assignment; continue independent work elsewhere. Serialize overlapping edits, integration, pushes, and mutations of the same public target, not independent work. A handoff is not itself a scope reset. While handoff is the current decision, do not project downstream clean-environment, negative-control, or review requirements into that decision; they are not yet applicable. After an explicit handoff, reconstruct the current base, head, requirements, scope, and evidence before deciding which downstream checks are required instead of continuing a stale plan.
 
 ## 2. Confirm the source-change path
 

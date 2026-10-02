@@ -1,7 +1,7 @@
 ---
 name: github-follow-up
 description: "Periodically or on demand follow up GitHub issues and the authenticated user's own pull requests: discover changed threads, reconstruct comments/reviews/checks, make verified issue/PR/code fixes, close the public loop, and report only actions or blockers. Use for portfolio sweeps and scheduled maintenance. Use github-issues for one issue, github-pr-workflow for one known own PR, and github-code-review for reviewing someone else's PR."
-version: 1.1.1
+version: 1.1.2
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -61,7 +61,7 @@ Classify every changed item:
 
 Prioritize confirmed blockers and required CI, then maintainer questions, issue maintenance, and non-blocking suggestions. Do not generate work merely because an item was updated.
 
-Process clear, authorized fixes; bring scope, design, and conflicting-feedback decisions to the user with a recommendation. Show that distinction before substantial work, then finish the independent fixes rather than merely reporting them as waiting. Delegate independent issue/PR threads in parallel by default when it materially reduces wall time, including within the same repository. Use separate branches/worktrees for source edits and one writer per branch, PR, or shared working tree; serialize dependent work and integration, not the whole repository. The parent verifies each result before accepting the batch.
+Process clear, authorized fixes; bring scope, design, and conflicting-feedback decisions to the user with a recommendation. Show that distinction before substantial work, then finish the independent fixes rather than merely reporting them as waiting. Delegate independent issue/PR threads in parallel when it materially reduces wall time, including within the same repository. Each PR may also delegate independent work; follow `github-pr-workflow` for worker isolation, integration, and publication ownership. The parent verifies each result before accepting the batch.
 
 ## 4. Act through the owning workflow
 
