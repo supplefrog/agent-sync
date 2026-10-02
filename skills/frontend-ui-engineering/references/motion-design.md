@@ -4,10 +4,10 @@ Use when implementing, reviewing, or auditing UI motion. Preserve the project's 
 
 ## Decide before implementing
 
-1. Name the purpose: feedback, state change, spatial continuity, or explanation. Remove decoration that distracts from reading or acting on data.
+1. Translate the request into each affected target, trigger, direction, and state before choosing effects. Preserve requested motion character and coverage; animating one target or substituting a different effect does not fulfill a multi-target request. Name the purpose: feedback, state change, spatial continuity, expression, or explanation. Remove decoration that distracts from reading or acting on data.
 2. Consider repetition and input method. Frequently repeated navigation and command actions should be instant or nearly imperceptible; never delay input, focus, or availability until an animation finishes. Keyboard input alone is not a reason to remove useful state feedback.
 3. Choose the smallest mechanism: CSS transitions for state changes, `@starting-style` for supported entry transitions, CSS keyframes for predetermined sequences, WAAPI for programmatic playback, or the existing motion library for gestures and coordinated springs. Check target-browser support and exit/unmount behavior; entry styling alone does not implement an exit lifecycle.
-4. Define interruption, exit, reduced-motion behavior, and verification before tuning the curve.
+4. Define interruption, entry, exit, reduced-motion behavior, and verification before tuning the curve. Treat entrance and exit as independent lifecycles with their own timing and state visibility; verify each requested direction rather than assuming a reversed entrance implements the requested exit.
 
 ## Tune without imposing a new style
 
@@ -28,7 +28,7 @@ Use when implementing, reviewing, or auditing UI motion. Preserve the project's 
 
 ## Verify and report
 
-Exercise normal playback in both directions where applicable, rapid reversal, repeated activation, exit/unmount, keyboard, touch where relevant, and reduced motion in a real browser with representative content. Inspect slowed playback for jumps and origin errors, then judge responsiveness at normal speed. User approval of the look is not performance evidence.
+Exercise every requested target and state in normal playback, both directions where applicable, rapid reversal, repeated activation, exit/unmount, keyboard, touch where relevant, and reduced motion in a real browser with representative content. Verify visible intermediate behavior and content lifetime, not just final styles or source presence. Inspect slowed playback for jumps and origin errors, then judge responsiveness at normal speed. Deliver a playable recording or interactive preview under the skill's visual-preview gate. User approval of the look is not performance evidence.
 
 When layout motion overlaps navigation, verify the destination after both settle: a collapsing disclosure can move an already-measured anchor. Coordinate or settle that layout before measuring the destination, while preserving ordinary disclosure motion. Test intentionally instant neighboring disclosures and closed-content printing when changing shared selectors. Measure intermediate geometry, visibility and actual content lifetime; browser-owned pseudo-element motion may not appear in `getAnimations()`, so an empty animation list is not proof of no motion. Keep intermediate samples separate from settled-state comparisons.
 
