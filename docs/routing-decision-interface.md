@@ -4,7 +4,7 @@
 
 For new Hermes routed tasks, follow the [V3 direct consumer contract](../skills/openai-delegation-route-research/references/hermes-direct-v3.md) and [selection contract](../skills/openai-delegation-route-research/references/selection-contract.md). V3 uses protocol-specific evidence, exact tools/context/effects, and independent acceptance—not the intelligence-tier ranking below. Expired availability or missing qualification does not authorize an optimized route. Unknown costs remain unknown; a working selector does not establish savings.
 
-When the routed-delegation plugin is enabled, its native pre-tool hook blocks new `delegate_task` spawns and directs callers through the V3 router; worker `list`, `steer`, and `stop` remain available. This is explicit routing, not transparent redispatch. Empty delegation model/provider/reasoning settings preserve the native compatibility baseline, not an alternative spawn path. V3 `keep_parent` means no new worker. Neither path implements foreground Auto.
+Ordinary Hermes delegation retains native workers and their task-appropriate tools. The routed-delegation plugin defaults to `require_router: false`; selected V3 tasks still enforce their route, tool, effect, identity and budget contracts. Explicit `require_router: true` opts into the pre-tool hook that blocks new native `delegate_task` spawns; list/steer/stop remain available. Empty delegation model/provider/reasoning settings preserve the native compatibility baseline. A selected V3 `keep_parent` or `defer` decision must not be bypassed with native spawning. Neither path implements foreground Auto.
 
 ## Historical V2 interface
 

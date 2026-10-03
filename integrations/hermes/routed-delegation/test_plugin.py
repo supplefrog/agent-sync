@@ -1324,13 +1324,14 @@ class RoutedDelegationTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "finalization.*unsupported"):
             self.plugin._summary_runtime_adapter(changed, native)
 
-    def test_native_spawn_requires_router_but_controls_remain_available(self) -> None:
+    def test_explicit_strict_routing_blocks_native_spawn_but_keeps_controls(self) -> None:
         registered_hooks = {}
         ctx = types.SimpleNamespace(
             get_config=lambda key, default=None: default,
             register_tool=lambda **kwargs: None,
             register_hook=lambda name, callback: registered_hooks.update({name: callback}),
         )
+        ctx.get_config = lambda key, default=None: True if key == "require_router" else default
         self.plugin.register(ctx)
         self.assertIn("pre_tool_call", registered_hooks)
         gate = registered_hooks["pre_tool_call"]
@@ -1344,6 +1345,18 @@ class RoutedDelegationTests(unittest.TestCase):
             self.assertIsNone(gate(tool_name="delegate_task", args={"action": action}))
         for name in ("routed_delegate_task", "routed_workflow", "terminal", "memory"):
             self.assertIsNone(gate(tool_name=name, args={}))
+
+    def test_default_keeps_native_delegation_and_routed_tools_available(self) -> None:
+        hooks, tools = {}, []
+        ctx = types.SimpleNamespace(
+            get_config=lambda key, default=None: default,
+            register_tool=lambda **kwargs: tools.append(kwargs),
+            register_hook=lambda name, callback: hooks.update({name: callback}),
+        )
+        self.plugin.register(ctx)
+        self.assertNotIn("pre_tool_call", hooks)
+        self.assertEqual({item["name"] for item in tools},
+                         {"routed_delegate_task", "routed_workflow"})
 
     def test_router_policy_can_be_disabled_without_removing_explicit_tools(self) -> None:
         for value in (False, True, None, "false"):

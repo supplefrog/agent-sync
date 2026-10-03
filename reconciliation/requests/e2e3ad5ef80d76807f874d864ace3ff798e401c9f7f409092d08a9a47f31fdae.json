@@ -1,0 +1,61 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "de78ed0b0b9f74e3a7f54bb934993e0628a39c73b543a60345c2d95ff8eccdad",
+      "before_sha256": "b2686225fad17f3d3ba2b1bf7476039e8ceb01930f6af058d42faec2cebcd6b6",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "refresh-artifact-bindings",
+  "owners": [
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "skipped"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "skipped"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "e2e3ad5ef80d76807f874d864ace3ff798e401c9f7f409092d08a9a47f31fdae",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "host-deltas"
+  }
+}

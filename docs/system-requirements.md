@@ -21,7 +21,7 @@ These are responsibility boundaries, not requirements for four services, separat
 
 | ID | Accountable owner | Requirement |
 | --- | --- | --- |
-| R01 | Authoring | Each capability expresses its desired and undesired outcomes, relevant contraindications, and scope. Do not invent exclusions to fill a template. |
+| R01 | Authoring | Each capability records the user's intention, distinguishes explicit intent from inference, and expresses its desired and undesired outcomes, relevant contraindications, and scope. Do not invent exclusions to fill a template. |
 | R02 | Governance | Compare a candidate with the effective baseline: what improves, worsens, stays intact, and remains uncertain. Include useful quality, time, cost, and induced work; distinguish source/discovery checks from behavioral evidence. |
 | R03 | Governance | Detect overlapping or conflicting capabilities and choose the correct owner. Preserve unique useful behaviors and necessary native differences rather than merging whole skills indiscriminately. |
 | R04 | Authoring | Identify and repair scope creep, overly broad or missing triggers, and unnecessary skill/tool invocation within the owning capability. Check intended cases and nearby cases where it should stay inactive. |
@@ -34,7 +34,7 @@ These are responsibility boundaries, not requirements for four services, separat
 | R11 | Reconciliation | Complete independently separable approved changes while leaving unrelated drift pending. Repository-wide visibility causes blocking only for a demonstrated dependency, conflict, or authorization boundary. |
 | R12 | Sync | Preserve concurrent work, detect races, and support bounded retries, resumability, idempotence, and recoverable rollback. Reconciliation identifies dependencies; sync protects application and publication. |
 | R13 | Governance | Maintain provenance, versions, evidence freshness, supersession, retirement decisions, and pending work. Staleness can trigger inspection; age or usage alone does not authorize removal. |
-| R14 | Governance | Keep governance proportional and evaluate it against baseline too. Avoid unnecessary reviews, experiments, repeated approval prompts, audit noise, latency, and instruction bloat. |
+| R14 | Governance | Prefer the simplest method that meets the recorded intention at the required quality. Tools, workflows, and governance must justify their total cost through better outcomes or less total work; use adequate evidence without adding a comparison ritual when the choice is already clear. Avoid unnecessary reviews, experiments, repeated approval prompts, audit noise, latency, and instruction bloat. |
 | R15 | Governance | Preserve scope, authorization, privacy, and native safety boundaries. Governance adds no permission for paid inference, external actions, destructive changes, credential access, or publication. |
 | R16 | Sync | Report drafted, checked, locally deployed, and remotely synchronized states distinctly, with evidence and unresolved work. Do not call a partial result completed sync. |
 | R17 | Governance | Reuse source-linked evidence bound to the relevant source/runtime identities. Inspect the changed owner and affected neighbors; broaden only when dependencies, conflicting evidence, or invalidated assumptions justify it. Support targeted revalidation so routine maintenance does not require another full-agent audit. |

@@ -1,12 +1,12 @@
 # Hermes direct task routing
 
-## Router-owned delegation
+## Native and selected routed delegation
 
-With the `routed-delegation` plugin enabled, send bounded local source reviews through `routed_delegate_task` with `work` below. Existing explicit V3 requests and `routed_workflow` retain their contracts. The pre-tool hook blocks ordinary worker spawning; existing-worker list/steer/stop controls remain available. Do not bypass a routing decision with native spawn, subprocesses or legacy V2 requests.
+Ordinary delegation uses native workers with the tools and permissions needed by the task. Select `routed_delegate_task` with `work` below for its bounded local source-review protocol; explicit V3 requests and `routed_workflow` retain their contracts. The plugin defaults to `require_router: false`, leaving native spawning available. Explicit `require_router: true` enables strict routing and blocks new native spawns; list/steer/stop remain available. Once a routed contract is selected, do not bypass its decision with native spawn, subprocesses or legacy V2 requests.
 
 The router selects an executor from task-specific evidence before execution. For task-first provisional reviews, missing evidence permits a bounded trial only for low-risk independently verifiable work with established callability. Explicit full DAG execution uses the separate parent-authorized execution contract below; it does not establish a model-quality qualification. `keep_parent`, parent, deterministic, and defer decisions return parent actions, not permission to start an inherited worker. The parent verifies worker output; task failure does not authorize an unbounded retry ladder.
 
-Keep native `delegation.model`, `provider`, and `reasoning_effort` empty, with `fallback_providers: []`, as the compatibility baseline rather than a global cheaper-model pin. These settings alone do not invoke the selector. Without the enabled plugin, ordinary delegation retains Hermes-native behavior. V2 fields remain compatible for existing runs, but are not the default for new work and cannot be combined with `route_request`.
+Keep native `delegation.model`, `provider`, and `reasoning_effort` empty, with `fallback_providers: []`, as the compatibility baseline rather than a global cheaper-model pin. These settings alone do not invoke the selector. Ordinary delegation retains Hermes-native behavior unless strict routing is explicitly enabled. V2 fields remain compatible for existing runs, but are not the default for new work and cannot be combined with `route_request`.
 
 ## Task-first local source reviews
 

@@ -713,7 +713,7 @@
       "readback": {
         "kind": "file",
         "path": "hermes:plugins/routed-delegation/__init__.py",
-        "sha256": "2be391395fbc2569a83fd886a4d5c4f3d700c70db4d97badbd28fa2a09e9b20d"
+        "sha256": "bb8826051b9fabe848281664755f70457122996a13d940054e89c19e4aebc569"
       },
       "redaction": "public-artifact",
       "required": true,
@@ -722,7 +722,7 @@
         "reference": "skills/openai-delegation-route-research/references/hermes-direct-v3.md"
       },
       "source_identity": "repository:integrations/hermes/routed-delegation/__init__.py",
-      "version_or_hash": "sha256:2be391395fbc2569a83fd886a4d5c4f3d700c70db4d97badbd28fa2a09e9b20d"
+      "version_or_hash": "sha256:bb8826051b9fabe848281664755f70457122996a13d940054e89c19e4aebc569"
     },
     {
       "category": "runtime",
