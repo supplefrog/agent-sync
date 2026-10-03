@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-defect-acceptance",
+  "capability": "frontend-ui-engineering",
+  "version": "3.2.2",
+  "status": "pass",
+  "claim": "Checked operational acceptance procedure and measurement checker; not a comparative model-quality or zero-defect claim.",
+  "candidate_files_sha256": {
+    "SKILL.md": "e5577412305ce611fb5f19348f11cfa6848e70552bff757f2b40bac68d438224",
+    "references/defect-acceptance.md": "cbd10af430831c75c5fde0a9b8b51ba3f5db7710a5f449da6d018e2ca26574d3",
+    "references/defect-gate-schema.md": "b2d1c16c875eebb27650c5b1a0d993c2e6354edb4e5f2c9d2e2da36d7ce03e22",
+    "scripts/frontend_gate.py": "6e60dc7fd378dd8a88f52beab33346a869291d6d2736a6838e1db83ae3fea0b7",
+    "scripts/test_frontend_gate.py": "5fdbbc72d2efaec3f800dc8eb24fa2a637b1b228daafc1531cc621bd9da3959f",
+    "scripts/contract.example.json": "f89667c47c1d4f5ab59bbeb5b61da5337f0dbacde5d8b1d513893428c751a729",
+    "scripts/observations.clean.json": "62bf9645aa9a593bad5640289659587c66c38faa3a76c5d3825f201d76208fe6",
+    "scripts/observations.bad.json": "f367a92eb0af728308bc68aa2d1ab6abdcd18710f86d9b273cb9ecfe8a9c93aa",
+    "scripts/observations.missing.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "references/provenance.md": "f485fdf7145b5196e062d697cd56c91bfd0c45cb52258f63a629ed0ce0ac2afa"
+  },
+  "verification": {
+    "unit_tests": 24,
+    "metadata": "quick_validate.py passed",
+    "real_browser_replay": {
+      "viewport_css_px": [
+        1100,
+        600
+      ],
+      "full_content_case": "fail",
+      "indicator_movement_css_px": 10.400009155273438,
+      "next_actual_point_hit": false,
+      "short_content_near_case": "pass for the same two measured relationships"
+    },
+    "missing_evidence": "incomplete; never pass",
+    "independent_review": "Fresh GPT-6.1 Sol/high; no-op false pass and numeric robustness findings corrected and retested by parent"
+  },
+  "preserved_behaviors": [
+    "Taste and premade component selection",
+    "Visual review before commit",
+    "Valid caret conventions",
+    "Abstract theme motion",
+    "Secondary menu access",
+    "Intentional responsive relocation"
+  ],
+  "limits": [
+    "Collector truth and case coverage remain external responsibilities",
+    "Rectangular clip and single use point only",
+    "Two settlement samples cannot prove intermediate smoothness",
+    "No natural-trigger reliability or cross-host behavioral parity claim",
+    "No product UI repaired or visually approved by this mechanism check"
+  ],
+  "result": {
+    "passed": true
+  }
+}

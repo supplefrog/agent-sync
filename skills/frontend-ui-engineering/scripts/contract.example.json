@@ -1,0 +1,8 @@
+{
+  "checks": [
+    {"id": "anchor", "kind": "stable_control", "promised": true, "control": "toggle", "states": ["closed", "open"], "max_edge_delta_px": 1},
+    {"id": "secondary-action", "kind": "reachable_action", "control": "export", "use_state": "menu-open", "min_point_clearance_px": 2},
+    {"id": "tap-responses", "kind": "activation_events", "run": "toggle-sequence", "max_latency_ms": 250},
+    {"id": "no-end-jump", "kind": "settled_geometry", "transition": "panel-open", "max_edge_delta_px": 1, "min_settle_wait_ms": 100}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "states": {
+    "closed": {"controls": {"toggle": {"rect": {"x": 20, "y": 30, "width": 120, "height": 40}}}},
+    "open": {"controls": {"toggle": {"rect": {"x": 20, "y": 30, "width": 120, "height": 40}}}},
+    "menu-open": {"controls": {"export": {
+      "rect": {"x": 100, "y": 150, "width": 100, "height": 40},
+      "effective_clip_rect": {"x": 0, "y": 0, "width": 320, "height": 200},
+      "use_point": {"x": 150, "y": 170}, "hit_target_or_descendant": true, "enabled": true
+    }}}
+  },
+  "runs": {"toggle-sequence": {
+    "capture_complete": true, "capture_start_ms": 0, "capture_end_ms": 2000,
+    "requests": [
+      {"id": "a", "time_ms": 100, "from_state": "closed", "expected_state": "open"},
+      {"id": "b", "time_ms": 500, "from_state": "open", "expected_state": "closed"}
+    ],
+    "events": [
+      {"request_id": "a", "time_ms": 140, "from_state": "closed", "to_state": "open"},
+      {"request_id": "b", "time_ms": 540, "from_state": "open", "to_state": "closed"}
+    ]
+  }},
+  "transitions": {"panel-open": {
+    "end_observed": true, "end_time_ms": 400, "settled_time_ms": 550,
+    "end_rect": {"x": 20, "y": 80, "width": 250, "height": 100},
+    "settled_rect": {"x": 20, "y": 80, "width": 250, "height": 100}
+  }}
+}

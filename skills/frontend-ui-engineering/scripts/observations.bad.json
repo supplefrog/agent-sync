@@ -1,0 +1,6 @@
+{
+  "states": {
+    "closed": {"controls": {"toggle": {"rect": {"x": 20, "y": 30, "width": 120, "height": 40}}}},
+    "open": {"controls": {"toggle": {"rect": {"x": 32, "y": 30, "width": 120, "height": 40}}}}
+  }
+}
