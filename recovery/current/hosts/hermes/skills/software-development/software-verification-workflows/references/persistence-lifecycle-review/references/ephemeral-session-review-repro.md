@@ -10,7 +10,9 @@ Also exercise `timeout`, `interrupted`, `unknown`, and crash-recovery-protected 
 
 ## Foreign-key deletion probe
 
-With foreign keys enabled, register an ownership row and call the normal parent/session deletion API. Expected: ordinary deletion succeeds and leaves no ownership rows. An `IntegrityError` indicates the new ledger references are not integrated with existing delete paths. Check single delete, bulk delete, prune, empty-session cleanup, and delegate-child cascade.
+With foreign keys enabled, create an owned fixture whose output is durably integrated and whose deletion is eligible under the lifecycle contract, or a fixture whose deletion is explicitly authorized by that API's contract. Keep an ownership row until the deletion path runs, then call the production parent/session deletion API. Expected: eligible deletion succeeds and leaves no dangling ownership rows. An `IntegrityError` indicates the ledger references are not integrated with that eligible delete path. Exercise single delete, bulk delete, prune, empty-session cleanup, and delegate-child cascade with fixtures eligible for each path.
+
+Use a separate unintegrated owned fixture for generic maintenance. Prune, empty-session cleanup, and other generic cleanup must retain that fixture and its ownership row. A successful deletion there is a lifecycle-authority failure, even when foreign-key cleanup is correct; explicit parent deletion grants authority only when its documented contract says so.
 
 ## Lazy-registration ordering probe
 

@@ -1,0 +1,149 @@
+{
+  "changes": [
+    "Restore the discoverable native sdlc-review entrypoint as the sole review procedure.",
+    "Replace the former nested procedure with its native preload boundary.",
+    "Align task orientation with requirements and initial artifact assessment before handoff claims.",
+    "Separate eligible foreign-key deletion fixtures from unintegrated maintenance-retention fixtures.",
+    "Require a passing current-root CLI control and rejection of missing/stale required-root variants."
+  ],
+  "date": "2026-10-03",
+  "host": "hermes",
+  "limits": [
+    "No inference or production Kanban transition was run.",
+    "Instruction clarity and native prompt delivery are verified; model adherence and comparative decision quality are unmeasured.",
+    "Existing workers retain their loaded guidance; newly started default-profile review workers read this entrypoint.",
+    "Other profiles, the shared portable fleet, and Hermes runtime code are outside this repair."
+  ],
+  "profile": "default",
+  "runtime_revision": "8fb466bc33246d85f77cd484bc65fbe84170d017",
+  "schema_version": 1,
+  "scope": "Native software verification router and Kanban review entrypoint only.",
+  "source_after_sha256": {
+    "devops/sdlc-review/SKILL.md": "bb08e122dcb7b0e1aa8f4dd7e04264e87fe93b37454e43713aecc02011505405",
+    "software-development/software-verification-workflows/SKILL.md": "4de1c5f21fb12f66aa164cc0a7f62514f645084cd56e70fd5edea87d984a1e9c",
+    "software-development/software-verification-workflows/references/persistence-lifecycle-review/references/ephemeral-session-review-repro.md": "8d67257a49d5c4eb36115f32fb190a49fbb15407d03d74937b267ade1107571b",
+    "software-development/software-verification-workflows/references/sdlc-review/SKILL.md": "ac28292ff1e43b51c4518ad1094c07596fe89f1fd29d92f2015174d085935f6e",
+    "software-development/software-verification-workflows/references/structured-contract-verification/SKILL.md": "7c1d011ce7a2ec800cb7be79d36f05251b0157781af46e0417aa249521e9b777"
+  },
+  "source_before_sha256": {
+    "devops/sdlc-review/SKILL.md": null,
+    "software-development/software-verification-workflows/SKILL.md": "b7fe3ff9fef6aadcea91d4a218f61876168850a0f75f78273c436d5fdf777ba8",
+    "software-development/software-verification-workflows/references/persistence-lifecycle-review/references/ephemeral-session-review-repro.md": "395a2c8c72796c042e8fdeab2d5960e12287ba8e645aed88c7c190e8346a039d",
+    "software-development/software-verification-workflows/references/sdlc-review/SKILL.md": "aaf06d5582e44269c387cd4605f5e42007a2dce3e2cf6ec32b69b25f430c363e",
+    "software-development/software-verification-workflows/references/structured-contract-verification/SKILL.md": "61ff8aea1bac7e22cb270bf741ac0ea09b421d9daf07818e7de3b6787e619bfb"
+  },
+  "source_owner": "Native Hermes skill files; Agent Sync preserves their reviewed recovery artifacts.",
+  "stock_sdlc_review_replace_sha256": "ce90e8a3e145cce69c62880dc85921700110879f9290952d6cec28218503155f",
+  "verification": {
+    "baseline": {
+      "checks": "passed",
+      "exit_code": 0,
+      "review_resolves": false,
+      "startup": {
+        "loaded": [],
+        "missing": [
+          "sdlc-review"
+        ],
+        "prompt_chars": 0
+      }
+    },
+    "bookkeeping_stubs": [
+      "not-found suggestions",
+      "background read bookkeeping",
+      "curator use bookkeeping"
+    ],
+    "broader_inventory_suite": {
+      "command": "python -B -m unittest discover -s tests -p test_native_skill_recovery.py",
+      "exit_code": 1,
+      "failures": 2,
+      "findings": [
+        "The HEAD baseline already has 26 inventoried files versus 27 manifest records for agent-orchestration-operations.",
+        "An ignored research-source-operations __pycache__ file is outside the managed snapshot inventory."
+      ],
+      "scope": "Outside this repair; preserved. Affected 17-file package restore and inventory membership pass.",
+      "tests_run": 2
+    },
+    "consumer": "tools.skills_tool.skill_view -> agent.skill_commands.build_preloaded_skills_prompt; native dispatch still requests --skills sdlc-review.",
+    "disposable_recovery": {
+      "affected_inventory_membership": "passed",
+      "artifacts_restored": 17,
+      "baseline_unrelated_inventory_counts": {
+        "inventory": 26,
+        "manifest": 27
+      },
+      "dry_run_invariance": "passed",
+      "exit_code": 0,
+      "restore_readback": "passed",
+      "restored_preload": {
+        "complete_procedure_present": true,
+        "loaded": [
+          "sdlc-review"
+        ],
+        "missing": [],
+        "procedure_sha256": "bb08e122dcb7b0e1aa8f4dd7e04264e87fe93b37454e43713aecc02011505405",
+        "prompt_chars": 9363,
+        "prompt_sha256": "92674f732b811d29ea5a6b502dc09a94da3555c91a30ed90cfeb5ec80eca2e59"
+      },
+      "second_restore_changes": 0,
+      "snapshot_integrity": "passed",
+      "stock_replacement_control": "passed",
+      "support_exclusion_control": {
+        "error": "Skill 'persistence-lifecycle-review' not found.",
+        "success": false
+      }
+    },
+    "fresh_review": {
+      "actionable_findings": 0,
+      "inherited_history": false,
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "scope": "Five candidate files and necessary discovery/dispatch/preload consumers; static read-only review."
+    },
+    "installed": {
+      "checks": "passed",
+      "exit_code": 0,
+      "indexed_target_paths": [
+        "devops/sdlc-review/SKILL.md",
+        "software-development/software-verification-workflows/SKILL.md"
+      ],
+      "linked_boundary_control": true,
+      "review_resolves": true,
+      "router_control": {
+        "loaded": [
+          "software-verification-workflows"
+        ],
+        "missing": [],
+        "prompt_chars": 6834
+      },
+      "startup": {
+        "complete_procedure_present": true,
+        "loaded": [
+          "sdlc-review"
+        ],
+        "missing": [],
+        "procedure_sha256": "bb08e122dcb7b0e1aa8f4dd7e04264e87fe93b37454e43713aecc02011505405",
+        "prompt_chars": 9303,
+        "prompt_sha256": "13408b2a8ffc4ec70a0274978a275b85bd82c74d056301a848f6a0832d4bd40e"
+      },
+      "support_exclusion_control": {
+        "error": "Skill 'persistence-lifecycle-review' not found.",
+        "success": false
+      }
+    },
+    "staged": {
+      "checks": "passed",
+      "exit_code": 0,
+      "review_resolves": true,
+      "startup": {
+        "complete_procedure_present": true,
+        "loaded": [
+          "sdlc-review"
+        ],
+        "missing": [],
+        "procedure_sha256": "bb08e122dcb7b0e1aa8f4dd7e04264e87fe93b37454e43713aecc02011505405",
+        "prompt_chars": 9349,
+        "prompt_sha256": "56630f49ba4bfc52ab6101c1a701f7a73ac4ee44a59b85e1e551cfc91913ba1f"
+      }
+    }
+  }
+}

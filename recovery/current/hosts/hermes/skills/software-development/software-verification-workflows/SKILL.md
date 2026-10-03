@@ -1,7 +1,7 @@
 ---
 name: software-verification-workflows
 description: Use for software review and verification.
-version: 1.0.0
+version: 1.0.1
 metadata:
   hermes:
     tags: [verification, review, lifecycle, contracts, merge, integrations, kanban]
@@ -17,7 +17,7 @@ Judge whether a software change or handoff is correct, safe, complete, and ready
 - Durable state, ownership, retention, cleanup, recovery, migrations, leases, and destructive APIs: `references/persistence-lifecycle-review/SKILL.md`.
 - Three-way merges, cherry-picks, divergent branches, checkout-supersession comparisons, and semantic conflicts: `references/semantic-merge-verification/SKILL.md`.
 - Structured parser/model/API output, schemas, graphs, durable gates, and fail-closed behavior: `references/structured-contract-verification/SKILL.md`.
-- Independent Kanban review-lane handoffs and terminal verdict routing: `references/sdlc-review/SKILL.md`.
+- Independent Kanban review-lane handoffs and terminal verdict routing: load the native `sdlc-review` skill. Its [preload boundary](references/sdlc-review/SKILL.md) explains the required entrypoint.
 - Bounded model/delegation trials: load `agent-capability-engineering` and its `references/evaluator-process-evidence-lifecycle.md`; ordinary verification does not require a trial protocol.
 - Technical manuals or cross-platform documentation acceptance: `references/technical-documentation-verification.md`; authoring style and platform preference remain with the task brief.
 - Hermes staged-skill loading: load `hermes-engineering-operations` and its `references/live-desktop-probes.md`.

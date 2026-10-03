@@ -4791,7 +4791,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "ade031fc1bc53b06dbeccfadb91e5ca493e66424e89c544a8b5a37669167f4ae"
+          "sha256": "4de1c5f21fb12f66aa164cc0a7f62514f645084cd56e70fd5edea87d984a1e9c"
         },
         {
           "path": "references/event-driven-integration-review/SKILL.md",
@@ -4803,11 +4803,11 @@
         },
         {
           "path": "references/persistence-lifecycle-review/SKILL.md",
-          "sha256": "3710b5fec171fd123b67be29f440b89e256b757e7ba54484c426d8452f9779c2"
+          "sha256": "3e57218ac5de70c6dd152bd3451423a28d1733f2cbd6c117f855970c287fdbac"
         },
         {
           "path": "references/persistence-lifecycle-review/references/ephemeral-session-review-repro.md",
-          "sha256": "395a2c8c72796c042e8fdeab2d5960e12287ba8e645aed88c7c190e8346a039d"
+          "sha256": "8d67257a49d5c4eb36115f32fb190a49fbb15407d03d74937b267ade1107571b"
         },
         {
           "path": "references/persistence-lifecycle-review/references/human-off-orchestration-probes.md",
@@ -4827,7 +4827,7 @@
         },
         {
           "path": "references/sdlc-review/SKILL.md",
-          "sha256": "ce90e8a3e145cce69c62880dc85921700110879f9290952d6cec28218503155f"
+          "sha256": "ac28292ff1e43b51c4518ad1094c07596fe89f1fd29d92f2015174d085935f6e"
         },
         {
           "path": "references/semantic-merge-verification/SKILL.md",
@@ -4839,11 +4839,19 @@
         },
         {
           "path": "references/structured-contract-verification/SKILL.md",
-          "sha256": "356ff0300f49d08460870e74b3b863d05e728eeced2ccc64acdb1bfad5b6890b"
+          "sha256": "7c1d011ce7a2ec800cb7be79d36f05251b0157781af46e0417aa249521e9b777"
         },
         {
           "path": "references/structured-contract-verification/references/fail-closed-probe-matrix.md",
           "sha256": "09b1af0da9051fb84a934e4c31973e7d23c2774e742ea8a6861d1ae2ff3fe7bb"
+        },
+        {
+          "path": "references/acceptance-boundary-controls.md",
+          "sha256": "66cb25f73bc5e7a3153114e05005e9e6fde7cac1c3c50bde294750570a0f6fc5"
+        },
+        {
+          "path": "references/technical-documentation-verification.md",
+          "sha256": "074f03c28b0e03c94e34e0fe9ba7f12770481a7d903a5851ec366496fa94f471"
         }
       ],
       "name": "software-verification-workflows",
@@ -4971,6 +4979,20 @@
       "name": "career-portfolio-positioning",
       "path": "productivity/career-portfolio-positioning",
       "upstream_baseline": null
+    },
+    {
+      "declared_license": "MIT",
+      "disabled": false,
+      "exclusions": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "sha256": "bb08e122dcb7b0e1aa8f4dd7e04264e87fe93b37454e43713aecc02011505405"
+        }
+      ],
+      "name": "sdlc-review",
+      "path": "devops/sdlc-review",
+      "upstream_baseline": "ce90e8a3e145cce69c62880dc85921700110879f9290952d6cec28218503155f"
     }
   ],
   "plugin_selection": {

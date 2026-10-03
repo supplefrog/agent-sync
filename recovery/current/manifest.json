@@ -11671,14 +11671,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5779,
+      "bytes": 5871,
       "format": "text",
       "host": "hermes",
       "id": "native-7401540a0061e4ace2d2",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "943a1c1f10803f973f4cbb9104e5f03d5ab60b2bbdec34fc2cc5cd6a4afc9d3d",
+      "sha256": "4de1c5f21fb12f66aa164cc0a7f62514f645084cd56e70fd5edea87d984a1e9c",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11723,14 +11723,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 4264,
+      "bytes": 4902,
       "format": "text",
       "host": "hermes",
       "id": "native-05785f4150d091be4916",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "cb835fa49124843f0985dbe1e755612c8fd06024c0aa304f58dd20462d85037e",
+      "sha256": "8d67257a49d5c4eb36115f32fb190a49fbb15407d03d74937b267ade1107571b",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/persistence-lifecycle-review/references/ephemeral-session-review-repro.md",
       "source": "skills/software-development/software-verification-workflows/references/persistence-lifecycle-review/references/ephemeral-session-review-repro.md",
       "strategy": "replace-if-absent"
@@ -11788,14 +11788,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 8230,
+      "bytes": 642,
       "format": "text",
       "host": "hermes",
       "id": "native-2839e05cf81047519118",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "97681148330603e571b756587903cf1ede45d5673bcb87b85d6e8a5fad1a8ce9",
+      "sha256": "ac28292ff1e43b51c4518ad1094c07596fe89f1fd29d92f2015174d085935f6e",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/sdlc-review/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/references/sdlc-review/SKILL.md",
       "strategy": "replace-if-absent"
@@ -11827,14 +11827,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 13253,
+      "bytes": 13356,
       "format": "text",
       "host": "hermes",
       "id": "native-bea77552c06e50ef7357",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "b3d499e8b6f2cc1949f2e2d8617069f74ef214403c1b2ca76e069eae95d32129",
+      "sha256": "7c1d011ce7a2ec800cb7be79d36f05251b0157781af46e0417aa249521e9b777",
       "snapshot": "hosts/hermes/skills/software-development/software-verification-workflows/references/structured-contract-verification/SKILL.md",
       "source": "skills/software-development/software-verification-workflows/references/structured-contract-verification/SKILL.md",
       "strategy": "replace-if-absent"
@@ -13436,10 +13436,26 @@
       "snapshot": "hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/references/user-project-retirement.md",
       "source": "skills/autonomous-ai-agents/agent-orchestration-operations/references/user-project-retirement.md",
       "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 8862,
+      "format": "text",
+      "host": "hermes",
+      "id": "native-ca7b488216a33ba4a160",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "replace_sha256": [
+        "ce90e8a3e145cce69c62880dc85921700110879f9290952d6cec28218503155f"
+      ],
+      "sha256": "bb08e122dcb7b0e1aa8f4dd7e04264e87fe93b37454e43713aecc02011505405",
+      "snapshot": "hosts/hermes/skills/devops/sdlc-review/SKILL.md",
+      "source": "skills/devops/sdlc-review/SKILL.md",
+      "strategy": "replace-if-absent"
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "c8f04fccac62c1c1416510d1d3982682448d29509b4af56ce2b43a5b6ca16d2c",
+  "policy_sha256": "7161b5e7512d678cdcca62f9a4b720c10a1be50e9275b1ebf2b6759bc603aceb",
   "public_safe": true,
   "schema_version": 1
 }

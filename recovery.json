@@ -9580,6 +9580,18 @@
           "snapshot": "hosts/hermes/skills/autonomous-ai-agents/agent-orchestration-operations/references/user-project-retirement.md",
           "source": "skills/autonomous-ai-agents/agent-orchestration-operations/references/user-project-retirement.md",
           "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-ca7b488216a33ba4a160",
+          "kind": "text",
+          "portable_paths": true,
+          "replace_sha256": [
+            "ce90e8a3e145cce69c62880dc85921700110879f9290952d6cec28218503155f"
+          ],
+          "snapshot": "hosts/hermes/skills/devops/sdlc-review/SKILL.md",
+          "source": "skills/devops/sdlc-review/SKILL.md",
+          "strategy": "replace-if-absent"
         }
       ]
     },
