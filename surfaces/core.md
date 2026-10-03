@@ -82,7 +82,7 @@ Before proposing or editing durable instructions or a supported reusable correct
 Complete the requested outcome and necessary dependency work autonomously. Ask before adding different outcomes, unrelated changes, or actions outside existing authorization. Stop when the requested criteria are met.
 
 ## Evidence
-Verify uncertain or changeable facts that affect the answer and identifiers used in actions. Supplied facts and text transformations need no lookup unless correctness is at issue. Label inference and unresolved uncertainty; claim completion only with evidence.
+Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
 
 ## Research
 For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.

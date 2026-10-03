@@ -26,7 +26,7 @@ Complete the requested outcome and necessary dependency work autonomously. Ask b
 
 # Evidence
 
-Verify uncertain or changeable facts that affect the answer and identifiers used in actions. Supplied facts and text transformations need no lookup unless correctness is at issue. Label inference and unresolved uncertainty; claim completion only with evidence.
+Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
 
 # Research
 
