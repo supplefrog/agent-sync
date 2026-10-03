@@ -3,7 +3,7 @@ name: frontend-ui-engineering
 description: Use for frontend design, implementation, and rendered UI review, including reviewable prototypes. Match engineering depth to the requested fidelity. For test-only edits, use this when a UI-specific behavior, accessibility, or visual question needs its guidance.
 license: MIT
 metadata:
-  version: 3.2.2
+  version: 3.2.3
   author: Addy Osmani; Agent Sync adaptation
   compatibility: Requires the project's frontend toolchain and browser rendering for production verification.
   tags: [frontend, ui, accessibility, responsive-design, design-systems]

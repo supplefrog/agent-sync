@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-fresh-workflow",
+  "capability": "frontend-ui-engineering",
+  "version": "3.2.3",
+  "status": "pass_for_scoped_corrections",
+  "claim": "Supported narrow verification corrections and explicit user preferences. Not matched comparative quality, full-page acceptance or zero-defect evidence.",
+  "candidate_files_sha256": {
+    "SKILL.md": "a9e6a57bd3445d3bcc2e05730da9f4bb227c4b5190901db7973946a773fc4b48",
+    "references/defect-acceptance.md": "490bedf289838746f8323fa9652849a3a96da6242a1ae651e6900c91cf5dcd25",
+    "references/personal-design-defaults.md": "465137cf0362a25880a8c08d211126fd86b4410ac4e6e39fe3182520d45c5f6f",
+    "references/taste-selection.md": "ceebc146883ccdef3c3e32c5428fa68d3652f6460224a0395a60036f3ef0fa34",
+    "references/provenance.md": "00eccc568f68541b7ab646190bf1c2bc9730aacf133ea057a352cabfa24e4847"
+  },
+  "baseline": "Installed3.2.2 initial diagnostic builds; no matched baseline/candidate comparison.",
+  "execution": {
+    "workers": {
+      "model": "gpt-6.1-sol",
+      "reasoning": "medium"
+    },
+    "reviewers": {
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "fresh_context": true
+    },
+    "mechanism": "Native bounded agents, artifact-first separate review, parent reproduction, scoped repair/retest; not routed DAG execution",
+    "skill_loading": "Explicit skill-body reads. Natural triggering untested. Early staged header indent was corrected before current metadata validation/deployment; early body-read trials are not native-discovery evidence.",
+    "entrypoint_line_endings": "Current entrypoint normalized to repository LF policy; original trial body-read hash is preserved in author receipt. Semantic entrypoint change is version only."
+  },
+  "verification": {
+    "metadata": "quick_validate.py passed",
+    "unchanged_measurement_checker_unit_tests": 24,
+    "browser": "Codex IAB; Windows Chrome154 user-agent",
+    "phone": "CSS viewport emulation, not physical device",
+    "current_artifact_hashes": {
+      "reader": "949086adceaa99967c9e23e2b5b7b40117dae4f9e9df76ee863ef07fa0cf22bb",
+      "gallery": "20a29ca612882410d74e0692e9a72b62c46d1a2032c5f45a6cdf89ae95dc3dd3",
+      "handbook": "3854763122b1a442ebd6542e77b6413323f3fa97e894911dfc5b3f0fc3d28975",
+      "disclosure": "d031a31f0335a47cd1d50f15f8e109e264a90368ce04a2f13cf719c11eceb98c"
+    },
+    "parent_reproduced_initial_defects": [
+      "destination/current/adjacent mismatch",
+      "native citation reveal then first close ignored",
+      "clipped focus during animated exit",
+      "modal background scroll"
+    ],
+    "additional_internal_findings": [
+      "same-hash chapter reselection did not return",
+      "default figure inspection shrank intrinsic image"
+    ],
+    "affected_repairs": "Parent browser replays passed; broad whole-page coverage remains incomplete.",
+    "subsequent_small_build": "Initial explicitly loaded fresh component passed narrow closing-focus case before repairs.",
+    "postlaunch_symbol_preference": "Shared stroke transform; centered and reversible; reduced-motion0s; Tab after closure reaches next summary.",
+    "metrics": {
+      "morph_frames": 205,
+      "morph_distinct_intermediate_scales": 25,
+      "horizontal_width_css_px": [
+        12
+      ],
+      "symbol_center_range_css_px": {
+        "x": 0.0,
+        "y": 1.2487173052022627e-05
+      },
+      "desktop_exit_clipped_focus_frames": 0,
+      "desktop_exit_end": {
+        "active": "SUMMARY",
+        "activeBottom": 395.8000183105469,
+        "activeTop": 315.8000183105469,
+        "detailBottom": 315,
+        "height": 80,
+        "inAnswer": false,
+        "open": false,
+        "t": 1303.2000000476835,
+        "text": "Can I extend my loan?",
+        "viewport": 700
+      },
+      "index_close_end": {
+        "height": 60.79999923706055,
+        "iconX": 343.20001220703125,
+        "iconY": 180.15000915527344,
+        "inert": true,
+        "open": false,
+        "scrollY": 0,
+        "summaryH": 44,
+        "summaryY": 158.15000915527344,
+        "t": 1500.0999999642372
+      }
+    },
+    "near_cases_preserved": [
+      "intentionally blue palette",
+      "native controls and high-contrast colors",
+      "different justified access paths",
+      "upward collapse caret",
+      "abstract theme motion",
+      "palette-only refinement",
+      "unrelated stillness"
+    ],
+    "user_observations_during_unfinished_QA": "Gallery caret inset review miss; later cross/symbol/continuity preference steering; spacing objection retracted with no padding rule."
+  },
+  "limits": [
+    "No causal model-quality or prevention-rate claim",
+    "No natural-trigger reliability or cross-host behavioral parity",
+    "Full reader/gallery/handbook acceptance incomplete",
+    "No physical-device or screen-reader certification",
+    "No paid tool use, product integration or UI publication"
+  ],
+  "local_raw_evidence": "Project-local frozen artifacts, review reports and frame/geometry records retained; not included in this publication.",
+  "publication_scope": "Existing skill owner plus this nonprivate summary only",
+  "resources": {
+    "billed_dollars": null,
+    "total_tokens": null,
+    "observation": "Not measured for this multi-turn loop"
+  }
+}
