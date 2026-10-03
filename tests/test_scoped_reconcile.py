@@ -1,6 +1,7 @@
 """Integrated scoped publication and concurrent-work preservation."""
 from pathlib import Path
 import json
+import shutil
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -26,6 +27,153 @@ class ScopedReconcileTests(unittest.TestCase):
         self.git(repo, 'add', '.')
         self.git(repo, 'commit', '-m', 'other baseline')
         self.git(repo, 'push', 'origin', 'main')
+
+    def binding_fixture(self, repo, live):
+        self.extra_owner(repo, live)
+        shutil.copyfile(fixtures.REPO / 'contracts/host-deltas.schema.json',
+                        repo / 'contracts/host-deltas.schema.json')
+        manifest = json.loads((repo / 'host-deltas.json').read_text())
+        for name in ('kept', 'other'):
+            relative = f'skills/{name}/SKILL.md'
+            digest = self.fleet.sha256_file(repo / relative)
+            manifest['entries'].append({
+                'id': name, 'host': 'codex', 'category': 'native-skill',
+                'owner': name, 'source_identity': 'repository:' + relative,
+                'version_or_hash': 'sha256:' + digest, 'enablement': 'managed',
+                'prerequisites': [], 'desired_state': 'installed', 'required': False,
+                'restore': {'kind': 'repository', 'reference': relative},
+                'readback': {'kind': 'file', 'path': relative, 'sha256': digest},
+                'redaction': 'public-artifact'})
+        (repo / 'host-deltas.json').write_text(json.dumps(manifest))
+        self.git(repo, 'add', '.')
+        self.git(repo, 'commit', '-m', 'binding baseline')
+        self.git(repo, 'push', 'origin', 'main')
+        return manifest
+
+    def test_foreign_generated_hashes_survive_working_sync_without_publication(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote = self.setup_git(Path(temp))
+            baseline = self.binding_fixture(repo, live)
+            selected = repo / 'skills/kept/SKILL.md'
+            selected.write_text(selected.read_text() + '\nselected change\n')
+            foreign = repo / 'skills/other/SKILL.md'
+            foreign.write_text(foreign.read_text() + '\nforeign pending change\n')
+            manifest = json.loads((repo / 'host-deltas.json').read_text())
+            digest = self.fleet.sha256_file(foreign)
+            manifest['entries'][1]['version_or_hash'] = 'sha256:' + digest
+            manifest['entries'][1]['readback']['sha256'] = digest
+            (repo / 'host-deltas.json').write_text(json.dumps(manifest))
+            source_before = foreign.read_bytes()
+            live_before = (live / 'other/SKILL.md').read_bytes()
+            report = self.run_sync(repo, live, adopt=['kept'])
+            self.assertEqual('synced', report['result'], report)
+            working = json.loads((repo / 'host-deltas.json').read_text())
+            published = json.loads(self.git(remote, 'show', 'main:host-deltas.json'))
+            self.assertEqual(manifest['entries'][1], working['entries'][1])
+            self.assertEqual(baseline['entries'][1], published['entries'][1])
+            self.assertEqual(working['entries'][0], published['entries'][0])
+            self.assertEqual('sha256:' + self.fleet.sha256_file(selected), published['entries'][0]['version_or_hash'])
+            self.assertEqual(source_before, foreign.read_bytes())
+            self.assertEqual(live_before, (live / 'other/SKILL.md').read_bytes())
+            self.assertNotEqual(foreign.read_text().strip(), self.git(remote, 'show', 'main:skills/other/SKILL.md'))
+            self.assertIn('host-deltas.json', report['pending_files'])
+            self.assertEqual(selected.read_bytes(), (live / 'kept/SKILL.md').read_bytes())
+
+    def test_projected_manifest_retry_keeps_foreign_hashes_unpublished(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote = self.setup_git(Path(temp))
+            baseline = self.binding_fixture(repo, live)
+            selected = repo / 'skills/kept/SKILL.md'
+            selected.write_text(selected.read_text() + '\nselected change\n')
+            foreign = repo / 'skills/other/SKILL.md'
+            foreign.write_text(foreign.read_text() + '\nforeign change\n')
+            manifest = json.loads((repo / 'host-deltas.json').read_text())
+            manifest['entries'][1]['version_or_hash'] = 'sha256:' + self.fleet.sha256_file(foreign)
+            (repo / 'host-deltas.json').write_text(json.dumps(manifest))
+            hook = remote / 'hooks/pre-receive'
+            hook.write_text('#!/bin/sh\nexit 1\n')
+            report = self.run_sync(repo, live, adopt=['kept'])
+            self.assertEqual('incomplete', report['result'], report)
+            self.assertEqual('push', report['failed_step'], report)
+            checked_commit = self.git(repo, 'rev-parse', 'HEAD')
+            hook.unlink()
+            report = self.run_sync(repo, live, adopt=['kept'])
+            self.assertEqual('synced', report['result'], report)
+            self.assertEqual(checked_commit, self.git(remote, 'rev-parse', 'main'))
+            self.assertEqual(manifest['entries'][1], json.loads((repo / 'host-deltas.json').read_text())['entries'][1])
+            self.assertEqual(baseline['entries'][1], json.loads(self.git(remote, 'show', 'main:host-deltas.json'))['entries'][1])
+
+    def test_manifest_change_during_checks_still_blocks_before_deployment(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote = self.setup_git(Path(temp))
+            self.binding_fixture(repo, live)
+            selected = repo / 'skills/kept/SKILL.md'
+            selected.write_text(selected.read_text() + '\nselected change\n')
+            head = self.git(remote, 'rev-parse', 'main')
+            original = (live / 'kept/SKILL.md').read_bytes()
+            def check(*_):
+                manifest = json.loads((repo / 'host-deltas.json').read_text())
+                manifest['entries'][1]['version_or_hash'] = 'sha256:' + 'a' * 64
+                (repo / 'host-deltas.json').write_text(json.dumps(manifest))
+                return []
+            with patch.object(self.reconcile, '_run_checks', side_effect=check):
+                report = self.reconcile.complete_sync(repo, machine='test', recovery_roots={},
+                    skill_roots=[live], adopt=['kept'])
+            self.assertEqual('incomplete', report['result'], report)
+            self.assertIn('selected files or agent owners changed', report['reason'])
+            self.assertEqual(original, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
+            self.assertEqual('sha256:' + 'a' * 64, json.loads((repo / 'host-deltas.json').read_text())['entries'][1]['version_or_hash'])
+
+    def test_selected_readback_hash_change_requires_explicit_manifest_review(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote = self.setup_git(Path(temp))
+            manifest = self.binding_fixture(repo, live)
+            manifest['entries'][0]['readback']['sha256'] = 'a' * 64
+            path = repo / 'host-deltas.json'
+            path.write_text(json.dumps(manifest))
+            working = path.read_bytes()
+            head = self.git(remote, 'rev-parse', 'main')
+            installed = (live / 'kept/SKILL.md').read_bytes()
+            report = self.run_sync(repo, live, adopt=['kept'])
+            self.assertEqual('incomplete', report['result'], report)
+            self.assertIn('unselected host-delta fields differ', report['reason'])
+            self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
+            self.assertEqual(installed, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(working, path.read_bytes())
+
+    def test_foreign_binding_policy_still_requires_review(self):
+        for field in ('desired_state', 'readback-path'):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as temp:
+                repo, live, remote = self.setup_git(Path(temp))
+                manifest = self.binding_fixture(repo, live)
+                selected = repo / 'skills/kept/SKILL.md'
+                selected.write_text(selected.read_text() + '\nselected change\n')
+                if field == 'readback-path':
+                    manifest['entries'][1]['readback']['path'] = 'different/file.md'
+                else:
+                    manifest['entries'][1][field] = 'new policy'
+                (repo / 'host-deltas.json').write_text(json.dumps(manifest))
+                head = self.git(remote, 'rev-parse', 'main')
+                original = (live / 'kept/SKILL.md').read_bytes()
+                report = self.run_sync(repo, live, adopt=['kept'])
+                self.assertEqual('incomplete', report['result'], report)
+                self.assertIn('unselected host-delta fields differ', report['reason'])
+                self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
+                self.assertEqual(original, (live / 'kept/SKILL.md').read_bytes())
+
+    def test_explicit_manifest_include_publishes_reviewed_foreign_fields(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote = self.setup_git(Path(temp))
+            manifest = self.binding_fixture(repo, live)
+            selected = repo / 'skills/kept/SKILL.md'
+            selected.write_text(selected.read_text() + '\nselected change\n')
+            manifest['entries'][1]['desired_state'] = 'reviewed new policy'
+            (repo / 'host-deltas.json').write_text(json.dumps(manifest))
+            report = self.run_sync(repo, live, adopt=['kept'], include=['host-deltas.json'])
+            self.assertEqual('synced', report['result'], report)
+            published = json.loads(self.git(remote, 'show', 'main:host-deltas.json'))
+            self.assertEqual(manifest['entries'][1], published['entries'][1])
 
     def test_selected_owner_completes_despite_unrelated_owner_conflict_and_staged_work(self):
         with tempfile.TemporaryDirectory() as temp:

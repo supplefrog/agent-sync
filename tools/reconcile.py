@@ -1226,7 +1226,7 @@ def _capture_shared_preflight(repo, artifacts, included):
             raise sync_git.SyncBlocked("unselected host-delta fields differ; review the exact shared metadata file before publication")
 
 
-def _scope_dependencies(repo, machine, names, capture=False, recovery_artifacts=None, binding_identities=()):
+def _scope_dependencies(repo, machine, names, capture=False, recovery_artifacts=None, binding_identities=(), *, project_bindings=False):
     entries = fleet.registry(repo) if names else {}
     dependencies = {
         "admission": {name: entries.get(name) for name in sorted(names)},
@@ -1247,10 +1247,7 @@ def _scope_dependencies(repo, machine, names, capture=False, recovery_artifacts=
             metadata = _recovery_metadata_policy(metadata,
                 json.loads((repo / "recovery/current/manifest.json").read_text(encoding="utf-8")), recovery_artifacts)
         derived = set(binding_identities) | _binding_selection(metadata, names, recovery_artifacts)
-        for row in metadata["entries"]:
-            if row["source_identity"] in derived:
-                row.pop("version_or_hash", None)
-        dependencies["binding_metadata_policy"] = metadata
+        dependencies["binding_metadata_policy"] = _binding_policy(metadata, derived, project_derived=project_bindings)
     if capture:
         dependencies["recovery_artifacts"] = sorted(recovery_artifacts or ())
         paths += ["recovery.json", "tools/recovery.py", "tools/host_deltas.py"]
@@ -1340,7 +1337,38 @@ def _prepare_candidate_bindings(candidate, names, artifacts, files=()):
         host_deltas.refresh_bindings(path, candidate, source_identities=sorted(identities))
 
 
-def _owner_binding_preflight(repo, names, included):
+def _binding_policy(manifest, identities=(), *, project_derived=False):
+    """Keep policy strict; independently derived artifact hashes are not policy."""
+    value = json.loads(json.dumps(manifest))
+    for row in value["entries"]:
+        source = row["source_identity"]
+        artifact = source.startswith(("repository:", "fleet:", "recovery-artifact:"))
+        if source in identities or (project_derived and artifact):
+            row.pop("version_or_hash", None)
+        # A file readback hash is derived only when it checks this same bound
+        # repository artifact. Other readbacks remain explicit policy.
+        readback = row["readback"]
+        if (project_derived and source not in identities and source.startswith("repository:")
+                and readback.get("kind") == "file"
+                and readback.get("path") == source.removeprefix("repository:")):
+            readback.pop("sha256", None)
+    return value
+
+
+def _project_binding_manifest(repo, identities, *, base="HEAD"):
+    """Publish baseline rows plus selected updates, preserving foreign work."""
+    import sync_git
+    baseline = json.loads(sync_git.git(repo, "show", base + ":host-deltas.json"))
+    current = host_deltas._load_manifest_unbound(repo / "host-deltas.json", repo)
+    if _binding_policy(current, identities, project_derived=True) != _binding_policy(baseline, identities, project_derived=True):
+        raise sync_git.SyncBlocked("unselected host-delta fields differ; include the reviewed shared metadata file")
+    for index, row in enumerate(current["entries"]):
+        if row["source_identity"] in identities:
+            baseline["entries"][index] = row
+    return host_deltas._canonical_json(baseline)
+
+
+def _owner_binding_preflight(repo, names, included, *, project_derived=True):
     import sync_git
     path = repo / "host-deltas.json"
     if not path.is_file():
@@ -1351,13 +1379,7 @@ def _owner_binding_preflight(repo, names, included):
         return set()
     if "host-deltas.json" not in included:
         baseline = json.loads(sync_git.git(repo, "show", "HEAD:host-deltas.json"))
-        def policy(manifest):
-            manifest = json.loads(json.dumps(manifest))
-            for row in manifest["entries"]:
-                if row["source_identity"] in identities:
-                    row.pop("version_or_hash", None)
-            return manifest
-        if policy(current) != policy(baseline):
+        if _binding_policy(current, identities, project_derived=project_derived) != _binding_policy(baseline, identities, project_derived=project_derived):
             raise sync_git.SyncBlocked("unselected host-delta fields differ; include the reviewed shared metadata file")
     return identities
 
@@ -1373,7 +1395,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
     if artifacts is not None:
         recovery._select_artifacts(recovery._load_policy(repo / "recovery.json"), artifacts)
     try:
-        with sync_git.lock(repo):
+        with sync_git.lock(repo, timeout=120):
             pending = sync_git.read_pending(repo)
             needed_owners = set(pending.get("owners", ())) if pending and pending.get("scoped") else names
             destinations = _destinations(repo, machine, skill_roots) if needed_owners else []
@@ -1400,16 +1422,17 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 # Recovery capture is a cohesive allowlisted snapshot operation.
                 # Explicit portable/file selection must not silently capture it.
                 return {"result": "review-required", "reason": "scoped recovery capture needs an explicit artifact contract; use a reviewed broad recovery operation", "owners": sorted(names)}
-            bind_owners = set(pending.get("binding_identities", ())) if pending else _owner_binding_preflight(repo, names, set(include))
+            project_bindings = bool(pending.get("project_bindings")) if pending else not capture and "host-deltas.json" not in include
+            bind_owners = set(pending.get("binding_identities", ())) if pending else _owner_binding_preflight(repo, names, set(include), project_derived=project_bindings)
             if pending:
                 dependencies = pending["dependencies"]
             else:
-                dependencies = _scope_dependencies(repo, machine, names, capture, artifacts, bind_owners)
+                dependencies = _scope_dependencies(repo, machine, names, capture, artifacts, bind_owners, project_bindings=project_bindings)
             def check_dependencies(candidate=None):
-                if _scope_dependencies(repo, machine, names, capture, artifacts, bind_owners) != dependencies:
+                if _scope_dependencies(repo, machine, names, capture, artifacts, bind_owners, project_bindings=project_bindings) != dependencies:
                     raise sync_git.SyncBlocked("a selected admission, destination, or execution dependency changed")
                 if candidate is not None:
-                    candidate_dependencies = _scope_dependencies(candidate, machine, names, capture, artifacts, bind_owners)
+                    candidate_dependencies = _scope_dependencies(candidate, machine, names, capture, artifacts, bind_owners, project_bindings=project_bindings)
                     if candidate_dependencies != dependencies:
                         raise sync_git.SyncBlocked("selected work depends on unpublished admission, destination, or execution changes; include the reviewed dependency")
 
@@ -1436,7 +1459,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             def verify():
                 readback()
                 current = sync_git.read_pending(repo) or pending
-                with sync_git.prepare_candidate(repo, current["files"], base=current["base"]) as (candidate, tree):
+                with sync_git.publication_candidate(repo, current) as (candidate, tree):
                     if current.get("tree") != tree:
                         raise sync_git.SyncBlocked("publication candidate changed")
                     check_dependencies(candidate)
@@ -1459,7 +1482,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 report["installed_verified"] = bool(state.get("installed_verified"))
                 report["verified_recovery_artifacts"] = sorted(state.get("recovery_artifacts") or ())
                 report["capture_verified"] = bool(state.get("capture_recovery"))
-                report["pending_files"] = sorted(sync_git.changed(repo) - set(state["files"]))
+                dirty = sync_git.changed(repo)
+                report["pending_files"] = sorted((dirty - set(state["files"])) | (dirty & set(state.get("publication_overrides", {}))))
                 report["verification_scope"] = state["limits"]
                 return report
 
@@ -1504,6 +1528,9 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             for path, data in overrides.items():
                 files[path] = hashlib.sha256(data).hexdigest() if data is not None else "deleted"
             base_commit = sync_git.git(repo, "rev-parse", "HEAD")
+            if project_bindings and bind_owners:
+                overrides["host-deltas.json"] = _project_binding_manifest(repo, bind_owners, base=base_commit)
+                files["host-deltas.json"] = hashlib.sha256(overrides["host-deltas.json"]).hexdigest()
             with sync_git.prepare_candidate(repo, files, base=base_commit, overrides=overrides) as (candidate, candidate_tree):
                 check_dependencies(candidate)
                 _prepare_candidate_bindings(candidate, names, artifacts, files)
@@ -1527,7 +1554,11 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             checked_agents = _agent_scope_identities(destinations, names)
             readback()
             final_files = sync_git.identities(repo, selected)
-            with sync_git.prepare_candidate(repo, final_files, base=base_commit) as (candidate, tree):
+            publication_overrides = {}
+            if project_bindings and bind_owners:
+                publication_overrides["host-deltas.json"] = _project_binding_manifest(repo, bind_owners, base=base_commit).decode("utf-8")
+            publication = {"files": final_files, "base": base_commit, "publication_overrides": publication_overrides}
+            with sync_git.publication_candidate(repo, publication) as (candidate, tree):
                 check_dependencies(candidate)
                 sync_git.assert_publishable(candidate, final_files)
                 if (candidate / "registry.json").is_file():
@@ -1539,7 +1570,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                        "owners": sorted(names), "destinations": [str(p) for _, p in destinations],
                        "capture_recovery": capture, "recovery_roots": roots, "recovery_artifacts": artifacts,
                        "agent_identities": checked_agents, "owner_identities": expected_owners,
-                       "binding_identities": sorted(bind_owners),
+                       "binding_identities": sorted(bind_owners), "project_bindings": project_bindings,
+                       "publication_overrides": publication_overrides,
                        "agents_verified": False, "installed_verified": bool(names), "dependencies": dependencies,
                        "target": target, "base": base_commit, "message": message,
                        "files": final_files, "tree": tree,

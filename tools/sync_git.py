@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import tempfile
 import threading
+import time
 
 
 class SyncBlocked(RuntimeError):
@@ -31,7 +32,7 @@ def git_dir(repo: Path) -> Path:
 
 
 @contextmanager
-def _file_lock(lock_path: Path):
+def _file_lock(lock_path: Path, timeout=0):
     """OS-released lock: a process crash does not leave a stale lock owner."""
     handle = lock_path.open('a+b')
     handle.seek(0, 2)
@@ -39,16 +40,22 @@ def _file_lock(lock_path: Path):
         handle.write(b'0')
         handle.flush()
     handle.seek(0)
-    try:
-        if os.name == 'nt':
-            import msvcrt
-            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
-        else:
-            import fcntl
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except OSError as exc:
-        handle.close()
-        raise SyncBlocked('another sync is running') from exc
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            handle.seek(0)
+            if os.name == 'nt':
+                import msvcrt
+                msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            break
+        except OSError as exc:
+            if time.monotonic() >= deadline:
+                handle.close()
+                raise SyncBlocked('another sync is running') from exc
+            time.sleep(min(0.1, max(0, deadline - time.monotonic())))
     try:
         yield
     finally:
@@ -56,7 +63,7 @@ def _file_lock(lock_path: Path):
 
 
 @contextmanager
-def lock(repo: Path):
+def lock(repo: Path, timeout=0):
     key = str(git_dir(repo) / 'agent-signal-sync.lock')
     held = getattr(_path_lock_local, 'git_held', None)
     if held is None:
@@ -64,7 +71,7 @@ def lock(repo: Path):
     if key in held:
         yield
         return
-    with _file_lock(Path(key)):
+    with _file_lock(Path(key), timeout=timeout):
         held.add(key)
         try:
             yield
@@ -366,6 +373,25 @@ def _scoped_selection_gate(repo, pending):
         raise SyncBlocked('selected paths overlap staged work; preserve it for review')
 
 
+def pending_overrides(pending):
+    """Decode checked scoped metadata without changing its working-file guard."""
+    values = pending.get('publication_overrides', {})
+    if not isinstance(values, dict) or any(
+            name != 'host-deltas.json' or name not in pending['files'] or not isinstance(data, str)
+            for name, data in values.items()):
+        raise SyncBlocked('invalid scoped metadata publication override')
+    return {name: data.encode('utf-8') for name, data in values.items()}
+
+
+@contextmanager
+def publication_candidate(repo, pending):
+    overrides = pending_overrides(pending)
+    files = dict(pending['files'])
+    files.update({name: hashlib.sha256(data).hexdigest() for name, data in overrides.items()})
+    with prepare_candidate(repo, files, base=pending['base'], overrides=overrides) as value:
+        yield value
+
+
 def _publish_scoped(repo, pending, *, verify, readback):
     step = 'verify'
     try:
@@ -379,7 +405,7 @@ def _publish_scoped(repo, pending, *, verify, readback):
             raise SyncBlocked('private or generated paths cannot be published by sync')
         _scoped_selection_gate(repo, pending)
         index = _index_entries(repo)
-        with prepare_candidate(repo, pending['files'], base=pending['base']) as (candidate, tree):
+        with publication_candidate(repo, pending) as (candidate, tree):
             if pending.get('tree') and tree != pending['tree']:
                 raise SyncBlocked('candidate differs from the checked tree')
             pending['tree'] = tree

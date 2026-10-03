@@ -66,6 +66,42 @@ class ScopedGitTests(unittest.TestCase):
         self.assertEqual(b'reviewed\r\n', sync._raw_git(self.repo, 'show', 'HEAD:selected.md'))
         self.assertEqual(self.git('rev-parse', 'HEAD'), sync.git(self.remote, 'rev-parse', 'main'))
 
+    def test_projected_metadata_publishes_selected_rows_and_keeps_working_guard(self):
+        path = self.repo / 'host-deltas.json'
+        path.write_text(json.dumps({'selected': 'baseline', 'foreign': 'baseline'}))
+        self.git('add', 'host-deltas.json')
+        self.git('commit', '-m', 'metadata baseline')
+        self.git('push', 'origin', 'main')
+        self.base = self.git('rev-parse', 'HEAD')
+        path.write_text(json.dumps({'selected': 'reviewed', 'foreign': 'pending'}))
+        working = path.read_bytes()
+        projected = json.dumps({'selected': 'reviewed', 'foreign': 'baseline'})
+        pending = self.pending(('host-deltas.json',))
+        pending['publication_overrides'] = {'host-deltas.json': projected}
+        with sync.publication_candidate(self.repo, pending) as (_, tree):
+            pending['tree'] = tree
+        sync.save_pending(self.repo, pending)
+        report = self.publish(pending)
+        self.assertEqual('synced', report['result'], report)
+        self.assertEqual(working, path.read_bytes())
+        self.assertEqual({'selected': 'reviewed', 'foreign': 'baseline'},
+                         json.loads(self.git('show', 'HEAD:host-deltas.json')))
+        self.assertEqual(self.git('rev-parse', 'HEAD'), sync.git(self.remote, 'rev-parse', 'main'))
+
+    def test_projected_metadata_still_blocks_working_races_and_invalid_overrides(self):
+        path = self.repo / 'host-deltas.json'
+        path.write_text('reviewed metadata')
+        pending = self.pending(('host-deltas.json',))
+        pending['publication_overrides'] = {'host-deltas.json': 'projected metadata'}
+        with sync.publication_candidate(self.repo, pending) as (_, tree):
+            pending['tree'] = tree
+        path.write_text('concurrent metadata')
+        self.assertEqual('incomplete', self.publish(pending)['result'])
+        self.assertEqual(self.base, self.git('rev-parse', 'HEAD'))
+        pending['publication_overrides'] = {'other.md': 'unselected bytes'}
+        with self.assertRaises(sync.SyncBlocked):
+            sync.pending_overrides(pending)
+
     def test_default_preflight_and_selected_staging_still_block(self):
         self.dirty()
         target = sync.destination(self.repo)
