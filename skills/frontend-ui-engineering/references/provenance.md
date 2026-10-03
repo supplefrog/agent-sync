@@ -63,3 +63,10 @@ The design language is not limited to these candidates and may mix them with oth
 ### Evidence limits
 
 This comparison establishes source-backed decision differences and rejects concrete conflicts; it does not establish that any candidate produces better-looking pages, that the synthesis matches an individual's visual taste, or that source-identical host deployments behave identically. No visual preference tournament, generated imagery, upstream executable, or paid inference was required for source intake. The repository's frontend evaluation receipt records the checks actually run. Rendered UI quality still requires a real frontend task; personal taste remains provisional until explicit feedback supplies evidence.
+
+
+## Resource selection and reusable options (3 October 2026)
+
+[component-selection.md](component-selection.md) adapts existing shadcn registry discovery, 21st project-aware build/explore and Emil's isolated prototype-before-promotion approach. It adds role/theme/behavior queries, source-backed fit explanations, user-visible parts before integration and scoped selection records to the existing taste owner. No external suite, fixed option count, universal timing ceiling, automatic tool installation or hosted generation entitlement was adopted.
+
+[liked-motion-options.md](liked-motion-options.md) records the user's requested reusable choices from WhichAI review and their reader example. These options preserve the user's sequencing, clipping, continuity and material-purpose corrections; exact private project code/assets were not imported. Named suppliers are discovery leads, not tested product integrations.

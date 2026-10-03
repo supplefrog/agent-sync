@@ -2,6 +2,8 @@
 
 Use when a material visual taste decision is unresolved, or when the user asks for inspiration or comparisons. Routine repairs within an approved system, explicitly delegated selection, or a request to skip comparisons can bypass this taste-selection exercise, not the [checks and visual review before commit](../SKILL.md#checks-and-visual-review-before-commit) requirement for appearance changes. This is a lightweight way to obtain preferences, not a claim that models cannot design or that a particular skill helps every model.
 
+For source/component selection, use [component-selection.md](component-selection.md) before building alternatives. It supplies discovery/source evidence and this user's default parts preview before product integration; delegated taste alone does not waive that preview. This reference owns visual delivery and user choice.
+
 ## Make the choice visible
 
 When a material taste decision remains unresolved and the user has not delegated it or asked to skip comparisons, make the decision viewable: show a small comparison using the same representative content or surface, with concise labels and the meaningful tradeoff, instead of asking which they prefer in plain chat. Deliver it in the user's response surface; a tool-only capture or unshared file is not a comparison delivered to the user. Keep the comparison scoped to the decision—no fixed option count or whole redesign is required. The user can choose, combine qualities, reject the directions, or delegate the choice. If the available host cannot show an interactive preview, use the labelled screenshots and short reply format below.

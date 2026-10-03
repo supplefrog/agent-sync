@@ -1,9 +1,14 @@
 # Frontend Resource Catalog
 
-This is a routing catalog, not an automatic install list. Recheck live terms, licenses, compatibility, and pricing when they matter.
+Use [component-selection.md](component-selection.md) to turn this catalog into targeted discovery when choosing new or unresolved UI parts. It is not an automatic install list. Recheck live terms, licenses, compatibility, and pricing when they matter.
 
 | Resource | Best use | Boundary |
 |---|---|---|
+| [shadcn/ui](https://ui.shadcn.com/) | Accessible project components, themed source and registry discovery through its official CLI/MCP | Registry search/view/examples inspect source; they do not render the product. Inspect third-party items separately and keep existing project primitives. |
+| [Aura](https://www.aura.build/components) | Premade sections and visual parts with HTML/Tailwind/vanilla JS export | Adapt to the target framework; check selected component rights and dependencies. Personal/commercial entitlements differ. No agent MCP was verified. |
+| [GodUI](https://godui.design/) | Open-source React/Tailwind motion parts and official component-source MCP | Distinct from Godly inspiration. Check the installed stack and exact source; a catalog entry does not mean its MCP is configured. |
+| [Animate UI](https://animate-ui.com/), [Magic UI](https://magicui.design/) | Targeted motion primitives, themed effects and source registries | Inspect actual behavior and the exact license: [Animate UI](https://github.com/imskyleen/animate-ui/blob/main/LICENSE.md) adds a Commons Clause restriction on redistribution of original components. A theme wipe is not an icon morph; component defaults may require sequencing/reduced-motion adaptation. Do not import a whole visual style. |
+| [Dembrandt](https://github.com/dembrandt/dembrandt) | Optional live computed-style extraction when a reference needs numeric measurement | Observed CSS and heuristic token groups do not recover the original design system or functional components. Use existing tools; no new scraper or automatic installation. |
 | [21st.dev](https://21st.dev/) | Searchable React and Tailwind components, screens, themes, and agent prompts | Copied source becomes project code. Inspect license, dependencies, accessibility, responsiveness, and token fit before importing. Do not make it a default dependency. |
 | [Fancy Components](https://www.fancycomponents.dev/) | React microinteractions and expressive components inspired by award-winning sites | Usually adds source and Motion-related dependencies. Use targeted pieces, adapt styling, and provide reduced-motion behavior. |
 | [Godly](https://godly.design/) | Curated website inspiration and composition references | Inspiration only. Extract principles and verify original sources; do not present gallery work as reusable code or clone it. |
@@ -26,4 +31,4 @@ This is a routing catalog, not an automatic install list. Recheck live terms, li
 
 ## Selection rule
 
-Start with the project's current system and the user's expressed taste. This catalog is a discovery aid, not a closed style menu or evidence that a skill improves the current model. Use [taste-selection.md](taste-selection.md) for the distinction between inspiration discovery, requested mockups, and delegated choice. Mix principles or introduce new ones; judge the result rather than enforcing a lineage. Keep component roles consistent and dependencies proportionate.
+Start with the project's current system and the user's expressed taste. Perform the targeted selection procedure above for unresolved parts instead of choosing an arbitrary catalog example. This catalog is a discovery aid, not a closed style menu or evidence that a skill improves the current model. Use [taste-selection.md](taste-selection.md) for the distinction between inspiration discovery, requested mockups, and delegated choice. Mix principles or introduce new ones; judge the result rather than enforcing a lineage. Keep component roles consistent and dependencies proportionate.

@@ -15,6 +15,8 @@ Build the interface for its actual task and audience. Keep visual judgment and p
 
 ## Design authority and delegated taste
 
+Before selecting external UI parts for a new surface, redesign or unresolved treatment, read [references/component-selection.md](references/component-selection.md). It owns theme-aware resource search, premade-component reuse and showing selected parts before product integration. Search the relevant resources when local components do not satisfy the role; do not rely on this catalog being passively loaded. Routine repairs and approved working parts need no new search.
+
 Before choosing or delegating a visual direction, load [references/personal-design-defaults.md](references/personal-design-defaults.md). It owns this user's reusable taste and collaboration preferences across projects, separately from the general engineering method. Current requests and an established project's explicit approvals take precedence; apply the defaults without asking the user to repeat them.
 
 The current request and explicitly approved references lead. Preserve a coherent existing product system unless redesign is authorized; missing `DESIGN.md` does not erase the identity already present in the UI, assets, and code. Refinement fixes the named weakness while preserving approved typography, texture intensity, content order, and unrelated working qualities. Judge the changed element with its neighbors and the page as a whole. An audit returns evidence and recommendations without editing.

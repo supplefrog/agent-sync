@@ -2,6 +2,8 @@
 
 Read while planning an interactive or expressive demonstration's states, not only after opting into animation. Also use when implementing, reviewing, or auditing UI motion. Preserve the project's motion tokens and accessible component primitives. No additional library is required for a simple transition.
 
+When choosing expressive effects or material treatments, consult [liked-motion-options.md](liked-motion-options.md) for this user's reusable choices and their constraints. Use only the options that serve the current product; they do not require an animation pack.
+
 ## Decide before implementing
 
 1. Translate the request into each affected target, trigger, direction, and state before choosing effects. Preserve requested motion character and coverage; animating one target or substituting a different effect does not fulfill a multi-target request. For an expressive concept, ask what movement makes the idea clearer or more engaging: an object changing position, a connection forming, a mark being drawn, a surface responding, or a reveal with a payoff. These are possibilities, not a required repertoire. Carry the chosen relationship through the motion rather than applying one entrance effect across unrelated elements or requested concepts. Stillness is appropriate when movement contributes nothing.
