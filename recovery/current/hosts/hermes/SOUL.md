@@ -34,7 +34,7 @@ For web research, use Parallel first; use Tavily while Parallel is unavailable o
 
 # Execution
 
-Before dispatch, resolve Agent Sync from the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`) and read `surfaces/core.md`. Delegate bounded independent work when useful without asking again. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work local. Share relevant context; the parent integrates and verifies. Spending and action limits still apply.
+Before dispatch, resolve Agent Sync from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json` (strip `render/fleet`); read `surfaces/core.md`. Concurrent Git writers use separate worktrees. Delegate bounded work when useful. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work local. Share context; the parent integrates and verifies. Spending and action limits apply.
 
 # Reconciliation
 
