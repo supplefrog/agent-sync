@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-workflow-continuity",
+  "capability": "frontend-ui-engineering",
+  "date": "2026-10-04",
+  "record_scope": "Supported method correction and bounded injected-guide subsequent-use evidence; not a matched skill-quality benchmark.",
+  "status": "supported_method_checked",
+  "baseline": {
+    "version": "4.0.0",
+    "source_commit": "77dd94c7cc801546fd18729761bfa0e97ad01de8",
+    "accepted_project_revision": "564e588ffc3bb99c1ed2aa82b00bb8953da2aea4",
+    "frozen_output_sha256": "9a2060382d99667ef4bba5ee2e5ca79e161323937350de2953c11181331a873c",
+    "project_modified": false
+  },
+  "candidate": {
+    "version": "4.1.0",
+    "source_sha256_at_follow_on_instruction_read": {
+      "skills/frontend-ui-engineering/SKILL.md": "ee8640f3bd74baeaf66718df24104af47435d9b7447ebf080d879cec3f783c86",
+      "skills/frontend-ui-engineering/references/defect-acceptance.md": "5d3a5ed6717eb687ffa4527e1c304dbbeeb9477b786c80d7b9cd354633e9b68b",
+      "skills/frontend-ui-engineering/references/design-judgment.md": "b2e13f5d0d325110c0cab586618af45b4f14f221f97279dc8614733441ca087e",
+      "skills/frontend-ui-engineering/references/motion-design.md": "07634a53d7af1275707b8283eecc898c9298004f7f993b9c109ff65b98a5a400"
+    },
+    "changes": [
+      "Carry purpose, useful content/actions, rendered relationships, selected finishing treatments and complete interaction as independent commitments in the existing brief/handoff.",
+      "Select falsifying rendered cases during planning, then recheck affected inherited commitments after repairs and revisions.",
+      "Inspect local painted extents and available client width/scroll position, rather than inferring acceptance from clickable boxes or innerWidth.",
+      "Choose product-fitting expressive motion/material during composition; distinguish quiet settled reading from abrupt navigation. No effect/image quota."
+    ],
+    "alternatives": {
+      "additional_symptom_bans": "Overlaps existing purpose guidance and risks suppressing valid expression.",
+      "new_design_framework_or_checker": "No demonstrated dependency; cannot supply purpose or optical judgment.",
+      "selected": "Reorganize the existing workflow and strengthen mechanism-selected rendered observations."
+    },
+    "source_sha256_lf_normalized": {
+      "skills/frontend-ui-engineering/SKILL.md": "ee8640f3bd74baeaf66718df24104af47435d9b7447ebf080d879cec3f783c86",
+      "skills/frontend-ui-engineering/references/defect-acceptance.md": "5d3a5ed6717eb687ffa4527e1c304dbbeeb9477b786c80d7b9cd354633e9b68b",
+      "skills/frontend-ui-engineering/references/design-judgment.md": "b2e13f5d0d325110c0cab586618af45b4f14f221f97279dc8614733441ca087e",
+      "skills/frontend-ui-engineering/references/motion-design.md": "07634a53d7af1275707b8283eecc898c9298004f7f993b9c109ff65b98a5a400"
+    }
+  },
+  "runtime": {
+    "execution": "Native Codex bounded collaboration workers with normal filesystem and browser tools",
+    "worker_model": "gpt-6.1-sol",
+    "worker_reasoning": "medium",
+    "reviewer_model": "gpt-6.1-sol",
+    "reviewer_reasoning": "high",
+    "instruction_loading": "Explicit candidate-file reads with recorded hashes; not natural triggering",
+    "browser": "Codex in-app browser, Windows Chrome/154.0.0.0, supported loopback HTTP",
+    "bounded_workers": 3,
+    "fresh_source_advisory_reviews": 2,
+    "new_dependencies": false,
+    "paid_inference_route": false,
+    "observed_billed_dollars": null,
+    "observed_input_tokens": null,
+    "observed_output_tokens": null
+  },
+  "observations": {
+    "old_output": [
+      "Focused textarea paint crossed adjacent labels despite reachable controls.",
+      "Selected first-item halo exceeded a local clipping boundary despite no document overflow.",
+      "Reported inactive capture action was not reproduced at desktop width; it opened and focused the editor.",
+      "Mobile disclosure indentation was observable but not established as a defect or universal centering requirement."
+    ],
+    "initial_build": {
+      "task": "Small usable reading-club collection from product requirements, without a supplied design",
+      "first_draft_sha256": "77fb5de1598bae5518397cd693c072133e1ba05ce3ea054fc80b3e570f15322e",
+      "final_sha256": "2b0e72aa6d3cd634ab8e115c2499e38f08745fa8f5b0777296099e9888b6f71e",
+      "guide_binding": "Earlier 4.1.0 draft; does not test subsequent finishing or scrollbar-occupancy wording",
+      "result": "Failed narrow geometry; useful content, filtering, capture and tested focus paths worked",
+      "failure": {
+        "inner_width": 320,
+        "client_width": 305,
+        "scrollable_width": 318,
+        "horizontal_focus_scroll_approx": 13.6
+      },
+      "repair_batches": 1,
+      "repair_scope": "Source-only dialog return-focus correction before browser replay",
+      "authorization": "Worker HTTP test initially blocked; direct user approval later allowed parent replay. No rejected protocol retry."
+    },
+    "layout_follow_on": {
+      "task": "Long-content and narrow-layout pressure while retaining useful task paths, content and interaction",
+      "raw_sha256": "fc57fe1e4749f774eaa8ca238f9eabd2a5bb079f3b66c839f7da451275c82b94",
+      "final_sha256": "f551b1a79bc91547fdff5d7c36f2eb21b30e8f8c6ddf6833bb4fe1ec526b0ad8",
+      "guide_binding": "Current 4.1.0 candidate",
+      "result": "Observed scoped layout/task acceptance after one bounded repair batch",
+      "repair_batches": 1,
+      "repair_scope": "Retain submitted content during modal closing; align selected article into view on desktop as well as narrow layouts",
+      "native_320_geometry": {
+        "inner_width": 320,
+        "client_width": 305,
+        "scrollable_width": 305,
+        "horizontal_scroll": 0
+      },
+      "observed_scope": "320/720/1280px, long title/topic/unbroken note, search/filter recovery, related selection, native validation, input preservation, cancel/Escape/focus, save/reload and reduced motion",
+      "parent_replay": "Native 320px geometry, contained controls, saving opens a visible focused article",
+      "finishing_choice": "Warm authored CSS annotation slip and continuous reader/modal changes; separate generated imagery rejected for this task's composition",
+      "motion_evidence": "Intermediate exit opacity recorded; later entry samples settled too soon to establish interpolation. No FPS/smoothness certification."
+    },
+    "copy_follow_on": {
+      "task": "Clear article/my-note vocabulary and truthful browser-only persistence while retaining layout, useful content and complete interaction",
+      "guide_binding": "Current 4.1.0 candidate and exact layout artifact",
+      "raw_sha256": "234ad8fe91f2ee494220f8d4ebf4b443074a7ec88c322de31b4a1b581103f6d5",
+      "final_sha256": "5c2573d6d7afd50e28ccc513049cbf5d03cc908fdf17432b50e0be8ef697f296",
+      "result": "Scoped parent replay passed after the disclosed syntax repair; worker final browser acceptance remained unavailable",
+      "initial_finding": "Parent source inspection found a malformed byline conditional; static shell screenshots are not task evidence.",
+      "repair_batches": 1,
+      "repair_scope": "Close the malformed empty-string quote; CSS and all six article excerpts remain byte-identical to the layout artifact",
+      "readiness": "Extracted JavaScript parses; HTTP 200 exact source readback matches final identity",
+      "parent_observed_scope": "320/720/1280px settled geometry, search miss/recovery, topic filter, related selection/detail agreement, native empty validation, long title/topic/unbroken note, save with no excerpt, distinct article/note labeling, reload persistence, reopening reset and Escape return focus",
+      "settled_geometry": [
+        {
+          "inner_width": 320,
+          "client_width": 305,
+          "scrollable_width": 305,
+          "horizontal_scroll": 0
+        },
+        {
+          "inner_width": 720,
+          "client_width": 705,
+          "scrollable_width": 705,
+          "horizontal_scroll": 0
+        },
+        {
+          "inner_width": 1280,
+          "client_width": 1265,
+          "scrollable_width": 1265,
+          "horizontal_scroll": 0
+        }
+      ],
+      "focus_after_save": "Reader focused, title visible, long topic and note wrap within available client width",
+      "intermediate_observation": "One immediate view-transition sample reported scrollable width 320 with client width 305 and x=0; after settlement it was 305/305/x0. Intermediate pan behavior remains unverified.",
+      "observed_console_errors_and_warnings": 0,
+      "operational_limit": "Worker browser call stalled approximately 1006.7 seconds, was interrupted, then its binding was unavailable. Partial raw-shell screenshots are excluded. Parent supported HTTP binding remained available and replayed the final source.",
+      "delivery": "Uncommitted interactive exploratory preview and representative screenshot; no personal taste approval implied"
+    }
+  },
+  "verification": {
+    "native_skill_metadata": "pass",
+    "local_markdown_links": "pass",
+    "unchanged_measurement_gate_tests": {
+      "passed": 24,
+      "new_tests_added": 0
+    },
+    "git_diff_check": "pass",
+    "source_advisory_review": "No blocking source issue; parent corrected a handoff that would freeze a provisional lack of expressive animation",
+    "public_safe": true
+  },
+  "limits": [
+    "No matched baseline/candidate causal improvement claim or weight-level diagnosis.",
+    "Explicit guide injection does not prove natural triggering or cross-host behavioral parity.",
+    "Initial draft failed; subsequent-use evidence includes disclosed QA repairs, not universally defect-free first output.",
+    "Generated-image tool invocation, physical-device testing, full accessibility, exhaustive interruption, zoom and cross-browser coverage were not established.",
+    "Motion CSS is preserved byte-for-byte, and the inherited layout probe includes exit evidence; copy trial does not establish complete intermediate-frame or interruption coverage.",
+    "Raw sources, instruction-read identities, screenshots, measurements and repair diffs remain local in the existing project evidence record; trial visuals remain exploratory and uncommitted."
+  ],
+  "rollback": "Existing 4.0.0 owner at baseline commit; revert this bounded source patch through the canonical reconciler without rewriting history."
+}
