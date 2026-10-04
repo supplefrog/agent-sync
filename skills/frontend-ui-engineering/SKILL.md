@@ -3,7 +3,7 @@ name: frontend-ui-engineering
 description: Use for frontend design, implementation, and rendered UI review, including reviewable prototypes. Match engineering depth to the requested fidelity. For test-only edits, use this when a UI-specific behavior, accessibility, or visual question needs its guidance.
 license: MIT
 metadata:
-  version: 3.2.3
+  version: 4.0.0
   author: Addy Osmani; Agent Sync adaptation
   compatibility: Requires the project's frontend toolchain and browser rendering for production verification.
   tags: [frontend, ui, accessibility, responsive-design, design-systems]
@@ -12,6 +12,26 @@ metadata:
 # Frontend UI Engineering
 
 Build the interface for its actual task and audience. Keep visual judgment and production engineering together: a distinctive screenshot with a broken task path is unfinished; correct components with no hierarchy are unfinished too.
+
+## Purpose before parts
+
+Before choosing words, controls, symbols or sections, decide what the visitor should understand, feel or accomplish and how the design makes that perceptible. Before coding a new direction, compare your proposed composition with a credible competing representation and with a version that omits its weakest part. Choose the experience whose visible relationships best convey the idea. Consider typography, color, imagery and behavior together; attractive parts in isolation do not establish a coherent whole. Keep this decision compact in the working context; no compulsory scorecard or long rationale.
+
+Test contribution by the difference a part makes, not by assigning it a category such as personality, breathing room or engagement. If removing it preserves understanding, action, orientation and the distinctive experience, omit it. If removal loses something, identify the actual loss: a needed fact, a discoverable action, a relationship, or an expressive setup/payoff. Let space, color and imagery create a pause without automatically adding a slogan to fill it. Use the strongest visual relationship rather than repeating its explanation in small text.
+
+Avoid repetition in meaning, not just identical wording. Compare neighboring copy by what it tells the visitor, and neighboring controls by the actual state or destination they produce. Several slogans can restate one benefit; differently named buttons can perform one action; different heroes can lead to the same stock demo. Consolidate these unless the visitor's changed context supplies a reason for recurrence. Keep useful metadata, instructions, honest limitations and distinctive voice; one memorable line may lead a composition. This asks for considered taste, not minimalism or a fixed text budget. Apply it while planning and delegating the first draft, before QA.
+
+### Recurring defaults to reject
+
+These are concrete failures of purpose, not a blacklist of styles or characters. Current explicit choices and an established product's intentional conventions take precedence.
+
+- **Decorative `01 /`, `02 /` and slash labels:** do not invent a serial or technical-looking system for ordinary content. Use numbering when order, position or reference matters; ordinary lists need no index or zero padding. Preserve meaningful IDs, dates, fractions, paths and chosen notation.
+- **An arrow on every card, selector or button:** establish its role from the actual action, destination and result. Local selection must not suggest leaving for another destination. Directional invitations and return actions must be coherent from their use position. Conventional progression arrows need not literally trace scrolling, but a repeated corner arrow cannot mean everything. Keep meaningful navigation, disclosure, transfer and expressive symbols; omit an unhelpful cue rather than replace it with another ornament.
+- **Scattered captions and miniature slogans:** remove lines that repeat a headline, visible relation or already stated benefit. Place needed information next to what it informs. Small text itself is valid; redundant, ungrounded scattering is the failure.
+- **Different labels for the same choice:** consolidate actions in the same decision context. A useful action repeated at a distant reading position can save travel; keep its meaning truthful. Do not create another sales section, footer CTA or capture box simply to fill the page.
+- **One shell across distinct concepts:** do not use recolors of an outlined note window, numbered feature list and bottom form as different experiences. Let the product relationship determine representation and interaction. Shared primitives and state logic are useful; cards, outlines and shadows remain available when they fit.
+
+Use model judgment for these decisions first, suitable tools/components for concrete implementation gaps, and focused instructions for recurring failures. Keep defect QA for behavior that needs observation; do not replace a coherent first draft with a growing mandatory patch/reviewer loop. When evaluating this guidance after a model change or recurring regression, recheck the affected behavior on fresh representative work with the exact model and active skill recorded, following `instruction-authoring`. Preserve successful capabilities and nearby valid cases; do not infer a weight-level cause or add a model-specific branch from one output. Keep evidence in the existing evaluation owner, without adding a compulsory evaluation to ordinary frontend work.
 
 ## Design authority and delegated taste
 
@@ -69,7 +89,7 @@ Read `references/webpage-workflow.md` when classifying supplied references, reco
 - Use semantic surface, text, border, action, selection, and status tokens. Choose light/dark behavior from the existing product, user setting, and usage context. Keep color meanings consistent across themes; check actual contrast. No color-space, accent-percentage, pure-black/white, gradient, or font blacklist overrides the brief.
 - Inspect textures as painted in the page, including their intensity, seams, repetition, scaling, and compositing across representative regions and scroll positions. When an artifact appears, isolate the asset, repetition boundary, and paint/compositing behavior to locate its cause; verify the chosen remedy in the full render without changing approved texture character as a side effect.
 - Keep factual copy intact unless changing it is in scope. Controls name their action and use the same terms through confirmation and error recovery. Never invent customers, testimonials, logos, prices, performance claims, or metrics as proof. Clearly labeled illustrative content is suitable for a demo, not production evidence; otherwise request the fact or choose a structure that does not need it. Put implementation/review bookkeeping in delivery notes, not authored reading content, unless readers need it to understand a limitation or act safely.
-- Edit for contribution: small slogans, numbering, icons, navigation and framing should add information, affordance, expression or discovery. Remove repetitions that explain an already clear visual or restate the headline; strengthen the visual when labels are compensating for an unclear idea. Keep meaningful controls, accessible labels and honest disclosures. No treatment is banned: judge borders, shadows, gradients, arrows and stillness by what they do in this composition.
+- Apply the purpose and repetition rules above to copy, symbols and repeated actions. Keep meaningful controls, accessible labels and honest disclosures; strengthen a visual when labels are compensating for an unclear relationship. Judge surfaces and stillness by their role in the composition.
 
 ## Component architecture and state
 

@@ -1,0 +1,68 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "c2478799adc8555f73dc7791c440040a7e2eea6794ea25c7f209b6fc60a48fd1",
+      "before_sha256": "c2478799adc8555f73dc7791c440040a7e2eea6794ea25c7f209b6fc60a48fd1",
+      "owner": "frontend-ui-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "d2a4461ca70a35ebd53ecc4cf8290ee37c04190360b0ad6457be20cbe9230532",
+      "before_sha256": "be6ef141de519b317de14e9d674bd543e88d63b8dd0141a8fd5ce26bb6dcbd13",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "frontend-ui-engineering",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "0c6d528ff36e3c25b6888683d29bb00a10cc26f64e32991aabafdd1a100702e2",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}
