@@ -1,7 +1,7 @@
 ---
 name: instruction-authoring
-description: Use when authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns skill improvements during work, triggers, supporting resources, and proportional verification.
-version: 2.0.0
+description: Use when saving behavioral preferences, authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns placement, skill improvements, triggers and proportional verification.
+version: 2.0.1
 author: Hermes Agent
 license: MIT
 metadata:
@@ -19,9 +19,12 @@ Use this to author or review durable instructions and model-facing tool descript
 - Unresolved workflow/capability design => `outcome-first-workflow-design`; skip for a bounded wording, duplication, or stale-reference repair with a known owner.
 - Cross-host placement or convergence => load `cross-agent-surface-engineering` first.
 - Hermes behavior-surface ambiguity => load `hermes-self-engineering` first.
-- Stable user/environment fact => memory, not a skill.
-- Project-only convention => effective project context file, not a global skill.
-- Repeated task procedure => one owning skill.
+- Shared behavioral preference => the existing standing owner in `surfaces/core.md`; necessary host-only differences remain in its adapter.
+- Task-type preference, reusable method or supported method correction => that task's existing skill.
+- Project-only convention or taste => effective project context file.
+- Stable user/environment fact or contextual preference => authorized native memory; preserve privacy and host authorization.
+
+When saving a preference, infer its intended scope from the user's words and existing context before choosing the owner. Distinguish explicit intent from inference. Check that the owner is available before the decision the rule governs; a saved file or catalog entry alone is insufficient. Ask only for consequential scope ambiguity.
 
 Patch an existing owner when it already covers the task. Create a new skill only when no owner can be extended coherently. Reference adjacent owners; do not copy their procedures.
 
@@ -29,9 +32,9 @@ Patch an existing owner when it already covers the task. Create a new skill only
 
 When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work. At substantial completion, check for a supported reusable correction; if none exists, preserve the handoff without loading more authoring guidance or adding a rule. Preserve task data and incident evidence locally.
 
-Keep substantial-task status, decisive reasons, evidence and next safe action in the existing project record, using `breadcrumb-records` when no equivalent record exists. That handoff is distinct from a reusable instruction correction; if no supported lesson exists, preserve the handoff without a skill edit. Follow the host's memory authorization rather than treating a learning checkpoint as permission to write memory.
+Keep substantial-task status, decisive reasons, evidence and next safe action in the existing project record, using `breadcrumb-records` when no equivalent record exists. Follow the host's memory authorization; a learning checkpoint does not authorize a memory write.
 
-Extract the reusable decision rule, its triggering conditions, and the nearby case it must not change. Project-specific taste and content stay in project context; a correction to the method belongs in the task's skill. Reconcile the rule with existing guidance rather than appending a competing instruction. If no durable lesson is supported or the owner already covers it, make no edit. Keep the standing trigger in the effective host instruction surface and the procedure here; verify that the trigger is available before the learning checkpoint, not only after this skill is manually loaded. Report checked source changes separately from live deployment; a blocked sync remains pending, not active across future threads.
+Extract the reusable decision rule, its triggering conditions, and the nearby case it must not change. Reconcile the rule with existing guidance rather than appending a competing instruction. If the owner already covers the rule, make no edit. Keep the standing authoring trigger available before the learning checkpoint, and the placement procedure here. Report checked source changes separately from live deployment; a blocked sync remains pending, not active across future threads.
 
 Use the existing authorization for ordinary reversible skill improvements. Check the affected behavior and a nearby valid case, preserve rollback, and complete authorized synchronization. Do not duplicate an existing rule or create a new skill for a narrow addition. Speculative causal/model-quality claims remain candidates until suitable evidence supports them; automatic improvement is not automatic acceptance, paid evaluation, a new background watcher, or permission to weaken safeguards.
 

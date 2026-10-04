@@ -78,7 +78,7 @@ Only this delimited section is projected into host overlays. Keep shared behavio
 Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence.
 
 ## Authoring
-Before proposing or editing durable instructions or a supported reusable correction, load Agent Sync's `skills/instruction-authoring/SKILL.md`. Change the existing source, replace overlapping advice, and regenerate managed overlays. Keep project rules local; preserve compact handoffs and reuse bound evidence for substantial work.
+Before saving behavioral preferences or proposing or editing durable instructions or supported reusable corrections, load Agent Sync's `skills/instruction-authoring/SKILL.md`. Update the existing owner; replace overlap and render overlays. Keep project rules local; retain compact handoffs and bound evidence for substantial work.
 
 ## Scope
 Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met.

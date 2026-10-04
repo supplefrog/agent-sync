@@ -1,7 +1,7 @@
 ---
 name: hermes-self-engineering
 description: Use when the owning Hermes behavior surface is unclear. Select the supported placement; instruction-authoring owns instruction content and cross-agent-surface-engineering owns cross-host parity.
-version: 2.1.0
+version: 2.1.1
 author: Hermes Agent
 license: MIT
 metadata:
@@ -21,10 +21,10 @@ Load `hermes-agent` for supported operations. Inspect the active home/profile, r
 - **Provider request setting:** generation mechanics such as verbosity, reasoning, service tier, JSON mode, or token limits. Display verbosity, reasoning visibility, reasoning effort, and answer length are different controls; backend acceptance does not prove the desired behavior.
 - **Task-specific auxiliary/delegation config:** routing for a defined side task. A catalog entry is not proof of account availability or usable rate limits.
 - **Skill:** a reusable task procedure, local trap, script, template, or conditional reference. Once selected, use `instruction-authoring` for content and proportional evaluation.
-- **SOUL.md:** instance-wide communication and judgment defaults. Keep useful short rules inline; do not move them solely to reduce this file's word count.
+- **SOUL.md:** instance-wide communication and judgment defaults. Author Agent Sync-managed shared rules in `surfaces/core.md`, then render. Keep useful short rules inline; do not move them solely to reduce word count.
 - **agent.system_prompt / API override:** deployment-specific or experimental text when no named personality is selected; not a second baseline communication owner.
 - **/personality / agent.personalities:** temporary or named persona overlays.
-- **Memory/user profile:** stable facts and preferences, not task results or short-lived rankings.
+- **Memory/user profile:** authorized stable facts and contextual preferences, not task results or short-lived rankings. Behavioral rules use the applicable standing or task owner through `instruction-authoring`.
 - **Source/plugin:** only when supported higher-level surfaces cannot implement the behavior. Within authorization, preserve the source revision, diff, rollback, and fresh-runtime check. Publishing issues or PRs remains a separate action.
 
 A one-off execution mistake or an already-correct rule may need no durable change. Do not edit another profile without explicit authorization.

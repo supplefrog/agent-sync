@@ -33,14 +33,14 @@
       "strategy": "merge"
     },
     {
-      "bytes": 2383,
+      "bytes": 2382,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "49939f14e4b0590bd1ed1d24c6c629eaa631029cb8c1c85daec94656f67437a3",
+      "sha256": "d95c27d5a6f280ae32dd92edbc608ced77ab079757b45a05aecab2cb4c6cf62f",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -295,14 +295,14 @@
       "strategy": "merge"
     },
     {
-      "bytes": 2741,
+      "bytes": 2740,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "ae131afb8327cc0831d3a891ffd98d3b8c9356a9bdd73db86ed4af5077c14c5a",
+      "sha256": "a6b68b8cddb81d49196e91da378a3418a558c8ef5331fc784334c584e1abf7e4",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"

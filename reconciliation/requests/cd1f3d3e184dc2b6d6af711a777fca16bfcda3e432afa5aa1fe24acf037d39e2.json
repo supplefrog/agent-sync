@@ -1,0 +1,82 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "634b50a64f7200ea2b0b2ec0a64fca3525eaefaa5e3cea19abb19439d0784583",
+      "before_sha256": "634b50a64f7200ea2b0b2ec0a64fca3525eaefaa5e3cea19abb19439d0784583",
+      "owner": "hermes-self-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "6e9a19ade1e8f21b1293d26e980a86157e3c48f7f6573846885e63231bf4f1ae",
+      "before_sha256": "6e9a19ade1e8f21b1293d26e980a86157e3c48f7f6573846885e63231bf4f1ae",
+      "owner": "instruction-authoring",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "0df883c8e83da54eb5373d125620968de242a673d9938bdf2969f09294a90d48",
+      "before_sha256": "0df883c8e83da54eb5373d125620968de242a673d9938bdf2969f09294a90d48",
+      "owner": "project-prior-art",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "569dc09ca37627b6d5bbd6504974da302a4a1111470e7e493d0d6c48b03144c5",
+      "before_sha256": "dae13a0f0f6b4492e96a470d8ac83421740508820076a34c4f8b94f2446a7579",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "hermes-self-engineering",
+    "instruction-authoring",
+    "project-prior-art",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "cd1f3d3e184dc2b6d6af711a777fca16bfcda3e432afa5aa1fe24acf037d39e2",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}
