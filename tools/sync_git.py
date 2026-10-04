@@ -19,7 +19,7 @@ class SyncBlocked(RuntimeError):
 
 
 def git(repo: Path, *args: str, env=None, input=None) -> str:
-    result = subprocess.run(['git', '-C', str(repo), *args], capture_output=True,
+    result = subprocess.run(['git', '-c', 'core.longpaths=true', '-C', str(repo), *args], capture_output=True,
                             text=True, encoding='utf-8', env=env, input=input, timeout=120)
     if result.returncode:
         # Do not persist remote URLs, credential-helper output, or hook secrets.
@@ -29,6 +29,47 @@ def git(repo: Path, *args: str, env=None, input=None) -> str:
 
 def git_dir(repo: Path) -> Path:
     return Path(git(repo, 'rev-parse', '--absolute-git-dir'))
+
+
+def common_dir(repo: Path) -> Path:
+    """Publication refs are shared by linked worktrees; coordinate there."""
+    return Path(git(repo, 'rev-parse', '--path-format=absolute', '--git-common-dir')).resolve()
+
+
+def assert_integration_owner(repo: Path, integration_attempt=None):
+    """All publication paths respect a pending ready attempt in shared Git state."""
+    common = common_dir(repo)
+    if Path(repo).resolve() == common / 'agent-signal-published':
+        raise SyncBlocked('published source is read-only; develop or maintain an isolated worktree')
+    journal_path = common / 'agent-signal-integration.json'
+    journal = json.loads(journal_path.read_bytes()) if journal_path.exists() else None
+    if journal is None:
+        if integration_attempt is not None:
+            raise SyncBlocked('the ready integration attempt is no longer pending')
+        return
+    if (integration_attempt != journal.get('attempt')
+            or str(Path(repo).resolve()) != journal.get('integration_repo')):
+        raise SyncBlocked('a ready integration is pending; resume its exact ready input and selection first')
+
+
+def assert_ready_source(repo: Path, files, integration_attempt):
+    """Bind the inner reconciler's captured inputs to the frozen composed tree."""
+    if integration_attempt is None:
+        return
+    assert_integration_owner(repo, integration_attempt)
+    journal = json.loads((common_dir(repo) / 'agent-signal-integration.json').read_bytes())
+    tree = journal['composed_tree']
+    if (git(repo, 'rev-parse', 'HEAD') != journal['base']
+            or git(repo, 'write-tree') != git(repo, 'rev-parse', journal['base'] + '^{tree}')
+            or changed(repo) != set(journal['composition_files'])
+            or identities(repo, journal['composition_files']) != journal['composition_files']):
+        raise SyncBlocked('integration source or index changed from the frozen ready composition')
+    for name, captured in files.items():
+        safe_path(repo, name)
+        expected = (hashlib.sha256(_raw_git(repo, 'show', tree + ':' + name)).hexdigest()
+                    if git(repo, 'ls-tree', tree, '--', name) else 'deleted')
+        if captured != expected:
+            raise SyncBlocked('selected source differs from the frozen ready tree: ' + name)
 
 
 @contextmanager
@@ -64,7 +105,7 @@ def _file_lock(lock_path: Path, timeout=0):
 
 @contextmanager
 def lock(repo: Path, timeout=0):
-    key = str(git_dir(repo) / 'agent-signal-sync.lock')
+    key = str(common_dir(repo) / 'agent-signal-sync.lock')
     held = getattr(_path_lock_local, 'git_held', None)
     if held is None:
         held = _path_lock_local.git_held = set()
@@ -122,9 +163,24 @@ def path_locks(paths):
 
 def changed(repo: Path) -> set[str]:
     # -z handles whitespace, Unicode, and literal pathspec metacharacters.
-    tracked = git(repo, 'diff', '--name-only', '-z', 'HEAD', '--')
+    entries = git(repo, 'diff', '--raw', '--no-renames', '-z', 'HEAD', '--').split('\0')
+    tracked = {entries[i + 1]: entries[i].split() for i in range(0, len(entries) - 1, 2)}
     new = git(repo, 'ls-files', '--others', '--exclude-standard', '-z')
-    return {p for p in (tracked + '\0' + new).split('\0') if p and not re.fullmatch(r"\.agent-signal-path-[0-9a-f]{64}\.lock", Path(p).name)}
+    paths = {p for p in set(tracked) | set(new.split('\0')) if p and not re.fullmatch(r"\.agent-signal-path-[0-9a-f]{64}\.lock", Path(p).name)}
+    staged = set(git(repo, 'diff', '--cached', '--name-only', '-z', 'HEAD', '--').split('\0')) - {''}
+    # Legacy CRLF blobs under text/eol attributes can look dirty immediately
+    # after checkout. Publication uses raw bytes; never conceal staged work.
+    for name, metadata in tracked.items():
+        if name in staged or metadata[0] != ':' + metadata[1]:
+            continue
+        try:
+            safe_path(repo, name)
+            target = repo / name
+            if target.is_file() and target.read_bytes() == _raw_git(repo, 'show', 'HEAD:' + name):
+                paths.discard(name)
+        except (OSError, SyncBlocked):
+            pass
+    return paths
 
 
 def safe_path(repo: Path, value: str) -> str:
@@ -213,7 +269,7 @@ def preflight(repo: Path, target, *, files=None, scoped=False):
 
 
 def _raw_git(repo, *args, input=None, env=None):
-    result = subprocess.run(['git', '-C', str(repo), *args], input=input,
+    result = subprocess.run(['git', '-c', 'core.longpaths=true', '-C', str(repo), *args], input=input,
                             capture_output=True, env=env, timeout=120)
     if result.returncode:
         raise SyncBlocked('git ' + args[0] + ' failed; inspect the repository or remote')
@@ -392,7 +448,7 @@ def publication_candidate(repo, pending):
         yield value
 
 
-def _publish_scoped(repo, pending, *, verify, readback):
+def _publish_scoped(repo, pending, *, verify, readback, integration_attempt=None):
     step = 'verify'
     try:
         if destination(repo) != pending['target']:
@@ -473,19 +529,46 @@ def _publish_scoped(repo, pending, *, verify, readback):
             if (_index_entries(repo) != index or git(repo, 'rev-parse', 'HEAD') != commit
                     or destination(repo) != target):
                 raise SyncBlocked('repository changed before final verification')
-        (git_dir(repo) / 'agent-signal-sync.json').unlink()
-        return {'result': 'synced', 'commit': commit, 'remote': target['remote'],
-                'branch': target['branch'], 'agents_verified': bool(pending.get('agents_verified')),
-                'remote_verified': True}
+        result = {'result': 'synced', 'commit': commit, 'remote': target['remote'],
+                  'branch': target['branch'], 'agents_verified': bool(pending.get('agents_verified')),
+                  'remote_verified': True}
+        if integration_attempt is not None:
+            # Keep the existing receipt until the ready adapter has completed
+            # published-source readback. A crash after return cannot redeploy.
+            pending.update(integration_attempt=integration_attempt, completion=result)
+            save_pending(repo, pending)
+        else:
+            (git_dir(repo) / 'agent-signal-sync.json').unlink()
+        return result
     except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
         return {'result': 'incomplete', 'failed_step': step, 'reason': str(exc),
                 'commit': pending.get('commit'), 'retry': 'run the same sync after resolving the failure'}
 
 
-def publish(repo: Path, pending, *, verify, readback=lambda: None):
+def publish(repo: Path, pending, *, verify, readback=lambda: None, integration_attempt=None):
+    """Serialize direct callers too; owner checks and publication share one lock."""
+    try:
+        with lock(repo, timeout=120 if pending.get('scoped') else 0):
+            return _publish_unlocked(repo, pending, verify=verify, readback=readback,
+                                     integration_attempt=integration_attempt)
+    except (OSError, RuntimeError, ValueError) as exc:
+        return {'result': 'incomplete', 'failed_step': 'integration-ownership', 'reason': str(exc)}
+
+
+def _publish_unlocked(repo: Path, pending, *, verify, readback, integration_attempt=None):
     """Resume exact checked content; success requires remote readback and agent checks."""
+    try:
+        assert_integration_owner(repo, integration_attempt)
+    except (OSError, RuntimeError, ValueError) as exc:
+        return {'result': 'incomplete', 'failed_step': 'integration-ownership', 'reason': str(exc)}
     if pending.get('scoped'):
-        return _publish_scoped(repo, pending, verify=verify, readback=readback)
+        if integration_attempt is not None:
+            if pending.get('integration_attempt') not in (None, integration_attempt):
+                return {'result': 'incomplete', 'failed_step': 'integration-ownership', 'reason': 'publisher receipt belongs to another ready attempt'}
+            if pending.get('integration_attempt') != integration_attempt:
+                pending['integration_attempt'] = integration_attempt
+                save_pending(repo, pending)
+        return _publish_scoped(repo, pending, verify=verify, readback=readback, integration_attempt=integration_attempt)
     step = 'verify'
     try:
         if destination(repo) != pending['target']:

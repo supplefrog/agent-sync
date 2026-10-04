@@ -215,6 +215,97 @@ def apply_snapshot(snapshot: Path, destination: Path, *, names: Collection[str] 
         return _apply_snapshot_unlocked(snapshot, destination, names=names, expected_state=expected_state)
 
 
+def _source_origin_repository(snapshot: Path) -> tuple[Path, Path]:
+    """Validate a canonical fleet origin without changing Git state."""
+    try:
+        import sync_git
+    except ModuleNotFoundError:
+        from tools import sync_git
+    snapshot = snapshot.absolute()
+    repo = snapshot.parent.parent
+    if snapshot != repo / "render" / "fleet" or not snapshot.is_dir():
+        raise RuntimeError("source origin must be an existing render/fleet snapshot")
+    if any(is_linklike_path(path) for path in (snapshot, *snapshot.parents)):
+        raise RuntimeError("source origin contains a link or junction")
+    top = Path(sync_git.git(repo, "rev-parse", "--show-toplevel")).resolve()
+    if top != repo.resolve():
+        raise RuntimeError("source origin is not rooted in a Git worktree")
+    load_manifest(snapshot)
+    return repo.resolve(), sync_git.common_dir(repo)
+
+
+def migrate_source_origin(snapshot: Path, destination: Path, *,
+                          expected_state: tuple[Any, ...] | None = None) -> dict[str, str]:
+    """Switch only global provenance after authorized published-source deployment.
+
+    Installed content and every per-owner record remain untouched. Callers must
+    finish ready publication first; this helper grants no publication authority.
+    An expected_state binds the migration to a caller's transaction backup.
+    """
+    snapshot, destination = snapshot.absolute(), destination.absolute()
+    with _path_locks([snapshot, destination]):
+        guard = state_identity(destination)
+        if expected_state is not None and guard != expected_state:
+            raise RuntimeError("destination managed state changed since transaction backup")
+        state_path = destination / STATE_FILE
+        if not state_path.is_file() or is_linklike_path(state_path):
+            raise RuntimeError("source origin requires existing owned managed state")
+        previous = state_path.read_bytes()
+        state = load_state(destination)
+        origin = state.get("source_snapshot")
+        if not isinstance(origin, str) or not origin or not Path(origin).is_absolute():
+            raise RuntimeError("source origin is missing or invalid")
+        _, old_common = _source_origin_repository(Path(origin))
+        _, new_common = _source_origin_repository(snapshot)
+        if old_common != new_common:
+            raise RuntimeError("source origins belong to different Git repositories")
+        if snapshot != new_common / "agent-signal-published" / "render" / "fleet":
+            raise RuntimeError("new source origin is not the persistent published worktree")
+        manifest_guard = path_identity(snapshot)
+        manifest_hash = sha256_file(snapshot / MANIFEST_FILE)
+        updated = dict(state, source_snapshot=str(snapshot.resolve()), manifest_sha256=manifest_hash)
+        if state_identity(destination) != guard:
+            raise RuntimeError("destination managed state changed while reading origin")
+        result = {"action": "unchanged" if updated == state else "migrate-source-origin",
+                  "previous": origin, "source_snapshot": updated["source_snapshot"],
+                  "manifest_sha256": manifest_hash}
+        stage = destination / f".{STATE_FILE}.origin-stage-{uuid.uuid4().hex}"
+        installed_identity = None
+        committed = False
+        try:
+            atomic_json(stage, updated)
+            installed_identity = path_identity(stage)
+            if state_identity(destination) != guard or path_identity(snapshot) != manifest_guard:
+                raise RuntimeError("managed state or published snapshot changed before origin commit")
+            if updated != state:
+                os.replace(stage, state_path)
+            else:
+                installed_identity = guard
+            if (state_identity(destination) != installed_identity
+                    or load_state(destination) != updated
+                    or path_identity(snapshot) != manifest_guard):
+                raise RuntimeError("source origin readback failed")
+            committed = True
+            return result
+        finally:
+            try:
+                if not committed and installed_identity is not None:
+                    current = state_identity(destination)
+                    if current == installed_identity and current != guard:
+                        # Restore exact original bytes, only while we still own the write.
+                        stage.write_bytes(previous)
+                        if state_identity(destination) != installed_identity:
+                            raise RuntimeError("source origin rollback conflict; concurrent state preserved")
+                        os.replace(stage, state_path)
+                        if state_path.read_bytes() != previous:
+                            raise RuntimeError("source origin rollback readback failed")
+                    elif current != guard:
+                        raise RuntimeError("source origin rollback conflict; concurrent state preserved")
+            finally:
+                if stage.exists():
+                    stage.unlink()
+
+
 def _render_snapshot_unlocked(repo: Path, output: Path, *, names: Collection[str] | None = None) -> dict[str, Any]:
     """Render admitted repository skills into a deterministic snapshot."""
     repo = repo.resolve()

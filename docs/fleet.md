@@ -18,6 +18,12 @@ to any declared machine.
 - `adapters/` retains intentional Hermes, Codex, and OMP differences. Fleet sync
   does not overwrite host instruction files.
 
+The managed root's global source origin points to the stable published Git
+worktree after ready publication. Develop independent source changes in separate
+worktrees and use the [worktree publication contract](worktree-publication.md).
+The low-level commands below do not publish source changes; direct maintenance
+does not edit the stable published checkout.
+
 ## Commands
 
 ```bash

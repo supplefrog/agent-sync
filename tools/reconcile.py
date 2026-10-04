@@ -697,6 +697,7 @@ def sync(
     recovery_artifacts: Sequence[str] | None = None,
     binding_repo: Path | None = None,
     binding_identities: Sequence[str] = (),
+    ready_input: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Reconcile selected owners and optionally capture allowlisted host state."""
 
@@ -737,6 +738,12 @@ def sync(
             return report
     fleet_snapshot = _snapshot(repo) if names else repo / "render/fleet"
     destinations = _destinations(repo, machine, skill_roots) if names else []
+    if ready_input is not None:
+        import sync_git
+        sync_git.assert_ready_source(repo, ready_input["files"], ready_input["attempt"])
+        if (sync_git.identities(repo, ready_input["files"]) != ready_input["files"]
+                or _agent_scope_identities(destinations, names) != ready_input["agent_identities"]):
+            raise sync_git.SyncBlocked("ready source or selected installed owners changed before mutation")
     states = [_skill_state(repo, fleet_snapshot, destinations, name) for name in names]
     if any(state["mode"] == "review-required" for state in states):
         report = _decision_receipt(
@@ -1385,7 +1392,7 @@ def _owner_binding_preflight(repo, names, included, *, project_derived=True):
 
 
 def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
-                          capture_recovery, include, message, recovery_artifacts=None):
+                          capture_recovery, include, message, recovery_artifacts=None, integration_attempt=None):
     """Complete one explicit change set; leave independent work pending."""
     import sync_git
     repo = Path(repo).resolve()
@@ -1396,6 +1403,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
         recovery._select_artifacts(recovery._load_policy(repo / "recovery.json"), artifacts)
     try:
         with sync_git.lock(repo, timeout=120):
+            sync_git.assert_integration_owner(repo, integration_attempt)
             pending = sync_git.read_pending(repo)
             needed_owners = set(pending.get("owners", ())) if pending and pending.get("scoped") else names
             destinations = _destinations(repo, machine, skill_roots) if needed_owners else []
@@ -1488,12 +1496,14 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 return report
 
             if pending:
-                return finish(sync_git.publish(repo, pending, verify=verify, readback=readback), pending)
+                return finish(sync_git.publish(repo, pending, verify=verify, readback=readback, integration_attempt=integration_attempt), pending)
             target = sync_git.destination(repo)
             if capture:
                 _capture_shared_preflight(repo, artifacts, set(include))
             snapshot = _snapshot(repo) if names else None
             states = {name: _skill_state(repo, snapshot, destinations, name) for name in names}
+            if integration_attempt is not None and any(state.get("origin") for state in states.values()):
+                raise sync_git.SyncBlocked("ready committed source cannot adopt an unreviewed live origin")
             if any(state["mode"] == "review-required" for state in states.values()):
                 return {"result": "review-required", "reason": "selected owner missing, unadmitted, or conflicting", "owners": sorted(names)}
             selected = {sync_git.safe_path(repo, name) for name in include}
@@ -1523,6 +1533,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 return {"result": "review-required", "reason": "no explicit owner or publication file selected"}
             sync_git.preflight(repo, target, files=selected, scoped=True)
             before_files = sync_git.identities(repo, selected)
+            sync_git.assert_ready_source(repo, before_files, integration_attempt)
             before_agents = _agent_scope_identities(destinations, names)
             files = dict(before_files)
             for path, data in overrides.items():
@@ -1546,7 +1557,9 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 if names or capture or bind_owners:
                     result = sync(repo, machine=machine, adopt=sorted(names), recovery_roots=recovery_roots,
                                   skill_roots=skill_roots, capture_recovery=capture, recovery_artifacts=artifacts,
-                                  check_commands=[], scoped=True, binding_repo=candidate, binding_identities=sorted(bind_owners))
+                                  check_commands=[], scoped=True, binding_repo=candidate, binding_identities=sorted(bind_owners),
+                                  ready_input={"attempt": integration_attempt, "files": before_files,
+                                               "agent_identities": before_agents} if integration_attempt is not None else None)
                     if result["result"] not in {"applied", "unchanged"}:
                         return result
                     if result.get("request_id"):
@@ -1578,8 +1591,10 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                        "checks": "selected candidate artifact checks" + (", selected installed owner readback" if names else "") +
                                  (", selected native capture readback" if capture else "") + (", selected binding identities" if bind_owners else ""),
                        "limits": "No whole-fleet, current-runtime, or model-behavior parity claim."}
+            if integration_attempt is not None:
+                pending["integration_attempt"] = integration_attempt
             sync_git.save_pending(repo, pending)
-            result = sync_git.publish(repo, pending, verify=verify, readback=readback)
+            result = sync_git.publish(repo, pending, verify=verify, readback=readback, integration_attempt=integration_attempt)
             return finish(result, pending)
     except (OSError, RuntimeError, ValueError, KeyError, subprocess.SubprocessError) as exc:
         return {"result": "incomplete", "failed_step": "scoped-preflight-or-reconcile", "reason": _safe_diagnostic(str(exc), repo),
@@ -1600,6 +1615,7 @@ def complete_sync(
     message: str = "chore: reconcile checked agent changes",
     scoped: bool | None = None,
     recovery_artifacts: Sequence[str] | None = None,
+    integration_attempt: str | None = None,
 ) -> dict[str, Any]:
     """One operator operation: reconcile checked owners, commit, push, read back.
 
@@ -1626,10 +1642,11 @@ def complete_sync(
     if selected_scope:
         return _scoped_complete_sync(repo, machine=machine, adopt=adopt,
                                      recovery_roots=recovery_roots, skill_roots=skill_roots,
-                                     capture_recovery=capture_recovery, include=include, message=message, recovery_artifacts=recovery_artifacts)
+                                     capture_recovery=capture_recovery, include=include, message=message, recovery_artifacts=recovery_artifacts, integration_attempt=integration_attempt)
     repo = Path(repo).resolve()
     try:
         with sync_git.lock(repo):
+            sync_git.assert_integration_owner(repo, integration_attempt)
             pending = sync_git.read_pending(repo)
             destinations = _destinations(repo, machine, skill_roots)
             capture = (recovery_roots is None or bool(recovery_roots)) if capture_recovery is None else capture_recovery
@@ -1792,6 +1809,7 @@ def complete_defaults_sync(repo, *, hosts=None, **options):
     try:
         with sync_git.lock(repo):
             # A failed push resumes its exact candidate, without creating a new observation.
+            sync_git.assert_integration_owner(repo)
             pending = sync_git.read_pending(repo)
             if pending:
                 preferences = runtime_defaults.load_preferences(repo)
@@ -1960,6 +1978,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--capture-artifact", action="append", default=None, metavar="HOST:ID", help="capture only an exact existing recovery artifact")
     parser.add_argument("--include", action="append", default=[], metavar="FILE",
                         help="exact additional repository file already reviewed for commit; does not authorize deployment")
+    parser.add_argument("--ready", metavar="COMMIT", help="integrate an exact ready commit from isolated development onto the latest published base")
+    parser.add_argument("--shared-checkout", action="store_true", help="explicit legacy scoped publication from this working checkout")
     parser.add_argument("--message", default="chore: reconcile checked agent changes")
     parser.add_argument("--full", action="store_true", help="explicitly retain broad reconciliation when owner/file selectors are present")
     parser.add_argument("--root", action="append", default=[], metavar="HOST=PATH")
@@ -1991,6 +2011,14 @@ def main(argv: list[str] | None = None) -> int:
                       if value in {"codex:settings", "hermes:settings"}]
     default_hosts = args.maintenance_host or (settings_hosts if settings_hosts else None)
     use_defaults = args.reconcile_defaults or bool(args.maintenance_host) or bool(settings_hosts)
+    if args.ready and (args.action == "review" or authoring or args.full or use_defaults
+                       or args.capture_artifact is not None or args.capture_recovery is True or args.shared_checkout):
+        parser.error("--ready selects isolated source/portable publication; native capture, defaults, broad sync and authoring review remain separate")
+    if args.shared_checkout and (args.action != "sync" or args.full or use_defaults):
+        parser.error("--shared-checkout applies only to legacy scoped source publication")
+    if (args.action == "sync" and (args.adopt or args.include) and not args.ready
+            and not args.shared_checkout and not use_defaults and args.capture_artifact is None):
+        parser.error("develop shared source in an isolated worktree, commit the ready change, then use --ready COMMIT; --shared-checkout explicitly retains the legacy operation")
     if args.action != "review":
         try:
             _reconciliation_intent(adopt=args.adopt, include=args.include, recovery_artifacts=args.capture_artifact,
@@ -2000,7 +2028,13 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("default reconciliation requires scoped recovery capture")
         except ValueError as exc:
             parser.error(str(exc))
-    if args.action == "review":
+    if args.ready:
+        import worktree_sync
+        operation = worktree_sync.ready_plan if args.action == "plan" else worktree_sync.ready_sync
+        report = operation(args.repo, args.ready, machine=args.machine, adopt=args.adopt,
+                           include=args.include, recovery_roots=roots, skill_roots=args.skill_root or None,
+                           message=args.message)
+    elif args.action == "review":
         import change_review
         report = change_review.review(args.repo, **options)
     elif args.action == "plan":

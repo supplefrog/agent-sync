@@ -1,0 +1,89 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "a9fcad8a18a32de9b2f3edf9d32a9cd8dcc2a4a2e46910230cb90860b66669dd",
+      "before_sha256": "a9fcad8a18a32de9b2f3edf9d32a9cd8dcc2a4a2e46910230cb90860b66669dd",
+      "owner": "cross-agent-surface-engineering",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "1c8aadf351c912e44497908a8734283c62bd1d5a1039c72489df00676305bcc0",
+      "before_sha256": "1c8aadf351c912e44497908a8734283c62bd1d5a1039c72489df00676305bcc0",
+      "owner": "fleet-sync",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "e2eecd54cb2ad3a2709d0a15e281836faf8e0c9e868ec7d36f34c3b15566ef1f",
+      "before_sha256": "e2eecd54cb2ad3a2709d0a15e281836faf8e0c9e868ec7d36f34c3b15566ef1f",
+      "owner": "outcome-first-workflow-design",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "e5d897ef5ef60ef51911fa654c1de2ef6c55209f01be818db45e17dccb606cd1",
+      "before_sha256": "e5d897ef5ef60ef51911fa654c1de2ef6c55209f01be818db45e17dccb606cd1",
+      "owner": "project-prior-art",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "38eb5bf5eecf719330e3ce636362d605ed5eea2112f8d5c5240ae8352ead8e46",
+      "before_sha256": "38eb5bf5eecf719330e3ce636362d605ed5eea2112f8d5c5240ae8352ead8e46",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "cross-agent-surface-engineering",
+    "fleet-sync",
+    "outcome-first-workflow-design",
+    "project-prior-art",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "1854db928d5eb56c9e2981542b3a8ddf4059a6b614b9e6c9b10fdb6ec9587039",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

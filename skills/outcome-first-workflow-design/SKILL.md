@@ -20,7 +20,7 @@ Optimize the user's outcome, not fidelity to the mechanism they named. Reconstru
 
 ### 1. Reconstruct intent and recover evidence
 
-Recover existing evidence relevant to the decision: supplied material, prior findings, and the affected implementation or callers. Reuse verified findings; mark stale, conflicting, or missing evidence. Separate the desired outcome, explicit constraints, and load-bearing guarantees from incidental implementation choices. Do not turn missing detail into an intake interview. Infer from evidence and resolve consequential unknowns with the cheapest available check. Ask only when a material user-owned preference or hard-to-reverse commitment cannot be settled by evidence.
+Recover existing evidence relevant to the decision: supplied material, prior findings, and the affected implementation or callers. Reuse verified findings; mark stale, conflicting, or missing evidence. Separate the desired outcome, explicit constraints, and load-bearing guarantees from incidental implementation choices. For material redesign, name the assumptions shaping the approach and inspect evidence that they could prevent the requested outcome; compare the strongest credible alternative before accepting them. Revise assumptions when evidence supports it, without turning this check into recurring reflection or review. Do not turn missing detail into an intake interview. Infer from evidence and resolve consequential unknowns with the cheapest available check. Ask only when a material user-owned preference or hard-to-reverse commitment cannot be settled by evidence.
 
 ### 2. Describe the outcome contract
 
@@ -38,7 +38,7 @@ Check relevant existing capabilities; reuse an adequate owner. Load additional d
 
 ### 5. Decide from first principles
 
-For each candidate, explain the mechanism that could satisfy the outcome. Compare only decision-changing dimensions: verified task success, failure behavior, latency, total expected cost including retries/verification, compatibility, security, maintenance, and rollback. Apply hard constraints before Pareto comparison. Prefer the simpler reversible option when differences are within uncertainty.
+For each candidate, explain the mechanism that could satisfy the whole authorized outcome. Compare only decision-changing dimensions: verified task success, failure behavior, latency, total system complexity and expected cost including retries/verification, compatibility, security, maintenance, and rollback. Patch size is not a proxy for simplicity. Apply hard constraints before Pareto comparison. Prefer the simpler reversible option when differences are within uncertainty. A focused repair remains appropriate when it meets the requested outcome; an architectural request may require replacing the mechanism. Verify the affected outcome and stop when its criteria are met.
 
 ### 6. Keep material decisions traceable
 

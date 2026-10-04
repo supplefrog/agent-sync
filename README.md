@@ -44,19 +44,21 @@ The agent handles routine bookkeeping. New capabilities, conflicting edits, remo
 
 For direct operation, run these from the checkout:
 
-`tools/run.py` selects the checkout's `.venv` (or verifies the current Python when no local environment exists) and checks the declared imports before dispatch. It never installs dependencies. Set up `requirements.txt` once if that preflight fails.
+Develop independent changes in separate Git worktrees based on the published source. Commit the ready change without including unrelated work. `tools/run.py` reuses the checkout's `.venv` or the primary checkout's runtime for a linked worktree, then checks declared imports. It never installs dependencies. Set up `requirements.txt` once if that preflight fails.
 
 ```bash
-python tools/run.py reconcile plan
+python tools/run.py reconcile plan --ready COMMIT --adopt OWNER --include FILE
 # Review the findings before proceeding.
-python tools/run.py reconcile sync
+python tools/run.py reconcile sync --ready COMMIT --adopt OWNER --include FILE
 ```
 
-Repeated `--adopt OWNER` and `--include FILE` arguments select admitted portable owners and exact reviewed publication files; unrelated work stays pending. `--include` grants no deployment authority. Without selectors—or with `--full`—sync retains broad allowlisted recovery capture. Repeated `--capture-artifact HOST:ID` selects exact reviewed native artifacts from an existing valid full snapshot under the same policy. Only selected roots are read and captured; unselected snapshot content is preserved. If shared recovery metadata contains unrelated changes, explicitly review and include the whole shared file before publication. `--no-capture-recovery` keeps native settings outside the operation. Rerun the same sync to resume checked work after a failure. See the [reconciliation contract](docs/architecture.md#unified-reconciliation) for dependency, recovery, and verification limits.
+Repeated `--adopt OWNER` and `--include FILE` select admitted portable owners and exact reviewed publication files; choose whichever selectors fit the change. `--include` grants no deployment authority. Ready commits integrate onto the latest configured upstream in one persistent published worktree, then use the existing deployment and publication checks. Git merges independent edits and reports real conflicts before deployment. Other branches, indexes, and unfinished files stay untouched. The managed source manifest points agents at this published checkout. See the [worktree publication contract](docs/worktree-publication.md) for selection, failure, and retry boundaries.
+
+Native settings maintenance uses the existing reconciler without `--ready`. Repeated `--capture-artifact HOST:ID` selects exact policy artifacts from an existing valid snapshot; shared recovery metadata dependencies still require review. Only selected roots are captured. Broad `--full` retains cohesive allowlisted recovery capture within existing authorization. Source-authored generated overlays may be published as exact includes, then restored through the native recovery owner.
 
 Native evaluation now supports isolated Hermes skill-catalog and tool-bearing artifact probes through the existing evaluation owners. The [remaining-outcomes receipt](evals/results/remaining-outcomes-20260927.json) records the narrow comparison and mechanism evidence; it does not establish a quality gain, Codex readiness, or whole-fleet parity.
 
-Scoped sync callers wait up to 120 seconds for the shared Git transaction and then check the latest committed baseline. Independent source edits can coexist; deployment and publication remain serialized because they update shared records. For owner or exact-file sync without native capture, an unrelated bound artifact's derived hash can remain dirty in `host-deltas.json`: publication uses the committed rows plus the selected binding updates and preserves the foreign working rows. Policy changes still require review. Explicitly including `host-deltas.json` selects the whole reviewed file. A failed pending transaction must be resumed with its original selection before another scope can publish.
+Ready callers check frozen source commits before waiting up to 120 seconds for the common Git publication lock. A failed deployed or published attempt must resume with the same ready commit and selection before another scope publishes. Generated binding hashes are composed for the selected scope; policy and selected readback changes still require manifest review. Explicit legacy working-file maintenance uses `--shared-checkout`; it is no longer the default shared-source path.
 
 This is an explicit operation, not a background watcher. Editing a file does not automatically publish it.
 

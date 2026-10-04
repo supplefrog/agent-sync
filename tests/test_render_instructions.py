@@ -41,7 +41,7 @@ class RenderInstructionTests(unittest.TestCase):
     def test_shared_edit_changes_both_projections_and_rejects_old_output(self):
         original = renderer.projections(self.repo)
         source = self.repo / "surfaces/core.md"
-        source.write_text(source.read_text(encoding="utf-8").replace("Use simple, direct language.", "Shared fixture correction."), encoding="utf-8")
+        source.write_bytes(source.read_bytes().replace(b"## Communication\n", b"## Communication\nShared fixture correction. ", 1))
         changed = renderer.projections(self.repo)
         for host in renderer.HOSTS:
             self.assertNotEqual(original[host][1], changed[host][1])

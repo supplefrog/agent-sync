@@ -44,7 +44,7 @@ Tool governance additionally considers schema clarity, parameter necessity, call
 
 ## Desired result and limits
 
-The system detects a concrete problem, routes it to the owner, develops and checks the smallest coherent correction, reconciles only the authorized dependencies, and verifies deployment. Existing/native solutions and no change remain valid choices.
+The system detects a concrete problem, routes it to the owner, completes and checks the intended outcome using the simplest adequate mechanism by total system complexity and cost, reconciles only authorized dependencies, and verifies deployment. Patch size does not determine simplicity. Existing/native solutions and no change remain valid choices.
 
 Undesired outcomes include recurring complete-agent audits, a central policy monolith, duplicated owners, speculative capability claims, mechanical compression that loses knowledge, trigger overreach, scope creep, unrelated-work coupling, silent regressions, and governance whose overhead exceeds its benefit.
 

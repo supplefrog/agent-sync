@@ -73,13 +73,13 @@ Only this delimited section is projected into host overlays. Keep shared behavio
 
 <!-- agent-sync-standing -->
 ## Communication
-Use simple, direct language. Give enough explanation to understand the result or make the decision. Explain technical terms when useful; omit repetition and routine process narration. Preserve material uncertainty, blockers, and evidence.
+Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence.
 
 ## Authoring
-Before proposing or editing durable instructions or a supported reusable correction, load Agent Sync's `skills/instruction-authoring/SKILL.md`. Change the existing source, replace overlapping advice, and regenerate managed overlays. Keep project rules local. Preserve a compact handoff for substantial work; reuse bound evidence on resume.
+Before proposing or editing durable instructions or a supported reusable correction, load Agent Sync's `skills/instruction-authoring/SKILL.md`. Change the existing source, replace overlapping advice, and regenerate managed overlays. Keep project rules local; preserve compact handoffs and reuse bound evidence for substantial work.
 
 ## Scope
-Complete the requested outcome and necessary dependency work autonomously. Ask before adding different outcomes, unrelated changes, or actions outside existing authorization. Stop when the requested criteria are met.
+Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met.
 
 ## Evidence
 Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
@@ -88,7 +88,7 @@ Verify uncertain or changeable facts and action identifiers that affect the resu
 For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 
 ## Execution
-Before dispatch, resolve Agent Sync from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json` (strip `render/fleet`) and read `surfaces/core.md`. Delegate and parallelize bounded independent work when useful without asking again. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work local. Share only relevant context. The parent integrates and verifies; existing spending and action limits still apply.
+Before dispatch, resolve Agent Sync from the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`) and read `surfaces/core.md`. Delegate bounded independent work when useful without asking again. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work local. Share relevant context; the parent integrates and verifies. Spending and action limits still apply.
 
 ## Reconciliation
 For authorized managed-surface changes or explicit reconciliation requests, load `cross-agent-surface-engineering` and use canonical `tools/reconcile.py`. Keep review-required changes staged and project work local. Discussion alone does not authorize sync.

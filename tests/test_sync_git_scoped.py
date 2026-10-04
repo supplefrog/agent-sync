@@ -33,6 +33,27 @@ class ScopedGitTests(unittest.TestCase):
     def git(self, *args):
         return sync.git(self.repo, *args)
 
+    def test_raw_head_match_is_clean_but_staged_and_raw_edits_remain_visible(self):
+        (self.repo / '.gitattributes').write_bytes(b'*.md text eol=lf\n')
+        self.git('add', '.gitattributes')
+        raw = b'legacy committed CRLF\r\n'
+        oid = sync._raw_git(self.repo, 'hash-object', '-w', '--stdin', input=raw).decode().strip()
+        self.git('update-index', '--add', '--cacheinfo', '100644', oid, 'legacy.md')
+        self.git('commit', '-m', 'legacy raw blob under text attributes')
+        (self.repo / 'legacy.md').write_bytes(raw)
+        self.assertIn('legacy.md', self.git('diff', '--name-only', 'HEAD'))
+        self.assertNotIn('legacy.md', sync.changed(self.repo))
+        # Raw editor changes remain real, even when only the newline changes.
+        (self.repo / 'legacy.md').write_bytes(raw.replace(b'\r\n', b'\n'))
+        self.assertIn('legacy.md', sync.changed(self.repo))
+        # A different index blob must remain visible when working bytes match HEAD.
+        self.git('add', 'legacy.md')
+        (self.repo / 'legacy.md').write_bytes(raw)
+        self.assertIn('legacy.md', sync.changed(self.repo))
+        self.git('reset', '--mixed', 'HEAD')
+        self.git('update-index', '--chmod=+x', 'legacy.md')
+        self.assertIn('legacy.md', sync.changed(self.repo))
+
     def pending(self, paths=('selected.md',)):
         files = sync.identities(self.repo, paths)
         with sync.prepare_candidate(self.repo, files, base=self.base) as (_, tree):
@@ -51,6 +72,37 @@ class ScopedGitTests(unittest.TestCase):
         self.git('add', 'other.md')
         (self.repo / 'other.md').write_bytes(b'unrelated unstaged\n')
         (self.repo / 'new.md').write_bytes(b'untracked\n')
+
+    def test_every_publication_path_honors_common_ready_attempt(self):
+        (self.repo / 'selected.md').write_bytes(b'ready\n')
+        pending = self.pending()
+        before = self.git('rev-parse', 'HEAD')
+        (sync.common_dir(self.repo) / 'agent-signal-integration.json').write_text(json.dumps(
+            {'attempt': 'ready-attempt', 'integration_repo': str(self.repo.parent / 'integration')}))
+        result = self.publish(pending)
+        self.assertEqual('incomplete', result['result'])
+        self.assertEqual('integration-ownership', result['failed_step'])
+        self.assertEqual(before, sync.git(self.remote, 'rev-parse', 'main'))
+        self.assertEqual(b'ready\n', (self.repo / 'selected.md').read_bytes())
+        self.assertIsNotNone(sync.read_pending(self.repo))
+
+    def test_ready_completion_is_durable_before_publisher_returns(self):
+        (self.repo / 'selected.md').write_bytes(b'ready\n')
+        pending = self.pending()
+        (sync.common_dir(self.repo) / 'agent-signal-integration.json').write_text(json.dumps(
+            {'attempt': 'ready-attempt', 'integration_repo': str(self.repo)}))
+        result = sync.publish(self.repo, pending, verify=lambda: None, integration_attempt='ready-attempt')
+        self.assertEqual('synced', result['result'], result)
+        durable = sync.read_pending(self.repo)
+        self.assertEqual('ready-attempt', durable['integration_attempt'])
+        self.assertEqual(result, durable['completion'])
+        self.assertEqual(result['commit'], sync.git(self.remote, 'rev-parse', 'main'))
+
+    def test_stable_published_source_rejects_direct_maintenance(self):
+        stable = sync.common_dir(self.repo) / 'agent-signal-published'
+        self.git('worktree', 'add', '-b', 'stable', str(stable), 'HEAD')
+        with self.assertRaisesRegex(sync.SyncBlocked, 'read-only'):
+            sync.assert_integration_owner(stable)
 
     def test_scoped_commit_preserves_unrelated_index_and_worktree(self):
         self.dirty()

@@ -10,6 +10,12 @@ from pathlib import Path
 
 def runtime(repo: Path) -> str:
     declared = [repo / ".venv/Scripts/python.exe", repo / ".venv/bin/python"]
+    if not any(path.is_file() for path in declared) and (repo / ".git").is_file():
+        shared = subprocess.run(["git", "-C", str(repo), "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                                capture_output=True, text=True, check=False)
+        if shared.returncode == 0:
+            primary = Path(shared.stdout.strip()).parent
+            declared += [primary / ".venv/Scripts/python.exe", primary / ".venv/bin/python"]
     interpreter = next((str(path) for path in declared if path.is_file()), sys.executable)
     probe = subprocess.run(
         [interpreter, "-B", "-c", "import jsonschema,yaml,toml"],
