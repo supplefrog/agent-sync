@@ -33,14 +33,14 @@
       "strategy": "merge"
     },
     {
-      "bytes": 2617,
+      "bytes": 2635,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "9e6030eba0352b7b51809ed2be0c0fb1bb6c95cf8ccbdf75ccce5c5a382de1c8",
+      "sha256": "34432a08c295f9645380f132c88159e936dd5caf7e2d4574b2bbf55d41764604",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -295,14 +295,14 @@
       "strategy": "merge"
     },
     {
-      "bytes": 2975,
+      "bytes": 2993,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "7986611d4dd77fe1415c47fafd6152386d31fb47e6f5ff930344d820664bd54b",
+      "sha256": "1b4fc310a29404e2ca76286f925c7a78e2411354d2889ac9b3eece9ffc6a8275",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -9994,14 +9994,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 6462,
+      "bytes": 6639,
       "format": "text",
       "host": "hermes",
       "id": "native-f09bae301475fffdb011",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "fdacc4fc58175a3804fe5dd8243f4274384975a596ceab9601fc2bb88cac04dd",
+      "sha256": "03bb5fc25948f4e684219a2870135b75bb6057bd3e55b501f1d5e95a774cbd43",
       "snapshot": "hosts/hermes/skills/productivity/session-librarian/SKILL.md",
       "source": "skills/productivity/session-librarian/SKILL.md",
       "strategy": "replace-if-absent"

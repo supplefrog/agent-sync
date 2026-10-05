@@ -59,11 +59,15 @@ full session (`session_search(session_id=...)`) when the user asks for
 decisions in depth. Report each as: link (`@session:` form) — one-line goal —
 one-line outcome.
 
-③ **Plan before acting (MANDATORY for anything that mutates).** Present a
-plan table first: which sessions get renamed to what, which get archived,
-which are proposed for deletion and why (duplicate of which keeper, stale,
-empty). Wait for the user's go-ahead. Exception: a single rename the user
-explicitly dictated can be done directly. A clearly authorized single fresh-thread creation can also proceed through the native workflow below without repeating the consent question; normal tool approval gates still apply.
+? **Resolve scope before acting.** For unrelated bulk library changes or
+unclear ownership, show the exact sessions, destinations and reasons, and obtain
+the missing scoped authorization. Reuse the user's existing authorization for
+reversible organization of the current workstream: project creation/association,
+an explicitly requested rename, or a focused fresh thread. State the selected
+target and destination and proceed through the native workflow without asking
+for the same permission again. Thinking aloud does not authorize new work.
+Required tool, profile/access and destructive-action approval gates still apply;
+deletion/pruning requires the dry-run and action-time confirmation below.
 
 ④ **Act with the safest primitive.**
 - Prefer `archive` (reversible soft-hide) over `delete`/`prune`.

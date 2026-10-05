@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-05",
+  "owner": "breadcrumb-records",
+  "capability": "breadcrumb-records",
+  "selection": "Extend the existing admitted owner and its managed standing trigger; no new owner or admission.",
+  "behavioral_evaluation": {
+    "agents": "Two fresh GPT-6.1 Sol agents at medium reasoning, author then independent continuation",
+    "loading": "The lifecycle guide was explicitly loaded; spontaneous retrieval was not measured.",
+    "casual_idea": "One comparative paragraph; no project or files created.",
+    "existing_project": "Only the whitespace-counting bug changed; existing README and project reused; command and boundary checks passed.",
+    "growing_thread": "Created a conventional CLI project, retained input/evidence references, linked one handoff and passed three implementation tests.",
+    "concurrent_work": "Unrelated ongoing file preserved; only explicitly owned stale preview archived using the real helper with verified recovery hash.",
+    "continuation": "Fresh agent used only the project handoff and files to implement a repeatable exclusion flag; four tests passed, default outputs and input CSV byte-identical.",
+    "limitation": "Bounded task evidence, no A/B quality comparison or universal reliability claim. Initial Windows mode-700 temporary-directory failures were corrected with ordinary project-local test directories."
+  },
+  "automation_evidence": {
+    "breadcrumb_cli": "13 regression tests passed; existing schema unchanged.",
+    "artifact_helper": "14 cases: 13 passed and one symlink-creation test skipped because this host lacks that privilege. Exact-path ownership, preview, unchanged-file archive/restore, concurrency, interruption, malformed-record and collision cases tested. Windows junction refusal separately passed with target bytes preserved.",
+    "source_guards": "Nine renderer tests and 18 instruction-profile tests passed; generated overlays, profile budgets and full recovery snapshot verified. Two skills passed metadata validation.",
+    "codex_adapter": "Seven unit cases passed. Disposable CODEX_HOME native RPC and independent-process helper readback persisted membership and reused the root, preserving cwd. Zero inference calls and no real user thread/project changes.",
+    "native_unsupported_case": "An empty thread without a persisted rollout refused metadata update. Synthetic seeding was used only in the disposable test profile and is prohibited as a production fallback.",
+    "native_skill_review": "Only the reconfirmation paragraph changed through the Hermes staged review/approval queue; deletion guards retained. Fresh native skill_view readback matched the reviewed file."
+  },
+  "retirements": {
+    "whole_skills_newly_retired": [],
+    "directive_removed": "Hermes session-librarian's blanket duplicate consent requirement for already-authorized reversible mutations",
+    "useful_capabilities_retained": ["session-librarian", "project-bootstrap", "conditional project-prior-art research", "existing frontend guidance and accepted evidence"]
+  },
+  "limits": [
+    "Model guidance is responsible for scope decisions, ownership and loading the owner; no autonomous watcher was installed.",
+    "Filesystem organization and native membership are distinct; the helper does not move files or change thread cwd, sandbox access or active UI selection.",
+    "Native Codex project API is experimental; membership has no atomic compare-and-set, so preflight/readback cannot prevent every noncooperating concurrent writer.",
+    "Hermes live session movement and Codex UI refresh were not tested; OMP automatic behavior was not established.",
+    "Recovery flags are caller assertions, not inferred completion/reference checks or deletion authorization."
+  ]
+}
