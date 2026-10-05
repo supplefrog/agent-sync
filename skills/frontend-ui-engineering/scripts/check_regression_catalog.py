@@ -209,6 +209,15 @@ def main():
                 entry = next(e for e in contract['requirements'] if e['id'] == identifier)
                 record(label + ':ordinary-mechanism-covered:' + identifier, entry['disposition'] == 'required')
 
+    # Mouse-focus policy is common: no selector tag may be needed to activate it.
+    for features in ([], ['form'], ['textarea'], ['selector']):
+        contract, observation = fixture(catalog, 'product', features)
+        label = 'all-element-pointer-focus:' + (','.join(features) or 'no-selector-tag')
+        entry = next(e for e in contract['requirements'] if e['id'] == 'V14')
+        record(label + ':required', entry['disposition'] == 'required' and bool(entry['cases']))
+        contract['requirements'] = [e for e in contract['requirements'] if e['id'] != 'V14']
+        check(label + ':omitted-policy-blocked', contract, observation)
+
     # Each selected want binds every case independently; previous wants cannot silently disappear.
     for identifier in capabilities:
         contract, observation = fixture(catalog, 'product', ['reader'], [identifier])
@@ -224,7 +233,7 @@ def main():
 
     # Mechanism-specific tags activate exactly their conditional cases.
     for feature, identifier in (('combined-slide-zoom', 'I12'), ('masked-gallery', 'I13'),
-                                ('native-image-generation', 'R07'), ('selector', 'V14')):
+                                ('native-image-generation', 'R07')):
         contract, observation = fixture(catalog, 'product', ['reader', 'disclosure', feature])
         check('mechanism-enabled:' + feature, contract, observation, ready=True)
         entry = next(e for e in contract['requirements'] if e['id'] == identifier)

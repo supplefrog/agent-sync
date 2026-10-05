@@ -473,8 +473,7 @@
       "id": "V14",
       "class": "conditional",
       "features": [
-        "selector",
-        "authored-selector-indicator"
+        "common"
       ],
       "methods": [
         "browser",
@@ -486,9 +485,9 @@
         "authored-native-boundary",
         "arrow-insets"
       ],
-      "summary": "Inspect current mouse highlight and arrow without native exception dismissing authored defects.",
-      "expectation": "Native and custom dropdown selectors have no incidental closed-control pointer halo, with a balanced visible indicator and inset. Identify authored CSS/overlays versus browser picker chrome using source plus actual pointer/keyboard render; preserve visible keyboard, programmatic and forced-color focus. A native arrow does not waive authored focus or spacing checks.",
-      "nearby_valid": "Preserve native semantics, intentional palette, keyboard/forced-color focus.",
+      "summary": "No incidental mouse-focus highlight across interactive elements; selector indicators remain balanced when present.",
+      "expectation": "Actual mouse activation adds or leaves no incidental focus highlight on any interactive control family, including buttons, links, selectors and text-entry fields. Exercise each family present through its relevant activation, editing, selection or cancellation path, then keyboard, programmatic restoration and mixed input separately. Identify authored CSS/overlays versus browser-owned feedback using source and actual rendered input; preserve visible keyboard/programmatic/forced-color focus and caret/editing behavior. For dropdown selectors present, inspect balanced visible indicator insets; a native arrow does not waive authored spacing checks. If no selector exists, record that boundary in the arrow-insets case without waiving the all-element pointer/keyboard cases.",
+      "nearby_valid": "Meaningful hover, pressed/selected and validation states, native text selection, caret/editing, intentional palette and keyboard/forced-color focus remain.",
       "owner": "references/personal-design-defaults.md; SKILL.md"
     },
     {
