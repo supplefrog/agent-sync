@@ -79,7 +79,7 @@ def fixture(catalog, scope='workflow', features=(), selected=()):
             entry['reason'] = LABEL + '; documented ' + disposition
         else:
             for index, suffix in enumerate(row['cases']):
-                method = row['methods'][index % len(row['methods'])]
+                method = row.get('case_methods', {}).get(suffix, [row['methods'][index % len(row['methods'])]])[0]
                 context = {'viewport': {'width': 1280, 'height': 900},
                            'modality': 'synthetic-' + method,
                            'state': row['id'] + ':' + suffix,
@@ -123,10 +123,10 @@ def main():
         return report
 
     rows = catalog['requirements']
-    record('actual-catalog-row-count', len(rows) == 75, actual=len(rows), expected=75)
+    record('actual-catalog-row-count', len(rows) == 77, actual=len(rows), expected=77)
     record('actual-catalog-unique-ids', len({r['id'] for r in rows}) == len(rows))
     retained_ids = {f'{prefix}{index:02d}' for prefix, last in
-                    (('P', 12), ('V', 19), ('I', 22), ('R', 18), ('A', 4))
+                    (('P', 12), ('V', 19), ('I', 24), ('R', 18), ('A', 4))
                     for index in range(1, last + 1)}
     record('retained-feedback-identities', {r['id'] for r in rows} == retained_ids)
     for row in rows:
@@ -240,6 +240,54 @@ def main():
         record('mechanism-required:' + feature, entry['disposition'] == 'required')
         contract['requirements'] = [e for e in contract['requirements'] if e['id'] != identifier]
         check('mechanism-omit-classification:' + feature, contract, observation)
+
+    # Defect readiness is distinct from later choice/integration/publication receipts.
+    contract, observation = fixture(catalog, 'product', ['resources'])
+    deferred = {(r['id'], suffix) for r in rows for suffix, stage in r.get('case_stages', {}).items()
+                if stage != 'pre_review'}
+    observation['results'] = [r for r in observation['results']
+                             if (r['requirement_id'], r['case_id']) not in deferred]
+    pending = check('later-choice-pending-full-not-ready', contract, observation)
+    record('later-choice-pre-review-ready', pending['pre_review_ready'])
+    for identifier, suffix in (('R05', 'isolated-delivered-preview'), ('R05', 'source-rights-adaptations'), ('R06', 'comparable-options'),
+                               ('R06', 'expandable-suppliers'), ('V14', 'pointer-keyboard')):
+        mutated = deepcopy(observation)
+        mutated['results'] = [r for r in mutated['results']
+                              if (r['requirement_id'], r['case_id']) != (identifier, suffix)]
+        report = check('pending-does-not-waive:' + identifier + ':' + suffix, contract, mutated)
+        record('pre-review-blocks:' + identifier + ':' + suffix, not report['pre_review_ready'])
+    mutated = deepcopy(observation)
+    mutated['source_sha256'] = 'b' * 64
+    record('pending-stalehash-blocks-pre-review', not check('pending-stalehash', contract, mutated)['pre_review_ready'])
+    changed = deepcopy(contract)
+    entry = next(e for e in changed['requirements'] if e['id'] == 'V14')
+    entry['cases'].pop(0)
+    record('pending-dropped-focus-blocks-pre-review', not check('pending-drop-focus', changed, observation, previous=contract)['pre_review_ready'])
+    for feature, identifier in (('authored-emphasis-highlight', 'I24'), ('transforming-symbol', 'I23')):
+        contract, observation = fixture(catalog, 'product', [feature])
+        check('conditional-finishing:' + feature, contract, observation, ready=True)
+        record('highlight-capability-still-unselected:' + feature,
+               next(e for e in contract['requirements'] if e['id'] == 'I22')['disposition'] == 'unselected')
+        for case in next(e for e in contract['requirements'] if e['id'] == identifier)['cases']:
+            mutated = deepcopy(observation)
+            mutated['results'] = [r for r in mutated['results']
+                                  if (r['requirement_id'], r['case_id']) != (identifier, case['id'])]
+            report = check('conditional-finishing-omission:' + identifier + ':' + case['id'], contract, mutated)
+            record('conditional-finishing-pre-review-blocked:' + identifier + ':' + case['id'], not report['pre_review_ready'])
+
+    for identifier, suffix in (('I24', 'trigger-reset'), ('I23', 'continuous-state-transform'), ('R06', 'scoped-choice')):
+        contract, observation = fixture(catalog, 'workflow')
+        case = next(c for e in contract['requirements'] if e['id'] == identifier for c in e['cases'] if c['id'] == suffix)
+        result = next(r for r in observation['results'] if (r['requirement_id'], r['case_id']) == (identifier, suffix))
+        case['method'] = result['method'] = 'rendered'
+        result['evidence'] = ['synthetic-image.png']
+        report = check('static-render-cannot-discharge:' + identifier + ':' + suffix, contract, observation)
+        record('static-render-pre-review-blocked:' + identifier + ':' + suffix, not report['pre_review_ready'])
+    contract, observation = fixture(catalog, 'product', ['resources'])
+    preview = next(r for r in observation['results'] if (r['requirement_id'], r['case_id']) == ('R05', 'isolated-delivered-preview'))
+    preview['evidence'] = ['https://supplier.example/preview']
+    report = check('supplier-link-is-not-delivered-preview-evidence', contract, observation)
+    record('supplier-link-blocks-pre-review', not report['pre_review_ready'])
 
     # Legacy measurements remain supplementary and cannot replace missing rendered cases.
     contract, observation = deepcopy(base), deepcopy(observed)

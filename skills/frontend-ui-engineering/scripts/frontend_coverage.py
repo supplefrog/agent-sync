@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 METHODS = {"browser", "rendered", "source", "resource", "human"}
+STAGES = {"pre_review", "human_choice", "integration", "publication"}
 CLASSES = {"requirement", "capability", "conditional", "tentative", "project"}
 STATUSES = {"pass", "fail", "incomplete"}
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"}
@@ -37,6 +38,22 @@ def context(value):
 def aggregate(checks):
     return "fail" if any(c["status"] == "fail" for c in checks) else (
         "incomplete" if any(c["status"] == "incomplete" for c in checks) else "pass")
+
+
+def case_policy(requirement):
+    """Only the catalog owns stage and per-case allowed-method constraints."""
+    suffixes = requirement.get("cases", [])
+    stages = requirement.get("case_stages", {})
+    methods = requirement.get("case_methods", {})
+    return (isinstance(stages, dict) and isinstance(methods, dict)
+            and all(k in suffixes and isinstance(v, str) and v in STAGES for k, v in stages.items())
+            and all(k in suffixes and strings(v) and bool(v)
+                    and set(v) <= set(requirement.get("methods", [])) for k, v in methods.items()))
+
+
+def deferred_context(value):
+    # Only absent or untouched scaffold context is pending, never malformed filled data.
+    return value is None or value == {"viewport": "", "modality": "", "state": ""}
 
 
 def disposition(requirement, scope, features, selected):
@@ -91,7 +108,7 @@ def plan(catalog, scope, source_sha256, features, selected):
         methods, cases, feature_tags = (requirement.get(k) for k in ("methods", "cases", "features"))
         valid = (isinstance(kind, str) and kind in CLASSES and strings(methods) and bool(methods)
                  and set(methods) <= METHODS and strings(cases) and bool(cases) and strings(feature_tags)
-                 and nonempty(requirement.get("summary")))
+                 and nonempty(requirement.get("summary")) and case_policy(requirement))
         if not valid:
             issue(identifier, "Malformed catalog requirement")
             continue
@@ -102,7 +119,7 @@ def plan(catalog, scope, source_sha256, features, selected):
         if classification == "required":
             if len(methods) > len(cases):
                 issue(identifier, "Catalog needs enough case suffixes to cover its evidence methods")
-            entry["cases"] = [{"id": suffix, "method": methods[index % len(methods)],
+            entry["cases"] = [{"id": suffix, "method": requirement.get("case_methods", {}).get(suffix, [methods[index % len(methods)]])[0],
                                "context": {"viewport": "", "modality": "", "state": ""}}
                               for index, suffix in enumerate(cases)]
         else:
@@ -114,13 +131,16 @@ def plan(catalog, scope, source_sha256, features, selected):
         if identifier not in known or known[identifier]["class"] != "capability":
             issue("selected:" + identifier, "Selected IDs must name catalog capabilities")
     issue("unmeasured", "Scaffold only: verify features, fill actual contexts and collect linked observations/evidence")
-    return {"status": "incomplete", "ready": False, "contract": contract, "checks": checks,
+    return {"status": "incomplete", "ready": False, "pre_review_status": "incomplete", "pre_review_ready": False,
+            "pending_later_cases": [], "contract": contract, "checks": checks,
             "limitations": LIMITATIONS}
 
 
 def validate(catalog, contract, observations, evidence_root, previous=None):
     checks = []
     measurement_checks = []
+    pending_later_cases = []
+    deferred_cases = {}
 
     def add(identifier, status, finding, **extra):
         checks.append({"id": identifier, "status": status, "finding": finding, **extra})
@@ -146,7 +166,11 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
     if any(not isinstance(v, dict) for _, v in roots):
         return {"status": "incomplete", "coverage_status": "incomplete",
                 "measurement_status": "not_applicable", "ready": False, "checks": checks,
-                "measurement_checks": [], "limitations": LIMITATIONS}
+                "measurement_checks": [], "pre_review_status": "incomplete", "pre_review_ready": False,
+                "pending_later_cases": [], "limitations": LIMITATIONS}
+    for label, value in (("contract", contract), ("observations", observations)):
+        if "stage" in value or "case_stages" in value:
+            add(label, "incomplete", "Stages are catalog-owned")
     for label, value in (("catalog", catalog), ("contract", contract)):
         if type(value.get("schema_version")) is not int or value["schema_version"] != 1:
             add(label, "incomplete", "Expected schema_version 1")
@@ -189,7 +213,7 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
         tags, methods, suffixes = (requirement.get(k) for k in ("features", "methods", "cases"))
         valid = (isinstance(kind, str) and kind in CLASSES and strings(tags) and strings(methods) and bool(methods)
                  and set(methods) <= METHODS and strings(suffixes) and bool(suffixes)
-                 and nonempty(requirement.get("summary")))
+                 and nonempty(requirement.get("summary")) and case_policy(requirement))
         if not valid:
             add(identifier, "incomplete", "Malformed catalog requirement")
             continue
@@ -201,6 +225,8 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
             continue
         if entry.get("disposition") != classification:
             add(identifier, "incomplete", "Disposition must be " + classification)
+        if "case_stages" in entry or "stage" in entry:
+            add(identifier, "incomplete", "Stages are catalog-owned; contract overrides are invalid")
         cases = indexed(entry.get("cases"), identifier + ".cases")
         if not applicable:
             if not nonempty(entry.get("reason")):
@@ -215,11 +241,22 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
         for case_id, case in cases.items():
             if case_id not in suffixes:
                 add(identifier + ":" + case_id, "incomplete", "Unknown catalog case")
+            stage = requirement.get("case_stages", {}).get(case_id, "pre_review")
+            allowed = requirement.get("case_methods", {}).get(case_id, methods)
             method = case.get("method")
-            if not isinstance(method, str) or method not in METHODS or not context(case.get("context")):
-                add(identifier + ":" + case_id, "incomplete", "Missing valid method or context")
+            if "stage" in case or "case_stages" in case:
+                add(identifier + ":" + case_id, "incomplete", "Stages are catalog-owned; contract overrides are invalid")
+            valid_method = isinstance(method, str) and method in METHODS and method in allowed
+            if not valid_method:
+                add(identifier + ":" + case_id, "incomplete", "Missing or disallowed case method")
             else:
                 used_methods.add(method)
+            later = case_id in suffixes and stage != "pre_review" and valid_method
+            if later:
+                deferred_cases[(identifier, case_id)] = stage
+            if not context(case.get("context")):
+                add(identifier + ":" + case_id, "incomplete", "Missing valid context",
+                    pending=later and deferred_context(case.get("context")))
             links = case.get("measurement_ids", [])
             if not strings(links):
                 add(identifier + ":" + case_id, "incomplete", "Invalid measurement_ids")
@@ -282,6 +319,8 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
         if not isinstance(result, dict) or not all(nonempty(result.get(k)) for k in ("requirement_id", "case_id")):
             add("results", "incomplete", "Missing result identifiers")
             continue
+        if "stage" in result or "case_stages" in result:
+            add("results", "incomplete", "Observation stages are catalog-owned")
         key = (result["requirement_id"], result["case_id"])
         if key in results:
             add(":".join(key), "incomplete", "Duplicate observation result")
@@ -294,7 +333,12 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
         identifier = ":".join(key)
         result = results.get(key)
         if result is None:
-            add(identifier, "incomplete", "Required observation is missing")
+            stage = deferred_cases.get(key)
+            pending = stage is not None and (context(case.get("context")) or deferred_context(case.get("context")))
+            add(identifier, "incomplete", "Required observation is missing", pending=pending)
+            if pending:
+                pending_later_cases.append({"requirement_id": key[0], "case_id": key[1],
+                                            "stage": stage, "method": case.get("method")})
             continue
         status = result.get("status")
         if not isinstance(status, str) or status not in STATUSES:
@@ -335,10 +379,17 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
                 add(identifier, measurement["status"], "Linked measurement is not pass: " + link)
         if status == "pass":
             add(identifier, "pass", result.get("finding", ""), evidence=paths)
+    observed_keys = set(results)
+    for check in checks:
+        if check.get("pending") and any(check["id"] == ":".join(key) for key in observed_keys):
+            check["pending"] = False
+    pre_review_status = aggregate([c for c in checks if not c.get("pending")] + measurement_checks)
     coverage_status = aggregate(checks)
     all_status = aggregate(checks + measurement_checks)
     return {"status": all_status, "coverage_status": coverage_status,
             "measurement_status": measurement_status,
+            "pre_review_status": pre_review_status, "pre_review_ready": pre_review_status == "pass",
+            "pending_later_cases": pending_later_cases,
             "ready": coverage_status == "pass" and measurement_status in {"pass", "not_applicable"},
             "checks": checks, "measurement_checks": measurement_checks, "limitations": LIMITATIONS}
 
@@ -383,7 +434,8 @@ def main():
                               args.evidence_root, read_json(args.previous) if args.previous else None)
     except (OSError, ValueError, TypeError) as exc:
         report = {"status": "incomplete", "coverage_status": "incomplete", "measurement_status": "incomplete",
-                  "ready": False, "checks": [{"id": "input", "status": "incomplete", "finding": str(exc)}],
+                  "ready": False, "pre_review_status": "incomplete", "pre_review_ready": False,
+                  "pending_later_cases": [], "checks": [{"id": "input", "status": "incomplete", "finding": str(exc)}],
                   "measurement_checks": [], "limitations": LIMITATIONS}
     print(json.dumps(report, indent=2, allow_nan=False))
     return {"pass": 0, "fail": 1, "incomplete": 2}[report["status"]]

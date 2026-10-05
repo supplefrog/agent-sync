@@ -73,6 +73,78 @@ class CoverageTests(unittest.TestCase):
         self.assertFalse(report["ready"])
         return report
 
+    def defer_paint(self):
+        self.catalog["requirements"][0]["case_stages"] = {"paint": "human_choice"}
+        self.catalog["requirements"][0]["case_methods"] = {"paint": ["rendered"]}
+        self.observations["results"].pop()
+
+    def test_catalog_missing_and_deferred_malformed_filled_context_block_pre_review(self):
+        self.defer_paint()
+        self.contract["requirements"][0]["cases"][1]["context"] = {"viewport": "320x900", "modality": "", "state": "choice"}
+        self.assertFalse(self.check()["pre_review_ready"])
+        self.catalog["requirements"] = []
+        self.assertFalse(self.check()["pre_review_ready"])
+
+    def test_plan_respects_catalog_case_methods_and_rejects_invalid_policy(self):
+        row = self.catalog["requirements"][0]
+        row["case_methods"] = {"input": ["rendered"], "paint": ["browser"]}
+        result = plan(self.catalog, "product", self.hash, ["reader"], [])
+        self.assertEqual([c["method"] for c in result["contract"]["requirements"][0]["cases"]], ["rendered", "browser"])
+        row["case_stages"] = {"paint": "unknown"}
+        result = plan(self.catalog, "product", self.hash, ["reader"], [])
+        self.assertTrue(any(c["id"] == "feedback" for c in result["checks"]))
+
+    def test_pending_later_case_preserves_full_status_and_pre_review(self):
+        self.defer_paint()
+        self.contract["requirements"][0]["cases"][1]["context"] = {"viewport": "", "modality": "", "state": ""}
+        report = self.incomplete()
+        self.assertTrue(report["pre_review_ready"], report)
+        self.assertEqual(report["pre_review_status"], "pass")
+        self.assertEqual(report["pending_later_cases"][0]["case_id"], "paint")
+
+    def test_pending_does_not_waive_stale_hash_dropped_commitment_or_missing_pre_review(self):
+        self.defer_paint()
+        original = copy.deepcopy(self.observations)
+        self.observations["source_sha256"] = "b" * 64
+        self.assertFalse(self.check()["pre_review_ready"])
+        self.observations = copy.deepcopy(original)
+        self.observations["results"] = []
+        self.assertFalse(self.check()["pre_review_ready"])
+        self.observations = original
+        previous = copy.deepcopy(self.contract)
+        self.contract["requirements"][0]["cases"].pop()
+        self.assertFalse(self.check(previous)["pre_review_ready"])
+
+    def test_invalid_stage_suffix_and_worker_override_block_pre_review(self):
+        self.defer_paint()
+        for mapping in ({"paint": "unknown"}, {"unknown": "integration"}, []):
+            self.catalog["requirements"][0]["case_stages"] = mapping
+            self.assertFalse(self.check()["pre_review_ready"])
+        self.catalog["requirements"][0]["case_stages"] = {"paint": "integration"}
+        self.contract["requirements"][0]["cases"][0]["stage"] = "publication"
+        self.assertFalse(self.check()["pre_review_ready"])
+
+    def test_deferred_observation_still_requires_valid_context_and_evidence(self):
+        self.defer_paint()
+        self.result("feedback", "paint", "rendered")
+        self.observations["results"][-1]["source_sha256"] = "b" * 64
+        self.assertFalse(self.check()["pre_review_ready"])
+        self.observations["results"][-1]["source_sha256"] = self.hash
+        self.contract["requirements"][0]["cases"][1]["context"] = {"viewport": "", "modality": "", "state": ""}
+        self.assertFalse(self.check()["pre_review_ready"])
+
+    def test_human_method_is_not_automatically_deferred_and_choice_cannot_be_rendered(self):
+        row = self.catalog["requirements"][0]
+        row["methods"] = ["browser", "human"]
+        row["case_methods"] = {"paint": ["human"]}
+        self.contract["requirements"][0]["cases"][1]["method"] = "human"
+        self.observations["results"].pop()
+        self.assertFalse(self.check()["pre_review_ready"])
+        row["case_stages"] = {"paint": "human_choice"}
+        self.assertTrue(self.check()["pre_review_ready"])
+        self.contract["requirements"][0]["cases"][1]["method"] = "rendered"
+        self.assertFalse(self.check()["pre_review_ready"])
+
     def test_complete_product_preserves_valid_optional_feature_absent_tentative_project(self):
         report = self.check()
         self.assertEqual(report["coverage_status"], "pass")
@@ -290,6 +362,18 @@ class CoverageTests(unittest.TestCase):
         self.catalog["requirements"][0]["cases"] = ["input"]
         report = plan(self.catalog, "product", self.hash, [], [])
         self.assertTrue(any("enough case" in c["finding"] for c in report["checks"]))
+
+    def test_unmapped_case_cannot_substitute_a_method_outside_its_row(self):
+        self.catalog["requirements"][0]["methods"] = ["browser"]
+        self.contract["requirements"][0]["cases"][1]["method"] = "browser"
+        self.observations["results"][1]["method"] = "browser"
+        self.assertTrue(self.check()["ready"])
+        self.contract["requirements"][0]["cases"][0]["method"] = "rendered"
+        self.observations["results"][0]["method"] = "rendered"
+        report = self.check()
+        self.assertFalse(report["ready"])
+        self.assertFalse(report["pre_review_ready"])
+        self.assertTrue(any("disallowed case method" in c["finding"] for c in report["checks"]))
 
     def test_verify_rejects_unknown_features_and_non_capability_selection(self):
         for features, selected in ((["native-selet"], []), (["reader"], ["connector"]),

@@ -1015,6 +1015,68 @@
       "owner": "references/liked-motion-options.md; references/component-selection.md"
     },
     {
+      "id": "I23",
+      "class": "conditional",
+      "features": [
+        "transforming-symbol"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "continuous-state-transform",
+        "center-reversal-semantics",
+        "reduced-motion"
+      ],
+      "case_methods": {
+        "continuous-state-transform": [
+          "browser"
+        ],
+        "center-reversal-semantics": [
+          "rendered"
+        ],
+        "reduced-motion": [
+          "browser"
+        ]
+      },
+      "summary": "State symbols transform continuously, including bookmark and check states.",
+      "expectation": "With motion allowed, the changing symbol follows a continuous morph or transformation, retains its visual center and reverses coherently from its current state. Exercise bookmark/check and other applicable state symbols, not only plus/cross or plus/minus. Reduced motion settles into the equivalent usable semantic state.",
+      "nearby_valid": "Static symbols, unrelated decoration and reduced-motion direct settlement remain valid.",
+      "owner": "references/personal-design-defaults.md; references/motion-design.md"
+    },
+    {
+      "id": "I24",
+      "class": "conditional",
+      "features": [
+        "authored-emphasis-highlight"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "trigger-reset",
+        "readability-wrap",
+        "reduced-motion"
+      ],
+      "case_methods": {
+        "trigger-reset": [
+          "browser"
+        ],
+        "readability-wrap": [
+          "rendered"
+        ],
+        "reduced-motion": [
+          "browser"
+        ]
+      },
+      "summary": "An authored emphasis highlight receives fitting smooth finishing even with I22 unselected.",
+      "expectation": "When an authored text/textbox emphasis mark is present, its fitting smooth sweep/draw or equivalent animation has a deliberate trigger, timing and reset. Actual words remain readable and wrapping stable through the transition; reduced motion remains usable. This conditional finishing applies independently of the optional passage/textbox capture-sweep capability I22.",
+      "nearby_valid": "No highlight is required. Native text selection, validation cues and ordinary nonhighlight text remain unchanged and need no emphasis animation.",
+      "owner": "references/personal-design-defaults.md; references/liked-motion-options.md"
+    },
+    {
       "id": "R01",
       "class": "requirement",
       "features": [
@@ -1094,16 +1156,32 @@
       ],
       "methods": [
         "resource",
-        "rendered"
+        "rendered",
+        "human"
       ],
       "cases": [
         "isolated-delivered-preview",
-        "selection-before-integration"
+        "selection-before-integration",
+        "source-rights-adaptations"
       ],
       "summary": "Isolated proposed-part preview precedes product integration by default.",
       "expectation": "The proposed new part is delivered as an isolated viewable/playable preview before product integration, with exact source/rights, adaptations and selection recorded; only an applicable repair exception or explicit waiver changes that sequence.",
       "nearby_valid": "Routine approved repair/explicit preview waiver can proceed.",
-      "owner": "references/component-selection.md; references/taste-selection.md"
+      "owner": "references/component-selection.md; references/taste-selection.md",
+      "case_stages": {
+        "selection-before-integration": "integration"
+      },
+      "case_methods": {
+        "isolated-delivered-preview": [
+          "rendered"
+        ],
+        "selection-before-integration": [
+          "human"
+        ],
+        "source-rights-adaptations": [
+          "resource"
+        ]
+      }
     },
     {
       "id": "R06",
@@ -1124,7 +1202,21 @@
       "summary": "Choices viewable/comparable/expandable without fixed ceiling/homework.",
       "expectation": "Candidates are delivered with comparable content, concrete recommendation/limits and a route to relevant supplier expansion; unresolved material choices receive scoped human selection without fixed ceilings or browsing homework.",
       "nearby_valid": "Small defensible shortlist valid.",
-      "owner": "references/taste-selection.md; references/component-selection.md"
+      "owner": "references/taste-selection.md; references/component-selection.md",
+      "case_stages": {
+        "scoped-choice": "human_choice"
+      },
+      "case_methods": {
+        "comparable-options": [
+          "rendered"
+        ],
+        "expandable-suppliers": [
+          "resource"
+        ],
+        "scoped-choice": [
+          "human"
+        ]
+      }
     },
     {
       "id": "R07",
@@ -1236,7 +1328,10 @@
       "summary": "Defect acceptance separate from taste; render before visible commit.",
       "expectation": "Execution receipts separate real defect acceptance from taste selection and show representative rendered/interactive delivery plus exact-treatment review or waiver before a visible commit within publication authority.",
       "nearby_valid": "Taste approval not performance evidence.",
-      "owner": "SKILL.md; references/defect-acceptance.md"
+      "owner": "SKILL.md; references/defect-acceptance.md",
+      "case_stages": {
+        "rendered-delivery-before-commit": "publication"
+      }
     },
     {
       "id": "R13",
@@ -1254,7 +1349,11 @@
       "summary": "No redundant push permission after reviewed authorized commit.",
       "expectation": "No redundant push permission after reviewed authorized commit.",
       "nearby_valid": "Unseen treatment/missing authority still needs resolution.",
-      "owner": "SKILL.md"
+      "owner": "SKILL.md",
+      "case_stages": {
+        "authorized-commit-push": "publication",
+        "no-redundant-pause": "publication"
+      }
     },
     {
       "id": "R14",
