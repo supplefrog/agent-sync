@@ -1,6 +1,6 @@
 # Liked motion and material options
 
-These are reusable choices explicitly raised by this user. Consult them when the product role or requested expression fits. They are not a mandatory animation pack, shape palette or single style. Follow the standing parts-preview preference in [component-selection.md](component-selection.md), which owns discovery; [motion-design.md](motion-design.md) owns playback checks. Exact project assets, colors, timings and approved treatments stay local.
+These are reusable choices explicitly raised by this user. Consult them when the product role or requested expression fits. They are not a mandatory animation pack, shape palette or single style. Choosing whether to introduce an emphasis highlight is optional; once chosen, its fitting animation follows [personal-design-defaults.md](personal-design-defaults.md). Follow the standing parts-preview preference in [component-selection.md](component-selection.md), which owns discovery; [motion-design.md](motion-design.md) owns playback checks. Exact project assets, colors, timings and approved treatments stay local.
 
 | Choice | Useful relationship | Preserve or verify |
 |---|---|---|
