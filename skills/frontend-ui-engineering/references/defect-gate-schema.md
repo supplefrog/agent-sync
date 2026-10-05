@@ -11,7 +11,7 @@ python -m unittest -v test_frontend_gate.py
 
 `observations.bad.json` demonstrates one proven stability failure plus incomplete unrelated checks. `observations.missing.json` demonstrates wholly missing measurements. The 24 tests also exercise the CLI's three exit codes. Test fixtures are read-only; the suite does not require writing to the operating system's temporary directory.
 
-The CLI prints a JSON report. Exit codes: `0` pass, `1` proven failure, `2` incomplete input or evidence. Every check retains concrete measurements or a missing-evidence reason. Overall failure takes precedence over incomplete; a report with an incomplete check never passes. An empty contract is incomplete. Additional fields are ignored, so collectors can retain source references, screenshots and metadata alongside measurements.
+The CLI prints a measurement report. Exit codes: `0` pass, `1` proven failure, `2` incomplete input or evidence. Every check retains concrete measurements or a missing-evidence reason. Overall failure takes precedence over incomplete; a report with an incomplete check never passes. An empty contract is incomplete. Additional fields are ignored; this CLI does not validate their revision or coverage. Use [coverage-schema.md](coverage-schema.md) and `frontend_coverage.py` for that separate readiness check. A measurement pass alone never establishes delivery readiness.
 
 ## Input schema
 

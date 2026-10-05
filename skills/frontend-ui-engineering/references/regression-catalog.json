@@ -1,0 +1,1421 @@
+{
+  "schema_version": 1,
+  "requirements": [
+    {
+      "id": "P01",
+      "class": "requirement",
+      "features": [
+        "common"
+      ],
+      "methods": [
+        "rendered"
+      ],
+      "cases": [
+        "contribution"
+      ],
+      "summary": "Every element serves understanding/action/orientation/expression.",
+      "expectation": "Removing a part exposes a concrete loss of useful understanding, action, orientation or coherent expression; retained filler with no loss fails.",
+      "nearby_valid": "Personality and useful metadata remain.",
+      "owner": "SKILL.md"
+    },
+    {
+      "id": "P02",
+      "class": "conditional",
+      "features": [
+        "common"
+      ],
+      "methods": [
+        "rendered"
+      ],
+      "cases": [
+        "meaning-context"
+      ],
+      "summary": "Remove scattered semantic filler, not literal strings or small text.",
+      "expectation": "Each retained caption contributes distinct information or expression in its actual context; paraphrased slogans do not repeatedly restate the same benefit.",
+      "nearby_valid": "Honest demo limitations/note titles remain.",
+      "owner": "SKILL.md"
+    },
+    {
+      "id": "P03",
+      "class": "conditional",
+      "features": [
+        "common",
+        "symbol"
+      ],
+      "methods": [
+        "rendered"
+      ],
+      "cases": [
+        "meaningful-notation"
+      ],
+      "summary": "Numbering, padding and slash chrome need semantic purpose.",
+      "expectation": "Visible numbering, zero padding and slash notation carry real order, reference or meaning rather than decorative technical chrome.",
+      "nearby_valid": "Meaningful dates/fractions/paths/sequence remain.",
+      "owner": "SKILL.md"
+    },
+    {
+      "id": "P04",
+      "class": "conditional",
+      "features": [
+        "directional-cue"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "action-result",
+        "rendered-cue"
+      ],
+      "summary": "Arrows tell actual action/result rather than generic departure.",
+      "expectation": "Activating selection, copy, save and destination controls produces the promised result; rendered arrows communicate that actual role without implying unrelated departure.",
+      "nearby_valid": "Useful navigation/disclosure arrows remain.",
+      "owner": "SKILL.md"
+    },
+    {
+      "id": "P05",
+      "class": "conditional",
+      "features": [
+        "directional-cue"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "use-position",
+        "conventional-progression"
+      ],
+      "summary": "Return/invitation arrows are coherent without literally tracing scroll.",
+      "expectation": "From its use position, an invitation or return arrow truthfully communicates the action. Conventional progression need not literally trace scroll direction.",
+      "nearby_valid": "Right-arrow chapter progression can scroll vertically.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "P06",
+      "class": "conditional",
+      "features": [
+        "common"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "action-context",
+        "rendered-economy"
+      ],
+      "summary": "Different CTA labels cannot hide duplicate action/context.",
+      "expectation": "Controls in one decision context have distinct useful contributions; differently worded actions with the same result and no contextual benefit are consolidated.",
+      "nearby_valid": "Distant reading navigation can save travel.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "P07",
+      "class": "tentative",
+      "features": [
+        "common"
+      ],
+      "methods": [
+        "rendered",
+        "human"
+      ],
+      "cases": [
+        "matched-invitation",
+        "scoped-judgment"
+      ],
+      "summary": "Two invitations mildly repeat; judge context rather than ban wording.",
+      "expectation": "Keep the observation scoped and unresolved until applicable rendered evidence and human judgment decide it. Two invitations mildly repeat; judge context rather than ban wording.",
+      "nearby_valid": "Contextually useful repeated invitation remains.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "P08",
+      "class": "conditional",
+      "features": [
+        "common"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "navigation-job",
+        "rendered-role"
+      ],
+      "summary": "Small landing-page menu needs a real navigation job.",
+      "expectation": "Each shown navigation/dropdown entry leads to a useful distinct route or state for this small landing page.",
+      "nearby_valid": "Useful site navigation remains.",
+      "owner": "SKILL.md"
+    },
+    {
+      "id": "P09",
+      "class": "conditional",
+      "features": [
+        "stacked-reader-navigation"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "navigation-purpose",
+        "rendered-wayfinding"
+      ],
+      "summary": "Stacked Contents/Current section need distinct jobs.",
+      "expectation": "Contents and current-section controls expose meaningfully different jobs or are consolidated; their settled indication matches the reached reading context.",
+      "nearby_valid": "Current indication and jump index may differ usefully.",
+      "owner": "references/defect-acceptance.md; SKILL.md"
+    },
+    {
+      "id": "P10",
+      "class": "conditional",
+      "features": [
+        "concepts"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "distinct-representation",
+        "complete-demo"
+      ],
+      "summary": "Distinct concepts cannot inherit identical capture idea via box changes.",
+      "expectation": "Full concept alternatives differ in how the product relationship and demonstration work, including the lower page; differently shaped capture boxes alone do not establish variety.",
+      "nearby_valid": "Shared state logic with different meaningful representation remains.",
+      "owner": "SKILL.md; references/design-judgment.md"
+    },
+    {
+      "id": "P11",
+      "class": "project",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "scope-authority"
+      ],
+      "summary": "Generated bottom bar is not globally user-approved direction.",
+      "expectation": "Generated bottom bar is not globally user-approved direction.",
+      "nearby_valid": "Approved local historical endpoints remain preserved.",
+      "owner": "project brief and acceptance record; references/personal-design-defaults.md"
+    },
+    {
+      "id": "P12",
+      "class": "requirement",
+      "features": [
+        "common"
+      ],
+      "methods": [
+        "browser"
+      ],
+      "cases": [
+        "ordinary-activation",
+        "reported-context"
+      ],
+      "summary": "Every control completes its advertised task; reported CTA remains context-bound.",
+      "expectation": "Ordinary activation completes the advertised task with usable visible response and relevant focus. Replay the reported context independently; one successful full-width replay cannot clear other states.",
+      "nearby_valid": "One 1280px success cannot clear all reported contexts.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "V01",
+      "class": "requirement",
+      "features": [
+        "common",
+        "concepts"
+      ],
+      "methods": [
+        "rendered"
+      ],
+      "cases": [
+        "product-relationship"
+      ],
+      "summary": "Type/palette/imagery/space/behavior collectively sell the idea.",
+      "expectation": "Type/palette/imagery/space/behavior collectively sell the idea.",
+      "nearby_valid": "No required font/gradient/symbol/notebook.",
+      "owner": "references/design-judgment.md; references/personal-design-defaults.md"
+    },
+    {
+      "id": "V02",
+      "class": "tentative",
+      "features": [
+        "concepts"
+      ],
+      "methods": [
+        "rendered",
+        "human"
+      ],
+      "cases": [
+        "palette-relationship",
+        "scoped-judgment"
+      ],
+      "summary": "Green/black objection concerns specific incoherence.",
+      "expectation": "Keep the observation scoped and unresolved until applicable rendered evidence and human judgment decide it. Green/black objection concerns specific incoherence.",
+      "nearby_valid": "Dark lush forest remains admired.",
+      "owner": "references/personal-design-defaults.md; SKILL.md"
+    },
+    {
+      "id": "V03",
+      "class": "conditional",
+      "features": [
+        "concepts"
+      ],
+      "methods": [
+        "rendered"
+      ],
+      "cases": [
+        "full-compositions",
+        "palette-only-countercase"
+      ],
+      "summary": "Distinct concepts differ beyond stock shell and palette.",
+      "expectation": "Distinct concepts differ beyond stock shell and palette.",
+      "nearby_valid": "Shared structure valid for palette-only study.",
+      "owner": "SKILL.md; references/design-judgment.md"
+    },
+    {
+      "id": "V04",
+      "class": "conditional",
+      "features": [
+        "concepts"
+      ],
+      "methods": [
+        "rendered"
+      ],
+      "cases": [
+        "role-fitting-treatment",
+        "valid-reuse"
+      ],
+      "summary": "No compulsory squircle, outline/shadow, note box or entrance choreography.",
+      "expectation": "No compulsory squircle, outline/shadow, note box or entrance choreography.",
+      "nearby_valid": "Each shape/material/entrance remains available when fitting.",
+      "owner": "references/personal-design-defaults.md; references/motion-design.md"
+    },
+    {
+      "id": "V05",
+      "class": "requirement",
+      "features": [
+        "common",
+        "assets",
+        "concepts"
+      ],
+      "methods": [
+        "rendered"
+      ],
+      "cases": [
+        "integrated-scale",
+        "comparison-width"
+      ],
+      "summary": "Integrate useful visuals at purposeful scale/space.",
+      "expectation": "Integrate useful visuals at purposeful scale/space.",
+      "nearby_valid": "Thoughtful asymmetry remains valid.",
+      "owner": "references/design-judgment.md"
+    },
+    {
+      "id": "V06",
+      "class": "requirement",
+      "features": [
+        "common"
+      ],
+      "methods": [
+        "rendered"
+      ],
+      "cases": [
+        "edge-and-baseline",
+        "intentional-space"
+      ],
+      "summary": "Preserve breathing room/style while inspecting crowding/baselines.",
+      "expectation": "Preserve breathing room/style while inspecting crowding/baselines.",
+      "nearby_valid": "No whitespace ceiling/universal centering.",
+      "owner": "references/personal-design-defaults.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "V07",
+      "class": "conditional",
+      "features": [
+        "diagram"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "node-attachment",
+        "resize-and-state"
+      ],
+      "summary": "Diagram connectors meet nodes/circles/text across sizes/states.",
+      "expectation": "Connector endpoints meet their intended nodes/text through responsive reflow, font loading and selected/moving states, using the declared relationship and tolerance.",
+      "nearby_valid": "Intentional semantic offsets follow declared geometry.",
+      "owner": "references/design-judgment.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "V08",
+      "class": "conditional",
+      "features": [
+        "selection-scroller"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "first-last-halo",
+        "scroll-extremes"
+      ],
+      "summary": "First/last selected-dot halos are not locally cut.",
+      "expectation": "At first/last local-scroller items and scroll extremes, the selected-dot halo remains visible without unintended local clipping even when document overflow is zero.",
+      "nearby_valid": "Local scrolling remains valid.",
+      "owner": "references/defect-acceptance.md"
+    },
+    {
+      "id": "V09",
+      "class": "conditional",
+      "features": [
+        "textarea"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "focus-neighbors",
+        "paint-boundaries"
+      ],
+      "summary": "Textarea focus paint does not cross adjacent labels.",
+      "expectation": "Keyboard focus paint remains visible and does not cross neighboring textarea labels; layout gaps, outline width and offset are inspected together.",
+      "nearby_valid": "Visible keyboard/forced-color focus remains.",
+      "owner": "references/defect-acceptance.md; references/personal-design-defaults.md"
+    },
+    {
+      "id": "V10",
+      "class": "conditional",
+      "features": [
+        "form",
+        "reader",
+        "scroller"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "long-content",
+        "local-edges"
+      ],
+      "summary": "Long text/input/list edges remain readable and usable.",
+      "expectation": "Actual long fields/content and first/last list edges remain readable, reachable and usable at relevant narrow/comparison/full widths; inspect local paint as well as boxes.",
+      "nearby_valid": "Intentional crop/scroller remains if usable.",
+      "owner": "references/defect-acceptance.md; SKILL.md"
+    },
+    {
+      "id": "V11",
+      "class": "requirement",
+      "features": [
+        "common"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "content-stress",
+        "paint-and-layout"
+      ],
+      "summary": "Stress content/focus/labels/selection/scroll and narrow/full widths.",
+      "expectation": "The project record contains real representative long-content, neighboring-label, selection/focus, scroll-extreme and width observations applicable to the affected surface.",
+      "nearby_valid": "Small repair needs affected cases only.",
+      "owner": "references/defect-acceptance.md; SKILL.md"
+    },
+    {
+      "id": "V12",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "repair-cause",
+        "preservation-contract"
+      ],
+      "summary": "Repair overflow cause without hidden content or removed focus.",
+      "expectation": "The repair targets the overflow cause and retains content and accessible focus; blanket clipping or focus removal cannot satisfy acceptance.",
+      "nearby_valid": "Intentional masks/local scrolling remain.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "V13",
+      "class": "conditional",
+      "features": [
+        "authored-selector-indicator",
+        "contents-disclosure"
+      ],
+      "methods": [
+        "browser",
+        "rendered",
+        "source"
+      ],
+      "cases": [
+        "authored-chrome",
+        "sidebar-state",
+        "visible-insets"
+      ],
+      "summary": "Authored arrows/insets remain balanced as sidebar appears.",
+      "expectation": "The actual authored indicator and label have considered visible insets and stable declared relationships during sidebar/layout changes; inspect icon geometry separately from whole-control movement.",
+      "nearby_valid": "Identify actual native chrome rather than infer from tag.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "V14",
+      "class": "conditional",
+      "features": [
+        "selector",
+        "authored-selector-indicator"
+      ],
+      "methods": [
+        "browser",
+        "rendered",
+        "source"
+      ],
+      "cases": [
+        "pointer-keyboard",
+        "authored-native-boundary",
+        "arrow-insets"
+      ],
+      "summary": "Inspect current mouse highlight and arrow without native exception dismissing authored defects.",
+      "expectation": "Native and custom dropdown selectors have no incidental closed-control pointer halo, with a balanced visible indicator and inset. Identify authored CSS/overlays versus browser picker chrome using source plus actual pointer/keyboard render; preserve visible keyboard, programmatic and forced-color focus. A native arrow does not waive authored focus or spacing checks.",
+      "nearby_valid": "Preserve native semantics, intentional palette, keyboard/forced-color focus.",
+      "owner": "references/personal-design-defaults.md; SKILL.md"
+    },
+    {
+      "id": "V15",
+      "class": "conditional",
+      "features": [
+        "transforming-symbol"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "visual-center",
+        "opening-closing-reversal"
+      ],
+      "summary": "Plus/cross transforms about visual center.",
+      "expectation": "The plus/cross retains its declared visual center through opening, closing and reversal; record both stroke/icon geometry and trigger bounds.",
+      "nearby_valid": "Declared whole-object movement can remain.",
+      "owner": "references/personal-design-defaults.md; references/motion-design.md"
+    },
+    {
+      "id": "V16",
+      "class": "conditional",
+      "features": [
+        "selector-action-row"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "control-row",
+        "focus-and-long-label"
+      ],
+      "summary": "Give it a home and Keep it have considered rendered relationship.",
+      "expectation": "The selector/action group remains visibly balanced with long selected text and pointer/keyboard focus without forcing different-role controls to identical heights.",
+      "nearby_valid": "Different roles need not have same height.",
+      "owner": "references/defect-acceptance.md; SKILL.md"
+    },
+    {
+      "id": "V17",
+      "class": "tentative",
+      "features": [
+        "symbol",
+        "concepts"
+      ],
+      "methods": [
+        "rendered",
+        "human"
+      ],
+      "cases": [
+        "optical-comparison",
+        "scoped-judgment"
+      ],
+      "summary": "Starburst imbalance is optical hypothesis, not proved defect.",
+      "expectation": "Keep the observation scoped and unresolved until applicable rendered evidence and human judgment decide it. Starburst imbalance is optical hypothesis, not proved defect.",
+      "nearby_valid": "Authored asymmetry need not be mathematical center.",
+      "owner": "references/defect-acceptance.md"
+    },
+    {
+      "id": "V18",
+      "class": "tentative",
+      "features": [
+        "disclosure"
+      ],
+      "methods": [
+        "browser",
+        "rendered",
+        "human"
+      ],
+      "cases": [
+        "idle-hover-focus",
+        "optical-state-comparison",
+        "scoped-judgment"
+      ],
+      "summary": "Hover indentation observation remains qualified.",
+      "expectation": "Keep the observation scoped and unresolved until applicable rendered evidence and human judgment decide it. Hover indentation observation remains qualified.",
+      "nearby_valid": "Idle grouping remains accepted; no universal equal indentation.",
+      "owner": "references/defect-acceptance.md"
+    },
+    {
+      "id": "V19",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "inherited-commitments",
+        "repair-preservation"
+      ],
+      "summary": "Preserve approved v3.2.1 type/color/spacing/copy/motion/cohesion.",
+      "expectation": "The inherited acceptance contract explicitly retains approved type, palette, spacing, useful restrained copy, expression and complete motion across repair handoffs; changed commitments require a supported reason and affected rechecks.",
+      "nearby_valid": "Exact approval is not future-output/performance proof.",
+      "owner": "SKILL.md"
+    },
+    {
+      "id": "I01",
+      "class": "requirement",
+      "features": [
+        "reader"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "reading-change",
+        "quiet-settlement"
+      ],
+      "summary": "Reader changes have complete continuous feedback when fitting.",
+      "expectation": "Full-content reader index/navigation/scroll changes carry a complete coherent visible response where continuity fits, then settle into quiet reading while input remains immediate.",
+      "nearby_valid": "Immediate input/reduced motion/still unrelated elements remain.",
+      "owner": "references/personal-design-defaults.md; references/motion-design.md"
+    },
+    {
+      "id": "I02",
+      "class": "conditional",
+      "features": [
+        "disclosure"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "long-answer-lifecycle",
+        "interruption-reversal"
+      ],
+      "summary": "Long-answer expansion/collapse finish independently without snap.",
+      "expectation": "Longest real answer opens and closes completely without an unintended endpoint jump, clipped/hidden outgoing interaction or lost reversal; neighbors and focus remain usable.",
+      "nearby_valid": "Reduced-motion direct settlement valid.",
+      "owner": "references/motion-design.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "I03",
+      "class": "conditional",
+      "features": [
+        "contents-disclosure"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "icon-container-separation",
+        "sidebar-reversal"
+      ],
+      "summary": "Separate caret pivot error and container displacement.",
+      "expectation": "Caret rotation keeps its intended pivot; any movement of the trigger/sidebar container is separately measured and explained rather than attributed to the icon.",
+      "nearby_valid": "Declared responsive rearrangement can move control.",
+      "owner": "references/motion-design.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "I04",
+      "class": "conditional",
+      "features": [
+        "continuous-disclosure",
+        "continuous-theme"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "whole-response",
+        "entry-exit-reversal"
+      ],
+      "summary": "Chosen continuity includes icon plus panel/page response.",
+      "expectation": "When continuity is chosen, indicator, content, neighboring layout and page surface visibly respond as one coherent feature through entry, exit and reversal.",
+      "nearby_valid": "Deliberate static or reduced-motion response may be valid.",
+      "owner": "references/personal-design-defaults.md; references/motion-design.md"
+    },
+    {
+      "id": "I05",
+      "class": "conditional",
+      "features": [
+        "chapter-reader"
+      ],
+      "methods": [
+        "browser"
+      ],
+      "cases": [
+        "full-index-use-position",
+        "destination-agreement"
+      ],
+      "summary": "Prev/next usable under actual full long contents.",
+      "expectation": "With the actual long index loaded, previous/next are usable from the reading position without test-runner auto-scroll; destination, current indication and adjacent actions agree after settlement.",
+      "nearby_valid": "Contextual repeated nav remains useful.",
+      "owner": "references/defect-acceptance.md; SKILL.md"
+    },
+    {
+      "id": "I06",
+      "class": "requirement",
+      "features": [
+        "chapter-reader"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "phone-chapter-navigation",
+        "phone-index-use-position",
+        "phone-reading-return"
+      ],
+      "summary": "Phone reader chapter navigation works.",
+      "expectation": "On a phone, navigate with the full chapter/index content from the middle and bottom of reading. When a persistent control opens contents, the actual index must become visibly usable at that position without runner auto-scroll. Choose a chapter, dismiss or return, and retain the intended reading context and focus. A changed expanded attribute or rotating caret alone cannot pass. Chapterless products need no chapter index.",
+      "nearby_valid": "Chapterless landing page needs no chapter nav.",
+      "owner": "references/defect-acceptance.md; SKILL.md"
+    },
+    {
+      "id": "I07",
+      "class": "tentative",
+      "features": [
+        "caret-disclosure"
+      ],
+      "methods": [
+        "browser",
+        "rendered",
+        "human"
+      ],
+      "cases": [
+        "state-semantics",
+        "conventional-caret",
+        "scoped-judgment"
+      ],
+      "summary": "Caret direction follows state semantics, not list location alone.",
+      "expectation": "Keep the observation scoped and unresolved until applicable rendered evidence and human judgment decide it. Caret direction follows state semantics, not list location alone.",
+      "nearby_valid": "Up means collapse can be conventional.",
+      "owner": "references/defect-acceptance.md; SKILL.md"
+    },
+    {
+      "id": "I08",
+      "class": "conditional",
+      "features": [
+        "authored-theme-source"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "depicted-attachment",
+        "abstract-metaphor-countercase"
+      ],
+      "summary": "Depicted source/attachment coherent; physics hypotheses remain taste.",
+      "expectation": "Depicted source/attachment coherent; physics hypotheses remain taste.",
+      "nearby_valid": "Abstract wipe need not simulate sunlight.",
+      "owner": "references/defect-acceptance.md; references/motion-design.md"
+    },
+    {
+      "id": "I09",
+      "class": "capability",
+      "features": [
+        "sun-moon-morph"
+      ],
+      "methods": [
+        "resource",
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "real-morph-candidate",
+        "shared-geometry",
+        "host-theme-reversal"
+      ],
+      "summary": "Actual sun/moon shared-geometry morph remains researched option.",
+      "expectation": "When the fitting morph option is selected, real preview/source demonstrates shared circle/clipping geometry changing into sun/moon through intermediate states; host theme, pressed state, contrast and rapid reversal work independently of a page wipe.",
+      "nearby_valid": "Crossfade/wipe distinct valid option, not this morph.",
+      "owner": "references/liked-motion-options.md; references/personal-design-defaults.md"
+    },
+    {
+      "id": "I10",
+      "class": "requirement",
+      "features": [
+        "plus-minus"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "stroke-continuity",
+        "stable-center-reversal"
+      ],
+      "summary": "Plus strokes merge into minus continuously with stable center/reversal.",
+      "expectation": "With motion allowed, plus strokes continuously merge into minus around a stable visual center and reverse from the current state. Reduced motion reaches the equivalent usable state directly.",
+      "nearby_valid": "Reduced-motion direct settlement retains semantics.",
+      "owner": "references/personal-design-defaults.md; references/motion-design.md"
+    },
+    {
+      "id": "I11",
+      "class": "requirement",
+      "features": [
+        "direct-selection"
+      ],
+      "methods": [
+        "browser"
+      ],
+      "cases": [
+        "depicted-object-activation",
+        "keyboard-equivalent"
+      ],
+      "summary": "Depicted card/note directly activates when natural.",
+      "expectation": "Activating a depicted selectable note/card changes the actual selected object/content, with a usable keyboard equivalent rather than requiring only a detached selector.",
+      "nearby_valid": "Separate selectors useful for precision/comparison remain.",
+      "owner": "references/design-judgment.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "I12",
+      "class": "conditional",
+      "features": [
+        "combined-slide-zoom"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "combined-choreography",
+        "standalone-countercase"
+      ],
+      "summary": "Combined slide/zoom is coherent, not universal slide-first rule.",
+      "expectation": "When translation and zoom are combined, intermediate content, object continuity and timing remain coherent through interruption/reversal without racing zoom or unintended outgoing-copy cover; no fixed order is prescribed.",
+      "nearby_valid": "Standalone slide/zoom valid; no fixed pause/order.",
+      "owner": "references/liked-motion-options.md; references/motion-design.md"
+    },
+    {
+      "id": "I13",
+      "class": "conditional",
+      "features": [
+        "masked-gallery"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "intended-frame",
+        "intermediate-mask"
+      ],
+      "summary": "Mask follows actual intended frame through motion.",
+      "expectation": "The moving image/card stays within its intended frame throughout the chosen transform; a rounded frame retains its actual silhouette without imposing rounding on other frames.",
+      "nearby_valid": "Unrounded frame needs no rounding added.",
+      "owner": "references/liked-motion-options.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "I14",
+      "class": "conditional",
+      "features": [
+        "image-zoom"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "intermediate-content",
+        "loading-interruption"
+      ],
+      "summary": "Intermediate zoom content does not reveal accidental placeholder/frame.",
+      "expectation": "Zoom entry/loading/interruption and settlement preserve intended content lifetime and clipping; an accidental placeholder or destination frame is not exposed.",
+      "nearby_valid": "Deliberate coherent visible frame valid.",
+      "owner": "references/motion-design.md"
+    },
+    {
+      "id": "I15",
+      "class": "conditional",
+      "features": [
+        "sentence-reveal"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "sentence-and-wrapping",
+        "repetition-reset"
+      ],
+      "summary": "Reveal fits sentence without jitter/repeated entrance defaults.",
+      "expectation": "A chosen text reveal fits the real sentence and wrapping without jitter, unstable line breaks, repeated generic fade-in or delayed ordinary reading/input.",
+      "nearby_valid": "Ordinary reading/input remains immediate.",
+      "owner": "references/motion-design.md; references/liked-motion-options.md"
+    },
+    {
+      "id": "I16",
+      "class": "capability",
+      "features": [
+        "cursor-reveal"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "fitting-cursor-reveal",
+        "reset-reduced-motion"
+      ],
+      "summary": "Cursor and fitting reveal remain available expressive choices.",
+      "expectation": "When selected because it fits the product, cursor and fitting reveal remain available expressive choices.",
+      "nearby_valid": "No every-page cursor/reveal mandate.",
+      "owner": "references/liked-motion-options.md"
+    },
+    {
+      "id": "I17",
+      "class": "capability",
+      "features": [
+        "small-artifact-motion"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "small-artifact-response",
+        "grounded-countercase"
+      ],
+      "summary": "Small lightweight floating/tilting artifacts remain available.",
+      "expectation": "When selected because it fits the product, small lightweight floating/tilting artifacts remain available.",
+      "nearby_valid": "Still grounded card valid.",
+      "owner": "references/liked-motion-options.md"
+    },
+    {
+      "id": "I18",
+      "class": "tentative",
+      "features": [
+        "floating-window-zoom"
+      ],
+      "methods": [
+        "rendered",
+        "human"
+      ],
+      "cases": [
+        "combined-weight",
+        "scoped-judgment"
+      ],
+      "summary": "Large-window float plus zoom awkwardness is composition-specific.",
+      "expectation": "Keep the observation scoped and unresolved until applicable rendered evidence and human judgment decide it. Large-window float plus zoom awkwardness is composition-specific.",
+      "nearby_valid": "Another coherent large-float brief may work.",
+      "owner": "references/motion-design.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "I19",
+      "class": "capability",
+      "features": [
+        "animated-selection"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "fitting-selection",
+        "response-reduced-motion"
+      ],
+      "summary": "Moving selector/glow/card slide/tilt available when coherent.",
+      "expectation": "When selected because it fits the product, moving selector/glow/card slide/tilt available when coherent.",
+      "nearby_valid": "No universal moving bar/glow.",
+      "owner": "references/liked-motion-options.md"
+    },
+    {
+      "id": "I20",
+      "class": "conditional",
+      "features": [
+        "selection-zoom"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "indicator-content-agreement",
+        "perceptible-response"
+      ],
+      "summary": "Indicator motion is not promised selection content/zoom proof.",
+      "expectation": "Selection changes the actual selected content/zoom as promised, perceptibly at normal speed; a moving indicator alone cannot establish the whole response.",
+      "nearby_valid": "Subtle motion valid if current contract met visibly.",
+      "owner": "references/motion-design.md"
+    },
+    {
+      "id": "I21",
+      "class": "capability",
+      "features": [
+        "expressive-underline",
+        "animated-strip"
+      ],
+      "methods": [
+        "resource",
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "fitting-part-preview",
+        "trigger-wrap",
+        "static-countercase"
+      ],
+      "summary": "Animated strip/expressive underline available finishing options.",
+      "expectation": "When selected because it fits the product, animated strip/expressive underline available finishing options.",
+      "nearby_valid": "No universal effect or repertoire.",
+      "owner": "references/liked-motion-options.md; references/design-judgment.md"
+    },
+    {
+      "id": "I22",
+      "class": "capability",
+      "features": [
+        "passage-textbox-sweep"
+      ],
+      "methods": [
+        "resource",
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "passage-textbox-preview",
+        "capture-reset",
+        "both-targets"
+      ],
+      "summary": "Text/textbox sweeps available coordinated choices.",
+      "expectation": "When fitting passage/textbox sweeps are selected, the real preview demonstrates the actual passage behavior and both coordinated targets with readable words and working trigger/reset. A predefined inline highlight alone cannot prove arbitrary capture or textbox response.",
+      "nearby_valid": "Predefined inline highlighter valid but not capture/textbox proof.",
+      "owner": "references/liked-motion-options.md; references/component-selection.md"
+    },
+    {
+      "id": "R01",
+      "class": "requirement",
+      "features": [
+        "resources"
+      ],
+      "methods": [
+        "resource"
+      ],
+      "cases": [
+        "local-first",
+        "theme-behavior-discovery"
+      ],
+      "summary": "Prefer suitable premade/local parts and active thematic search.",
+      "expectation": "For an unresolved part, actual targeted discovery starts from suitable local components and inspects relevant role/theme/behavior/stack candidates before inventing a replacement.",
+      "nearby_valid": "Routine approved repair needs no fresh search.",
+      "owner": "references/component-selection.md"
+    },
+    {
+      "id": "R02",
+      "class": "requirement",
+      "features": [
+        "resources"
+      ],
+      "methods": [
+        "resource"
+      ],
+      "cases": [
+        "relevant-suppliers",
+        "exact-finalists"
+      ],
+      "summary": "Named suppliers remain active relevant sources, not passive/random catalog.",
+      "expectation": "Named suppliers remain active relevant sources, not passive/random catalog.",
+      "nearby_valid": "No every-site/item browsing requirement.",
+      "owner": "references/resource-catalog.md; references/component-selection.md"
+    },
+    {
+      "id": "R03",
+      "class": "project",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "fresh-host-readiness",
+        "setup-evidence-limit"
+      ],
+      "summary": "Requested both-host MCP readiness is operational when relevant.",
+      "expectation": "When both-host tool readiness affects the task, fresh native tool exposure and applicable read-only response receipts support the dependency; historical setup/auth alone cannot establish current rendering or parity.",
+      "nearby_valid": "Configured/authenticated server not current rendering/parity proof.",
+      "owner": "project brief and acceptance record; references/component-selection.md"
+    },
+    {
+      "id": "R04",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "authorization-boundary",
+        "unavailable-route"
+      ],
+      "summary": "No paid fallback or credential extraction under current authority.",
+      "expectation": "No paid fallback or credential extraction under current authority.",
+      "nearby_valid": "Native authorized image route remains.",
+      "owner": "references/component-selection.md; references/personal-design-defaults.md"
+    },
+    {
+      "id": "R05",
+      "class": "requirement",
+      "features": [
+        "resources"
+      ],
+      "methods": [
+        "resource",
+        "rendered"
+      ],
+      "cases": [
+        "isolated-delivered-preview",
+        "selection-before-integration"
+      ],
+      "summary": "Isolated proposed-part preview precedes product integration by default.",
+      "expectation": "The proposed new part is delivered as an isolated viewable/playable preview before product integration, with exact source/rights, adaptations and selection recorded; only an applicable repair exception or explicit waiver changes that sequence.",
+      "nearby_valid": "Routine approved repair/explicit preview waiver can proceed.",
+      "owner": "references/component-selection.md; references/taste-selection.md"
+    },
+    {
+      "id": "R06",
+      "class": "requirement",
+      "features": [
+        "resources"
+      ],
+      "methods": [
+        "resource",
+        "rendered",
+        "human"
+      ],
+      "cases": [
+        "comparable-options",
+        "expandable-suppliers",
+        "scoped-choice"
+      ],
+      "summary": "Choices viewable/comparable/expandable without fixed ceiling/homework.",
+      "expectation": "Candidates are delivered with comparable content, concrete recommendation/limits and a route to relevant supplier expansion; unresolved material choices receive scoped human selection without fixed ceilings or browsing homework.",
+      "nearby_valid": "Small defensible shortlist valid.",
+      "owner": "references/taste-selection.md; references/component-selection.md"
+    },
+    {
+      "id": "R07",
+      "class": "requirement",
+      "features": [
+        "native-image-generation"
+      ],
+      "methods": [
+        "resource",
+        "rendered"
+      ],
+      "cases": [
+        "actual-native-invocation",
+        "useful-integrated-asset",
+        "truthful-route-version"
+      ],
+      "summary": "Use native latest-supported GPT image route when useful, with truthful version.",
+      "expectation": "When native image generation is chosen because it materially helps, actual native invocation and useful integrated rendered result are evidenced. Select the latest supported GPT Image model when the route permits; report backend uncertainty truthfully. Existing suitable assets and original explanatory SVGs do not require a generation call.",
+      "nearby_valid": "Existing suitable asset can avoid generation; unknown backend stays unverified.",
+      "owner": "references/personal-design-defaults.md; references/design-judgment.md"
+    },
+    {
+      "id": "R08",
+      "class": "capability",
+      "features": [
+        "reader-material"
+      ],
+      "methods": [
+        "resource",
+        "rendered"
+      ],
+      "cases": [
+        "fitting-texture",
+        "light-dark-scroll-print"
+      ],
+      "summary": "Sharp slightly warm functional reader material available.",
+      "expectation": "When a functional reader material is selected, actual authored/licensed texture is reviewed for fine detail, strength, seams, scrolling, light/dark compositing, print and readability; warmth remains a scoped choice.",
+      "nearby_valid": "No automatic warm-paper theme or eye-strain claim.",
+      "owner": "references/liked-motion-options.md; references/design-judgment.md"
+    },
+    {
+      "id": "R09",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "invocation-evidence",
+        "capability-evidence-limit"
+      ],
+      "summary": "Missing actual generation is uncovered wanted behavior, not route failure.",
+      "expectation": "Missing actual generation is uncovered wanted behavior, not route failure.",
+      "nearby_valid": "Worker declining assets cannot prove route ineffective.",
+      "owner": "references/defect-acceptance.md; references/personal-design-defaults.md"
+    },
+    {
+      "id": "R10",
+      "class": "capability",
+      "features": [
+        "continuous-theme"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "fitting-theme-response",
+        "host-state-reversal"
+      ],
+      "summary": "Fitting animated reader theme plus complete transition available.",
+      "expectation": "When an animated reader theme treatment fits, control and content/surface response are complete both ways with working host state/persistence, reversal, keyboard and reduced motion.",
+      "nearby_valid": "No universal icon/wipe combination.",
+      "owner": "references/personal-design-defaults.md; references/liked-motion-options.md"
+    },
+    {
+      "id": "R11",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "native-route-authority",
+        "backend-uncertainty"
+      ],
+      "summary": "Backend uncertainty cannot revoke native-route permission.",
+      "expectation": "Backend uncertainty cannot revoke native-route permission.",
+      "nearby_valid": "No paid/API-key fallback permission follows.",
+      "owner": "references/personal-design-defaults.md"
+    },
+    {
+      "id": "R12",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "defect-taste-separation",
+        "rendered-delivery-before-commit"
+      ],
+      "summary": "Defect acceptance separate from taste; render before visible commit.",
+      "expectation": "Execution receipts separate real defect acceptance from taste selection and show representative rendered/interactive delivery plus exact-treatment review or waiver before a visible commit within publication authority.",
+      "nearby_valid": "Taste approval not performance evidence.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "R13",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "authorized-commit-push",
+        "no-redundant-pause"
+      ],
+      "summary": "No redundant push permission after reviewed authorized commit.",
+      "expectation": "No redundant push permission after reviewed authorized commit.",
+      "nearby_valid": "Unseen treatment/missing authority still needs resolution.",
+      "owner": "SKILL.md"
+    },
+    {
+      "id": "R14",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "full-contract-preservation",
+        "defect-before-taste"
+      ],
+      "summary": "Agent catches obvious regressions, preserves accepted qualities.",
+      "expectation": "The repair handoff and final acceptance record retain the full affected inherited contract, resolve obvious material defects/gaps before taste review, and do not replace acceptance with only the latest criticism.",
+      "nearby_valid": "New coherent taste choice remains user-owned.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "R15",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "mechanism-baseline",
+        "matched-evaluation-scope"
+      ],
+      "summary": "Judgment first, tools next, focused guidance and necessary observation QA.",
+      "expectation": "Judgment first, tools next, focused guidance and necessary observation QA.",
+      "nearby_valid": "No weight cause/prompt ritual/anecdotal model branch.",
+      "owner": "SKILL.md; references/taste-selection.md"
+    },
+    {
+      "id": "R16",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "bounded-useful-delegation",
+        "parent-verification"
+      ],
+      "summary": "Useful bounded delegation/research/review/DAG improves tested output.",
+      "expectation": "Useful bounded delegation/research/review/DAG improves tested output.",
+      "nearby_valid": "Simple work local; reviewer verdict alone not proof.",
+      "owner": "SKILL.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "R17",
+      "class": "project",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "authorized-target-scope"
+      ],
+      "summary": "Future workflow/tooling correction, no accepted WhichAI patches.",
+      "expectation": "Future workflow/tooling correction, no accepted WhichAI patches.",
+      "nearby_valid": "Separate real evaluation artifacts allowed.",
+      "owner": "project brief and acceptance record; references/personal-design-defaults.md"
+    },
+    {
+      "id": "R18",
+      "class": "project",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "historical-comparisons-preserved"
+      ],
+      "summary": "Comparison retirement cancelled for now.",
+      "expectation": "Comparison retirement cancelled for now.",
+      "nearby_valid": "Original full-width outputs remain inspectable.",
+      "owner": "project brief and acceptance record"
+    },
+    {
+      "id": "A01",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "complete-id-mapping",
+        "individual-statuses"
+      ],
+      "summary": "Every complaint/want has independent ID/class/owner/case/evidence/status.",
+      "expectation": "Every maintained ID retains its authority class, applicable real case, rule owner, valid neighbor and independent evidence status in the project record; no aggregate verdict hides omissions.",
+      "nearby_valid": "Source bullet can split into atomic rows.",
+      "owner": "project brief and acceptance record; references/defect-acceptance.md"
+    },
+    {
+      "id": "A02",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "real-case-evidence",
+        "measurement-coverage-boundary"
+      ],
+      "summary": "Wording/config/fixture/exploratory label not real behavior proof.",
+      "expectation": "Every behavioral pass is bound to a real applicable revision/context observation. Wording, tooling configuration, fixtures or exploratory labels remain their actual evidence level.",
+      "nearby_valid": "Synthetic checker test only mechanism evidence.",
+      "owner": "references/defect-acceptance.md"
+    },
+    {
+      "id": "A03",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "nearby-valid-case",
+        "individual-gaps"
+      ],
+      "summary": "Preserve nearby valid cases and individual gaps.",
+      "expectation": "Affected nearby valid cases remain usable and scoped gaps remain individual; one passed case or a blanket ban does not clear untested neighbors.",
+      "nearby_valid": "Brief-specific N/A cannot clear portfolio coverage.",
+      "owner": "references/personal-design-defaults.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "A04",
+      "class": "requirement",
+      "features": [
+        "workflow"
+      ],
+      "methods": [
+        "source"
+      ],
+      "cases": [
+        "brief-relevance",
+        "real-portfolio-coverage"
+      ],
+      "summary": "Absent features not added to fill table; real portfolio covers all wants.",
+      "expectation": "A real evaluation portfolio maps every maintained want/complaint to fitting products and actual case evidence. A feature absent from one brief stays absent; its portfolio gap remains incomplete until genuinely exercised.",
+      "nearby_valid": "Individual brief N/A; suite omission incomplete.",
+      "owner": "references/personal-design-defaults.md; SKILL.md"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-complete-regression-coverage",
+  "capability": "frontend-ui-engineering",
+  "date": "2026-10-05",
+  "status": "supported_method_checked",
+  "record_scope": "Checked omission/identity/inheritance mechanism and narrow optional native-select focus adapter; real UI portfolio remains failed/incomplete.",
+  "baseline": {
+    "version": "4.1.0",
+    "source_commit": "16ac815696522b17f15527226f6c15e21c66e87d"
+  },
+  "candidate": {
+    "version": "4.2.0",
+    "source_sha256_lf_normalized": {
+      "skills/frontend-ui-engineering/SKILL.md": "8d91b7f5e53f106d9cca370cfcbb1decade43635a07e39df6e2fb736e4d9b1f6",
+      "skills/frontend-ui-engineering/references/defect-acceptance.md": "8221d776d46d2f43a6159b0e8dde0aacaa531e30994302b130381664511e8dd5",
+      "skills/frontend-ui-engineering/references/defect-gate-schema.md": "d7def0e0b0392e966142eaf28f911a988682ab51a140fe3ee09787a99bd44c71",
+      "skills/frontend-ui-engineering/references/personal-design-defaults.md": "d6a5ab806977228918065d348f5ed240bffa724187e2e1a80f4e4156c1a4d5ac",
+      "skills/frontend-ui-engineering/references/coverage-schema.md": "377b090b271bf463da87e6f1a8e23ec80077abee589b4049994851c1e5a9e46a",
+      "skills/frontend-ui-engineering/references/regression-catalog.json": "fb0a47546bca11b4fc0e9a467280acc8190e224ae14f53759835278d9eb5ace1",
+      "skills/frontend-ui-engineering/references/regression-catalog.md": "83624d1e65aff3e98cbb254b5266e6eb3b7ab2b1616bddc788f5d96fcff98e75",
+      "skills/frontend-ui-engineering/references/selector-feedback.md": "85d43dfd75f74fab7d7de03e2bbd56188e2bad34c51f92506cb4ff06f40a2384",
+      "skills/frontend-ui-engineering/scripts/frontend_coverage.py": "430302be8800f1a15086b586176d6c12dab4f2e17b7ab3c4b4e3a8591bd0f5d0",
+      "skills/frontend-ui-engineering/scripts/test_frontend_coverage.py": "38e4500ba638b513cccd9d79953c60e456f657a864cd96e891abb8f360b15d78",
+      "skills/frontend-ui-engineering/scripts/check_regression_catalog.py": "f0e066e2f82cef22fa54dbc7abbead19439013f349b60338405af2bf0a02f1aa",
+      "skills/frontend-ui-engineering/scripts/test_selector_focus.mjs": "cc29d65f3ab277391a5b4844d6351734eaacfddbeb1455bf7df5eef6a972f319",
+      "skills/frontend-ui-engineering/assets/selector-focus.js": "eb7db0c19119879349af8f238414552e2069befce23e3d00cd1b45521eee7222"
+    },
+    "changes": [
+      "Maintain 75 stable feedback IDs with falsifying and nearby-valid cases, retaining conditional defects, optional wants and tentative/project scope.",
+      "Classify the full catalog once per acceptance contract and inherit commitments through revisions; reject omitted cases, invalid feature tags, stale context/build, missing rendered evidence and invalid measurement links.",
+      "Make selector guidance available before implementing native/custom dropdowns; actual pointer feedback is separate from keyboard/programmatic/high-contrast focus and painted indicator balance.",
+      "Provide a tested optional native-select modality adapter while preferring suitable existing primitives.",
+      "Require phone contents access from the middle/bottom of actual reading, not only expanded attributes or scroll-zero tests.",
+      "Keep generated assets and expressive motion conditional on usefulness and selection; preserve original SVG/existing-asset alternatives."
+    ],
+    "alternatives": {
+      "additional_bans": "Would suppress valid small text, arrows, asymmetric composition and useful repeated actions without checking their purpose.",
+      "new_design_framework_or_orchestration_platform": "No demonstrated dependency; cannot replace task, paint or taste judgment.",
+      "mature_product_browser_suite": "Preferred where already present; supplements the retained requirement contract.",
+      "selected": "Extend the existing owner with a maintained catalog, small stdlib coverage checker and narrow reusable implementation aid."
+    }
+  },
+  "verification": {
+    "native_skill_metadata": "pass",
+    "local_reference_links": "pass",
+    "python_unit_tests": {
+      "total": 53,
+      "passed": 52,
+      "skipped": 1,
+      "skip_reason": "Windows denied symbolic-link creation"
+    },
+    "full_catalog_synthetic": {
+      "catalog_rows": 75,
+      "workflow_required_rows": 65,
+      "workflow_required_cases": 134,
+      "tests_run": 2600,
+      "passed": 2600,
+      "failed": 0,
+      "evidence_level": "SYNTHETIC VALIDATOR TEST ONLY; mocked evidence metadata; no UI or image truth"
+    },
+    "selector_event_sequence_assertions": {
+      "passed": 7,
+      "evidence_level": "Node event mechanism; not browser paint"
+    },
+    "fresh_source_review": {
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "context": "fresh artifact-first read-only reviewer",
+      "findings": [
+        {
+          "issue": "Verify accepted unknown feature vocabulary and non-capability selections",
+          "resolution": "Same validity checks during plan and verification; mutation tests pass"
+        },
+        {
+          "issue": "Stale pointer target could hide later programmatic restoration",
+          "resolution": "Pointer marker expires/clears on blur; event tests and real restoration replay pass"
+        }
+      ]
+    },
+    "parent_browser": {
+      "selector": "Trusted pointer trigger suppressed authored halo despite focus-visible matching. Tab/native ArrowDown, programmatic restoration, disabled/text-entry countercases, 320px render and forced-colors emulation checked. Native-popup pixels unverified.",
+      "reader": "Desktop Contents anchor stable; long answer opened/closed; direct claim selection/application and phone reading-position navigation observed. Phone Contents remained above viewport, so blocked before taste-ready delivery.",
+      "fresh_transfer": "Six-plant guide from outcome-only brief, explicit candidate reads, preserved actual raw-first source, zero repairs. Native/keyboard habitat and context navigation, settled phone containment and reduced-motion path observed; transient geometry unresolved."
+    },
+    "real_portfolio": {
+      "catalog_rows": 75,
+      "workflow_required_rows": 65,
+      "workflow_required_cases": 134,
+      "real_case_results": 5,
+      "status": "fail",
+      "ready": false
+    }
+  },
+  "transfer": {
+    "worker_model": "gpt-6.1-sol",
+    "reasoning": "medium",
+    "mode": "fresh explicitly injected guide",
+    "skill_version_at_build": "4.2.0 candidate before later applicability/use-position refinements",
+    "raw_and_final_artifact_sha256": "9cbfdb8c49adc09eeb9ae3b13e08f2db8c09fcd5f1362952a15aedfb597378cd",
+    "source_repair_batches": 0
+  },
+  "native_image": {
+    "actual_invocation": true,
+    "use": "Fine paper texture in isolated reader trial",
+    "backend_model_version": "unverified",
+    "paid_api_fallback": false
+  },
+  "publication_scope": {
+    "owner": "frontend-ui-engineering",
+    "product_demos_changed": false,
+    "trial_sources_committed": false,
+    "native_settings_selected": false
+  },
+  "limits": [
+    "Synthetic evidence metadata does not establish UI/image truth.",
+    "Checker does not collect observations or authorize publication/taste acceptance.",
+    "Only five real cases are formally bound in the portfolio; further observed scopes are described separately. Other real cases remain incomplete.",
+    "Phone index failure and transient navigation geometry remain in frozen trial sources; no perfect-first-draft claim.",
+    "Full motion lifecycles, every optional component, physical devices, screen readers, natural triggering and cross-host behavioral parity remain unqualified.",
+    "No matched skill/no-skill quality result, neural-weight cause, backend image version or measured paid cost is claimed."
+  ],
+  "rollback": {
+    "method": "Restore the admitted frontend owner from its baseline ready source through scoped canonical reconciliation; do not reset unrelated work."
+  }
+}
