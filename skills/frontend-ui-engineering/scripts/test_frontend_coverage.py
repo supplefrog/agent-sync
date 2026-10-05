@@ -404,5 +404,21 @@ class CoverageTests(unittest.TestCase):
         self.assertFalse(json.loads(process.stdout)["ready"])
 
 
+class ActualCatalogMechanisms(unittest.TestCase):
+    def test_generic_symbol_does_not_claim_plus_cross_pivot(self):
+        catalog = json.loads((Path(__file__).resolve().parents[1] / "references" / "regression-catalog.json").read_text(encoding="utf-8"))
+        def dispositions(features):
+            report = plan(catalog, "product", "a" * 64, features, [])
+            return {row["id"]: row["disposition"] for row in report["contract"]["requirements"]}
+        generic = dispositions(["transforming-symbol"])
+        self.assertEqual(generic["I23"], "required")
+        self.assertEqual(generic["V15"], "not_applicable")
+        for mechanism in ("plus-cross", "plus-minus"):
+            with self.subTest(mechanism=mechanism):
+                actual = dispositions([mechanism, "transforming-symbol"])
+                self.assertEqual(actual["V15"], "required")
+                self.assertEqual(actual["I23"], "required")
+
+
 if __name__ == "__main__":
     unittest.main()

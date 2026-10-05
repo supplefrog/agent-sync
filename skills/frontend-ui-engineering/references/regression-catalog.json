@@ -494,7 +494,8 @@
       "id": "V15",
       "class": "conditional",
       "features": [
-        "transforming-symbol"
+        "plus-cross",
+        "plus-minus"
       ],
       "methods": [
         "browser",
