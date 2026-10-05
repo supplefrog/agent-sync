@@ -22,7 +22,7 @@ Before saving behavioral preferences or proposing or editing durable instruction
 
 # Scope
 
-Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met.
+Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met. Use one task-local temporary folder for scratch files, test outputs and temporary helpers. Before completion, remove them and duplicate artifacts; keep deliverables and compact recovery/evidence. Preserve unrelated or unfinished work.
 
 # Evidence
 

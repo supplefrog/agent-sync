@@ -83,6 +83,8 @@ Before saving behavioral preferences or proposing or editing durable instruction
 ## Scope
 Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met.
 
+Use one task-local temporary folder for scratch files, test outputs and temporary helpers. Before completion, remove them and duplicate artifacts; keep deliverables and compact recovery/evidence. Preserve unrelated or unfinished work.
+
 ## Evidence
 Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
 
