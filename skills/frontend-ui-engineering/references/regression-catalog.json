@@ -1119,10 +1119,12 @@
       "cases": [
         "manual-wheel-takeover",
         "alternate-input-takeover",
-        "settlement-after-cancel"
+        "settlement-after-cancel",
+        "rapid-command-burst",
+        "command-reversal"
       ],
-      "summary": "Manual navigation cancels the mechanism moving the viewport.",
-      "expectation": "Use real manual input while animated navigation is in flight. Wheel and relevant touch, scrollbar or navigation-key input promptly take ownership; cancel the scroll animation itself, not merely its tracking flag. After cancellation no delayed callback resumes the old destination or steals focus, and location indication follows the user's settled position. Preserve editing and keys consumed by other controls; synthetic scroll events and final-anchor checks alone cannot establish takeover.",
+      "summary": "Navigation commands retarget travel; manual input takes ownership of the viewport.",
+      "expectation": "During in-flight animated navigation, exercise real rapid command bursts and reversals. Record every accepted next/previous or direct-target activation and verify that commands resolve against the requested destination, its indication never rolls back to an intermediate observed location, and the final position reaches the resulting target. Separately use real manual input: wheel and relevant touch, scrollbar or navigation-key input promptly take ownership; cancel the scroll animation itself, not merely its tracking flag. After cancellation no delayed callback resumes the old destination or steals focus, and location indication follows the user's settled position. Preserve editing and keys consumed by other controls; synthetic scroll events and final-anchor checks alone cannot establish takeover.",
       "nearby_valid": "Instant navigation needs no cancellation animation. Ordinary scrolling, editing controls and useful chapter progression remain intact.",
       "owner": "references/motion-design.md; references/defect-acceptance.md"
     },

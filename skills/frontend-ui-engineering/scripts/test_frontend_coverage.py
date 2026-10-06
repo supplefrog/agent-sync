@@ -430,7 +430,8 @@ class ActualCatalogMechanisms(unittest.TestCase):
         self.assertEqual(rows["I25"]["disposition"], "required")
         self.assertEqual(rows["I26"]["disposition"], "required")
         self.assertEqual({case["id"] for case in rows["I26"]["cases"]},
-                         {"manual-wheel-takeover", "alternate-input-takeover", "settlement-after-cancel"})
+                         {"manual-wheel-takeover", "alternate-input-takeover", "settlement-after-cancel",
+                          "rapid-command-burst", "command-reversal"})
         self.assertTrue(all(case["method"] == "browser" for case in rows["I26"]["cases"]))
         self.assertEqual(self.planned_rows(["chapter-reader"])["I26"]["disposition"], "not_applicable")
 
