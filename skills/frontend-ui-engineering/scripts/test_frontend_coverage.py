@@ -405,6 +405,41 @@ class CoverageTests(unittest.TestCase):
 
 
 class ActualCatalogMechanisms(unittest.TestCase):
+    def planned_rows(self, features=(), selected=()):
+        catalog = json.loads((Path(__file__).resolve().parents[1] / "references" / "regression-catalog.json").read_text(encoding="utf-8"))
+        report = plan(catalog, "product", "a" * 64, list(features), list(selected))
+        return {row["id"]: row for row in report["contract"]["requirements"]}
+
+    def test_static_mock_does_not_require_invented_motion(self):
+        rows = self.planned_rows()
+        for identifier in ("I25", "I26"):
+            self.assertEqual(rows[identifier]["disposition"], "not_applicable")
+        self.assertEqual(rows["R19"]["disposition"], "unselected")
+
+    def test_animated_mock_retains_distinct_smoothness_evidence(self):
+        for mechanism in ("animated-transition", "continuous-theme", "illustration-motion"):
+            with self.subTest(mechanism=mechanism):
+                rows = self.planned_rows([mechanism])
+                self.assertEqual(rows["I25"]["disposition"], "required")
+                methods = {case["id"]: case["method"] for case in rows["I25"]["cases"]}
+                self.assertEqual(methods, {"active-window-response": "browser", "repeated-normal-speed": "rendered"})
+                self.assertEqual(rows["I26"]["disposition"], "not_applicable")
+
+    def test_animated_navigation_cannot_be_cleared_by_final_anchor_only(self):
+        rows = self.planned_rows(["animated-navigation"])
+        self.assertEqual(rows["I25"]["disposition"], "required")
+        self.assertEqual(rows["I26"]["disposition"], "required")
+        self.assertEqual({case["id"] for case in rows["I26"]["cases"]},
+                         {"manual-wheel-takeover", "alternate-input-takeover", "settlement-after-cancel"})
+        self.assertTrue(all(case["method"] == "browser" for case in rows["I26"]["cases"]))
+        self.assertEqual(self.planned_rows(["chapter-reader"])["I26"]["disposition"], "not_applicable")
+
+    def test_illustration_motion_is_a_choice_not_a_hero_quota(self):
+        self.assertEqual(self.planned_rows(["concepts"])["R19"]["disposition"], "unselected")
+        rows = self.planned_rows(["illustration-motion"], ["R19"])
+        self.assertEqual(rows["R19"]["disposition"], "required")
+        self.assertEqual(rows["I25"]["disposition"], "required")
+
     def test_generic_symbol_does_not_claim_plus_cross_pivot(self):
         catalog = json.loads((Path(__file__).resolve().parents[1] / "references" / "regression-catalog.json").read_text(encoding="utf-8"))
         def dispositions(features):

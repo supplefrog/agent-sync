@@ -123,12 +123,12 @@ def main():
         return report
 
     rows = catalog['requirements']
-    record('actual-catalog-row-count', len(rows) == 77, actual=len(rows), expected=77)
+    record('actual-catalog-row-count', len(rows) == 80, actual=len(rows), expected=80)
     record('actual-catalog-unique-ids', len({r['id'] for r in rows}) == len(rows))
     retained_ids = {f'{prefix}{index:02d}' for prefix, last in
                     (('P', 12), ('V', 19), ('I', 24), ('R', 18), ('A', 4))
                     for index in range(1, last + 1)}
-    record('retained-feedback-identities', {r['id'] for r in rows} == retained_ids)
+    record('retained-feedback-identities', {r['id'] for r in rows} == retained_ids | {'I25', 'I26', 'R19'})
     for row in rows:
         record('catalog-method-case-capacity:' + row['id'], len(row['methods']) <= len(row['cases']))
     base, observed = fixture(catalog)
@@ -263,7 +263,9 @@ def main():
     entry = next(e for e in changed['requirements'] if e['id'] == 'V14')
     entry['cases'].pop(0)
     record('pending-dropped-focus-blocks-pre-review', not check('pending-drop-focus', changed, observation, previous=contract)['pre_review_ready'])
-    for feature, identifier in (('authored-emphasis-highlight', 'I24'), ('transforming-symbol', 'I23')):
+    for feature, identifier in (('authored-emphasis-highlight', 'I24'), ('transforming-symbol', 'I23'),
+                                ('animated-transition', 'I25'), ('continuous-theme', 'I25'),
+                                ('animated-navigation', 'I26'), ('illustration-motion', 'I25')):
         contract, observation = fixture(catalog, 'product', [feature])
         check('conditional-finishing:' + feature, contract, observation, ready=True)
         record('highlight-capability-still-unselected:' + feature,
@@ -275,7 +277,9 @@ def main():
             report = check('conditional-finishing-omission:' + identifier + ':' + case['id'], contract, mutated)
             record('conditional-finishing-pre-review-blocked:' + identifier + ':' + case['id'], not report['pre_review_ready'])
 
-    for identifier, suffix in (('I24', 'trigger-reset'), ('I23', 'continuous-state-transform'), ('R06', 'scoped-choice')):
+    for identifier, suffix in (('I24', 'trigger-reset'), ('I23', 'continuous-state-transform'), ('R06', 'scoped-choice'),
+                               ('I25', 'active-window-response'), ('I26', 'manual-wheel-takeover'),
+                               ('R19', 'input-exit-reentry')):
         contract, observation = fixture(catalog, 'workflow')
         case = next(c for e in contract['requirements'] if e['id'] == identifier for c in e['cases'] if c['id'] == suffix)
         result = next(r for r in observation['results'] if (r['requirement_id'], r['case_id']) == (identifier, suffix))

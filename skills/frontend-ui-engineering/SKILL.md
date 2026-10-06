@@ -3,7 +3,7 @@ name: frontend-ui-engineering
 description: Use for frontend design, implementation, and rendered UI review, including reviewable prototypes. Match engineering depth to the requested fidelity. For test-only edits, use this when a UI-specific behavior, accessibility, or visual question needs its guidance.
 license: MIT
 metadata:
-  version: 4.3.1
+  version: 4.3.2
   author: Addy Osmani; Agent Sync adaptation
   compatibility: Requires the project's frontend toolchain and browser rendering for production verification.
   tags: [frontend, ui, accessibility, responsive-design, design-systems]
@@ -111,7 +111,7 @@ Before implementing or revising a dropdown selector, read [references/selector-f
 - Choose viewport coverage for the changed surface and risk: 320px, 768px, 1024px and 1440px are useful starting points, not a compulsory matrix for every edit. Include the user's viewport and narrow, intermediate, container or zoom conditions needed to verify the change and applicable accessibility requirements. Verify long content, missing assets, slow/failed data and localization/RTL when supported. Maintain meaningful DOM and focus order after visual reflow.
 - Fix overflow at its cause: shrinkable flex/grid children, appropriate wrapping, responsive tracks, and deliberate local scrolling for wide data. Do not globally clip overflow to disguise inaccessible content. Allow control labels to wrap when needed rather than clipping text or shrinking it below legibility. Check sticky headers and overlays for obscured focus, overlap, and clipping.
 
-For interactive or expressive demonstrations, read `references/motion-design.md` before choosing the state-change treatment, including a decision to keep it instant. Also read it before motion implementation or review. Make the changed object and its relationship perceptible; a button's hover effect does not establish feedback for the illustration it controls. Motion should explain change or support the chosen expression without delaying input. Preserve existing tokens, verify interruption and reduced motion, and measure expensive effects before claiming performance. Static interfaces remain valid when they serve the brief.
+For interactive or expressive demonstrations, read `references/motion-design.md` before choosing the state-change treatment, including a decision to keep it instant. Also read it before motion implementation or review. Make the changed object and its relationship perceptible; a button's hover effect does not establish feedback for the illustration it controls. Motion should explain change or support the chosen expression without delaying input. Preserve existing tokens, verify interruption and reduced motion, and measure expensive effects before claiming performance. Declare `animated-transition` for actual animated state changes, `animated-navigation` for animated scrolling/navigation and `illustration-motion` for moving illustrations, including those in interactive mocks. Static interfaces remain valid when they serve the brief.
 
 ## Delivery checks
 

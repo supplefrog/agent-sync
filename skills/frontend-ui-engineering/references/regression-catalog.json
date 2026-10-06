@@ -1078,6 +1078,55 @@
       "owner": "references/personal-design-defaults.md; references/liked-motion-options.md"
     },
     {
+      "id": "I25",
+      "class": "conditional",
+      "features": [
+        "animated-transition",
+        "continuous-theme",
+        "animated-navigation",
+        "illustration-motion"
+      ],
+      "methods": [
+        "browser",
+        "rendered"
+      ],
+      "cases": [
+        "active-window-response",
+        "repeated-normal-speed"
+      ],
+      "case_methods": {
+        "active-window-response": [
+          "browser"
+        ],
+        "repeated-normal-speed": [
+          "rendered"
+        ]
+      },
+      "summary": "Actual product motion remains responsive and visibly smooth after integration and repairs.",
+      "expectation": "Check the active transition with representative content and responsive input, separately from final styles and reversal. Observe repeated normal-speed playback in the target environment. Investigate a visible stall or material performance claim with active-window timing and, where needed, a trace; record measured signal, window and limits. A supplier demo, sampled colors or settled state cannot establish product frame continuity. Recheck when theme, content, geometry or surrounding effects can change the cost.",
+      "nearby_valid": "No animation or universal FPS target is required. Static mocks do not activate this condition; reduced-motion instant changes and approved continuity remain valid.",
+      "owner": "references/motion-design.md; references/defect-acceptance.md"
+    },
+    {
+      "id": "I26",
+      "class": "conditional",
+      "features": [
+        "animated-navigation"
+      ],
+      "methods": [
+        "browser"
+      ],
+      "cases": [
+        "manual-wheel-takeover",
+        "alternate-input-takeover",
+        "settlement-after-cancel"
+      ],
+      "summary": "Manual navigation cancels the mechanism moving the viewport.",
+      "expectation": "Use real manual input while animated navigation is in flight. Wheel and relevant touch, scrollbar or navigation-key input promptly take ownership; cancel the scroll animation itself, not merely its tracking flag. After cancellation no delayed callback resumes the old destination or steals focus, and location indication follows the user's settled position. Preserve editing and keys consumed by other controls; synthetic scroll events and final-anchor checks alone cannot establish takeover.",
+      "nearby_valid": "Instant navigation needs no cancellation animation. Ordinary scrolling, editing controls and useful chapter progression remain intact.",
+      "owner": "references/motion-design.md; references/defect-acceptance.md"
+    },
+    {
       "id": "R01",
       "class": "requirement",
       "features": [
@@ -1443,6 +1492,38 @@
       "expectation": "Comparison retirement cancelled for now.",
       "nearby_valid": "Original full-width outputs remain inspectable.",
       "owner": "project brief and acceptance record"
+    },
+    {
+      "id": "R19",
+      "class": "capability",
+      "features": [
+        "illustration-motion",
+        "concepts"
+      ],
+      "methods": [
+        "rendered",
+        "browser"
+      ],
+      "cases": [
+        "purpose-trigger-repetition",
+        "input-exit-reentry",
+        "accessible-still-alternative"
+      ],
+      "case_methods": {
+        "purpose-trigger-repetition": [
+          "rendered"
+        ],
+        "input-exit-reentry": [
+          "browser"
+        ],
+        "accessible-still-alternative": [
+          "browser"
+        ]
+      },
+      "summary": "Meaningful illustration motion is an available, optional attention or exploration choice.",
+      "expectation": "When selected or promised, an illustration's movement expresses its actual idea, with a deliberate one-time, replay or input-driven trigger. Observe its payoff and repetition in context, exit/reentry and relevant input modes. Retain stable important content/task access and fitting coarse-pointer, keyboard and reduced-motion alternatives. Cursor parallax, drawn marks, folds and anchored waves are candidates rather than a repeated hero recipe.",
+      "nearby_valid": "A strong still illustration remains valid. No illustration or animated effect is added solely to satisfy a catalog row.",
+      "owner": "references/liked-motion-options.md; references/motion-design.md"
     },
     {
       "id": "A01",
