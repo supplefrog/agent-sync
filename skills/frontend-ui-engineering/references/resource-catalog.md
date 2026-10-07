@@ -4,6 +4,7 @@ Use [component-selection.md](component-selection.md) to turn this catalog into t
 
 | Resource | Best use | Boundary |
 |---|---|---|
+| [Google Fonts](https://fonts.google.com/), [official CSS API](https://developers.google.com/fonts/docs/css2) | Broad typeface discovery and licensed web-font delivery; compare actual words, weights and type roles with the illustration/composition | Verify the selected family's license and language/weight coverage. Font names or pairings do not establish fit; inspect fallback, loading and settled wrapping. Preserve approved fonts and existing loading infrastructure. |
 | [shadcn/ui](https://ui.shadcn.com/) | Accessible project components, themed source and registry discovery through its official CLI/MCP | Registry search/view/examples inspect source; they do not render the product. Inspect third-party items separately and keep existing project primitives. |
 | [Aura](https://www.aura.build/components) | Premade sections and visual parts with HTML/Tailwind/vanilla JS export | Adapt to the target framework; check selected component rights and dependencies. Personal/commercial entitlements differ. No agent MCP was verified. |
 | [GodUI](https://godui.design/) | Open-source React/Tailwind motion parts and official component-source MCP | Distinct from Godly inspiration. Check the installed stack and exact source; a catalog entry does not mean its MCP is configured. |
