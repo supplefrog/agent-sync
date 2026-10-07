@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "checked-native-candidate",
+  "baseline": "91ead1e62ce1fb12821d183adadb939533635b45",
+  "selected_recovery_artifacts": [
+    "codex:native-prototype-entrypoint",
+    "codex:native-prototype-license",
+    "codex:native-prototype-logic",
+    "codex:native-prototype-ui-metadata",
+    "codex:native-prototype-ui-owner"
+  ],
+  "checks": {
+    "only_five_policy_additions": true,
+    "existing_950_snapshot_records_unchanged": true,
+    "only_five_host_delta_additions": true,
+    "native_logic_unchanged": true,
+    "native_wrappers_match_reviewed_candidate": true,
+    "fresh_codex_prompt_assembly": {
+      "exit": 0,
+      "verifier_trigger": true,
+      "prototype_redirect": true
+    },
+    "native_plan": "21 eligible-after-checks findings, no review-required finding"
+  },
+  "native_sha256": {
+    "SKILL.md": "ec251321b20c9337eca16c9584934cb2946c76766f9d76b8ed7e71bd5337eac0",
+    "UI.md": "bfb9b0b0820073da8acda856fc8e866493e21fb631f0779c2cb37d73e40dee69",
+    "LOGIC.md": "cf372862bccd3db7f18ea57abd76d6c32e6adf65b9e7f46c73d433e107567a5c",
+    "agents/openai.yaml": "5af65e43ab41a350436697b81e27b7f848d36782043b73c322bb2c9fa9cc55dc",
+    "LICENSE.txt": "4ff5bdb7887ec1435c9cab0e8d1a7caee704d894d65c2a008ccc68b1cc2f260b"
+  },
+  "license_source": "https://github.com/emilkowalski/skills/blob/main/LICENSE",
+  "limits": [
+    "Fresh prompt assembly proves discovery/loading instructions, not actual invocation or model-quality advantage.",
+    "Native Hermes verifier/test-validity/router bodies were preserved unchanged; no new comparative behavioral test."
+  ],
+  "rollback": "Reconcile reviewed original prototype entrypoint/UI bytes and revert only selected recovery policy/bindings; unrelated state is outside this scope."
+}

@@ -32,6 +32,8 @@ Use the [selected-host recovery procedure](recovery.md) and the [verification re
 
 ## Keeping local edits recoverable
 
+The Codex-local `prototype` package is captured as five exact text artifacts: its adapted entrypoint/UI owner redirect, unchanged logic procedure and UI metadata, and upstream MIT notice. UI comparison now belongs to the admitted frontend owner; logic remains native. The [upstream license](https://github.com/emilkowalski/skills/blob/main/LICENSE) and authorship are retained. This scoped addition does not claim coverage of the rest of Codex's native skill catalog. Restore may replace only the reviewed original entrypoint/UI hashes; unexpected edits remain conflicts.
+
 When a task changes a reviewed native package, include its complete scripts, references, templates, and applicable license notices in the recovery inventory. Add new support files explicitly, and review removed files instead of silently dropping knowledge. Do not copy bytecode, dot-state, usage/curator records, logs, caches, sessions, source data, or credentials.
 
 Run the normal reconciliation path after the edit: review the proposed recovery capture, public-safety findings, and exact publication scope; then sync and verify. Existing allowlisted file edits are captured by that path. New or previously unreviewed files need allowlist review first. A local edit alone does not update the remote hub.

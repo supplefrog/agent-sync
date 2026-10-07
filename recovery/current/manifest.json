@@ -13452,10 +13452,81 @@
       "snapshot": "hosts/hermes/skills/devops/sdlc-review/SKILL.md",
       "source": "skills/devops/sdlc-review/SKILL.md",
       "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 1520,
+      "format": "text",
+      "host": "codex",
+      "id": "native-prototype-entrypoint",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "replace_sha256": [
+        "03074862d4b6e4eaf472aa75146e1d193dd9e3bba0e4303a9b2425562d1d44cc"
+      ],
+      "sha256": "ec251321b20c9337eca16c9584934cb2946c76766f9d76b8ed7e71bd5337eac0",
+      "snapshot": "hosts/codex/skills/prototype/SKILL.md",
+      "source": "skills/prototype/SKILL.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 603,
+      "format": "text",
+      "host": "codex",
+      "id": "native-prototype-ui-owner",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "replace_sha256": [
+        "e2ca04434be54acdee2f5df582ef8038fadf582bbcc99be0d2e27737ff8ed096"
+      ],
+      "sha256": "bfb9b0b0820073da8acda856fc8e866493e21fb631f0779c2cb37d73e40dee69",
+      "snapshot": "hosts/codex/skills/prototype/UI.md",
+      "source": "skills/prototype/UI.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 5637,
+      "format": "text",
+      "host": "codex",
+      "id": "native-prototype-logic",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "cf372862bccd3db7f18ea57abd76d6c32e6adf65b9e7f46c73d433e107567a5c",
+      "snapshot": "hosts/codex/skills/prototype/LOGIC.md",
+      "source": "skills/prototype/LOGIC.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 100,
+      "format": "text",
+      "host": "codex",
+      "id": "native-prototype-ui-metadata",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "5af65e43ab41a350436697b81e27b7f848d36782043b73c322bb2c9fa9cc55dc",
+      "snapshot": "hosts/codex/skills/prototype/agents/openai.yaml",
+      "source": "skills/prototype/agents/openai.yaml",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 1070,
+      "format": "text",
+      "host": "codex",
+      "id": "native-prototype-license",
+      "include": [],
+      "kind": "text",
+      "portable_paths": true,
+      "sha256": "4ff5bdb7887ec1435c9cab0e8d1a7caee704d894d65c2a008ccc68b1cc2f260b",
+      "snapshot": "hosts/codex/skills/prototype/LICENSE.txt",
+      "source": "skills/prototype/LICENSE.txt",
+      "strategy": "replace-if-absent"
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "7161b5e7512d678cdcca62f9a4b720c10a1be50e9275b1ebf2b6759bc603aceb",
+  "policy_sha256": "14bac037f33c0a3cec1075d4447029218b862b28f99767b57eab8b35ea814ff7",
   "public_safe": true,
   "schema_version": 1
 }

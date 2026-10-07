@@ -22,4 +22,4 @@ Record the selected or combined qualities, the question settled and useful previ
 
 Integrate the selected treatment with production checks, accessibility, state handling and error paths. Prototype code's reduced scope does not establish production readiness. Remove prototype routes and controls from the shipped surface.
 
-Provenance: adapted from the locally installed Emil Kowalski `prototype` skill's `UI.md`, already referenced by [component-selection.md](component-selection.md#existing-foundations). The former fixed counts, mandatory floating picker and universal branch/issue capture are optional here; their useful comparison, isolation, stable-link and recovery mechanisms remain.
+Provenance: adapted from the locally installed Emil Kowalski `prototype` skill's `UI.md`, already referenced by [component-selection.md](component-selection.md#existing-foundations), under its [MIT license notice](prototype-LICENSE.txt). The former fixed counts, mandatory floating picker and universal branch/issue capture are optional here; their useful comparison, isolation, stable-link and recovery mechanisms remain.

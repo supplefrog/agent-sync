@@ -46,6 +46,57 @@
           "snapshot": "hosts/codex/hooks/windows_destructive_commands.py",
           "source": "hooks/windows_destructive_commands.py",
           "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-prototype-entrypoint",
+          "kind": "text",
+          "portable_paths": true,
+          "replace_sha256": [
+            "03074862d4b6e4eaf472aa75146e1d193dd9e3bba0e4303a9b2425562d1d44cc"
+          ],
+          "snapshot": "hosts/codex/skills/prototype/SKILL.md",
+          "source": "skills/prototype/SKILL.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-prototype-ui-owner",
+          "kind": "text",
+          "portable_paths": true,
+          "replace_sha256": [
+            "e2ca04434be54acdee2f5df582ef8038fadf582bbcc99be0d2e27737ff8ed096"
+          ],
+          "snapshot": "hosts/codex/skills/prototype/UI.md",
+          "source": "skills/prototype/UI.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-prototype-logic",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/codex/skills/prototype/LOGIC.md",
+          "source": "skills/prototype/LOGIC.md",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-prototype-ui-metadata",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/codex/skills/prototype/agents/openai.yaml",
+          "source": "skills/prototype/agents/openai.yaml",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "format": "text",
+          "id": "native-prototype-license",
+          "kind": "text",
+          "portable_paths": true,
+          "snapshot": "hosts/codex/skills/prototype/LICENSE.txt",
+          "source": "skills/prototype/LICENSE.txt",
+          "strategy": "replace-if-absent"
         }
       ]
     },
@@ -8648,875 +8699,875 @@
           "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime---init---py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/__init__.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/__init__.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/__init__.py",
+          "source": "plugins/hermes-lcm/__init__.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-adaptive-retrieval-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/adaptive_retrieval.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/adaptive_retrieval.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/adaptive_retrieval.py",
+          "source": "plugins/hermes-lcm/adaptive_retrieval.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-answer-contract-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/answer_contract.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/answer_contract.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/answer_contract.py",
+          "source": "plugins/hermes-lcm/answer_contract.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-assertion-extraction-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/assertion_extraction.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/assertion_extraction.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/assertion_extraction.py",
+          "source": "plugins/hermes-lcm/assertion_extraction.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-assertion-rebuild-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/assertion_rebuild.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/assertion_rebuild.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/assertion_rebuild.py",
+          "source": "plugins/hermes-lcm/assertion_rebuild.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-assertion-state-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/assertion_state.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/assertion_state.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/assertion_state.py",
+          "source": "plugins/hermes-lcm/assertion_state.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-assertion-store-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/assertion_store.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/assertion_store.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/assertion_store.py",
+          "source": "plugins/hermes-lcm/assertion_store.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-aux-session-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/aux_session.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/aux_session.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/aux_session.py",
+          "source": "plugins/hermes-lcm/aux_session.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-bypass-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/bypass.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/bypass.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/bypass.py",
+          "source": "plugins/hermes-lcm/bypass.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-chunking-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/chunking.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/chunking.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/chunking.py",
+          "source": "plugins/hermes-lcm/chunking.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-codex-routing-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/codex_routing.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/codex_routing.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/codex_routing.py",
+          "source": "plugins/hermes-lcm/codex_routing.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-command-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/command.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/command.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/command.py",
+          "source": "plugins/hermes-lcm/command.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-compaction-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/compaction.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/compaction.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/compaction.py",
+          "source": "plugins/hermes-lcm/compaction.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-config-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/config.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/config.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/config.py",
+          "source": "plugins/hermes-lcm/config.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-dag-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/dag.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/dag.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/dag.py",
+          "source": "plugins/hermes-lcm/dag.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-db-bootstrap-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/db_bootstrap.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/db_bootstrap.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/db_bootstrap.py",
+          "source": "plugins/hermes-lcm/db_bootstrap.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-diagnostics-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/diagnostics.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/diagnostics.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/diagnostics.py",
+          "source": "plugins/hermes-lcm/diagnostics.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-embedding-provider-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/embedding_provider.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/embedding_provider.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/embedding_provider.py",
+          "source": "plugins/hermes-lcm/embedding_provider.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-engine-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/engine.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/engine.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/engine.py",
+          "source": "plugins/hermes-lcm/engine.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-engine-registry-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/engine_registry.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/engine_registry.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/engine_registry.py",
+          "source": "plugins/hermes-lcm/engine_registry.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-escalation-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/escalation.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/escalation.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/escalation.py",
+          "source": "plugins/hermes-lcm/escalation.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-evidence-compiler-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/evidence_compiler.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/evidence_compiler.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/evidence_compiler.py",
+          "source": "plugins/hermes-lcm/evidence_compiler.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-evidence-pack-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/evidence_pack.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/evidence_pack.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/evidence_pack.py",
+          "source": "plugins/hermes-lcm/evidence_pack.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-externalize-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/externalize.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/externalize.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/externalize.py",
+          "source": "plugins/hermes-lcm/externalize.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-extraction-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/extraction.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/extraction.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/extraction.py",
+          "source": "plugins/hermes-lcm/extraction.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-fresh-tail-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/fresh_tail.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/fresh_tail.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/fresh_tail.py",
+          "source": "plugins/hermes-lcm/fresh_tail.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-guidance-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/guidance.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/guidance.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/guidance.py",
+          "source": "plugins/hermes-lcm/guidance.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-host-evidence-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/host_evidence.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/host_evidence.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/host_evidence.py",
+          "source": "plugins/hermes-lcm/host_evidence.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-ingest-protection-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/ingest_protection.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/ingest_protection.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/ingest_protection.py",
+          "source": "plugins/hermes-lcm/ingest_protection.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-license",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/LICENSE",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/LICENSE",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/LICENSE",
+          "source": "plugins/hermes-lcm/LICENSE",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-lifecycle-state-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/lifecycle_state.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/lifecycle_state.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/lifecycle_state.py",
+          "source": "plugins/hermes-lcm/lifecycle_state.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-maintenance-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/maintenance.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/maintenance.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/maintenance.py",
+          "source": "plugins/hermes-lcm/maintenance.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-message-analysis-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/message_analysis.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/message_analysis.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/message_analysis.py",
+          "source": "plugins/hermes-lcm/message_analysis.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-message-content-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/message_content.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/message_content.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/message_content.py",
+          "source": "plugins/hermes-lcm/message_content.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-message-patterns-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/message_patterns.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/message_patterns.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/message_patterns.py",
+          "source": "plugins/hermes-lcm/message_patterns.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-model-routing-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/model_routing.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/model_routing.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/model_routing.py",
+          "source": "plugins/hermes-lcm/model_routing.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-occurrence-time-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/occurrence_time.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/occurrence_time.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/occurrence_time.py",
+          "source": "plugins/hermes-lcm/occurrence_time.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-placeholder-ledger-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/placeholder_ledger.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/placeholder_ledger.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/placeholder_ledger.py",
+          "source": "plugins/hermes-lcm/placeholder_ledger.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-plugin-yaml",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/plugin.yaml",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/plugin.yaml",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/plugin.yaml",
+          "source": "plugins/hermes-lcm/plugin.yaml",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-preanswer-evidence-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/preanswer_evidence.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/preanswer_evidence.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/preanswer_evidence.py",
+          "source": "plugins/hermes-lcm/preanswer_evidence.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-presets-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/presets.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/presets.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/presets.py",
+          "source": "plugins/hermes-lcm/presets.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-query-view-store-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/query_view_store.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/query_view_store.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/query_view_store.py",
+          "source": "plugins/hermes-lcm/query_view_store.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-reasoning-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/reasoning.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/reasoning.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/reasoning.py",
+          "source": "plugins/hermes-lcm/reasoning.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-reconcile-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/reconcile.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/reconcile.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/reconcile.py",
+          "source": "plugins/hermes-lcm/reconcile.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-requirements-compiler-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/requirements_compiler.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/requirements_compiler.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/requirements_compiler.py",
+          "source": "plugins/hermes-lcm/requirements_compiler.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-reset-state-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/reset_state.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/reset_state.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/reset_state.py",
+          "source": "plugins/hermes-lcm/reset_state.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-retrieval-core-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/retrieval_core.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/retrieval_core.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/retrieval_core.py",
+          "source": "plugins/hermes-lcm/retrieval_core.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-rollup-builder-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/rollup_builder.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/rollup_builder.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/rollup_builder.py",
+          "source": "plugins/hermes-lcm/rollup_builder.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-rollup-periods-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/rollup_periods.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/rollup_periods.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/rollup_periods.py",
+          "source": "plugins/hermes-lcm/rollup_periods.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-rollup-store-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/rollup_store.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/rollup_store.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/rollup_store.py",
+          "source": "plugins/hermes-lcm/rollup_store.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-runtime-identity-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/runtime_identity.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/runtime_identity.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/runtime_identity.py",
+          "source": "plugins/hermes-lcm/runtime_identity.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-sanitize-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/sanitize.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/sanitize.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/sanitize.py",
+          "source": "plugins/hermes-lcm/sanitize.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-schemas-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/schemas.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/schemas.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/schemas.py",
+          "source": "plugins/hermes-lcm/schemas.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-search-query-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/search_query.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/search_query.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/search_query.py",
+          "source": "plugins/hermes-lcm/search_query.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-selective-compiler-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/selective_compiler.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/selective_compiler.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/selective_compiler.py",
+          "source": "plugins/hermes-lcm/selective_compiler.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-selective-recall-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/selective_recall.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/selective_recall.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/selective_recall.py",
+          "source": "plugins/hermes-lcm/selective_recall.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-session-patterns-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/session_patterns.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/session_patterns.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/session_patterns.py",
+          "source": "plugins/hermes-lcm/session_patterns.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-sqlite-util-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/sqlite_util.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/sqlite_util.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/sqlite_util.py",
+          "source": "plugins/hermes-lcm/sqlite_util.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-store-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/store.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/store.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/store.py",
+          "source": "plugins/hermes-lcm/store.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-tokens-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/tokens.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/tokens.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/tokens.py",
+          "source": "plugins/hermes-lcm/tokens.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-tools-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/tools.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/tools.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/tools.py",
+          "source": "plugins/hermes-lcm/tools.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-trajectory-store-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/trajectory_store.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/trajectory_store.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/trajectory_store.py",
+          "source": "plugins/hermes-lcm/trajectory_store.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-runtime-vector-store-py",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/vector_store.py",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/vector_store.py",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/vector_store.py",
+          "source": "plugins/hermes-lcm/vector_store.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-skill-a206ba12e0f595cddf6a",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/architecture.md",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/architecture.md",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/architecture.md",
+          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/architecture.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-skill-5b897be44d0ba7e484a0",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/configuration.md",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/configuration.md",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/configuration.md",
+          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/configuration.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-skill-ed8fc04896d2dd57c05a",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/diagnostics.md",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/diagnostics.md",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/diagnostics.md",
+          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/diagnostics.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-skill-d0fa0d33084166e346e8",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/recall-policy.md",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/recall-policy.md",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/recall-policy.md",
+          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/recall-policy.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-skill-0a3b2afc3c9d3c0913ee",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/recall-tools.md",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/recall-tools.md",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/recall-tools.md",
+          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/recall-tools.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-skill-c9bf4c904ab1727f084e",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/session-lifecycle.md",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/session-lifecycle.md",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/references/session-lifecycle.md",
+          "source": "plugins/hermes-lcm/skills/hermes-lcm/references/session-lifecycle.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "capture_mount": "plugins/hermes-lcm",
+          "format": "text",
           "id": "lcm-skill-cf4dc001bbdad739eb7f",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "plugins/hermes-lcm/skills/hermes-lcm/SKILL.md",
-          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/SKILL.md",
           "portable_paths": true,
-          "capture_mount": "plugins/hermes-lcm"
+          "snapshot": "hosts/hermes/plugins/hermes-lcm/skills/hermes-lcm/SKILL.md",
+          "source": "plugins/hermes-lcm/skills/hermes-lcm/SKILL.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-75e2b611c7a994c89d6b",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/devops/hermes-local-operations/references/package-upgrades.md",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/devops/hermes-local-operations/references/package-upgrades.md",
-          "portable_paths": true
+          "source": "skills/devops/hermes-local-operations/references/package-upgrades.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-05a2b21e4de5ca0dfb75",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/knowledge-workspace-operations/references/google-workspace/references/daily-brief.md",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/knowledge-workspace-operations/references/google-workspace/references/daily-brief.md",
-          "portable_paths": true
+          "source": "skills/productivity/knowledge-workspace-operations/references/google-workspace/references/daily-brief.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-8c54e85b9e716b4a9f5d",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/LICENSE",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/LICENSE",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/LICENSE",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-ce761560234d038e1f3a",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/SKILL.md",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/SKILL.md",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/SKILL.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-3d56cab48e8939ae4858",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_create.py",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/scripts/pptx_create.py",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_create.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-ab43abd9b49d7f17a1ac",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_edit.py",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/scripts/pptx_edit.py",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_edit.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-79d2f7e4bad81a488d04",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_from_template.py",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/scripts/pptx_from_template.py",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_from_template.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-4d7a299fe5d393933e53",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_read.py",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/scripts/pptx_read.py",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_read.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-fdb5f0211f549f8e81c8",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_render.py",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/scripts/pptx_render.py",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/scripts/pptx_render.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-de92a019053f713ca909",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/tests/test_powerpoint_skill.py",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/tests/test_powerpoint_skill.py",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/tests/test_powerpoint_skill.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-012e3d2d24085bcf338d",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/advanced/AUTHORING.md",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/advanced/AUTHORING.md",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/advanced/AUTHORING.md",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-a6856b1b0bc6dc9cd994",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/advanced/package.json",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/advanced/package.json",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/advanced/package.json",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-7e0e3cac4c6ce7f09bef",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/advanced/package-lock.json",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/advanced/package-lock.json",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/advanced/package-lock.json",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-bc23fd817b948c67e937",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/advanced/vendor/provenance.json",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/advanced/vendor/provenance.json",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/advanced/vendor/provenance.json",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-2ec9a1517bcfb41ea852",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/advanced/examples/advanced-authoring-probe.js",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/advanced/examples/advanced-authoring-probe.js",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/advanced/examples/advanced-authoring-probe.js",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-a0cb9cda5f74292e6942",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/advanced/scripts/normalize_svg_fallbacks.py",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/advanced/scripts/normalize_svg_fallbacks.py",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/advanced/scripts/normalize_svg_fallbacks.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-4fd0f5842b7132ea031e",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/advanced/tests/dependency-security.test.js",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/advanced/tests/dependency-security.test.js",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/advanced/tests/dependency-security.test.js",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-37ccbb2cc35aa836f577",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/document-files/references/powerpoint/advanced/tests/verify_probe.py",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/document-files/references/powerpoint/advanced/tests/verify_probe.py",
-          "portable_paths": true
+          "source": "skills/productivity/document-files/references/powerpoint/advanced/tests/verify_probe.py",
+          "strategy": "replace-if-absent"
         },
         {
+          "format": "text",
           "id": "native-0de41087d8ac0f26d4a8",
           "kind": "text",
-          "format": "text",
-          "strategy": "replace-if-absent",
-          "source": "skills/productivity/career-portfolio-positioning/SKILL.md",
+          "portable_paths": true,
           "snapshot": "hosts/hermes/skills/productivity/career-portfolio-positioning/SKILL.md",
-          "portable_paths": true
+          "source": "skills/productivity/career-portfolio-positioning/SKILL.md",
+          "strategy": "replace-if-absent"
         },
         {
           "format": "text",
