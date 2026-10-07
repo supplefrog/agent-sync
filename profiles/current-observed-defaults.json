@@ -22,7 +22,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "34432a08c295f9645380f132c88159e936dd5caf7e2d4574b2bbf55d41764604"
+        "3aad45c5725b6c537585c54a86b6ae6a556d863ae5f2e9ac4766ee53dbe575d5"
       ],
       "effective_surfaces": [
         "provider.native-system",

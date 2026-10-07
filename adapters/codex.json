@@ -21,7 +21,7 @@
         {
           "label": "OUTPUT",
           "shared": "communication",
-          "suffix": "If artifacts changed, add a `Changed:` list with clickable Markdown file links (`[name](/absolute/path)`); for many changes, link one diff or index."
+          "suffix": "If artifacts changed, add a `Changed:` list with file links; for many changes, link one diff or index."
         },
         {
           "label": "INSTRUCTION-AUTHORING",
@@ -30,7 +30,8 @@
         },
         {
           "label": "SCOPE",
-          "shared": "scope"
+          "shared": "scope",
+          "suffix": "Use the side browser by default for small tasks."
         },
         {
           "label": "EVIDENCE",
