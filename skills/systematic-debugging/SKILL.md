@@ -1,142 +1,33 @@
 ---
 name: systematic-debugging
 description: Use for hard bugs, regressions, failing tests/builds, and unexpected behavior that needs causal diagnosis. Skip the full workflow for straightforward fixes.
-version: 2.0.0
+version: 2.1.0
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [debugging, troubleshooting, root-cause, investigation, rca]
-    related_skills: [test-driven-development, code-change-verification, runtime-debugger-tools]
 ---
 
 # Systematic Debugging
 
-Establish the failure, isolate where state or behavior diverges, test a discriminating hypothesis, then fix and verify the mechanism. Scale investigation to uncertainty and blast radius; straightforward config edits and known supported operations need no full workflow.
+Use a short causal loop: establish the failure, locate where behavior diverges, test a check that distinguishes competing causes, then fix the supported mechanism and verify the original symptom and a nearby valid case through the real execution path. Scale the investigation to uncertainty and impact; straightforward fixes need no full workflow.
 
-## 1. Establish the failure
+When no trustworthy reproduction exists, choose a realistic signal: a test, CLI fixture, captured request/trace replay, browser path, known-good comparison, or timing measurement. For manual runs, record steps and state so observations are comparable. Temporary instrumentation can locate the failure; remove it afterward. Keep an automated regression only when its test boundary represents the actual symptom.
 
-Capture the concrete symptom:
+## Safeguards
 
-- exact error, incorrect output, state, timing, or user-visible behavior;
-- reliable or probabilistic reproduction steps;
-- expected behavior and evidence for that expectation;
-- relevant environment, version, config, and recent changes.
-
-Read complete errors and stack traces. Reproduce with the smallest realistic command when possible. If the failure is intermittent, record frequency and correlated state instead of pretending one non-reproduction disproves it. For a hard failure without a useful reproduction, use [the feedback-loop reference](references/feedback-loop.md) to build one without imposing a fixed debugging phase sequence.
-
-## 2. Build a causal split
-
-For real competing causes, name each mechanism, its supporting evidence, and the cheapest check that would disprove it. “Component X is broken” is not a mechanism.
-
-Useful evidence includes:
-
-- logs at the failing timestamp;
-- process, port, environment, and config state;
-- git diff/history and dependency versions;
-- data entering and leaving component boundaries;
-- comparable working paths;
-- runtime stack/scopes when logs are insufficient.
-
-## 3. Isolate the failing boundary
-
-Trace backward from the symptom or forward from the entry point:
-
-- inputs and validation;
-- call sites and branch conditions;
-- state mutations, caches, persistence, and reloads;
-- subprocess/network/database boundaries;
-- retries, timeouts, cleanup, and fallback behavior.
-
-In multi-component systems, inspect the boundaries needed to locate where correct state becomes incorrect. Revisit a boundary when new evidence changes what must be checked; avoid repeating checks without a new question. Avoid adding fixes to several layers at once; that destroys causal information.
-
-### Config/local before upstream
-
-For configurable products, check local state before blaming source:
-
-- active config and profile overrides;
-- live process environment and command resolution;
-- stale workers, ports, caches, or local patches;
-- whether disabling the suspected local integration removes the symptom;
-- whether the behavior violates a documented product invariant.
-
-Only upstream a source issue after identifying a product-level mechanism, not merely a local workaround that is inconvenient.
-
-### PATH and toolchain faults
-
-When the wrong binary runs:
-
-1. inspect live `PATH` and command resolution;
-2. distinguish current-process environment from persistent User/Machine environment;
-3. read wrappers and shims before editing or deleting them;
-4. verify version-manager activation as well as installation;
-5. prefer correcting path precedence/discovery over deleting vendor binaries;
-6. verify in a fresh process.
-
-For the known Windows Node/fnm pattern, load `references/windows-node-path-shadowing.md`.
-
-## 4. Test one hypothesis
-
-Run the cheapest discriminating check from the causal split, changing one relevant variable at a time. Explain the hypothesis when it helps the user steer the experiment; no chat template is required. If read-only evidence cannot isolate the boundary, use a temporary diagnostic edit and remove it afterward. Update disproved hypotheses with the new evidence rather than stacking speculative fixes.
-
-## 5. Contain harm, then fix the mechanism
-
-If ongoing harm makes diagnosis too costly to wait for, use an authorized, reversible mitigation first. Preserve diagnostic evidence when safe, verify that harm is reduced, and record how to undo the mitigation. Label it containment, not proof of root cause or permanent resolution; keep the unresolved diagnosis explicit.
-
-Once the mechanism is supported:
-
-- fix the source of invalid state or behavior rather than only its visible symptom;
-- preserve surrounding contracts unless changing them is required;
-- add a regression test when it is the cheapest durable proof;
-- avoid unrelated cleanup.
-
-Use `test-driven-development` when a failing automated test can capture the bug. Use `code-change-verification` before shipping a nontrivial or high-risk diff.
-
-## 6. Validate at the production seam
-
-Verify:
-
-1. the original reproduction now succeeds; for intermittent failures, compare observed frequency or correlated state rather than claiming resolution from one passing run;
-2. a nearby boundary/regression case still works;
-3. state persists/reloads correctly when relevant;
-4. fallback/error behavior remains valid;
-5. fresh-process or startup behavior for environment/lifecycle fixes;
-6. no new targeted test, lint, or type failures.
-
-For large repositories, use targeted and nearby tests locally and CI as the authoritative full matrix unless the full suite is fast and known-clean. Separate unrelated baseline failures from regressions introduced by the fix.
-
-## Failed-attempt escalation
-
-When experiments stop distinguishing causes or producing new evidence, stop speculative patching and revisit the model; do not wait for an arbitrary number of failed fixes:
-
-- Was the reproduction incomplete?
-- Is shared state or another component involved?
-- Did a local workaround hide the real boundary?
-- Does each attempted fix reveal architectural coupling?
-
-Resume with a new discriminating check. If none is available, report the evidence gap and the access, observation, or decision needed; do not loop on equivalent experiments. If the fix requires a broad architectural change or infrastructure mutation, explain the evidence and tradeoff before proceeding.
+- **Intermittent failures:** compare frequency and correlated state. One passing run neither disproves the failure nor establishes a fix.
+- **Competing causes:** identify mechanisms, supporting evidence, and the cheapest check that could disprove each. Change one relevant variable at a time; fixes across several layers obscure causality.
+- **Local versus upstream:** distinguish active configuration, overrides, live process environment, stale workers/caches, local patches, and command resolution from documented product behavior. Disabling a suspected integration can isolate its role. Report an upstream defect only when evidence supports a product-level mechanism.
+- **Wrong binary:** inspect resolution and wrappers, distinguish tool installation from activation, and prefer correcting path precedence/discovery over deleting vendor binaries. Verify environment and lifecycle fixes in a fresh process. For Windows Node/npm/fnm faults, use [the PATH diagnostic reference](references/windows-node-path-shadowing.md).
+- **Containment:** when ongoing harm cannot wait for diagnosis, use an authorized, reversible mitigation. Preserve evidence when safe, verify harm is reduced, and record rollback. Keep unresolved diagnosis explicit; mitigation does not prove root cause or permanent resolution.
+- **Verification:** check persistence/reload and fallback/error behavior when the changed mechanism affects them. Separate existing baseline failures from regressions introduced by the fix.
+- **Stalled investigation:** when experiments stop distinguishing causes or producing evidence, revisit the reproduction and causal explanation. Resume with a new discriminating check; if none is available, report the missing observation/access/decision instead of repeating equivalent experiments.
 
 ## Agent-behavior failures
 
-Investigate recurring, consequential, or explicitly requested agent-behavior failures at the owning mechanism. A local correction alone does not establish a need for durable changes. For such investigations:
+For recurring, consequential, or explicitly requested agent failures, trace input → applicable instruction/skill → model/tool boundary → persisted transition → user-visible output. Identify absent rules, failed triggering, conflicts, lost context, or unenforced transitions. Repair the owning mechanism, including sibling paths that can cause the same failure; correcting an artifact or the nearest loaded skill does not establish resolution. A local correction alone does not justify durable changes. Use `instruction-authoring` before durable instruction edits; keep an unchangeable owning mechanism explicit as a blocker.
 
-- reproduce the bad decision or state transition;
-- trace input → applicable instruction/skill → model/tool boundary → persisted transition → user-visible output;
-- identify why the intended rule was absent, failed to trigger, lost at a boundary, conflicted, or was unenforced;
-- change the narrowest owning mechanism, including sibling paths that can create the same failure;
-- add a behavioral regression at the production seam;
-- verify the original failure is prevented and nearby valid behavior still works.
-
-Do not patch the nearest loaded skill unless it owns the failure class. Do not close the RCA merely because the failed artifact was corrected; if the owning mechanism cannot yet be changed, preserve that as an explicit blocker.
-
-## RCA handoff
-
-Write a postmortem only when these are known:
-
-- **Reproduction/symptom**
-- **Root cause mechanism**
-- **Fix**
-- **Validation scope**
-
-Use concise sections as relevant: summary, symptom, root cause, why it produced the symptom, fix, discovery, why it escaped, validation, and action items. Preserve concrete identifiers and evidence. Separate confirmed facts from hypotheses; do not invent owners or action items.
+For requested postmortems, use the host's available postmortem workflow with the confirmed symptom, cause, fix, and validation scope.

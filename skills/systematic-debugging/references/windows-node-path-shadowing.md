@@ -52,11 +52,12 @@ Using Python subprocess avoids Git Bash mangling PowerShell `$_.` If invoking Po
 
 4. Read suspicious wrappers before touching them. Example: a vendored `npm.cmd` may intentionally call a private `node.exe` and private `npm-cli.js`.
 
-5. If modifying PATH, prefer removing/reordering the stale PATH entry, not deleting vendor binaries. Save a backup first:
+5. If modifying PATH, prefer removing/reordering the stale PATH entry, not deleting vendor binaries. Save a backup in the task's scratch directory first; run this example from that directory:
 
 ```powershell
-$userPath = [Environment]::GetEnvironmentVariable('Path','User')
-Set-Content -LiteralPath "$HOME\path-user-before-edit.txt" -Value $userPath -Encoding UTF8
+$taskUserPath = [Environment]::GetEnvironmentVariable('Path','User')
+$taskPathBackup = Join-Path $PWD 'path-user-before-edit.txt'
+Set-Content -LiteralPath $taskPathBackup -Value $taskUserPath -Encoding UTF8
 ```
 
 6. For `fnm`, distinguish installed from activated:
