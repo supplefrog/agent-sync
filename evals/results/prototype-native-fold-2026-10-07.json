@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "checked-native-candidate",
+  "status": "installed-and-recovery-published",
   "baseline": "91ead1e62ce1fb12821d183adadb939533635b45",
   "selected_recovery_artifacts": [
     "codex:native-prototype-entrypoint",
@@ -20,7 +20,8 @@
       "verifier_trigger": true,
       "prototype_redirect": true
     },
-    "native_plan": "21 eligible-after-checks findings, no review-required finding"
+    "native_plan": "21 eligible-after-checks findings, no review-required finding",
+    "selected_overlay_bindings": "Refreshed exactly codex:global-instructions and hermes:standing-instructions to generated source hashes"
   },
   "native_sha256": {
     "SKILL.md": "ec251321b20c9337eca16c9584934cb2946c76766f9d76b8ed7e71bd5337eac0",
@@ -34,5 +35,14 @@
     "Fresh prompt assembly proves discovery/loading instructions, not actual invocation or model-quality advantage.",
     "Native Hermes verifier/test-validity/router bodies were preserved unchanged; no new comparative behavioral test."
   ],
-  "rollback": "Reconcile reviewed original prototype entrypoint/UI bytes and revert only selected recovery policy/bindings; unrelated state is outside this scope."
+  "rollback": "Reconcile reviewed original prototype entrypoint/UI bytes and revert only selected recovery policy/bindings; unrelated state is outside this scope.",
+  "publication": {
+    "shared_cleanup_commit": "91ead1e62ce1fb12821d183adadb939533635b45",
+    "native_recovery_commit": "25e21b9fdbad49d014ee1433120e222f37d5fc03",
+    "remote_verified": true,
+    "installed_verified": true,
+    "capture_verified": true,
+    "recovery_artifacts_verified": 7,
+    "source_binding": "Finish through ready publication so the stable published checkout owns the frontend source"
+  }
 }
