@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "capability": "frontend-ui-engineering",
+  "record_scope": "Existing-owner entry/reload lifecycle correction, not a frontend quality benchmark",
+  "baseline_commit": "e26c0f68b4f76ebefd9602904496075997695c48",
+  "change": {
+    "owner": "skills/frontend-ui-engineering",
+    "requirement": "I25",
+    "new_case": "entry-and-reload",
+    "allowed_case_method": "browser",
+    "planning": "Decide when meaningful entry frames can be seen under relevant initialization, restoration and asset/font work.",
+    "valid_neighbor": "Record observed no-entry boundary; do not add motion, arbitrary delay, universal hydration gate or startup profile. Static products do not activate I25."
+  },
+  "verification": {
+    "actual_catalog_synthetic_checks": {"run": 2999, "passed": 2999, "failed": 0},
+    "isolated_actual_I25_synthetic_probes": {
+      "run": 8,
+      "passed": 8,
+      "cases": [
+        "Old warm-playback-only contract passes baseline but fails candidate",
+        "Candidate accepts complete typed evidence",
+        "Candidate rejects missing observation, stale revision and source-only startup claim",
+        "Static product does not activate motion case",
+        "Non-entry motion accepts observed absence boundary"
+      ]
+    },
+    "frontend_unit_tests": {"run": 66, "passed": 65, "skipped": 1},
+    "source_validation": "Agent Sync skill validation and native skill metadata validation passed",
+    "actual_browser_evidence": {
+      "scope": "One local Next.js underline entry under real application initialization; project evidence retained locally",
+      "viewport": [644, 668],
+      "baseline_active_raf_gap_ms": 236.1,
+      "baseline_untraced_control_max_gaps_ms": [215.3, 215.3],
+      "blocking_initialization_task_ms": 240.115,
+      "repair": "Same 800ms draw begins after hydration and two animation frames, without a startup timeout",
+      "repaired_reload_active_max_gaps_ms": [20.8, 7.1, 7.1],
+      "repaired_untraced_control_max_gaps_ms": [7.1, 7.1],
+      "nearby_checks": ["pointer/keyboard note selection", "keyboard focus", "reduced motion on reload and during draw", "viewport overflow"]
+    }
+  },
+  "limits": [
+    "Synthetic checks establish schema/case enforcement, not UI truth; collectors remain responsible for actual observation.",
+    "Browser timing is callback scheduling evidence, not physically displayed FPS or universal smoothness.",
+    "Initialization cost remains; the repair schedules playback rather than making loading faster.",
+    "No natural-triggering, prevention-rate, cross-host behavioral-parity or future-generation-quality claim.",
+    "Whole local demo readiness remains incomplete; this receipt covers the corrected mechanism only."
+  ]
+}

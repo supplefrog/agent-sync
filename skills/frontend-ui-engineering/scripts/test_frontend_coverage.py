@@ -422,7 +422,9 @@ class ActualCatalogMechanisms(unittest.TestCase):
                 rows = self.planned_rows([mechanism])
                 self.assertEqual(rows["I25"]["disposition"], "required")
                 methods = {case["id"]: case["method"] for case in rows["I25"]["cases"]}
-                self.assertEqual(methods, {"active-window-response": "browser", "repeated-normal-speed": "rendered"})
+                self.assertEqual(methods, {"active-window-response": "browser",
+                                           "entry-and-reload": "browser",
+                                           "repeated-normal-speed": "rendered"})
                 self.assertEqual(rows["I26"]["disposition"], "not_applicable")
 
     def test_animated_navigation_cannot_be_cleared_by_final_anchor_only(self):

@@ -1092,6 +1092,7 @@
       ],
       "cases": [
         "active-window-response",
+        "entry-and-reload",
         "repeated-normal-speed"
       ],
       "case_methods": {
@@ -1100,10 +1101,13 @@
         ],
         "repeated-normal-speed": [
           "rendered"
+        ],
+        "entry-and-reload": [
+          "browser"
         ]
       },
       "summary": "Actual product motion remains responsive and visibly smooth after integration and repairs.",
-      "expectation": "Check the active transition with representative content and responsive input, separately from final styles and reversal. Observe repeated normal-speed playback in the target environment. Investigate a visible stall or material performance claim with active-window timing and, where needed, a trace; record measured signal, window and limits. A supplier demo, sampled colors or settled state cannot establish product frame continuity. Recheck when theme, content, geometry or surrounding effects can change the cost.",
+      "expectation": "Check the active transition with representative content and responsive input, separately from final styles and reversal. Observe repeated normal-speed playback in the target environment. Investigate a visible stall or material performance claim with active-window timing and, where needed, a trace; record measured signal, window and limits. A supplier demo, sampled colors or settled state cannot establish product frame continuity. Recheck when theme, content, geometry or surrounding effects can change the cost. For entry or restored-state motion, observe fresh load and reload from first visibility through settlement under relevant initialization/font/asset work; post-load replay cannot replace this evidence. Retain intended playback, essential content and input without stalls, flashes or hydration restarts. Record absence if no entry motion is present, without adding one or requiring a startup profile.",
       "nearby_valid": "No animation or universal FPS target is required. Static mocks do not activate this condition; reduced-motion instant changes and approved continuity remain valid.",
       "owner": "references/motion-design.md; references/defect-acceptance.md"
     },
