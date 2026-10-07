@@ -1,11 +1,11 @@
 ---
 name: outcome-first-workflow-design
-description: Use when creating or materially iterating an agent workflow, automation, reusable procedure, or persistent capability. Reconstruct the user's intended outcome, inspect why the current mechanism exists, research supported existing solutions, and compare retain/adapt/replace options from first principles before building.
+description: Use when creating or materially iterating an agent workflow, automation, reusable procedure, or persistent capability. Reconstruct the user's intended outcome, inspect why the current mechanism exists, and compare retain/adapt/replace options before building.
 license: MIT
 compatibility: Requires access to the current artifact and, when external options matter, source or web research.
 metadata:
   author: supplefrog
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Outcome-First Workflow Design
@@ -14,13 +14,13 @@ Use this before creating or materially changing a workflow, automation, reusable
 
 ## Contract
 
-Optimize the user's outcome, not fidelity to the mechanism they named. Reconstruct the likely goal, challenge weak assumptions, and inspect what already exists. Reversible implementation is still wasted work when the mechanism cannot deliver the outcome. Preserve explicit constraints and safety boundaries. Reuse, simplify, adapt, replace, or make no change as the evidence warrants.
+Optimize the user's outcome, not fidelity to the mechanism they named. Separate explicit constraints and load-bearing guarantees from incidental implementation choices. Reuse, simplify, adapt, replace, or make no change as the evidence warrants. Scope, authorization and dispatch follow Agent Sync's `surfaces/core.md`; resolve it from the shared fleet's `source_snapshot` and load it before dispatch.
 
 ## Procedure
 
 ### 1. Reconstruct intent and recover evidence
 
-Recover existing evidence relevant to the decision: supplied material, prior findings, and the affected implementation or callers. Reuse verified findings; mark stale, conflicting, or missing evidence. Separate the desired outcome, explicit constraints, and load-bearing guarantees from incidental implementation choices. For material redesign, name the assumptions shaping the approach and inspect evidence that they could prevent the requested outcome; compare the strongest credible alternative before accepting them. Revise assumptions when evidence supports it, without turning this check into recurring reflection or review. Do not turn missing detail into an intake interview. Infer from evidence and resolve consequential unknowns with the cheapest available check. Ask only when a material user-owned preference or hard-to-reverse commitment cannot be settled by evidence.
+Recover supplied material, prior findings, and the affected implementation or callers. Reuse verified findings; mark stale, conflicting, or missing evidence. For material redesign, name the assumptions shaping the approach, inspect whether they prevent the outcome, and compare the strongest credible alternative. Revise assumptions when evidence supports it, without recurring reflection or review. Resolve consequential unknowns with the cheapest available check; do not turn missing detail into an intake interview. Ask only when a material user-owned preference or hard-to-reverse commitment cannot be settled by evidence.
 
 ### 2. Describe the outcome contract
 
@@ -34,43 +34,28 @@ For an uncertain capability, trace its required inputs and prerequisites. If a k
 
 ### 4. Research only decision-changing gaps
 
-Check relevant existing capabilities; reuse an adequate owner. Load additional design or placement guidance only for a concrete unresolved question in the feasibility check or justified implementation. Search externally only for gaps that could change the decision, using sources suited to that gap. Reuse verified research and inspect a proposed outside implementation before adopting it. Compare credible alternatives, including retain/simplify when relevant; do not require a catalog audit or fixed set of source types.
+When existing implementations or external mechanism evidence could change the choice, load `project-prior-art` for proportional search, source inspection and reuse. Load other design or placement guidance only for a concrete unresolved question in the feasibility check or justified implementation.
 
 ### 5. Decide from first principles
 
-For each candidate, explain the mechanism that could satisfy the whole authorized outcome. Compare only decision-changing dimensions: verified task success, failure behavior, latency, total system complexity and expected cost including retries/verification, compatibility, security, maintenance, and rollback. Patch size is not a proxy for simplicity. Apply hard constraints before Pareto comparison. Prefer the simpler reversible option when differences are within uncertainty. A focused repair remains appropriate when it meets the requested outcome; an architectural request may require replacing the mechanism. Verify the affected outcome and stop when its criteria are met.
+For each candidate, explain the mechanism that could satisfy the whole authorized outcome. Compare only decision-changing dimensions: verified task success, failure behavior, latency, total system complexity and expected cost including retries/verification, compatibility, security, maintenance, and rollback. Patch size is not a proxy for simplicity; do not collapse cost, speed and quality into an arbitrary score. Apply hard constraints before Pareto comparison. Prefer the simpler reversible option when differences are within uncertainty. A focused repair remains appropriate when it meets the requested outcome; an architectural request may require replacing the mechanism. Verify the affected outcome and stop when its criteria are met.
 
 ### 6. Keep material decisions traceable
 
-Externalize the decision path while work is live so later context loss cannot turn an assumption into an unexplained architecture:
+Record the outcome, constraints, evidence, live alternatives, recommendation, decisive tradeoff, assumptions, and condition that would reopen the choice in the existing plan or ADR; otherwise use the handoff. For cross-session continuity, handoff or closeout, load `breadcrumb-records` for record organization and safe continuation.
 
-- Record the outcome, material constraints, evidence, live alternatives, recommendation, decisive tradeoff, assumptions, and the condition that would reopen the choice. Reuse the project's existing plan or ADR owner; otherwise keep the compact trace in the handoff instead of inventing a new ledger format.
-- When user constraints fix the choice, record them and proceed within authorization if feasibility is supported. If a known limit rules out the outcome, explain the conflict and identify the smallest constraint or approach change needed. Ask only if resolution requires changing a user-owned constraint.
-- When evidence supports one option, present that recommendation and proceed within the user's authorized scope; do not convert option comparison into a questionnaire.
-- When material taste or priorities remain unresolved after evidence, present reviewable alternatives and a recommendation before committing, even when the choice is reversible. For unresolved hard-to-reverse choices, request focused selection or approval of the smallest unresolved branch—not a general interview.
-- Safety and authorization gates apply separately; a supported choice does not bypass them.
-- Do not let workers choose an unresolved material architecture implicitly. Fix shared contracts before fan-out, then let independent work run in parallel only where ownership and dependencies do not collide.
-- Treat unresolved, blocked, or abandoned branches as first-class outcomes with reasons and impact. Never hide them in a completion summary.
-
-This section owns decision authority and traceability, not execution machinery. Reuse existing task decomposition, scheduling, acceptance-gate, and worker-lifecycle owners; do not copy another workflow's tree, depth ritual, checker, lease, or scheduler.
+- When user constraints fix the choice, proceed within authorization if feasibility is supported. If a known limit rules out the outcome, explain the conflict and identify the smallest constraint or approach change needed. Ask only if resolution requires changing a user-owned constraint.
+- When evidence supports one option, present that recommendation and proceed within authorized scope; do not convert comparison into a questionnaire.
+- When material taste or priorities remain unresolved after evidence, present reviewable alternatives and a recommendation before committing, even when reversible. For unresolved hard-to-reverse choices, request focused selection or approval of the smallest unresolved branch.
+- Do not let workers choose an unresolved material architecture implicitly. Settle shared contracts before fan-out, then parallelize only where ownership and dependencies do not collide. Use existing execution owners for decomposition, scheduling, acceptance and worker lifecycle.
+- Record unresolved, blocked or abandoned branches with reasons and impact; never hide them in completion.
 
 ### 7. Validate before promotion
 
-Stage instruction and capability candidates outside live discovery and shared config; use an isolated test target for executable automation when its side effects require one. Choose the cheapest checks that prove the outcome and relevant failure boundary. For deterministic automation, run the real acceptance probe plus a regression or boundary case as appropriate. For instruction or trigger changes, use `instruction-authoring` for proportional evaluation; add adversarial, non-trigger, or held-out cases only when they address an actual behavioral risk or an uncertain quality claim. Verify consequential claims and delegated work at the parent boundary. Promote only when the relevant checks establish the required correction or supported improvement without a material regression. Record evidence, unresolved checks, rollback, and reevaluation triggers.
+Choose the cheapest checks that prove the outcome and relevant failure boundary. For deterministic automation, use an isolated test target when side effects require it and run the real acceptance probe plus a regression or boundary case as appropriate. Verify consequential claims and delegated work at the parent boundary.
+
+Before authoring instruction or trigger candidates, load `instruction-authoring` for staging outside live discovery, proportional evaluation and regression boundaries. For shared capability admission or promotion, load `cross-agent-surface-engineering` for checked deployment, evidence, rollback and unresolved checks; no candidate is promoted without the required correction or supported improvement and no material regression.
 
 ## Output
 
 Return the decision, intended outcome, decisive evidence, chosen mechanism, validation, and remaining uncertainty. Exclude research narration and implementation work that cannot change the decision.
-
-## Failure modes
-
-- building the named mechanism before establishing the outcome;
-- stopping ordinary work for a fixed intake questionnaire when evidence or a reversible default can decide;
-- presenting options without a supported recommendation when evidence favors one;
-- silently implementing a value-dependent, hard-to-reverse architecture choice;
-- treating the current implementation as accidental without checking history;
-- asking the user to design an evaluation that evidence can answer;
-- accepting popularity without current mechanism evidence;
-- collapsing cost, speed, and quality into one arbitrary score;
-- replacing a load-bearing guarantee for simplicity;
-- accumulating another workflow when the baseline can be extended.

@@ -44,7 +44,8 @@
         },
         {
           "label": "Evidence",
-          "shared": "evidence"
+          "shared": "evidence",
+          "suffix": "Nontrivial code review: load `code-change-verification`; for specialist risks, load `software-verification-workflows`. Skip tiny edits with a direct check."
         },
         {
           "label": "Research",

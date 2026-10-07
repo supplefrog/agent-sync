@@ -21,21 +21,22 @@
         {
           "label": "OUTPUT",
           "shared": "communication",
-          "suffix": "If artifacts changed, add a `Changed:` list with file links; for many changes, link one diff or index."
+          "suffix": "Changed artifacts: `Changed:` links; for many, one diff/index."
         },
         {
           "label": "INSTRUCTION-AUTHORING",
           "shared": "authoring",
-          "suffix": "Codex `.system/skill-creator` owns native scaffolding, UI metadata and validation."
+          "suffix": "Scaffolding/UI metadata/validation: `.system/skill-creator`."
         },
         {
           "label": "SCOPE",
           "shared": "scope",
-          "suffix": "Use the side browser by default for small tasks."
+          "suffix": "Small tasks: side browser by default."
         },
         {
           "label": "EVIDENCE",
-          "shared": "evidence"
+          "shared": "evidence",
+          "suffix": "Nontrivial code review: read Agent Sync `adapters/code-verification.md`."
         },
         {
           "label": "RESEARCH",

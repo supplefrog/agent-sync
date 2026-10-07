@@ -3,7 +3,7 @@ name: frontend-ui-engineering
 description: Use for frontend design, implementation, and rendered UI review, including reviewable prototypes. Match engineering depth to the requested fidelity. For test-only edits, use this when a UI-specific behavior, accessibility, or visual question needs its guidance.
 license: MIT
 metadata:
-  version: 4.3.3
+  version: 4.3.4
   author: Addy Osmani; Agent Sync adaptation
   compatibility: Requires the project's frontend toolchain and browser rendering for production verification.
   tags: [frontend, ui, accessibility, responsive-design, design-systems]
@@ -42,6 +42,8 @@ Before choosing or delegating a visual direction, load [references/personal-desi
 The current request and explicitly approved references lead. Preserve a coherent existing product system unless redesign is authorized; missing `DESIGN.md` does not erase the identity already present in the UI, assets, and code. Refinement fixes the named weakness while preserving approved typography, texture intensity, content order, and unrelated working qualities. Judge the changed element with its neighbors and the page as a whole. An audit returns evidence and recommendations without editing.
 
 When a material taste decision is unresolved, use [references/taste-selection.md](references/taste-selection.md) to present a viewable visual comparison by default before substantial implementation. When the user wants to see a proposed treatment before it is applied, deliver a scoped, isolated demo before editing the actual page, even for a small tweak; a demo created afterward does not satisfy that sequence. The user can select or combine qualities without choosing an entire site's style. Delegated selection, an explicit request to skip comparisons, or routine repairs within an approved system may otherwise proceed without a comparison. Matching before/after captures still verify the implemented result.
+
+For an interactive comparison of UI variants inside the project's real context, optionally use [references/prototype-variants.md](references/prototype-variants.md). It supplies preview isolation, stable variant links and safe switching; the taste-selection procedure still owns comparison scope and delivery.
 
 For a new direction, make the product's idea felt through the interface. Typography, palette, imagery, space, surfaces and behavior should explain the same idea together. Find the relationship worth showing: what the visitor can collect, change, connect, compare, discover or accomplish. Let that relationship shape the composition and demonstration before selecting familiar page sections. Expression can serve understanding, curiosity and delight; it need not be justified only by task efficiency. Use [references/design-judgment.md](references/design-judgment.md) for this work, including concept exploration, assets and visual explanations. Sources and physical references are useful inputs, not an allowed-style menu or a requirement to imitate real objects.
 

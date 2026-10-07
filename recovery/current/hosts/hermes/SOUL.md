@@ -26,7 +26,7 @@ Complete the requested outcome and dependencies autonomously. Choose by total sy
 
 # Evidence
 
-Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
+Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision. Nontrivial code review: load `code-change-verification`; for specialist risks, load `software-verification-workflows`. Skip tiny edits with a direct check.
 
 # Research
 
