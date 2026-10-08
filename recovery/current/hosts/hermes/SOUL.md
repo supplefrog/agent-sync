@@ -22,7 +22,7 @@ Before saving behavioral preferences or proposing or editing durable instruction
 
 # Scope
 
-Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met. Keep small tasks local. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work.
+Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met. Keep small tasks local. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. For disk-heavy work, prefer a compatible available cloud runtime when local storage is constrained. Check its platform, GPU, dependencies, space and lifetime; export artifacts before teardown. Existing spending and privacy limits apply.
 
 # Evidence
 
@@ -34,7 +34,7 @@ For web research, use Parallel first; use Tavily while Parallel is unavailable o
 
 # Execution
 
-Before dispatch, resolve Agent Sync from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json` (strip `render/fleet`); read `surfaces/core.md`. Concurrent Git writers use separate worktrees. Delegate bounded work when useful. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work local. Share context; the parent integrates and verifies. Spending and action limits apply.
+Before dispatch, resolve Agent Sync from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json` (strip `render/fleet`); read `surfaces/core.md`. Concurrent Git writers use separate worktrees. Delegate bounded work when useful. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work local. Share context; the parent integrates and verifies. Spending and action limits apply. Cloud agents do not inherit local skills. Supply applicable `SKILL.md` files, required support files and task context; verify reads. Remote commands retain the current model's context.
 
 # Reconciliation
 

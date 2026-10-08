@@ -86,6 +86,8 @@ Complete the requested outcome and dependencies autonomously. Choose by total sy
 
 Keep small tasks local. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work.
 
+For disk-heavy work, prefer a compatible available cloud runtime when local storage is constrained. Check its platform, GPU, dependencies, space and lifetime; export artifacts before teardown. Existing spending and privacy limits apply.
+
 ## Evidence
 Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
 
@@ -94,6 +96,8 @@ For web research, use Parallel first; use Tavily while Parallel is unavailable o
 
 ## Execution
 Before dispatch, resolve Agent Sync from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json` (strip `render/fleet`); read `surfaces/core.md`. Concurrent Git writers use separate worktrees. Delegate bounded work when useful. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work local. Share context; the parent integrates and verifies. Spending and action limits apply.
+
+Cloud agents do not inherit local skills. Supply applicable `SKILL.md` files, required support files and task context; verify reads. Remote commands retain the current model's context.
 
 ## Reconciliation
 For authorized managed-surface changes or explicit reconciliation requests, load `cross-agent-surface-engineering` and use canonical `tools/reconcile.py`. Keep review-required changes staged and project work local. Discussion alone does not authorize sync.
