@@ -60,7 +60,7 @@
       "status": "admitted",
       "license": "MIT",
       "source": "local-converged-port",
-      "eval": "evals/results/frontend-ui-engineering-deterministic.json"
+      "eval": "evals/results/frontend-image-workflow-2026-10-09.json"
     },
     {
       "name": "surface-convergence",

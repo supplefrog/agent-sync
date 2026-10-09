@@ -1,0 +1,11 @@
+# Conditional material reconstruction
+
+Use for a selected material's fidelity failure, or a renderer/export choice. These are diagnostic options, not compulsory checks for every interface or a glass recipe.
+
+- **Translucency or backlighting fails:** inspect the background continuing beneath the object, transmitted light, tint and blur together. Compare in its actual surroundings; surface brightness alone does not establish transmission. Keep readable controls and states.
+- **A dissolving pane has a visible boundary:** isolate narrow rim strokes from broad opacity/tint ramps. Keep a failing capture and change one cause at a time. Fade blur with the pane when that relationship is intended; smooth tint/opacity transitions and a longer tail can help. Stable fine dither can address visible shade quantization when the output needs it. Check that the treatment does not add shimmer or erase useful boundaries.
+- **A transparent export has halos or loses its light:** verify straight versus premultiplied alpha and the receiving compositor. Inspect on the actual background plus light, dark and checker samples; an alpha channel alone does not prove correct compositing.
+- **An exported loop looks stepped or stalls:** inspect decoded distinct frames and cadence rather than trusting saved frame count. Review playback and interruption in the receiving browser. Clock measurements can diagnose timing but do not clear a visible flicker report.
+- **The design implies live response:** verify the required signal actually drives the rendering. An offline film cannot establish live audio reactivity; a silent hover preview must not start sound. Preserve reduced motion, idle behavior and semantic state independently of the rendering layer.
+
+Choose the cheapest construction that preserves the approved appearance and actual response. Baked and live rendering can coexist within one component family. Resource sizes alone do not establish total performance or cost: compression, optimization, reuse, CPU/GPU work and device behavior may differ. Retain project evidence locally; do not turn one project's material or renderer into a universal default.

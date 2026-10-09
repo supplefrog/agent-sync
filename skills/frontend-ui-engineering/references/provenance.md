@@ -1,5 +1,13 @@
 # Canonical Source Provenance
 
+## Image-led workflow, 5.0.0
+
+On 2026-10-09 the user approved the extracted image-led procedure and requested its synchronization through this existing owner. Whole-page image studies made multiple visual worlds reviewable; the accepted Mindlatch master was extended into related layouts and two working metallic-control routes. A second product, Sondara, exercised reference-family transfer, live audio response and material repairs. Local evidence remains with the projects; the portable receipt is `evals/results/frontend-image-workflow-2026-10-09.json` in Agent Sync.
+
+Adopted: generation as a central design partner for new identity/major redesign; selected master to real layouts and consequential states; missing asset/component supply; one shared semantic app/state system; separate rendered fidelity and behavior judgment. Conditional transmission, alpha, cadence and gradient diagnostics are in `material-reconstruction.md`. Existing architecture, accessibility, motion, sourcing, truthfulness and rendered review boundaries remain active. Approved identity and routine fixes reuse existing references and parts.
+
+The user's acceptance supports this procedure and broad cohesive visual range. It does not select universal glass, metal, botanical imagery, a palette, font or renderer. Native generation backend/version and billing must remain truthful. These trials are not matched skill-quality, weights-causation or total-cost experiments; the source routing checks do not establish natural discovery or cross-host behavioral parity.
+
 ## Current taste-selection policy
 
 Current selection behavior is owned by [taste-selection.md](taste-selection.md) and the design authority in [SKILL.md](../SKILL.md); the historical delegated-taste entry below is provenance, not an active trigger. The current practitioner review is recorded in Agent Sync's `docs/frontend-taste-evidence.md`: a first-person Astra comparison preferred a no-skill version, while other reports differ. This supports retaining a minimal comparison baseline, not claiming a universal skill benefit or harm. No local Astra quality experiment established that update; it implemented explicit user control and removed compulsory method wording.

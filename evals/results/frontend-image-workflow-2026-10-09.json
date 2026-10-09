@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-image-workflow",
+  "capability": "frontend-ui-engineering",
+  "version": "5.0.0",
+  "record_scope": "Approved procedure upgrade and proportional source checks; no paid or matched quality evaluation.",
+  "status": "pass",
+  "baseline_commit": "29a39cbabcf9acad2f20c64207e938294fc84471",
+  "baseline_version": "4.3.4",
+  "authorization": {
+    "date": "2026-10-09",
+    "decision": "User approved extracted takeaways and requested synchronization of the upgraded image-led workflow. First major-issue checks on Sondara were reported passed; this is not complete product readiness."
+  },
+  "evidence_reused": [
+    {
+      "study": "Whole-page visual worlds",
+      "observed": "Six generated compositions and two scenic assets; four reconstructed into working desktop/narrow proofs. Earlier prose-only range was rejected by the user. Generator fixation was observed, so actual output inspection remains necessary.",
+      "limit": "Bounded reconstruction feasibility and user selection; no matched model or skill comparison."
+    },
+    {
+      "study": "Mindlatch reference family and metal controls",
+      "observed": "Selected master extended into related layouts and a transparent control skin; two semantic play/pause specimens compared baked artwork and live Three.js material. Both routes were liked.",
+      "limit": "The compact generated reference was not an actual phone specification. No universal renderer winner or complete performance comparison."
+    },
+    {
+      "study": "Sondara transfer and material repair",
+      "observed": "Second product exercised selected master, derivative references, live audio response, silent previews and translucent-material repair. Retained failing controls separated a narrow rim defect from a broad gradient defect.",
+      "limit": "Scoped runtime/repair evidence; visual flicker reports cannot be cleared by clock measurements alone. Historical project receipts still name remaining production checks."
+    }
+  ],
+  "generation_provenance": {
+    "route": "Authenticated Codex native image generation",
+    "backend_model_version": null,
+    "billing_entitlement": "Not established as unlimited; no API-key or paid fallback used in the reused studies."
+  },
+  "adopted": [
+    "Image generation central to new identity/major redesign",
+    "Whole-page varied worlds; selected master to actual layouts and consequential states",
+    "Missing asset/component supply supports the selected direction",
+    "One shared semantic app/component/state system",
+    "Rendered fidelity and cohesion judged separately from task correctness",
+    "Conditional material, alpha, cadence and gradient diagnostics"
+  ],
+  "preserved": [
+    "Architecture and project stack",
+    "Accessibility, responsive and motion requirements",
+    "Truthful copy and generation provenance",
+    "Existing isolated-parts preview and rendered review before appearance commit",
+    "Approved identity and routine repair reuse without new exploration"
+  ],
+  "source_bindings": {
+    "skills/frontend-ui-engineering/SKILL.md": "1e94a808ee55d2440d7d28206a7d91343fe8d880494a440ea4553d649dd42698",
+    "skills/frontend-ui-engineering/references/design-judgment.md": "e471e668535be4f5ac1ae1f846cfa0181d139af367c8a148e6360eceb044ea43",
+    "skills/frontend-ui-engineering/references/personal-design-defaults.md": "d6df0362a4c6f587066351ba65252f1bab67797f9e7b63e947027faad9a15c9f",
+    "skills/frontend-ui-engineering/references/component-selection.md": "9028545890aac4370d5f16c969368c4f2bdf9e7ee7cdbe751b8944b6b27eee6d",
+    "skills/frontend-ui-engineering/references/taste-selection.md": "8b893e1ac325cc380d70c52be7b7d4c0495e4654db10fa5c721c4b54e3ee6796",
+    "skills/frontend-ui-engineering/references/material-reconstruction.md": "7d116776f7acaec6f9766060cf55339e11935cc79290a3964fa678f7e642ccd0",
+    "skills/frontend-ui-engineering/references/provenance.md": "f0d5c5e10835c4fa678babf371bb2c3c690c807826c2c2d6e6418a9a4ba9cf24"
+  },
+  "verification": {
+    "agent_sync_metadata": "python tools/run.py validate skills/frontend-ui-engineering: 1/1 pass",
+    "native_metadata": "Codex .system/skill-creator/scripts/quick_validate.py: valid",
+    "local_markdown_links": {
+      "checked": 60,
+      "missing": 0
+    },
+    "existing_frontend_unit_tests": {
+      "run": 66,
+      "passed": 65,
+      "skipped": 1
+    },
+    "routing_source_check": [
+      {
+        "case": "New visual identity or major redesign",
+        "result": "Entrypoint and working step 2 load design-judgment; image-led workflow supplies whole-page/master/layout/state sequence."
+      },
+      {
+        "case": "Approved identity or routine repair",
+        "result": "Entrypoint, design-judgment and personal defaults explicitly reuse references/parts and skip new exploration."
+      },
+      {
+        "case": "Palette-only comparison or unresolved component inside approved product",
+        "result": "Taste selection retains scoped comparable treatment; component-selection supplies missing parts without restarting identity."
+      },
+      {
+        "case": "Material/export fidelity failure",
+        "result": "Material reference loads conditionally from design-judgment; no mandatory glass, renderer or diagnostic checklist for every UI."
+      },
+      {
+        "case": "Nonvisual fix or frontend test-only edit",
+        "result": "Existing entry trigger and relevant-check boundaries retained; no image exploration requirement introduced."
+      }
+    ],
+    "routing_evidence_level": "Manual source-path inspection, not a model runtime or natural-discovery trial.",
+    "ownership_schema_and_registry_binding": "PASS using dependency-ready Agent Sync runtime",
+    "public_safety": "PASS, 95 exact reviewed false positives"
+  },
+  "limits": [
+    "No controlled model-quality, weights-causation or cost-superiority claim",
+    "No new skill, provider, renderer installation or paid evaluation",
+    "Local source preparation only; deployment, remote publication and fresh host discovery belong to parent reconciliation"
+  ],
+  "result": {
+    "passed": true
+  },
+  "prior_evidence": "evals/results/frontend-ui-engineering-deterministic.json"
+}

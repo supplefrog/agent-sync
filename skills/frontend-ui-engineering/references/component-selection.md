@@ -1,6 +1,6 @@
 # Component discovery and selection
 
-Read before choosing external UI parts for a new surface, redesign, or unresolved visual treatment. Prefer suitable existing components to rebuilding them. This preference includes the project's installed components; it does not require replacing an approved working component or adding a dependency for ordinary HTML/CSS.
+Read when retrieving missing UI parts or assets for a selected direction or unresolved treatment. New identity and major-redesign exploration starts with [design-judgment.md](design-judgment.md); component discovery supports that direction rather than supplying its visible template. Prefer suitable existing components to rebuilding them. This preference includes the project's installed components; it does not require replacing an approved working component or adding a dependency for ordinary HTML/CSS.
 
 ## Find parts for the idea
 
@@ -26,7 +26,7 @@ Before importing, inspect the exact source, dependencies, global styles, framewo
 
 Check selected-item rights, not only the library's license. Link official catalog previews when reuse is restricted; do not mirror marketplace media. Account/quota limits are operational facts to recheck, not permanent instructions. Inspect available quota before a metered source retrieval and avoid spending it on discarded alternatives. Do not buy access or invoke separately metered hosted AI under a component-browsing request.
 
-When a useful background or illustration cannot be reused or found at suitable quality, use the authorized native image-generation route described in personal defaults. Generate a fresh asset suited to its actual job rather than reproduce another site's branded artwork. Prefer the latest supported GPT Image route and leave an unverifiable backend version unverified. Preserve functional UI as real components. Review texture strength, seams, readability and light/dark behavior in context before replacing an approved asset.
+When a missing background, illustration or control treatment cannot be reused or found at suitable quality, use the authorized generation route described in personal defaults, anchored to the selected master and related references. Generate fresh assets suited to their actual jobs rather than reproduce another site's branded artwork. Prefer the latest supported GPT Image route and leave an unverifiable backend version unverified. Preserve functional UI as real semantic components; a generated control skin does not supply interaction or state logic. Review texture strength, seams, readability and relevant states in context before replacing an approved asset.
 
 ## Existing foundations
 
