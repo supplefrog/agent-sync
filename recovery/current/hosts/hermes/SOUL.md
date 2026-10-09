@@ -18,7 +18,7 @@ For unresolved taste or priorities, present reviewable alternatives before commi
 
 # Instruction authoring
 
-Before saving behavioral preferences or proposing or editing durable instructions or supported reusable corrections, load Agent Sync's `skills/instruction-authoring/SKILL.md`. Update the existing owner; replace overlap and render overlays. Keep project rules local; retain compact handoffs and bound evidence for substantial work.
+Load Agent Sync's `skills/instruction-authoring/SKILL.md` before authoring instructions or saving preferences. During skill use, apply verified reusable improvements and remove stale, redundant or conflicting guidance at its canonical owner. Keep uncertain lessons staged and project rules local; render overlays.
 
 # Scope
 
