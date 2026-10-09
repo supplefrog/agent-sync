@@ -1,7 +1,7 @@
 ---
 name: instruction-authoring
 description: Use when saving behavioral preferences, authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns placement, skill improvements, triggers and proportional verification.
-version: 2.0.2
+version: 2.0.3
 author: Hermes Agent
 license: MIT
 metadata:
@@ -27,6 +27,8 @@ Use this to author or review durable instructions and model-facing tool descript
 When saving a preference, infer its intended scope from the user's words and existing context before choosing the owner. Distinguish explicit intent from inference. Check that the owner is available before the decision the rule governs; a saved file or catalog entry alone is insufficient. Ask only for consequential scope ambiguity.
 
 Patch an existing owner when it already covers the task. Create a new skill only when no owner can be extended coherently. Reference adjacent owners; do not copy their procedures.
+
+When creating or materially revisiting a managed skill, preserve its `purpose` in the existing `contracts/ownership.json` record: the objective independent of its present method, what it adds beyond the current model/native tools, and the check that would justify retiring it entirely. Keep this maintenance metadata outside routine skill prompts; link evidence through the existing selection fields. Distinguish documented original intent from inferred purpose, and mark unknown or unproven added value honestly. Missing legacy records are not retention or retirement evidence. Reassess against doing the same job without the skill as capabilities evolve; sensible advice alone does not establish a need for a skill.
 
 ## Improve skills during collaborative work
 

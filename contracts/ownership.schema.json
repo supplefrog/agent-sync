@@ -28,7 +28,18 @@
             "uniqueItems": true,
             "items": {"type": "string", "pattern": "^evals/results/.+\\.json$"}
           },
-          "selection_reason": {"type": "string", "minLength": 1}
+          "selection_reason": {"type": "string", "minLength": 1},
+          "purpose": {
+            "type": "object",
+            "description": "Maintenance metadata for deciding whether the skill is still needed; not routine prompt instructions.",
+            "required": ["objective", "added_value", "retirement_test"],
+            "properties": {
+              "objective": {"type": "string", "pattern": "\\S"},
+              "added_value": {"type": "string", "pattern": "\\S"},
+              "retirement_test": {"type": "string", "pattern": "\\S"}
+            },
+            "additionalProperties": false
+          }
         },
         "additionalProperties": false
       }

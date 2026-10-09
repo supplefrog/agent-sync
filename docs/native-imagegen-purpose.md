@@ -1,0 +1,9 @@
+# Native imagegen purpose assessment
+
+Source: Codex's system package at `{CODEX_HOME}/skills/.system/imagegen`. Inspected entrypoint SHA-256: `706d4d96e1d5c9e6023fe3ccabba1bb34b364024d344fd25b8515ec7d28fe3c4`. This is a source-linked assessment of an unmanaged native package, not portable capability admission or a supported installation path.
+
+- **Objective:** Produce or modify raster assets and variants from references for the requested use. This is inferred from the package's stated capability and workflows; its original creation rationale was not recovered. Image-led frontend exploration is one caller, not the package's entire objective.
+- **Added value:** The package contains an explicit CLI/API generation, editing and batch implementation with parameter validation and output decoding/saving. That is executable capability, distinct from native image generation. The general prompting prose has no established advantage over the current reasoning model and native tool instructions. No incremental quality or total-cost benefit is claimed; fallback use still requires authorization.
+- **Retirement test:** Determine whether the same raster jobs succeed with ordinary native tools and no imagegen skill, at acceptable quality and total cost, including relevant reference fidelity, text and alpha cases. For complete package retirement, separately decide whether the CLI capability is still wanted and whether its needed controls already have a supported replacement or should be consciously discarded. An inconclusive pilot or missing original rationale proves neither retention nor removal.
+
+The objective survives even if all present instructions are discarded. Changes to model/tool capability should reopen the retention decision, rather than automatically producing another revision of the prose. Source repair and safe capability removal use their existing owners; this record creates no extra gate, watcher or evaluation platform.

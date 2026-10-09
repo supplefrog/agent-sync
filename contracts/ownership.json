@@ -182,7 +182,12 @@
       "selection_evidence": [
         "evals/results/instruction-authoring-rename-deterministic.json"
       ],
-      "selection_reason": "Selected as the established model-facing instruction author; public prose, placement, and admission remain separate owners."
+      "selection_reason": "Selected as the established model-facing instruction author; public prose, placement, and admission remain separate owners.",
+      "purpose": {
+        "objective": "Keep durable agent instructions aligned with user intent, owned once and removable when they no longer add value.",
+        "added_value": "Agent Sync-specific ownership, loading, evaluation and reversible publication rules are external system knowledge. Its general authoring advice may be redundant with current models; comparative quality benefit is unproven.",
+        "retirement_test": "Use the current model and native tools without this skill to maintain, place and retire instructions under the same user requirements. Retire the whole skill when that path preserves intent, ownership, discovery, authorization and recovery at acceptable total cost, with any still-needed system integration owned elsewhere."
+      }
     },
     {
       "id": "humanizer",
