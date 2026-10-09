@@ -54,7 +54,7 @@ A user-authorized model migration includes the named legacy defaults, examples, 
 
 ## Dispatch and review
 
-Choose execution within the authorized task without another permission question solely for orchestration. Use native bounded workers for separate work or review when they materially improve the result; parallelize independent scopes and serialize shared contracts and integration. Use `dynamic-workflows` when dependencies, resumability, or durable acceptance make a persisted DAG useful, rather than for every parallel task. The agent may select a supported routed contract under this standing permission; retain its exact route, budget, approval and identity checks. Keep simple work local. Preserve existing run pins unless the user's migration scope selects them for replacement; changing defaults alone does not migrate running tasks.
+Choose execution within the authorized task without another permission question solely for orchestration. Use native bounded workers for separate work or review when they materially improve the result; parallelize independent scopes and serialize shared contracts and integration. Use `dynamic-workflows` when dependencies, resumability, or durable acceptance make a persisted DAG useful, rather than for every parallel task. The agent may select a supported routed contract under this standing permission; retain its exact route, budget, approval and identity checks. Keep simple work within the chosen environment. Preserve existing run pins unless the user's migration scope selects them for replacement; changing defaults alone does not migrate running tasks.
 
 Concurrent writers to one Git project use separate worktrees. Read-only reviewers can share the inspected checkout; serialized work needs no extra checkout. Where native chat messaging is available, use it for necessary scope or ready-change coordination within the user's authorization. Messaging does not isolate writes. Where it is unavailable, reuse the existing project handoff and publication receipts; do not add a coordination service. A thread the user is explicitly handling stays with them unless they request collaboration.
 
@@ -84,9 +84,9 @@ Load Agent Sync's `skills/instruction-authoring/SKILL.md` before authoring instr
 ## Scope
 Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met.
 
-Keep small tasks local. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work.
+Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work.
 
-For disk-heavy work, prefer a compatible available cloud runtime when local storage is constrained. Check its platform, GPU, dependencies, space and lifetime; export artifacts before teardown. Existing spending and privacy limits apply.
+Project work defaults to a compatible configured native Codex cloud workspace or repository-linked reusable environment. Reuse it; use the PC for tasks requiring its local apps, files or hardware. Verify compatibility and access; a one-off sandbox is not a reusable workspace. Export artifacts before teardown. Existing spending and privacy limits apply.
 
 ## Evidence
 Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
@@ -100,5 +100,5 @@ Before dispatch, resolve Agent Sync from `source_snapshot` in the shared skill r
 Cloud agents do not inherit local skills. Supply applicable `SKILL.md` files, required support files and task context; verify reads. Remote commands retain the current model's context.
 
 ## Reconciliation
-For authorized managed-surface changes or explicit reconciliation requests, load `cross-agent-surface-engineering` and use canonical `tools/reconcile.py`. Keep review-required changes staged and project work local. Discussion alone does not authorize sync.
+For authorized managed-surface changes or explicit reconciliation requests, load `cross-agent-surface-engineering` and use canonical `tools/reconcile.py`. Keep review-required changes staged and project-specific changes with their project. Discussion alone does not authorize sync.
 <!-- /agent-sync-standing -->

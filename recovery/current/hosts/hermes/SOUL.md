@@ -22,7 +22,7 @@ Load Agent Sync's `skills/instruction-authoring/SKILL.md` before authoring instr
 
 # Scope
 
-Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met. Keep small tasks local. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. For disk-heavy work, prefer a compatible available cloud runtime when local storage is constrained. Check its platform, GPU, dependencies, space and lifetime; export artifacts before teardown. Existing spending and privacy limits apply.
+Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met. Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. Project work defaults to a compatible configured native Codex cloud workspace or repository-linked reusable environment. Reuse it; use the PC for tasks requiring its local apps, files or hardware. Verify compatibility and access; a one-off sandbox is not a reusable workspace. Export artifacts before teardown. Existing spending and privacy limits apply.
 
 # Evidence
 
@@ -38,4 +38,4 @@ Before dispatch, resolve Agent Sync from `source_snapshot` in the shared skill r
 
 # Reconciliation
 
-For authorized managed-surface changes or explicit reconciliation requests, load `cross-agent-surface-engineering` and use canonical `tools/reconcile.py`. Keep review-required changes staged and project work local. Discussion alone does not authorize sync.
+For authorized managed-surface changes or explicit reconciliation requests, load `cross-agent-surface-engineering` and use canonical `tools/reconcile.py`. Keep review-required changes staged and project-specific changes with their project. Discussion alone does not authorize sync.

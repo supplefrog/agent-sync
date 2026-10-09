@@ -3,8 +3,8 @@
   "claim": "Configured defaults with per-host observation time and source identities; not active-session model identities or universal behavior parity. Unselected host observations retain their recorded or unknown time.",
   "context_policy": {
     "max_standing_bytes": {
-      "codex": 2979,
-      "hermes": 3480,
+      "codex": 3116,
+      "hermes": 3617,
       "omp": 2048
     },
     "recovery_loaded_into_prompt": false,
@@ -22,7 +22,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "8fb748af4a0348b1bc8822ba64cf8d08218289f1b0085b6d281f8eb1f8dd0573"
+        "b8a04f0c82f061068ba16a1d7992fe24044fbf2f58fc98f0263688d5e975bb2f"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -56,7 +56,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "e711f9e9c824f98a4d72b0e03ede88694d6b6fd5b916a36e76a27ea84d206953"
+        "625c2964724fcdf339c65fce953353f98fdf2f7c50b3f77cc0449b56a3af7b1e"
       ],
       "effective_surfaces": [
         "provider.native-system",
