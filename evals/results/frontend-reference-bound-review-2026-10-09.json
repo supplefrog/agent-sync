@@ -2,7 +2,7 @@
   "schema_version": 1,
   "suite": "frontend-reference-bound-review",
   "capability": "frontend-ui-engineering",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "status": "pass",
   "record_scope": "Admission of evidence-enforcement and scrutiny mechanisms, not product readiness.",
   "baseline_commit": "883c65b8d5fe9c8d4704007c7dea1478288e7e6e",
@@ -14,13 +14,14 @@
     "Fresh broad scrutiny before author verdicts, bounded repairs, causal rechecks and explicit stop conditions."
   ],
   "source_bindings": {
-    "skills/frontend-ui-engineering/SKILL.md": "807694ee6a63089371bec96e5ec41346739b7828342d49b12e3ba24a109b9d6e",
+    "skills/frontend-ui-engineering/SKILL.md": "05545a39c1612f3e64ead4fc353e8d6ebbceaeb43e179e22c90584e6622ac4e4",
     "skills/frontend-ui-engineering/references/design-judgment.md": "e06beca7ef9c7dddbc8ebdb44060fbb7739288d2e9772bb01bf88333e0319f9f",
     "skills/frontend-ui-engineering/references/defect-acceptance.md": "b7d07d2c36f441f65a0051e4bd49f6a9e1a8f99a498b79825c25cd67209adddc",
     "skills/frontend-ui-engineering/references/coverage-schema.md": "2c735809bdce54d2e0fb0ad3cae5cfd779a20f5c0fe614fba27a19020fa4ce4c",
-    "skills/frontend-ui-engineering/references/provenance.md": "671f5d55cb1fc04479ddf496417fc20110bd595bc0f3835f6dfdca3edeb3698f",
+    "skills/frontend-ui-engineering/references/provenance.md": "910812f73545ddc623d0088cf47e1fd5b0aab7f9ea93f44789d595b59a26b1f1",
     "skills/frontend-ui-engineering/scripts/frontend_coverage.py": "00391cb3bb564ccd26c893bf1570ac92744cf4a51d5f2457d1c2ebbb70083603",
-    "skills/frontend-ui-engineering/scripts/test_frontend_coverage.py": "f147120867b19b7ef648c836b353dd8accb426e7ed70a1e684ecc98acdbce5c5"
+    "skills/frontend-ui-engineering/scripts/test_frontend_coverage.py": "f147120867b19b7ef648c836b353dd8accb426e7ed70a1e684ecc98acdbce5c5",
+    "skills/frontend-ui-engineering/references/material-reconstruction.md": "5e1c6dc039a861590f2c8a43e31dd01368f4b7fa21d24f6e39c9febf250fcb62"
   },
   "verification": {
     "native_quick_validate": "valid",
@@ -46,7 +47,8 @@
     },
     "actual_packet": "HTTP browser inspection: all 20 linked images loaded; approved images and source-bound actual captures displayed.",
     "fresh_scrutiny": "Reviewer inspected approved images and isolated working candidate before author verdicts; reproduced pointer-open focus failure and inconsistent ordinal direction. Parent corrected reviewer painted-direction claim.",
-    "nearby_valid_cases": "Legacy contracts without references remain supported and tested; passive illustrations need no renderer; non-reference repairs need no image quota or compulsory reviewer."
+    "nearby_valid_cases": "Legacy contracts without references remain supported and tested; passive illustrations need no renderer; non-reference repairs need no image quota or compulsory reviewer.",
+    "historical_mechanism_version": "5.1.0; validator and tests are unchanged in this follow-up"
   },
   "limits": [
     "Declared verdicts, file availability and geometry never establish reference fidelity without inspecting actual paint.",
@@ -56,5 +58,17 @@
   ],
   "result": {
     "passed": true
+  },
+  "follow_up": {
+    "scope": "Clarify the existing conditional dimensional-reconstruction boundary; no new style, renderer, review tier or mandatory artifact.",
+    "observed_failure": "Generic symmetric plates and domed primitives preserved direct operation and stable centers while replacing selected contours, negative space and nested seating. Reference-first reviewer and parent actual-pixel inspection agreed on those departures.",
+    "correction": "Match consequential rest anatomy explicitly. State-stability invariants do not freeze an incorrect initial design or DOM rectangle.",
+    "failure_replay": "Actual source-bound rejection retains all 39 cases, original-width endpoint evidence and all five comparison criteria. Failed anatomy blocks readiness.",
+    "nearby_valid_case": "Static controls and deliberately graphic motion remain valid in the same conditional rule; baked and live construction remain permissible. Legacy validator support is unchanged.",
+    "local_links": {
+      "checked": 60,
+      "missing": 0
+    },
+    "limits": "Observed failure boundary and source/metadata checks; no controlled behavioral comparison, savings or prevention-rate claim. Project reconstruction remains unresolved."
   }
 }
