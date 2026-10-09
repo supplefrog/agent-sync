@@ -89,7 +89,8 @@
         "evals/results/frontend-ui-engineering-deterministic.json",
         "evals/results/frontend-design-synthesis-2026-09-13.json",
         "evals/results/frontend-image-workflow-2026-10-09.json",
-        "evals/results/frontend-case-clarifications-2026-10-09.json"
+        "evals/results/frontend-case-clarifications-2026-10-09.json",
+        "evals/results/frontend-representation-contract-2026-10-09.json"
       ],
       "selection_reason": "Original admission preserved the byte-identical shared/Codex engineering baseline and MIT provenance. The source revision integrates bounded Anthropic, Impeccable, and Hallmark design-judgment findings without adding frontend owners; source and decision-probe evidence does not establish visual-quality, personal-taste, or cross-host behavioral superiority. Candidate deployment status is recorded in the follow-up receipt. The user approved the 5.0.0 image-led new-identity/major-redesign procedure after whole-page, reference-family and second-product trials; routine repairs reuse approved identity. Portable receipt records source checks and bounded evidence without claiming causal quality, cost or host parity."
     },

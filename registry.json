@@ -60,7 +60,7 @@
       "status": "admitted",
       "license": "MIT",
       "source": "local-converged-port",
-      "eval": "evals/results/frontend-case-clarifications-2026-10-09.json"
+      "eval": "evals/results/frontend-representation-contract-2026-10-09.json"
     },
     {
       "name": "surface-convergence",

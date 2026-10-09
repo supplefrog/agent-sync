@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-image-workflow",
+  "capability": "frontend-ui-engineering",
+  "version": "5.0.2",
+  "status": "pass",
+  "record_scope": "User-authorized clarification of existing representation/input/geometry cases; no successful product behavior inferred from source rules.",
+  "baseline_commit": "5e2a0d5513b834ce35afa47b87d015bfd4b5c933",
+  "prior_evidence": "evals/results/frontend-case-clarifications-2026-10-09.json",
+  "authorization": "User identified reconstructed dimensional-object rest/reference mismatch, a decorative physical representation operated by separate UI, and chassis/task surface resizing across state changes. Parent authorized compact existing-owner preventive clarification; product evidence remains parent-owned.",
+  "changes": [
+    {
+      "case": "V01.product-relationship",
+      "owner": "Conditional material reconstruction",
+      "contract": "Match approved rest pose, silhouette, camera and orientation before judging motion."
+    },
+    {
+      "case": "P12.ordinary-activation and P12.reported-context",
+      "owner": "Design judgment direct operation",
+      "contract": "A visibly operable object is primary pointer/touch and keyboard input, with shared semantic state and accessible fallback. Gestures release on cancel and yield outside hit area; exercise actual object on desktop and phone."
+    },
+    {
+      "case": "V11.content-stress and V11.paint-and-layout",
+      "owner": "Defect acceptance",
+      "contract": "A declared fixed chassis/monitor/task surface keeps its dimensions across mode/count/connection changes; real variable content uses deliberate internal layout and remains usable. Compare desktop and phone transitions with actual content rather than frozen blanks."
+    }
+  ],
+  "nearby_cases_retained": [
+    "Noninteractive illustrations need no direct input",
+    "Useful separate precision controls remain valid",
+    "Static or intentionally graphic objects need no full 3D simulation",
+    "Declared responsive rearrangement and intentional content-driven resizing remain valid",
+    "No universal height, camera, pose, angle count or sprite count imposed",
+    "Approved identity and routine repairs still skip new exploration"
+  ],
+  "source_bindings": {
+    "skills/frontend-ui-engineering/SKILL.md": "abdb80141b35d30782fbfcb87c4e0b0c27c7940f4dbc2eec59986b47865885b1",
+    "skills/frontend-ui-engineering/references/design-judgment.md": "7650b2e93866d53cdedd278d73bd339359676810953bf2e64b434e4116e89802",
+    "skills/frontend-ui-engineering/references/defect-acceptance.md": "94c1df8b94be330ad2123b94538d8419b3dd9874b56bfc5b521cb61813bce9ba",
+    "skills/frontend-ui-engineering/references/regression-catalog.md": "8dbfffccb9b9a610899e1fb9aa97f58a90e42119e91bc13c49a6aaa97d38169e",
+    "skills/frontend-ui-engineering/references/material-reconstruction.md": "23b55c9d62274590f4580c3881d025fd6e329ef83d51f141125e82fd05fa922d",
+    "skills/frontend-ui-engineering/references/provenance.md": "f40742a7b19aea4385e2dae610fad1fb50a09267eaadcb748006d2bca29a8eee"
+  },
+  "verification": {
+    "agent_sync_metadata": "1/1 valid",
+    "native_quick_validate": "valid",
+    "local_markdown_links": {
+      "checked": 60,
+      "missing": 0
+    },
+    "existing_frontend_unit_tests": {
+      "run": 66,
+      "passed": 65,
+      "skipped": 1
+    },
+    "ownership_schema_and_registry_binding": "pass using Agent Sync dependency-ready runtime",
+    "public_safety": "pass; 95 exact reviewed false positives",
+    "whitespace": "git diff --check passed",
+    "routing_and_nearby_case_source_check": "Existing P12/V01/V11 IDs and suffixes retained; material reference remains conditional; direct-input requirement limited to visibly operable objects; fixed geometry limited to declared fixed surfaces; no model task or product-render pass claimed."
+  },
+  "limits": [
+    "Source checks establish contract and metadata integrity only",
+    "Actual rest/reference fidelity and desktop/phone gesture/state geometry remain project-bound checks",
+    "Fresh host discovery for published 5.0.1 was recorded separately; 5.0.2 synchronization/discovery remain parent-owned",
+    "No controlled quality, model-weight cause, renderer superiority or total-cost claim"
+  ],
+  "result": {
+    "passed": true
+  }
+}
