@@ -34,6 +34,8 @@ For moving surfaces, retain separate evidence for continuity/reversal, active-wi
 
 For selectors, inspect idle, mouse-open/close/cancel/selection, keyboard focus/selection and mixed input. Capture the closed control after mouse use as well as the popup. A native popup's system highlight does not explain an authored halo on the closed trigger. Inspect the actual indicator's visible insets and pivot at narrow and normal sizes; CSS box centers alone do not establish optical balance. Keep keyboard and forced-colors focus visible, and meaningful selection distinguishable. Do not suppress all outlines or rebuild an accessible picker solely to pass a styling test.
 
+When adding a rendered detector after recurring missed defects, calibrate it on the observed bad candidate, a different fault that visibly changes the actual output at the tested size, and a nearby valid case. Verify that the faulty variant loaded and altered the relevant paint or behavior; a mutation that misses a versioned import or disappears at the display scale supplies no detection evidence. Targeted faulty cases must fail and the valid case must pass. Record misses and false positives; leave that detection claim unresolved until the check is corrected or complementary rendered observation settles the affected uncertainty. Keep this proportional to the affected promise; neither a universal score nor a compulsory new test framework follows.
+
 ## Review findings and accept
 
 Classify findings by their evidence:
