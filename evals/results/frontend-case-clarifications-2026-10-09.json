@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-image-workflow",
+  "capability": "frontend-ui-engineering",
+  "version": "5.0.1",
+  "status": "pass",
+  "record_scope": "User-authorized preventive case clarifications in the existing owner; no product repair or quality benchmark.",
+  "baseline_commit": "15716bd867e2a49028d5a16f9689d215648f940f",
+  "prior_evidence": "evals/results/frontend-image-workflow-2026-10-09.json",
+  "authorization": "User asked to retain rules preventing reported regressions and stop Sondara repairs, and identified physical-control response limitations when animating a static dimensional image.",
+  "case_mapping": [
+    {
+      "reported_family": "Changing numeric values shift neighboring controls",
+      "existing_owner": "defect-acceptance anchored state geometry; V10/V11 content stress",
+      "classification": "Execution omission plus missing explicit digit/decimal-width example."
+    },
+    {
+      "reported_family": "Numeric field and native spinner optical placement",
+      "existing_owner": "defect-acceptance painted optical balance/insets; V06/V10/V11",
+      "classification": "Execution omission; make actual native-indicator room explicit."
+    },
+    {
+      "reported_family": "Selection marker/handle crosses intended plot edge",
+      "existing_owner": "defect-acceptance local painted boundaries; V11",
+      "classification": "Execution omission; explicitly include pseudo-element extents rather than assuming layout-box fit."
+    },
+    {
+      "reported_family": "Empty-to-one-item library layout jump",
+      "existing_owner": "defect-acceptance replacement-state geometry; V11",
+      "classification": "Execution omission plus underspecified content-count stress case; deliberate resizing stays valid."
+    },
+    {
+      "reported_family": "Apparent dimensional control moves unlike its physical counterpart",
+      "existing_owner": "motion-design spatial hypothesis and R19 represented relationship; material-reconstruction baked/live response",
+      "classification": "Existing motion expectation, but missing explicit fixed-lit-image limitation and angle/state sprite-coverage option."
+    }
+  ],
+  "changed_contract": [
+    "Affected value precision and content-count transitions exercise existing V11 cases",
+    "Numeric/native-indicator paint and markers meet intended relationships",
+    "Physical-looking response uses suitable changing geometry/light/occlusion or coherent sprite coverage when required"
+  ],
+  "nearby_cases_preserved": [
+    "Approved identity and routine repair need no new image exploration",
+    "Static or graphic controls need no 3D renderer or sprite family",
+    "Intentional content-driven resizing and declared motion remain valid",
+    "No universal width, height, pivot, palette or library sizing imposed"
+  ],
+  "source_bindings": {
+    "skills/frontend-ui-engineering/SKILL.md": "5a9b35126f332e251b709b56cb96d7c7f228709aac53749d34b4e9347cc15665",
+    "skills/frontend-ui-engineering/references/defect-acceptance.md": "b99863b7c48f8dbaadfc2c08ae4c705718b1f7792b70d9f983e5d19225267eee",
+    "skills/frontend-ui-engineering/references/regression-catalog.md": "b1c12fb3fab33622159e855920bc5391f833977f87a7d10c1511b291e88e4f56",
+    "skills/frontend-ui-engineering/references/material-reconstruction.md": "a80e720d7a1ffd0323c5cbf8f1942876082c4fca7520b03904195f5954d29f69",
+    "skills/frontend-ui-engineering/references/provenance.md": "4fd24b02356cd36686f9234d0f5505e575b1b0aa4001f89ba573cd27f90bb965"
+  },
+  "verification": {
+    "agent_sync_metadata": "1/1 valid",
+    "native_quick_validate": "valid",
+    "local_markdown_links": {
+      "checked": 60,
+      "missing": 0
+    },
+    "existing_frontend_unit_tests": {
+      "run": 66,
+      "passed": 65,
+      "skipped": 1
+    },
+    "ownership_schema_and_registry_evidence_binding": "pass using native dependency-ready runtime",
+    "public_safety": "pass; 95 exact reviewed false positives",
+    "whitespace": "git diff --check passed",
+    "nearby_case_source_check": "Routine approved identity, intentional resizing, graphic/static motion and conditional material loading retained; manual source inspection, not model behavioral proof."
+  },
+  "limits": [
+    "User reports and source inspection motivate case clarification; no new rendered product repair pass claimed",
+    "Native discovery was verified for published 5.0.0 separately; 5.0.1 deployment remains parent-owned",
+    "No controlled skill-quality, causal model-weight or total-cost claim"
+  ],
+  "result": {
+    "passed": true
+  }
+}

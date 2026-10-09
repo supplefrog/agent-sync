@@ -2,6 +2,8 @@
 
 ## Image-led workflow, 5.0.0
 
+The 5.0.1 follow-up names changing numeric precision, native-indicator paint, marker extents and empty-to-one-item sizing inside existing defect acceptance and V11; it adds dimensional-control pivot/light/occlusion and coherent sprite-coverage guidance to conditional material reconstruction. User-reported regressions exposed missed execution of existing relationships and underspecified stress examples, not evidence that every product needs fixed geometry or 3D rendering. `evals/results/frontend-case-clarifications-2026-10-09.json` records the scoped correction and its evidence limits.
+
 On 2026-10-09 the user approved the extracted image-led procedure and requested its synchronization through this existing owner. Whole-page image studies made multiple visual worlds reviewable; the accepted Mindlatch master was extended into related layouts and two working metallic-control routes. A second product, Sondara, exercised reference-family transfer, live audio response and material repairs. Local evidence remains with the projects; the portable receipt is `evals/results/frontend-image-workflow-2026-10-09.json` in Agent Sync.
 
 Adopted: generation as a central design partner for new identity/major redesign; selected master to real layouts and consequential states; missing asset/component supply; one shared semantic app/state system; separate rendered fidelity and behavior judgment. Conditional transmission, alpha, cadence and gradient diagnostics are in `material-reconstruction.md`. Existing architecture, accessibility, motion, sourcing, truthfulness and rendered review boundaries remain active. Approved identity and routine fixes reuse existing references and parts.
