@@ -217,7 +217,7 @@
         "reported-context"
       ],
       "summary": "Every control completes its advertised task; reported CTA remains context-bound.",
-      "expectation": "Ordinary activation completes the advertised task with usable visible response and relevant focus. Replay the reported context independently; one successful full-width replay cannot clear other states.",
+      "expectation": "Ordinary activation completes the advertised task with usable visible response and relevant focus. When its task is already satisfied or its destination is current, repeat activation from the actual use position and check for unintended scroll or reflow; explicitly promised restart, refresh and return-to-anchor actions remain valid. Replay the reported context independently; one successful full-width replay cannot clear other states.",
       "nearby_valid": "One 1280px success cannot clear all reported contexts.",
       "owner": "SKILL.md; references/defect-acceptance.md"
     },
