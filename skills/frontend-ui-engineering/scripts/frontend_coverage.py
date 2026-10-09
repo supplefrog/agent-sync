@@ -1,8 +1,12 @@
 """Validate explicit frontend requirement coverage and linked evidence, not its truth."""
 import argparse
+import hashlib
+import html
 import json
+import os
 import re
 from pathlib import Path
+from urllib.parse import quote
 
 
 METHODS = {"browser", "rendered", "source", "resource", "human"}
@@ -23,6 +27,22 @@ def strings(value):
 
 def sha(value):
     return isinstance(value, str) and re.fullmatch(r"[0-9a-fA-F]{64}", value) is not None
+
+
+def evidence_file(root, relative, image=False):
+    """Return only a nonempty, contained local file; never accept URLs or traversal."""
+    if not nonempty(relative):
+        return None
+    path = Path(relative.replace("\\", "/"))
+    try:
+        target = (Path(root).resolve() / path).resolve()
+        if (path.is_absolute() or ".." in path.parts or ":" in relative
+                or not target.is_relative_to(Path(root).resolve()) or not target.is_file()
+                or target.stat().st_size == 0 or (image and target.suffix.lower() not in IMAGE_EXTENSIONS)):
+            return None
+        return target
+    except (OSError, ValueError):
+        return None
 
 
 def context(value):
@@ -178,6 +198,14 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
     if not requirements:
         add("catalog.requirements", "incomplete", "Catalog must not be empty")
     entries = indexed(contract.get("requirements"), "contract.requirements")
+    root = Path(evidence_root).resolve()
+    references = indexed(contract.get("references", []), "contract.references")
+    for identifier, reference in references.items():
+        target = evidence_file(root, reference.get("evidence"), image=True)
+        if not nonempty(reference.get("authority")) or not sha(reference.get("sha256")) or target is None:
+            add("reference:" + identifier, "incomplete", "Reference needs authority, SHA256 and contained nonempty image evidence")
+        elif hashlib.sha256(target.read_bytes()).hexdigest().lower() != reference["sha256"].lower():
+            add("reference:" + identifier, "incomplete", "Approved reference hash is stale")
     scope = contract.get("scope")
     if not isinstance(scope, str) or scope not in {"product", "workflow"}:
         add("scope", "incomplete", "Expected product or workflow scope")
@@ -260,6 +288,13 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
             links = case.get("measurement_ids", [])
             if not strings(links):
                 add(identifier + ":" + case_id, "incomplete", "Invalid measurement_ids")
+            reference_ids, criteria = case.get("reference_ids", []), case.get("criteria", [])
+            if "reference_ids" in case or "criteria" in case:
+                if (method != "rendered" or not strings(reference_ids) or not reference_ids
+                        or not strings(criteria) or not criteria):
+                    add(identifier + ":" + case_id, "incomplete", "Reference-bound rendered case needs nonempty unique reference_ids and criteria")
+                elif any(ref not in references for ref in reference_ids):
+                    add(identifier + ":" + case_id, "incomplete", "Case names an unknown approved reference")
             required_cases[(identifier, case_id)] = case
         if not set(methods) <= used_methods:
             add(identifier + ":methods", "incomplete", "Required evidence methods are not covered")
@@ -284,8 +319,15 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
                 for case_id, prior_case in prior_cases.items():
                     current_case = current_cases.get(case_id, {})
                     if (any(current_case.get(k) != prior_case.get(k) for k in ("method", "context"))
-                            or current_case.get("measurement_ids", []) != prior_case.get("measurement_ids", [])):
+                            or any(current_case.get(k, []) != prior_case.get(k, []) for k in
+                                   ("measurement_ids", "reference_ids", "criteria"))):
                         add("previous:" + identifier + ":" + case_id, "incomplete", "Inherited case changed without a reason")
+                    prior_refs = prior_case.get("reference_ids", [])
+                    if strings(prior_refs):
+                        prior_reference_map = indexed(previous.get("references", []), "previous.references")
+                        for ref in prior_refs:
+                            if ref not in prior_reference_map or references.get(ref) != prior_reference_map.get(ref):
+                                add("previous:" + identifier + ":" + case_id, "incomplete", "Inherited reference identity changed without a reason")
 
     report = observations.get("measurements")
     measurements = {}
@@ -369,6 +411,31 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
                 images = True
         if case.get("method") == "rendered" and not images:
             add(identifier, "incomplete", "Rendered judgment needs a nonempty image evidence file")
+        if "reference_ids" in case or "criteria" in case:
+            comparison = result.get("comparison")
+            if not isinstance(comparison, dict):
+                add(identifier, "incomplete", "Reference-bound case needs a comparison")
+            else:
+                if comparison.get("reference_ids") != case.get("reference_ids"):
+                    add(identifier, "incomplete", "Comparison reference_ids must exactly match the case")
+                rendered = comparison.get("rendered_evidence")
+                if not strings(rendered) or not rendered:
+                    add(identifier, "incomplete", "Comparison needs unique rendered image evidence")
+                else:
+                    for relative in rendered:
+                        if relative not in paths or evidence_file(root, relative, image=True) is None:
+                            add(identifier, "incomplete", "Comparison render must be valid linked image evidence: " + relative)
+                findings = indexed(comparison.get("criteria_findings"), identifier + ".criteria_findings", "criterion")
+                expected = case.get("criteria", [])
+                expected = expected if strings(expected) else []
+                if set(findings) != set(expected):
+                    add(identifier, "incomplete", "Comparison must cover exactly every named criterion")
+                for criterion, item in findings.items():
+                    verdict = item.get("status")
+                    if not isinstance(verdict, str) or verdict not in STATUSES or not nonempty(item.get("finding")):
+                        add(identifier + ":" + criterion, "incomplete", "Criterion needs a valid verdict and concrete finding")
+                    else:
+                        add(identifier + ":" + criterion, verdict, item["finding"])
         for link in case.get("measurement_ids", []) if strings(case.get("measurement_ids", [])) else []:
             measurement = measurements.get(link)
             if measurement is None or not isinstance(measurement.get("status"), str) or measurement.get("status") not in STATUSES:
@@ -401,6 +468,69 @@ LIMITATIONS = [
 ]
 
 
+def review_html(contract, observations, evidence_root, report, output_path):
+    """A local inspection packet. Verdicts are declarations, never pixel verification."""
+    def esc(value):
+        return html.escape(str(value), quote=True)
+
+    def picture(relative, label, expected_hash=None):
+        target = evidence_file(evidence_root, relative, image=True)
+        if target is None:
+            return '<p>Incomplete image evidence: ' + esc(relative) + '</p>'
+        if expected_hash is not None and (not sha(expected_hash) or
+                hashlib.sha256(target.read_bytes()).hexdigest().lower() != expected_hash.lower()):
+            return '<p>Incomplete: reference hash mismatch for ' + esc(relative) + '</p>'
+        limitation = ''
+        try:
+            relative_url = os.path.relpath(target, Path(output_path).resolve().parent).replace('\\', '/')
+            uri = esc(quote(relative_url, safe='/'))
+        except ValueError:
+            uri = esc(target.as_uri())
+            limitation = '<p>Cross-drive image: this file URL may require opening the packet as a local file; an HTTP preview cannot load it.</p>'
+        return limitation + '<figure><a href="' + uri + '"><img src="' + uri + '" alt="' + esc(label) + '"></a><figcaption>' + esc(label) + ': ' + esc(relative) + '</figcaption></figure>'
+
+    contract = contract if isinstance(contract, dict) else {}
+    observations = observations if isinstance(observations, dict) else {}
+    references = {r['id']: r for r in contract.get('references', [])
+                  if isinstance(r, dict) and nonempty(r.get('id'))} if isinstance(contract.get('references', []), list) else {}
+    results = {(r.get('requirement_id'), r.get('case_id')): r for r in observations.get('results', [])
+               if isinstance(r, dict) and nonempty(r.get('requirement_id')) and nonempty(r.get('case_id'))} if isinstance(observations.get('results', []), list) else {}
+    parts = ['<!doctype html><html lang="en"><meta charset="utf-8"><title>Frontend reference inspection</title>',
+             '<style>body{font:16px system-ui;margin:2rem;line-height:1.5} .pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem}img{max-width:100%;height:auto}figure{margin:0 0 1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere}section{border-top:1px solid #888;padding:1rem 0}@media(max-width:700px){.pair{grid-template-columns:1fr}}</style>',
+             '<h1>Frontend reference inspection</h1><p>Unverified declarations. Inspect the real captures in a browser; file availability and hashes do not prove pixel fidelity, reference quality or approval.</p>',
+             '<p>Declared acceptance status: ' + esc(report['status']) + '; ready: ' + esc(report['ready']) + '</p>',
+             '<p>Exact revision SHA256: ' + esc(contract.get('source_sha256')) + '</p>']
+    entries = contract.get('requirements', [])
+    for entry in entries if isinstance(entries, list) else []:
+        if not isinstance(entry, dict):
+            continue
+        cases = entry.get('cases', [])
+        for case in cases if isinstance(cases, list) else []:
+            if not isinstance(case, dict) or not ('reference_ids' in case or 'criteria' in case):
+                continue
+            identifier = str(entry.get('id')) + ':' + str(case.get('id'))
+            result = results.get((entry.get('id'), case.get('id')), {})
+            comparison = result.get('comparison', {})
+            comparison = comparison if isinstance(comparison, dict) else {}
+            parts.extend(['<section><h2>' + esc(identifier) + '</h2><pre>Exact context: ' + esc(json.dumps(case.get('context'), ensure_ascii=False)) + '</pre>',
+                          '<div class="pair"><div><h3>Approved reference declarations</h3>'])
+            ids = case.get('reference_ids', [])
+            for ref in ids if strings(ids) else []:
+                reference = references.get(ref, {})
+                parts.append('<p>' + esc(ref) + ' — authority: ' + esc(reference.get('authority')) + '</p>')
+                parts.append(picture(reference.get('evidence'), ref, reference.get('sha256', '')))
+            parts.append('</div><div><h3>Current render declarations</h3>')
+            rendered = comparison.get('rendered_evidence', [])
+            linked = result.get('evidence', [])
+            for relative in rendered if strings(rendered) else []:
+                parts.append(picture(relative, 'Current render') if strings(linked) and relative in linked else '<p>Incomplete: render is not linked observation evidence</p>')
+            if not strings(rendered) or not rendered:
+                parts.append('<p>Incomplete: no comparison render</p>')
+            parts.append('</div></div><h3>Named criteria and declared verdicts</h3><pre>' + esc(json.dumps({'required_criteria': case.get('criteria'), 'comparison': comparison}, indent=2, ensure_ascii=False)) + '</pre></section>')
+    parts.append('<details><summary>Complete validator report (coverage and measurement findings)</summary><pre>' + esc(json.dumps(report, indent=2, ensure_ascii=False)) + '</pre></details></html>')
+    return '\n'.join(parts)
+
+
 def read_json(path):
     def invalid_constant(value):
         raise ValueError("Invalid JSON numeric constant: " + value)
@@ -414,15 +544,17 @@ def main():
     parser.add_argument("observations", type=Path, nargs="?")
     parser.add_argument("evidence_root", type=Path, nargs="?")
     parser.add_argument("--previous", type=Path)
+    parser.add_argument("--review-html", type=Path, help="Write a local reference/render inspection packet at this path only")
     parser.add_argument("--plan", action="store_true")
     parser.add_argument("--scope", choices=("product", "workflow"), default="product")
     parser.add_argument("--source-sha256")
     parser.add_argument("--features", default="", help="Comma-separated actual feature tags")
     parser.add_argument("--selected", default="", help="Comma-separated selected capability IDs")
     args = parser.parse_args()
+    contract, observations = {}, {}
     try:
         if args.plan:
-            if any((args.contract, args.observations, args.evidence_root, args.previous)):
+            if any((args.contract, args.observations, args.evidence_root, args.previous, args.review_html)):
                 raise ValueError("Plan mode accepts the catalog only")
             report = plan(read_json(args.catalog), args.scope, args.source_sha256,
                           [s.strip() for s in args.features.split(",")] if args.features else [],
@@ -430,13 +562,24 @@ def main():
         else:
             if any(p is None for p in (args.contract, args.observations, args.evidence_root)):
                 raise ValueError("Verification needs catalog, contract, observations and evidence_root")
-            report = validate(read_json(args.catalog), read_json(args.contract), read_json(args.observations),
+            contract, observations = read_json(args.contract), read_json(args.observations)
+            report = validate(read_json(args.catalog), contract, observations,
                               args.evidence_root, read_json(args.previous) if args.previous else None)
     except (OSError, ValueError, TypeError) as exc:
         report = {"status": "incomplete", "coverage_status": "incomplete", "measurement_status": "incomplete",
                   "ready": False, "pre_review_status": "incomplete", "pre_review_ready": False,
                   "pending_later_cases": [], "checks": [{"id": "input", "status": "incomplete", "finding": str(exc)}],
                   "measurement_checks": [], "limitations": LIMITATIONS}
+    if args.review_html and not args.plan:
+        try:
+            args.review_html.write_text(review_html(contract, observations, args.evidence_root, report, args.review_html), encoding="utf-8")
+        except (OSError, ValueError, TypeError) as exc:
+            report['checks'].append({'id': 'review-html', 'status': 'incomplete', 'finding': str(exc)})
+            report['status'] = aggregate(report['checks'] + report['measurement_checks'])
+            report['coverage_status'] = aggregate(report['checks'])
+            report['ready'] = False
+            report['pre_review_ready'] = False
+            report['pre_review_status'] = report['status']
     print(json.dumps(report, indent=2, allow_nan=False))
     return {"pass": 0, "fail": 1, "incomplete": 2}[report["status"]]
 

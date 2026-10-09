@@ -6,6 +6,7 @@ Python 3.11+ standard library only. From the skill's scripts directory, using ab
 
 ```powershell
 python -B frontend_coverage.py catalog.json contract.json observations.json evidence-directory --previous previous-contract.json
+python -B frontend_coverage.py catalog.json contract.json observations.json evidence-directory --review-html review.html
 python -B -m unittest -v test_frontend_coverage.py test_frontend_gate.py
 ```
 
@@ -98,6 +99,41 @@ For a workflow portfolio with several fixtures, bind `source_sha256` to a determ
 For required entries, every catalog case must be present. A case supplies a valid method and a nonempty `context` object containing `viewport`, `modality`, `state`. Viewport is a nonempty string or an object with finite positive numeric `width`/`height`; modality and state are nonempty strings. Extra context fields, such as browser/fixture, are permitted and participate in exact equality. Optional `measurement_ids` is a unique list of legacy measurement-check IDs. Select scenarios and contexts by the actual brief/rendering risks; there is no universal viewport matrix or numerical optical-center rule.
 
 When `--previous` is used, its previously required commitments and cases must remain required with the same methods, contexts and measurement links. Contract `changes: {"requirement-id": "explicit supported brief/scope change reason"}` permits a documented change to that inherited item. A reason cannot waive currently required catalog items/cases or method coverage. The checker validates reason presence, not its authorization or correctness. A frozen first draft's omissions do not establish user approval.
+
+### Approved reference commitments
+
+When a rendered case must preserve an approved visual reference, bind that reference and name its perceptual commitments in the existing contract. These optional fields retain schema version 1 and leave cases without a reference unchanged. They do not require images, 3D, GPU rendering, centering or a new viewport matrix in products that do not select them.
+
+Contract additions (merge into the existing contract and affected rendered case):
+
+```json
+{
+  "references": [{"id": "approved-master", "evidence": "approved.png", "sha256": "ACTUAL64HEXSHA256OFFILE", "authority": "User-selected master"}],
+  "reference_ids": ["approved-master"],
+  "criteria": ["Composition", "Type hierarchy"]
+}
+```
+
+`references` is a contract-level array of unique nonempty IDs. Each reference needs a nonempty authority receipt description, an actual 64-hex SHA256 of its nonempty image file, and an evidence-root-relative path. `reference_ids` and `criteria` belong on each affected rendered case, with nonempty unique strings. Each reference ID must exist. Use concrete named perceptual commitments from the approved treatment; the schema imposes no universal style rubric. The checker verifies file bytes against reference hashes, not approval authority or reference quality.
+
+That case's observation adds:
+
+```json
+{
+  "comparison": {
+    "reference_ids": ["approved-master"],
+    "rendered_evidence": ["current.png"],
+    "criteria_findings": [
+      {"criterion": "Composition", "status": "pass", "finding": "Describe the inspected spatial relationship and any difference."},
+      {"criterion": "Type hierarchy", "status": "incomplete", "finding": "State what still needs real capture inspection."}
+    ]
+  }
+}
+```
+
+Comparison reference IDs must exactly match the case list. Rendered evidence is a nonempty unique list of contained image files also present in that result's ordinary `evidence`. Every declared criterion needs exactly one finding with `pass`, `fail` or `incomplete` and a nonempty concrete explanation. Missing comparison, missing/extra criterion, mismatched reference, missing/escaping image or stale approved-reference hash blocks readiness. A failed criterion produces failure even when the result itself says pass; existing measurement and other coverage findings remain visible. With `--previous`, affected case reference IDs, criteria and each referenced identity (including file/hash/authority) cannot be changed or dropped without the existing requirement-level supported `changes` reason.
+
+`--review-html PATH` writes only that requested file; its parent directory must already exist. It shows locally linked reference/render images side by side, exact case context and source revision, declared criterion verdicts, and the complete validator report. All supplied strings are HTML-escaped; links resolve only to validated contained local images, and a stale reference is labeled incomplete. Same-drive image URLs are relative to the output directory with URL-quoted forward-slash paths, supporting local-file viewing and HTTP previews that serve the packet and evidence under a common root. Cross-drive images fall back to file URLs with an explicit warning that HTTP previews cannot load them. The packet is labeled unverified even when declared acceptance passes. Open the HTML in a browser and inspect the real captures; metadata, file availability and human-written verdicts never prove pixels or reference quality. Generation does not relax CLI exit codes or hide incomplete measurements; write errors block readiness and retain existing failures. Plan mode cannot generate a review packet.
 
 ## Observations and evidence
 

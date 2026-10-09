@@ -1,6 +1,7 @@
 """Discriminating coverage mutations use real temporary evidence paths."""
 import copy
 import contextlib
+import hashlib
 import json
 import shutil
 import subprocess
@@ -9,7 +10,7 @@ import unittest
 import uuid
 from pathlib import Path
 
-from frontend_coverage import plan, validate
+from frontend_coverage import plan, validate, review_html
 
 
 @contextlib.contextmanager
@@ -77,6 +78,121 @@ class CoverageTests(unittest.TestCase):
         self.catalog["requirements"][0]["case_stages"] = {"paint": "human_choice"}
         self.catalog["requirements"][0]["case_methods"] = {"paint": ["rendered"]}
         self.observations["results"].pop()
+
+    def bind_reference(self):
+        self.contract['references'] = [{'id': 'master', 'evidence': 'capture.png',
+            'sha256': hashlib.sha256((self.root / 'capture.png').read_bytes()).hexdigest(),
+            'authority': 'User selected master'}]
+        case = self.contract['requirements'][0]['cases'][1]
+        case.update(reference_ids=['master'], criteria=['Composition', 'Type'])
+        self.observations['results'][1]['comparison'] = {
+            'reference_ids': ['master'], 'rendered_evidence': ['capture.png'],
+            'criteria_findings': [{'criterion': c, 'status': 'pass', 'finding': 'Declared inspection of ' + c}
+                                  for c in case['criteria']]}
+
+    def test_reference_bound_pass_and_static_compatibility(self):
+        self.assertTrue(self.check()['ready'])
+        self.bind_reference()
+        self.assertTrue(self.check()['ready'])
+
+    def test_reference_missing_stale_and_escaping(self):
+        self.bind_reference()
+        original = copy.deepcopy(self.contract)
+        for mutate in (lambda: self.contract.pop('references'),
+                       lambda: self.contract['references'][0].update(sha256='b' * 64),
+                       lambda: self.contract['references'][0].update(evidence='../capture.png'),
+                       lambda: self.contract['references'][0].update(evidence=str(self.root / 'capture.png'))):
+            self.contract = copy.deepcopy(original)
+            mutate()
+            self.incomplete()
+
+    def test_comparison_missing_mismatch_criterion_and_image(self):
+        self.bind_reference()
+        original = copy.deepcopy(self.observations)
+        for mutate in (lambda r: r.pop('comparison'),
+                       lambda r: r['comparison'].update(reference_ids=['wrong']),
+                       lambda r: r['comparison']['criteria_findings'].pop(),
+                       lambda r: r['comparison'].update(rendered_evidence=['events.json']),
+                       lambda r: r['comparison'].update(rendered_evidence=['../capture.png'])):
+            self.observations = copy.deepcopy(original)
+            mutate(self.observations['results'][1])
+            self.incomplete()
+
+    def test_failed_criterion_overrides_pass_result_and_retains_measurements(self):
+        self.bind_reference()
+        self.observations['results'][1]['comparison']['criteria_findings'][0]['status'] = 'fail'
+        self.observations['measurements'] = {'status': 'incomplete', 'checks': [{'id': 'missing', 'status': 'incomplete'}]}
+        report = self.check()
+        self.assertEqual(report['status'], 'fail')
+        self.assertFalse(report['ready'])
+        self.assertEqual(report['measurement_status'], 'incomplete')
+
+    def test_inherited_reference_and_criteria_changes_need_supported_reason(self):
+        self.bind_reference()
+        previous = copy.deepcopy(self.contract)
+        self.contract['requirements'][0]['cases'][1].pop('reference_ids')
+        self.assertFalse(self.check(previous)['ready'])
+        self.contract = copy.deepcopy(previous)
+        self.contract['references'][0]['authority'] = 'Different authority'
+        self.assertFalse(self.check(previous)['ready'])
+        self.contract['changes'] = {'feedback': 'Explicit supported new approval'}
+        self.assertTrue(self.check(previous)['ready'])
+
+    def test_review_html_escapes_strings_and_unsafe_paths(self):
+        self.bind_reference()
+        self.contract['references'][0]['authority'] = '<script>alert(1)</script>'
+        self.observations['results'][1]['comparison']['criteria_findings'][0]['finding'] = '<img onerror="bad">'
+        packet = review_html(self.contract, self.observations, self.root, self.check(), self.root / 'review.html')
+        self.assertNotIn('<script>', packet)
+        self.assertIn('&lt;script&gt;', packet)
+        self.assertIn('&lt;img onerror=', packet)
+        self.assertIn('src="capture.png"', packet)
+        self.assertNotIn('file://', packet)
+        self.assertIn('Unverified declarations', packet)
+        self.contract['references'][0]['evidence'] = '../capture.png'
+        packet = review_html(self.contract, self.observations, self.root, self.check(), self.root / 'review.html')
+        self.assertIn('Incomplete image evidence', packet)
+
+    def test_review_html_relative_url_escapes_space_and_delimiters(self):
+        self.bind_reference()
+        name = 'render space & # quote.png'
+        (self.root / name).write_bytes(b'image fixture')
+        result = self.observations['results'][1]
+        result['evidence'] = [name]
+        result['comparison']['rendered_evidence'] = [name]
+        packet = review_html(self.contract, self.observations, self.root, self.check(), self.root / 'nested' / 'review.html')
+        self.assertIn('src="../render%20space%20%26%20%23%20quote.png"', packet)
+        self.assertIn('src="../capture.png"', packet)
+        self.assertNotIn('file://', packet)
+
+    def test_review_html_cli_retains_failures_and_only_writes_requested_file(self):
+        self.bind_reference()
+        self.observations['results'][1]['comparison']['criteria_findings'][0]['status'] = 'fail'
+        self.observations['measurements'] = {'status': 'incomplete', 'checks': [{'id': 'measurement', 'status': 'incomplete'}]}
+        inputs = []
+        for name, value in [('catalog', self.catalog), ('contract', self.contract), ('observations', self.observations)]:
+            path = self.root / (name + '.json')
+            path.write_text(json.dumps(value), encoding='utf-8')
+            inputs.append(str(path))
+        before = set(self.root.iterdir())
+        output = self.root / 'review.html'
+        process = subprocess.run([sys.executable, '-B', str(Path(__file__).with_name('frontend_coverage.py')),
+                                  *inputs, str(self.root), '--review-html', str(output)], capture_output=True, text=True)
+        self.assertEqual(process.returncode, 1, process.stderr)
+        report = json.loads(process.stdout)
+        self.assertFalse(report['ready'])
+        self.assertEqual(report['measurement_status'], 'incomplete')
+        self.assertEqual(set(self.root.iterdir()) - before, {output})
+        packet = output.read_text(encoding='utf-8')
+        self.assertIn('measurement_status', packet)
+        self.assertIn('Composition', packet)
+        self.assertIn('320x900', packet)
+        output.unlink()
+        process = subprocess.run([sys.executable, '-B', str(Path(__file__).with_name('frontend_coverage.py')),
+                                  *inputs, str(self.root), '--review-html', str(self.root / 'absent' / 'review.html')], capture_output=True, text=True)
+        self.assertEqual(process.returncode, 1, process.stderr)
+        self.assertFalse(json.loads(process.stdout)['ready'])
+        self.assertFalse((self.root / 'absent').exists())
 
     def test_catalog_missing_and_deferred_malformed_filled_context_block_pre_review(self):
         self.defer_paint()
