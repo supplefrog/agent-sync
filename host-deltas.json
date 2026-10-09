@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:625c2964724fcdf339c65fce953353f98fdf2f7c50b3f77cc0449b56a3af7b1e"
+      "version_or_hash": "sha256:c2b612e4e1f2329257bbfbb5ecbd51e1cf62fe5c2eccdb86c9c0e9972dff5ca3"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:b8a04f0c82f061068ba16a1d7992fe24044fbf2f58fc98f0263688d5e975bb2f"
+      "version_or_hash": "sha256:3b92f6a6f7409e1fc7ad4e14c081e232f58e79848cc1637a76e9dc058ff322a4"
     },
     {
       "category": "instructions",
