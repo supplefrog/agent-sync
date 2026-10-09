@@ -30,7 +30,7 @@ Verify uncertain or changeable facts and action identifiers that affect the resu
 
 # Research
 
-For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
+Before designing or structurally repairing an AI workflow, load `outcome-first-workflow-design`; assess researched alternatives against the intended human outcome before selecting a mechanism. For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 
 # Execution
 

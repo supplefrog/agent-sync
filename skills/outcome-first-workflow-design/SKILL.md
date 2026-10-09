@@ -1,11 +1,11 @@
 ---
 name: outcome-first-workflow-design
-description: Use when creating or materially iterating an agent workflow, automation, reusable procedure, or persistent capability. Reconstruct the user's intended outcome, inspect why the current mechanism exists, and compare retain/adapt/replace options before building.
+description: Use for agent workflow design or structural workflow repair, including recurring failures despite checks, and for material changes to automation, reusable procedures or persistent capabilities. Recover the human outcome and baseline, research mechanism alternatives and compare retain/adapt/replace options before building.
 license: MIT
 compatibility: Requires access to the current artifact and, when external options matter, source or web research.
 metadata:
   author: supplefrog
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Outcome-First Workflow Design
@@ -32,9 +32,11 @@ Inspect the relevant baseline and rationale. Identify what is already solved, wh
 
 For an uncertain capability, trace its required inputs and prerequisites. If a known information or performance limit rules out the intended result, reject or revise the approach before coding. Otherwise test the decisive assumption against the baseline using existing evidence, existing tools, or the smallest disposable probe. Before feasibility is established, build only the minimum disposable code or adapter needed to test that assumption. Build further supporting infrastructure only when existing evidence or that probe supports the intended benefit. Permission to code or delegate supplies authority, not evidence of usefulness. Reuse adequate existing evidence; routine fixes with an established cause do not require a new feasibility study.
 
-### 4. Research only decision-changing gaps
+### 4. Research the mechanism before structural repair
 
-When existing implementations or external mechanism evidence could change the choice, load `project-prior-art` for proportional search, source inspection and reuse. Load other design or placement guidance only for a concrete unresolved question in the feasibility check or justified implementation.
+For a new or materially redesigned workflow, or recurring failures despite checks, investigate the structural cause and compare credible mechanisms before selecting a repair. Judge alternatives against the human outcome and observed baseline. A mechanism suggested by the user is a candidate unless the user fixes it as a constraint.
+
+Reuse current, source-bound research when it answers the decision; otherwise load `project-prior-art` for proportional search and source inspection. Record which evidence settles the choice and which uncertainty needs a probe. Routine fixes with an established cause and adequate evidence can proceed through their existing owner. Load other design or placement guidance only for a concrete unresolved question in feasibility or justified implementation.
 
 ### 5. Decide from first principles
 
@@ -53,6 +55,8 @@ Record the outcome, constraints, evidence, live alternatives, recommendation, de
 ### 7. Validate before promotion
 
 Choose the cheapest checks that prove the outcome and relevant failure boundary. For deterministic automation, use an isolated test target when side effects require it and run the real acceptance probe plus a regression or boundary case as appropriate. Verify consequential claims and delegated work at the parent boundary.
+
+For acceptance or evaluation workflows, demonstrate that the checks reject relevant faulty outputs and accept nearby valid outputs before using their verdict for promotion. Bind the evidence to the actual artifact or action being judged; metadata, authored pass labels and check counts do not establish the human outcome.
 
 Before authoring instruction or trigger candidates, load `instruction-authoring` for staging outside live discovery, proportional evaluation and regression boundaries. For shared capability admission or promotion, load `cross-agent-surface-engineering` for checked deployment, evidence, rollback and unresolved checks; no candidate is promoted without the required correction or supported improvement and no material regression.
 

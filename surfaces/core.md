@@ -92,6 +92,8 @@ Project work defaults to a compatible configured native Codex cloud workspace or
 Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
 
 ## Research
+Before designing or structurally repairing an AI workflow, load `outcome-first-workflow-design`; assess researched alternatives against the intended human outcome before selecting a mechanism.
+
 For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 
 ## Execution

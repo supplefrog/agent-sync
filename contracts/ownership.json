@@ -121,7 +121,12 @@
       "selection_evidence": [
         "evals/results/organic-architecture-governance-2026-08-25.json"
       ],
-      "selection_reason": "Retains the recorded admission with stated evaluation limits: structural checks passed, cross-host discovery was partial, and one value-dependent Hermes probe completed. The normal-build probe began implementation but exceeded the harness ceiling; the isolated A/B was inconclusive, and OMP natural-trigger behavior was not sampled. The linked receipt does not establish completed held-out evaluation or cross-host behavioral validation."
+      "selection_reason": "Retains the recorded admission with stated evaluation limits: structural checks passed, cross-host discovery was partial, and one value-dependent Hermes probe completed. The normal-build probe began implementation but exceeded the harness ceiling; the isolated A/B was inconclusive, and OMP natural-trigger behavior was not sampled. The linked receipt does not establish completed held-out evaluation or cross-host behavioral validation.",
+      "purpose": {
+        "objective": "Choose AI workflow mechanisms that achieve the intended human outcome within the user's constraints. This purpose is inferred from the existing contract and the user's explicit outcome-first research requirement.",
+        "added_value": "Connects structural failures to Agent Sync's research, implementation, acceptance and reversible promotion owners. General first-principles advice may be redundant with current models; comparative output-quality and cost benefits remain unproven.",
+        "retirement_test": "Use the current model and native tools without this skill on comparable workflow design and structural repair tasks. Retire the skill when that path preserves outcome reconstruction, credible researched alternatives, fault detection, authorization and recovery at acceptable total cost, with necessary Agent Sync integration owned elsewhere."
+      }
     },
     {
       "id": "openai-delegation-route-research",
