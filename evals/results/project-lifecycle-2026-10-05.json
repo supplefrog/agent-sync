@@ -131,14 +131,17 @@
       "recovery_hashes": "passed",
       "retained_history_package_unchanged": "passed",
       "engineering_plugin_uninstall": "passed",
-      "agent_ops_refresh": "pending automatic-review approval",
-      "fresh_discovery": "pending final cache refresh"
+      "agent_ops_refresh": "passed: user explicitly approved native remove/re-add; installed version 0.2.4+codex.20261010",
+      "fresh_discovery": "passed: six obsolete prose entries absent, one shared dynamic-workflows entry and retained history tool discovered",
+      "retained_installed_history_authored_hashes": "passed",
+      "old_plugin_caches_absent": "passed"
     },
     "limits": [
       "Source/ownership audit only; no matched whole-agent benefit or cost comparison.",
       "Research corpus dependencies at old external paths are missing; preserved domain format/report semantics do not establish working validator support.",
       "Recovery retains exact removed text outside live discovery; no existing run, save, trace, session or credential was removed."
-    ]
+    ],
+    "approval_limit": "Initial automatic-review refusals preserved as attempted outcomes; user subsequently explicitly authorized the exact Agent Ops lifecycle refresh."
   },
   "instruction_changes": [
     {
