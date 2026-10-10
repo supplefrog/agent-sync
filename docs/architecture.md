@@ -15,6 +15,8 @@ Agent Sync accepts a desired persistent behavior and produces the smallest verif
 
 The convergence target is equivalent useful behavior. Mechanisms may differ, and valuable native capabilities remain native.
 
+For an accumulated system audit, recover existing evidence and infer behavior clusters before asking the user to clarify concrete contracts or mismatches. The user remains the behavior authority. Inspect mechanisms and causal explanations before spending on comparisons; no inventory, source alignment or test count alone establishes output quality.
+
 ## Ownership layers
 
 | Layer | Canonical artifact | Responsibility |

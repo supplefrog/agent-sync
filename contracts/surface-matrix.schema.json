@@ -100,6 +100,126 @@
         },
         "additionalProperties": false
       }
+    },
+    "behavior_contracts": {
+      "type": "array",
+      "description": "Behavior-level maintenance metadata; human authority and outcome evidence are separate from deployment eligibility.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "scope",
+          "authority",
+          "owners",
+          "hosts",
+          "trigger",
+          "desired_outcomes",
+          "undesired_outcomes",
+          "contraindications",
+          "acceptable_native_differences",
+          "checks"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "scope": {
+            "enum": [
+              "system",
+              "task-type"
+            ]
+          },
+          "authority": {
+            "type": "object",
+            "required": [
+              "status",
+              "reference"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "inferred",
+                  "user-confirmed"
+                ]
+              },
+              "reference": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          },
+          "owners": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "minItems": 1
+          },
+          "hosts": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "codex",
+                "hermes",
+                "omp"
+              ]
+            }
+          },
+          "trigger": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "desired_outcomes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "minItems": 1
+          },
+          "undesired_outcomes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "contraindications": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "acceptable_native_differences": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            }
+          },
+          "checks": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false
+      }
     }
   },
   "additionalProperties": false

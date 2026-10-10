@@ -20,6 +20,8 @@ Optimize the user's outcome, not fidelity to the mechanism they named. Separate 
 
 ### 1. Reconstruct intent and recover evidence
 
+For an audit of an accumulated agent system, reconstruct behavior clusters from existing instructions, original user decisions and observed outcomes. Present concrete desired/undesired outcomes, mismatches and unresolved user-owned choices; do not ask the user to enumerate the system's requirements from scratch or substitute an inventory for a behavior audit. Keep inferred contracts staged for human clarification. Skills and instructions are candidate implementations; retain, improve or remove them according to their contribution to the required output, with the user as final behavior authority.
+
 Recover supplied material, prior findings, and the affected implementation or callers. Reuse verified findings; mark stale, conflicting, or missing evidence. For material redesign, name the assumptions shaping the approach, inspect whether they prevent the outcome, and compare the strongest credible alternative. Revise assumptions when evidence supports it, without recurring reflection or review. Resolve consequential unknowns with the cheapest available check; do not turn missing detail into an intake interview. Ask only when a material user-owned preference or hard-to-reverse commitment cannot be settled by evidence.
 
 ### 2. Describe the outcome contract

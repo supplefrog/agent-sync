@@ -19,6 +19,8 @@ The [system requirements](docs/system-requirements.md) define expected outcomes 
 
 Each expected behavior has one accountable owner. Keep these boundaries apparent in the project; reorganize when it improves clarity without duplicating mechanisms.
 
+`python tools/run.py audit behaviors` reports recorded behavior contracts and legacy capability gaps without inference or deployment. Contracts live in the existing [surface matrix](contracts/surface-matrix.json); inferred requirements remain distinct from user-confirmed requirements. See [behavior auditing](docs/behavior-auditing.md) for reconstruction and evidence limits.
+
 [Requirement status and evidence](docs/requirement-status.md) maps R01–R18 to their implementation, checks, and remaining gaps. Start maintenance from the affected owner and its still-relevant evidence; the capability ownership registry remains the admission authority.
 
 ## Start with the outcome

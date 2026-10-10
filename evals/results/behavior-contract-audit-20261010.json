@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "suite": "behavior-contract-audit",
+  "owner_capability": "outcome-first-workflow-design",
+  "intent_reference": "User clarification in Codex chat 01a12321-7697-7573-b3ad-599fb2aad366 on 2026-10-10.",
+  "checks": [
+    "Real audit CLI reports missing, inferred and user-confirmed contract metadata distinctly.",
+    "System-level confirmation cannot fill a task-type gap.",
+    "Invalid/missing metadata, duplicate IDs and invalid owners reject without fixture mutation.",
+    "Twenty existing audit tests and four production-CLI contract tests passed.",
+    "Fresh review reproduced duplicate/invalid ownership coverage errors; the corrected CLI rejects duplicate IDs, invalid states, registry disagreement and invalid capability owners without mutation."
+  ],
+  "result": {
+    "passed": true,
+    "decision": "user-selected-audit-procedure-and-report-mechanics",
+    "limitations": [
+      "No new model inference or baseline comparison.",
+      "No model-quality, natural-triggering, cost-savings or host-behavior parity claim.",
+      "Authority labels require their human evidence; the tool does not authenticate approval.",
+      "Unconfirmed cluster contracts stay task-local."
+    ]
+  }
+}

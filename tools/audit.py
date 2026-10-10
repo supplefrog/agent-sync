@@ -211,6 +211,12 @@ def validate_repo(repo: Path, live: bool = False, *, current_evidence: bool = Tr
     except Exception as exc:
         errors.append(f"ownership schema: {exc}")
 
+    try:
+        from behavior_contracts import validate_contracts
+        errors.extend(validate_contracts(repo, surface))
+    except Exception as exc:
+        errors.append(f"behavior contracts: {exc}")
+
     if os.path.lexists(repo / "contracts/external-owners.json"):
         try:
             tools_dir = str(repo / "tools")
@@ -681,7 +687,7 @@ def refresh_current_evidence(repo: Path) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", nargs="?", choices=("check", "snapshot"), default="check")
+    parser.add_argument("action", nargs="?", choices=("check", "snapshot", "behaviors"), default="check")
     parser.add_argument("--repo", type=Path, default=Path.cwd())
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--structural", action="store_true", help="pre-refresh check; full audit is still required for sync completion")
@@ -689,6 +695,17 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     repo = args.repo.resolve()
+    if args.action == "behaviors":
+        from behavior_contracts import report
+        value = json.dumps(report(repo), indent=2, ensure_ascii=False)
+        if args.live or args.structural:
+            parser.error("behaviors is a metadata-only report; --live/--structural apply to check")
+        if args.out:
+            args.out.parent.mkdir(parents=True, exist_ok=True)
+            args.out.write_text(value + "\n", encoding="utf-8")
+        else:
+            print(value)
+        return 0
     if args.action == "check":
         errors = validate_repo(repo, live=args.live, current_evidence=not args.structural)
         if errors:

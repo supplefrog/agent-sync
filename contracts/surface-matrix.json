@@ -375,5 +375,53 @@
         "summaries": []
       }
     }
+  ],
+  "behavior_contracts": [
+    {
+      "id": "agent-sync-behavior-governance",
+      "scope": "system",
+      "authority": {
+        "status": "user-confirmed",
+        "reference": "User clarification in Codex chat 01a12321-7697-7573-b3ad-599fb2aad366 on 2026-10-10; agreed docs/system-requirements.md R01-R18."
+      },
+      "owners": [
+        "surfaces/core.md",
+        "skills/outcome-first-workflow-design",
+        "skills/instruction-authoring",
+        "skills/cross-agent-surface-engineering",
+        "tools/audit.py",
+        "tools/reconcile.py"
+      ],
+      "hosts": [
+        "codex",
+        "hermes"
+      ],
+      "trigger": "Audit or change persistent agent behavior, including an accumulated system whose original requirements are incomplete.",
+      "desired_outcomes": [
+        "Maintain equivalent useful outcomes across maintained agents, retaining valuable native capabilities.",
+        "Reconstruct behavior clusters and candidate contracts from existing instructions, original human intent and observed outcomes before asking the user to clarify concrete gaps.",
+        "Improve or remove instructions when evidence shows they hinder output quality; the user remains final authority over required behavior and taste.",
+        "Inspect mechanisms and causal evidence first, reuse adequate evidence and run the existing baseline comparator only for uncertainty that could change a decision."
+      ],
+      "undesired_outcomes": [
+        "Repeated inventories presented as behavior audits.",
+        "Requiring the user to enumerate the whole system from scratch.",
+        "Treating skills, matching files, passing tests or an assistant verdict as proof of quality or behavioral parity.",
+        "Promoting inferred requirements or speculative instruction removals without human authority and sufficient evidence."
+      ],
+      "contraindications": [
+        "An observed failure in the claimed scope prevents a passing or readiness claim.",
+        "Missing relevant evidence prevents the corresponding quality or parity claim."
+      ],
+      "acceptable_native_differences": [
+        "Discovery, tools, execution and presentation may differ when the required user outcome and protected boundaries are preserved.",
+        "OMP remains outside this selected audit and repair scope."
+      ],
+      "checks": [
+        "Audit produces concrete contract drafts, traced mismatches, evidence limits and focused human decisions.",
+        "Known mechanism failures are directly checked; uncertain behavioral effects use scoped matched comparison.",
+        "Publication and installed-content receipts remain distinct from actual behavior and human acceptance."
+      ]
+    }
   ]
 }
