@@ -12,6 +12,67 @@ python -B -m unittest -v test_frontend_coverage.py test_frontend_gate.py
 
 `--previous` is optional. The CLI reads inputs and evidence metadata without modifying them. It emits JSON and exits `0` for pass, `1` for a retained failure, or `2` for incomplete inputs/coverage/evidence. A failure takes precedence over incomplete, retaining both kinds of finding. `coverage_status`, `measurement_status`, `checks`, `measurement_checks` and `ready` remain separate. `ready` is true only when applicable coverage passes and supplied/linked measurement checks pass. An absent measurement report is not applicable only when no case declares measurement links.
 
+## Consume delivery at export and closeout
+
+The additive delivery lane invokes `validate(catalog, contract, observations, evidence_root, previous)` on the supplied raw inputs. It ignores supplied coverage summaries. Legacy API/CLI calls above keep their semantics and schema version 1. Use the full owner catalog for whole-product delivery; keep transport/recovery separate from acceptance:
+
+```powershell
+python -B frontend_coverage.py catalog.json contract.json observations.json evidence-directory --delivery delivery.json --source-sha256 CURRENT64HEXSOURCEHASH --previous previous-contract.json --previous-delivery previous-delivery.json
+python -B -m unittest -v test_frontend_delivery.py test_frontend_coverage.py test_frontend_gate.py
+```
+
+The project consumer resolves the trusted owner catalog and rejects supplied catalogs that omit or change its requirements, classifications, cases, stages or methods; additive project requirements remain valid. The parent independently verifies the actual source identity supplied with `--source-sha256`; all current records must match it. Both previous inputs are optional for a first delivery; retain them on revisions so inherited commitments and raw user/reviewer findings cannot silently disappear. The Python API is `delivery_acceptance(catalog, contract, observations, evidence_root, delivery, current_source_sha256, previous=None, previous_delivery=None)`. Generate `--review-html` separately with the legacy lane before consumption.
+
+Merge `acceptance_extent` and the compact job mapping into the existing contract, alongside its current cases:
+
+```json
+{
+  "acceptance_extent": "whole_product",
+  "journeys": [{"id": "read-chapter", "job": "Read the selected chapter", "path": "/reader > chapter picker at reading position", "state_producer": "Chapter selection, restored location and browser history", "case_ids": ["I05:full-index-use-position", "I05:destination-agreement"]}]
+}
+```
+
+Use actual existing case IDs. Derive necessary jobs and consequential state edges from the brief and inspected routes, controls and external state producers before acceptance, rather than converting only reported complaints into tests. The fresh reviewer explores the running product and discovers omitted paths; the typed mapping checks links, not completeness of that discovery. Each journey needs a nonempty job, actual access path and state producer, unique existing required `case_ids`, and at least one browser case. No fixed combination or journey count is imposed. On revision, changing an inherited journey needs the affected requirements' existing `changes` reasons.
+
+Delivery receipt shape (merge real linked files and current identity):
+
+```json
+{
+  "schema_version": 1,
+  "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "extent": "whole_product",
+  "known_findings": {"source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "findings": []},
+  "scrutiny": {
+    "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "extent": "whole_product", "status": "pass",
+    "fresh_context": true, "read_only": true, "artifact_first": true, "ordinary_input": true,
+    "explored_journey_ids": ["read-chapter"], "evidence": ["runtime-review.md", "chapter.png"],
+    "finding": "Concrete current findings from ordinary running-product exploration, including omitted-path inspection."
+  },
+  "journey_results": [{
+    "id": "read-chapter", "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "pass", "context": {"viewport": "390x844", "modality": "touch", "state": "Mid-chapter reading position"},
+    "finding": "Selection exposed the destination and retained coherent location feedback.",
+    "steps": [
+      {"at_ms": 0, "state": "Chapter one", "action": "Open chapter picker", "visible_result": "Choices visible at use position", "evidence": ["chapter.png"]},
+      {"at_ms": 900, "state": "Chapter two", "action": "Select chapter two", "visible_result": "Destination and current indication agree", "evidence": ["chapter-events.json"]}
+    ]
+  }]
+}
+```
+
+Every mapped journey needs exactly one current result, valid runtime context, status and concrete finding. Ordered steps link contained nonempty evidence from entry through the visible outcome; at least two steps with strictly increasing finite nonnegative `at_ms` are necessary for temporal linkage. Include intermediate, repeat, interruption or external-entry states where the actual state edges require them; this is not a new universal matrix. Repeat controls using existing `stable_control` and browser `scrollY` measurements when applicable. The validator checks evidence availability and declared chronology, not what the recording proves.
+
+The current ledger is mandatory, including an explicit empty `findings` array when nothing remains. Entries have unique `id`, `kind` (`defect`, `unresolved`, `taste`), `status` (`open`, `resolved`), concrete `finding`, unique `case_ids` naming exact current required catalog cases and raw `evidence`. Unknown or non-required links block acceptance before any scope exclusion. Resolved in-scope entries also need current `resolution_evidence`; closure cannot erase the original finding/evidence. `--previous-delivery` requires retaining prior ID, kind, finding, case links and raw evidence. Open defects fail; open unresolved findings are incomplete. Taste stays distinct from defect acceptance and later human choice.
+
+Whole-product acceptance requires matching `whole_product` in the contract and delivery, passing current applicable pre-review coverage, all mapped journeys, a current ledger with no open defect/unresolved finding, and passing source-bound scrutiny with all four controls true, concrete finding, linked evidence and exactly all mapped journey IDs explored. A narrow repair receipt cannot substitute for that scrutiny. Fresh context and artifact-first declarations must be verified under the standing dispatch contract; the consumer cannot establish their truth.
+
+For an honest small repair, set both extents to `bounded_repair` and provide delivery `repair_case_ids` naming the affected current required pre-review cases. Keep the full validation report: acceptance considers affected case findings plus all global contract/integrity and measurement checks; unrelated case gaps stay visible. The consumer requests validator `include_check_scope=True`: typed `check_scope` identifies case-level verdict/evidence gaps and integrity errors. Duplicate/unknown observation IDs, malformed records, identity mismatches and escaping evidence remain integrity blockers regardless of textual ID prefixes; legacy validation omits this metadata by default. Scope the job map to affected behavior; a noninteractive repair can retain `journeys: []` and `journey_results: []`. Unmapped defects cannot be excluded, and intersecting open findings block repair closure. Small repairs require no compulsory reviewer; set `scrutiny_required: true` when the existing scrutiny trigger applies. Supplied scrutiny is checked even when optional. A bounded repair can only derive `repair_verified`, never whole-product readiness.
+
+Output includes the recomputed `coverage` report, consumer `checks`, `status`, `acceptance`, `transport_allowed: true`, and `delivery_status`: `transported`, `repair_verified`, `ready_for_taste`, or `fully_ready`. Failed/incomplete acceptance preserves transport with acceptance false. CLI exits describe acceptance (`0` pass, `1` fail, `2` incomplete), not permission to export; callers must preserve recovery/export on nonzero exit. `ready_for_taste` requires whole-product acceptance; `fully_ready` additionally requires the full coverage report's `ready`, so deferred catalog stages remain pending. Neither status authorizes publication, replaces human approval or asserts defect freedom. Missing/unreadable delivery inputs also retain transport with acceptance false.
+
+These fields prevent stale, narrow and failed receipts from being promoted by downstream delivery consumers. They cannot certify the running product, detect fabricated observations, prove complete feature/job inventory or turn synthetic probes into generation-quality evidence.
+
 ## Plan without rewriting classifications
 
 ```powershell

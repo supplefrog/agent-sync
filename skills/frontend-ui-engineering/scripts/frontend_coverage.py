@@ -156,13 +156,16 @@ def plan(catalog, scope, source_sha256, features, selected):
             "limitations": LIMITATIONS}
 
 
-def validate(catalog, contract, observations, evidence_root, previous=None):
+def validate(catalog, contract, observations, evidence_root, previous=None, *, include_check_scope=False):
     checks = []
     measurement_checks = []
     pending_later_cases = []
     deferred_cases = {}
 
-    def add(identifier, status, finding, **extra):
+    def add(identifier, status, finding, *, case_ref=None, **extra):
+        if include_check_scope:
+            extra["check_scope"] = ({"kind": "case", "requirement_id": case_ref[0], "case_id": case_ref[1]}
+                                    if case_ref is not None else {"kind": "integrity"})
         checks.append({"id": identifier, "status": status, "finding": finding, **extra})
 
     def indexed(items, label, key="id"):
@@ -377,7 +380,7 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
         if result is None:
             stage = deferred_cases.get(key)
             pending = stage is not None and (context(case.get("context")) or deferred_context(case.get("context")))
-            add(identifier, "incomplete", "Required observation is missing", pending=pending)
+            add(identifier, "incomplete", "Required observation is missing", pending=pending, case_ref=key)
             if pending:
                 pending_later_cases.append({"requirement_id": key[0], "case_id": key[1],
                                             "stage": stage, "method": case.get("method")})
@@ -386,7 +389,7 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
         if not isinstance(status, str) or status not in STATUSES:
             add(identifier, "incomplete", "Invalid observation status")
         elif status != "pass":
-            add(identifier, status, result.get("finding", "Observed case did not pass"))
+            add(identifier, status, result.get("finding", "Observed case did not pass"), case_ref=key)
         for field, expected in (("source_sha256", expected_sha), ("method", case.get("method")), ("context", case.get("context"))):
             if result.get(field) != expected:
                 add(identifier, "incomplete", "Observation " + field + " does not match contract")
@@ -395,26 +398,29 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
         paths = result.get("evidence")
         images = False
         if not strings(paths) or not paths:
-            add(identifier, "incomplete", "Evidence needs unique relative file paths")
+            add(identifier, "incomplete", "Evidence needs unique relative file paths",
+                case_ref=key if paths is None or paths == [] else None)
             paths = []
         for relative in paths:
             path = Path(relative)
             try:
                 target = (root / path).resolve()
-                valid = (not path.is_absolute() and ".." not in path.parts
-                         and target.is_relative_to(root) and target.is_file() and target.stat().st_size > 0)
+                contained = not path.is_absolute() and ".." not in path.parts and target.is_relative_to(root)
+                valid = contained and target.is_file() and target.stat().st_size > 0
             except (OSError, ValueError):
                 valid = False
+                contained = False
             if not valid:
-                add(identifier, "incomplete", "Missing, empty or escaping evidence file: " + relative)
+                add(identifier, "incomplete", "Missing, empty or escaping evidence file: " + relative,
+                    case_ref=key if contained else None)
             elif target.suffix.lower() in IMAGE_EXTENSIONS:
                 images = True
         if case.get("method") == "rendered" and not images:
-            add(identifier, "incomplete", "Rendered judgment needs a nonempty image evidence file")
+            add(identifier, "incomplete", "Rendered judgment needs a nonempty image evidence file", case_ref=key)
         if "reference_ids" in case or "criteria" in case:
             comparison = result.get("comparison")
             if not isinstance(comparison, dict):
-                add(identifier, "incomplete", "Reference-bound case needs a comparison")
+                add(identifier, "incomplete", "Reference-bound case needs a comparison", case_ref=key)
             else:
                 if comparison.get("reference_ids") != case.get("reference_ids"):
                     add(identifier, "incomplete", "Comparison reference_ids must exactly match the case")
@@ -435,7 +441,7 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
                     if not isinstance(verdict, str) or verdict not in STATUSES or not nonempty(item.get("finding")):
                         add(identifier + ":" + criterion, "incomplete", "Criterion needs a valid verdict and concrete finding")
                     else:
-                        add(identifier + ":" + criterion, verdict, item["finding"])
+                        add(identifier + ":" + criterion, verdict, item["finding"], case_ref=key)
         for link in case.get("measurement_ids", []) if strings(case.get("measurement_ids", [])) else []:
             measurement = measurements.get(link)
             if measurement is None or not isinstance(measurement.get("status"), str) or measurement.get("status") not in STATUSES:
@@ -445,7 +451,7 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
             elif measurement["status"] != "pass":
                 add(identifier, measurement["status"], "Linked measurement is not pass: " + link)
         if status == "pass":
-            add(identifier, "pass", result.get("finding", ""), evidence=paths)
+            add(identifier, "pass", result.get("finding", ""), evidence=paths, case_ref=key)
     observed_keys = set(results)
     for check in checks:
         if check.get("pending") and any(check["id"] == ":".join(key) for key in observed_keys):
@@ -459,6 +465,179 @@ def validate(catalog, contract, observations, evidence_root, previous=None):
             "pending_later_cases": pending_later_cases,
             "ready": coverage_status == "pass" and measurement_status in {"pass", "not_applicable"},
             "checks": checks, "measurement_checks": measurement_checks, "limitations": LIMITATIONS}
+
+
+def delivery_acceptance(catalog, contract, observations, evidence_root, delivery,
+                        current_source_sha256, previous=None, previous_delivery=None):
+    """Consume current raw coverage and delivery evidence; transport never implies acceptance."""
+    coverage = validate(catalog, contract, observations, evidence_root, previous, include_check_scope=True)
+    checks = []
+    contract = contract if isinstance(contract, dict) else {}
+    delivery = delivery if isinstance(delivery, dict) else {}
+    extent = delivery.get("extent")
+
+    def add(identifier, status, finding):
+        checks.append({"id": identifier, "status": status, "finding": finding})
+
+    def linked(identifier, paths):
+        if not strings(paths) or not paths or any(evidence_file(evidence_root, p) is None for p in paths):
+            add(identifier, "incomplete", "Needs contained nonempty linked evidence")
+
+    def bound(identifier, record):
+        if not isinstance(record, dict) or record.get("source_sha256") != current_source_sha256:
+            add(identifier, "incomplete", "Record must match independently supplied current source identity")
+            return {}
+        return record
+
+    def indexed(identifier, rows):
+        found = {}
+        if not isinstance(rows, list):
+            add(identifier, "incomplete", "Expected an array")
+            return found
+        for row in rows:
+            if not isinstance(row, dict) or not nonempty(row.get("id")) or row["id"] in found:
+                add(identifier, "incomplete", "Missing or duplicate identifier")
+            else:
+                found[row["id"]] = row
+        return found
+
+    if type(delivery.get("schema_version")) is not int or delivery.get("schema_version") != 1:
+        add("delivery", "incomplete", "Expected schema_version 1")
+    if not sha(current_source_sha256) or contract.get("source_sha256") != current_source_sha256:
+        add("current-source", "incomplete", "Current source must match the coverage contract")
+    bound("delivery-source", delivery)
+    if extent not in ("whole_product", "bounded_repair") or contract.get("acceptance_extent") != extent:
+        add("extent", "incomplete", "Delivery and contract need the same explicit acceptance_extent")
+    if contract.get("scope") != "product":
+        add("scope", "incomplete", "Delivery consumes a product contract")
+
+    entries = contract.get("requirements", [])
+    cases = {entry["id"] + ":" + case["id"]: case
+             for entry in (entries if isinstance(entries, list) else []) if isinstance(entry, dict) and nonempty(entry.get("id"))
+             for case in (entry.get("cases", []) if isinstance(entry.get("cases"), list) else [])
+             if isinstance(case, dict) and nonempty(case.get("id")) and entry.get("disposition") == "required"}
+    catalog_cases = {row["id"] + ":" + suffix: row.get("case_stages", {}).get(suffix, "pre_review")
+                     for row in (catalog.get("requirements", []) if isinstance(catalog, dict)
+                                 and isinstance(catalog.get("requirements"), list) else [])
+                     if isinstance(row, dict) and nonempty(row.get("id")) and strings(row.get("cases"))
+                     and isinstance(row.get("case_stages", {}), dict) for suffix in row["cases"]}
+    repair_links = delivery.get("repair_case_ids")
+    repair_cases = set()
+    if extent == "bounded_repair":
+        if (not strings(repair_links) or not repair_links or any(link not in cases
+                or catalog_cases.get(link) != "pre_review" for link in repair_links)):
+            add("repair-scope", "incomplete", "Bounded repair needs explicit current required pre_review repair_case_ids")
+        else:
+            repair_cases = set(repair_links)
+    journeys = indexed("journeys", contract.get("journeys"))
+    results = indexed("journey-results", delivery.get("journey_results"))
+    if not journeys and extent == "whole_product":
+        add("journeys", "incomplete", "Map actual user jobs and state paths to existing cases before collection")
+    for identifier, journey in journeys.items():
+        key = "journey:" + identifier
+        links = journey.get("case_ids")
+        if (not all(nonempty(journey.get(k)) for k in ("job", "path", "state_producer"))
+                or not strings(links) or not links or any(link not in cases for link in links)):
+            add(key, "incomplete", "Job, actual access path/state producer and existing required case links are necessary")
+        elif not any(cases[link].get("method") == "browser" for link in links):
+            add(key, "incomplete", "A running journey must link a browser case")
+        elif extent == "bounded_repair" and not set(links) <= repair_cases:
+            add(key, "incomplete", "Repair journeys must belong to the affected case scope")
+        result = bound(key, results.get(identifier))
+        verdict = result.get("status")
+        if not isinstance(verdict, str) or verdict not in STATUSES:
+            add(key, "incomplete", "Missing valid journey verdict")
+        elif verdict != "pass":
+            add(key, verdict, result.get("finding", "Journey did not pass"))
+        if not context(result.get("context")) or not nonempty(result.get("finding")):
+            add(key, "incomplete", "Journey needs actual runtime context and a concrete finding")
+        steps = result.get("steps")
+        if not isinstance(steps, list) or len(steps) < 2:
+            add(key, "incomplete", "Journey needs ordered temporal evidence from entry through visible outcome")
+            continue
+        last = -1
+        for step in steps:
+            if not isinstance(step, dict):
+                add(key, "incomplete", "Malformed journey step")
+                continue
+            at = step.get("at_ms")
+            if (not isinstance(at, (int, float)) or isinstance(at, bool) or not 0 <= at < float("inf") or at <= last
+                    or not all(nonempty(step.get(k)) for k in ("state", "action", "visible_result"))):
+                add(key, "incomplete", "Steps need increasing nonnegative at_ms, actual state, ordinary action and visible result")
+            else:
+                last = at
+            linked(key, step.get("evidence"))
+    for identifier in results.keys() - journeys.keys():
+        add("journey:" + identifier, "incomplete", "Unknown journey result")
+    if isinstance(previous, dict) and previous.get("journeys") is not None:
+        prior_journeys = indexed("previous.journeys", previous.get("journeys"))
+        for identifier, prior in prior_journeys.items():
+            if journeys.get(identifier) != prior:
+                links = prior.get("case_ids", [])
+                changes = contract.get("changes", {})
+                if (not strings(links) or not links or not isinstance(changes, dict)
+                        or not all(nonempty(changes.get(link.split(":", 1)[0])) for link in links)):
+                    add("previous.journey:" + identifier, "incomplete", "Inherited journey changed without affected commitment change reasons")
+
+    ledger = bound("known-findings", delivery.get("known_findings"))
+    findings = indexed("known-findings", ledger.get("findings"))
+    for identifier, finding in findings.items():
+        key = "finding:" + identifier
+        kind, status, links = (finding.get(k) for k in ("kind", "status", "case_ids"))
+        if (kind not in ("defect", "unresolved", "taste") or status not in ("open", "resolved")
+                or not nonempty(finding.get("finding")) or not strings(links)):
+            add(key, "incomplete", "Finding needs kind, status, concrete finding and unique case_ids")
+        if strings(links) and any(link not in catalog_cases or link not in cases for link in links):
+            add(key, "incomplete", "Finding case_ids must name exact current required catalog cases before scope exclusion")
+        linked(key, finding.get("evidence"))
+        affected = extent == "whole_product" or (strings(links) and bool(set(links) & repair_cases))
+        if extent == "bounded_repair" and kind != "taste" and not links:
+            add(key, "incomplete", "Unmapped defect cannot be excluded from a bounded repair")
+        if affected and kind != "taste":
+            if status == "open":
+                add(key, "fail" if kind == "defect" else "incomplete", finding.get("finding", "Unresolved finding"))
+            elif status == "resolved":
+                linked(key + ":resolution", finding.get("resolution_evidence"))
+                if not links or any(link not in cases for link in links):
+                    add(key, "incomplete", "Resolution needs current required case links")
+    if previous_delivery is not None:
+        prior = previous_delivery.get("known_findings", {}) if isinstance(previous_delivery, dict) else {}
+        prior_findings = indexed("previous.known-findings", prior.get("findings"))
+        for identifier, prior_finding in prior_findings.items():
+            current = findings.get(identifier, {})
+            if any(current.get(k) != prior_finding.get(k) for k in ("kind", "finding", "case_ids", "evidence")):
+                add("retained-finding:" + identifier, "incomplete", "Retain prior finding identity and raw evidence; record current resolution separately")
+
+    scrutiny_required = extent == "whole_product" or delivery.get("scrutiny_required") is True
+    if "scrutiny_required" in delivery and type(delivery["scrutiny_required"]) is not bool:
+        add("scrutiny", "incomplete", "scrutiny_required must be boolean")
+    if scrutiny_required or delivery.get("scrutiny") is not None:
+        scrutiny = bound("scrutiny", delivery.get("scrutiny"))
+        explored = scrutiny.get("explored_journey_ids")
+        if (scrutiny.get("extent") != extent or not all(scrutiny.get(k) is True for k in
+                ("fresh_context", "read_only", "artifact_first", "ordinary_input"))
+                or not nonempty(scrutiny.get("finding"))
+                or not strings(explored) or set(explored) != journeys.keys()):
+            add("scrutiny", "incomplete", "Current fresh read-only artifact-first running-product scrutiny must explore the declared extent and all journeys")
+        linked("scrutiny", scrutiny.get("evidence"))
+        verdict = scrutiny.get("status")
+        add("scrutiny", verdict if isinstance(verdict, str) and verdict in STATUSES else "incomplete",
+            scrutiny.get("finding", "Missing scrutiny verdict"))
+    acceptance_checks = [c for c in coverage["checks"] if not c.get("pending")]
+    if extent == "bounded_repair":
+        # Scope comes from the validator's typed case provenance, never an identifier prefix.
+        acceptance_checks = [c for c in acceptance_checks if c.get("check_scope", {}).get("kind") != "case"
+            or c["check_scope"]["requirement_id"] + ":" + c["check_scope"]["case_id"] in repair_cases]
+    status = aggregate(acceptance_checks + coverage["measurement_checks"] + checks)
+    accepted = status == "pass"
+    ready_for_taste = accepted and extent == "whole_product"
+    fully_ready = ready_for_taste and coverage["ready"]
+    return {"schema_version": 1, "status": status, "transport_allowed": True, "acceptance": accepted,
+            "delivery_status": "fully_ready" if fully_ready else "ready_for_taste" if ready_for_taste else
+                               "repair_verified" if accepted and extent == "bounded_repair" else "transported",
+            "repair_verified": accepted and extent == "bounded_repair", "ready_for_taste": ready_for_taste,
+            "fully_ready": fully_ready, "extent": extent, "source_sha256": current_source_sha256,
+            "checks": checks, "coverage": coverage, "limitations": LIMITATIONS}
 
 
 LIMITATIONS = [
@@ -544,6 +723,8 @@ def main():
     parser.add_argument("observations", type=Path, nargs="?")
     parser.add_argument("evidence_root", type=Path, nargs="?")
     parser.add_argument("--previous", type=Path)
+    parser.add_argument("--delivery", type=Path, help="Consume current delivery evidence; never blocks artifact transport")
+    parser.add_argument("--previous-delivery", type=Path, help="Retain known findings from the preceding delivery")
     parser.add_argument("--review-html", type=Path, help="Write a local reference/render inspection packet at this path only")
     parser.add_argument("--plan", action="store_true")
     parser.add_argument("--scope", choices=("product", "workflow"), default="product")
@@ -554,7 +735,8 @@ def main():
     contract, observations = {}, {}
     try:
         if args.plan:
-            if any((args.contract, args.observations, args.evidence_root, args.previous, args.review_html)):
+            if any((args.contract, args.observations, args.evidence_root, args.previous, args.review_html,
+                    args.delivery, args.previous_delivery)):
                 raise ValueError("Plan mode accepts the catalog only")
             report = plan(read_json(args.catalog), args.scope, args.source_sha256,
                           [s.strip() for s in args.features.split(",")] if args.features else [],
@@ -563,14 +745,27 @@ def main():
             if any(p is None for p in (args.contract, args.observations, args.evidence_root)):
                 raise ValueError("Verification needs catalog, contract, observations and evidence_root")
             contract, observations = read_json(args.contract), read_json(args.observations)
-            report = validate(read_json(args.catalog), contract, observations,
-                              args.evidence_root, read_json(args.previous) if args.previous else None)
+            if args.delivery:
+                if args.review_html:
+                    raise ValueError("Generate the inspection packet with the legacy coverage lane before delivery consumption")
+                report = delivery_acceptance(read_json(args.catalog), contract, observations, args.evidence_root,
+                    read_json(args.delivery), args.source_sha256,
+                    read_json(args.previous) if args.previous else None,
+                    read_json(args.previous_delivery) if args.previous_delivery else None)
+            elif args.previous_delivery:
+                raise ValueError("--previous-delivery requires --delivery")
+            else:
+                report = validate(read_json(args.catalog), contract, observations,
+                                  args.evidence_root, read_json(args.previous) if args.previous else None)
     except (OSError, ValueError, TypeError) as exc:
         report = {"status": "incomplete", "coverage_status": "incomplete", "measurement_status": "incomplete",
                   "ready": False, "pre_review_status": "incomplete", "pre_review_ready": False,
                   "pending_later_cases": [], "checks": [{"id": "input", "status": "incomplete", "finding": str(exc)}],
                   "measurement_checks": [], "limitations": LIMITATIONS}
-    if args.review_html and not args.plan:
+        if args.delivery:
+            report.update(transport_allowed=True, acceptance=False, delivery_status="transported",
+                          repair_verified=False, ready_for_taste=False, fully_ready=False)
+    if args.review_html and not args.plan and not args.delivery:
         try:
             args.review_html.write_text(review_html(contract, observations, args.evidence_root, report, args.review_html), encoding="utf-8")
         except (OSError, ValueError, TypeError) as exc:

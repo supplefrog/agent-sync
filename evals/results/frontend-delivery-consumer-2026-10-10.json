@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-delivery-consumer",
+  "capability": "frontend-ui-engineering",
+  "version": "5.1.7",
+  "status": "pass",
+  "baseline_commit": "b567982b4d51907b7feaad329ca1b5c8fd946d15",
+  "record_scope": "Admission of delivery-consumer enforcement; not product readiness or a prevention-rate claim.",
+  "authorization": "User requested comprehensive reusable workflow repairs, synchronization and current product verification.",
+  "source_bindings": {
+    "skills/frontend-ui-engineering/SKILL.md": "0341e0e745a9708c28cff2ec526d95c9a68ebbb4113cef9110ac3ddff4151fa4",
+    "skills/frontend-ui-engineering/references/coverage-schema.md": "c8273486505cf8680373832280b700a495222a2463300002473c23d9c30fd50b",
+    "skills/frontend-ui-engineering/scripts/frontend_coverage.py": "2045db2a8f2f2323b71f0250e9bbe491af43254ac5ff3a9dda2b3cb863bc05ab",
+    "skills/frontend-ui-engineering/scripts/test_frontend_delivery.py": "c10606fb25758dce0fe308c6e18bfdd4eb2f46eae43822c76a615324ca22bf64"
+  },
+  "changes": [
+    "Existing coverage validator consumed at actual closeout with independently verified source identity.",
+    "Whole-product jobs, ordered running journeys, retained failure ledger and fresh artifact-first scrutiny required for taste readiness.",
+    "Bounded repair and transport retained separately; typed integrity cannot be excluded as unrelated case gaps.",
+    "Project closeout pins unchanged canonical catalog requirements while permitting additive project rows."
+  ],
+  "research": [
+    {
+      "url": "https://fast-check.dev/docs/advanced/model-based-testing",
+      "finding": "State commands help explore paths; explicit assertions still supply the semantic oracle."
+    },
+    {
+      "url": "https://playwright.dev/docs/actionability",
+      "finding": "Stable bounding boxes and actionability cannot establish smooth painted motion."
+    },
+    {
+      "url": "https://playwright.dev/docs/videos",
+      "finding": "Running temporal evidence must be retained; settled screenshots do not prove intermediate behavior."
+    },
+    {
+      "url": "https://playwright.dev/docs/release-notes",
+      "finding": "Animations-disabled snapshots settle or rewind motion, hiding intermediate defects."
+    }
+  ],
+  "verification": {
+    "unit_tests": {
+      "run": 86,
+      "skipped": 1,
+      "status": "pass"
+    },
+    "synthetic_catalog_probes": {
+      "run": 2999,
+      "status": "pass",
+      "limits": "Metadata and declared receipts, not rendered quality."
+    },
+    "fresh_cli_scrutiny": {
+      "status": "pass after observed faults repaired",
+      "faults_found": [
+        "narrow canonical catalog substitution",
+        "unknown finding links hidden by scope",
+        "unrelated malformed observations hidden by textual prefixes"
+      ],
+      "source_sha256": "2045db2a8f2f2323b71f0250e9bbe491af43254ac5ff3a9dda2b3cb863bc05ab",
+      "cases": [
+        {
+          "case": "valid_bounded_control",
+          "exit": 0,
+          "acceptance": true,
+          "delivery_status": "repair_verified"
+        },
+        {
+          "case": "unknown_open_defect_case",
+          "exit": 2,
+          "acceptance": false,
+          "delivery_status": "transported"
+        },
+        {
+          "case": "matching_open_defect_control",
+          "exit": 1,
+          "acceptance": false,
+          "delivery_status": "transported"
+        },
+        {
+          "case": "valid_unrelated_open_defect_control",
+          "exit": 0,
+          "acceptance": true,
+          "delivery_status": "repair_verified"
+        },
+        {
+          "case": "duplicate_unrelated_observation",
+          "exit": 2,
+          "acceptance": false,
+          "delivery_status": "transported"
+        },
+        {
+          "case": "unknown_unrelated_case_with_valid_prefix",
+          "exit": 2,
+          "acceptance": false,
+          "delivery_status": "transported"
+        },
+        {
+          "case": "valid_unrelated_missing_observation_control",
+          "exit": 0,
+          "acceptance": true,
+          "delivery_status": "repair_verified"
+        },
+        {
+          "case": "closeout_narrow_catalog",
+          "exit": 2
+        },
+        {
+          "case": "closeout_owner_additive_valid_control",
+          "exit": 0
+        },
+        {
+          "case": "closeout_narrow_transport_control",
+          "exit": 0
+        },
+        {
+          "case": "closeout_nonobject_catalog_transport",
+          "exit": 0
+        }
+      ],
+      "transport_followup": "Non-object catalogs and malformed IDs now fail acceptance without preventing transported receipts; non-object transport recheck exit 0.",
+      "limits": "Fresh read-only code/CLI scrutiny; not running-product or future-generation quality proof."
+    },
+    "real_entrypoint_baseline": {
+      "source_manifest_sha256": "0c6b8db56b116e34daf3e70d60f6c745e0a3156ce7422110a270909a243aa9e7",
+      "files_verified": 31,
+      "actual_failed_replay_evidence": "p5-baseline-replay-jump.jpg",
+      "whole_ready_rejected": true,
+      "transport_preserved": true,
+      "results": [
+        {
+          "claim": "ready_for_taste",
+          "exit_code": 1,
+          "stdout": "{\"status\": \"transported\", \"requested_claim\": \"ready_for_taste\", \"claim_allowed\": false, \"source_files_verified\": 31, \"source_manifest_sha256\": \"0c6b8db56b116e34daf3e70d60f6c745e0a3156ce7422110a270909a243aa9e7\"}",
+          "acceptance": false
+        },
+        {
+          "claim": "transported",
+          "exit_code": 0,
+          "stdout": "{\"status\": \"transported\", \"requested_claim\": \"transported\", \"claim_allowed\": true, \"source_files_verified\": 31, \"source_manifest_sha256\": \"0c6b8db56b116e34daf3e70d60f6c745e0a3156ce7422110a270909a243aa9e7\"}",
+          "acceptance": false
+        }
+      ],
+      "limits": "This real delivery-entrypoint probe tests acceptance enforcement; it does not establish fixed products or future generation quality."
+    },
+    "project_closeout_sha256": "e8d01cc54413ff3e4f00dd757c805db05259982ec89076a86bd73395d339b713"
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "f9d4f0b9293d146ef9c7782d935ea07a43899717dd24cacfb5cc461151ca5d04",
+          "after_sha256": "0341e0e745a9708c28cff2ec526d95c9a68ebbb4113cef9110ac3ddff4151fa4"
+        },
+        "skills/frontend-ui-engineering/references/coverage-schema.md": {
+          "before_sha256": "2c735809bdce54d2e0fb0ad3cae5cfd779a20f5c0fe614fba27a19020fa4ce4c",
+          "after_sha256": "c8273486505cf8680373832280b700a495222a2463300002473c23d9c30fd50b"
+        }
+      },
+      "change_kind": "add-or-change",
+      "baseline_sufficient": false,
+      "basis": "observed-deviation",
+      "deviation": "Full pre-review evidence remained incomplete while bounded repair receipts were used as delivery completion; reported ordinary navigation, cold-load and painted-quality failures recurred.",
+      "evidence": "Current 31-file baseline closeout rejects ready_for_taste and preserves transport; historical 39-case product evidence was incomplete; independent CLI scrutiny reproduced three acceptance bypasses.",
+      "why_instruction": "Existing checks were not consumed at export/closeout. The changed step selects and consumes the concrete delivery mechanism, including ordinary job discovery and source-bound scrutiny; more generic QA prose would not close that gap.",
+      "alternative": "Reuse existing coverage/measurement cases and validator rather than add a new orchestration framework, test generator, reviewer swarm or universal matrix."
+    }
+  ],
+  "limits": [
+    "Observed passing records do not prove pixel truth, complete job discovery or honest reviewer declarations.",
+    "No controlled future-generation quality, total-cost, defect-prevention rate or cross-host behavioral comparison.",
+    "Current maintained products remain FAILED pending source-bound whole-product checks and rendered review."
+  ],
+  "result": {
+    "passed": true
+  }
+}

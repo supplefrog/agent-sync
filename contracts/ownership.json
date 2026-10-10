@@ -91,9 +91,15 @@
         "evals/results/frontend-image-workflow-2026-10-09.json",
         "evals/results/frontend-case-clarifications-2026-10-09.json",
         "evals/results/frontend-representation-contract-2026-10-09.json",
-        "evals/results/frontend-reference-bound-review-2026-10-09.json"
+        "evals/results/frontend-reference-bound-review-2026-10-09.json",
+        "evals/results/frontend-delivery-consumer-2026-10-10.json"
       ],
-      "selection_reason": "Original admission preserved the byte-identical shared/Codex engineering baseline and MIT provenance. The source revision integrates bounded Anthropic, Impeccable, and Hallmark design-judgment findings without adding frontend owners; source and decision-probe evidence does not establish visual-quality, personal-taste, or cross-host behavioral superiority. Candidate deployment status is recorded in the follow-up receipt. The user approved the 5.0.0 image-led new-identity/major-redesign procedure after whole-page, reference-family and second-product trials; routine repairs reuse approved identity. Portable receipt records source checks and bounded evidence without claiming causal quality, cost or host parity."
+      "selection_reason": "Original admission preserved the byte-identical shared/Codex engineering baseline and MIT provenance. The source revision integrates bounded Anthropic, Impeccable, and Hallmark design-judgment findings without adding frontend owners; source and decision-probe evidence does not establish visual-quality, personal-taste, or cross-host behavioral superiority. Candidate deployment status is recorded in the follow-up receipt. The user approved the 5.0.0 image-led new-identity/major-redesign procedure after whole-page, reference-family and second-product trials; routine repairs reuse approved identity. Portable receipt records source checks and bounded evidence without claiming causal quality, cost or host parity.",
+      "purpose": {
+        "objective": "Deliver frontend experiences that fulfill the brief with coherent ordinary behavior and painted quality before human taste selection.",
+        "added_value": "Project-independent regression cases and source-bound delivery acceptance connect rendered findings to retained commitments, recovery and whole-product readiness. Native models and browser tools still supply discovery and judgment; comparative generation-quality benefit is unproven.",
+        "retirement_test": "Use the current model and native tools without this skill on comparable new builds and revisions. Retire the whole skill when that path preserves ordinary-path discovery, reference commitments, source-bound defect acceptance, transport and human review at acceptable total cost, with any necessary system integration owned elsewhere."
+      }
     },
     {
       "id": "surface-convergence",
