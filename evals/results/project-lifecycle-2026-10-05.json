@@ -128,7 +128,7 @@
     "native_changes": "Exact source packages removed from discovery with verified local recovery hashes; engineering-comms removed from marketplace and natively uninstalled; Agent Ops metadata narrowed to retained history skill.",
     "verification": {
       "source_absence": "passed",
-      "recovery_hashes": "passed",
+      "recovery_hashes": "Verified before the subsequent user-authorized purge; recovery copies are no longer retained.",
       "retained_history_package_unchanged": "passed",
       "engineering_plugin_uninstall": "passed",
       "agent_ops_refresh": "passed: user explicitly approved native remove/re-add; installed version 0.2.4+codex.20261010",
@@ -139,9 +139,16 @@
     "limits": [
       "Source/ownership audit only; no matched whole-agent benefit or cost comparison.",
       "Research corpus dependencies at old external paths are missing; preserved domain format/report semantics do not establish working validator support.",
-      "Recovery retains exact removed text outside live discovery; no existing run, save, trace, session or credential was removed."
+      "User subsequently requested no recovery copies. All 16 task-local source/metadata backup files were permanently deleted and directory absence verified. Historical hashes and behavior evidence remain; unrelated recovery packages, existing runs and credentials were untouched."
     ],
-    "approval_limit": "Initial automatic-review refusals preserved as attempted outcomes; user subsequently explicitly authorized the exact Agent Ops lifecycle refresh."
+    "approval_limit": "Initial automatic-review refusals preserved as attempted outcomes; user subsequently explicitly authorized the exact Agent Ops lifecycle refresh.",
+    "recovery_purge": {
+      "authorization": "User explicitly requested no recovery copies in the follow-up.",
+      "state": "complete",
+      "task_backup_files_deleted": 16,
+      "directory_absence_verified": true,
+      "rollback": "No task-local restoration copies retained; this purge is irreversible."
+    }
   },
   "instruction_changes": [
     {
