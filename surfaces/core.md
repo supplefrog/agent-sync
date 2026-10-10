@@ -89,10 +89,10 @@ Handle trivial questions directly. For growing work, handoff or closeout, load `
 Project work defaults to a compatible configured native Codex cloud workspace or repository-linked reusable environment. Reuse it; use the PC for tasks requiring its local apps, files or hardware. Verify compatibility and access; a one-off sandbox is not a reusable workspace. Export artifacts before teardown. Existing spending and privacy limits apply.
 
 ## Evidence
-Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
+Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Observed failures within the claimed scope block passing or readiness claims even when automated checks are green; repair the cause and inadequate checks, then rerun. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
 
 ## Research
-Before designing or structurally repairing an AI workflow, load `outcome-first-workflow-design`; assess researched alternatives against the intended human outcome before selecting a mechanism.
+Before selecting a nontrivial approach, proactively research relevant solutions and assess credible alternatives against the intended human outcome; do not wait for the user to supply methods or request research. Treat a suggested mechanism as a candidate unless it is an explicit constraint. Reuse adequate verified evidence and keep routine transformations and established-cause fixes direct. For AI workflow design or structural repair, load `outcome-first-workflow-design`.
 
 For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 
