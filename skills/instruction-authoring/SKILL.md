@@ -1,7 +1,7 @@
 ---
 name: instruction-authoring
 description: Use when saving behavioral preferences, authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns placement, skill improvements, triggers and proportional verification.
-version: 2.0.3
+version: 2.0.4
 author: Hermes Agent
 license: MIT
 metadata:
@@ -32,7 +32,7 @@ When creating or materially revisiting a managed skill, preserve its `purpose` i
 
 ## Improve skills during collaborative work
 
-When the work establishes a reusable procedure, verified correction or explicit task-type preference, update its existing canonical skill during the work. At substantial completion, check for a supported reusable correction; if none exists, preserve the handoff without loading more authoring guidance or adding a rule. Preserve task data and incident evidence locally.
+A reusable procedure or completed task alone does not justify an instruction. Identify a deviation from the author's intended outcome, then inspect the existing model behavior, instructions, tools and runtime for its cause. If the baseline already meets the outcome, make no instruction change. For a supported correction or explicit preference, repair the cause at its existing owner; tool or runtime failures belong there. Preserve task data and incident evidence locally.
 
 Keep substantial-task status, decisive reasons, evidence and next safe action in the existing project record, using `breadcrumb-records` when no equivalent record exists. Follow the host's memory authorization; a learning checkpoint does not authorize a memory write.
 
@@ -57,7 +57,7 @@ Apply the standing model preference to instruction writing according to the diff
 
 When writing durable instructions:
 
-1. Keep a sentence when it adds a useful decision rule, user preference, or necessary boundary beyond what the task and native instructions already provide. Remove generic reminders and duplication. Ground the difference in the user's intent or observed evidence; test uncertain benefit rather than assuming an instruction helps.
+1. Treat instructions as code within the system's architecture: one concern per owner, compatible dependencies and loading, the author's behavioral direction, and evidence-bound acceptance. Add a rule only to address a specified deviation the base model or existing system does not already handle. Prefer correcting an existing tool, runtime or rule over adding prose. Reuse sufficient causal evidence; compare model behavior only when the uncertainty could change the decision.
 2. State desired and undesired outcomes and contraindications directly. Preserve material exclusions while removing correction history, repetition, and incidental contrasts. Do not invent constraints or contraindications. Keep detail, examples, and rationale only when they change a decision or boundary.
 3. Keep each procedure in one owner. Retain short, frequently needed rules inline when that avoids a larger skill load; defer substantial conditional detail. Judge economy by actually loaded context and induced tool work, not repository word count.
 4. Preserve user intent, scope, safety, governance, authorization boundaries, and capability; approval for one task does not authorize adjacent external action; brevity never overrides these. For a requested replacement, generic preservation rules do not protect the selected old model, vendor role, or historical configuration. Use the current user decision as the target, retain the capability and truthful execution provenance, and update superseded instructions at their owner.
@@ -92,9 +92,9 @@ For OpenAI model-specific prompt changes, use the installed OpenAI Docs procedur
 
 1. Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome.
 2. State the target behavior and near-miss behavior that must remain unchanged. Check missing or overly broad triggers and unnecessary skill or tool invocation.
-3. Draft the minimum coherent change using the correct modality. Condense duplicate advice, stale rules, excessive steering, and unnecessary fields while preserving material exceptions, side effects, error behavior, and execution boundaries. Before a removal, name the candidate, reason, dependencies, and possible capability loss; for a skill fold or retirement, record the compact [behavior preservation map](references/useful-behaviors.md). Check callers and compatibility before removing schema or API fields.
+3. Compare no instruction change, a repair to the existing tool/runtime, and an owner-level instruction correction. Choose the minimum coherent change using the correct modality. Condense duplicate advice, stale rules, excessive steering, and unnecessary fields while preserving material exceptions, side effects, error behavior, and execution boundaries. Before a removal, name the candidate, reason, dependencies, and possible capability loss; for a skill fold or retirement, record the compact [behavior preservation map](references/useful-behaviors.md). Check callers and compatibility before removing schema or API fields.
 4. Edit the canonical source; keep candidates outside live discovery until their checks pass. Shared standing rules belong in `surfaces/core.md`; native formatting and host-only differences belong in `adapters/`. Run `tools/run.py render_instructions render`, then `check`; never patch generated `AGENTS.md` or `SOUL.md`. Use `skill_manage` only when it targets source or performs authorized deployment.
-5. Verify metadata/frontmatter, linked-file existence, and fresh skill discovery.
+5. Verify metadata/frontmatter, linked-file existence, and fresh skill discovery. For managed instruction publication, bind the deviation, baseline assessment, architectural owner and reason for prose to the changed bytes in an existing `evals/results` receipt; `reconcile plan --ready` and publication `sync` check this record. See [authoring review](references/change-review.md). A receipt records the reasoning; it does not prove model benefit or human approval.
 6. Run proportional behavior probes:
    - trigger change => realistic positive and near-miss prompts;
    - corrected failure => replay it plus one nearby valid case;

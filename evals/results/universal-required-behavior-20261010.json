@@ -721,5 +721,10 @@
     "increase_each_relative_to_upstream": 222
   },
   "status": "checked-with-explicit-behavior-limits",
-  "suite": "universal-required-behavior-20261010"
+  "suite": "universal-required-behavior-20261010",
+  "later_user_clarification": {
+    "date": "2026-10-10",
+    "instruction": "Judge outcomes; preserve necessary reads",
+    "effect": "Blanket skill-read acceptance is superseded. Original runs, failures and scores remain historical under their recorded criteria; they do not test the clarified policy."
+  }
 }

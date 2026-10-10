@@ -422,6 +422,47 @@
         "Known mechanism failures are directly checked; uncertain behavioral effects use scoped matched comparison.",
         "Publication and installed-content receipts remain distinct from actual behavior and human acceptance."
       ]
+    },
+    {
+      "id": "outcome-and-instruction-necessity",
+      "scope": "system",
+      "authority": {
+        "status": "user-confirmed",
+        "reference": "User in Codex chat 01a12321-7697-7573-b3ad-599fb2aad366, 2026-10-10: Judge outcomes; preserve necessary reads. Rules address deviations; all instructions are architectural code and the author directs behavior."
+      },
+      "owners": [
+        "surfaces/core.md",
+        "skills/instruction-authoring",
+        "tools/reconcile.py",
+        "tools/worktree_sync.py",
+        "tools/instruction_changes.py"
+      ],
+      "hosts": [
+        "codex",
+        "hermes"
+      ],
+      "trigger": "Perform a task or change agent skills, standing instructions or other persistent behavior surfaces.",
+      "desired_outcomes": [
+        "Judge completion by the author's required outcome and constraints; preserve necessary protocol, explicit skill-request and missing-knowledge reads before governed action.",
+        "Use rules for specified deviations the base model or existing system does not already handle.",
+        "Treat instructions as architectural code: correct owner, coherent dependencies, compatibility with the author's direction, and evidence-bound acceptance.",
+        "Prefer an adequate existing tool/runtime repair over prose; no instruction edit is a valid outcome."
+      ],
+      "undesired_outcomes": [
+        "Failing useful correct output solely for unread optional advice.",
+        "Writing rules in arbitrary files to demonstrate a fix.",
+        "Treating another sentence or a complete evidence form as an enforced fix or demonstrated quality gain."
+      ],
+      "contraindications": [
+        "Outcome-first acceptance cannot omit necessary protocols or authorized constraints."
+      ],
+      "acceptable_native_differences": [
+        "Native tools and instruction assembly may differ; maintain the required outcome and safeguards. OMP work is deferred."
+      ],
+      "checks": [
+        "The reconciler rejects unbound instruction publication, wrong owners and new/rewritten rules with a sufficient or unassessed baseline; bound pure deletions remain possible.",
+        "Direct mechanism checks and reused evidence precede costly comparison; semantic value and author approval are not inferred from metadata."
+      ]
     }
   ]
 }

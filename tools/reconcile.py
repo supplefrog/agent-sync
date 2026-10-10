@@ -1240,7 +1240,8 @@ def _scope_dependencies(repo, machine, names, capture=False, recovery_artifacts=
         "destination": fleet.load_fleet(repo)["machines"].get(machine) if names else None,
         "snapshot_root": fleet.load_fleet(repo)["snapshot_root"] if names else None,
     }
-    paths = ["tools/reconcile.py", "tools/fleet.py", "tools/sync_git.py",
+    paths = ["tools/reconcile.py", "tools/fleet.py", "tools/sync_git.py", "tools/instruction_changes.py",
+             "contracts/instruction-surfaces.json",
              "tools/public_check.py"]
     paths.extend(["tools/render_instructions.py", "surfaces/core.md",
                   "adapters/codex.json", "adapters/hermes.json", "adapters/schema.json"])
@@ -1544,6 +1545,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 files["host-deltas.json"] = hashlib.sha256(overrides["host-deltas.json"]).hexdigest()
             with sync_git.prepare_candidate(repo, files, base=base_commit, overrides=overrides) as (candidate, candidate_tree):
                 check_dependencies(candidate)
+                import instruction_changes
+                instruction_changes.check(candidate, repo, base_commit, files)
                 _prepare_candidate_bindings(candidate, names, artifacts, files)
                 sync_git.assert_publishable(candidate, files)
                 if (candidate / "registry.json").is_file():
@@ -1697,6 +1700,8 @@ def complete_sync(
             evidence_paths = [f"evals/results/{name}-local-windows.json" for name in
                               ("fleet-discovery", "unified-reconciliation")]
             def publish_broad(state):
+                import instruction_changes
+                instruction_changes.check(repo, repo, state["base"], state["files"])
                 report = sync_git.publish(repo, state, verify=verify, readback=readback)
                 if not capture:
                     report["deferred_evidence"] = [name for name in evidence_paths if (repo / name).is_file()]
@@ -1750,6 +1755,26 @@ def complete_sync(
                         "files": sorted(before - selected)}
             approved = sync_git.identities(repo, selected)
             sync_git.assert_publishable(repo, selected)
+            import instruction_changes
+            proposed_paths = set(selected)
+            proposed_overrides = {}
+            for name in names:
+                state = states[name]
+                if not state.get("origin"):
+                    continue
+                desired = state["origin"][1] / name
+                desired_paths = {f"skills/{name}/{path}" for path in fleet.directory_record(desired)["files"]}
+                tracked = set(sync_git.git(repo, "ls-files", "-z", "--", f"skills/{name}/").split("\0")) - {""}
+                for path in desired_paths | tracked:
+                    relative = Path(path).relative_to(Path("skills") / name)
+                    desired_file = desired / relative
+                    proposed_paths.add(path)
+                    proposed_overrides[path] = desired_file.read_bytes() if desired_file.is_file() else None
+            proposed_files = sync_git.identities(repo, proposed_paths)
+            for path, data in proposed_overrides.items():
+                proposed_files[path] = hashlib.sha256(data).hexdigest() if data is not None else "deleted"
+            with sync_git.prepare_candidate(repo, proposed_files, overrides=proposed_overrides) as (candidate, _):
+                instruction_changes.check(candidate, repo, "HEAD", proposed_paths)
             _run_checks(repo, [*commands[:-1], [*commands[-1], "--artifact-only"],
                                [sys.executable, str(repo / "tools/audit.py"), "check", "--structural"]])
             if (_agent_identities(destinations) != agents_before
@@ -1779,6 +1804,7 @@ def complete_sync(
                 selected.update(audit.refresh_current_evidence(repo))
             if sync_git.changed(repo) - selected:
                 raise sync_git.SyncBlocked("unreviewed changes appeared during reconciliation")
+            instruction_changes.check(repo, repo, "HEAD", selected)
             pending = {"schema_version": 1, "machine": machine,
                        "destinations": [str(p) for _, p in destinations], "capture_recovery": capture,
                        "recovery_roots": resolved_roots, "agent_identities": checked_agents,

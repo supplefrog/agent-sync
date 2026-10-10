@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "owner_capability": "instruction-authoring",
+  "suite": "instruction-necessity",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "deviation": "Blanket optional-owner loading and reusable-procedure promotion can override outcome acceptance and the need for a rule.",
+      "evidence": "Explicit user corrections in Codex chat 01a12321-7697-7573-b3ad-599fb2aad366 on 2026-10-10; original source and historical receipts retained.",
+      "baseline_sufficient": false,
+      "why_instruction": "The conflicting policies live at these existing source owners. Enforcement is implemented in the existing reconciliation tool; prose alone is not the fix.",
+      "alternative": "No change leaves the selected policy conflict. Another universal warning duplicates existing advice. Reconciliation checks can enforce binding and placement but cannot decide semantic taste.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "5033566e388962eae5aa6d2261347298b0e90e28221b3080474ef9ff3215487a",
+          "after_sha256": "a1862b34a7a528a9add515776e08251a8a1eece37a24b9a996d674c4cc311070"
+        }
+      }
+    },
+    {
+      "owner": "skills/instruction-authoring",
+      "basis": "user-correction",
+      "deviation": "Blanket optional-owner loading and reusable-procedure promotion can override outcome acceptance and the need for a rule.",
+      "evidence": "Explicit user corrections in Codex chat 01a12321-7697-7573-b3ad-599fb2aad366 on 2026-10-10; original source and historical receipts retained.",
+      "baseline_sufficient": false,
+      "why_instruction": "The conflicting policies live at these existing source owners. Enforcement is implemented in the existing reconciliation tool; prose alone is not the fix.",
+      "alternative": "No change leaves the selected policy conflict. Another universal warning duplicates existing advice. Reconciliation checks can enforce binding and placement but cannot decide semantic taste.",
+      "artifacts": {
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "be647b9e307807ac3e24d398509849495ef4fc45f9d678081b22fb4d87ec1712",
+          "after_sha256": "e242cd4d0b05ae749dff650677dd7812bca2d9e8acc05a61eaba10d522a53c21"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "c148af47bf1062e0238e2a06d6da109e84b654057ec5b7dc055066546ed1a3ff",
+          "after_sha256": "25beae96aad7592f7fc610fee2adc3c5a6ff746896b0f86359c155a28bac12b8"
+        }
+      }
+    }
+  ],
+  "checks": [
+    "Original ready-plan regression accepted an unjustified standing rule; corrected publication rejects it before mutation.",
+    "Eight instruction-gate cases exercise ready, scoped, broad, live-origin, generated-source, malformed/stale/wrong-owner records and sufficient-base deletion.",
+    "Three nearby existing deployment, retry and unrelated-work preservation tests pass.",
+    "Original scores retained with a supersession note; no policy-clarification rescore.",
+    "Generated overlay, recovery, source-profile and exact selected publication checks are recorded separately."
+  ],
+  "limits": [
+    "Record checks do not prove model benefit or authenticate approval.",
+    "No new provider inference; no current host behavioral parity claim.",
+    "Controller governs Agent Sync publication, not arbitrary host file writes."
+  ],
+  "root_cause": [
+    "The authoring owner discouraged duplication but promoted reusable procedures before checking whether the model/system needed the rule.",
+    "The prior universal scope rule made every applicable owner read an acceptance condition rather than separating necessary protocols from optional methods.",
+    "Ready and broad/scoped publication validated ownership/readback but had no bound instruction-necessity check; fresh review reproduced a broad live/remote bypass."
+  ],
+  "review": {
+    "finding": "P1 broad sync bypass reproduced by fresh reviewer; root added pre-adoption projection and broad/retry gate checks.",
+    "acceptance": "Direct production-fixture regressions verify the repaired paths; reviewer verdict itself is not promotion authority."
+  },
+  "result": {
+    "passed": true,
+    "claim": "Explicit author-policy alignment and deterministic managed-publication gates; no model-quality or behavioral-parity claim."
+  }
+}

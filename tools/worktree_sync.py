@@ -105,6 +105,8 @@ def _qualify(repo, ready, options):
                 if reconcile._binding_policy(before, selected, project_derived=True) != reconcile._binding_policy(after, selected, project_derived=True):
                     raise sync_git.SyncBlocked('ready metadata policy requires explicit host-deltas.json review')
         selected_paths = sorted(paths - ({'host-deltas.json'} if omit_metadata else set()))
+        import instruction_changes
+        instruction_changes.check(candidate, repo, base, selected_paths)
         sync_git.assert_publishable(candidate, paths)
         reconcile._prepare_candidate_bindings(candidate, owners, None, selected_paths)
         if (candidate / 'registry.json').is_file():

@@ -18,6 +18,14 @@ python tools/reconcile.py plan --target skills/NAME/SKILL.md --baseline SAVED/NA
 
 Both entrypoints call the same function. The review uses the existing intake classifier, registry and instruction-surface ownership. It reports description/body size and a token-based overlap shortlist. The shortlist is not proof of semantic overlap; compare each owner's unique procedures and native strengths before consolidation or retirement. No length threshold alone establishes poor quality.
 
+## Publication necessity record
+
+Managed instruction publication uses the existing `evals/results` change evidence, not a new review service. In one selected receipt, add `instruction_changes`: records with `owner`, `basis` (`user-correction`, `observed-deviation` or `mechanical-maintenance`), `deviation`, `evidence`, `baseline_sufficient`, `why_instruction`, `alternative`, and `artifacts`. Each artifact maps its canonical path to exact `before_sha256` and `after_sha256`; absent files use `absent`.
+
+The deviation comes from the author's required outcome. Assess the current model and system before assuming prose is needed; include no change and the existing tool/runtime as alternatives. If the baseline is sufficient, add no rule. A checked pure deletion may use `change_kind: remove` with that assessment; the tool rejects added or rewritten content disguised as removal. Other records default to `add-or-change`. A mechanical repair can use directly verified evidence; no model comparison is required by this record. Correct source ownership, complete reasoning and exact bindings are checked before publication. The tool does not judge taste, authenticate human approval or turn a filled record into quality evidence.
+
+Generated standing overlays inherit their selected core/adapter correction and still pass the renderer/profile checks. Source instructions need their own bound record; naming a file in `--include` does not supply it. Necessary operational protocols and explicit author corrections remain supported. Optional drafting review and inference remain optional.
+
 ## Existing/native procedure references
 
 Use repeated `--reference-skill PATH` to inspect an existing/native skill alongside the proposal. See [useful-behavior review](useful-behaviors.md). The same source inventory and judgment questions are available before editing and with `plan --target`; source names or website links alone do not establish preservation of the source workflow.
