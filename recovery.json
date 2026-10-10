@@ -34,6 +34,11 @@
           "format": "text",
           "id": "global-instructions",
           "kind": "text",
+          "replace_sha256": [
+            "2ceb3bf61abdd305fc7708ae3ae77b13dbe45d477caac6d098dd4901a4a73d52",
+            "399ead0326f0d1f456652097843ab9a8813e824380b49704d3623974b679822e",
+            "6c4bfd40daf8efc6bbc95e67fc182d4870f938b8e203f4e2fd2907a8003a95b9"
+          ],
           "snapshot": "hosts/codex/AGENTS.md",
           "source": "AGENTS.md",
           "strategy": "replace-if-absent"
@@ -330,6 +335,11 @@
           "format": "text",
           "id": "standing-instructions",
           "kind": "text",
+          "replace_sha256": [
+            "39fafbdfdc9bd3136f80ee2279421657d4b47f5c2afd3930a9be78aa69e01f70",
+            "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e",
+            "f88771c048eaf8d96521ba07aa19bc3b6e1616006e34ef199c45b9cd401497e5"
+          ],
           "snapshot": "hosts/hermes/SOUL.md",
           "source": "SOUL.md",
           "strategy": "replace-if-absent"
@@ -5421,6 +5431,10 @@
           "id": "native-57f6dbe61cb2c76fbde2",
           "kind": "text",
           "portable_paths": true,
+          "replace_sha256": [
+            "0cdaa6830b1049d7ef65d1f08b922854eebc6d13d7e142582b9237effc01d46c",
+            "62e8c64be9c83144141a90c2ec52a17a4f34d7a84f35760e369443784d7b4592"
+          ],
           "snapshot": "hosts/hermes/skills/github/github-collaboration-workflows/references/github-issues/SKILL.md",
           "source": "skills/github/github-collaboration-workflows/references/github-issues/SKILL.md",
           "strategy": "replace-if-absent"

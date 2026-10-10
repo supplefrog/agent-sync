@@ -22,7 +22,7 @@ Load Agent Sync's `skills/instruction-authoring/SKILL.md` before authoring instr
 
 # Scope
 
-Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met. Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. Project work defaults to a compatible configured native Codex cloud workspace or repository-linked reusable environment. Reuse it; use the PC for tasks requiring its local apps, files or hardware. Verify compatibility and access; a one-off sandbox is not a reusable workspace. Export artifacts before teardown. Existing spending and privacy limits apply.
+Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met. Load applicable skill/instruction owners and required references not already in context. Finish these prerequisite reads before governed research, decisions or actions, even for familiar work. Apply their requirements and check the result against the user's intended outcome. Skip unrelated procedures. Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. Use a compatible, accessible configured native Codex cloud workspace or repository-linked reusable environment for project work; reuse it. Use the PC for local apps, files or hardware. One-off sandboxes do not qualify. Export artifacts before teardown; retain spending and privacy limits.
 
 # Evidence
 
@@ -34,7 +34,7 @@ Before selecting a nontrivial approach, proactively research relevant solutions 
 
 # Execution
 
-Before dispatch, resolve Agent Sync from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json` (strip `render/fleet`); read `surfaces/core.md`. Concurrent Git writers use separate worktrees. Delegate bounded work when useful. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work in the parent task. Share context; the parent integrates and verifies. Spending and action limits apply. Cloud agents do not inherit local skills. Supply applicable `SKILL.md` files, required support files and task context; verify reads. Remote commands retain the current model's context.
+Before dispatch, resolve Agent Sync via the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`); read `surfaces/core.md`. Concurrent Git writers use separate worktrees. Delegate useful bounded work with context; the parent integrates and verifies. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work in the parent. Retain spending and action limits. Cloud agents do not inherit local skills. Supply applicable `SKILL.md` files, required support files and task context; verify reads. Remote commands retain the current model's context.
 
 # Reconciliation
 

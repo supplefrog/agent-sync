@@ -104,7 +104,7 @@
       "status": "admitted",
       "license": "MIT",
       "source": "original",
-      "eval": "evals/results/github-follow-up-deterministic.json"
+      "eval": "evals/results/universal-required-behavior-20261010.json"
     },
     {
       "name": "global-learning-intake",

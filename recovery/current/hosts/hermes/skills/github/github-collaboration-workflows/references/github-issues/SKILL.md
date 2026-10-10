@@ -1,7 +1,7 @@
 ---
 name: github-issues
 description: Create, search, triage, edit, comment on, transfer, close, or reopen a GitHub issue with duplicate checks, repository ownership validation, source-backed evidence, maintainer-grade writing, and live readback. Use github-follow-up for recurring or multi-thread sweeps; use github-pr-workflow when implementation and a PR are also required.
-version: 2.0.0
+version: 2.0.1
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -54,7 +54,7 @@ Check existing settings, documented workarounds, and controllable local causes t
 
 ## 3. Search for duplicates and overlap
 
-Search open and closed issues with several terms drawn from symptom, component, error text, source path, and expected behavior:
+Before creating or recommending a new issue, search open and closed issues with several terms drawn from symptom, component, error text, source path, and expected behavior. For an edit or comment on a known issue, read that thread and relevant linked discussion; do not restart creation searches unless proposing a separate issue or resolving an overlap question.
 
 ```bash
 gh issue list --repo OWNER/REPO --state all --search "<terms>" --limit 50
@@ -72,6 +72,7 @@ Do not use `-F` without `--method GET` for reads; it can accidentally issue POST
 
 Treat a hit as duplicate only when it describes the same user-visible failure and expected fix. For a close match:
 
+- return an exact matching issue's verified link without posting when there is no substantive new evidence;
 - comment with genuinely new evidence;
 - cross-link a distinct narrow issue and state the boundary;
 - avoid creating a parallel issue merely to improve wording.
@@ -111,11 +112,11 @@ Use only sections that add evidence:
 ...
 ```
 
-For feature/extension requests, replace reproduction with motivation, current limitation, acceptance criteria/proposed surface, and alternatives tried.
+For feature/extension requests, state the requested behavior, motivation and verified current limitation. Include acceptance criteria or a proposed interface only when requested or needed to express the outcome; leave implementation choices open when the evidence does not establish them. Do not expand the user's platform, device or feature scope. Include alternatives only when actually investigated and relevant.
 
 Write for maintainers:
 
-- `humanizer` is the sole owner of prose and information order; this skill owns evidence, issue scope, required fields, and publication. Draft in the final voice from the first sentence rather than adding a local style checklist or post-hoc cleanup pass.
+- Load `humanizer` before drafting an issue body, edit or comment; it owns prose and information order. This skill owns evidence, issue scope, required fields, and publication. Draft in the final voice from the first sentence rather than adding a local style checklist or post-hoc cleanup pass.
 - concise component-scoped title;
 - no “I searched issues” narration, apology, or agent process history;
 - no credentials, private transcript text, or raw local personal data;
@@ -154,7 +155,7 @@ For bulk operations, list/review exact targets first. Do not pipe broad searches
 
 ## 7. Learn from corrections
 
-When the user corrects how an issue was researched, scoped, filed, or repaired, update this skill or its owning reference rather than storing the correction as user memory. Use memory only when the correction expresses a genuinely user-specific preference; reusable agent behavior and workflow rules belong in the task skill.
+When the user corrects how an issue was researched, scoped, filed, or repaired, update this skill or its owning reference rather than storing the correction as user memory. Use memory only when the correction expresses a genuinely user-specific preference. Reusable issue-workflow rules belong in this skill or its owning reference; cross-task requirements belong at their canonical shared owner.
 
 ## 8. Specialized reference routing
 

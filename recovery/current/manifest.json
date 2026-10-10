@@ -33,14 +33,19 @@
       "strategy": "merge"
     },
     {
-      "bytes": 3855,
+      "bytes": 4077,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "399ead0326f0d1f456652097843ab9a8813e824380b49704d3623974b679822e",
+      "replace_sha256": [
+        "2ceb3bf61abdd305fc7708ae3ae77b13dbe45d477caac6d098dd4901a4a73d52",
+        "399ead0326f0d1f456652097843ab9a8813e824380b49704d3623974b679822e",
+        "6c4bfd40daf8efc6bbc95e67fc182d4870f938b8e203f4e2fd2907a8003a95b9"
+      ],
+      "sha256": "b6450b48baae1f54ec301965f8aa762ed4a539c4a792cf2370aab75f720a9b64",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -295,14 +300,19 @@
       "strategy": "merge"
     },
     {
-      "bytes": 4366,
+      "bytes": 4588,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "f88771c048eaf8d96521ba07aa19bc3b6e1616006e34ef199c45b9cd401497e5",
+      "replace_sha256": [
+        "39fafbdfdc9bd3136f80ee2279421657d4b47f5c2afd3930a9be78aa69e01f70",
+        "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e",
+        "f88771c048eaf8d96521ba07aa19bc3b6e1616006e34ef199c45b9cd401497e5"
+      ],
+      "sha256": "0de652a84e2d6c29c4a5af090e5d685f7244198f293f2dc534598bc6136e447a",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -7458,14 +7468,18 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 8136,
+      "bytes": 8855,
       "format": "text",
       "host": "hermes",
       "id": "native-57f6dbe61cb2c76fbde2",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "0cdaa6830b1049d7ef65d1f08b922854eebc6d13d7e142582b9237effc01d46c",
+      "replace_sha256": [
+        "0cdaa6830b1049d7ef65d1f08b922854eebc6d13d7e142582b9237effc01d46c",
+        "62e8c64be9c83144141a90c2ec52a17a4f34d7a84f35760e369443784d7b4592"
+      ],
+      "sha256": "62e8c64be9c83144141a90c2ec52a17a4f34d7a84f35760e369443784d7b4592",
       "snapshot": "hosts/hermes/skills/github/github-collaboration-workflows/references/github-issues/SKILL.md",
       "source": "skills/github/github-collaboration-workflows/references/github-issues/SKILL.md",
       "strategy": "replace-if-absent"
@@ -13526,7 +13540,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "14bac037f33c0a3cec1075d4447029218b862b28f99767b57eab8b35ea814ff7",
+  "policy_sha256": "60318e2a8ee131abf5289f39a2cfe3387270895f5fa885572195e6fb065d4a7c",
   "public_safe": true,
   "schema_version": 1
 }

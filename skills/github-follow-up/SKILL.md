@@ -1,7 +1,7 @@
 ---
 name: github-follow-up
-description: "Periodically or on demand follow up GitHub issues and the authenticated user's own pull requests: discover changed threads, reconstruct comments/reviews/checks, make verified issue/PR/code fixes, close the public loop, and report only actions or blockers. Use for portfolio sweeps and scheduled maintenance. Use github-issues for one issue, github-pr-workflow for one known own PR, and github-code-review for reviewing someone else's PR."
-version: 1.1.2
+description: "Use for GitHub issue drafts, creation, edits and comments, including feature requests and corrections, and for recurring or multi-thread issue/own-PR follow-up. Focused issue work loads the existing issue procedure through references/focused-issues.md; portfolio sweeps reconstruct changed threads and remediate verified requests. A GitHub link in unrelated work does not trigger this workflow."
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -15,7 +15,11 @@ metadata:
 
 Discovery and remediation are different jobs. GitHub notifications are hints; the live issue/PR, review threads, checks, linked requirements, and current code are the source of truth. Treat GitHub outcomes as evidence for engineering quality, not as a target to maximize PR activity or merge count.
 
-This skill owns repeated or multi-thread follow-up. It routes focused work to the existing owners instead of duplicating their procedures.
+This shared entrypoint routes focused issue work to the native issue owner and owns repeated or multi-thread follow-up.
+
+## Focused issue work
+
+For one issue, a new report, feature request, issue draft, edit or comment, read [focused-issues.md](references/focused-issues.md) and resolve/read its full issue procedure before repository or issue research, decisions or drafting. Draft-only work keeps publication disabled. Stop at that requested artifact; the portfolio procedure below does not apply. For a known own PR use `github-pr-workflow`; independent review uses `github-code-review`.
 
 ## Modes
 
@@ -90,7 +94,7 @@ For a workflow-learning classification or a plausible merged replacement, read [
 
 ## Public participation
 
-Act as the user's contributor, not a triage bot. Post when there is something worth saying: a direct answer, useful evidence, a correction, or a decision the user actually holds. Do not invent firsthand experience, opinions, or commitments. Load `humanizer` for requested voice matching, explicit humanization, or channel-specific prose choices that need its guidance; routine replies use the standing language rules. This workflow decides whether to publish at all.
+Act as the user's contributor, not a triage bot. Post when there is something worth saying: a direct answer, useful evidence, a correction, or a decision the user actually holds. Do not invent firsthand experience, opinions, or commitments. Load `humanizer` before drafting public issue/PR text or comments. This workflow decides whether to publish at all.
 
 Read the discussion, including the user's previous comments, before posting. Routine base refreshes, passing CI, and unchanged status belong in the private report. Silence is a valid outcome; do not generate activity to demonstrate work or chase merges.
 

@@ -1,0 +1,725 @@
+{
+  "alternatives": {
+    "all_domain_policy_in_standing": "Duplicates ownership and increases context/drift.",
+    "promote_github_leaf_or_umbrella": "Additional admission/migration without demonstrated capability gain.",
+    "unchanged": "Retains timing/discovery gaps.",
+    "universal_router_or_hook": "No common supported pre-decision seam; adds infrastructure."
+  },
+  "artifacts": {
+    "recovery/current/hosts/codex/AGENTS.md": "b6450b48baae1f54ec301965f8aa762ed4a539c4a792cf2370aab75f720a9b64",
+    "recovery/current/hosts/hermes/SOUL.md": "0de652a84e2d6c29c4a5af090e5d685f7244198f293f2dc534598bc6136e447a",
+    "recovery/current/hosts/hermes/skills/github/github-collaboration-workflows/references/github-issues/SKILL.md": "62e8c64be9c83144141a90c2ec52a17a4f34d7a84f35760e369443784d7b4592",
+    "skills/github-follow-up/SKILL.md": "75c425a3d1d690cd69916a929cfe22e17cf5c8a4429b6c30795dd34dd6f19d6b",
+    "skills/github-follow-up/references/focused-issues.md": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b",
+    "surfaces/core.md": "5033566e388962eae5aa6d2261347298b0e90e28221b3080474ef9ff3215487a"
+  },
+  "baseline": "fa58cd8726521f575c5a0ca6a98014ba4354da07",
+  "candidate_deltas_after_codex_trials": {
+    "native_leaf": "Section 7 now assigns issue-specific corrections to the issue owner and cross-task requirements to the canonical shared owner; this ownership-routing correction was not exercised by the issue-action probes.",
+    "shared_skill": "Three damaged em dashes restored; no procedural change."
+  },
+  "checks": {
+    "artifact_profile": "pass",
+    "deployment": "native instruction files installed; shared skill publication pending",
+    "generated_overlays": "pass",
+    "native_behavior": "Codex V2 four cases observed pass; Hermes candidate awaiting explicit provider-transfer approval",
+    "native_capture_postflight": "pass: final merged three actual native files, no changes or conflicts",
+    "remote_publication": "Verified separately by the canonical reconciliation receipt; publication is not inferred from this source report.",
+    "structural_audit": "pass"
+  },
+  "limits": [
+    "Original dead-thread skill/search trace was not available.",
+    "Transport/tool readiness failures are inconclusive, not behavior evidence.",
+    "Standing wording and file identity do not guarantee universal compliance.",
+    "OMP is explicitly deferred; no parity claim."
+  ],
+  "native_behavior": {
+    "automatic_review_rejection": "Rejected Hermes native candidate probe because local managed instruction/skill content and fixture data would be sent to configured model provider without sufficiently explicit authorization. No bypass or alternative inference attempted.",
+    "bound_helper_sha256": "de29f278632d6a80902a30c29c9989ca145a7ceebfaf811f132f44794fa42814",
+    "candidate_before_upstream_merge_sha256": {
+      "codex_overlay": "2ceb3bf61abdd305fc7708ae3ae77b13dbe45d477caac6d098dd4901a4a73d52",
+      "core": "04be9c34c610e7a08c9a852fd025cc68adf9daae60708d76d2ef5e68fe5510c4",
+      "focused_reference": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b",
+      "hermes_overlay": "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e",
+      "native_issue_leaf": "62e8c64be9c83144141a90c2ec52a17a4f34d7a84f35760e369443784d7b4592",
+      "shared_owner": "75c425a3d1d690cd69916a929cfe22e17cf5c8a4429b6c30795dd34dd6f19d6b"
+    },
+    "cases": [
+      {
+        "case": "creation",
+        "catalog_count": 38,
+        "catalog_manifest_sha256": "f908c13e3464bf0675998b8f51019b1ec014e81cefbc9415ded2aa22a6e03d79",
+        "context": "Fresh isolated native session; complete matched CLI/native catalogs; no injected skill bodies; native standing overlay; memory/background/external connectors omitted equivalently.",
+        "ephemeral_runtime_removed": true,
+        "host": "codex",
+        "id": "codex-baseline-creation-retry1",
+        "managed_catalog_file_sha256": {
+          "focused_reference": null,
+          "native_issue_leaf": "e4a1c5add7a9d46114075be195173efd9bb29ec10fbad4f02426066d1975d423",
+          "shared_owner": "459eba9cc407b26059e8b7625155d08aa2d2689972b9fcac9a75c29b6f20b977"
+        },
+        "metrics": {
+          "api_calls": null,
+          "controller_wall_seconds": 82.34400000004098,
+          "dollar_cost": "subscription cost unavailable",
+          "native_wall_seconds": 42.46900000004098,
+          "tokens": {
+            "cached_input": 64128,
+            "input": 85990,
+            "output": 1062,
+            "source": "native-turn-completed-usage"
+          },
+          "tool_calls": 8
+        },
+        "ordering_and_behavior": "No GitHub domain owner read; humanizer and breadcrumb read before drafts. Exact duplicate linked; new LAN draft and concrete renderer caveat.",
+        "output": "1. **HDR output:** Use existing open issue [#41 — Support HDR rendering on Android displays](https://github.com/probe-lab/racing-android/issues/41). It covers the request, including SDR-only output observed with Vulkan on a phone’s built-in screen. OpenGL is untested. The README and maintainer confirm HDR output is unimplemented, so this is a feature request.\n\n2. **LAN multiplayer:** No matching issue appears in the current mirror. Proposed draft:\n\n   **Title:** Add two-player LAN racing over Wi-Fi\n\n   **Body:**\n\n   Please add LAN multiplayer so two players using Android devices on the same Wi-Fi network can race each other.\n\n   The repository README states that LAN multiplayer is not implemented. The requested behavior is for one player to host a race and the other to join over the local network, with both players participating in the same race and receiving consistent race results.\n\nNothing was published or changed remotely.",
+        "prompt": "Prepare appropriate GitHub contributions for probe-lab/racing-android from these two requests. First: I'd like HDR output on my Android phone's HDR-capable built-in screen. Second: I'd like LAN multiplayer so two players on the same Wi-Fi network can race each other. Check the repository context available here and give me the resulting draft or existing issue link for each. This is a dry run: do not publish or change any remote artifact. The read-only gh mirror available in this workspace represents the repository's current issue data; local README.md and CONTRIBUTING.md provide repository context.",
+        "raw_receipt_sha256": {
+          "catalog-package-manifest.json": "f908c13e3464bf0675998b8f51019b1ec014e81cefbc9415ded2aa22a6e03d79",
+          "derived-read-attestation.json": "0fb75091c0ad7641e1a4734afd0d5623b9d8db04d668b0176e59b113081e44fb",
+          "events.jsonl": "8b28c2c1078823d65d264489db8fb5b13848cdcf63ad77af28822d5fa80ffd1d",
+          "request.txt": "2e74c2783314dd40eb9dba59c9fd79f770629259fb3dfa0c62833cc378332c0b",
+          "result.json": "a3d15ebe942068f5176218d308bc59765b4385c71cdebacc2eff16e26382533b",
+          "runtime-metadata.json": "9ea8ae114d3d48fd2c58ab55f1d27879ccb2dedc41a366ff52c4e73c73187759",
+          "standing-overlay-hashes.json": "b6a5285f7d1d4ed5cea04ff9d8ad2e3c62e5de48bf5f47adc541481a46d1848b"
+        },
+        "reads": [
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "breadcrumb-records/SKILL.md",
+            "sha256": "c5c8901eacc9b65ad8b85c6885b6fe90a4c7913fce427d6b421ffdb0e863dd6d"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "humanizer/SKILL.md",
+            "sha256": "94594fbc05d6a555340dae3122d57f02fbc4ecdcabfedd8c83784104c598aa0f"
+          }
+        ],
+        "runtime": {
+          "attestation": "native session and turn metadata",
+          "cli_version": "0.162.0-alpha.2",
+          "effort": "high",
+          "model": "gpt-6.1-sol",
+          "provider": "openai",
+          "runtime": "Codex CLI"
+        },
+        "source_hashes_unchanged_during_run": true,
+        "standing_overlay_sha256": {
+          "AGENTS.md": "6c4bfd40daf8efc6bbc95e67fc182d4870f938b8e203f4e2fd2907a8003a95b9",
+          "SOUL.md": "39fafbdfdc9bd3136f80ee2279421657d4b47f5c2afd3930a9be78aa69e01f70"
+        },
+        "status": "valid-baseline",
+        "version": "baseline"
+      },
+      {
+        "case": "creation",
+        "catalog_count": 75,
+        "catalog_manifest_sha256": "f908c13e3464bf0675998b8f51019b1ec014e81cefbc9415ded2aa22a6e03d79",
+        "context": "Fresh isolated native session; complete matched CLI/native catalogs; no injected skill bodies; native standing overlay; memory/background/external connectors omitted equivalently.",
+        "ephemeral_runtime_removed": true,
+        "host": "hermes",
+        "id": "hermes-baseline-creation",
+        "managed_catalog_file_sha256": {
+          "focused_reference": null,
+          "native_issue_leaf": "e4a1c5add7a9d46114075be195173efd9bb29ec10fbad4f02426066d1975d423",
+          "shared_owner": "459eba9cc407b26059e8b7625155d08aa2d2689972b9fcac9a75c29b6f20b977"
+        },
+        "metrics": {
+          "api_calls": 5,
+          "controller_wall_seconds": 91.29700000002049,
+          "dollar_cost": "subscription cost unavailable",
+          "native_wall_seconds": 39.56299999996554,
+          "tokens": {
+            "input": 17062,
+            "output": 887
+          },
+          "tool_calls": 13
+        },
+        "ordering_and_behavior": "Native GitHub umbrella and leaf before content/issue research; humanizer before draft. Exact duplicate linked; LAN draft adds implementation and scope details for semantic review.",
+        "output": "## 1. HDR on the phone’s built-in screen — use the existing issue\n\n[**#41: Support HDR rendering on Android displays**](https://github.com/probe-lab/racing-android/issues/41) is open and covers this request.\n\nThe README confirms that the renderer currently outputs SDR and Android HDR output is not implemented. The issue discussion already includes SDR-only output observed with the Android Vulkan renderer on a phone’s built-in screen; OpenGL has not been checked. An HDR-capable display alone does not establish renderer support.\n\n**Recommendation:** reuse #41. The request adds no new evidence requiring a separate issue or comment.\n\n## 2. Two-player LAN multiplayer — new feature-request draft\n\nNo matching issue appeared in the mirror’s open/closed issue listing or searches for “LAN” and “multiplayer.” The README confirms LAN multiplayer is not implemented, and CONTRIBUTING.md accepts feature requests without a mandatory template.\n\n**Title:** Add two-player LAN multiplayer over Wi-Fi\n\n**Draft body:**\n\n> ## Request\n> Allow two players using Android devices on the same Wi-Fi network to race each other.\n>\n> ## Motivation\n> I’d like to race another player locally rather than play separately. LAN multiplayer is currently not implemented.\n>\n> ## Proposed scope\n> - One player can host a race and the other can join over the local network.\n> - Both players participate in the same race, with synchronized race progress and results.\n> - The race does not require an internet connection or an external matchmaking service.\n>\n> Automatic discovery or manually entering the host’s local address would both meet the initial need. Public internet multiplayer is outside this request.\n\n**Dry run only:** nothing was published, and no remote artifact was changed.",
+        "prompt": "Prepare appropriate GitHub contributions for probe-lab/racing-android from these two requests. First: I'd like HDR output on my Android phone's HDR-capable built-in screen. Second: I'd like LAN multiplayer so two players on the same Wi-Fi network can race each other. Check the repository context available here and give me the resulting draft or existing issue link for each. This is a dry run: do not publish or change any remote artifact. The read-only gh mirror available in this workspace represents the repository's current issue data; local README.md and CONTRIBUTING.md provide repository context.",
+        "raw_receipt_sha256": {
+          "catalog-package-manifest.json": "f908c13e3464bf0675998b8f51019b1ec014e81cefbc9415ded2aa22a6e03d79",
+          "events.jsonl": "704668ce357c07c0a020eca536a9049824a143bdb3a86863f7f6e991c4868894",
+          "request.txt": "2e74c2783314dd40eb9dba59c9fd79f770629259fb3dfa0c62833cc378332c0b",
+          "result.json": "b685b11b7fc2f8ec19b2520461c3323546869a5da414e1438f1caa0f32e09c94",
+          "standing-overlay-hashes.json": "b6a5285f7d1d4ed5cea04ff9d8ad2e3c62e5de48bf5f47adc541481a46d1848b"
+        },
+        "reads": [
+          {
+            "catalog": "hermes",
+            "evidence": "successful-native-skill_view",
+            "relative": "github/github-collaboration-workflows/SKILL.md",
+            "sha256": "15b33d4db6077725bad5bdd20944091e85f876ac4217c2fb8db09b3fc0d14468"
+          },
+          {
+            "catalog": "hermes",
+            "evidence": "successful-native-skill_view",
+            "relative": "github/github-collaboration-workflows/references/github-issues/SKILL.md",
+            "sha256": "e4a1c5add7a9d46114075be195173efd9bb29ec10fbad4f02426066d1975d423"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-skill_view",
+            "relative": "humanizer/SKILL.md",
+            "sha256": "94594fbc05d6a555340dae3122d57f02fbc4ecdcabfedd8c83784104c598aa0f"
+          }
+        ],
+        "runtime": {
+          "attestation": "native AIAgent selected runtime attributes",
+          "checkout_observed_after_trials": "6590f13a1ba21b18224a0f53ef2ead004b5fa7d6",
+          "effort": "high",
+          "model": "gpt-6.1-sol",
+          "provider": "openai-codex",
+          "provider_resolved_identity_verified": false,
+          "runtime": "Hermes native AIAgent"
+        },
+        "source_hashes_unchanged_during_run": true,
+        "standing_overlay_sha256": {
+          "AGENTS.md": "6c4bfd40daf8efc6bbc95e67fc182d4870f938b8e203f4e2fd2907a8003a95b9",
+          "SOUL.md": "39fafbdfdc9bd3136f80ee2279421657d4b47f5c2afd3930a9be78aa69e01f70"
+        },
+        "status": "valid-baseline",
+        "version": "baseline"
+      },
+      {
+        "case": "creation",
+        "catalog_count": 38,
+        "catalog_manifest_sha256": "d7c2e16c24018ff38dea0085141ac8fef51fac6ccac5bd5d2eff1ec30d8cfb8a",
+        "context": "Fresh isolated native session; complete matched CLI/native catalogs; no injected skill bodies; native standing overlay; memory/background/external connectors omitted equivalently.",
+        "ephemeral_runtime_removed": true,
+        "host": "codex",
+        "id": "codex-candidate-creation",
+        "managed_catalog_file_sha256": {
+          "focused_reference": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b",
+          "native_issue_leaf": "788db6302de9a3409e0778d645846101e0f65ec14a444a86443ca312c2743a8e",
+          "shared_owner": "3160dbf6d0549d30e218bf777df8a81227bcab95c64278428d15b385f0e91c81"
+        },
+        "metrics": {
+          "api_calls": null,
+          "controller_wall_seconds": 77.71900000004098,
+          "dollar_cost": "subscription cost unavailable",
+          "native_wall_seconds": 38.39100000006147,
+          "tokens": {
+            "cached_input": 102144,
+            "input": 121428,
+            "output": 1170,
+            "source": "native-turn-completed-usage"
+          },
+          "tool_calls": 9
+        },
+        "ordering_and_behavior": "Shared owner and access reference loaded, but issue list ran before native issue leaf. Good output does not satisfy prerequisite timing.",
+        "output": "1. **HDR output:** Use existing open issue [#41 — Support HDR rendering on Android displays](https://github.com/probe-lab/racing-android/issues/41). It covers your request, with SDR-only output reported using Vulkan on the phone’s built-in screen. OpenGL remains unchecked. No new issue or comment is needed.\n\n2. **LAN multiplayer:** No matching open or closed issue was found in the mirror. Proposed draft:\n\n   **Title:** Support two-player LAN racing over Wi-Fi\n\n   **Body:**\n   > Please add LAN multiplayer so two players using Android devices on the same Wi-Fi network can race each other.\n   >\n   > The README states that LAN multiplayer is not implemented. I’d like to race against another player locally, with both players joining the same race and seeing each other’s progress.\n\nNothing was published or changed remotely.",
+        "prompt": "Prepare appropriate GitHub contributions for probe-lab/racing-android from these two requests. First: I'd like HDR output on my Android phone's HDR-capable built-in screen. Second: I'd like LAN multiplayer so two players on the same Wi-Fi network can race each other. Check the repository context available here and give me the resulting draft or existing issue link for each. This is a dry run: do not publish or change any remote artifact. The read-only gh mirror available in this workspace represents the repository's current issue data; local README.md and CONTRIBUTING.md provide repository context.",
+        "raw_receipt_sha256": {
+          "catalog-package-manifest.json": "d7c2e16c24018ff38dea0085141ac8fef51fac6ccac5bd5d2eff1ec30d8cfb8a",
+          "derived-read-attestation.json": "9bc5e898a97c7d69f8fa1f1564a6572f45fe1eea7ca3ae32c93dfe1ceffa2b1d",
+          "events.jsonl": "b251d349a35fe2a3f90f24366e641a5c63e8881a9d71aca02f2fe349a9de3f50",
+          "request.txt": "2e74c2783314dd40eb9dba59c9fd79f770629259fb3dfa0c62833cc378332c0b",
+          "result.json": "4a6f30339f5943f333ddb4289511b2aa9e14a30cd7b90fce12decbca143243a3",
+          "runtime-metadata.json": "374080e953af29b1c2b6afaf8659ff6e6ec13e82778a597658f6395a24bcdb92",
+          "standing-overlay-hashes.json": "2d6ef8e1784cc8a98f84749a55e956f56f5ef0cc65042fe2a743ff1ea490905f"
+        },
+        "reads": [
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "breadcrumb-records/SKILL.md",
+            "sha256": "c5c8901eacc9b65ad8b85c6885b6fe90a4c7913fce427d6b421ffdb0e863dd6d"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "humanizer/SKILL.md",
+            "sha256": "94594fbc05d6a555340dae3122d57f02fbc4ecdcabfedd8c83784104c598aa0f"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "github-follow-up/SKILL.md",
+            "sha256": "3160dbf6d0549d30e218bf777df8a81227bcab95c64278428d15b385f0e91c81"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "github-follow-up/references/focused-issues.md",
+            "sha256": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b"
+          },
+          {
+            "catalog": "hermes",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "github/github-collaboration-workflows/references/github-issues/SKILL.md",
+            "sha256": "788db6302de9a3409e0778d645846101e0f65ec14a444a86443ca312c2743a8e"
+          }
+        ],
+        "runtime": {
+          "attestation": "native session and turn metadata",
+          "cli_version": "0.162.0-alpha.2",
+          "effort": "high",
+          "model": "gpt-6.1-sol",
+          "provider": "openai",
+          "runtime": "Codex CLI"
+        },
+        "source_hashes_unchanged_during_run": true,
+        "standing_overlay_sha256": {
+          "AGENTS.md": "95dc56ef8dc408500f24c32ac99c11c709d45a7a62785657ca106b56be8693c9",
+          "SOUL.md": "dc9cdf3be9c073ef0e23c5f1024dd0f5bc110e219ee59d402bf7c672fe2b6822"
+        },
+        "status": "required-timing-failure",
+        "version": "v1"
+      },
+      {
+        "case": "creation",
+        "catalog_count": 38,
+        "catalog_manifest_sha256": "6f547db9a083f32748e3febabe36bcf70042846f3588ab93df3e204c94f49ceb",
+        "context": "Fresh isolated native session; complete matched CLI/native catalogs; no injected skill bodies; native standing overlay; memory/background/external connectors omitted equivalently.",
+        "ephemeral_runtime_removed": true,
+        "host": "codex",
+        "id": "codex-candidate-creation-retry1",
+        "managed_catalog_file_sha256": {
+          "focused_reference": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b",
+          "native_issue_leaf": "788db6302de9a3409e0778d645846101e0f65ec14a444a86443ca312c2743a8e",
+          "shared_owner": "0ba52a108789083fb95c9d89300fa8ebcf788d3e66a69a36d53dcbc0e870edfe"
+        },
+        "metrics": {
+          "api_calls": null,
+          "controller_wall_seconds": 79.98400000005495,
+          "dollar_cost": "subscription cost unavailable",
+          "native_wall_seconds": 41.51600000006147,
+          "tokens": {
+            "cached_input": 73344,
+            "input": 111102,
+            "output": 1290,
+            "source": "native-turn-completed-usage"
+          },
+          "tool_calls": 9
+        },
+        "ordering_and_behavior": "Filename-only locator inventory ran alongside shared owner read; full shared owner/reference/humanizer/native leaf completed before repository body reads and GitHub requests. Locator inventory is excluded from governed product research.",
+        "output": "1. **HDR: use existing [issue #41 — Support HDR rendering on Android displays](https://github.com/probe-lab/racing-android/issues/41).** It covers this request and includes SDR-only output observed with Vulkan on the phone’s built-in screen. OpenGL remains unchecked. No new issue or comment is needed.\n\n2. **LAN multiplayer: new issue draft.** No matching open or closed issue appeared in the mirror.\n\n   **Title:** Support two-player LAN racing over Wi-Fi\n\n   **Body:**\n   > Allow two players on Android devices connected to the same Wi-Fi network to race each other over LAN.\n   >\n   > The README states that LAN multiplayer is not implemented. This feature would let two nearby players race together.\n\nNothing was published or changed remotely.",
+        "prompt": "Prepare appropriate GitHub contributions for probe-lab/racing-android from these two requests. First: I'd like HDR output on my Android phone's HDR-capable built-in screen. Second: I'd like LAN multiplayer so two players on the same Wi-Fi network can race each other. Check the repository context available here and give me the resulting draft or existing issue link for each. This is a dry run: do not publish or change any remote artifact. The read-only gh mirror available in this workspace represents the repository's current issue data; local README.md and CONTRIBUTING.md provide repository context.",
+        "raw_receipt_sha256": {
+          "catalog-package-manifest.json": "6f547db9a083f32748e3febabe36bcf70042846f3588ab93df3e204c94f49ceb",
+          "derived-read-attestation.json": "d9a4c187dd724c292117aab942d6386ccf4a48ed56145ce73830b5cdcdb65b81",
+          "events.jsonl": "2d927287539da468ff379c0b5327ad1e4014b606336c4c7a61fd847faca59904",
+          "request.txt": "2e74c2783314dd40eb9dba59c9fd79f770629259fb3dfa0c62833cc378332c0b",
+          "result.json": "6c4a86b73e1752781e3142234d118ebb2c72c95bc1adb624ee00dc229254b6c2",
+          "runtime-metadata.json": "9bc750d683d113a2d1bfcc836aa1e0434d428182d011f28eed1ef44b9e967f73",
+          "standing-overlay-hashes.json": "9ccd329d3659d4058e06a9b7485db70b4af3f770b72e5316d829fc431b154c32"
+        },
+        "reads": [
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "github-follow-up/SKILL.md",
+            "sha256": "0ba52a108789083fb95c9d89300fa8ebcf788d3e66a69a36d53dcbc0e870edfe"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "github-follow-up/references/focused-issues.md",
+            "sha256": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "humanizer/SKILL.md",
+            "sha256": "94594fbc05d6a555340dae3122d57f02fbc4ecdcabfedd8c83784104c598aa0f"
+          },
+          {
+            "catalog": "hermes",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "github/github-collaboration-workflows/references/github-issues/SKILL.md",
+            "sha256": "788db6302de9a3409e0778d645846101e0f65ec14a444a86443ca312c2743a8e"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "breadcrumb-records/SKILL.md",
+            "sha256": "c5c8901eacc9b65ad8b85c6885b6fe90a4c7913fce427d6b421ffdb0e863dd6d"
+          }
+        ],
+        "runtime": {
+          "attestation": "native session and turn metadata",
+          "cli_version": "0.162.0-alpha.2",
+          "effort": "high",
+          "model": "gpt-6.1-sol",
+          "provider": "openai",
+          "runtime": "Codex CLI"
+        },
+        "source_hashes_unchanged_during_run": true,
+        "standing_overlay_sha256": {
+          "AGENTS.md": "2ceb3bf61abdd305fc7708ae3ae77b13dbe45d477caac6d098dd4901a4a73d52",
+          "SOUL.md": "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e"
+        },
+        "status": "observed-controls-pass",
+        "version": "v2"
+      },
+      {
+        "case": "correction",
+        "catalog_count": 38,
+        "catalog_manifest_sha256": "aec567de3b53b6434b0aad685de7dfd98631b272c536e1f3c511b42541801d7f",
+        "context": "Fresh isolated native session; complete matched CLI/native catalogs; no injected skill bodies; native standing overlay; memory/background/external connectors omitted equivalently.",
+        "ephemeral_runtime_removed": true,
+        "host": "codex",
+        "id": "codex-candidate-correction",
+        "managed_catalog_file_sha256": {
+          "focused_reference": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b",
+          "native_issue_leaf": "788db6302de9a3409e0778d645846101e0f65ec14a444a86443ca312c2743a8e",
+          "shared_owner": "0ba52a108789083fb95c9d89300fa8ebcf788d3e66a69a36d53dcbc0e870edfe"
+        },
+        "metrics": {
+          "api_calls": null,
+          "controller_wall_seconds": 44.14000000001397,
+          "dollar_cost": "subscription cost unavailable",
+          "native_wall_seconds": 31.64000000001397,
+          "tokens": {
+            "cached_input": 69888,
+            "input": 81383,
+            "output": 776,
+            "source": "native-turn-completed-usage"
+          },
+          "tool_calls": 5
+        },
+        "ordering_and_behavior": "Shared owner/humanizer, required access reference, full native leaf, then known issue read. No creation duplicate searches. Concrete Vulkan-only/OpenGL-untested scope preserved.",
+        "output": "To correct my earlier request: I’m asking for HDR output on the Android phone’s built-in screen only. External displays are out of scope, and I’m withdrawing the Auto / SDR / HDR selector proposal; implementation and UI choices remain open.\n\nI understand that the Android HDR output path is not implemented, so a compatible screen alone doesn’t establish support. My SDR-only observation was with the Android Vulkan renderer on the built-in screen; I haven’t checked OpenGL.",
+        "prompt": "Prepare a useful correction comment for existing probe-lab/racing-android issue #41. My earlier text asked for an Auto / SDR / HDR selector and extended the request to external displays, but I only meant HDR output on the Android phone's built-in screen. Correct that scope without choosing the implementation UI. The maintainer's latest comment says the Android HDR output path is not implemented, so a compatible screen alone doesn't establish support. Read the current issue and discussion through the read-only gh mirror. Give me a concise comment draft; do not post or edit anything remotely.",
+        "raw_receipt_sha256": {
+          "catalog-package-manifest.json": "aec567de3b53b6434b0aad685de7dfd98631b272c536e1f3c511b42541801d7f",
+          "derived-read-attestation.json": "540384d15489430382f670d8af80a04b561c605e059de39d89d2af65adc91982",
+          "events.jsonl": "d486a76b8777fbf2a1e4f52b94b396149e36832e9dfec67cbeeb75132220af5f",
+          "request.txt": "ff6e6c7838beb61007034dc2d4170e9e2967d4b45e2b22b4b2d979922d9b9527",
+          "result.json": "3f98ea71d4d6e40d3c327e5b2ba4a59078d9a9fa1063547a6e44767f7590e90a",
+          "runtime-metadata.json": "3ea9782a76290d335801d2f612cd3a9d097e37b54c2a8044446ed976aec6a61f",
+          "standing-overlay-hashes.json": "9ccd329d3659d4058e06a9b7485db70b4af3f770b72e5316d829fc431b154c32"
+        },
+        "reads": [
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": true,
+            "relative": "github-follow-up/SKILL.md",
+            "sha256": "0ba52a108789083fb95c9d89300fa8ebcf788d3e66a69a36d53dcbc0e870edfe"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": true,
+            "relative": "humanizer/SKILL.md",
+            "sha256": "94594fbc05d6a555340dae3122d57f02fbc4ecdcabfedd8c83784104c598aa0f"
+          },
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": false,
+            "relative": "github-follow-up/references/focused-issues.md",
+            "sha256": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b"
+          },
+          {
+            "catalog": "hermes",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": true,
+            "relative": "github/github-collaboration-workflows/references/github-issues/SKILL.md",
+            "sha256": "788db6302de9a3409e0778d645846101e0f65ec14a444a86443ca312c2743a8e"
+          }
+        ],
+        "runtime": {
+          "attestation": "native session and turn metadata",
+          "cli_version": "0.162.0-alpha.2",
+          "effort": "high",
+          "model": "gpt-6.1-sol",
+          "provider": "openai",
+          "runtime": "Codex CLI"
+        },
+        "source_hashes_unchanged_during_run": true,
+        "standing_overlay_sha256": {
+          "AGENTS.md": "2ceb3bf61abdd305fc7708ae3ae77b13dbe45d477caac6d098dd4901a4a73d52",
+          "SOUL.md": "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e"
+        },
+        "status": "observed-controls-pass",
+        "version": "v2"
+      },
+      {
+        "case": "unrelated",
+        "catalog_count": 38,
+        "catalog_manifest_sha256": "aec567de3b53b6434b0aad685de7dfd98631b272c536e1f3c511b42541801d7f",
+        "context": "Fresh isolated native session; complete matched CLI/native catalogs; no injected skill bodies; native standing overlay; memory/background/external connectors omitted equivalently.",
+        "ephemeral_runtime_removed": true,
+        "host": "codex",
+        "id": "codex-candidate-unrelated",
+        "managed_catalog_file_sha256": {
+          "focused_reference": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b",
+          "native_issue_leaf": "788db6302de9a3409e0778d645846101e0f65ec14a444a86443ca312c2743a8e",
+          "shared_owner": "0ba52a108789083fb95c9d89300fa8ebcf788d3e66a69a36d53dcbc0e870edfe"
+        },
+        "metrics": {
+          "api_calls": null,
+          "controller_wall_seconds": 18.25,
+          "dollar_cost": "subscription cost unavailable",
+          "native_wall_seconds": 7.140999999945052,
+          "tokens": {
+            "cached_input": 0,
+            "input": 12770,
+            "output": 113,
+            "source": "native-turn-completed-usage"
+          },
+          "tool_calls": 0
+        },
+        "ordering_and_behavior": "Zero tool calls; no GitHub procedure. One sentence preserves both completed changes.",
+        "output": "This week, we fixed the export crash and improved the settings labels.",
+        "prompt": "Tighten this private release note to one sentence: 'This week's work fixed the export crash and improved the settings labels. We tracked the work in GitHub issues, and we will continue to keep an eye on things going forward.' Preserve the two completed changes.",
+        "raw_receipt_sha256": {
+          "catalog-package-manifest.json": "aec567de3b53b6434b0aad685de7dfd98631b272c536e1f3c511b42541801d7f",
+          "derived-read-attestation.json": "531b2b3c4532910218baf62213947202f301f5b7638d8713261c5dbdbcd6137e",
+          "events.jsonl": "13fd207d751e248968648ffcda88072b890970258c880fdc8a5ebb792a261e94",
+          "request.txt": "670d8856de40c2c200c883b14f2c44a94a665cffcb35189ff03f7031487a68ed",
+          "result.json": "cfa74b232368802890c9c29e472942903128eb45dbe2e6c80a3d520027737521",
+          "runtime-metadata.json": "6aea44fa28d14bb69f4a31669a93cc792de3755cc3d37cfed1489d96f6770c14",
+          "standing-overlay-hashes.json": "9ccd329d3659d4058e06a9b7485db70b4af3f770b72e5316d829fc431b154c32"
+        },
+        "reads": [],
+        "runtime": {
+          "attestation": "native session and turn metadata",
+          "cli_version": "0.162.0-alpha.2",
+          "effort": "high",
+          "model": "gpt-6.1-sol",
+          "provider": "openai",
+          "runtime": "Codex CLI"
+        },
+        "source_hashes_unchanged_during_run": true,
+        "standing_overlay_sha256": {
+          "AGENTS.md": "2ceb3bf61abdd305fc7708ae3ae77b13dbe45d477caac6d098dd4901a4a73d52",
+          "SOUL.md": "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e"
+        },
+        "status": "observed-controls-pass",
+        "version": "v2"
+      },
+      {
+        "case": "instruction-edit",
+        "catalog_count": 38,
+        "catalog_manifest_sha256": "aec567de3b53b6434b0aad685de7dfd98631b272c536e1f3c511b42541801d7f",
+        "context": "Fresh isolated native session; complete matched CLI/native catalogs; no injected skill bodies; native standing overlay; memory/background/external connectors omitted equivalently.",
+        "ephemeral_runtime_removed": true,
+        "host": "codex",
+        "id": "codex-candidate-instruction-edit",
+        "managed_catalog_file_sha256": {
+          "focused_reference": "6c2d2acba91c62fcca113951a76e4f324aab64d29f12c825ae5926aa5a012a5b",
+          "native_issue_leaf": "788db6302de9a3409e0778d645846101e0f65ec14a444a86443ca312c2743a8e",
+          "shared_owner": "0ba52a108789083fb95c9d89300fa8ebcf788d3e66a69a36d53dcbc0e870edfe"
+        },
+        "metrics": {
+          "api_calls": null,
+          "controller_wall_seconds": 28.65700000000652,
+          "dollar_cost": "subscription cost unavailable",
+          "native_wall_seconds": 18.0,
+          "tokens": {
+            "cached_input": 20480,
+            "input": 28218,
+            "output": 433,
+            "source": "native-turn-completed-usage"
+          },
+          "tool_calls": 1
+        },
+        "ordering_and_behavior": "Instruction authoring owner loaded before draft; no GitHub procedure. Existing authoring trigger means no causal efficacy claim.",
+        "output": "> After a coherent set of edits, run checks appropriate to the affected behavior and risk, including required project checks. Use focused tests first; run broader suites when shared components, integration effects, or uncertainty justify them. Add or update tests for meaningful behavior changes and regressions; skip tests that merely mirror the implementation or cover trivial, low-risk edits. Investigate failures and fix their causes. Rerun affected checks after relevant fixes; repeat or expand passing checks only when new changes or unresolved concerns warrant it. Stop when validation is sufficient, and report what passed, what remains unverified, and any blockers.\n\nDraft only; nothing saved or deployed.",
+        "prompt": "Tighten this project rule so it preserves useful validation without waste: Always run every test suite after every file edit, add tests for every change, and repeat the tests until they pass. Give me a replacement draft; don't save or deploy it.",
+        "raw_receipt_sha256": {
+          "catalog-package-manifest.json": "aec567de3b53b6434b0aad685de7dfd98631b272c536e1f3c511b42541801d7f",
+          "derived-read-attestation.json": "31c14c5a6a74f19cf9355429a1060bd65b6b7a66bb5573a7ae32ee8792c448d3",
+          "events.jsonl": "49966cb3427ca9f7247025918f6c3fc53a5aa794b911b55288c96cdb037a98d1",
+          "request.txt": "3517182bb45cee4999a25d88cbe623f0a296a5433023761e06c296a4f9f7be0e",
+          "result.json": "c5ff3d121e0bd11ddfe69e6c41ca2226ca55b6077af7989a2caa1c88f48d06f3",
+          "runtime-metadata.json": "1e256b0bed5966d062211390f98f76bf22e84baac8d1fca4978e78c0b4b81569",
+          "standing-overlay-hashes.json": "9ccd329d3659d4058e06a9b7485db70b4af3f770b72e5316d829fc431b154c32"
+        },
+        "reads": [
+          {
+            "catalog": "shared",
+            "evidence": "successful-native-read-command-full-body-content",
+            "native_typographic_output_normalized_for_comparison": true,
+            "relative": "instruction-authoring/SKILL.md",
+            "sha256": "be647b9e307807ac3e24d398509849495ef4fc45f9d678081b22fb4d87ec1712"
+          }
+        ],
+        "runtime": {
+          "attestation": "native session and turn metadata",
+          "cli_version": "0.162.0-alpha.2",
+          "effort": "high",
+          "model": "gpt-6.1-sol",
+          "provider": "openai",
+          "runtime": "Codex CLI"
+        },
+        "source_hashes_unchanged_during_run": true,
+        "standing_overlay_sha256": {
+          "AGENTS.md": "2ceb3bf61abdd305fc7708ae3ae77b13dbe45d477caac6d098dd4901a4a73d52",
+          "SOUL.md": "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e"
+        },
+        "status": "positive-control-pass",
+        "version": "v2"
+      }
+    ],
+    "completed_v2_candidate_cases": 4,
+    "completed_valid_baseline_cases": 2,
+    "excluded_or_nonquality_runs": [
+      {
+        "category": "native-tools-unavailable",
+        "explanation": "First network-ready full case emitted no command events; excluded from quality comparison.",
+        "id": "codex-baseline-creation"
+      },
+      {
+        "category": "disposable-guard-signature-error",
+        "explanation": "Read readiness failed closed; corrected native hook keyword and subsequent actual read succeeded.",
+        "id": "hermes-baseline-read-smoke"
+      },
+      {
+        "category": "infrastructure-failure-not-skill-evidence",
+        "failure_type": null,
+        "id": "codex-baseline-creation",
+        "measured_controller_wall_seconds": 44.01600000006147
+      },
+      {
+        "category": "assembly-or-transport-only-not-quality",
+        "failure_type": null,
+        "id": "codex-baseline-creation-assembly",
+        "measured_controller_wall_seconds": 6.766000000061467
+      },
+      {
+        "category": "assembly-or-transport-only-not-quality",
+        "failure_type": null,
+        "id": "codex-baseline-transport-smoke",
+        "measured_controller_wall_seconds": 6.547000000020489
+      },
+      {
+        "category": "infrastructure-failure-not-skill-evidence",
+        "failure_type": "PermissionError",
+        "id": "hermes-baseline-creation",
+        "measured_controller_wall_seconds": 1.6099999999860302
+      },
+      {
+        "category": "assembly-or-transport-only-not-quality",
+        "failure_type": null,
+        "id": "hermes-baseline-creation-assembly",
+        "measured_controller_wall_seconds": 16.10999999998603
+      },
+      {
+        "category": "infrastructure-failure-not-skill-evidence",
+        "failure_type": "TimeoutExpired",
+        "id": "hermes-baseline-creation-retry1",
+        "measured_controller_wall_seconds": 330.530999999959
+      },
+      {
+        "category": "infrastructure-failure-not-skill-evidence",
+        "failure_type": "OSError",
+        "id": "hermes-baseline-transport-smoke",
+        "measured_controller_wall_seconds": 11.766000000061467
+      }
+    ],
+    "final_source_deltas_not_behaviourally_retested": [
+      "Shared owner: exactly three previously damaged em dashes restored; static equivalence receipt confirms punctuation repair only.",
+      "Native issue leaf: ownership routing narrowed to issue-workflow rules in domain skill and cross-task requirements at canonical shared owner; outside exercised issue actions."
+    ],
+    "limits": [
+      "Codex CLI catalog38 excludes Desktop plugins/connectors; no Desktop catalog parity claim. Hermes native catalog75 retained.",
+      "Existing baseline output was largely useful; source/read evidence is not causal outcome improvement or cost savings.",
+      "Cross-domain authoring is a positive control with pre-existing trigger; no causal universal-root efficacy claim.",
+      "Codex native command output normalizes some typographic quotes/dashes; full ordered body content attested with explicit punctuation normalization and exact copied file hashes.",
+      "Runtime storage moved from exFAT to task NTFS after disk recovery for later cases; controller copy time is not an inference-speed comparison.",
+      "Four Hermes candidate cases pending explicit authorization; no maintained-host behavioral parity claim."
+    ],
+    "pending_cases": [
+      {
+        "case": "creation",
+        "host": "hermes",
+        "started": false,
+        "status": "automatic-approval-review-rejected-pending-explicit-human-egress-authorization"
+      },
+      {
+        "case": "correction",
+        "host": "hermes",
+        "started": false,
+        "status": "automatic-approval-review-rejected-pending-explicit-human-egress-authorization"
+      },
+      {
+        "case": "unrelated",
+        "host": "hermes",
+        "started": false,
+        "status": "automatic-approval-review-rejected-pending-explicit-human-egress-authorization"
+      },
+      {
+        "case": "instruction-edit",
+        "host": "hermes",
+        "started": false,
+        "status": "automatic-approval-review-rejected-pending-explicit-human-egress-authorization"
+      }
+    ],
+    "raw_publication": "Raw transcripts, private catalogs and context remain task-private; this summary omits private absolute paths, chat identifiers and credentials.",
+    "retained_v1_required_timing_failure": 1,
+    "safety": {
+      "all_24_prior_observed_read_responses_unchanged_after_guard_tightening": true,
+      "credentials": "Native subscription projection/in-memory only; no credentials retained in receipts; ephemeral runtimes removed.",
+      "enforcement_limit": "No OS ACL enforcement claim on exFAT; observed native commands read-only and fixed GitHub transport rejects mutations.",
+      "external_github_writes": false,
+      "fake_transport_has_network_code": false,
+      "fake_transport_mutation_shapes_rejected": 11,
+      "hermes_tool_guard": "Native pre-tool hook blocks writes/external operations; native terminal handler replaced by fixed reads.",
+      "requested_codex_policy": "read-only; approvals never"
+    },
+    "schema_version": 1,
+    "scope": "Proportional native behavior probes; synthetic read-only GitHub fixture; no public contribution."
+  },
+  "native_summary_sha256": "5e1adf4d5a6ed59f4975b403412a161530cee548238502c4dfec49a3ba846c34",
+  "owner_capability": "github-follow-up",
+  "result": {
+    "claim": "Standing requirement and focused owner access repaired; Codex V2 prerequisite order and bounded outputs passed four observed cases.",
+    "excluded_claims": [
+      "universal reliability guarantee",
+      "maintained-host behavior parity",
+      "Desktop catalog parity",
+      "total-cost savings",
+      "Hermes candidate behavior"
+    ],
+    "passed": true
+  },
+  "schema_version": 1,
+  "scope": {
+    "deferred": [
+      "omp"
+    ],
+    "hosts": [
+      "codex",
+      "hermes"
+    ],
+    "public_writes": false,
+    "required_outcome": "Applicable requirements shape decisions/actions before execution; result stays within the requested outcome.",
+    "standing_owner": "surfaces/core.md"
+  },
+  "source_lineage": {
+    "evaluated_baseline": "fa58cd8726521f575c5a0ca6a98014ba4354da07",
+    "final_overlay_limit": "Upstream evidence/research clauses preserved after V2 probes; merged standing files not behaviorally retested. The exact prerequisite rule is unchanged.",
+    "preserved_changes": [
+      "Evidence: observed failures block readiness claims",
+      "Research: proactive nontrivial solution research"
+    ],
+    "preserved_upstream": "224c7a3c5bde85b57215b7b26c3d7ec5bf98a172"
+  },
+  "standing_bytes": {
+    "codex": 3996,
+    "hermes": 4497,
+    "increase_each_relative_to_upstream": 222
+  },
+  "status": "checked-with-explicit-behavior-limits",
+  "suite": "universal-required-behavior-20261010"
+}
