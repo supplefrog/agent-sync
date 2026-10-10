@@ -25,7 +25,12 @@
   "retirements": {
     "whole_skills_newly_retired": [],
     "directive_removed": "Hermes session-librarian's blanket duplicate consent requirement for already-authorized reversible mutations",
-    "useful_capabilities_retained": ["session-librarian", "project-bootstrap", "conditional project-prior-art research", "existing frontend guidance and accepted evidence"]
+    "useful_capabilities_retained": [
+      "session-librarian",
+      "project-bootstrap",
+      "conditional project-prior-art research",
+      "existing frontend guidance and accepted evidence"
+    ]
   },
   "limits": [
     "Model guidance is responsible for scope decisions, ownership and loading the owner; no autonomous watcher was installed.",
@@ -33,5 +38,127 @@
     "Native Codex project API is experimental; membership has no atomic compare-and-set, so preflight/readback cannot prevent every noncooperating concurrent writer.",
     "Hermes live session movement and Codex UI refresh were not tested; OMP automatic behavior was not established.",
     "Recovery flags are caller assertions, not inferred completion/reference checks or deletion authorization."
+  ],
+  "native_retirement_followup_2026_10_10": {
+    "authorization": "User explicitly requested removing project-bootstrap and other Codex-local skills redundant in the same way.",
+    "scope": "Codex-native/local skill packages only; no portable owner retirement, official tool removal, model change or unrelated task cleanup.",
+    "baseline_package_hashes": {
+      "project-bootstrap": {
+        "EVAL.md": "a52d4a1ed444010ffd30fdd3d7993494df93a2dc2131b6054819b48679012f6c",
+        "SKILL.md": "3648e15515913ed10fb83cd69314fd9a99fac85df74e4a4ca5c221a91aff825e"
+      },
+      "personal-ops-agent": {
+        "agents/openai.yaml": "20c5736d2bcf7a586dde949ba973d8cf321760c25dc97a2b3907850f1e280c98",
+        "EVAL.md": "5653ed5e3bd2a9656c4a0ec75b6cfc969ca0cd5b475a9ab9cd5ff22b86dc8843",
+        "SKILL.md": "40e402fd70cb0c62148f3b4f99e2c73ffaacb25c54f816eaf68c557bb444772b"
+      },
+      "codex-dynamic-workflows-adapter": {
+        "agents/openai.yaml": "1b666cd30c9a14b5499d1d4ccc2d6f5f618c28957c5be06bbf8abe2934e6d70c",
+        "SKILL.md": "4fdd0c54cb5cab45277a19f83368fd379ba97f9cb6a97b6beea6bb9b83cccae1"
+      },
+      "engineering-comms": {
+        ".codex-plugin/plugin.json": "2a03e3578867441b07eed5578d3a48077b313f34162b73e993e7a48da3a7bae3",
+        "EVALUATION.md": "7f1e94801252fdeafa466260ce80945a51d738a4486bbeae94d55ecaeb6bcaf3",
+        "skills/bug-postmortem/SKILL.md": "f23391a43145376823ebc1e4b73528b8270b086f90cc2d281d32e28cb740e8a4",
+        "skills/change-scrutiny/SKILL.md": "c25d6ac091b504138541a7ee2fe515c40ae3f4a4788966c48d29237ecae0ea52",
+        "skills/management-update/SKILL.md": "647f29cd56d8f828e257a31e1c6934f8136bc063f6d2f34f8ca378430a299661"
+      },
+      "grilling": {
+        "agents/openai.yaml": "cf29b9a8dbf35a58a908a6ca4f64dcd86c2b2130291eee0a78b9f706b138825b",
+        "SKILL.md": "44331dda57f461db4fec3f2efb6ddabe7aaaa0a57ae0f88a883bc61aed8a0587"
+      }
+    },
+    "behavior_preservation": [
+      {
+        "removed": "project-bootstrap",
+        "retained": "breadcrumb-records owns project boundaries, evidence-backed continuation, recovery and decision-sensitive freshness.",
+        "discarded": "AGENTS-first layout, line quotas, blanket layout approval, mandatory exact next command and repeated status reruns.",
+        "loss": "Prescribed compact AGENTS handoff format; no unique executable mechanism."
+      },
+      {
+        "removed": "personal-ops-agent",
+        "retained": "Current core scope/research/evidence rules, breadcrumb-records and native application/tool authorization.",
+        "discarded": "Compulsory run directory bundle, generic stack-selection checklist, blanket sensitive-data takeover and missing resourceful-agent/skill-curator routes.",
+        "loss": "Fixed personal-operations checklist; no application-specific mechanism."
+      },
+      {
+        "removed": "grilling",
+        "retained": "A direct user request can still select an interview or stress-test style.",
+        "discarded": "Universal one-question-at-a-time interview and confirmation-before-action gate.",
+        "loss": "Named discoverable interview-style prompt."
+      },
+      {
+        "removed": "engineering-comms:change-scrutiny",
+        "retained": "adapters/code-verification.md loads native code-change-verification; live source sections 2-5 cover scope, alternatives, real-path tracing and relevant risk/verification. Core covers architecture alternatives.",
+        "discarded": "Mandatory verdict wording and universal edge-case checklist.",
+        "loss": "Standalone broad review trigger and fixed review format."
+      },
+      {
+        "removed": "engineering-comms:bug-postmortem",
+        "retained": "Core evidence rules, systematic-debugging and breadcrumb-records preserve truthful cause/validation and durable project evidence.",
+        "discarded": "Exact nine-section outline and refusal to draft any partial incident record.",
+        "loss": "Fixed postmortem template."
+      },
+      {
+        "removed": "engineering-comms:management-update",
+        "retained": "Current audience-sensitive communication instructions and normal writing capability.",
+        "discarded": "Compulsory channel question, fixed channel recipes and unconditional technical-identifier stripping.",
+        "loss": "Fixed channel templates."
+      },
+      {
+        "removed": "agent-ops:dynamic-workflows",
+        "retained": "Installed shared dynamic-workflows entrypoint, references/codex-adapter.md, references/runtime-contract.md, scripts and existing runs.",
+        "discarded": "Duplicate local discovery wrapper and hard-coded canonical source path.",
+        "loss": "No unique route, state, token, handle, retry or acceptance guard."
+      }
+    ],
+    "retained": [
+      "clean-codex-history",
+      "codebase-design",
+      "domain-modeling",
+      "prototype",
+      "security-and-hardening",
+      "playwright",
+      "recover-chrome-remote-desktop",
+      "Paseo tool-specific references",
+      "Context7 and research corpus/reference mechanisms",
+      "shared dynamic-workflows"
+    ],
+    "dependencies": "Checked shared skills, native skill callers, local marketplace metadata and Agent Sync contracts/recovery. Only current lifecycle documentation required a retention-decision correction. Existing historical receipts and disabled config tombstones remain truthful.",
+    "native_changes": "Exact source packages removed from discovery with verified local recovery hashes; engineering-comms removed from marketplace and natively uninstalled; Agent Ops metadata narrowed to retained history skill.",
+    "verification": {
+      "source_absence": "passed",
+      "recovery_hashes": "passed",
+      "retained_history_package_unchanged": "passed",
+      "engineering_plugin_uninstall": "passed",
+      "agent_ops_refresh": "pending automatic-review approval",
+      "fresh_discovery": "pending final cache refresh"
+    },
+    "limits": [
+      "Source/ownership audit only; no matched whole-agent benefit or cost comparison.",
+      "Research corpus dependencies at old external paths are missing; preserved domain format/report semantics do not establish working validator support.",
+      "Recovery retains exact removed text outside live discovery; no existing run, save, trace, session or credential was removed."
+    ]
+  },
+  "instruction_changes": [
+    {
+      "owner": "breadcrumb-records",
+      "basis": "user-correction",
+      "deviation": "Current project-lifecycle documentation instructs retaining a Codex-local skill the user explicitly asked to retire.",
+      "evidence": [
+        "native_retirement_followup_2026_10_10",
+        "Source ownership/dependency inspection and exact local removal-plan hashes."
+      ],
+      "baseline_sufficient": false,
+      "why_instruction": "Correct the existing current retention decision; add no new behavioral rule or replacement skill.",
+      "alternative": "Leaving the row untouched contradicts the selected removal; generic advice is not copied into shared owners.",
+      "artifacts": [
+        {
+          "path": "docs/project-lifecycle.md",
+          "before_sha256": "66abea20f1023365040f4190256cfdf9c76cfa3d57e5362670aab4f1cd4cbd43",
+          "after_sha256": "45fada846a1f8bdb7913028d82d2a1579fd9cad48c1653dbdbf799480f623ad8"
+        }
+      ]
+    }
   ]
 }

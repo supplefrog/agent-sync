@@ -19,8 +19,8 @@ The [artifact helper](../skills/breadcrumb-records/references/task-artifacts.md)
 | Shared `breadcrumb-records` | Extend the admitted continuity owner instead of adding a competing lifecycle skill. Preserve the original record CLI/schema. |
 | Shared `project-prior-art` | Preserve conditional reuse research; clarify that conventions and consequential decisions belong beside the project. |
 | Hermes native `session-librarian` | Replace only the blanket reconfirmation paragraph through the native review queue. Existing authorization now covers reversible workstream organization; destructive and profile/access gates remain. |
-| Installed `project-bootstrap` | Retain its lightweight AGENTS capability. Overlapping terminology alone is not a conflict. |
-| Prior retirements | `advise-project-approach`, `conversational-communication` and the disabled `one-three-one-rule` were already retired/disabled. No new whole-skill retirement is claimed. |
+| Codex local `project-bootstrap` | Retired at the user's request on 2026-10-10. `breadcrumb-records` remains the continuation owner; the AGENTS-first layout, line quotas, repeated blanket status checks and prescribed next command were intentionally discarded. The earlier retention decision is historical. |
+| Prior retirements | `advise-project-approach`, `conversational-communication` and the disabled `one-three-one-rule` were retired/disabled before the original lifecycle change. The dated evaluation receipt preserves those earlier decisions and records subsequent Codex-local retirements separately. |
 | Frontend owners and accepted comparison evidence | Preserve unchanged; this change contains no frontend selection or taste revision. |
 
 The native skill's captured recovery artifact and manifest hashes record the reviewed paragraph change. No plugin cache is edited. [Evaluation receipt](../evals/results/project-lifecycle-2026-10-05.json) distinguishes automation tests, explicitly loaded behavioral probes and untested host behavior. Private task fixtures and native receipts stay outside publication.
