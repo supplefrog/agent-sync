@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "status": "source-authored",
+  "purpose": "Explicit higher-effort preference for a parent coordinating concurrent workers; no quality or cost comparison claim",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "deviation": "Current delegation contract pins bounded worker medium and linear high but does not require high effort for a parent coordinating parallel workers.",
+      "evidence": "User: a model that parallelizes needs a higher thinking budget, this should be in the delegation rule. Existing durable task was dispatched at configured worker effort before this correction.",
+      "baseline_sufficient": false,
+      "why_instruction": "Explicit cross-host delegation preference belongs in the existing model and dispatch owner, loaded before dispatch. Reuse linear high instead of adding a schema role or changing leaf defaults.",
+      "alternative": "No change omits the requested preference. Raising every worker/default increases scope. A runtime override alone does not persist future delegation decisions.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "a1862b34a7a528a9add515776e08251a8a1eece37a24b9a996d674c4cc311070",
+          "after_sha256": "8713f84230c4e63ee92a54a00fa89d9c27b7329ba0293ec073a75ca241e5f6a6"
+        }
+      }
+    }
+  ],
+  "near_miss": "Single bounded worker remains medium; independent reviewer remains high; native default settings and running-session identity unchanged."
+}
