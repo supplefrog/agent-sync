@@ -29,5 +29,54 @@
   ],
   "observed_at": "2026-09-08T13:34:57.091887+00:00",
   "fleet_limit": "No remaining fleet conflict. Whole-environment health is not claimed: concurrent Hermes settings/recovery and runtime/native-file verification gaps remain outside the breadcrumb scope.",
-  "installed_tree_sha256": "9be748377f95d2c357858dd6200928687f9df1d902ca2a4845e7a447c3a4ee4e"
+  "installed_tree_sha256": "9be748377f95d2c357858dd6200928687f9df1d902ca2a4845e7a447c3a4ee4e",
+  "release_history_correction": {
+    "observed_at": "2026-10-10T03:32:45.565399+00:00",
+    "scope": "Versioned releases for repositories the user owns or maintains; existing project lifecycle owner, no new GitHub skill or global standing rule.",
+    "baseline": "Published wrapper had current-state handoff and development history but no consolidated public version history; GitHub follow-up is scoped to issues and own PRs.",
+    "boundary_checks": [
+      {
+        "case": "Prepare a published release of an owned repository with an existing changelog",
+        "expected": "Update its existing changelog with the released changes and evidence; preserve prior entries."
+      },
+      {
+        "case": "Prepare the first versioned release without a changelog",
+        "expected": "Create CHANGELOG.md in repository convention and record version/date and relevant release guidance."
+      },
+      {
+        "case": "Publish an experimental prerelease",
+        "expected": "Include its version entry, clearly label experimental status and known failures; do not turn observations into measured gains."
+      },
+      {
+        "case": "Reject an unpublished experimental build",
+        "expected": "Keep it in development notes; no required published-release entry or publication."
+      },
+      {
+        "case": "Contribute an issue or a focused PR to another project",
+        "expected": "Follow that project conventions; no imposed new changelog or unrelated release workflow."
+      },
+      {
+        "case": "Write a release note without publication authorization",
+        "expected": "Prepare documentation only; do not publish."
+      }
+    ],
+    "verification_level": "Source and boundary inspection plus governed metadata/byte-binding/deployment checks; no fresh model behavior comparison or spontaneous-trigger claim."
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/breadcrumb-records",
+      "basis": "user-correction",
+      "deviation": "The user wants a reusable version-by-version changelog rule for maintained repositories; the existing project lifecycle skill did not require release history and the GitHub issue/PR workflow does not govern owned-project releases.",
+      "evidence": "Direct user request to write this rule in an appropriate owner, following verified absence of a full public wrapper changelog. Existing breadcrumb lifecycle and GitHub follow-up scope inspected.",
+      "baseline_sufficient": false,
+      "why_instruction": "A narrow release trigger and rule in the admitted project lifecycle owner make the explicit preference available before future release publication without loading or expanding an unrelated issue/PR workflow.",
+      "alternative": "No change leaves the release-history omission. A project-only rule would not carry to future owned repositories. A new GitHub release skill or global standing paragraph would duplicate lifecycle ownership and add discovery overhead. Existing changelog conventions and native publication tools remain in use.",
+      "artifacts": {
+        "skills/breadcrumb-records/SKILL.md": {
+          "before_sha256": "c5c8901eacc9b65ad8b85c6885b6fe90a4c7913fce427d6b421ffdb0e863dd6d",
+          "after_sha256": "e738bf95f217847ba51d8d805a795ccf60370d1e28bd3b9e69419791fae69323"
+        }
+      }
+    }
+  ]
 }

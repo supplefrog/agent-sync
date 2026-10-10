@@ -1,14 +1,14 @@
 ---
 name: breadcrumb-records
-description: Use when work grows into a project, or at handoff, interruption and closeout. Organize owned files and preserve decision reasons, evidence and safe continuation.
-version: 1.1.1
+description: Use when work grows into a project, or at project release, handoff, interruption and closeout. Organize owned files and preserve decision reasons, evidence and safe continuation.
+version: 1.1.2
 license: UNLICENSED
 compatibility: Python 3.11+; local evidence files; one writer per record.
 ---
 
 # Breadcrumb Records
 
-Use when exploratory work becomes durable, or for an explicit breadcrumb, substantial handoff, interruption or closeout. On resume, consult the existing record before repeating the investigation. Keep trivial replies and isolated corrections lightweight; extend an equivalent project record rather than create a duplicate. This skill owns the project lifecycle; architecture choices remain with `project-prior-art`, reusable instruction corrections with `instruction-authoring`, and native thread association with the host adapter.
+Use when exploratory work becomes durable, or for a project release, explicit breadcrumb, substantial handoff, interruption or closeout. On resume, consult the existing record before repeating the investigation. Keep trivial replies and isolated corrections lightweight; extend an equivalent project record rather than create a duplicate. This skill owns the project lifecycle; architecture choices remain with `project-prior-art`, reusable instruction corrections with `instruction-authoring`, and native thread association with the host adapter.
 
 ## Decide and organize
 
@@ -35,6 +35,10 @@ Before interruption or delegation, save state and next action; do not mark unfin
 At completion, verify deliverables, commands, links and record completeness; report material gaps and update the result/limits. Keep consequential architecture rationale beside the decision, using an ADR when a later maintainer may revisit it. Use concise outcome-first prose.
 
 Route supported reusable methods/corrections to the existing `instruction-authoring` owner under current authorization; project facts/taste stay local and memory obeys host authorization. Completion alone requires no new skill and grants no shared admission or publication authority.
+
+## Release history for maintained repositories
+
+When preparing a versioned release for a repository the user owns or maintains, update its existing changelog; create `CHANGELOG.md` if none exists. For each published version, record the version/date, meaningful changes, compatibility or migration needs, known drawbacks and relevant upgrade guidance. Link the release or tag and supporting evidence; distinguish measured performance or quality changes from user observations and untested expectations. Label published prereleases experimental where applicable, and keep rejected or unpublished experiments in development notes. Follow the repository's conventions for contributions to other projects. Prepare the entry before authorized publication, verify it reflects the released revision, and preserve earlier entries. Writing release documentation grants no publication permission.
 
 ## Recover owned artifacts
 
