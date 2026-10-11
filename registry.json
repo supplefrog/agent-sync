@@ -141,6 +141,13 @@
       "status": "admitted",
       "license": "MIT",
       "source": "local-converged-port"
+    },
+    {
+      "name": "reverse-engineer-anything",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "https://github.com/morluto/rea/tree/v6.4.0/skills/reverse-engineer-anything",
+      "eval": "evals/results/reverse-engineer-anything-install-20261011.json"
     }
   ]
 }

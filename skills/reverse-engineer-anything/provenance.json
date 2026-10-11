@@ -1,0 +1,11 @@
+{
+  "upstream": "https://github.com/morluto/rea",
+  "npm_package": "rea-agents",
+  "npm_version": "6.4.0",
+  "npm_integrity": "sha512-Vj1zWfSlna5bphGoaoI/TcVBuYvze9u+OyPC3Shz8YkBqaCTqB4COnnRoX7XDwMpwI24ZlFEel2yEj0k8LTWEQ==",
+  "adaptations": [
+    "MIT license metadata",
+    "User-requested deferred native-engine installation in compatible Codex cloud environment"
+  ],
+  "update": "Review a new pinned npm package, retain the local engine policy, and reconcile the canonical owner; do not overwrite the managed skill with upstream setup."
+}

@@ -245,6 +245,21 @@
         "evals/results/systematic-debugging-deterministic.json"
       ],
       "selection_reason": "Explicitly approved byte-preserving port of the existing Hermes debugging procedure and optional Windows diagnostic reference. Structural checks preserve all behavior; no new model-quality or natural-trigger parity is claimed."
+    },
+    {
+      "id": "reverse-engineer-anything",
+      "owner": "skills/reverse-engineer-anything",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/reverse-engineer-anything-install-20261011.json"
+      ],
+      "selection_reason": "User explicitly requested REA for their agents and deferred native analysis engines until needed in compatible Codex cloud. Existing native tools do not expose the REA artifact graph and provider bridge. Pinned source inspection, static analysis and MCP smoke establish scoped readiness, not model-quality or full host behavioral parity.",
+      "purpose": {
+        "objective": "Explain shipped application behavior using source-bound artifact and optional runtime evidence.",
+        "added_value": "REA supplies artifact parsers, evidence retention and native decompiler bridges; the skill routes target types and explains the package-specific recovery protocol. Comparative model-quality benefit remains unmeasured.",
+        "retirement_test": "Retire the skill when the current model can reliably discover and use equivalent artifact and provider tools with evidence handling and deferred engine provisioning without these instructions at lower total cost."
+      }
     }
   ],
   "retired_artifacts": [

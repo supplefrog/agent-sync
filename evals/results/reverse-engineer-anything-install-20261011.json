@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "suite": "reverse-engineer-anything-install",
+  "capability": "reverse-engineer-anything",
+  "status": "pass",
+  "upstream_version": "6.4.0",
+  "baseline": {
+    "rea_registration": "absent on codex, hermes, omp",
+    "skill": "absent",
+    "native_provider": "unconfigured"
+  },
+  "candidate": {
+    "clients": [
+      "codex",
+      "hermes",
+      "omp"
+    ],
+    "native_engines": "deferred by user"
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/reverse-engineer-anything",
+      "basis": "user-correction",
+      "deviation": "User requested the REA capability and explicit deferred engine installation; the baseline has neither REA nor its provider protocol.",
+      "evidence": "Explicit user installation and deferred-engine requests; pinned REA 6.4.0 upstream package and skill inspected.",
+      "baseline_sufficient": false,
+      "why_instruction": "REA target routing, provider recovery, evidence paging and deferred cloud provisioning require its package-specific protocol.",
+      "alternative": "Use existing source tools for complete repositories and static REA tools without installing engines; native bridges remain task dependent.",
+      "artifacts": {
+        "skills/reverse-engineer-anything/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "471b730dc0d4c8c04e2d1f5bb625a6dfd5a1f67afd99b76e7fd8d91ce397dee0"
+        },
+        "skills/reverse-engineer-anything/references/android-applications.md": {
+          "before_sha256": "absent",
+          "after_sha256": "412d9cb462d85b07f6fdbc2453dd741ca3da2c0dbba627867d5624df94afa74c"
+        },
+        "skills/reverse-engineer-anything/references/connection-and-recovery.md": {
+          "before_sha256": "absent",
+          "after_sha256": "668e421e2a27b63058f42ebd36bec04db73404c136e5f47611119ab9d4b4f607"
+        },
+        "skills/reverse-engineer-anything/references/evidence-workflows.md": {
+          "before_sha256": "absent",
+          "after_sha256": "dd23217d55342bbe3e98a2bf47a7f208b35a4b41c98645ac160a4d0aac5316f9"
+        },
+        "skills/reverse-engineer-anything/references/javascript-applications.md": {
+          "before_sha256": "absent",
+          "after_sha256": "04cc298e2485d1db7925b8789097fc5fdd042e937ed11980d3eabc29cb176e59"
+        },
+        "skills/reverse-engineer-anything/references/native-and-artifacts.md": {
+          "before_sha256": "absent",
+          "after_sha256": "1947af57448ba7be6a0736ffbe976c7ecdab4105f315ecc06c830727cc5205fe"
+        },
+        "skills/reverse-engineer-anything/references/runtime-observation.md": {
+          "before_sha256": "absent",
+          "after_sha256": "b3eea94dd7d0c6474634de22ac3ccae317f42ba1ba2389d93535ee8dae7d94e1"
+        }
+      }
+    }
+  ],
+  "limits": [
+    "No live cloud environment or native engine was provisioned.",
+    "No comparative model quality or cross-host behavioral parity claimed.",
+    "MCP registrations are native local settings; this scoped skill publication does not capture them into recovery."
+  ],
+  "result": {
+    "passed": true
+  },
+  "verification": {
+    "mcp_handshake": "pass",
+    "advertised_tools": 170,
+    "static_fixture_analysis": "pass; 2 JavaScript files parsed, 0 parse failures, application coverage complete",
+    "client_registration": "codex, hermes, omp matched",
+    "skill_deployment": "scoped add and hash readback passed",
+    "native_engines": "none installed; deferred by user"
+  }
+}
