@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-view-scale-preference-20261011",
+  "owner_capability": "frontend-ui-engineering",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The user explicitly requested useful detail magnification and ascending numeric view-scale options for future similar comparisons; the existing playable-options rule leaves these choices unspecified.",
+      "evidence": "Direct user preference relayed in the frontend-design-lab chat on 2026-10-11; conditional future comparisons, not a compulsory zoom control for every visual choice.",
+      "baseline_sufficient": false,
+      "why_instruction": "The existing loaded personal-design-defaults owner already owns the playable comparison preference; one conditional sentence preserves the requested future behavior.",
+      "alternative": "No change leaves the explicit preference unavailable in future work. A project-only note cannot implement its reusable scope; a new owner would duplicate the existing rule.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/references/personal-design-defaults.md": {
+          "before_sha256": "d51906a44e3883b04d0f28a24294f1e11dad5b0969fce429af6d0a6cfa4b11bc",
+          "after_sha256": "2b88646dc09f4e40ffaa811c294e2ef4f111512a351267ee7a630d6deb674087"
+        }
+      }
+    }
+  ],
+  "checks": {
+    "scope": "One conditional sentence added to existing playable-options rule. Corrected final rendering defaults and routine finishing autonomy unchanged.",
+    "nearby_case": "Comparisons without useful detail inspection need no magnification control."
+  },
+  "limits": [
+    "Exact persistence and deployment checks, not measured model behavior."
+  ]
+}
