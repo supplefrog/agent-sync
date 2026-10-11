@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-playable-preferences-20261011",
+  "owner_capability": "frontend-ui-engineering",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The user explicitly requested a persistent playable-demo workflow for difficult frontend visual choices and a concrete canvas default; existing guidance made interaction optional and did not specify this rendering preference.",
+      "evidence": "Explicit user request in the frontend-design-lab coordinator chat on 2026-10-11, relayed to this bounded worker; confirmed 4x each physical dimension, spatial SMAA1x Ultra, no extra supersampling/MSAA and no temporal SMAA.",
+      "baseline_sufficient": false,
+      "why_instruction": "The existing personal-design-defaults owner is loaded before frontend visual decisions and owns this cross-project user preference. Updating it preserves scope and avoids a standing global rendering rule.",
+      "alternative": "No change leaves the requested preference unavailable in future work. A renderer change alone cannot persist collaboration preferences across projects. Project-only context would not implement the requested cross-project scope; a new skill would duplicate the existing owner.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/references/personal-design-defaults.md": {
+          "before_sha256": "67859cfebcf551ddac5845113fa43b2f8ffd8df3bde6c00e8bf85d51474e8078",
+          "after_sha256": "2c26b5863acf76d6deb93422ed5b5badb5afe7fc255c299c8c545fa3706c85a1"
+        }
+      }
+    }
+  ],
+  "checks": {
+    "source_boundaries": "Existing comparison bullet replaced; autonomous finishing and explicit overrides preserved; rendering observations scoped to tested preview.",
+    "decision_probes": [
+      {
+        "case": "Difficult typography or motion decision",
+        "expected": "Small playable demo with meaningful labelled controls."
+      },
+      {
+        "case": "Render-quality complaint",
+        "expected": "Independent canvas, additional supersampling, MSAA and spatial SMAA options; actual dimensions shown."
+      },
+      {
+        "case": "Routine approved finishing repair",
+        "expected": "Autonomous refinement; no compulsory options round."
+      },
+      {
+        "case": "Explicit user chooses another render budget",
+        "expected": "Current choice overrides saved default."
+      }
+    ]
+  },
+  "limits": [
+    "Source checks and requested-preference persistence, not measured generation quality or performance superiority.",
+    "Installed readback does not prove future model behavior or cross-host behavioral parity."
+  ]
+}
