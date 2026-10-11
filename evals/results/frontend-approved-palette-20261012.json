@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-approved-palette-20261012",
+  "owner_capability": "frontend-ui-engineering",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The added generic color hierarchy guidance did not express the requested concrete reconstruction behavior: preserve an approved mockup palette and reuse its role colors consistently.",
+      "evidence": "Explicit user request in frontend-design-lab to replace generic color theory wording with approved-mockup palette preservation and consistent reuse.",
+      "baseline_sufficient": false,
+      "why_instruction": "The existing frontend color bullet is the single owner of the recently added wording. Replacing its three sentences implements the requested correction without adding a procedure, palette tool or project-specific color rule. Existing broad reference authority remains intact.",
+      "alternative": "No change retains the rejected generic wording. Adding another palette-preservation paragraph would duplicate guidance; a palette generator does not preserve approved roles. Project-only context cannot carry the explicitly requested shared instruction.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "2f2e60b6e3c7b98fed8f1c61f69c94113ed982f3be9d1303a3bdd4b438d6c42b",
+          "after_sha256": "b1e700c82a56290a4342b1d1995fea21e1bd082623031dbb61d0a825928d25b1"
+        }
+      }
+    }
+  ],
+  "checks": {
+    "source_boundary": "New instruction applies to reconstructing/refining approved mockups, consistent approved color roles, actual material/light and unresolved-deviation lab selection. Generic saturation/chroma/quieter-background advice removed.",
+    "nearby_case": "New visual identities and free exploration retain existing palette creation guidance. Slider, early-lab, accessibility and semantic-token guidance unchanged.",
+    "ownership_purpose": "Existing objective, added value and retirement test retained unchanged."
+  },
+  "limits": [
+    "Explicit wording correction and source/deployment checks, not model-quality gain or natural-trigger evidence."
+  ]
+}
