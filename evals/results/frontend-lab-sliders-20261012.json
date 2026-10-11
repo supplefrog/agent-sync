@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-lab-sliders-20261012",
+  "owner_capability": "frontend-ui-engineering",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "Playable lab guidance left the control choice unspecified, allowing continuous visual parameters to be exposed only through preset buttons.",
+      "evidence": "Explicit user follow-up requests sliders where applicable in frontend labs.",
+      "baseline_sufficient": false,
+      "why_instruction": "The existing personal-default and taste-selection owners already govern lab controls; a small refinement persists the requested interaction across projects.",
+      "alternative": "No change leaves continuous parameters limited to discrete presets. A project-only slider implementation cannot carry the reusable preference; a new procedure or owner would duplicate the lab guidance.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "6f3905ddba4033e946237f8d5f9f289ef839761b70fa403e7110d7860bd6c56c",
+          "after_sha256": "2f2e60b6e3c7b98fed8f1c61f69c94113ed982f3be9d1303a3bdd4b438d6c42b"
+        },
+        "skills/frontend-ui-engineering/references/personal-design-defaults.md": {
+          "before_sha256": "f6c8b25d14e30a5f77239dd458bb4386503c46a99935d08434cfb26c8c5a9cc0",
+          "after_sha256": "08c4228d4746fa3f84a1e89d3b526b31d3f1746f94b13f86a9cd01263043c3cb"
+        },
+        "skills/frontend-ui-engineering/references/taste-selection.md": {
+          "before_sha256": "d12527d3de7098076e71a9923f17b08d135ad9595dfea3303fa594c3c9d7b26c",
+          "after_sha256": "db2556c57c80b0b34d30eac1f9b98c3cd2339adc5cf5d2a23c48684e8d9d6fbf"
+        }
+      }
+    }
+  ],
+  "checks": {
+    "source_boundary": "Continuous/numeric visual parameters use sliders with visible values and useful bounds. Categorical choices use buttons/toggles. Existing comparable content, reset and keyboard operation remain intact. Exact project colors and dial finish are excluded.",
+    "nearby_case": "Categorical theme selection remains suitable for buttons/toggles; numeric parameters may retain presets alongside their sliders.",
+    "ownership_purpose": "Existing objective, added value and retirement test retained unchanged."
+  },
+  "limits": [
+    "Explicit-preference source check and deployment readback, not a model behavior or natural-trigger evaluation."
+  ]
+}

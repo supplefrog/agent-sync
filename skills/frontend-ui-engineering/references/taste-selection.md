@@ -32,7 +32,7 @@ A dislike of color does not reject layout. Record preferences by quality and pag
 
 ## Make iteration cheap
 
-Local controls can preview a few relevant choices—density, type size or image emphasis—without a model call per adjustment. Controls should expose useful decisions, not every CSS token. Preserve an original/reset state, clear selection and keyboard operation. Show the current choice immediately; send or apply it only through a deliberate action. On hosts without interactive previews, use labelled screenshots and a short reply format instead.
+Local controls can preview a few relevant choices—density, type size or image emphasis—without a model call per adjustment. Use sliders with visible values and useful bounds for continuous or numeric visual parameters; use buttons or toggles for categorical choices. Discrete presets can supplement a slider, but should not be the only way to adjust a continuous parameter. Controls should expose useful decisions, not every CSS token. Preserve an original/reset state, clear selection and keyboard operation. Show the current choice immediately; send or apply it only through a deliberate action. On hosts without interactive previews, use labelled screenshots and a short reply format instead.
 
 The optional [taste-picker.html](../templates/taste-picker.html) demonstrates this interaction with original learning-interface mockups. It is not a default style pack: replace its sample content/directions for the actual task. It works locally; a host may wire its `taste-choice` event to conversation input. Host-specific messaging belongs in the host adapter or preview copy, not a required dependency of this portable template.
 
