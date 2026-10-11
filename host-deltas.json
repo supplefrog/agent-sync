@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:37903cdf3edf60f39429fc4676a7c9a2780bade2dc51e391826fd11dee4bed4a"
+      "version_or_hash": "sha256:8e6d0c6c0cbd02e1f838b8e96d580ae84ca1758076cd65fa9c6661103d34f297"
     },
     {
       "category": "settings",
@@ -348,7 +348,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:37903cdf3edf60f39429fc4676a7c9a2780bade2dc51e391826fd11dee4bed4a"
+      "version_or_hash": "sha256:8e6d0c6c0cbd02e1f838b8e96d580ae84ca1758076cd65fa9c6661103d34f297"
     },
     {
       "category": "plugin",
@@ -422,7 +422,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:37903cdf3edf60f39429fc4676a7c9a2780bade2dc51e391826fd11dee4bed4a"
+      "version_or_hash": "sha256:8e6d0c6c0cbd02e1f838b8e96d580ae84ca1758076cd65fa9c6661103d34f297"
     },
     {
       "category": "mcp-tool",
@@ -560,7 +560,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:37903cdf3edf60f39429fc4676a7c9a2780bade2dc51e391826fd11dee4bed4a"
+      "version_or_hash": "sha256:8e6d0c6c0cbd02e1f838b8e96d580ae84ca1758076cd65fa9c6661103d34f297"
     },
     {
       "category": "curator",
@@ -633,7 +633,7 @@
     },
     {
       "category": "plugin",
-      "desired_state": "Reviewed LCM source is installed, with portable paths and canonical text line endings; original patch byte hashes remain in the patch record.",
+      "desired_state": "Verified LCM source registers without opening SQLite storage; first activation opens it outside the plugin deadline. A committed native repair branch and full recovery source preserve the change.",
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-lcm-patch-engine",
@@ -651,12 +651,12 @@
         "kind": "recovery-artifact",
         "reference": "hermes:lcm-runtime-engine-py"
       },
-      "source_identity": "repository:integrations/hermes/native-patches/lcm-session-transactions/manifest.json",
-      "version_or_hash": "sha256:5f85801b068c0f87fe44c2d2c49d10900c84b6dcd44a744815d7587f6415a7a5"
+      "source_identity": "repository:integrations/hermes/native-patches/lcm-registration-startup/manifest.json",
+      "version_or_hash": "sha256:032feb751a98df9878e1ff38f7af5c77844d2411448243561b05a311ef62d0cf"
     },
     {
       "category": "plugin",
-      "desired_state": "Reviewed LCM source is installed, with portable paths and canonical text line endings; original patch byte hashes remain in the patch record.",
+      "desired_state": "Verified LCM source registers without opening SQLite storage; first activation opens it outside the plugin deadline. A committed native repair branch and full recovery source preserve the change.",
       "enablement": "installed",
       "host": "hermes",
       "id": "hermes-lcm-hook-owner-init",
@@ -674,8 +674,8 @@
         "kind": "recovery-artifact",
         "reference": "hermes:lcm-runtime---init---py"
       },
-      "source_identity": "repository:integrations/hermes/native-patches/lcm-hook-ownership/manifest.json",
-      "version_or_hash": "sha256:73d611357c607ba0e9e18cb3a20351769717742a9a03da0bc8a3f893d644ab7c"
+      "source_identity": "repository:integrations/hermes/native-patches/lcm-registration-startup/manifest.json",
+      "version_or_hash": "sha256:032feb751a98df9878e1ff38f7af5c77844d2411448243561b05a311ef62d0cf"
     },
     {
       "category": "plugin",

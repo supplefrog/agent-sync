@@ -432,7 +432,8 @@
       "foreground-context-router",
       "image_gen/fal",
       "mnemosyne-dashboard",
-      "video_gen/fal"
+      "video_gen/fal",
+      "homeassistant"
     ],
     "enabled": [
       "browserclaw",

@@ -397,7 +397,9 @@ def register(ctx):
         import os
         hermes_home = os.environ.get("HERMES_HOME", os.path.expanduser("~/.hermes"))
 
-    engine = LCMEngine(config=config, hermes_home=hermes_home)
+    # Registration runs under the host's 10s plugin deadline. SQLite startup
+    # can legitimately wait 30s for another writer; activate it on first use.
+    engine = LCMEngine(config=config, hermes_home=hermes_home, defer_storage=True)
 
     # Register as the context engine (replaces ContextCompressor)
     ctx.register_context_engine(engine)

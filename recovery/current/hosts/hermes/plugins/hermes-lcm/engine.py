@@ -562,10 +562,13 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
     """
 
     def __init__(self, config: LCMConfig | None = None,
-                 hermes_home: str = ""):
+                 hermes_home: str = "", *, defer_storage: bool = False):
         self._shutdown_group = _EngineShutdownGroup()
         self._config = config or LCMConfig.from_env()
         self._hermes_home = hermes_home
+        self._storage_init_lock = threading.RLock()
+        self._storage_ready = False
+        self._storage_initializing = False
         self._background_work_condition = threading.Condition(threading.RLock())
         self._background_schedules_in_flight = 0
         self._background_shutdown_started = False
@@ -586,8 +589,8 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
         self._assertion_extraction_last_error = ""
         self._assertion_extraction_last_model = ""
 
-        db_path = self._resolve_db_path(hermes_home)
-        self._bind_storage(db_path, hermes_home)
+        if not defer_storage:
+            self._ensure_storage()
 
         self._session_id: str = ""
         self._session_platform: str = ""
@@ -825,6 +828,7 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
         initialized = False
         reservation_open = True
         try:
+            self._ensure_storage()
             clone_type = type(self)
             clone = clone_type.__new__(clone_type)
             clone_type.__init__(
@@ -894,6 +898,40 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
             return Path(hermes_home) / "lcm.db"
         return Path.home() / ".hermes" / "lcm.db"
 
+    def __getattr__(self, name: str):
+        if (
+            name in {"_store", "_dag", "_lifecycle", "_assertions", "_query_views",
+                     "_adaptive_retrieval", "_assertion_extractor"}
+            and self.__dict__.get("_storage_ready") is False
+            and not self.__dict__.get("_storage_initializing", False)
+        ):
+            self._ensure_storage()
+            return object.__getattribute__(self, name)
+        raise AttributeError(f"{type(self).__name__!s} has no attribute {name!r}")
+
+    def _ensure_storage(self) -> None:
+        """Open storage on activation, outside the host's plugin-load deadline."""
+        with self._storage_init_lock:
+            if self._storage_ready:
+                return
+            if self._background_shutdown_started:
+                raise RuntimeError("Cannot initialize LCM storage while plugin is unloading")
+            self._storage_initializing = True
+            try:
+                self._bind_storage(self._resolve_db_path(self._hermes_home), self._hermes_home)
+                self._storage_ready = True
+            except BaseException:
+                # Close partial handles, including interrupted initialization.
+                self._close_storage()
+                # Forget them so a later
+                # activation retries instead of returning a closed connection.
+                for name in ("_store", "_dag", "_lifecycle", "_assertions", "_query_views",
+                             "_adaptive_retrieval", "_assertion_extractor"):
+                    self.__dict__.pop(name, None)
+                raise
+            finally:
+                self._storage_initializing = False
+
     def _bind_storage(self, db_path: str | Path, hermes_home: str = "") -> None:
         """Bind store/DAG/lifecycle helpers to one SQLite database."""
         self._assertions = None
@@ -945,6 +983,8 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
 
     def _close_storage(self) -> None:
         """Best-effort close of currently bound SQLite helpers."""
+        if self.__dict__.get("_storage_ready") is False and not self._storage_initializing:
+            return
         for attr in (
             "_adaptive_retrieval",
             "_store",
@@ -1030,6 +1070,10 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
         with self._shutdown_lock:
             if self._background_shutdown_started or self._primary_shutdown_complete:
                 raise RuntimeError("Cannot rebind LCM storage while plugin is unloading")
+            if not self._storage_ready:
+                self._hermes_home = hermes_home
+                self._ensure_storage()
+                return True
             return self._rebind_storage_for_home_locked(hermes_home)
 
     def _rebind_storage_for_home_locked(self, hermes_home: str) -> bool:
@@ -6960,7 +7004,7 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
             "_assertions",
             "_query_views",
         ):
-            resource = getattr(self, name, None)
+            resource = self.__dict__.get(name)
             close = getattr(resource, "close", None)
             if callable(close):
                 try:
@@ -6993,15 +7037,17 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
             self._stop_background_work(wait=wait_for_background_work)
             if not self._primary_shutdown_complete:
                 self._unregister_active_engine_binding()
-                if self._adaptive_retrieval is not None:
-                    self._adaptive_retrieval.close()
-                self._store.close()
-                self._dag.close()
-                self._lifecycle.close()
-                if self._assertions is not None:
-                    self._assertions.close()
-                if self._query_views is not None:
-                    self._query_views.close()
+                with self._storage_init_lock:
+                    if self._storage_ready:
+                        if self._adaptive_retrieval is not None:
+                            self._adaptive_retrieval.close()
+                        self._store.close()
+                        self._dag.close()
+                        self._lifecycle.close()
+                        if self._assertions is not None:
+                            self._assertions.close()
+                        if self._query_views is not None:
+                            self._query_views.close()
                 self._primary_shutdown_complete = True
             if wait_for_background_work:
                 shutdown_group.discard(self)

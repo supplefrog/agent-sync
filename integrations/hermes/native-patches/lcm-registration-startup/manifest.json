@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "owner": "hermes-lcm native source",
+  "repository": "https://github.com/stephenschoettler/hermes-lcm",
+  "base_revision": "80262e4e337e366020f8781c2fd0f1f9868c25cd",
+  "installed_revision": "963f633a00d95741a89fb1c118afeffed688e7c1",
+  "installed_branch": "fix/lcm-registration-startup",
+  "patch_sha256": "21a1547866c9bc6802189e3bc2bd4d8e8c67ed9a655df71adaba352ca571719d",
+  "files": [
+    {
+      "path": "engine.py",
+      "before_sha256": "02eae599043696b2046e56dd8661cff29bb44e4cb12ef6db5501848cb96b4d95",
+      "after_sha256": "fe10700b3dedb671aac23d328e83109217bbcc151048228fee0de0f767d5d4df",
+      "installed_sha256": "b4efbab85341e0129895158b3a915b787188e04c2dc6a6bfd114abadb1512173"
+    },
+    {
+      "path": "__init__.py",
+      "before_sha256": "e30525fd1e6253b1a6b7997f3a0c78c8f426949747e14278cc09b177b9f20f26",
+      "after_sha256": "fb3d81b41a776cac6b27a4917306d6c1eb8ed0cdaa7724c452866261c2d8ffce",
+      "installed_sha256": "84052c14c80b1076893d71454b68bac52c72e7c6687761e2220e73409b170f0a"
+    },
+    {
+      "path": "tests/test_registration_startup.py",
+      "before_sha256": null,
+      "after_sha256": "8c383cfb421d5172e4c39640e530802fd53abbb2ad05deb517fa138519faf973",
+      "installed_sha256": "5d29d363da24ad9ba120d163d24ce2467ddd3a25da1d166f8c5f1de0aa1f33b7"
+    }
+  ],
+  "mechanism": "Registration defers SQLite storage; first activation opens storage under a lock. Unload does not activate unused storage; failed activation closes partial handles and can retry.",
+  "verification": {
+    "passed": 796,
+    "skipped": 3,
+    "lint": "Ruff 0.15.13",
+    "native_plugin_deadline_seconds": 10,
+    "baseline_locked_db": "registration timed out",
+    "candidate_locked_db": "registered, then ingested and read back after release",
+    "activation_retry": "passed",
+    "unused_unload": "passed",
+    "profile_selection": "passed",
+    "model_calls": 0
+  },
+  "restore": "Use the exact base or the existing full recovery source. Check file hashes, apply repair.patch to the base with Git, and verify canonical LF hashes. Preserve unrelated changes and native Windows line endings. Retain the committed repair branch when updating.",
+  "limits": [
+    "Storage may still wait for a writer on first activation; it is outside registration's deadline.",
+    "No claim that every historical timeout had one cause; the observed timeout was also reproduced through the native loader under DB contention.",
+    "Existing Hermes processes require a fresh start."
+  ]
+}

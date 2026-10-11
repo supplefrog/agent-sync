@@ -91,7 +91,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16854,
+      "bytes": 16877,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -296,7 +296,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "37903cdf3edf60f39429fc4676a7c9a2780bade2dc51e391826fd11dee4bed4a",
+      "sha256": "8e6d0c6c0cbd02e1f838b8e96d580ae84ca1758076cd65fa9c6661103d34f297",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
@@ -12054,7 +12054,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 25512,
+      "bytes": 25687,
       "capture_mount": "plugins/hermes-lcm",
       "format": "text",
       "host": "hermes",
@@ -12062,7 +12062,7 @@
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "e30525fd1e6253b1a6b7997f3a0c78c8f426949747e14278cc09b177b9f20f26",
+      "sha256": "fb3d81b41a776cac6b27a4917306d6c1eb8ed0cdaa7724c452866261c2d8ffce",
       "snapshot": "hosts/hermes/plugins/hermes-lcm/__init__.py",
       "source": "plugins/hermes-lcm/__init__.py",
       "strategy": "replace-if-absent"
@@ -12306,7 +12306,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 317310,
+      "bytes": 319566,
       "capture_mount": "plugins/hermes-lcm",
       "format": "text",
       "host": "hermes",
@@ -12314,7 +12314,7 @@
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "02eae599043696b2046e56dd8661cff29bb44e4cb12ef6db5501848cb96b4d95",
+      "sha256": "fe10700b3dedb671aac23d328e83109217bbcc151048228fee0de0f767d5d4df",
       "snapshot": "hosts/hermes/plugins/hermes-lcm/engine.py",
       "source": "plugins/hermes-lcm/engine.py",
       "strategy": "replace-if-absent"

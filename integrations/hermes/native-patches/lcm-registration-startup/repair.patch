@@ -1,0 +1,286 @@
+diff --git a/__init__.py b/__init__.py
+index d89b017..5faf8e1 100644
+--- a/__init__.py
++++ b/__init__.py
+@@ -397,7 +397,9 @@ def register(ctx):
+         import os
+         hermes_home = os.environ.get("HERMES_HOME", os.path.expanduser("~/.hermes"))
+ 
+-    engine = LCMEngine(config=config, hermes_home=hermes_home)
++    # Registration runs under the host's 10s plugin deadline. SQLite startup
++    # can legitimately wait 30s for another writer; activate it on first use.
++    engine = LCMEngine(config=config, hermes_home=hermes_home, defer_storage=True)
+ 
+     # Register as the context engine (replaces ContextCompressor)
+     ctx.register_context_engine(engine)
+diff --git a/engine.py b/engine.py
+index 5db57d0..c3c768d 100644
+--- a/engine.py
++++ b/engine.py
+@@ -562,10 +562,13 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
+     """
+ 
+     def __init__(self, config: LCMConfig | None = None,
+-                 hermes_home: str = ""):
++                 hermes_home: str = "", *, defer_storage: bool = False):
+         self._shutdown_group = _EngineShutdownGroup()
+         self._config = config or LCMConfig.from_env()
+         self._hermes_home = hermes_home
++        self._storage_init_lock = threading.RLock()
++        self._storage_ready = False
++        self._storage_initializing = False
+         self._background_work_condition = threading.Condition(threading.RLock())
+         self._background_schedules_in_flight = 0
+         self._background_shutdown_started = False
+@@ -586,8 +589,8 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
+         self._assertion_extraction_last_error = ""
+         self._assertion_extraction_last_model = ""
+ 
+-        db_path = self._resolve_db_path(hermes_home)
+-        self._bind_storage(db_path, hermes_home)
++        if not defer_storage:
++            self._ensure_storage()
+ 
+         self._session_id: str = ""
+         self._session_platform: str = ""
+@@ -825,6 +828,7 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
+         initialized = False
+         reservation_open = True
+         try:
++            self._ensure_storage()
+             clone_type = type(self)
+             clone = clone_type.__new__(clone_type)
+             clone_type.__init__(
+@@ -894,6 +898,40 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
+             return Path(hermes_home) / "lcm.db"
+         return Path.home() / ".hermes" / "lcm.db"
+ 
++    def __getattr__(self, name: str):
++        if (
++            name in {"_store", "_dag", "_lifecycle", "_assertions", "_query_views",
++                     "_adaptive_retrieval", "_assertion_extractor"}
++            and self.__dict__.get("_storage_ready") is False
++            and not self.__dict__.get("_storage_initializing", False)
++        ):
++            self._ensure_storage()
++            return object.__getattribute__(self, name)
++        raise AttributeError(f"{type(self).__name__!s} has no attribute {name!r}")
++
++    def _ensure_storage(self) -> None:
++        """Open storage on activation, outside the host's plugin-load deadline."""
++        with self._storage_init_lock:
++            if self._storage_ready:
++                return
++            if self._background_shutdown_started:
++                raise RuntimeError("Cannot initialize LCM storage while plugin is unloading")
++            self._storage_initializing = True
++            try:
++                self._bind_storage(self._resolve_db_path(self._hermes_home), self._hermes_home)
++                self._storage_ready = True
++            except BaseException:
++                # Close partial handles, including interrupted initialization.
++                self._close_storage()
++                # Forget them so a later
++                # activation retries instead of returning a closed connection.
++                for name in ("_store", "_dag", "_lifecycle", "_assertions", "_query_views",
++                             "_adaptive_retrieval", "_assertion_extractor"):
++                    self.__dict__.pop(name, None)
++                raise
++            finally:
++                self._storage_initializing = False
++
+     def _bind_storage(self, db_path: str | Path, hermes_home: str = "") -> None:
+         """Bind store/DAG/lifecycle helpers to one SQLite database."""
+         self._assertions = None
+@@ -945,6 +983,8 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
+ 
+     def _close_storage(self) -> None:
+         """Best-effort close of currently bound SQLite helpers."""
++        if self.__dict__.get("_storage_ready") is False and not self._storage_initializing:
++            return
+         for attr in (
+             "_adaptive_retrieval",
+             "_store",
+@@ -1030,6 +1070,10 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
+         with self._shutdown_lock:
+             if self._background_shutdown_started or self._primary_shutdown_complete:
+                 raise RuntimeError("Cannot rebind LCM storage while plugin is unloading")
++            if not self._storage_ready:
++                self._hermes_home = hermes_home
++                self._ensure_storage()
++                return True
+             return self._rebind_storage_for_home_locked(hermes_home)
+ 
+     def _rebind_storage_for_home_locked(self, hermes_home: str) -> bool:
+@@ -6960,7 +7004,7 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
+             "_assertions",
+             "_query_views",
+         ):
+-            resource = getattr(self, name, None)
++            resource = self.__dict__.get(name)
+             close = getattr(resource, "close", None)
+             if callable(close):
+                 try:
+@@ -6993,15 +7037,17 @@ class LCMEngine(CompactionMixin, ResetStateMixin, ReconcileMixin, AuxiliarySessi
+             self._stop_background_work(wait=wait_for_background_work)
+             if not self._primary_shutdown_complete:
+                 self._unregister_active_engine_binding()
+-                if self._adaptive_retrieval is not None:
+-                    self._adaptive_retrieval.close()
+-                self._store.close()
+-                self._dag.close()
+-                self._lifecycle.close()
+-                if self._assertions is not None:
+-                    self._assertions.close()
+-                if self._query_views is not None:
+-                    self._query_views.close()
++                with self._storage_init_lock:
++                    if self._storage_ready:
++                        if self._adaptive_retrieval is not None:
++                            self._adaptive_retrieval.close()
++                        self._store.close()
++                        self._dag.close()
++                        self._lifecycle.close()
++                        if self._assertions is not None:
++                            self._assertions.close()
++                        if self._query_views is not None:
++                            self._query_views.close()
+                 self._primary_shutdown_complete = True
+             if wait_for_background_work:
+                 shutdown_group.discard(self)
+diff --git a/tests/test_registration_startup.py b/tests/test_registration_startup.py
+new file mode 100644
+index 0000000..62e5ba9
+--- /dev/null
++++ b/tests/test_registration_startup.py
+@@ -0,0 +1,130 @@
++"""Registration must survive slow storage without losing the context engine."""
++import importlib.util
++from pathlib import Path
++import sqlite3
++import sys
++
++import pytest
++
++from hermes_lcm.config import LCMConfig
++from hermes_lcm.engine import LCMEngine
++
++
++def load_plugin():
++    root = Path(__file__).resolve().parents[1]
++    name = "hermes_lcm_registration_startup"
++    spec = importlib.util.spec_from_file_location(name, root / "__init__.py", submodule_search_locations=[str(root)])
++    module = importlib.util.module_from_spec(spec)
++    sys.modules[name] = module
++    spec.loader.exec_module(module)
++    return module
++
++
++def test_native_registration_survives_database_writer(tmp_path, monkeypatch):
++    plugins = pytest.importorskip("hermes_cli.plugins")
++    from hermes_cli.plugins_manifest import PluginManifest
++    # This plugin has its own tools.py; keep the actual host's tools package
++    # ahead of the checkout when exercising the native registration seam.
++    monkeypatch.syspath_prepend(str(Path(plugins.__file__).resolve().parents[1]))
++
++    home = tmp_path / "home"
++    home.mkdir()
++    (home / "config.yaml").write_text("plugins:\n  enabled: []\n  load_timeout_seconds: 10\n", encoding="utf-8")
++    db_path = home / "lcm.db"
++    initial = LCMEngine(config=LCMConfig(database_path=str(db_path)), hermes_home=str(home))
++    initial.shutdown_all_instances()
++    monkeypatch.setenv("HERMES_HOME", str(home))
++    monkeypatch.setenv("LCM_DATABASE_PATH", str(db_path))
++    manager = plugins.PluginManager(scope_key=str(home))
++    root = Path(__file__).resolve().parents[1]
++    manifest = PluginManifest(name="hermes-lcm", version="0.21.0", description="LCM startup regression", source="user", path=str(root))
++    writer = sqlite3.connect(db_path)
++    writer.execute("BEGIN IMMEDIATE")
++    try:
++        manager._load_plugin(manifest)
++        loaded = manager._plugins["hermes-lcm"]
++        assert loaded.enabled, loaded.error
++        assert loaded.error is None
++        assert manager._context_engine.name == "lcm"
++    finally:
++        writer.rollback()
++        writer.close()
++    try:
++        clone = manager._context_engine.clone_for_agent()
++        clone.on_session_start("registration-regression")
++        clone.ingest([{"role": "user", "content": "registration recovery marker"}])
++        assert clone._store.get_session_messages("registration-regression")[0]["content"] == "registration recovery marker"
++        assert clone.get_tool_schemas()
++    finally:
++        manager.unload()
++
++
++def test_unload_before_first_use_creates_no_storage(tmp_path, monkeypatch):
++    module = load_plugin()
++    db_path = tmp_path / "unused.db"
++    monkeypatch.setenv("LCM_DATABASE_PATH", str(db_path))
++    callbacks = []
++
++    class Context:
++        def register_context_engine(self, engine):
++            self.engine = engine
++
++        def on_unload(self, callback):
++            callbacks.append(callback)
++
++    ctx = Context()
++    module.register(ctx)
++    assert not db_path.exists()
++    callbacks[0]()
++    assert not db_path.exists()
++    with pytest.raises(RuntimeError, match="unloading"):
++        ctx.engine.clone_for_agent()
++
++
++def test_failed_storage_activation_closes_partial_handles_and_can_retry(tmp_path, monkeypatch):
++    from hermes_lcm import engine as engine_module
++
++    real_store = engine_module.MessageStore
++    real_dag = engine_module.SummaryDAG
++    stores = []
++    attempts = []
++
++    def record_store(*args, **kwargs):
++        store = real_store(*args, **kwargs)
++        stores.append(store)
++        return store
++
++    def fail_first_dag(*args, **kwargs):
++        attempts.append(True)
++        if len(attempts) == 1:
++            raise RuntimeError("startup failure")
++        return real_dag(*args, **kwargs)
++
++    monkeypatch.setattr(engine_module, "MessageStore", record_store)
++    monkeypatch.setattr(engine_module, "SummaryDAG", fail_first_dag)
++    engine = LCMEngine(config=LCMConfig(database_path=str(tmp_path / "retry.db")), defer_storage=True)
++    with pytest.raises(RuntimeError, match="startup failure"):
++        _ = engine._store
++    assert len(stores) == 1
++    assert stores[0]._conn is None
++    try:
++        engine.on_session_start("retry-session")
++        engine.ingest([{"role": "user", "content": "retry marker"}])
++        assert engine._store.get_session_messages("retry-session")[0]["content"] == "retry marker"
++        assert len(stores) == 2
++    finally:
++        engine.shutdown_all_instances()
++
++
++def test_first_activation_uses_requested_profile(tmp_path):
++    original_home = tmp_path / "original"
++    active_home = tmp_path / "active"
++    engine = LCMEngine(config=LCMConfig(), hermes_home=str(original_home), defer_storage=True)
++    try:
++        engine.on_session_start("profile-session", hermes_home=str(active_home))
++        assert not (original_home / "lcm.db").exists()
++        assert engine._store.db_path == active_home / "lcm.db"
++        engine.ingest([{"role": "user", "content": "active profile marker"}])
++        assert engine._store.get_session_messages("profile-session")[0]["content"] == "active profile marker"
++    finally:
++        engine.shutdown_all_instances()

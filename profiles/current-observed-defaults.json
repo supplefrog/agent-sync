@@ -80,11 +80,11 @@
       "model": "gpt-6.1-sol",
       "observation": {
         "kind": "configured-defaults",
-        "observed_at": "2026-10-11T11:36:00.494189Z",
+        "observed_at": "2026-10-11T12:26:59.769262Z",
         "time_status": "known",
         "source": "recovery/current/hosts/hermes/config.json",
-        "source_sha256": "37903cdf3edf60f39429fc4676a7c9a2780bade2dc51e391826fd11dee4bed4a",
-        "native_source_sha256": "4c95de3a9abe6cea53a9b11eb86bdcb57c6418baa1b5f77d5a7683c824af05d2",
+        "source_sha256": "8e6d0c6c0cbd02e1f838b8e96d580ae84ca1758076cd65fa9c6661103d34f297",
+        "native_source_sha256": "9084c234cf6cf7d5e2552d746e36629c897815413ad4c97563b9e771d1810e63",
         "preference_sha256": "3d879054dc1b290eddb0e1fb42236eb255e292e2f457fd66c1a5ea65c3248840"
       },
       "provider": "openai-codex",
