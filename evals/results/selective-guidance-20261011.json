@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "suite": "selective-guidance-20261011",
+  "owner_capability": "instruction-authoring",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "deviation": "Task success was used as a trigger for automatic instruction and skill maintenance despite the supported-deviation requirement; memory management must be manual.",
+      "evidence": "Explicit user correction in the current Codex chat on 2026-10-11 and native baseline prompt regressions.",
+      "baseline_sufficient": false,
+      "why_instruction": "Remove the unconditional trigger at its standing source and native prompt owner, and require explicit memory requests. Native approval settings enforce the write boundary.",
+      "alternative": "Leaving source unchanged retains the conflicting trigger. Disabling all skill discovery or memory reads discards useful capabilities. A separate update patch manager duplicates the existing native merge strategy.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "8713f84230c4e63ee92a54a00fa89d9c27b7329ba0293ec073a75ca241e5f6a6",
+          "after_sha256": "3d879054dc1b290eddb0e1fb42236eb255e292e2f457fd66c1a5ea65c3248840"
+        }
+      }
+    }
+  ],
+  "native_repair": {
+    "base": "6590f13a1ba21b18224a0f53ef2ead004b5fa7d6",
+    "installed_commit": "bfb88d3cff115387c172c22818107b7395ad7c97",
+    "manifest": "integrations/hermes/native-patches/guidance/current-selector/manifest.json"
+  },
+  "checks": {
+    "new_regressions_red": 2,
+    "native_targeted_passed": 180,
+    "native_targeted_skipped": 4,
+    "native_lint_checks_passed": 11,
+    "copy_apply_reverse_and_exact_target_hashes": "passed"
+  },
+  "configuration": {
+    "curator.enabled": false,
+    "auxiliary.background_review.enabled": false,
+    "memory.write_approval": true,
+    "memory.nudge_interval": 0,
+    "skills.write_approval": true,
+    "skills.creation_nudge_interval": 0,
+    "updates.parked_branch_strategy": "update_in_place"
+  },
+  "recovery_artifacts": [
+    "codex:global-instructions",
+    "hermes:standing-instructions",
+    "hermes:settings"
+  ],
+  "recovery_policy_migration": "Verified canonical snapshot mirror; only two generated overlays and four live-verified settings changed; unrelated native plugin drift not adopted.",
+  "limits": [
+    "No new inference, model-quality, latency or cost claim",
+    "Existing processes require a fresh start",
+    "Explicit branch/channel switches are outside update preservation"
+  ]
+}

@@ -18,7 +18,7 @@ For unresolved taste or priorities, present reviewable alternatives before commi
 
 # Instruction authoring
 
-Load Agent Sync's `skills/instruction-authoring/SKILL.md` before authoring instructions or saving preferences. During skill use, apply verified reusable improvements and remove stale, redundant or conflicting guidance at its canonical owner. Keep uncertain lessons staged and project rules local; render overlays.
+Load `skills/instruction-authoring/SKILL.md` before authoring instructions or saving preferences. Edit for supported corrections or explicit user preferences in scope; success alone warrants no edit. Memory writes need an explicit user request. Stage uncertain lessons; keep project rules local; render overlays.
 
 # Scope
 

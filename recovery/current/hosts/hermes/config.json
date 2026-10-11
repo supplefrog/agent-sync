@@ -34,6 +34,7 @@
       "timeout": 30
     },
     "background_review": {
+      "enabled": false,
       "model": "",
       "provider": "auto",
       "timeout": 120
@@ -372,11 +373,11 @@
     "flush_min_turns": 6,
     "memory_char_limit": 2200,
     "memory_enabled": true,
-    "nudge_interval": 10,
+    "nudge_interval": 0,
     "provider": "",
     "user_char_limit": 1375,
     "user_profile_enabled": true,
-    "write_approval": false
+    "write_approval": true
   },
   "model": {
     "default": "gpt-6.1-sol",
@@ -493,7 +494,7 @@
     "write_json_snapshots": false
   },
   "skills": {
-    "creation_nudge_interval": 15,
+    "creation_nudge_interval": 0,
     "disabled": [
       "action-item-extraction",
       "adversarial-ux-test",

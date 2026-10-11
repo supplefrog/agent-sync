@@ -1,20 +1,52 @@
-# Current native skill selector and execution calibration
+# Current selective skill loading and authorized maintenance
 
-Rebased onto native Hermes revision `d0288be5b3330d2442e3907185b8e9d0958297bb` (0.21.5+2453.gd0288be.dirty). The exact baseline and applied hashes are in manifest.json. This replaces the earlier 9fe737a selector bundle; do not apply historical whole-file candidates to current source.
+Native base: `6590f13a1ba21b18224a0f53ef2ead004b5fa7d6`. Installed local commit:
+`bfb88d3cff115387c172c22818107b7395ad7c97` on `local/selective-skill-guidance`.
 
-Normal-session skill loading now requires an explicit request or material specialist/local value. Duplicate catalog maintenance coaching is removed; standing authoring routing, tools, discovery, organization collisions, compact categories, and the one-shot branch remain native. Execution guidance scales checks to the affected behavior, narrows arithmetic tool use, resolves real prerequisites, preserves prior authorization, and asks only for material missing information. External-write readback and literal-preservation sections are byte-identical between baseline and candidate.
+The interactive skill catalog loads requested or materially useful knowledge and required
+protocols. General topical overlap alone requires no load. The catalog, skill tools,
+one-shot branch, compaction reload rule, and approval checks remain available.
+Successful task completion alone requires no skill or instruction write. Memory writes
+require an explicit user request and native approval.
 
-## Installation and rollback
+## Update preservation
 
-This is an exact-base manual native prerequisite, not automatic updater enrollment. Require the recorded native revision and both before-hashes, check the patch on a disposable copy, and apply with `git -c core.autocrlf=false apply`. Require both after-hashes. Preserve unrelated native edits. Rollback requires both after-hashes, reverse-check on a copy, then `git -c core.autocrlf=false apply --reverse`; require both before-hashes. Stop and rebase on any drift.
+Keep this change committed on the local branch with native
+`updates.parked_branch_strategy: update_in_place`. The existing updater merges ordinary
+`origin/main` updates into that branch while preserving local commits. A deliberate branch
+or release-channel switch can leave the branch; it is outside this preservation claim.
+Overlapping upstream edits can produce a visible merge conflict that must be resolved
+without restoring the broad skill-loading or success-based learning clauses.
 
-Start a fresh Hermes process to load changed modules. Active conversations were not restarted; existing assembled prompts can persist.
+The regression tests in this patch guard those clauses through actual prompt construction.
+Do not reapply historical whole-file prompt builders or the older update-engine bundle.
 
-## Evidence
+## Exact-base recovery and rollback
 
-- Baseline and candidate each passed 51 tests through the native per-file isolated runner: external skills, project skills, organization namespaces, one-shot footprint, and guidance-content filtering. UTF-8 was enabled for Windows Unicode fixtures; retries were disabled.
-- Fresh public prompt-builder probes preserve one-shot output and external-state/literal-preservation section hashes. Normal output changes from broad loading to selective loading, with explicit material ambiguity and proportional verification.
-- Exact patch apply/reverse and target hashes are verified separately before completion.
-- Prior 9fe737a evidence reported 67 tests; those results are historical, not a count for this revision. No inference, model-quality gain, cross-provider parity, or automatic update survival is claimed.
+On a clean native checkout at the recorded base, require the before-hash in manifest.json,
+check this patch on a disposable copy, create the local branch, and apply
+`git -c core.autocrlf=false apply selector.patch`. Require both after-hashes, run the native
+test command, and commit the two paths. Retain the existing update-in-place setting.
+For rollback, require the after-hashes and check `git apply --reverse` on a copy first.
+Stop and rebase on revision or hash drift. Preserve unrelated native edits.
 
+Native settings are captured separately in `recovery/current/hosts/hermes/config.json`:
+curator and periodic background review off; memory and skill nudges off; memory writes
+approval-gated; skill writes approval-gated; existing memory reads enabled.
+
+Start a fresh Hermes process to load changed modules and standing instructions.
+Existing sessions retain cached prompts; they were not interrupted.
+
+## Verification and limits
+
+- The two new prompt regressions failed on the base and passed on the candidate.
+- The native isolated runner passed 180 tests, with four Windows skips, across prompt
+  construction, skill discovery, native Git update preservation, and write approvals.
+- Pinned Ruff 0.15.10 and all 11 native `scripts/check` checks passed.
+- Exact patch application/reversal, target hashes, and a later upstream merge passed on
+  a disposable Git copy. Installed readback is recorded in the selected repair receipt.
+- These are source, mechanism, and installation checks. No new provider inference,
+  model-quality, latency, or cost claim is made.
+
+The previous d0288be selector evidence is retained in manifest.json as historical evidence.
 MIT provenance and license remain in ../LICENSE.

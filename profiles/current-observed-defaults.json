@@ -22,7 +22,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "c865707809fb0cb8e0e224751edd6672e05a4c979e16303a66f450a3ce6772bc"
+        "dfdc91e9e488e3f70564fccf34925d741aa1469d4bbd9617b14c33755819d002"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -56,7 +56,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "08c82a28ca3b015b7117b9a21529878497678c2e175913f69b2afb3f65a0ea6a"
+        "f2c2fce51ec2de50fbdec54f29d677c3719b74849e1411ed111c8bf6e02166d9"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -80,12 +80,12 @@
       "model": "gpt-6.1-sol",
       "observation": {
         "kind": "configured-defaults",
-        "native_source_sha256": "a6078bb93d023c622ec8d169030d9824c6c12bf31af63c52f5bea3a6882b6015",
-        "observed_at": "2026-10-02T07:04:51.628548+00:00",
-        "preference_sha256": "b2bcf18107e8ed46ef6985eecab6ee1854cc8931210117430efefe185f8682fb",
+        "observed_at": "2026-10-11T11:36:00.494189Z",
+        "time_status": "known",
         "source": "recovery/current/hosts/hermes/config.json",
-        "source_sha256": "8c703351fea90e86014e4acf7d244a01dfcf2656b26623ff004e3748ceea5714",
-        "time_status": "known"
+        "source_sha256": "37903cdf3edf60f39429fc4676a7c9a2780bade2dc51e391826fd11dee4bed4a",
+        "native_source_sha256": "4c95de3a9abe6cea53a9b11eb86bdcb57c6418baa1b5f77d5a7683c824af05d2",
+        "preference_sha256": "3d879054dc1b290eddb0e1fb42236eb255e292e2f457fd66c1a5ea65c3248840"
       },
       "provider": "openai-codex",
       "reasoning": "medium",

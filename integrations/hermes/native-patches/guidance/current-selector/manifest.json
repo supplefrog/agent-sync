@@ -1,49 +1,94 @@
 {
   "schema_version": 1,
-  "owner": "Hermes native skill selection and execution calibration",
+  "owner": "Hermes native skill selection and authorized maintenance",
   "repository": "https://github.com/NousResearch/hermes-agent",
-  "native_base_revision": "d0288be5b3330d2442e3907185b8e9d0958297bb",
-  "runtime_observed": "0.21.5+2453.gd0288be.dirty",
+  "native_base_revision": "6590f13a1ba21b18224a0f53ef2ead004b5fa7d6",
+  "installed_revision": "bfb88d3cff115387c172c22818107b7395ad7c97",
   "targets": {
     "agent/prompt_builder.py": {
-      "before_sha256": "fcbe56ff59edecf1ea21f62f34c4a027487b7bd9440360a83175c2e137438fa6",
-      "after_sha256": "5f30637977fddbb6c9462cd18f8e8b5b0bc086918f94f8739a1c46fc99b1bdd1"
+      "before_sha256": "d109f9c08441dcc03cc3d7eb52e489cc0de7a68b25007ec2bcb460b0506f95dd",
+      "after_sha256": "7e08e54fc835ab742e7d64beb3c58ed3525c550b69a8775895dcd8c0985a19ab"
     },
-    "tests/agent/test_oneshot_footprint.py": {
-      "before_sha256": "8d9280d7a71fb5ad29865aea17f6b503c4b977dbf3680b23fdc13df7d4bbe1fd",
-      "after_sha256": "eb70d8db6b56f902ccd02a899c0a6b2ca6527d0b70768969d75ebdd2d6e88f3f"
+    "tests/agent/test_selective_skill_guidance.py": {
+      "before_sha256": null,
+      "after_sha256": "65b72b90521751147a878fb0c2f93c07e728262687a39b5981f24ad43ead2b12"
     }
   },
   "artifacts": {
-    "selector.patch": "8944653b2f13d8b7078178c54a33430bfd0b2d33d235def310a31c6ecf30505b",
-    "README.md": "b47f49308b1efbfbe26787dfd1d2357b5302e8f739343488db36102cd0063bbb"
+    "selector.patch": "6cfb85d1aba2e22078877babb22d9c1fbc42671dd8d23de5a0529a5274eaaff1",
+    "README.md": "9de14db0d25f6e86904223456e764cba26600fba26919c45eb2aa66da4715346"
   },
   "license": {
     "spdx": "MIT",
     "source": "../LICENSE",
     "sha256": "e29dfaf6905a8d396a58ea4bd84ad27057756bbd9599b5bec0971ae34d2a2118"
   },
-  "lifecycle": "manual reviewed native prerequisite; not updater enrollment",
+  "lifecycle": {
+    "branch": "local/selective-skill-guidance",
+    "native_strategy": "update_in_place",
+    "owner": "existing Hermes updater; no new patch manager",
+    "ordinary_upstream_merge_probe": "passed",
+    "explicit_branch_or_channel_switch": "outside preservation claim"
+  },
   "mechanism_verification": {
-    "native_targeted_tests": 51,
-    "baseline_and_candidate_passed": true,
-    "public_entry_point_comparison": "passed; identical one-shot output and protected section hashes",
-    "copy_apply_reverse_and_exact_target_hashes": "passed",
-    "installed_native_targeted_tests": 51
+    "new_regressions_red": 2,
+    "native_targeted_passed": 180,
+    "native_targeted_skipped": 4,
+    "native_lint_checks_passed": 11,
+    "copy_apply_reverse_and_exact_target_hashes": "passed"
   },
   "historical_selection": {
-    "native_base_revision": "9fe737aef2dd18a351dff3c4de608d63879a6524",
+    "schema_version": 1,
+    "owner": "Hermes native skill selection and execution calibration",
+    "repository": "https://github.com/NousResearch/hermes-agent",
+    "native_base_revision": "d0288be5b3330d2442e3907185b8e9d0958297bb",
+    "runtime_observed": "0.21.5+2453.gd0288be.dirty",
     "targets": {
       "agent/prompt_builder.py": {
-        "before_sha256": "a14a71dc2d4687dac6405136f841cb421d818d9115c84341e8d178de3f34df67",
-        "after_sha256": "9325b3b18c855241e72293a708ad1538df1f01eabeef6bf77e2d7b222fa43a87"
+        "before_sha256": "fcbe56ff59edecf1ea21f62f34c4a027487b7bd9440360a83175c2e137438fa6",
+        "after_sha256": "5f30637977fddbb6c9462cd18f8e8b5b0bc086918f94f8739a1c46fc99b1bdd1"
       },
       "tests/agent/test_oneshot_footprint.py": {
         "before_sha256": "8d9280d7a71fb5ad29865aea17f6b503c4b977dbf3680b23fdc13df7d4bbe1fd",
-        "after_sha256": "16241d9593189e7421ceb4d9cb0aa0eca249c49f7f08adb124d3e1e5ea533964"
+        "after_sha256": "eb70d8db6b56f902ccd02a899c0a6b2ca6527d0b70768969d75ebdd2d6e88f3f"
       }
     },
-    "native_targeted_tests": 67
+    "artifacts": {
+      "selector.patch": "8944653b2f13d8b7078178c54a33430bfd0b2d33d235def310a31c6ecf30505b",
+      "README.md": "b47f49308b1efbfbe26787dfd1d2357b5302e8f739343488db36102cd0063bbb"
+    },
+    "license": {
+      "spdx": "MIT",
+      "source": "../LICENSE",
+      "sha256": "e29dfaf6905a8d396a58ea4bd84ad27057756bbd9599b5bec0971ae34d2a2118"
+    },
+    "lifecycle": "manual reviewed native prerequisite; not updater enrollment",
+    "mechanism_verification": {
+      "native_targeted_tests": 51,
+      "baseline_and_candidate_passed": true,
+      "public_entry_point_comparison": "passed; identical one-shot output and protected section hashes",
+      "copy_apply_reverse_and_exact_target_hashes": "passed",
+      "installed_native_targeted_tests": 51
+    },
+    "historical_selection": {
+      "native_base_revision": "9fe737aef2dd18a351dff3c4de608d63879a6524",
+      "targets": {
+        "agent/prompt_builder.py": {
+          "before_sha256": "a14a71dc2d4687dac6405136f841cb421d818d9115c84341e8d178de3f34df67",
+          "after_sha256": "9325b3b18c855241e72293a708ad1538df1f01eabeef6bf77e2d7b222fa43a87"
+        },
+        "tests/agent/test_oneshot_footprint.py": {
+          "before_sha256": "8d9280d7a71fb5ad29865aea17f6b503c4b977dbf3680b23fdc13df7d4bbe1fd",
+          "after_sha256": "16241d9593189e7421ceb4d9cb0aa0eca249c49f7f08adb124d3e1e5ea533964"
+        }
+      },
+      "native_targeted_tests": 67
+    },
+    "limits": [
+      "No inference or model-quality claim",
+      "Active processes not restarted",
+      "Historical bundles are not current-source installers"
+    ]
   },
   "limits": [
     "No inference or model-quality claim",

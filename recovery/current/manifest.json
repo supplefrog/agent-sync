@@ -33,7 +33,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 4167,
+      "bytes": 4166,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
@@ -46,7 +46,7 @@
         "6c4bfd40daf8efc6bbc95e67fc182d4870f938b8e203f4e2fd2907a8003a95b9",
         "b6450b48baae1f54ec301965f8aa762ed4a539c4a792cf2370aab75f720a9b64"
       ],
-      "sha256": "c865707809fb0cb8e0e224751edd6672e05a4c979e16303a66f450a3ce6772bc",
+      "sha256": "dfdc91e9e488e3f70564fccf34925d741aa1469d4bbd9617b14c33755819d002",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -91,7 +91,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16833,
+      "bytes": 16854,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -119,6 +119,7 @@
         "auxiliary.approval.model",
         "auxiliary.approval.provider",
         "auxiliary.approval.timeout",
+        "auxiliary.background_review.enabled",
         "auxiliary.background_review.model",
         "auxiliary.background_review.provider",
         "auxiliary.background_review.timeout",
@@ -295,13 +296,13 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "8c703351fea90e86014e4acf7d244a01dfcf2656b26623ff004e3748ceea5714",
+      "sha256": "37903cdf3edf60f39429fc4676a7c9a2780bade2dc51e391826fd11dee4bed4a",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
     },
     {
-      "bytes": 4678,
+      "bytes": 4677,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
@@ -314,7 +315,7 @@
         "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e",
         "f88771c048eaf8d96521ba07aa19bc3b6e1616006e34ef199c45b9cd401497e5"
       ],
-      "sha256": "08c82a28ca3b015b7117b9a21529878497678c2e175913f69b2afb3f65a0ea6a",
+      "sha256": "f2c2fce51ec2de50fbdec54f29d677c3719b74849e1411ed111c8bf6e02166d9",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -13542,7 +13543,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "9d782d2f97a2719eaa0f10f8c31f71fc48f35da7e7169cabd3cf302b33ec3e18",
+  "policy_sha256": "e08ca60520052d029f314ee281b0150eab9334bcd82e3928488bc55dcff53f4c",
   "public_safe": true,
   "schema_version": 1
 }

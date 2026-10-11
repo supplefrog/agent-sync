@@ -8,7 +8,7 @@ This file owns shared standing rules, model preferences, and reviewer dispatch. 
 | Host formatting, artifact links, and necessary native differences | `adapters/codex.json`, `adapters/hermes.json` |
 | Model preferences and fresh reviewer dispatch | `surfaces/core.md`; host overlays load this owner before dispatch |
 | Instruction content, triggers, sentence-level intent, and evaluation | `skills/instruction-authoring` |
-| Automatic checked improvements from reusable workflows during work | `skills/instruction-authoring`; thin standing reminders in the effective host overlays |
+| Supported instruction corrections during work | `skills/instruction-authoring`; thin standing reminders in the effective host overlays |
 | Unresolved Hermes placement | `skills/hermes-self-engineering` |
 | Cross-host placement, parity, deployment, and recovery | `skills/cross-agent-surface-engineering` |
 | Unresolved workflow design | `skills/outcome-first-workflow-design` |
@@ -81,7 +81,7 @@ Only this delimited section is projected into host overlays. Keep shared behavio
 Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence.
 
 ## Authoring
-Load Agent Sync's `skills/instruction-authoring/SKILL.md` before authoring instructions or saving preferences. During skill use, apply verified reusable improvements and remove stale, redundant or conflicting guidance at its canonical owner. Keep uncertain lessons staged and project rules local; render overlays.
+Load `skills/instruction-authoring/SKILL.md` before authoring instructions or saving preferences. Edit for supported corrections or explicit user preferences in scope; success alone warrants no edit. Memory writes need an explicit user request. Stage uncertain lessons; keep project rules local; render overlays.
 
 ## Scope
 Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met.

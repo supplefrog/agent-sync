@@ -153,6 +153,7 @@
             "auxiliary.approval.model",
             "auxiliary.approval.provider",
             "auxiliary.approval.timeout",
+            "auxiliary.background_review.enabled",
             "auxiliary.background_review.model",
             "auxiliary.background_review.provider",
             "auxiliary.background_review.timeout",
