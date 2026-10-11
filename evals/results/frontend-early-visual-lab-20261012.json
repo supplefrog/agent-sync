@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-early-visual-lab-20261012",
+  "owner_capability": "frontend-ui-engineering",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "A playable lab was delivered only after repeated subjective color tweaks. Existing difficult-choice and before-substantial-implementation wording failed to require it before the next small subjective iteration. Existing color guidance did not address foreground/background competition in the full composition.",
+      "evidence": "Direct user correction in frontend-design-lab: labs should be called earlier; a more saturated wallpaper draws attention from the object, and the design skill should attend to color theory.",
+      "baseline_sufficient": false,
+      "why_instruction": "The loaded frontend entrypoint owns decision timing; its existing personal default and taste-selection reference own the playable comparison. Its existing color guidance owns composition-level hierarchy. This is a user-requested correction, not a model-specific capability claim.",
+      "alternative": "No change preserves the failed timing ambiguity. A lab implementation alone cannot carry the reusable trigger to later frontend work. A universal options gate would disrupt exact routine repairs; a new owner duplicates the existing skill.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "b3ff9cf683799d476ad9e8f743f0e3eb1b279c1c5e0e577ca33f9973eedd4a6d",
+          "after_sha256": "6f3905ddba4033e946237f8d5f9f289ef839761b70fa403e7110d7860bd6c56c"
+        },
+        "skills/frontend-ui-engineering/references/personal-design-defaults.md": {
+          "before_sha256": "2b88646dc09f4e40ffaa811c294e2ef4f111512a351267ee7a630d6deb674087",
+          "after_sha256": "f6c8b25d14e30a5f77239dd458bb4386503c46a99935d08434cfb26c8c5a9cc0"
+        },
+        "skills/frontend-ui-engineering/references/taste-selection.md": {
+          "before_sha256": "8b893e1ac325cc380d70c52be7b7d4c0495e4654db10fa5c721c4b54e3ee6796",
+          "after_sha256": "d12527d3de7098076e71a9923f17b08d135ad9595dfea3303fa594c3c9d7b26c"
+        }
+      }
+    }
+  ],
+  "checks": {
+    "decision_probes": [
+      {
+        "case": "The wallpaper still pulls attention from the object after several color revisions; make it a little less saturated.",
+        "expected": "Make an in-context playable lab before another subjective tweak; numeric wording does not remove unresolved hierarchy.",
+        "assessment": "Source decision-boundary review: explicit positive trigger."
+      },
+      {
+        "case": "Set the approved background to the supplied exact token; keep the accepted composition.",
+        "expected": "Apply exact routine repair without a new options round; render and delivery checks still apply.",
+        "assessment": "Source decision-boundary review: routine exception retained."
+      },
+      {
+        "case": "Choose the palette yourself; skip comparisons for this revision.",
+        "expected": "Choose a provisional palette, judge hierarchy in context and preserve delivery checks.",
+        "assessment": "Source decision-boundary review: explicit delegation/waiver retained."
+      }
+    ],
+    "linked_references": "Every relative link in changed Markdown resolves.",
+    "ownership_purpose": "Existing frontend ownership objective, added value and retirement test retained unchanged."
+  },
+  "limits": [
+    "Probes are source decision-boundary reviews, not fresh model inference, natural triggering or behavioral parity.",
+    "Color advice is a composition hypothesis to test in the render, not proof that muted backgrounds are universally superior."
+  ]
+}
