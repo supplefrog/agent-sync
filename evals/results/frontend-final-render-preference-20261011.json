@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-final-render-preference-20261011",
+  "owner_capability": "frontend-ui-engineering",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The user selected a final setup in the local render lab, superseding the previously saved 4x output and no additional supersampling default.",
+      "evidence": "Explicit final user preference relayed in this chat on 2026-10-11: Final correction: 3x output canvas per dimension, 2x supersampling above output, Tent final display filter, SMAA off, MSAA off and no temporal processing. User explicitly calls this a starting preference for renders from now onwards; texture anisotropy remains unspecified.",
+      "baseline_sufficient": false,
+      "why_instruction": "Update the same loaded personal-design-defaults owner so future frontend work uses the chosen setup.",
+      "alternative": "No change retains superseded values; changing only the demo cannot preserve the requested cross-project preference. A new owner would duplicate existing preference ownership.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/references/personal-design-defaults.md": {
+          "before_sha256": "2c26b5863acf76d6deb93422ed5b5badb5afe7fc255c299c8c545fa3706c85a1",
+          "after_sha256": "d51906a44e3883b04d0f28a24294f1e11dad5b0969fce429af6d0a6cfa4b11bc"
+        },
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "0341e0e745a9708c28cff2ec526d95c9a68ebbb4113cef9110ac3ddff4151fa4",
+          "after_sha256": "b3ff9cf683799d476ad9e8f743f0e3eb1b279c1c5e0e577ca33f9973eedd4a6d"
+        }
+      }
+    }
+  ],
+  "checks": {
+    "scope": "Only superseded rendering default and temporal wording changed; playable-options workflow, explicit overrides, practical-limit checks and preview-specific observation scope unchanged. Entry point explicitly loads the owner for render-quality settings, including within an approved direction.",
+    "render_dimensions": "3x physical output per axis; 2x additional supersampling per axis above output, hence 6x physical render target per axis."
+  },
+  "limits": [
+    "Persistence and exact deployment checks; no universal quality/performance or behavior-parity claim."
+  ]
+}

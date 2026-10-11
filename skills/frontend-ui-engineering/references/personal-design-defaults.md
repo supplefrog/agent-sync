@@ -31,7 +31,7 @@ These are this user's cross-project preferences, explicitly requested to persist
 
 ## Canvas rendering preferences
 
-For frontend canvas visuals, default to a canvas at 4× the physical output width and height (16× its pixel area), with full spatial SMAA1x Ultra, no additional supersampling and MSAA off. Keep temporal SMAA off: the user prefers crispness and found its softness undesirable. A current explicit choice or an approved project constraint can override this default; verify practical limits in the actual preview.
+Use the user's standing render-quality preference as the starting point for renders whose pipeline supports these controls: an output canvas at 3× the physical output width and height (9× its pixel area), 2× supersampling above that output in each dimension, a Tent final display filter, SMAA off, MSAA off and no temporal processing. Keep temporal processing off: the user prefers crispness and found temporal SMAA softness undesirable. A current explicit choice or an approved project constraint can override this default; verify practical limits in the actual preview.
 
 When resolving a render-quality complaint, provide independent controls for canvas resolution, additional supersampling, MSAA and spatial SMAA. Show the CSS size, device-pixel ratio, physical output size and actual canvas/render-target dimensions so the user can compare the settings and their visible consequences. Label unsupported combinations or implementation limits rather than presenting an inactive control as working. The user's quality/performance preference over MSAA came from the tested preview; it is not a universal benchmark result.
 
