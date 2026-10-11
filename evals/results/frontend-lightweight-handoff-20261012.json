@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-lightweight-handoff-20261012",
+  "owner_capability": "frontend-ui-engineering",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The frontend owner retained acceptance obligations but did not specify a minimal selected-version handoff, transfer readback, bounded frontend batches and dependency-scoped evidence reuse together. A broad source-invalidation workflow could restart unrelated verification during small comparisons.",
+      "evidence": "The user explicitly approved the proposed lightweight additions and authorized publication from this side conversation. Preserve labs for unresolved visual choices; leave the complete private pipeline unadopted.",
+      "baseline_sufficient": false,
+      "why_instruction": "Extend the existing frontend working sequence for explicit reusable user preferences. Existing selected-versus-finished and retained-finding requirements remain authoritative; no new tool, schema, workflow owner or historical project mapping is installed.",
+      "alternative": "No change retains missing practical triggers. Full pipeline adoption imposes broad collection/review after small edits without demonstrated outcome or cost benefit. Existing transfer helpers remain conditional; no transfer tool is needed for wholly local comparisons.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "b1e700c82a56290a4342b1d1995fea21e1bd082623031dbb61d0a825928d25b1",
+          "after_sha256": "94dde108d304f2bfddae8966da1af63d313795a160265b41d97af454b716f74a"
+        }
+      }
+    }
+  ],
+  "checks": {
+    "linked_references": "All relative Markdown links resolve.",
+    "source_boundaries": [
+      "Iterative batches choose outcome, baseline and project effort ceiling; an exact one-off repair needs no budget document.",
+      "Chosen visual settings and exact receiving files are recorded; visual selection leaves functional defects open.",
+      "Changed rendering dependencies require affected checks and neighbors; unchanged independent evidence can be reused with scoped justification.",
+      "Reuse cannot clear missing evidence or manufacture whole-product acceptance.",
+      "Transfer helpers apply only when environments differ; existing lab guidance, approvals and regression commitments remain unchanged."
+    ],
+    "ownership_purpose": "Existing frontend objective, added value and retirement test retained."
+  },
+  "limits": [
+    "Source decision-boundary checks and publication/readback only; no fresh model comparison, cost measurement or behavioral parity claim.",
+    "No private V15 source or project-specific historical findings are published."
+  ]
+}
