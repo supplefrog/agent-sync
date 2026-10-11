@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-11",
+  "owner": "tools/codex_workspace_mcp.py",
+  "host": "codex",
+  "installed_app_version": "26.1007.2314.0",
+  "purpose": "Fill native creation gaps and export cloud files privately without public hosting or writable cloud deliverable directories.",
+  "mechanism": "Native sign-in RPC, installed app HTTP/WebSocket contracts, stdio MCP registration.",
+  "alternative": "Existing native tools retain coordination and supported assignment; simulated environment finalization cannot create reusable backend configurations.",
+  "checks": {
+    "local_boundary_retry_publication_tests": 21,
+    "tests_passed": true,
+    "fresh_stdio_tool_count": 10,
+    "durable_catalog_read": true,
+    "configuration_identity_readback": true,
+    "malformed_message_recovery": true,
+    "invalid_mutation_rejected_before_write": true,
+    "nonexistent_export_environment_rejected": true,
+    "real_cloud_mutations_performed": 0
+  },
+  "limitations": [
+    "Private backend contracts are version-sensitive.",
+    "No real remote creation or publication was executed during installation verification.",
+    "Real product media transfer still needs its exact file path and running environment ID.",
+    "Durable Codex tasks cannot join ChatGPT projects through the installed native app restriction.",
+    "Source and protocol checks do not establish natural triggering or quality improvements.",
+    "Independent agent review was excluded by the side conversation boundary."
+  ],
+  "retirement": "Remove when native tools cover creation and private export with equivalent identity and uncertainty handling.",
+  "rollback": "Remove the codex-workspace MCP registration; retain exports and uncertain-operation receipts."
+}
