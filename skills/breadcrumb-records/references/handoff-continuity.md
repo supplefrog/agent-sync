@@ -1,0 +1,13 @@
+# Handoff continuity
+
+Use for a handoff between agents, cloud instances or fresh contexts. Reuse the existing project record and transfer mechanism; no new orchestration service, transcript dump or compulsory model review is required.
+
+Before transfer, reconcile the current user instructions and prior authoritative checkpoint with the proposed destination. Carry the material decisions that could change the next action: role/model routing and fallback, spending/account/publication limits, selected design and collaboration preferences, exact source and uncommitted progress, acceptance/rejections, pending work, and stop/next-action boundaries. Distinguish active, superseded, proposed and unresolved decisions; do not turn a historical project allowance into a global default.
+
+In the existing handoff, map each active decision to its source or override, effective owner, destination load point and readback status. A preference stated in chat or buried in an artifact index is not implemented merely because it was copied. Shared reusable rules go through instruction-authoring and canonical reconciliation; project-only decisions stay with the project. Additions do not retroactively approve archived candidates or restart exhausted batches.
+
+Check the effective destination, not just the export manifest. Supply applicable skill/support files and execution preferences that the destination lacks; keep pins when still applicable, and refresh or qualify a snapshot that omits a current decision. Verify the receiver actually reads the relevant owner before the decision it governs. Copied paths, file hashes and catalog visibility prove narrower things than loading or behavior. Keep retained-only evidence and unavailable inputs explicit.
+
+At intake, compare the decision map with the destination's actual instruction stack, current source/status and planned next action. Correct separable omissions within existing authorization. Ask the user about consequential ownership or preference conflicts that the evidence cannot settle, without asking them to reconstruct the whole project. Any remaining material omission stays pending; do not call semantic intake complete because source restoration passed.
+
+Keep one clear current summary and name exactly what it supersedes. Preserve the earlier evidence and rejected alternatives beneath it. Recheck only decisions whose source, instruction version, destination or user override changed; do not repeat a broad history audit for every small repair. Report transport/restoration, decision continuity and runtime/behavior verification separately.

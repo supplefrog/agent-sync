@@ -3,7 +3,7 @@ name: frontend-ui-engineering
 description: Use for frontend design, implementation, and rendered UI review, including image-led new visual identities, major redesigns and reviewable prototypes. Match engineering depth to the requested fidelity. For test-only edits, use this when a UI-specific behavior, accessibility, or visual question needs its guidance.
 license: MIT
 metadata:
-  version: 5.1.12
+  version: 5.1.13
   author: Addy Osmani; Agent Sync adaptation
   compatibility: Requires the project's frontend toolchain and browser rendering for production verification.
   tags: [frontend, ui, accessibility, responsive-design, design-systems]
@@ -34,6 +34,8 @@ These are concrete failures of purpose, not a blacklist of styles or characters.
 Use model judgment for these decisions first, suitable tools/components for concrete implementation gaps, and focused instructions for recurring failures. Keep defect QA for behavior that needs observation; do not replace a coherent first draft with a growing mandatory patch/reviewer loop. When evaluating this guidance after a model change or recurring regression, recheck the affected behavior on fresh representative work with the exact model and active skill recorded, following `instruction-authoring`. Preserve successful capabilities and nearby valid cases; do not infer a weight-level cause or add a model-specific branch from one output. Keep evidence in the existing evaluation owner, without adding a compulsory evaluation to ordinary frontend work.
 
 ## Design authority and delegated taste
+
+At the start of substantial frontend design planning, read [references/design-planning.md](references/design-planning.md). It applies the current preferred planner and fallback without changing implementation/review roles or human taste authority; routine repairs reuse the accepted direction.
 
 For a new visual identity or major redesign, load [references/design-judgment.md](references/design-judgment.md) and use its image-led direction workflow before selecting parts. Explore coherent whole-page worlds, then derive required layouts and consequential states from the selected master. An approved identity or routine repair reuses its references and working parts without new exploration.
 

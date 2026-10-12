@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "status": "user-authorized; source validation passed; runtime behavior untested",
+  "baseline_commit": "5815a4eea4ea55e8a298f04e9d2ef451319d08ae",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "deviation": "The approved design-only free-account planner existed in private handoff prose but not in the shared effective owner; restored source/hash checks did not reconcile all current decisions at destination.",
+      "evidence": "User confirmed restoration, explicitly selected Astra High/xhigh as the planner fallback, and requested checking other coordinator handoff gaps and repairing the handoff process. Earlier handoff retains Sonnet routing; current shared owner and exported cloud snapshot omit it.",
+      "baseline_sufficient": false,
+      "why_instruction": "Centralize the explicit planner preference and user-selected Astra fallback at the existing model-preference owner.",
+      "alternative": "No change leaves the explicit routing absent. Re-exporting identical source does not ensure decision loading. Existing project records and reconciliation can repair this without a new scheduler, watcher or reviewer loop.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "3d879054dc1b290eddb0e1fb42236eb255e292e2f457fd66c1a5ea65c3248840",
+          "after_sha256": "e2f1902892c94d5b2212ac69c8489800ed5f5fa5ddcf8ad2e1c831621d2d928b"
+        }
+      }
+    },
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The approved design-only free-account planner existed in private handoff prose but not in the shared effective owner; restored source/hash checks did not reconcile all current decisions at destination.",
+      "evidence": "User confirmed restoration, explicitly selected Astra High/xhigh as the planner fallback, and requested checking other coordinator handoff gaps and repairing the handoff process. Earlier handoff retains Sonnet routing; current shared owner and exported cloud snapshot omit it.",
+      "baseline_sufficient": false,
+      "why_instruction": "Load the selected planner at design time while keeping assumptions, corrections and labs with the user-facing frontend workflow.",
+      "alternative": "No change leaves the explicit routing absent. Re-exporting identical source does not ensure decision loading. Existing project records and reconciliation can repair this without a new scheduler, watcher or reviewer loop.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "33b5bca7fb4e1bcc0860539fae01287e513cb3c9b90bef46ad711d8eb512ea73",
+          "after_sha256": "42294b4ca572ac69ec7e7e99f2ee32cbe0a4d580326d5754b5684432b434bb9d"
+        },
+        "skills/frontend-ui-engineering/references/design-planning.md": {
+          "before_sha256": "absent",
+          "after_sha256": "4532a4024d22e40e30e461d56857704af177f55946380c66a8292b3a408e2fd4"
+        }
+      }
+    },
+    {
+      "owner": "skills/breadcrumb-records",
+      "basis": "user-correction",
+      "deviation": "The approved design-only free-account planner existed in private handoff prose but not in the shared effective owner; restored source/hash checks did not reconcile all current decisions at destination.",
+      "evidence": "User confirmed restoration, explicitly selected Astra High/xhigh as the planner fallback, and requested checking other coordinator handoff gaps and repairing the handoff process. Earlier handoff retains Sonnet routing; current shared owner and exported cloud snapshot omit it.",
+      "baseline_sufficient": false,
+      "why_instruction": "Repair the demonstrated distinction between preserved instructions and instructions available at their effective destination load point.",
+      "alternative": "No change leaves the explicit routing absent. Re-exporting identical source does not ensure decision loading. Existing project records and reconciliation can repair this without a new scheduler, watcher or reviewer loop.",
+      "artifacts": {
+        "skills/breadcrumb-records/SKILL.md": {
+          "before_sha256": "e738bf95f217847ba51d8d805a795ccf60370d1e28bd3b9e69419791fae69323",
+          "after_sha256": "1941b454ae29480c7a7c06cd68bb984149a074b825ea82d48de6cbe0f89b04b9"
+        },
+        "skills/breadcrumb-records/references/handoff-continuity.md": {
+          "before_sha256": "absent",
+          "after_sha256": "2c49a4b41e54741603adcfdd7ccb46b7a3afc953fc2ab4ac1afea7cb4f45f6a6"
+        }
+      }
+    }
+  ],
+  "verification": {
+    "skills_validated": "2/2",
+    "rendered_standing_overlays": "render and check pass; model runtime-default block unchanged",
+    "links": "all changed Markdown local links resolve",
+    "first_draft_guide": "byte-identical to approved previous revision",
+    "failure_and_nearby_boundaries": [
+      "Historical private handoff contains Sonnet direction but old effective owner omits it; new core/loader specifies it.",
+      "Unavailable free route selects Astra High/xhigh, with no Sol or paid-provider substitution.",
+      "Planning advice remains provisional; human corrections and early local labs remain authoritative.",
+      "Routine repairs reuse accepted direction; archived budgets and candidates are not restarted."
+    ],
+    "evidence_level": "Deterministic/source inspection, not model inference or claimed quality gain."
+  },
+  "official_model_source": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+  "verified_model_efforts": [
+    "high",
+    "xhigh"
+  ],
+  "limits": [
+    "No Claude consultation or Astra inference performed during the side conversation.",
+    "No runtime parity, prevention-rate or total-cost improvement claim.",
+    "Existing project-only batch budgets and rejected candidates remain project-scoped."
+  ]
+}

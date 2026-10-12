@@ -1,7 +1,7 @@
 ---
 name: breadcrumb-records
 description: Use when work grows into a project, or at project release, handoff, interruption and closeout. Organize owned files and preserve decision reasons, evidence and safe continuation.
-version: 1.1.2
+version: 1.1.3
 license: UNLICENSED
 compatibility: Python 3.11+; local evidence files; one writer per record.
 ---
@@ -20,6 +20,8 @@ Use when exploratory work becomes durable, or for a project release, explicit br
 - Move only clearly task-owned files through an explicit source/destination inventory, retaining recovery and checking collisions, references, Git/worktree links and entrypoints. Leave uncertain, shared or unfinished files in place. Filesystem organization and native thread/project membership are separate actions: use the supported host adapter, read back the exact project/thread IDs and report any incomplete association. Never edit conversation databases as an automatic fallback. Host procedures and current limits: [project lifecycle adapters](references/host-association.md).
 
 ## Record, continue and close out
+
+For an agent, cloud or fresh-context handoff, read [handoff-continuity](references/handoff-continuity.md) before declaring intake complete. It compares active decisions with the destination's effective instructions; matching archive bytes alone does not establish that continuity.
 
 Keep one compact record per logical change in the project's existing work/docs area, linked from its README, AGENTS.md, task index or equivalent. Extend an equivalent record; do not duplicate a README, ADR or status record, create a global log, or put private records in the shared skill repository.
 

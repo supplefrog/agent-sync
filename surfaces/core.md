@@ -48,7 +48,15 @@ This block owns approved desired values. Native adapters read it; observations a
 ```
 <!-- /agent-sync-preferences -->
 
-The current migration target is GPT-6.1 Sol for reasoning, planning, coding, design direction, and review. Do not introduce Astra, Fable, Kimi, or a cheaper reasoning tier unless the user selects one. Preserve each role's supported reasoning effort. Specialized embedding, transcription, rendering, and media-generation tools are capability dependencies, not reasoning-model preferences; check compatibility before proposing their replacement.
+The general migration target is GPT-6.1 Sol for reasoning, planning, coding, design direction, and review, subject to the frontend design-planning exception below. Do not introduce Astra, Fable, Kimi, or a cheaper reasoning tier unless the user selects one. Preserve each role's supported reasoning effort. Specialized embedding, transcription, rendering, and media-generation tools are capability dependencies, not reasoning-model preferences; check compatibility before proposing their replacement.
+
+### Frontend design-planning exception
+
+For substantial frontend design planning, prefer Sonnet 5.5 Extra/xhigh through the user's free Claude web account when that exact route is available. Reserve its limited quota for implementation-ready design direction; no routine coding, repository exploration, diagnostic tooling or general engineering/workflow planning. Do not upgrade the account, use a paid/API route, or infer free availability from the model name.
+
+When the free Claude route is unavailable, quota-limited or cannot supply the selected model/effort, use GPT-6 Astra (`gpt-6-astra`) through an authorized native Codex route: High by default, xhigh for harder design planning or an explicit user choice. Report the actual planner, effort and fallback reason. If the selected fallback cannot run under the host/session constraints, report the limitation rather than silently substituting Sol or a paid provider. Current permissions and dispatch restrictions still apply.
+
+This is a design-planner exception, not a change to general runtime defaults, implementation workers or reviewer roles above. The frontend skill owns phase placement and human taste selection; planner advice never establishes acceptance. The user's current choice supersedes the earlier Sol design-planner fallback.
 
 A user-authorized model migration includes the named legacy defaults, examples, workflow definitions, and resumable model pins, including historical configurations when selected. Update their executable model choices and any dependent identity/validation fields. Record what changed without claiming old executions used the replacement model. Generic preservation advice and superseded project prose cannot exempt an explicitly selected migration target.
 
