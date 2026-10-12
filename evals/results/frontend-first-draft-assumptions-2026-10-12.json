@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "capability": "frontend-ui-engineering",
+  "version": "5.1.12",
+  "status": "user-authorized; source checks passed; efficacy untested",
+  "baseline_commit": "e28c8531f1bb52952756e0c85772ceefb5a0cce1",
+  "authorization": "User explicitly requested the agreed workflow changes and said the next draft will be tested in a new thread.",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The existing owner requires anatomy, palette consistency, motion checks and bounded repair but does not require all consequential construction assumptions to be shown upfront or offer reference-specific correction hints during production.",
+      "evidence": "User said visibility must not depend on the model recognizing its own uncertainty. User clarified that correction hints belong at production time beside the construction assumptions. User agreed to relationship-based construction and bounded checks while preserving the human/lab workflow.",
+      "baseline_sufficient": false,
+      "why_instruction": "The missing behavior is task-specific communication and sequencing, owned by the admitted frontend skill. Existing geometry/motion/lab checks are reused, not replaced.",
+      "alternative": "No change leaves the explicit visibility/hint preference unspecified. Runtime changes cannot express this interaction policy. Another reviewer loop or generic advice duplicates existing checks without evidence of benefit.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "94dde108d304f2bfddae8966da1af63d313795a160265b41d97af454b716f74a",
+          "after_sha256": "33b5bca7fb4e1bcc0860539fae01287e513cb3c9b90bef46ad711d8eb512ea73"
+        },
+        "skills/frontend-ui-engineering/references/first-draft.md": {
+          "before_sha256": "absent",
+          "after_sha256": "2aaf6b43ca0a3f7055eaedafd6c5046efe6a9052c8db649be88d975e7e16c035"
+        }
+      }
+    }
+  ],
+  "verification": {
+    "scope": "Source validation only; next fresh-thread draft is the user-led effectiveness test.",
+    "markdown_links_checked": 12,
+    "missing_links": 0,
+    "source_boundaries": [
+      "Selected reference first implementation: consequential confident assumptions shown before construction; tailored hints alongside them.",
+      "Routine repair: inherit approved interpretations and only revisit affected assumptions.",
+      "Unresolved taste: existing local lab procedure remains authoritative.",
+      "No new reviewer, forced approval step, benchmark suite or universal art recipe."
+    ],
+    "evidence_level": "Source inspection and deterministic validation only; no behavioral generation trial."
+  },
+  "limits": [
+    "No new model run or rendered quality comparison was performed.",
+    "No claim of fewer defects, savings, model superiority or cross-host behavioral parity.",
+    "Explicit preference deployment can be checked independently of its unproven first-draft benefit.",
+    "Nearby ordinary repair, text-only/non-reference work, existing approval gates, local labs and accepted styles remain unchanged."
+  ]
+}

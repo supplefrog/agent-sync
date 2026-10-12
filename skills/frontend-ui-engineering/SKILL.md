@@ -3,7 +3,7 @@ name: frontend-ui-engineering
 description: Use for frontend design, implementation, and rendered UI review, including image-led new visual identities, major redesigns and reviewable prototypes. Match engineering depth to the requested fidelity. For test-only edits, use this when a UI-specific behavior, accessibility, or visual question needs its guidance.
 license: MIT
 metadata:
-  version: 5.1.11
+  version: 5.1.12
   author: Addy Osmani; Agent Sync adaptation
   compatibility: Requires the project's frontend toolchain and browser rendering for production verification.
   tags: [frontend, ui, accessibility, responsive-design, design-systems]
@@ -36,6 +36,8 @@ Use model judgment for these decisions first, suitable tools/components for conc
 ## Design authority and delegated taste
 
 For a new visual identity or major redesign, load [references/design-judgment.md](references/design-judgment.md) and use its image-led direction workflow before selecting parts. Explore coherent whole-page worlds, then derive required layouts and consequential states from the selected master. An approved identity or routine repair reuses its references and working parts without new exploration.
+
+For the first implementation from a selected visual reference, read [references/first-draft.md](references/first-draft.md) before constructing parts. It owns visible construction assumptions, correction hints during production, and early bounded checks of defining relationships and motion. Routine repairs retain approved interpretations rather than reopening the whole brief.
 
 Before retrieving missing UI parts or assets, read [references/component-selection.md](references/component-selection.md). It owns theme-aware resource search, premade-component reuse and showing selected parts before product integration. Search relevant resources when local components do not satisfy the selected role; do not rely on this catalog being passively loaded. Routine repairs and approved working parts need no new search.
 
