@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "d0a57fe43210c589f66366a24f36b1b51da03651",
+  "status": "Explicit user preference; deterministic source checks; subjective generation comparison",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "deviation": "Existing routing prefers Sonnet but does not require a pre-image brief followed by a detailed plan grounded in the selected image, and does not fix Sonnet xhigh for both phases.",
+      "evidence": "After viewing 18 varied requirements with three planner briefs and one native GPT Image generation per cell, the user explicitly selected Sonnet xhigh for both the reference brief and the subsequent detailed design plan, with Astra fallback, and requested a workflow update.",
+      "baseline_sufficient": false,
+      "why_instruction": "Persist the explicit cross-project model choice at the model owner and phase sequence at the existing frontend procedure; actual image viewing must precede the detailed plan.",
+      "alternative": "Keeping the old owner leaves phase placement ambiguous. A new workflow or runtime default change would duplicate ownership and alter unrelated work. Extend the existing owners instead.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "e2f1902892c94d5b2212ac69c8489800ed5f5fa5ddcf8ad2e1c831621d2d928b",
+          "after_sha256": "6d1b626f2f56dea6ac23672fec53577ef796347ebb805f1f6aca40538be525ea"
+        }
+      }
+    },
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "Existing routing prefers Sonnet but does not require a pre-image brief followed by a detailed plan grounded in the selected image, and does not fix Sonnet xhigh for both phases.",
+      "evidence": "After viewing 18 varied requirements with three planner briefs and one native GPT Image generation per cell, the user explicitly selected Sonnet xhigh for both the reference brief and the subsequent detailed design plan, with Astra fallback, and requested a workflow update.",
+      "baseline_sufficient": false,
+      "why_instruction": "Persist the explicit cross-project model choice at the model owner and phase sequence at the existing frontend procedure; actual image viewing must precede the detailed plan.",
+      "alternative": "Keeping the old owner leaves phase placement ambiguous. A new workflow or runtime default change would duplicate ownership and alter unrelated work. Extend the existing owners instead.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "42294b4ca572ac69ec7e7e99f2ee32cbe0a4d580326d5754b5684432b434bb9d",
+          "after_sha256": "4ae8396751089f61cae8d5de1b49a60efc410b9a3e76e9385c7872fc0dfcb8b9"
+        },
+        "skills/frontend-ui-engineering/references/design-planning.md": {
+          "before_sha256": "4532a4024d22e40e30e461d56857704af177f55946380c66a8292b3a408e2fd4",
+          "after_sha256": "28a90289071183c9b732c0cb3e15e8e61e9e04fafd6e1afe5aa96a46e03633c6"
+        }
+      }
+    }
+  ],
+  "verification": {
+    "evidence_level": "User-selected preference from first-sample images; no general quality or cost claim",
+    "boundaries": [
+      "New reference: planner brief, native image, human selection, actual-image detailed plan.",
+      "Existing selected reference: reuse it and start the image-based plan.",
+      "Routine repair: reuse accepted plan without consultation.",
+      "Unavailable free Sonnet phase: native Astra with actual phase and fallback reporting.",
+      "General role defaults, implementation and review unchanged."
+    ]
+  },
+  "limits": [
+    "Gallery compares pre-image briefs only; no comparative post-image plan benchmark.",
+    "Identical user inputs and image route do not isolate image-generation variation or native host prompts.",
+    "Publication/readback verifies installed sources, not future natural loading or cloud reload."
+  ]
+}

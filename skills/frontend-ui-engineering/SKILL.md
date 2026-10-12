@@ -3,7 +3,7 @@ name: frontend-ui-engineering
 description: Use for frontend design, implementation, and rendered UI review, including image-led new visual identities, major redesigns and reviewable prototypes. Match engineering depth to the requested fidelity. For test-only edits, use this when a UI-specific behavior, accessibility, or visual question needs its guidance.
 license: MIT
 metadata:
-  version: 5.1.13
+  version: 5.1.14
   author: Addy Osmani; Agent Sync adaptation
   compatibility: Requires the project's frontend toolchain and browser rendering for production verification.
   tags: [frontend, ui, accessibility, responsive-design, design-systems]
@@ -35,7 +35,7 @@ Use model judgment for these decisions first, suitable tools/components for conc
 
 ## Design authority and delegated taste
 
-At the start of substantial frontend design planning, read [references/design-planning.md](references/design-planning.md). It applies the current preferred planner and fallback without changing implementation/review roles or human taste authority; routine repairs reuse the accepted direction.
+Before briefing a new reference image or planning substantial frontend design, read [references/design-planning.md](references/design-planning.md). It routes the pre-image brief and the detailed plan based on the selected image through the current preferred planner and fallback. Implementation/review roles and human taste authority stay with their existing owners; routine repairs reuse the accepted direction.
 
 For a new visual identity or major redesign, load [references/design-judgment.md](references/design-judgment.md) and use its image-led direction workflow before selecting parts. Explore coherent whole-page worlds, then derive required layouts and consequential states from the selected master. An approved identity or routine repair reuses its references and working parts without new exploration.
 
