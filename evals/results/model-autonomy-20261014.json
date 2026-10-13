@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "owner_capability": "instruction-authoring",
+  "suite": "model-autonomy-20261014",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "deviation": "The accepted user preference separates useful available tools from mandatory method routing; the baseline optional-guidance clause does not cover tool availability.",
+      "evidence": "Explicit parallel action request and accepted design direction in Codex chat 01a1370f-dd39-7640-8c00-2e6d621d6aae on 2026-10-14; docs/system-requirements.md records the decision and source-backed limits.",
+      "baseline_sufficient": false,
+      "why_instruction": "This is the existing shared preference owner. Replace its optional-guidance clause rather than append an essay, new skill or model exception. Mandatory protocol reads and executable safeguards remain unchanged.",
+      "alternative": "No change omits the explicit availability-versus-use preference. Runtime fixes remain required for runtime defects; OMP-native mandatory template rules are separately owned and cannot be repaired by this shared sentence.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "6d1b626f2f56dea6ac23672fec53577ef796347ebb805f1f6aca40538be525ea",
+          "after_sha256": "ebc8d8bc7d7c0647b2393ba7ca960f80f7e400780751336968ee371a532171b3"
+        }
+      }
+    }
+  ],
+  "checks": [
+    "Normalized source comparison permits only the selected clause replacement.",
+    "Both generated host overlays contain the replacement through the canonical renderer.",
+    "Standing byte budgets remain satisfied.",
+    "Required protocol reads, permission boundaries, state, cancellation and dispatch rules are unchanged."
+  ],
+  "limits": [
+    "No inference, model-quality, speed, quota-saving or behavioral-parity claim.",
+    "OMP global preference loading and native runtime candidate remain independently checked prerequisites.",
+    "Current full live profile has unrelated recovery drift; scoped overlay checks are required instead."
+  ],
+  "result": {
+    "passed": true,
+    "claim": "Explicit shared preference correction and deterministic source/projection checks only."
+  }
+}

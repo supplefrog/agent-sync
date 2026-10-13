@@ -37,7 +37,7 @@ The current snapshot contains:
 - public plugin selections and enablement where the source is reproducible or an external prerequisite is declared;
 - complete reviewed Hermes-local [native skill packages](native-skill-recovery.md), with support files and parked-package enablement preserved separately;
 - the two thin OMP skill adapters that consume Agent Sync's canonical workflow owners without copying their state machines;
-- no OMP `RULES.md`, because OMP already inherits the same Codex output rule and the duplicate delta was retired.
+- no OMP `RULES.md`; the duplicate delta was retired. The recorded configuration has no effective managed global overlay. Do not infer Codex inheritance; check the selected OMP runtime and discovery configuration before claiming core preferences load.
 
 Config restore is a deep merge. Only allowlisted paths are written, while unknown or sensitive fields already present on the target remain untouched. If selected values already match, restore does not rewrite the file merely to normalize TOML/YAML formatting.
 
