@@ -6,7 +6,7 @@ version: 2.1.0
 
 # OMP Dynamic Workflows Adapter
 
-Canonical owner: `{{agent-signal:AGENT_SIGNAL_ROOT}}/skills/dynamic-workflows/SKILL.md`.
+Canonical owner: resolve `~/.agents/skills/.agent-signal-fleet.json` `source_snapshot`, remove its trailing `render/fleet`, then read `skills/dynamic-workflows/SKILL.md` from that published checkout.
 
 Before using this capability, read the canonical skill and `references/runtime-contract.md`. Use its `scripts/workflow_state.py` for every plan/state mutation; do not duplicate or reinterpret the state machine.
 

@@ -5,7 +5,7 @@
     "max_standing_bytes": {
       "codex": 4086,
       "hermes": 4587,
-      "omp": 2048
+      "omp": 3920
     },
     "recovery_loaded_into_prompt": false,
     "skills": "on-demand",
@@ -17,7 +17,8 @@
     "units": "contracts/instruction-units.json"
   },
   "evidence": [
-    "evals/results/astra-surface-repair-20260926.json"
+    "evals/results/astra-surface-repair-20260926.json",
+    "evals/results/omp-reconciliation-20261014.json"
   ],
   "hosts": {
     "codex": {
@@ -92,26 +93,39 @@
       "runtime": "Hermes Agent 0.21.5+2456.gb7840ef"
     },
     "omp": {
-      "artifact_sha256": [],
+      "artifact_sha256": [
+        "dfceff1d160f2a41ff275549dc0a402c50757baa420419cd198d9de9dbe181de"
+      ],
       "effective_surfaces": [
         "provider.native-system",
         "portable.reconciliation-authority",
         "omp.runtime-native",
-        "omp.project-context"
+        "omp.project-context",
+        "omp.global-instructions",
+        "omp.reduced-system-template",
+        "omp.reduced-tool-descriptions"
       ],
-      "effective_units": [],
+      "effective_units": [
+        "omp.output",
+        "omp.instruction-authoring",
+        "omp.reconciliation",
+        "omp.scope",
+        "omp.evidence",
+        "omp.research",
+        "omp.execution"
+      ],
       "model": "gpt-6-astra",
-      "no_managed_standing_reason": "OMP 18.2.6's Codex discovery provider is not enabled (enabledProviders is empty); fresh native get_state omits the managed standing markers, and no native OMP user-global AGENTS.md is installed.",
       "observation": {
         "kind": "configured-defaults",
-        "observed_at": null,
+        "observed_at": "2026-10-13T23:11:10.234876+00:00",
         "source": "recovery/current/hosts/omp/config.json",
-        "source_sha256": "bb8e76ee1784d6ae2639c6ec6f43e41d82bc50e7b4c4ccb5eff22345f5f87543",
-        "time_status": "unknown"
+        "source_sha256": "759b372fcbff2179d60dcf8eae19ecaf7106d6dd2497e7c0995b054b3a31bb7d",
+        "time_status": "known",
+        "native_source_sha256": "291e55fc3085c40d4355e3e39c4d20a2ee21eda2e983ba57d86b63efd23b9f26"
       },
       "provider": "openai-codex",
       "reasoning": "xhigh",
-      "runtime": "omp 18.2.6"
+      "runtime": "omp 18.8.9"
     }
   },
   "id": "current-observed-defaults",

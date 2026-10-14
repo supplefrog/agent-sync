@@ -194,7 +194,7 @@
       "kind": "runtime-native",
       "scope": "runtime",
       "status": "external",
-      "owner": "oh-my-pi@18.2.6",
+      "owner": "oh-my-pi@18.8.9; stock runtime restored from upstream",
       "target": "OMP prompt builder",
       "model_sensitive": true,
       "backup": "reinstall-runtime",
@@ -249,6 +249,54 @@
       "model_sensitive": false,
       "backup": "project-owned",
       "assembly_order": 300
+    },
+    {
+      "id": "omp.global-instructions",
+      "hosts": [
+        "omp"
+      ],
+      "kind": "user-global",
+      "scope": "user-global",
+      "status": "active",
+      "owner": "surfaces/core.md via adapters/omp.json",
+      "artifact": "recovery/current/hosts/omp/AGENTS.md",
+      "target": "${OMP_HOME}/AGENTS.md",
+      "model_sensitive": true,
+      "backup": "captured",
+      "note": "Public authored delta only; upstream runtime and stock tooling are not captured.",
+      "assembly_order": 200
+    },
+    {
+      "id": "omp.reduced-system-template",
+      "hosts": [
+        "omp"
+      ],
+      "kind": "user-global",
+      "scope": "user-global",
+      "status": "active",
+      "owner": "checked native OMP reduction",
+      "artifact": "recovery/current/hosts/omp/SYSTEM_TEMPLATE.md",
+      "target": "${OMP_HOME}/SYSTEM_TEMPLATE.md",
+      "model_sensitive": true,
+      "backup": "captured",
+      "note": "Public authored delta only; upstream runtime and stock tooling are not captured.",
+      "assembly_order": 110
+    },
+    {
+      "id": "omp.reduced-tool-descriptions",
+      "hosts": [
+        "omp"
+      ],
+      "kind": "hook-injection",
+      "scope": "user-global",
+      "status": "active",
+      "owner": "checked native OMP reduction",
+      "artifact": "recovery/current/hosts/omp/extensions/reduced-tool-guidance.ts",
+      "target": "${OMP_HOME}/extensions/reduced-tool-guidance.ts",
+      "model_sensitive": true,
+      "backup": "captured",
+      "note": "Public authored delta only; upstream runtime and stock tooling are not captured.",
+      "assembly_order": 115
     }
   ]
 }

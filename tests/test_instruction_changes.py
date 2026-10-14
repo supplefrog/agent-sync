@@ -10,6 +10,20 @@ import test_worktree_sync as fixtures
 
 
 class InstructionChangeTests(unittest.TestCase):
+    def test_omp_generated_overlay_requires_its_canonical_source(self):
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+        import instruction_changes
+        import sync_git
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, _, _ = self.setup_instructions(Path(temporary))
+            name = 'recovery/current/hosts/omp/AGENTS.md'
+            target = repo / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text('An unowned replacement for shared preferences.\n')
+            with self.assertRaisesRegex(sync_git.SyncBlocked, 'generated instruction edit requires its canonical source'):
+                instruction_changes.check(repo, repo, 'HEAD', [name])
+
     setUp = fixtures.WorktreeSyncTests.setUp
     fixture = fixtures.WorktreeSyncTests.fixture
     git = fixtures.WorktreeSyncTests.git

@@ -5,25 +5,24 @@
   "instruction_changes": [
     {
       "owner": "surfaces/core.md",
-      "basis": "user-correction",
-      "deviation": "The accepted user preference separates useful available tools from mandatory method routing; the baseline optional-guidance clause does not cover tool availability.",
-      "evidence": "Explicit parallel action request and accepted design direction in Codex chat 01a1370f-dd39-7640-8c00-2e6d621d6aae on 2026-10-14; docs/system-requirements.md records the decision and source-backed limits.",
+      "basis": "mechanical-maintenance",
+      "deviation": "The shared source ownership header names only two host projections; the checked OMP integration adds a third.",
+      "evidence": "The user authorized finished trimmed OMP reconciliation on 2026-10-14. Shared rule publication is independently complete at 102307eaa5d5cb2bd9ff13e9a4ccbbeed4e4e0b3.",
       "baseline_sufficient": false,
-      "why_instruction": "This is the existing shared preference owner. Replace its optional-guidance clause rather than append an essay, new skill or model exception. Mandatory protocol reads and executable safeguards remain unchanged.",
-      "alternative": "No change omits the explicit availability-versus-use preference. Runtime fixes remain required for runtime defects; OMP-native mandatory template rules are separately owned and cannot be repaired by this shared sentence.",
+      "why_instruction": "Update only the non-injected owner header to name adapters/omp.json. The standing model-choice contract is byte-identical to the already published version.",
+      "alternative": "Leave a stale owner header or duplicate the shared preference table in OMP; neither is needed.",
       "artifacts": {
         "surfaces/core.md": {
-          "before_sha256": "6d1b626f2f56dea6ac23672fec53577ef796347ebb805f1f6aca40538be525ea",
-          "after_sha256": "ebc8d8bc7d7c0647b2393ba7ca960f80f7e400780751336968ee371a532171b3"
+          "before_sha256": "ebc8d8bc7d7c0647b2393ba7ca960f80f7e400780751336968ee371a532171b3",
+          "after_sha256": "4694bfc665baaf40cef1756d12ea959071e1a487599385fad2783d856cf678ef"
         }
       }
     }
   ],
   "checks": [
-    "Normalized source comparison permits only the selected clause replacement.",
-    "Both generated host overlays contain the replacement through the canonical renderer.",
-    "Standing byte budgets remain satisfied.",
-    "Required protocol reads, permission boundaries, state, cancellation and dispatch rules are unchanged."
+    "Non-injected owner header names all three generated hosts.",
+    "The standing section is unchanged from the published instruction correction.",
+    "Existing native core loading and deterministic source/projection checks remain bound."
   ],
   "limits": [
     "No inference, model-quality, speed, quota-saving or behavioral-parity claim.",
@@ -32,6 +31,7 @@
   ],
   "result": {
     "passed": true,
-    "claim": "Explicit shared preference correction and deterministic source/projection checks only."
-  }
+    "claim": "Mechanical owner-header maintenance; prior shared preference correction is already published separately."
+  },
+  "shared_rule_published_commit": "102307eaa5d5cb2bd9ff13e9a4ccbbeed4e4e0b3"
 }

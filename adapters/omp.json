@@ -3,16 +3,60 @@
   "schema_version": 1,
   "host": "omp",
   "instructions": {
-    "source": "recovery/current/hosts/codex/AGENTS.md",
-    "target": "{CODEX_HOME}/AGENTS.md",
-    "strategy": "inactive",
-    "reason": "OMP 18.1.10's opt-out Codex discovery provider is not enabled, and no native OMP user-global AGENTS.md is installed."
+    "source": "recovery/current/hosts/omp/AGENTS.md",
+    "target": "{OMP_HOME}/AGENTS.md",
+    "strategy": "generated",
+    "required_markers": [
+      "[OUTPUT]",
+      "[INSTRUCTION-AUTHORING]",
+      "[SCOPE]",
+      "[EVIDENCE]",
+      "[RESEARCH]",
+      "[EXECUTION]",
+      "[RECONCILIATION]"
+    ],
+    "projection": {
+      "format": "tagged-lines",
+      "sections": [
+        {
+          "label": "OUTPUT",
+          "shared": "communication"
+        },
+        {
+          "label": "INSTRUCTION-AUTHORING",
+          "shared": "authoring"
+        },
+        {
+          "label": "SCOPE",
+          "shared": "scope"
+        },
+        {
+          "label": "EVIDENCE",
+          "shared": "evidence"
+        },
+        {
+          "label": "RESEARCH",
+          "shared": "research"
+        },
+        {
+          "label": "EXECUTION",
+          "shared": "execution"
+        },
+        {
+          "label": "RECONCILIATION",
+          "shared": "reconciliation"
+        }
+      ]
+    }
   },
   "skills": {
     "source": "skills",
     "selection": "registry:admitted",
     "install_root": "{SHARED_SKILLS_HOME}",
-    "discovery": {"kind": "native", "value": "{SHARED_SKILLS_HOME}"}
+    "discovery": {
+      "kind": "native",
+      "value": "{SHARED_SKILLS_HOME}"
+    }
   },
   "routing": {
     "status": "automatic-selection-active-workflow",
@@ -26,7 +70,12 @@
     "surfaces": [
       {
         "target_surface": "omp-workflow",
-        "required_fields": ["provider", "model", "reasoning_effort", "decision_receipt"],
+        "required_fields": [
+          "provider",
+          "model",
+          "reasoning_effort",
+          "decision_receipt"
+        ],
         "pinning": "The definitive DAG state selects once at initialization; resume and retries reuse the exact receipt.",
         "native_owner": "skills/dynamic-workflows plus OMP route-<route-id> named agents",
         "enforcement": "live-native-skill-and-agent-adapter",

@@ -1,6 +1,8 @@
 {
   "providers": {
     "openai-codex": {
+      "auth": "oauth",
+      "baseUrl": "https://chatgpt.com/backend-api",
       "models": [
         {
           "api": "openai-codex-responses",

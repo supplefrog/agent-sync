@@ -57,7 +57,7 @@
     },
     {
       "category": "runtime",
-      "desired_state": "OMP 18.2.6 installed",
+      "desired_state": "OMP 18.8.9 installed",
       "enablement": "installed",
       "host": "omp",
       "id": "omp-runtime",
@@ -70,7 +70,7 @@
           "omp",
           "--version"
         ],
-        "contains": "18.2.6",
+        "contains": "18.8.9",
         "kind": "command"
       },
       "redaction": "metadata-only",
@@ -80,7 +80,7 @@
         "reference": "install the declared OMP runtime"
       },
       "source_identity": "prerequisite:install the declared OMP runtime",
-      "version_or_hash": "version:18.2.6"
+      "version_or_hash": "version:18.8.9"
     },
     {
       "category": "settings",
@@ -149,7 +149,7 @@
         "reference": "omp:settings"
       },
       "source_identity": "recovery-artifact:omp:settings",
-      "version_or_hash": "sha256:bb8e76ee1784d6ae2639c6ec6f43e41d82bc50e7b4c4ccb5eff22345f5f87543"
+      "version_or_hash": "sha256:759b372fcbff2179d60dcf8eae19ecaf7106d6dd2497e7c0995b054b3a31bb7d"
     },
     {
       "category": "instructions",
@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:f2c2fce51ec2de50fbdec54f29d677c3719b74849e1411ed111c8bf6e02166d9"
+      "version_or_hash": "sha256:74171a296af2d0de3437320f72b0074380227cd14247fa8a50fb296cd1b12256"
     },
     {
       "category": "instructions",
@@ -195,37 +195,30 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:dfdc91e9e488e3f70564fccf34925d741aa1469d4bbd9617b14c33755819d002"
+      "version_or_hash": "sha256:fbe9eb410f614274a0c4472d1ffc44b400658c61696e7454ee3de939de34f26c"
     },
     {
       "category": "instructions",
-      "desired_state": "OMP's opt-out Codex discovery provider remains disabled",
-      "enablement": "absent",
+      "desired_state": "Native OMP context loads the generated shared core once",
+      "enablement": "managed",
       "host": "omp",
       "id": "omp-instructions",
-      "owner": "OMP 18.1.10 native discovery configuration",
+      "owner": "surfaces/core.md via adapters/omp.json",
       "prerequisites": [
-        "omp runtime 18.1.10 is installed"
+        "OMP18.8.9 native context discovery"
       ],
       "readback": {
-        "argv": [
-          "omp",
-          "config",
-          "get",
-          "enabledProviders",
-          "--json"
-        ],
-        "kind": "command",
-        "not_contains": "codex"
+        "kind": "recovery-artifact",
+        "reference": "omp:global-instructions"
       },
-      "redaction": "metadata-only",
+      "redaction": "public-artifact",
       "required": true,
       "restore": {
-        "kind": "runtime-managed",
-        "reference": "OMP native discovery provider state"
+        "kind": "recovery-artifact",
+        "reference": "omp:global-instructions"
       },
-      "source_identity": "runtime-managed:OMP native discovery provider state",
-      "version_or_hash": "runtime-version:18.1.10"
+      "source_identity": "recovery-artifact:omp:global-instructions",
+      "version_or_hash": "sha256:dfceff1d160f2a41ff275549dc0a402c50757baa420419cd198d9de9dbe181de"
     },
     {
       "category": "hook",
@@ -468,7 +461,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:f04a0277d5f25be59fe20800bf09f569767abba00446f013f133b9771eec023b"
+      "version_or_hash": "sha256:a1bb75e9735ba8682f3b50e865636a09e9969202758ee4425de7f63d6949b140"
     },
     {
       "category": "native-skill",
@@ -948,6 +941,52 @@
       },
       "source_identity": "recovery-artifact:codex:native-prototype-license",
       "version_or_hash": "sha256:4ff5bdb7887ec1435c9cab0e8d1a7caee704d894d65c2a008ccc68b1cc2f260b"
+    },
+    {
+      "category": "instructions",
+      "desired_state": "Checked native OMP reduction delta retained",
+      "enablement": "managed",
+      "host": "omp",
+      "id": "omp-reduced-system-template",
+      "owner": "checked native OMP reduction",
+      "prerequisites": [
+        "OMP18.8.9 native context discovery"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "omp:reduced-system-template"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "omp:reduced-system-template"
+      },
+      "source_identity": "recovery-artifact:omp:reduced-system-template",
+      "version_or_hash": "sha256:80197a4a8bd3aac6c52ca9594237f61da410f1183bed1bb40c9acfceaf5e7900"
+    },
+    {
+      "category": "hook",
+      "desired_state": "Checked native OMP reduction delta retained",
+      "enablement": "managed",
+      "host": "omp",
+      "id": "omp-reduced-tool-descriptions",
+      "owner": "checked native OMP reduction",
+      "prerequisites": [
+        "OMP18.8.9 native context discovery"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "omp:reduced-tool-descriptions"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "omp:reduced-tool-descriptions"
+      },
+      "source_identity": "recovery-artifact:omp:reduced-tool-descriptions",
+      "version_or_hash": "sha256:197cd4c1fcad4b39e5d594c6c4f92271eae9299cf83693e1a140b4b29fe08f4a"
     }
   ],
   "exclusions": [

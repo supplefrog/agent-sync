@@ -37,7 +37,7 @@ The current snapshot contains:
 - public plugin selections and enablement where the source is reproducible or an external prerequisite is declared;
 - complete reviewed Hermes-local [native skill packages](native-skill-recovery.md), with support files and parked-package enablement preserved separately;
 - the two thin OMP skill adapters that consume Agent Sync's canonical workflow owners without copying their state machines;
-- no OMP `RULES.md`; the duplicate delta was retired. The recorded configuration has no effective managed global overlay. Do not infer Codex inheritance; check the selected OMP runtime and discovery configuration before claiming core preferences load.
+- OMP native `AGENTS.md` generated from the shared core, the checked reduced `SYSTEM_TEMPLATE.md`, request-description hook, and selected settings/provider transport fields. Stock OMP is restored from upstream; no stock binary, stock tool implementation, credentials, or private history are copied. Codex inheritance stays disabled; fresh OMP18.8.9 context and loopback-request checks load the shared core exactly once.
 
 Config restore is a deep merge. Only allowlisted paths are written, while unknown or sensitive fields already present on the target remain untouched. If selected values already match, restore does not rewrite the file merely to normalize TOML/YAML formatting.
 
@@ -49,11 +49,11 @@ Recovery-artifact host-delta bindings use the selected artifact digest rather th
 
 Each host-delta entry records its host, surface, owner, desired state, source identity, version or artifact hash, enablement, external prerequisites, restore method, redaction policy, and deterministic readback. Command readbacks are selected from a fixed Agent Sync allowlist; the manifest cannot introduce executable argv. Fleet binding is derived from tracked `registry.json` plus admitted canonical skill trees, so a fresh clone does not need generated `render/` output before host-delta validation. `python tools/host_deltas.py verify` validates the schema, checks recovery/fleet bindings, and emits one of these statuses:
 
-- `restored` — this run wrote the allowlisted state and readback succeeded;
-- `verified` — state already matched and readback succeeded;
-- `prerequisite-missing` — the public manifest is complete but a required external runtime/source is absent;
-- `excluded-private` — the state is deliberately outside the public contract; or
-- `failed` — required recoverable state did not pass readback.
+- `restored` â€” this run wrote the allowlisted state and readback succeeded;
+- `verified` â€” state already matched and readback succeeded;
+- `prerequisite-missing` â€” the public manifest is complete but a required external runtime/source is absent;
+- `excluded-private` â€” the state is deliberately outside the public contract; or
+- `failed` â€” required recoverable state did not pass readback.
 
 ## What is deliberately excluded
 

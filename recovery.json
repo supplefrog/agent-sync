@@ -9681,7 +9681,8 @@
             "symbolPreset",
             "textVerbosity",
             "theme.dark",
-            "theme.light"
+            "theme.light",
+            "dev.autoqa"
           ],
           "kind": "config",
           "snapshot": "hosts/omp/config.json",
@@ -9721,12 +9722,38 @@
           "format": "yaml",
           "id": "astra-model-registration",
           "include": [
-            "providers.openai-codex.models"
+            "providers.openai-codex.models",
+            "providers.openai-codex.baseUrl",
+            "providers.openai-codex.auth"
           ],
           "kind": "config",
           "snapshot": "hosts/omp/models.json",
           "source": "models.yml",
           "strategy": "merge"
+        },
+        {
+          "id": "global-instructions",
+          "kind": "text",
+          "source": "AGENTS.md",
+          "snapshot": "hosts/omp/AGENTS.md",
+          "format": "text",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "id": "reduced-system-template",
+          "kind": "text",
+          "source": "SYSTEM_TEMPLATE.md",
+          "snapshot": "hosts/omp/SYSTEM_TEMPLATE.md",
+          "format": "text",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "id": "reduced-tool-descriptions",
+          "kind": "text",
+          "source": "extensions/reduced-tool-guidance.ts",
+          "snapshot": "hosts/omp/extensions/reduced-tool-guidance.ts",
+          "format": "text",
+          "strategy": "replace-if-absent"
         }
       ]
     }

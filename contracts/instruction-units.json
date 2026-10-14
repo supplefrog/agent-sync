@@ -368,6 +368,149 @@
         "effective-stack-changed"
       ],
       "priority": 50
+    },
+    {
+      "id": "omp.output",
+      "path": "recovery/current/hosts/omp/AGENTS.md",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[OUTPUT]"
+      },
+      "class": "generic-steering",
+      "status": "effective",
+      "hosts": [
+        "omp"
+      ],
+      "owner": "surfaces/core.md",
+      "suite": "evals/core-instruction-retirement.json",
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
+      "priority": 50
+    },
+    {
+      "id": "omp.instruction-authoring",
+      "path": "recovery/current/hosts/omp/AGENTS.md",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[INSTRUCTION-AUTHORING]"
+      },
+      "class": "workflow-routing",
+      "status": "effective",
+      "hosts": [
+        "omp"
+      ],
+      "owner": "surfaces/core.md",
+      "suite": "evals/capability-admission.json",
+      "retest_on": [
+        "instruction-owner-changed",
+        "instruction-changed"
+      ],
+      "priority": 80
+    },
+    {
+      "id": "omp.reconciliation",
+      "path": "recovery/current/hosts/omp/AGENTS.md",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[RECONCILIATION]"
+      },
+      "class": "safety-governance",
+      "status": "effective",
+      "hosts": [
+        "omp"
+      ],
+      "owner": "surfaces/core.md",
+      "suite": "evals/capability-admission.json",
+      "retest_on": [
+        "curator-policy-changed",
+        "instruction-changed"
+      ],
+      "priority": 100
+    },
+    {
+      "id": "omp.scope",
+      "path": "recovery/current/hosts/omp/AGENTS.md",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[SCOPE]"
+      },
+      "class": "generic-steering",
+      "status": "effective",
+      "hosts": [
+        "omp"
+      ],
+      "owner": "surfaces/core.md",
+      "suite": "evals/core-instruction-retirement.json",
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
+      "priority": 60
+    },
+    {
+      "id": "omp.evidence",
+      "path": "recovery/current/hosts/omp/AGENTS.md",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[EVIDENCE]"
+      },
+      "class": "generic-steering",
+      "status": "effective",
+      "hosts": [
+        "omp"
+      ],
+      "owner": "surfaces/core.md",
+      "suite": "evals/core-instruction-retirement.json",
+      "retest_on": [
+        "model-release",
+        "effective-stack-changed",
+        "instruction-changed"
+      ],
+      "priority": 70
+    },
+    {
+      "id": "omp.research",
+      "path": "recovery/current/hosts/omp/AGENTS.md",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[RESEARCH]"
+      },
+      "class": "workflow-routing",
+      "status": "effective",
+      "hosts": [
+        "omp"
+      ],
+      "owner": "surfaces/core.md",
+      "suite": "evals/primary-source-research.json",
+      "retest_on": [
+        "research-provider-changed",
+        "instruction-changed"
+      ],
+      "priority": 80
+    },
+    {
+      "id": "omp.execution",
+      "path": "recovery/current/hosts/omp/AGENTS.md",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[EXECUTION]"
+      },
+      "class": "safety-governance",
+      "status": "effective",
+      "hosts": [
+        "omp"
+      ],
+      "owner": "surfaces/core.md",
+      "suite": "evals/capability-admission.json",
+      "retest_on": [
+        "curator-policy-changed",
+        "instruction-changed"
+      ],
+      "priority": 100
     }
   ]
 }

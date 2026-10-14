@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "owner_capability": "instruction-authoring",
+  "suite": "omp-reconciliation-20261014",
+  "instruction_changes": [
+    {
+      "owner": "adapters/omp.json",
+      "basis": "user-correction",
+      "deviation": "OMP has no verified shared core load point, and its finished native reduction is absent from recovery.",
+      "evidence": "Direct user approval in the originating side conversation on 2026-10-14: publish 7772fc9 and reconcile the finished trimmed OMP; upstream restores stock OMP.",
+      "baseline_sufficient": false,
+      "why_instruction": "Project the existing shared owner once through native OMP context, without cloning Codex-only adapter rules or adding a theory essay.",
+      "alternative": "Enabling broad Codex inheritance risks unrelated imported context; capturing the entire OMP installation duplicates upstream.",
+      "artifacts": {
+        "adapters/omp.json": {
+          "before_sha256": "ca95e1ebe4e67366e68b80360b20537ba5648cf3cecd731262f0b00edeb1ea60",
+          "after_sha256": "a6e29519f3b431222e087276fb131a7e1ccf71fc57070a346958e5b03f088b74"
+        }
+      }
+    },
+    {
+      "owner": "checked native OMP reduction",
+      "basis": "user-correction",
+      "deviation": "Finished native OMP reduction cannot be recovered or maintained from the previous default-only snapshot.",
+      "evidence": "Direct user approval on 2026-10-14 to reconcile finished trimmed OMP; the native reduction report and no-inference deployment/request checks identify these exact deltas.",
+      "baseline_sufficient": false,
+      "why_instruction": "Preserve the already checked native template and request hook as host deltas; no new method mandates or stock runtime copy.",
+      "alternative": "Upstream restores stock OMP but cannot restore our authored reduction; copying the full installation would duplicate upstream.",
+      "artifacts": {
+        "recovery/current/hosts/omp/SYSTEM_TEMPLATE.md": {
+          "before_sha256": "absent",
+          "after_sha256": "80197a4a8bd3aac6c52ca9594237f61da410f1183bed1bb40c9acfceaf5e7900"
+        },
+        "recovery/current/hosts/omp/extensions/reduced-tool-guidance.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "197cd4c1fcad4b39e5d594c6c4f92271eae9299cf83693e1a140b4b29fe08f4a"
+        }
+      }
+    }
+  ],
+  "checks": [
+    "Native shared core loads exactly once.",
+    "Loopback request preserves all schemas and reduced descriptions.",
+    "All 16 admitted shared skills remain discoverable.",
+    "32 scoped tests and 11 subtests passed.",
+    "Public recovery binds only curated deltas; exact oauth selector rejects arbitrary auth state."
+  ],
+  "limits": [
+    "No model-quality claim or full Hermes parity.",
+    "Shared correction is already published; this source is requalified against that exact commit."
+  ],
+  "result": {
+    "passed": true,
+    "claim": "Verified native loading, request preservation and deterministic recovery integration; publication pending."
+  }
+}

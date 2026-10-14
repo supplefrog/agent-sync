@@ -18,7 +18,7 @@ class RenderInstructionTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.repo = Path(self.temp.name)
-        for relative in ("surfaces/core.md", "adapters/codex.json", "adapters/hermes.json"):
+        for relative in ("surfaces/core.md", "adapters/codex.json", "adapters/hermes.json", "adapters/omp.json"):
             target = self.repo / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / relative, target)
@@ -37,6 +37,8 @@ class RenderInstructionTests(unittest.TestCase):
         self.assertIn("# Communication", first["hermes"][1])
         self.assertIn("file:///absolute/path", first["hermes"][1])
         self.assertNotIn("file:///absolute/path", first["codex"][1])
+        self.assertIn("[OUTPUT]", first["omp"][1])
+        self.assertNotIn("Small tasks: side browser by default.", first["omp"][1])
 
     def test_shared_edit_changes_both_projections_and_rejects_old_output(self):
         original = renderer.projections(self.repo)

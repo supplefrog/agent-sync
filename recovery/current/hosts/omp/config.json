@@ -2,6 +2,7 @@
   "colorBlindMode": false,
   "defaultThinkingLevel": "xhigh",
   "dev": {
+    "autoqa": false,
     "autoqaConsent": "granted"
   },
   "memory": {

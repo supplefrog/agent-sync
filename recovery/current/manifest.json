@@ -13307,7 +13307,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 535,
+      "bytes": 556,
       "format": "yaml",
       "host": "omp",
       "id": "settings",
@@ -13324,17 +13324,18 @@
         "symbolPreset",
         "textVerbosity",
         "theme.dark",
-        "theme.light"
+        "theme.light",
+        "dev.autoqa"
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "bb8e76ee1784d6ae2639c6ec6f43e41d82bc50e7b4c4ccb5eff22345f5f87543",
+      "sha256": "759b372fcbff2179d60dcf8eae19ecaf7106d6dd2497e7c0995b054b3a31bb7d",
       "snapshot": "hosts/omp/config.json",
       "source": "config.yml",
       "strategy": "merge"
     },
     {
-      "bytes": 193,
+      "bytes": 527,
       "format": "json",
       "host": "omp",
       "id": "mcp-tools",
@@ -13343,20 +13344,20 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "f04a0277d5f25be59fe20800bf09f569767abba00446f013f133b9771eec023b",
+      "sha256": "a1bb75e9735ba8682f3b50e865636a09e9969202758ee4425de7f63d6949b140",
       "snapshot": "hosts/omp/mcp.json",
       "source": "mcp.json",
       "strategy": "merge"
     },
     {
-      "bytes": 1930,
+      "bytes": 2041,
       "format": "text",
       "host": "omp",
       "id": "dynamic-workflows-adapter",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "58178e67f29b1db8ed1ac3d077f38ef8a59fd0a90ab7f2a4350a3cef131754e2",
+      "sha256": "8e8f233cbc55dbc5344295dbd27996f5572ffd4a62ab13b9e49ed03d6889ad4e",
       "snapshot": "hosts/omp/adapters/dynamic-workflows.md",
       "source": "skills/dynamic-workflows/SKILL.md",
       "strategy": "replace-if-absent"
@@ -13375,16 +13376,18 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 468,
+      "bytes": 543,
       "format": "yaml",
       "host": "omp",
       "id": "astra-model-registration",
       "include": [
-        "providers.openai-codex.models"
+        "providers.openai-codex.models",
+        "providers.openai-codex.baseUrl",
+        "providers.openai-codex.auth"
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "067b96f104c4a7f78f491dcce54b956edcbe3776ffcc3d23610c0de5d87f19ae",
+      "sha256": "c7e8da4fb2209a0c91503c8c03866270d3d02a5e3fe56eb716ae334ba26d5ed1",
       "snapshot": "hosts/omp/models.json",
       "source": "models.yml",
       "strategy": "merge"
@@ -13540,10 +13543,49 @@
       "snapshot": "hosts/codex/skills/prototype/LICENSE.txt",
       "source": "skills/prototype/LICENSE.txt",
       "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 3920,
+      "format": "text",
+      "host": "omp",
+      "id": "global-instructions",
+      "include": [],
+      "kind": "text",
+      "portable_paths": false,
+      "sha256": "dfceff1d160f2a41ff275549dc0a402c50757baa420419cd198d9de9dbe181de",
+      "snapshot": "hosts/omp/AGENTS.md",
+      "source": "AGENTS.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 3176,
+      "format": "text",
+      "host": "omp",
+      "id": "reduced-system-template",
+      "include": [],
+      "kind": "text",
+      "portable_paths": false,
+      "sha256": "80197a4a8bd3aac6c52ca9594237f61da410f1183bed1bb40c9acfceaf5e7900",
+      "snapshot": "hosts/omp/SYSTEM_TEMPLATE.md",
+      "source": "SYSTEM_TEMPLATE.md",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 2983,
+      "format": "text",
+      "host": "omp",
+      "id": "reduced-tool-descriptions",
+      "include": [],
+      "kind": "text",
+      "portable_paths": false,
+      "sha256": "197cd4c1fcad4b39e5d594c6c4f92271eae9299cf83693e1a140b4b29fe08f4a",
+      "snapshot": "hosts/omp/extensions/reduced-tool-guidance.ts",
+      "source": "extensions/reduced-tool-guidance.ts",
+      "strategy": "replace-if-absent"
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "e08ca60520052d029f314ee281b0150eab9334bcd82e3928488bc55dcff53f4c",
+  "policy_sha256": "e530149093f05e4531b73d5598b9b5661a8728a5bf6363fa10def1cac12514f6",
   "public_safe": true,
   "schema_version": 1
 }

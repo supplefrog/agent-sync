@@ -13,7 +13,9 @@ import sync_git
 
 INDEX = 'contracts/instruction-surfaces.json'
 GENERATED = {'recovery/current/hosts/codex/AGENTS.md',
-             'recovery/current/hosts/hermes/SOUL.md'}
+             'recovery/current/hosts/hermes/SOUL.md',
+             'recovery/current/hosts/omp/AGENTS.md'}
+ADAPTERS = {'adapters/codex.json', 'adapters/hermes.json', 'adapters/omp.json'}
 
 
 def _before(repo, base, name):
@@ -65,7 +67,7 @@ def check(candidate: Path, source: Path, base: str, paths):
             for row in spec.get('artifacts', []):
                 native_owners['recovery/current/' + row['snapshot']] = 'recovery:' + host + ':' + row['id']
     source_changes = set()
-    for source_name in ('surfaces/core.md', 'adapters/codex.json', 'adapters/hermes.json'):
+    for source_name in {'surfaces/core.md', *ADAPTERS}:
         if source_name in paths:
             source_path = candidate / source_name
             new_source = source_path.read_bytes() if source_path.is_file() else None
@@ -75,7 +77,7 @@ def check(candidate: Path, source: Path, base: str, paths):
     for name in paths:
         path = candidate / name
         if name in GENERATED:
-            host_adapter = 'adapters/codex.json' if '/codex/' in name else 'adapters/hermes.json'
+            host_adapter = 'adapters/' + Path(name).parts[3] + '.json'
             if not ({'surfaces/core.md', host_adapter} & source_changes):
                 if _before(source, base, name) != (path.read_bytes() if path.is_file() else None):
                     raise sync_git.SyncBlocked('generated instruction edit requires its canonical source: ' + name)
@@ -86,7 +88,7 @@ def check(candidate: Path, source: Path, base: str, paths):
             owner = capability_owners.get(parts[1])
             if owner != 'skills/' + parts[1]:
                 raise sync_git.SyncBlocked('unowned instruction capability: ' + name)
-        elif name in owners or name.startswith('surfaces/') or name in {'adapters/codex.json', 'adapters/hermes.json'}:
+        elif name in owners or name.startswith('surfaces/') or name in ADAPTERS:
             owner = owners.get(name, name if name.startswith('adapters/') else None)
             if not owner:
                 raise sync_git.SyncBlocked('unowned standing instruction source: ' + name)

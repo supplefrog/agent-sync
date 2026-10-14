@@ -58,20 +58,23 @@ class InstructionProfileTests(unittest.TestCase):
         self.assertNotIn("omp.output-delta", report["hosts"]["omp"]["units"])
         self.assertNotIn("omp.rules-delta", report["hosts"]["omp"]["surfaces"])
         self.assertNotIn("omp.codex-inherited", report["hosts"]["omp"]["surfaces"])
-        self.assertEqual([], report["hosts"]["omp"]["units"])
-        self.assertEqual([], report["hosts"]["omp"]["artifact_sha256"])
-        self.assertEqual(0, report["hosts"]["omp"]["bytes"])
-        self.assertIn("not enabled", report["hosts"]["omp"]["no_managed_standing_reason"])
+        self.assertIn("omp.output", report["hosts"]["omp"]["units"])
+        self.assertEqual(1, len(report["hosts"]["omp"]["artifact_sha256"]))
+        self.assertGreater(report["hosts"]["omp"]["bytes"], 0)
+        self.assertNotIn("no_managed_standing_reason", report["hosts"]["omp"])
 
     def test_empty_managed_standing_requires_explicit_observed_reason(self) -> None:
         def mutate(data):
-            data["hosts"]["omp"].pop("no_managed_standing_reason")
+            data["hosts"]["omp"]["effective_units"] = []
+            data["hosts"]["omp"]["artifact_sha256"] = []
+            data["hosts"]["omp"].pop("no_managed_standing_reason", None)
 
         with self.assertRaisesRegex(profile_tool.ProfileError, "model profile schema"):
             self.verify(self.mutated_profile(mutate))
 
     def test_observed_absence_cannot_hide_managed_units(self) -> None:
         def mutate(data):
+            data["hosts"]["omp"]["no_managed_standing_reason"] = "Fixture observed absence."
             data["hosts"]["omp"]["effective_units"] = ["codex.output"]
             data["hosts"]["omp"]["artifact_sha256"] = [
                 data["hosts"]["codex"]["artifact_sha256"][0]

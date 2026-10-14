@@ -47,6 +47,7 @@ _SECRET_PATH_PART = re.compile(
     re.IGNORECASE,
 )
 _SAFE_SECRET_NAMED_PATHS = {
+    "providers.openai-codex.auth",
     "compression.proactive_prune_tokens",
     "security.redact_secrets",
     "features.memories",
@@ -331,6 +332,12 @@ def _set_dotted(value: dict[str, Any], dotted: str, selected: Any) -> None:
 
 
 def _assert_no_secret_paths(value: Any, prefix: str) -> None:
+    if prefix == "providers.openai-codex.auth":
+        # OMP's provider transport selector is not credential state. Never
+        # admit arbitrary strings or nested auth data through this exception.
+        if value != "oauth" or not isinstance(value, str):
+            raise RecoveryError("OMP Codex auth recovery permits only the oauth transport selector")
+        return
     if prefix in _SAFE_NONNEGATIVE_INTEGER_PATHS:
         if type(value) is not int or value < 0:
             raise RecoveryError(
@@ -351,6 +358,10 @@ def _assert_no_secret_paths(value: Any, prefix: str) -> None:
 def _logical_home(roots: Mapping[str, Path]) -> Path:
     if not roots:
         return Path.home()
+    if set(roots) == {"omp"}:
+        root = Path(roots["omp"]).resolve(strict=False)
+        if tuple(part.casefold() for part in root.parts[-2:]) == (".omp", "agent"):
+            return root.parent.parent
     try:
         return Path(os.path.commonpath([str(Path(path).resolve(strict=False)) for path in roots.values()]))
     except ValueError:

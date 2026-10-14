@@ -11,7 +11,7 @@ class RenderError(RuntimeError):
     pass
 
 
-HOSTS = ("codex", "hermes")
+HOSTS = ("codex", "hermes", "omp")
 START, END = "<!-- agent-sync-standing -->", "<!-- /agent-sync-standing -->"
 
 

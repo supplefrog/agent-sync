@@ -20,11 +20,10 @@
       ]
     },
     "omp": {
-      "cli_version": "18.2.6",
-      "source_revision": "unknown; installed CLI reports 18.2.6",
+      "cli_version": "18.8.9",
+      "source_revision": "Installed OMP18.8.9; native template/context and request hooks verified without model inference",
       "sources": [
-        "https://github.com/can1357/oh-my-pi",
-        "https://github.com/can1357/oh-my-pi/releases/tag/v18.1.10"
+        "https://github.com/can1357/oh-my-pi/releases/tag/v18.8.9"
       ]
     }
   },

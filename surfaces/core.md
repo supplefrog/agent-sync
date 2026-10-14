@@ -1,6 +1,6 @@
 # Shared instruction ownership
 
-This file owns shared standing rules, model preferences, and reviewer dispatch. `tools/render_instructions.py` projects only the standing rules through `adapters/codex.json` and `adapters/hermes.json` into the managed `AGENTS.md` and `SOUL.md`. Host adapters own native formatting and host-only rules. Edit this source or the affected adapter, then render; do not edit generated overlays. The whole reference is not injected. `contracts/instruction-surfaces.json` records loading; OMP does not inherit a Codex file merely because it exists.
+This file owns shared standing rules, model preferences, and reviewer dispatch. `tools/render_instructions.py` projects only the standing rules through `adapters/codex.json`, `adapters/hermes.json`, and `adapters/omp.json` into their native managed instruction files. Host adapters own native formatting and host-only rules. Edit this source or the affected adapter, then render; do not edit generated overlays. The whole reference is not injected. `contracts/instruction-surfaces.json` records loading; OMP does not inherit a Codex file merely because it exists.
 
 | Concern | Owner |
 | --- | --- |
