@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "owner_capability": "instruction-authoring",
+  "suite": "staged-autonomy-findings-20261014",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "A common entrypoint loads mode-specific detail for every frontend invocation.",
+      "evidence": "Direct user instruction on 2026-10-14: recon the staged stuff; six unrelated edits deferred. Prior system-contract review and source/loading checks identify these scoped corrections.",
+      "baseline_sufficient": false,
+      "why_instruction": "Keep the original procedures once, with relative links rebased and explicit applicability before use. This is a structural loading correction, not a new aesthetic policy.",
+      "alternative": "Keeping all detail in the entrypoint retains avoidable loading; deleting procedures loses accepted taste or engineering guarantees.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "4ae8396751089f61cae8d5de1b49a60efc410b9a3e76e9385c7872fc0dfcb8b9",
+          "after_sha256": "a813c31499df9bd4a640a98c8a7178cd1c0c307fe00af74ecdb4845cc4763378"
+        },
+        "skills/frontend-ui-engineering/references/design-mode.md": {
+          "before_sha256": "absent",
+          "after_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3"
+        },
+        "skills/frontend-ui-engineering/references/product-workflow.md": {
+          "before_sha256": "absent",
+          "after_sha256": "51cc57687f5cc601a033c86d090ffb26deed7185796c76935256a291f2d69a06"
+        },
+        "skills/frontend-ui-engineering/references/implementation-mode.md": {
+          "before_sha256": "absent",
+          "after_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b"
+        },
+        "skills/frontend-ui-engineering/references/delivery-mode.md": {
+          "before_sha256": "absent",
+          "after_sha256": "f6bd33ceb89d96b844582f23663e9f692a6832360784c3aea07f436f18620671"
+        }
+      }
+    },
+    {
+      "owner": "skills/humanizer",
+      "basis": "user-correction",
+      "deviation": "The trigger can attract ordinary private chat explanations despite its selected public-artifact purpose.",
+      "evidence": "Direct user instruction on 2026-10-14: recon the staged stuff; six unrelated edits deferred. Prior system-contract review and source/loading checks identify these scoped corrections.",
+      "baseline_sufficient": false,
+      "why_instruction": "Clarify artifact/recipient and explicit voice triggers at the existing owner; preserve its complete writing body.",
+      "alternative": "Standing communication already owns ordinary chat; removing the writing capability would lose requested artifact editing.",
+      "artifacts": {
+        "skills/humanizer/SKILL.md": {
+          "before_sha256": "94594fbc05d6a555340dae3122d57f02fbc4ecdcabfedd8c83784104c598aa0f",
+          "after_sha256": "7b087ef814d61896cd6e8ba13996158bfd7648098f5357a65b782668b9388729"
+        }
+      }
+    },
+    {
+      "owner": "adapters/hermes.json",
+      "basis": "user-correction",
+      "deviation": "The adapter claims native delegation is always blocked although source and current config make require_router opt-in.",
+      "evidence": "Direct user instruction on 2026-10-14: recon the staged stuff; six unrelated edits deferred. Prior system-contract review and source/loading checks identify these scoped corrections.",
+      "baseline_sufficient": false,
+      "why_instruction": "Correct the source-backed factual adapter statement; no routing code, configured flag, authorization or live process is changed.",
+      "alternative": "Changing the plugin is unnecessary; leaving the stale statement can cause needless route machinery.",
+      "artifacts": {
+        "adapters/hermes.json": {
+          "before_sha256": "9553ad0e440d4e0a41c2c59a61d305823618d8bf4eace8fa6ed7ce34af90b4a0",
+          "after_sha256": "a2f011e48a0cd772ab32e692873d354f6e23c8a48b9a5e7508e27b6f6efb30e8"
+        }
+      }
+    },
+    {
+      "owner": "checked native OMP reduction",
+      "basis": "user-correction",
+      "deviation": "The separately appended native footer still prohibits all context-file search, including instruction-loading audits.",
+      "evidence": "Direct user instruction on 2026-10-14: recon the staged stuff; six unrelated edits deferred. Prior system-contract review and source/loading checks identify these scoped corrections.",
+      "baseline_sufficient": false,
+      "why_instruction": "Use the supported before_agent_start callback to change only that native footer line, preserving project-file text, core context, tools and critical guarantees. Check actual requests and compatibility on demand.",
+      "alternative": "A stock-runtime fork increases maintenance; changing tool schemas or duplicating a core is unnecessary. Leaving the rule blocks needed inspection.",
+      "artifacts": {
+        "recovery/current/hosts/omp/extensions/reduced-tool-guidance.ts": {
+          "before_sha256": "197cd4c1fcad4b39e5d594c6c4f92271eae9299cf83693e1a140b4b29fe08f4a",
+          "after_sha256": "0511367d29018d797d808f4c953358cbfba6b480a45ac762e6f01ae6983aedc7"
+        }
+      }
+    }
+  ],
+  "baseline_commit": "6378f56f125b38584b77dce33ad6e9bbbed1d61f",
+  "behavior_preservation": {
+    "baseline": "6378f56f125b38584b77dce33ad6e9bbbed1d61f",
+    "baseline_sha256": "4ae8396751089f61cae8d5de1b49a60efc410b9a3e76e9385c7872fc0dfcb8b9",
+    "entrypoint_before_bytes": 32887,
+    "entrypoint_after_bytes": 9853,
+    "moved_or_retained": [
+      {
+        "destination": "references/design-mode.md",
+        "headings": [
+          "## Design authority and delegated taste",
+          "## Choose priorities by surface"
+        ],
+        "original_text_sha256": "ffd0288ed85a6e9e352a5a1efc70f9fc0c423b92d1e8084951b8d6633df69fcc",
+        "moved_text_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3",
+        "change": "verbatim text; Markdown links rebased to their new directory"
+      },
+      {
+        "destination": "references/product-workflow.md",
+        "headings": [
+          "## Working sequence"
+        ],
+        "original_text_sha256": "29d0f18dd2cb514916578e70c77ae2b21b30cc2cbb5c1a390941e9c0a62843dc",
+        "moved_text_sha256": "51cc57687f5cc601a033c86d090ffb26deed7185796c76935256a291f2d69a06",
+        "change": "verbatim text; Markdown links rebased to their new directory"
+      },
+      {
+        "destination": "references/implementation-mode.md",
+        "headings": [
+          "## Type, layout, color, and content",
+          "## Component architecture and state",
+          "## Accessibility and resilient interaction"
+        ],
+        "original_text_sha256": "f96088f7f83e8aac45573a0340b1df2ac4ea813c1604b7b19eeb60920b0a7c0d",
+        "moved_text_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b",
+        "change": "verbatim text; Markdown links rebased to their new directory"
+      },
+      {
+        "destination": "references/delivery-mode.md",
+        "headings": [
+          "## Delivery checks"
+        ],
+        "original_text_sha256": "f6bd33ceb89d96b844582f23663e9f692a6832360784c3aea07f436f18620671",
+        "moved_text_sha256": "f6bd33ceb89d96b844582f23663e9f692a6832360784c3aea07f436f18620671",
+        "change": "verbatim text; Markdown links rebased to their new directory"
+      },
+      {
+        "destination": "SKILL.md",
+        "headings": [
+          "## Purpose before parts",
+          "## Checks and visual review before commit"
+        ],
+        "retained": "original full sections and the original compact acceptance-contract paragraph"
+      }
+    ],
+    "removed_original_procedures": [],
+    "scripts_templates_and_existing_references_unchanged": true
+  },
+  "checks": [
+    "Verbatim moved frontend procedures and rebased references; mode routing inspected.",
+    "Humanizer artifact/recipient positives and ordinary-chat near misses inspected; writing body unchanged.",
+    "Native footer hook idempotence, quote/context preservation and schema preservation checked.",
+    "Actual loopback provider request and on-demand compatibility checker; no model inference."
+  ],
+  "limits": [
+    "No improved model-quality or natural-triggering claim. No whole-host/Hermes replacement claim.",
+    "Compulsory critic/review capability and the six unrelated project edits are unchanged."
+  ],
+  "result": {
+    "passed": true,
+    "claim": "Scoped source/loading and deterministic runtime corrections; deployment and publication verified separately."
+  }
+}

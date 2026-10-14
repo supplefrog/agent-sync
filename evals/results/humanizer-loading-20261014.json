@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "suite": "staged-autonomy-findings-20261014",
+  "owner_capability": "humanizer",
+  "baseline_commit": "6378f56f125b38584b77dce33ad6e9bbbed1d61f",
+  "source_evidence": "evals/results/staged-autonomy-findings-20261014.json",
+  "change": {
+    "owner": "skills/humanizer",
+    "basis": "user-correction",
+    "deviation": "The trigger can attract ordinary private chat explanations despite its selected public-artifact purpose.",
+    "evidence": "Direct user instruction on 2026-10-14: recon the staged stuff; six unrelated edits deferred. Prior system-contract review and source/loading checks identify these scoped corrections.",
+    "baseline_sufficient": false,
+    "why_instruction": "Clarify artifact/recipient and explicit voice triggers at the existing owner; preserve its complete writing body.",
+    "alternative": "Standing communication already owns ordinary chat; removing the writing capability would lose requested artifact editing.",
+    "artifacts": {
+      "skills/humanizer/SKILL.md": {
+        "before_sha256": "94594fbc05d6a555340dae3122d57f02fbc4ecdcabfedd8c83784104c598aa0f",
+        "after_sha256": "7b087ef814d61896cd6e8ba13996158bfd7648098f5357a65b782668b9388729"
+      }
+    }
+  },
+  "checks": [
+    "Humanizer artifact/recipient positives and ordinary-chat near misses inspected; writing body unchanged."
+  ],
+  "result": {
+    "passed": true,
+    "claim": "Scoped source and loading preservation; no model-quality or natural-triggering claim"
+  },
+  "limits": [
+    "No improved model-quality or natural-triggering claim. No whole-host/Hermes replacement claim.",
+    "Compulsory critic/review capability and the six unrelated project edits are unchanged."
+  ]
+}

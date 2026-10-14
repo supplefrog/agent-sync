@@ -295,7 +295,7 @@
       "target": "${OMP_HOME}/extensions/reduced-tool-guidance.ts",
       "model_sensitive": true,
       "backup": "captured",
-      "note": "Public authored delta only; upstream runtime and stock tooling are not captured.",
+      "note": "Supported before_agent_start footer correction and before_provider_request description reductions. Project-file text, schemas and critical guarantees remain unchanged; compatibility is checked on demand after upgrades. Stock runtime and tooling are not captured.",
       "assembly_order": 115
     }
   ]

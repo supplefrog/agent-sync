@@ -1,7 +1,7 @@
 ---
 name: humanizer
-description: Write or revise public-facing prose so it sounds like an experienced person rather than a generated template. Use for GitHub issues and comments, PR descriptions, release notes, engineering updates, technical explanations, email, Slack, posts, and explicit humanize or voice-matching requests. Do not use for code, private reasoning, strict-schema output, or creative work owned by a more specific skill.
-version: 3.0.0
+description: "Use for public or recipient-facing writing artifacts, or explicit humanize/voice-matching requests: GitHub issues/PRs, release notes, engineering updates, published explanations, email, Slack and posts. Ordinary chat answers and progress replies use standing communication preferences. Code, private reasoning, strict schemas and specialist creative work keep their domain owners."
+version: 3.0.1
 author: Hermes Agent; derived from Siqi Chen's Humanizer
 license: MIT
 metadata:

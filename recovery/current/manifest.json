@@ -13571,14 +13571,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 2983,
+      "bytes": 4930,
       "format": "text",
       "host": "omp",
       "id": "reduced-tool-descriptions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "197cd4c1fcad4b39e5d594c6c4f92271eae9299cf83693e1a140b4b29fe08f4a",
+      "sha256": "0511367d29018d797d808f4c953358cbfba6b480a45ac762e6f01ae6983aedc7",
       "snapshot": "hosts/omp/extensions/reduced-tool-guidance.ts",
       "source": "extensions/reduced-tool-guidance.ts",
       "strategy": "replace-if-absent"

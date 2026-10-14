@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "suite": "staged-autonomy-findings-20261014",
+  "owner_capability": "frontend-ui-engineering",
+  "baseline_commit": "6378f56f125b38584b77dce33ad6e9bbbed1d61f",
+  "source_evidence": "evals/results/staged-autonomy-findings-20261014.json",
+  "change": {
+    "owner": "skills/frontend-ui-engineering",
+    "basis": "user-correction",
+    "deviation": "A common entrypoint loads mode-specific detail for every frontend invocation.",
+    "evidence": "Direct user instruction on 2026-10-14: recon the staged stuff; six unrelated edits deferred. Prior system-contract review and source/loading checks identify these scoped corrections.",
+    "baseline_sufficient": false,
+    "why_instruction": "Keep the original procedures once, with relative links rebased and explicit applicability before use. This is a structural loading correction, not a new aesthetic policy.",
+    "alternative": "Keeping all detail in the entrypoint retains avoidable loading; deleting procedures loses accepted taste or engineering guarantees.",
+    "artifacts": {
+      "skills/frontend-ui-engineering/SKILL.md": {
+        "before_sha256": "4ae8396751089f61cae8d5de1b49a60efc410b9a3e76e9385c7872fc0dfcb8b9",
+        "after_sha256": "a813c31499df9bd4a640a98c8a7178cd1c0c307fe00af74ecdb4845cc4763378"
+      },
+      "skills/frontend-ui-engineering/references/design-mode.md": {
+        "before_sha256": "absent",
+        "after_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3"
+      },
+      "skills/frontend-ui-engineering/references/product-workflow.md": {
+        "before_sha256": "absent",
+        "after_sha256": "51cc57687f5cc601a033c86d090ffb26deed7185796c76935256a291f2d69a06"
+      },
+      "skills/frontend-ui-engineering/references/implementation-mode.md": {
+        "before_sha256": "absent",
+        "after_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b"
+      },
+      "skills/frontend-ui-engineering/references/delivery-mode.md": {
+        "before_sha256": "absent",
+        "after_sha256": "f6bd33ceb89d96b844582f23663e9f692a6832360784c3aea07f436f18620671"
+      }
+    }
+  },
+  "checks": [
+    "Verbatim moved frontend procedures and rebased references; mode routing inspected.",
+    "Humanizer artifact/recipient positives and ordinary-chat near misses inspected; writing body unchanged.",
+    "Native footer hook idempotence, quote/context preservation and schema preservation checked.",
+    "Actual loopback provider request and on-demand compatibility checker; no model inference."
+  ],
+  "result": {
+    "passed": true,
+    "claim": "Scoped source and loading preservation; no model-quality or natural-triggering claim"
+  },
+  "limits": [
+    "No improved model-quality or natural-triggering claim. No whole-host/Hermes replacement claim.",
+    "Compulsory critic/review capability and the six unrelated project edits are unchanged."
+  ]
+}

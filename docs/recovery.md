@@ -100,3 +100,8 @@ For full capture, `diff` must report no changes and no conflicts against the sou
 - Postflight requires zero recovery changes/conflicts, an exact fleet manifest, a valid current instruction profile, and successful required host-delta readback.
 
 The file-restore phase is rollback-safe, but `bootstrap --apply` composes fleet apply and recovery apply rather than pretending the two independent subsystems are one disk transaction. Its preflight and postflight fail closed, and re-running it is idempotent after interruption. A full machine recovery still requires runtime installation, authentication, and any declared native prerequisites. No credentials, private memory, sessions, or provider-hidden state can be reconstructed from this public repository.
+
+
+### OMP reduction compatibility on upgrade
+
+The reduced context uses supported system-template, before_agent_start and before_provider_request seams. When upgrading OMP or changing the provider transport, verify an actual private request capture with `bun tools/check_omp_reduction.ts <capture.json>` (or Node 24 with TypeScript stripping). The checker performs no inference and prints only a verdict; a changed contract requires inspection, not silent acceptance. Use a loopback-only dummy-provider assembly check when no model run is needed. `get_state` alone does not establish request-description or footer-hook behavior. Keep captures private; the tool does not log prompt or account data. No per-turn compatibility audit or reviewer swarm is added.

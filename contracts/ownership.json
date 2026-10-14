@@ -92,9 +92,10 @@
         "evals/results/frontend-case-clarifications-2026-10-09.json",
         "evals/results/frontend-representation-contract-2026-10-09.json",
         "evals/results/frontend-reference-bound-review-2026-10-09.json",
-        "evals/results/frontend-delivery-consumer-2026-10-10.json"
+        "evals/results/frontend-delivery-consumer-2026-10-10.json",
+        "evals/results/frontend-ui-engineering-loading-20261014.json"
       ],
-      "selection_reason": "Original admission preserved the byte-identical shared/Codex engineering baseline and MIT provenance. The source revision integrates bounded Anthropic, Impeccable, and Hallmark design-judgment findings without adding frontend owners; source and decision-probe evidence does not establish visual-quality, personal-taste, or cross-host behavioral superiority. Candidate deployment status is recorded in the follow-up receipt. The user approved the 5.0.0 image-led new-identity/major-redesign procedure after whole-page, reference-family and second-product trials; routine repairs reuse approved identity. Portable receipt records source checks and bounded evidence without claiming causal quality, cost or host parity.",
+      "selection_reason": "Original admission preserved the byte-identical shared/Codex engineering baseline and MIT provenance. The source revision integrates bounded Anthropic, Impeccable, and Hallmark design-judgment findings without adding frontend owners; source and decision-probe evidence does not establish visual-quality, personal-taste, or cross-host behavioral superiority. Candidate deployment status is recorded in the follow-up receipt. The user approved the 5.0.0 image-led new-identity/major-redesign procedure after whole-page, reference-family and second-product trials; routine repairs reuse approved identity. Portable receipt records source checks and bounded evidence without claiming causal quality, cost or host parity. The user-authorized 2026-10-14 reconciliation retains the capability and narrows loading to its applicable work.",
       "purpose": {
         "objective": "Deliver frontend experiences that fulfill the brief with coherent ordinary behavior and painted quality before human taste selection.",
         "added_value": "Project-independent regression cases and source-bound delivery acceptance connect rendered findings to retained commitments, recovery and whole-product readiness. Native models and browser tools still supply discovery and judgment; comparative generation-quality benefit is unproven.",
@@ -214,9 +215,15 @@
       "status": "admitted",
       "selection_state": "selected",
       "selection_evidence": [
-        "evals/results/humanizer-deterministic.json"
+        "evals/results/humanizer-deterministic.json",
+        "evals/results/humanizer-loading-20261014.json"
       ],
-      "selection_reason": "Selected as the established reader-first public prose owner and kept on-demand to avoid standing prompt weight."
+      "selection_reason": "Selected as the established reader-first public prose owner and kept on-demand to avoid standing prompt weight. The user-authorized 2026-10-14 reconciliation retains the capability and narrows loading to its applicable work.",
+      "purpose": {
+        "objective": "Write useful reader-first public or recipient-facing artifacts in the requested voice; this purpose follows the established selected owner.",
+        "added_value": "Retained artifact/channel distinctions and editorial checks supplement standing chat preferences. Comparative benefit over the current model alone is unmeasured.",
+        "retirement_test": "Retire when the current model and standing preferences alone preserve requested voice, recipient/channel fit, factual restraint and artifact completeness at equal or lower total task cost on relevant writing work."
+      }
     },
     {
       "id": "conversational-communication",

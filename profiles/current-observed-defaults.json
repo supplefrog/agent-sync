@@ -18,7 +18,8 @@
   },
   "evidence": [
     "evals/results/astra-surface-repair-20260926.json",
-    "evals/results/omp-reconciliation-20261014.json"
+    "evals/results/omp-reconciliation-20261014.json",
+    "evals/results/staged-autonomy-findings-20261014.json"
   ],
   "hosts": {
     "codex": {
