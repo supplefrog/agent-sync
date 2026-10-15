@@ -1,4 +1,4 @@
-"""Codex-native project/cloud creation and private file export over MCP stdio.
+"""ChatGPT project/cloud creation and private file export over MCP stdio.
 
 Uses the signed-in native app-server; never reads, stores, or returns auth files.
 Remote contracts are private and version-sensitive. See docs/codex-workspace-mcp.md.
@@ -30,6 +30,13 @@ class ToolError(Exception):
     pass
 
 
+def preflight_action(name, args):
+    if name == "create_project" and args.get("kind") == "local":
+        raise ToolError("Local Desktop project creation is retired: native registry creation does not "
+                        "adopt a project into the Desktop sidebar. Use supported Desktop setup and "
+                        "verify its saved project ID. Existing native registrations are preserved.")
+
+
 def digest(value):
     return hashlib.sha256(value).hexdigest()
 
@@ -55,7 +62,7 @@ TOOLS = [
     {"name": "list_cloud_environments", "description": "List real reusable durable Codex cloud configurations in user or workspace scope. Returns safe summaries and a pagination cursor, without secrets.", "inputSchema": schema({"scope": {"enum": ["user", "workspace"]}, "cursor": STR, "limit": {"type": "integer", "minimum": 1, "maximum": 100}}), "annotations": {"readOnlyHint": True}},
     {"name": "read_cloud_thread_environment", "description": "Read one durable Codex task's stored environment IDs and working directories, without loading history or resuming the task. Use exact returned environment IDs for private file export. An empty selection is inconclusive; do not invent a container ID.", "inputSchema": schema({"thread_id": STR}, ("thread_id",)), "annotations": {"readOnlyHint": True}},
     {"name": "create_cloud_environment", "description": "Create a real durable Codex cloud configuration, only when requested. Supply verified native repository IDs and refs. Onboarding is disabled for this write; creation alone does not establish a published ready environment. Complete setup/publication in the native UI, including any secrets, before launching work.", "inputSchema": schema({"operation_id": OP, "configuration": CONFIGURATION}, ("operation_id", "configuration")), "annotations": {"readOnlyHint": False, "destructiveHint": False}},
-    {"name": "create_project", "description": "Create a requested ChatGPT project or local native Codex project. Local roots must already exist. This does not assign threads or change their execution host.", "inputSchema": schema({"operation_id": OP, "kind": {"enum": ["chatgpt", "local"]}, "name": STR, "roots": {"type": "array", "items": STR, "minItems": 1}}, ("operation_id", "kind", "name")), "annotations": {"readOnlyHint": False, "destructiveHint": False}},
+    {"name": "create_project", "description": "Create a requested ChatGPT project. Local Desktop project creation/adoption is unsupported by this adapter; use supported Desktop setup. This does not assign threads or change their execution host.", "inputSchema": schema({"operation_id": OP, "kind": {"enum": ["chatgpt"]}, "name": STR}, ("operation_id", "kind", "name")), "annotations": {"readOnlyHint": False, "destructiveHint": False}},
     {"name": "create_cloud_thread", "description": "Create a requested persistent Codex task on host durable from an existing saved cloud configuration. Optional prompt starts its first turn; omit it to create an idle task. Model/effort overrides require the user's selection. Does not attach the task to a ChatGPT project. Do not use to create subagents in a side conversation.", "inputSchema": schema({"operation_id": OP, "environment_config_id": STR, "cwd": STR, "prompt": STR, "title": STR, "model": STR, "reasoning_effort": {"enum": ["low", "medium", "high", "xhigh", "max", "ultra"]}}, ("operation_id", "environment_config_id", "cwd")), "annotations": {"readOnlyHint": False, "destructiveHint": False}},
     {"name": "export_cloud_file", "description": "Privately copy an explicitly selected cloud recording, still, patch or other file to the configured local export root. Requires an exact cloud environment ID and absolute POSIX path. Returns only the local path, bytes and SHA256. No public hosting, cloud writes, or local overwrites. File size ceiling is 256 MiB.", "inputSchema": schema({"environment_id": STR, "path": STR, "relative_destination": STR, "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}, "max_bytes": {"type": "integer", "minimum": 1, "maximum": MAX_FILE}}, ("environment_id", "path", "relative_destination")), "annotations": {"readOnlyHint": False, "destructiveHint": False}},
 ]
@@ -214,6 +221,7 @@ class Service:
         return result
 
     def execute(self, name, args, backend):
+        preflight_action(name, args)
         if name == "read_cloud_environment":
             result = backend.http("GET", config_path(args))
             if result["id"] != args["configuration_id"]:
@@ -276,12 +284,6 @@ class Service:
                 return summary(result)
             return self.creation(name, args, backend, create)
         if name == "create_project":
-            if args["kind"] == "local":
-                roots = args.get("roots", [])
-                if not roots or any(not Path(r).is_absolute() or not Path(r).is_dir() for r in roots):
-                    raise ToolError("Local project roots must be existing absolute directories.")
-                return self.creation(name, args, backend, lambda: backend.native.call("project/create", {
-                    "idempotencyKey": args["operation_id"], "name": args["name"], "roots": [{"path": str(Path(r).resolve())} for r in roots]}))
             if "roots" in args or not 1 <= len(args["name"].strip()) <= 50:
                 raise ToolError("ChatGPT projects take a 1–50 character name and no local roots.")
             def create():
@@ -357,7 +359,7 @@ def main():
             method = request["method"]
             if method == "initialize":
                 response["result"] = {"protocolVersion": request.get("params", {}).get("protocolVersion", "2025-06-18"),
-                    "capabilities": {"tools": {}}, "serverInfo": {"name": "codex-workspace", "version": "0.1.0"}}
+                    "capabilities": {"tools": {}}, "serverInfo": {"name": "codex-workspace", "version": "0.1.1"}}
             elif method == "ping":
                 response["result"] = {}
             elif method == "tools/list":
@@ -368,6 +370,7 @@ def main():
                 if tool is None:
                     raise ToolError("Unknown tool.")
                 args = params.get("arguments", {})
+                preflight_action(params["name"], args)  # Stale clients fail before auth/RPC/receipt writes.
                 jsonschema.validate(args, tool["inputSchema"], format_checker=jsonschema.FormatChecker())
                 with connected(options.codex_exe) as native:
                     auth = native.call("getAuthStatus", {"includeToken": True, "refreshToken": False})

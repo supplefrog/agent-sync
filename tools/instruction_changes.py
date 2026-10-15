@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 
@@ -35,6 +36,118 @@ def _before(repo, base, name):
 
 def _hash(data):
     return hashlib.sha256(data).hexdigest() if data is not None else 'absent'
+
+
+CONTRACTS = {'docs/system-requirements.md', 'docs/requirement-status.md'}
+
+
+def reconciliation_scope(candidate, source, base, paths):
+    """Discover exact reverse references; this is coverage, not semantic analysis."""
+    names = set(subprocess.check_output(
+        ['git', '-C', str(source), 'ls-tree', '-r', '--name-only', base], text=True).splitlines()) | set(paths)
+    guidance = {n for n in names if (n.endswith('.md') and n.startswith(('skills/', 'docs/', 'adapters/'))) or
+                (n.startswith('contracts/') and n.endswith(('.json', '.md')))}
+    changed = {n for n in paths if _before(source, base, n) !=
+               ((candidate / n).read_bytes() if (candidate / n).is_file() else None)}
+    executables = {n for n in changed if n.startswith(('tools/', 'integrations/')) or
+                   (n.startswith('skills/') and '/scripts/' in n)}
+    # Batch baseline reads; avoid a subprocess per edge on every graph walk.
+    ordered = sorted(guidance)
+    result = subprocess.run(['git', '-C', str(source), 'cat-file', '--batch'],
+                            input=''.join(base + ':' + n + '\n' for n in ordered).encode(),
+                            capture_output=True, check=True)
+    raw, offset, graph = result.stdout, 0, {}
+    for name in ordered:
+        end = raw.index(b'\n', offset)
+        header = raw[offset:end].split()
+        offset = end + 1
+        if header[-1] == b'missing':
+            old = b''
+        else:
+            size = int(header[-1]); old = raw[offset:offset + size]; offset += size + 1
+        new = (candidate / name).read_bytes() if (candidate / name).is_file() else b''
+        links = set()
+        for data in (old, new):
+            text = data.decode('utf-8')
+            links.update(re.findall(r'(?<![\w/.-])((?:tools|integrations|skills|docs|adapters)/[\w./-]+)', text))
+            for link in validate.local_links(text):
+                try:
+                    links.add((candidate / name).parent.joinpath(link.split('#', 1)[0]).resolve().relative_to(candidate.resolve()).as_posix())
+                except ValueError:
+                    pass
+        graph[name] = links
+    contract_sources = {n for n in changed if n.startswith('contracts/')}
+    affected = set(executables) | contract_sources | {n for n in changed if n.startswith('skills/') and n.endswith('.md')} | (changed & CONTRACTS)
+    while True:
+        more = ({name for name, links in graph.items() if links & affected} |
+                {target for name in contract_sources for target in graph.get(name, ()) if target in guidance}) - affected
+        if not more:
+            break
+        affected.update(more)
+    return changed, executables, affected
+
+
+def _dependency_review(candidate, source, base, paths, instruction_paths):
+    # Legacy fixtures/repos without this intent owner keep their migration boundary.
+    if not any(_before(source, base, n) is not None or (candidate / n).is_file() for n in CONTRACTS):
+        return []
+    if any(not (candidate / name).is_file() for name in CONTRACTS):
+        raise sync_git.SyncBlocked('existing intent contract and status cannot be removed')
+    changed, executables, affected = reconciliation_scope(candidate, source, base, paths)
+    if not executables and not instruction_paths and not (changed & CONTRACTS) and not any(n.startswith('contracts/') for n in changed) and not any(n.startswith('skills/') and n.endswith('.md') for n in changed):
+        return []
+    required = affected | set(instruction_paths) | CONTRACTS
+    records = []
+    for name in sorted(paths):
+        if name.startswith('evals/results/') and name.endswith('.json') and (candidate / name).is_file():
+            value = json.loads((candidate / name).read_bytes())
+            rows = value.get('change_reconciliation', []) if isinstance(value, dict) else []
+            if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+                raise sync_git.SyncBlocked('invalid change reconciliation record: ' + name)
+            records.extend((name, row) for row in rows)
+    framework_changed = any(n.startswith('skills/instruction-authoring/') and n.endswith('.md') for n in changed)
+    if framework_changed:
+        reviews = [row.get('framework_review') for _, row in records if 'framework_review' in row]
+        if len(reviews) != 1 or not isinstance(reviews[0], dict):
+            raise sync_git.SyncBlocked('authoring framework change requires one affected-owner assessment')
+        review = reviews[0]
+        if any(not isinstance(review.get(k), str) or not review[k].strip() for k in ('selection_reason', 'unaffected_reason', 'checks')) or not isinstance(review.get('affected'), list) or not review['affected']:
+            raise sync_git.SyncBlocked('authoring framework assessment is incomplete')
+        for name in review['affected']:
+            if not isinstance(name, str) or sync_git.safe_path(candidate, name) != name or not name.startswith(('skills/', 'contracts/', 'docs/')):
+                raise sync_git.SyncBlocked('invalid framework dependency address')
+            required.add(name)
+    used = []
+    for name in sorted(required):
+        matches = [(receipt, row) for receipt, row in records if isinstance(row.get('artifacts'), dict) and name in row['artifacts']]
+        if len(matches) != 1:
+            raise sync_git.SyncBlocked('change reconciliation requires one bound dependency record: ' + name)
+        receipt, row = matches[0]
+        old = _before(source, base, name)
+        new = (candidate / name).read_bytes() if (candidate / name).is_file() else None
+        if row['artifacts'][name] != {'before_sha256': _hash(old), 'after_sha256': _hash(new)}:
+            raise sync_git.SyncBlocked('change reconciliation has stale dependency bytes: ' + name)
+        if not isinstance(row.get('requirement_change'), bool) or any(
+                not isinstance(row.get(key), str) or not row[key].strip()
+                for key in ('requirement_reason', 'authority', 'checks')):
+            raise sync_git.SyncBlocked('change reconciliation requires intent assessment and checks: ' + name)
+        outcome = row.get('outcome_review')
+        if not isinstance(outcome, dict) or any(not isinstance(outcome.get(k), str) or not outcome[k].strip() for k in ('expected', 'observed', 'evidence', 'limitations')):
+            raise sync_git.SyncBlocked('change reconciliation requires expected/observed outcome evidence: ' + name)
+        if old is None and new is None:
+            raise sync_git.SyncBlocked('dependency address does not exist: ' + name)
+        if row['requirement_change'] and not CONTRACTS <= (changed & set(paths)):
+            raise sync_git.SyncBlocked('changed user intent requires selected requirements and status updates')
+        if name not in executables:
+            obligations = row.get('obligations', [])
+            matches = [o for o in obligations if isinstance(o, dict) and o.get('path') == name] if isinstance(obligations, list) else []
+            expected = 'removed' if new is None else ('updated' if old != new else 'unchanged')
+            if len(matches) != 1 or matches[0].get('disposition') != expected or not isinstance(matches[0].get('reason'), str) or not matches[0]['reason'].strip():
+                raise sync_git.SyncBlocked('change reconciliation omits dependency disposition: ' + name)
+            if old != new and name not in paths:
+                raise sync_git.SyncBlocked('changed dependency must be selected for publication: ' + name)
+        used.append({'path': name, 'receipt': receipt, 'check': 'dependency-coverage'})
+    return used
 
 
 def _loading_review(candidate, source, base, owner, row, changed):
@@ -197,8 +310,9 @@ def check(candidate: Path, source: Path, base: str, paths):
             new = path.read_bytes() if path.is_file() else None
             if old != new:
                 required[name] = (owner, _hash(old), _hash(new))
+    dependencies = _dependency_review(candidate, source, base, paths, required)
     if not required:
-        return []
+        return dependencies
     records = []
     for name in sorted(paths):
         if name.startswith('evals/results/') and name.endswith('.json') and (candidate / name).is_file():
@@ -256,4 +370,4 @@ def check(candidate: Path, source: Path, base: str, paths):
         if reviews:
             assessment['loading_review'] = reviews[0]
         _loading_review(candidate, source, base, owner, assessment, changed)
-    return used
+    return used + dependencies

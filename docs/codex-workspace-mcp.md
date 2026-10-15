@@ -6,12 +6,21 @@ the existing `tools/codex_project.py` native RPC helper. No portable skill or
 shared standing-instruction change is needed.
 
 Tools: durable cloud-configuration listing/creation/publication, safe config and
-publication operation readback, ChatGPT/local project creation,
+publication operation readback, ChatGPT project creation,
 durable Codex task creation from a saved configuration, stored task-environment
 readback, and cloud-file export. Existing app tools continue to own messaging,
 waiting, archiving, and supported project assignment. Durable Codex tasks cannot
 be assigned to ChatGPT projects by this adapter; it does not bypass the installed
 app's local-only membership restriction.
+
+Local Desktop creation was retired in adapter 0.1.1. Native `project/create`
+can persist a registry record without adopting it into Desktop's saved sidebar
+catalog. `create_project` now accepts only `kind: "chatgpt"`; stale local requests
+fail before authentication, native RPC or operation-receipt writes. Existing
+native registrations and old receipts are preserved. Use supported Desktop setup
+and verify the receiving saved project/thread through app tools before continuing.
+The low-level native registry primitives remain in `codex_project.py`; they are
+not a Desktop adoption workaround.
 
 ## Contracts and evidence
 
@@ -32,8 +41,9 @@ Observed in installed Codex 26.1007.2314.0 on 2026-10-11:
   bound to this account/configuration/draft by the private begin receipt. Use a
   fresh UUID for completion, while retaining both receipts across uncertainty.
   These explicit publication tools do not answer agent approval requests.
-- ChatGPT project creation uses `POST /projects` with `creation_request_id`;
-  local project creation uses `project/create` with `idempotencyKey`.
+- ChatGPT project creation uses `POST /projects` with `creation_request_id`.
+  Native `project/create` with `idempotencyKey` is a separate registry-only API;
+  this adapter no longer exposes it as local Desktop project creation.
 - The native durable transport uses the authenticated
   `codex-cloud-backend.chatgpt.com` WebSocket. Saved-configuration startup uses
   `thread/start`, `environments[{environmentConfigId,cwd}]` and

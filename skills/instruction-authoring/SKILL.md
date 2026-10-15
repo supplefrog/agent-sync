@@ -1,7 +1,7 @@
 ---
 name: instruction-authoring
 description: Use when saving behavioral preferences, authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns placement, skill improvements, triggers and proportional verification.
-version: 2.0.5
+version: 2.0.6
 author: Hermes Agent
 license: MIT
 metadata:
@@ -94,11 +94,11 @@ For OpenAI model-specific prompt changes, use the installed OpenAI Docs procedur
 
 ## Workflow
 
-1. Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome.
+1. Inspect the current owner, neighboring owners, callers/references, and the observed failure or requested outcome. For a tool change, reconcile its linked skills, adapters and docs in the same change; update affected guidance or record why it remains correct. Assess the existing Agent Sync intent contract and status map: a user-requested change to intended behavior requires an authorized contract correction; an implementation repair can retain existing intent with a reason. Compare expected contract outcomes with the workflow's observed outcomes and acceptance evidence, not mirrored wording. Do not invent preferences from code changes.
 2. State the target behavior and near-miss behavior that must remain unchanged. Check missing or overly broad triggers and unnecessary skill or tool invocation.
 3. Compare no instruction change, a repair to the existing tool/runtime, and an owner-level instruction correction. Choose the minimum coherent change using the correct modality. Condense duplicate advice, stale rules, excessive steering, and unnecessary fields while preserving material exceptions, side effects, error behavior, and execution boundaries. Before a removal, name the candidate, reason, dependencies, and possible capability loss; for a skill fold or retirement, record the compact [behavior preservation map](references/useful-behaviors.md). Check callers and compatibility before removing schema or API fields.
 4. Edit the canonical source; keep candidates outside live discovery until their checks pass. Shared standing rules belong in `surfaces/core.md`; native formatting and host-only differences belong in `adapters/`. Run `tools/run.py render_instructions render`, then `check`; never patch generated `AGENTS.md` or `SOUL.md`. Use `skill_manage` only when it targets source or performs authorized deployment.
-5. Verify metadata/frontmatter, linked-file existence, and fresh skill discovery. For managed instruction publication, bind the deviation, baseline assessment, architectural owner and reason for prose to the changed bytes in an existing `evals/results` receipt; `reconcile plan --ready` and publication `sync` check this record. See [authoring review](references/change-review.md). A receipt records the reasoning; it does not prove model benefit or human approval.
+5. Verify metadata/frontmatter, linked-file existence, and fresh skill discovery. For managed instruction publication, bind the deviation, baseline assessment, architectural owner and reason for prose to the changed bytes in an existing `evals/results` receipt; `reconcile plan --ready` and publication `sync` check this record. For tool, skill, contract or framework changes, read the dependency/outcome review in [authoring review](references/change-review.md) before qualifying publication. A receipt records the reasoning; it does not prove model benefit or human approval.
 6. Run proportional behavior probes:
    - trigger change => realistic positive and near-miss prompts;
    - corrected failure => replay it plus one nearby valid case;

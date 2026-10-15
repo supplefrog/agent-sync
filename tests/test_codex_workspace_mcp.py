@@ -1,6 +1,7 @@
 import base64
 from contextlib import contextmanager
 import json
+import shutil
 from pathlib import Path
 import sys
 import tempfile
@@ -9,7 +10,7 @@ from unittest.mock import Mock
 import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from codex_workspace_mcp import Service, ToolError, absolute_cloud_path, save_export
+from codex_workspace_mcp import Service, ToolError, TOOLS, preflight_action, absolute_cloud_path, save_export
 
 
 class FakeBackend:
@@ -56,13 +57,43 @@ class FakeBackend:
 
 class WorkspaceToolsTests(unittest.TestCase):
     def setUp(self):
-        self.scratch = tempfile.TemporaryDirectory()
-        self.root = Path(self.scratch.name)
+        self.root = Path(tempfile.gettempdir()) / ("codex-workspace-test-" + str(uuid.uuid4()))
+        self.root.mkdir()  # Ordinary inherited access; no ACL/permission changes.
         self.service = Service(self.root / "state", self.root / "exports")
         self.backend = FakeBackend()
 
     def tearDown(self):
-        self.scratch.cleanup()
+        shutil.rmtree(self.root)
+
+    def test_creation_catalog_retires_only_local_desktop_mode(self):
+        tools = {tool["name"]: tool for tool in TOOLS}
+        self.assertEqual(set(tools), {"read_cloud_environment", "publish_cloud_environment",
+                         "read_cloud_environment_operation", "complete_cloud_environment_publication",
+                         "list_cloud_environments", "read_cloud_thread_environment", "create_cloud_environment",
+                         "create_project", "create_cloud_thread", "export_cloud_file"})
+        self.assertEqual(tools["create_project"]["inputSchema"]["properties"]["kind"]["enum"], ["chatgpt"])
+        self.assertNotIn("roots", tools["create_project"]["inputSchema"]["properties"])
+
+    def test_stale_local_request_refuses_before_native_or_receipt_writes(self):
+        args = dict(self.project_args(), kind="local", roots=[str(self.root)])
+        with self.assertRaisesRegex(ToolError, "Local Desktop project creation is retired"):
+            preflight_action("create_project", args)
+        with self.assertRaisesRegex(ToolError, "Existing native registrations are preserved"):
+            self.service.execute("create_project", args, self.backend)
+        self.backend.native.call.assert_not_called()
+        self.assertEqual(self.backend.requests, [])
+        self.assertFalse((self.root / "state").exists())
+
+    def test_retired_local_mode_does_not_replay_old_native_creation_receipt(self):
+        args = dict(self.project_args(), kind="local", roots=[str(self.root)])
+        self.service.state_root.mkdir()
+        receipt = self.service.state_root / (args["operation_id"] + ".json")
+        receipt.write_text('{"status":"complete","result":{"project":{"id":"existing"}}}', encoding="utf8")
+        before = receipt.read_bytes()
+        with self.assertRaisesRegex(ToolError, "retired"):
+            self.service.execute("create_project", args, self.backend)
+        self.assertEqual(receipt.read_bytes(), before)
+        self.backend.native.call.assert_not_called()
 
     def project_args(self):
         return {"kind": "chatgpt", "name": "Verification", "operation_id": str(uuid.uuid4())}

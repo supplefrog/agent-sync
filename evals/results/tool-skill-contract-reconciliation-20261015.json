@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-15",
+  "scope": "Local candidate only; remote publication excluded by user.",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "deviation": "Tool changes were not carrying linked guidance and user intent through the same publication checks; execution policy was conflated with native chat placement.",
+      "evidence": "Explicit user request on 2026-10-15; published MCP 0.1.0 compared with preserved 0.1.1 correction. Regression tests exercise retired mode and independent app readback.",
+      "baseline_sufficient": false,
+      "why_instruction": "The executable guard enforces coverage; the authoring owner must perform semantic outcome review, and the host adapter must describe the actual native route. Standing text retains only its trigger and placement boundary.",
+      "alternative": "No change leaves the demonstrated stale interface/guidance. A new judge or watcher duplicates existing reconciliation; static links cannot decide semantic correctness.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "4694bfc665baaf40cef1756d12ea959071e1a487599385fad2783d856cf678ef",
+          "after_sha256": "56be5bd62e0d39fe9928921478c764f5d8fa6f255859019416679592975a6d69"
+        }
+      }
+    },
+    {
+      "owner": "skills/instruction-authoring",
+      "basis": "user-correction",
+      "deviation": "Tool changes were not carrying linked guidance and user intent through the same publication checks; execution policy was conflated with native chat placement.",
+      "evidence": "Explicit user request on 2026-10-15; published MCP 0.1.0 compared with preserved 0.1.1 correction. Regression tests exercise retired mode and independent app readback.",
+      "baseline_sufficient": false,
+      "why_instruction": "The executable guard enforces coverage; the authoring owner must perform semantic outcome review, and the host adapter must describe the actual native route. Standing text retains only its trigger and placement boundary.",
+      "alternative": "No change leaves the demonstrated stale interface/guidance. A new judge or watcher duplicates existing reconciliation; static links cannot decide semantic correctness.",
+      "artifacts": {
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "d11a59e5508bc553d4e5bece595d6065d26b2faac98fd8203d56056ee0d32aeb",
+          "after_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "8b3bd4b9676fa3485dd7f6e1fee2fbac69a4ed7040ba88b9c1cf3eb442b80488",
+          "after_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575"
+        }
+      },
+      "loading_review": {
+        "entrypoint_reason": "Keep the existing authoring lifecycle and the short tool/intent trigger common; receipt details remain conditional in the linked change-review reference before publication qualification.",
+        "obligations": [
+          {
+            "obligation": "Preserve authoring ownership, authorization, proportional evidence and outcome-based acceptance; add linked tool/skill/contract reconciliation before completion.",
+            "applies_when": "Authoring a managed instruction/tool correction or user intent change.",
+            "required": true,
+            "before": [
+              "skills/instruction-authoring/SKILL.md",
+              "skills/instruction-authoring/references/change-review.md"
+            ],
+            "after": [
+              "skills/instruction-authoring/SKILL.md",
+              "skills/instruction-authoring/references/change-review.md"
+            ],
+            "disposition": "changed",
+            "load_when": "Entrypoint before authoring; dependency/outcome reference before qualifying managed publication.",
+            "reason": "User explicitly requests automatic alignment of produced outcomes with expected contract outcomes; existing mandatory procedures and conditional loading remain."
+          }
+        ],
+        "checks": "Inspected entrypoint and exact linked reference; existing loading tests cover unchanged-route restructuring, missing obligations and unreachable references. New dependency tests cover omitted/stale guidance and intent updates. No native model selection/loading or quality trial was run."
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "adapters/project-lifecycle.md": {
+          "before_sha256": "48045b9cacc6d2c418870ec9d77d0afaaeef9eabae526665811994145d2b4297",
+          "after_sha256": "f894948f3c6a9d31eb97ced21e27341b7c6cc9518e3dba0e82701d666a2d2a34"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/codex-workspace-mcp.md": {
+          "before_sha256": "18b6096d3313bbb7db3b098a330ab03821bd0b788e7deca04db7817261f1b5de",
+          "after_sha256": "3fdf1dc856d034493ea60f5d7afe3c2df0141570ee318d582e50e266758204cb"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/project-lifecycle.md": {
+          "before_sha256": "45fada846a1f8bdb7913028d82d2a1579fd9cad48c1653dbdbf799480f623ad8",
+          "after_sha256": "fe1846610b3500c0840d43b4a44a89972b991be0bac741026e45cbde36c52a25"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "6d3282df4a268f9df937857a173b0e78219945715332a9997cafc146285c7427",
+          "after_sha256": "06e2872a255aa53c76b278f6151dc8c40742631058cca7bb2a301c7549bba33d"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "329e61de39de7bba923036cf1f946980ae8fffe7e534c601d39cd033a09b642c",
+          "after_sha256": "d2231b30eeff6d2d4087247048f59e54f312907c62021a4ee39db7ad0dec7bbd"
+        },
+        "skills/breadcrumb-records/SKILL.md": {
+          "before_sha256": "1941b454ae29480c7a7c06cd68bb984149a074b825ea82d48de6cbe0f89b04b9",
+          "after_sha256": "1941b454ae29480c7a7c06cd68bb984149a074b825ea82d48de6cbe0f89b04b9"
+        },
+        "skills/breadcrumb-records/references/host-association.md": {
+          "before_sha256": "f58e556e9760ffbe1c0a59d0feb0343284202d77b768e9df8883826f32225df7",
+          "after_sha256": "f58e556e9760ffbe1c0a59d0feb0343284202d77b768e9df8883826f32225df7"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "d11a59e5508bc553d4e5bece595d6065d26b2faac98fd8203d56056ee0d32aeb",
+          "after_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "8b3bd4b9676fa3485dd7f6e1fee2fbac69a4ed7040ba88b9c1cf3eb442b80488",
+          "after_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "4694bfc665baaf40cef1756d12ea959071e1a487599385fad2783d856cf678ef",
+          "after_sha256": "56be5bd62e0d39fe9928921478c764f5d8fa6f255859019416679592975a6d69"
+        },
+        "tools/codex_project.py": {
+          "before_sha256": "9c35bda700293d477bf963ba0c9b0fb7407c433a33394a2a12e4c5d02c5b2e84",
+          "after_sha256": "97346fba646c2c76d4bcd7ede99d4356df3b0ae6f0eafb8a4d18b367c4240d48"
+        },
+        "tools/codex_workspace_mcp.py": {
+          "before_sha256": "23a85336827f4918ab9357bf2678d7a5e8c0dfae05c5dcef20dba654c26cef6d",
+          "after_sha256": "ddc683c135ecb5aa6722423572828ec160f9cf63da9574a9c27e4bc72e918fa7"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "1ffa051279fda65257f59500639260ebdda4c7b935665e94fbd87bad6329a1cb",
+          "after_sha256": "81ecac3c57a3c6dcc12e4970fb5e9cf2c46bb8dd6f8ba4c8fd888c47d2473047"
+        }
+      },
+      "obligations": [
+        {
+          "path": "adapters/project-lifecycle.md",
+          "disposition": "updated",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        },
+        {
+          "path": "docs/codex-workspace-mcp.md",
+          "disposition": "updated",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Historical source/evaluation account remains historical; its authoring link still resolves. This correction makes no new research, frontend taste or quality claim."
+        },
+        {
+          "path": "docs/project-lifecycle.md",
+          "disposition": "updated",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        },
+        {
+          "path": "skills/breadcrumb-records/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "The existing lifecycle owner already requires the supported host adapter and exact project/thread readback; no portable API copy is needed."
+        },
+        {
+          "path": "skills/breadcrumb-records/references/host-association.md",
+          "disposition": "unchanged",
+          "reason": "The existing conditional router resolves the published adapter and requires exact membership readback; host-specific route changes remain in that adapter."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "updated",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Updated at its existing owner for the explicitly requested tool, placement or outcome-contract correction; the receipt binds the exact implementation/guidance assessed."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "User explicitly requires automatic tool-to-skill/docs and contract alignment, bidirectional framework assessment, and agreement of produced versus expected behavioral outcomes.",
+      "authority": "Explicit user requests in this task on 2026-10-15. No new user preferences inferred from implementation.",
+      "checks": "42 final focused tests passed with 8 subtests; 90 broader authoring/worktree/sync tests passed before the final intent-deletion boundary addition. The final focused run covers that addition. A known-bad publication-guard bypass was rejected by the new seam regression. Renderer and structural audit passed after selected source hash refresh. MCP stdio negotiation returned version 0.1.1, 10 tools, and ChatGPT-only project creation without authentication or native connections.",
+      "outcome_review": {
+        "expected": "R19: a tool, skill or contract change brings affected guidance and intent into one source-bound publication check. The relevant workflow outcomes agree with contract acceptance evidence. Local chat placement requires the exact requested host and saved project.",
+        "observed": "Missing/stale dependency records, absent outcome assessment and undeclared intent changes fail before completion. Independent app readback rejects wrong host, null/wrong project and wrong identity. Local Desktop project creation is retired while cloud helpers remain.",
+        "evidence": "tests/test_dependency_reconciliation.py; tests/test_instruction_changes.py; tests/test_codex_project.py; tests/test_codex_workspace_mcp.py; renderer and structural audit.",
+        "limitations": "These are deterministic fixture and source-review results. They do not authenticate receipt assertions, discover unlinked consumers, prove semantic alignment, natural skill triggering or live Desktop behavior. No conversations, model trials, remote push or live deployment ran."
+      },
+      "framework_review": {
+        "affected": [
+          "skills/instruction-authoring/SKILL.md",
+          "skills/instruction-authoring/references/change-review.md",
+          "skills/breadcrumb-records/references/host-association.md",
+          "docs/system-requirements.md",
+          "docs/requirement-status.md"
+        ],
+        "selection_reason": "The authoring owner governs tool/contract edits; native association is the corrected consumer. Existing conditional routing stays at its host-association reference and adapter.",
+        "unaffected_reason": "No change to the general progressive-disclosure or mandatory loading preservation contract; unrelated skill methods require no blanket rewrite. Framework changes still require this explicit affected-owner assessment.",
+        "checks": "Compared expected authoring outcome to entrypoint trigger, conditional reference load point and existing before/after obligation checks. Required protocol reads remain before the governed decision; actual model routing remains unmeasured."
+      }
+    }
+  ],
+  "verification": {
+    "focused": "42 passed, 8 subtests",
+    "broader": "90 passed, 8 subtests before final intent-deletion boundary; final focused tests cover it",
+    "negative_control": "Known-bad publication bypass rejected",
+    "stdio": "0.1.1; 10 tools; project kinds chatgpt only",
+    "structural_audit": "passed",
+    "live_deployment": "not performed",
+    "remote_publication": "not authorized"
+  },
+  "rollback": "Use a new scoped correction through the existing reconciler; preserve native operation receipts and other worktrees. No live state was changed."
+}

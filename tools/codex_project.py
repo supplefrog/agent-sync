@@ -1,4 +1,4 @@
-"""Preview or assign one stored Codex thread through the native project API."""
+"""Preview or assign one stored local thread in the native registry, not Desktop's sidebar."""
 from __future__ import annotations
 
 import argparse
@@ -109,10 +109,26 @@ def projects(client):
 
 
 def thread(client, thread_id):
-    return client.call("thread/read", {"threadId": thread_id, "includeTurns": False})["thread"]
+    try:
+        return client.call("thread/read", {"threadId": thread_id, "includeTurns": False})["thread"]
+    except AssociationError as exc:
+        if "thread not loaded" in str(exc):
+            raise AssociationError("The local native server cannot read this stored thread. Verify its "
+                                   "actual host and persistence; durable/remote routing is unsupported "
+                                   "here. Use supported app tools on the correct host; do not resume or "
+                                   "recreate the thread to manufacture local persistence.") from exc
+        raise
 
 
-def associate(client, *, root, name, thread_id, apply=False, expect_project=None, key=None):
+def validate_association_host(host_id):
+    if host_id != "local":
+        raise AssociationError(f"Unsupported association host '{host_id}': this helper only accesses "
+                               "the local native registry. Use supported app tools on the thread's "
+                               "actual host; no project or thread was changed.")
+
+
+def associate(client, *, root, name, thread_id, apply=False, expect_project=None, key=None, host_id="local"):
+    validate_association_host(host_id)
     if not root.is_dir():
         raise AssociationError("create/verify the chosen project directory first")
     before = thread(client, thread_id)  # Must be persisted; never resume or create a thread.
@@ -123,7 +139,10 @@ def associate(client, *, root, name, thread_id, apply=False, expect_project=None
     project = matching[0] if matching else None
     report = {"thread_id": thread_id, "root": str(root), "previous_project_id": current,
         "project_id": project["id"] if project else None, "action": "reuse" if project else "create",
-        "status": "planned", "cwd_changed": False, "ui_refresh_verified": False}
+        "status": "planned", "cwd_changed": False, "ui_refresh_verified": False,
+        "scope": "local_native_registry_only", "association_host_id": host_id,
+        "outcomes": {"native_registry": "found" if project else "not_created",
+                     "desktop_sidebar_adoption": "unsupported", "thread_association": "not_attempted"}}
     if not apply:
         return report
     if expect_project != (current or "none"):
@@ -147,24 +166,59 @@ def associate(client, *, root, name, thread_id, apply=False, expect_project=None
     if after.get("projectId") != project["id"] or after.get("cwd") != before.get("cwd"):
         raise AssociationError("assignment readback disagreed; inspect before retrying")
     report.update(status="persisted", project_id=project["id"])
+    report["outcomes"].update(native_registry="verified", thread_association="verified")
     return report
+
+
+def verify_app_placement(observed, *, thread_id, project_id, host_id="local"):
+    """Validate independent active-app readback, never a creation response or cwd."""
+    if not isinstance(observed, dict):
+        raise AssociationError("active-app readback must be a thread object")
+    if not isinstance(observed, dict):
+        raise AssociationError("active-app readback must be a thread object")
+    if not isinstance(observed, dict):
+        raise AssociationError("active-app readback must be a thread object")
+    if not isinstance(observed, dict):
+        raise AssociationError("active-app readback must be a thread object")
+    if not isinstance(observed, dict):
+        raise AssociationError("active-app readback must be a thread object")
+    if not isinstance(observed, dict):
+        raise AssociationError("active-app readback must be a thread object")
+    if not thread_id or not project_id or not host_id:
+        raise AssociationError("placement verification requires exact requested identities")
+    if (observed.get("threadId", observed.get("id")) != thread_id
+            or observed.get("hostId") != host_id or observed.get("projectId") != project_id):
+        raise AssociationError("active-app placement readback disagreed or is incomplete; inspect before retrying")
+    return {"status": "verified", "threadId": thread_id, "hostId": host_id, "projectId": project_id}
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--codex-exe", type=Path, required=True, help="verified installed native executable")
-    parser.add_argument("--root", type=Path, required=True)
-    parser.add_argument("--name", required=True)
+    parser.add_argument("--codex-exe", type=Path, help="verified installed native executable")
+    parser.add_argument("--root", type=Path)
+    parser.add_argument("--name")
     parser.add_argument("--thread-id", required=True)
+    parser.add_argument("--host-id", default="local", help="actual thread host; only local is supported")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--expect-project", help="prior project ID from preview, or none")
     parser.add_argument("--idempotency-key", help="retain one UUID across uncertain project creation")
+    parser.add_argument("--verify-app-readback", type=Path, help="JSON from independent active-app thread readback; no connection or write")
+    parser.add_argument("--project-id", help="exact requested saved project ID for readback verification")
     args = parser.parse_args(argv)
     try:
+        if args.verify_app_readback:
+            if args.apply or args.codex_exe or args.root or args.name or args.expect_project or args.idempotency_key:
+                raise AssociationError("readback verification cannot be combined with registry operations")
+            print(json.dumps(verify_app_placement(json.loads(args.verify_app_readback.read_text(encoding="utf-8")),
+                thread_id=args.thread_id, project_id=args.project_id, host_id=args.host_id)))
+            return 0
+        if not args.codex_exe or not args.root or not args.name or args.project_id:
+            raise AssociationError("registry operations require codex-exe, root and name")
+        validate_association_host(args.host_id)  # Reject unsupported routing before connecting.
         with connected(args.codex_exe.resolve(strict=True)) as client:
             result = associate(client, root=args.root.resolve(strict=True), name=args.name,
                 thread_id=args.thread_id, apply=args.apply, expect_project=args.expect_project,
-                key=args.idempotency_key)
+                key=args.idempotency_key, host_id=args.host_id)
         print(json.dumps(result, indent=2))
         return 0
     except (AssociationError, OSError, ValueError, KeyError, TypeError) as exc:
