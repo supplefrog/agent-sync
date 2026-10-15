@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "suite": "authoring-loading",
+  "capability": "instruction-authoring",
+  "status": "pass",
+  "claim": "Deterministic loading-review enforcement at the existing publication seam; no model quality or natural-triggering claim.",
+  "instruction_changes": [
+    {
+      "owner": "skills/instruction-authoring",
+      "basis": "observed-deviation",
+      "deviation": "The 32887-byte, 139-line frontend entrypoint passed the line-only validator despite existing conditional-detail guidance. Publication checked necessity and identities without a loading/preservation assessment.",
+      "evidence": "Published frontend restructuring at 3ac5c59 retains procedures. Real ready-plan regression reproduced acceptance of a dense unreviewed entrypoint; negative and valid compulsory-workflow controls exercise the corrected publication seam.",
+      "baseline_sufficient": false,
+      "why_instruction": "The existing authoring owner must explain how conditional references retain compulsory obligations. The existing publication guard enforces a bound loading assessment; source wording alone was insufficient.",
+      "alternative": "Retaining prose-only checks repeats the failure. A hard word/byte ceiling rejects useful compulsory protocols. A new manager or blanket inference benchmark adds cost without proving obligation preservation.",
+      "artifacts": {
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "e242cd4d0b05ae749dff650677dd7812bca2d9e8acc05a61eaba10d522a53c21",
+          "after_sha256": "d11a59e5508bc553d4e5bece595d6065d26b2faac98fd8203d56056ee0d32aeb"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "25beae96aad7592f7fc610fee2adc3c5a6ff746896b0f86359c155a28bac12b8",
+          "after_sha256": "8b3bd4b9676fa3485dd7f6e1fee2fbac69a4ed7040ba88b9c1cf3eb442b80488"
+        }
+      },
+      "loading_review": {
+        "entrypoint_reason": "Placement, instruction modality, protected intent, proportional evaluation and canonical completion apply across authoring work. The entrypoint adds only the obligation-preserving routing rule and conditional record trigger. The receipt schema stays in the existing review reference.",
+        "checks": "Source inspection: substantial restructuring requires the linked loading contract before receipt preparation; a tiny wording repair does not require a new map; required procedures keep original applicability and read-before-decision strength. Ready-plan controls reject dense unreviewed, stale/outside/missing/unreachable destinations and accept a justified substantial compulsory workflow. Static reachability is not natural triggering or semantic-completeness proof.",
+        "obligations": [
+          {
+            "obligation": "Existing placement, modality, authorization, evaluation and canonical completion",
+            "applies_when": "Durable instruction authoring under existing conditional owner and task boundaries",
+            "required": true,
+            "before": [
+              "skills/instruction-authoring/SKILL.md"
+            ],
+            "after": [
+              "skills/instruction-authoring/SKILL.md"
+            ],
+            "disposition": "preserved",
+            "load_when": "Read authoring entrypoint before its governed decisions",
+            "reason": "Existing workflows and proportional exceptions remain unchanged."
+          },
+          {
+            "obligation": "Existing optional review and compulsory publication necessity receipt",
+            "applies_when": "Optional early review or managed instruction publication respectively",
+            "required": true,
+            "before": [
+              "skills/instruction-authoring/references/change-review.md"
+            ],
+            "after": [
+              "skills/instruction-authoring/references/change-review.md"
+            ],
+            "disposition": "preserved",
+            "load_when": "Existing entrypoint routes review/receipt preparation to this reference",
+            "reason": "Publication obligations are retained; optional early review remains optional."
+          },
+          {
+            "obligation": "Loading assessment and before/after obligations for substantial restructuring",
+            "applies_when": "Substantial restructuring or deterministic size/growth/local-link/removal review signal",
+            "required": true,
+            "before": [],
+            "after": [
+              "skills/instruction-authoring/SKILL.md#Skill structure",
+              "skills/instruction-authoring/references/change-review.md#Loading review for growth and restructuring"
+            ],
+            "disposition": "added",
+            "load_when": "Read loading contract before preparing the applicable receipt; check map before promotion",
+            "reason": "Repairs the reproduced loading-assessment gap without changing frontend or host policy."
+          }
+        ]
+      }
+    }
+  ],
+  "checks": [
+    "Real ready-plan failure and valid compulsory-workflow controls",
+    "Reference move and malformed/stale/outside/unreachable address controls",
+    "Body growth/line-ending diagnostics",
+    "Nearby publication, worktree and authoring-review checks"
+  ],
+  "limits": [
+    "Declared obligation coverage and static reachability do not prove semantic completeness, original-trigger equivalence, natural reference selection, model quality or total-cost improvement.",
+    "No frontend policy or source change; no real image generation or model inference."
+  ]
+}

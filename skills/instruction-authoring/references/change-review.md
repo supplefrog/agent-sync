@@ -26,6 +26,20 @@ The deviation comes from the author's required outcome. Assess the current model
 
 Generated standing overlays inherit their selected core/adapter correction and still pass the renderer/profile checks. Source instructions need their own bound record; naming a file in `--include` does not supply it. Necessary operational protocols and explicit author corrections remain supported. Optional drafting review and inference remain optional.
 
+## Loading review for growth and restructuring
+
+Use the same necessity record for a substantial workflow restructuring. Set `restructured: true` when moving or materially condensing procedures even if the link set and size stay unchanged. The publication guard also requests `loading_review` when a changed entrypoint has at least 3,000 body words or more than 500 body lines, grows by at least 500 body words and 25 percent, changes local links in a changed Markdown source, or removes a Markdown source. These are review signals, not quality verdicts or hard size ceilings. Validation and advisory review expose body words, bytes and lines; unchanged legacy packages do not need retrospective receipts. Keep one loading map per changed skill owner, covering all selected changed Markdown sources even when necessity reasoning is split across records.
+
+Add `loading_review` to the existing owner record with:
+
+- `entrypoint_reason`: why the remaining common content is needed across the skill's tasks; explain retained substantial compulsory procedures.
+- `obligations`: a compact before/after map. Each row has `obligation`, `applies_when`, `required` (boolean), `before` and `after` (lists of canonical source addresses), `disposition` (`preserved`, `changed`, `added`, `removed`), `load_when`, and `reason`. Use `path#Literal heading text` for a precise receipt address, or a file path for a whole-file mechanism. Empty `before` is allowed for an addition; empty `after` for an intentional removal. Group repeated advice, but preserve unique exceptions and conditional dependencies. Cover every changed Markdown source in the owner's record. Explain an intentional omission or policy change and its authority; restructuring itself supplies none.
+- `checks`: the actual preservation/loading checks and their limits. Inspect common and conditional routes against representative tasks and a nearby non-applicable case. Verify required reads remain mandatory at the same decision point and under the same conditions. Use native routing/reference-loading probes when uncertainty could change acceptance; no compulsory inference benchmark, image generation or reviewer fan-out.
+
+The existing before/after hashes bind this assessment to the changed sources. Publication checks the record's shape, addresses in the proper baseline/candidate, changed-file coverage, and reachability from `SKILL.md` through local links, including nested routers. It does not infer every obligation from prose, authenticate a declared check, prove semantic preservation, or establish natural triggering. A linked file can still have a wrong or optional trigger: inspect that wording before promotion. Keep unresolved behavior explicit rather than filling the record with unsupported pass claims.
+
+A short entrypoint is not automatically economical. Loading every linked file unconditionally, splitting common rules across many reads, or losing a necessary procedure can raise total cost. A substantial universally needed protocol can remain inline with a justified review. Revisit signals only when observed workload evidence shows unnecessary review or a missed failure class.
+
 ## Existing/native procedure references
 
 Use repeated `--reference-skill PATH` to inspect an existing/native skill alongside the proposal. See [useful-behavior review](useful-behaviors.md). The same source inventory and judgment questions are available before editing and with `plan --target`; source names or website links alone do not establish preservation of the source workflow.

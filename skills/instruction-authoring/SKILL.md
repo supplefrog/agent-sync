@@ -1,7 +1,7 @@
 ---
 name: instruction-authoring
 description: Use when saving behavioral preferences, authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns placement, skill improvements, triggers and proportional verification.
-version: 2.0.4
+version: 2.0.5
 author: Hermes Agent
 license: MIT
 metadata:
@@ -79,6 +79,10 @@ Keep the entrypoint focused. Put substantial conditional detail in linked files:
 - `templates/` or `assets/` => artifacts used in outputs, not prompt prose.
 
 Add a supporting file only when `SKILL.md` links it and names its trigger. Remove orphan examples, placeholders, copied manuals, and unused scaffolding.
+
+When moving or condensing workflows, preserve their applicability and obligation strength. Required detail can live in a reference: its router must require the read before the governed decision, under the original conditions. Moving a procedure does not authorize making it optional, narrowing its trigger, or weakening planning, review, delivery or approval. Keep the common entrypoint for shared decisions; route conditional methods and exceptions by task need. Judge the resulting load path and total task cost, including missed obligations, rather than file size alone.
+
+For substantial restructuring, record the before/after obligations, conditions and load points in the existing change receipt; read the [loading review contract](references/change-review.md#loading-review-for-growth-and-restructuring) before preparing that record. Explain why common content remains universal and check representative applicable and near-miss cases. A tiny wording repair needs no new map. Reuse source-bound preservation evidence; inspect uncertain routing with a proportional native probe. Static links and hashes prove narrower things than natural reference selection or model quality.
 
 ## Optional review before editing
 

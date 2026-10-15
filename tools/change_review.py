@@ -230,6 +230,7 @@ def review(repo: str | Path, target: str, *, candidate: str | Path | None = None
             'owner': owner, 'classification': finding, 'structural_findings': warnings,
             'catalog': {'description_characters': len(metadata.get('description', '')),
                         'entrypoint_bytes': len(text.encode()), 'entrypoint_lines': len(text.splitlines()),
+                        'loading': validate.loading_signals(text, before.read_text(encoding='utf-8') if before else None),
                         'native_catalog_view': native_catalog_view(metadata.get('description', ''), selected_hosts),
                         'overlap_candidates': peers[:8],
                         'semantic_overlap': 'unresolved; token overlap is only a review shortlist'},

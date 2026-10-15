@@ -10,6 +10,7 @@ from pathlib import Path
 import subprocess
 
 import sync_git
+import validate
 
 INDEX = 'contracts/instruction-surfaces.json'
 GENERATED = {'recovery/current/hosts/codex/AGENTS.md',
@@ -34,6 +35,101 @@ def _before(repo, base, name):
 
 def _hash(data):
     return hashlib.sha256(data).hexdigest() if data is not None else 'absent'
+
+
+def _loading_review(candidate, source, base, owner, row, changed):
+    """Validate the declared map and load graph, not its semantic completeness."""
+    if not owner.startswith('skills/'):
+        return
+    if 'restructured' in row and not isinstance(row['restructured'], bool):
+        raise sync_git.SyncBlocked('instruction restructuring declaration must be boolean: ' + owner)
+    entry = owner + '/SKILL.md'
+    old_entry = _before(source, base, entry)
+    current = candidate / entry
+    new_entry = current.read_bytes() if current.is_file() else None
+    reasons = []
+    if entry in changed and new_entry is not None:
+        reasons.extend(validate.loading_signals(new_entry.decode('utf-8'),
+                       old_entry.decode('utf-8') if old_entry is not None else None)['review_reasons'])
+    for name in changed:
+        old = _before(source, base, name)
+        path = candidate / name
+        new = path.read_bytes() if path.is_file() else None
+        if old is not None and new is None:
+            reasons.append('removed instruction file')
+        if validate.local_links((old or b'').decode('utf-8')) != validate.local_links((new or b'').decode('utf-8')):
+            reasons.append('changed local reference routes')
+    if row.get('restructured') is True:
+        reasons.append('declared workflow restructuring')
+    review = row.get('loading_review')
+    if not reasons and review is None:
+        return
+    if not isinstance(review, dict) or any(not isinstance(review.get(key), str) or not review[key].strip()
+                                          for key in ('entrypoint_reason', 'checks')):
+        raise sync_git.SyncBlocked('instruction change requires a loading review: ' + owner + ' (' + '; '.join(sorted(set(reasons))) + ')')
+    rows = review.get('obligations')
+    if not isinstance(rows, list) or not rows or any(not isinstance(item, dict) for item in rows):
+        raise sync_git.SyncBlocked('loading review requires an obligation map: ' + owner)
+
+    def address(value):
+        if not isinstance(value, str) or not value.startswith(owner + '/') or '\\' in value:
+            raise sync_git.SyncBlocked('loading review address is outside its owner: ' + str(value))
+        name, _, fragment = value.partition('#')
+        if sync_git.safe_path(candidate, name) != name:
+            raise sync_git.SyncBlocked('loading review requires exact source addresses: ' + value)
+        return name, fragment
+
+    # Follow local Markdown links, including nested routers; mere existence is
+    # insufficient. References outside this package remain with their owners.
+    reachable, pending = set(), [entry] if new_entry is not None else []
+    while pending:
+        name = pending.pop()
+        if name in reachable:
+            continue
+        path = candidate / name
+        if not path.is_file():
+            continue
+        reachable.add(name)
+        if path.suffix.lower() != '.md':
+            continue
+        for link in validate.local_links(path.read_text(encoding='utf-8')):
+            destination = (path.parent / link.split('#', 1)[0]).resolve()
+            try:
+                destination.relative_to((candidate / owner).resolve())
+                relative = destination.relative_to(candidate.resolve()).as_posix()
+            except ValueError:
+                continue
+            if relative not in reachable:
+                pending.append(relative)
+    covered_before, covered_after = set(), set()
+    for item in rows:
+        if (any(not isinstance(item.get(key), str) or not item[key].strip()
+                for key in ('obligation', 'applies_when', 'load_when', 'reason'))
+                or not isinstance(item.get('required'), bool)
+                or item.get('disposition') not in {'preserved', 'changed', 'added', 'removed'}):
+            raise sync_git.SyncBlocked('loading review has incomplete obligation conditions: ' + owner)
+        for side in ('before', 'after'):
+            values = item.get(side)
+            if not isinstance(values, list) or (not values and item['disposition'] != ('added' if side == 'before' else 'removed')):
+                raise sync_git.SyncBlocked('loading review has no ' + side + ' obligation address: ' + owner)
+            for value in values:
+                name, fragment = address(value)
+                data = _before(source, base, name) if side == 'before' else ((candidate / name).read_bytes() if (candidate / name).is_file() else None)
+                if data is None:
+                    raise sync_git.SyncBlocked('loading review address does not exist in ' + side + ': ' + value)
+                if fragment:
+                    # Addresses use literal heading text, avoiding platform slug conventions.
+                    headings = {line.lstrip('#').strip() for line in data.decode('utf-8').splitlines() if line.startswith('#')}
+                    if fragment not in headings:
+                        raise sync_git.SyncBlocked('loading review heading does not exist: ' + value)
+                if side == 'after' and name not in reachable:
+                    raise sync_git.SyncBlocked('loading review destination is not reachable from entrypoint: ' + value)
+                (covered_before if side == 'before' else covered_after).add(name)
+    for name in changed:
+        if _before(source, base, name) is not None and name not in covered_before:
+            raise sync_git.SyncBlocked('loading review omits changed baseline source: ' + name)
+        if (candidate / name).is_file() and name not in covered_after:
+            raise sync_git.SyncBlocked('loading review omits changed destination source: ' + name)
 
 
 def check(candidate: Path, source: Path, base: str, paths):
@@ -113,6 +209,7 @@ def check(candidate: Path, source: Path, base: str, paths):
                     raise sync_git.SyncBlocked('invalid instruction change evidence: ' + name)
                 records.extend((name, row) for row in rows)
     used = []
+    loading_rows = {}
     for name, (owner, old_hash, new_hash) in sorted(required.items()):
         matches = [(receipt, row) for receipt, row in records
                    if isinstance(row.get('artifacts'), dict) and name in row['artifacts']]
@@ -144,4 +241,19 @@ def check(candidate: Path, source: Path, base: str, paths):
                for key in ('deviation', 'evidence', 'why_instruction', 'alternative')):
             raise sync_git.SyncBlocked('instruction change has incomplete architectural reasoning: ' + name)
         used.append({'path': name, 'owner': owner, 'receipt': receipt})
+        rows, changed = loading_rows.setdefault(owner, ({}, set()))
+        rows[id(row)] = row
+        changed.add(name)
+    for owner, (rows, changed) in loading_rows.items():
+        if not owner.startswith('skills/'):
+            continue
+        if any('restructured' in row and not isinstance(row['restructured'], bool) for row in rows.values()):
+            raise sync_git.SyncBlocked('instruction restructuring declaration must be boolean: ' + owner)
+        reviews = [row['loading_review'] for row in rows.values() if 'loading_review' in row]
+        if len(reviews) > 1:
+            raise sync_git.SyncBlocked('loading review requires one owner-level map: ' + owner)
+        assessment = {'restructured': any(row.get('restructured') is True for row in rows.values())}
+        if reviews:
+            assessment['loading_review'] = reviews[0]
+        _loading_review(candidate, source, base, owner, assessment, changed)
     return used

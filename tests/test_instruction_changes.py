@@ -10,6 +10,169 @@ import test_worktree_sync as fixtures
 
 
 class InstructionChangeTests(unittest.TestCase):
+    def test_later_restructuring_declaration_is_checked_with_unchanged_routes(self):
+        adapter = self.adapter()
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, live, remote = self.setup_instructions(Path(temporary))
+            entry, detail = 'skills/kept/SKILL.md', 'skills/kept/references/protocol.md'
+            (repo / 'contracts/ownership.json').write_text(json.dumps({'capabilities': [{'id': 'kept', 'owner': 'skills/kept'}]}))
+            (repo / entry).write_bytes((repo / entry).read_bytes() + b'\nFor release read [protocol](references/protocol.md).\n')
+            (repo / detail).parent.mkdir()
+            (repo / detail).write_bytes(b'Required release procedure.\n')
+            self.git(repo, 'add', '.')
+            self.git(repo, 'commit', '-m', 'existing release route')
+            self.git(repo, 'push', 'origin', 'main')
+            worker = self.worker(repo, 'stable-route-worker')
+            rows = []
+            for name in (entry, detail):
+                old = subprocess.check_output(['git', '-C', str(worker), 'show', 'HEAD:' + name])
+                (worker / name).write_bytes(old + b'\nClarified existing procedure.\n')
+                rows.append({'owner': 'skills/kept', 'basis': 'mechanical-maintenance',
+                    'deviation': 'Substantial semantic restructuring with stable link topology.', 'evidence': 'Fixture current source.',
+                    'baseline_sufficient': False, 'why_instruction': 'Existing instruction owner.', 'alternative': 'Keep existing wording.',
+                    'artifacts': {name: {'before_sha256': hashlib.sha256(old).hexdigest(),
+                                         'after_sha256': hashlib.sha256((worker / name).read_bytes()).hexdigest()}}})
+            rows[1]['restructured'] = True
+            receipt_name = 'evals/results/stable-route.json'
+            receipt = worker / receipt_name
+            receipt.parent.mkdir(parents=True)
+            receipt.write_text(json.dumps({'instruction_changes': rows}))
+            self.git(worker, 'add', '.')
+            self.git(worker, 'commit', '-m', 'stable links later declaration')
+            includes = [entry, detail, receipt_name]
+            before = self.snapshot(worker), (live / 'kept/SKILL.md').read_bytes(), self.git(remote, 'rev-parse', 'main')
+            result = adapter.ready_plan(worker, self.git(worker, 'rev-parse', 'HEAD'), include=includes)
+            self.assertEqual('review-required', result['result'], result)
+            self.assertIn('declared workflow restructuring', result['reason'])
+            self.assertEqual(before, (self.snapshot(worker), (live / 'kept/SKILL.md').read_bytes(), self.git(remote, 'rev-parse', 'main')))
+            rows[1]['loading_review'] = {'entrypoint_reason': 'Keep common routing inline.',
+                'checks': 'Source route and required conditions inspected; no natural triggering claim.',
+                'obligations': [{'obligation': 'Required release procedure', 'required': True, 'applies_when': 'Release',
+                    'before': [entry, detail], 'after': [entry, detail], 'disposition': 'preserved',
+                    'load_when': 'Before release', 'reason': 'Keep the existing required route.'}]}
+            ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': rows}))
+            self.assertEqual('ready', adapter.ready_plan(worker, ready, include=includes)['result'])
+
+    def test_loading_review_blocks_dense_entrypoint_and_accepts_required_workflow(self):
+        adapter = self.adapter()
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, live, remote = self.setup_instructions(Path(temporary))
+            owner = repo / 'contracts/ownership.json'
+            owner.write_text(json.dumps({'capabilities': [{'id': 'kept', 'owner': 'skills/kept'}]}))
+            self.git(repo, 'add', '.')
+            self.git(repo, 'commit', '-m', 'declare skill owner')
+            self.git(repo, 'push', 'origin', 'main')
+            worker = self.worker(repo, 'loading-worker')
+            name = 'skills/kept/SKILL.md'
+            target = worker / name
+            old = subprocess.check_output(['git', '-C', str(worker), 'show', 'HEAD:' + name])
+            # The reported failure class: extensive prose hidden in few lines.
+            target.write_bytes(old + ('\n' + 'required procedure ' * 2000 + '\n').encode())
+            record = {'owner': 'skills/kept', 'basis': 'observed-deviation',
+                      'deviation': 'Dense common entrypoint bypasses line-only review.',
+                      'evidence': 'Reported 139-line frontend body exceeded 32 KB.',
+                      'baseline_sufficient': False, 'why_instruction': 'Repair existing loading policy.',
+                      'alternative': 'A hard size ceiling rejects legitimate required procedures.',
+                      'artifacts': {name: {'before_sha256': hashlib.sha256(old).hexdigest(),
+                                           'after_sha256': hashlib.sha256(target.read_bytes()).hexdigest()}}}
+            receipt_name = 'evals/results/loading-test.json'
+            receipt = worker / receipt_name
+            receipt.parent.mkdir(parents=True)
+            receipt.write_text(json.dumps({'instruction_changes': [record]}))
+            self.git(worker, 'add', '.')
+            self.git(worker, 'commit', '-m', 'dense entrypoint')
+            includes = [name, receipt_name]
+            before = self.snapshot(worker), (live / 'kept/SKILL.md').read_bytes(), self.git(remote, 'rev-parse', 'main')
+            result = adapter.ready_plan(worker, self.git(worker, 'rev-parse', 'HEAD'), include=includes)
+            self.assertEqual('review-required', result['result'], result)
+            self.assertIn('loading review', result['reason'])
+            self.assertEqual(before, (self.snapshot(worker), (live / 'kept/SKILL.md').read_bytes(), self.git(remote, 'rev-parse', 'main')))
+            record['loading_review'] = {
+                'entrypoint_reason': 'All cases need this substantial compulsory protocol.',
+                'checks': 'Source inspection verifies a shared required procedure; no natural-routing claim.',
+                'obligations': [{'obligation': 'Required common procedure', 'applies_when': 'Every kept task',
+                    'required': True, 'before': [name], 'after': [name], 'disposition': 'preserved',
+                    'load_when': 'Read entrypoint before execution', 'reason': 'All modes share the protocol.'}]}
+            ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': [record]}))
+            result = adapter.ready_plan(worker, ready, include=includes)
+            self.assertEqual('ready', result['result'], result)
+            # The same justified required workflow remains valid over 500 lines.
+            target.write_bytes(old + b'\n' + b'Required step.\n' * 501)
+            record['artifacts'][name]['after_sha256'] = hashlib.sha256(target.read_bytes()).hexdigest()
+            receipt.write_text(json.dumps({'instruction_changes': [record]}))
+            self.git(worker, 'add', '.')
+            self.git(worker, 'commit', '-m', 'valid multi-line compulsory protocol')
+            self.assertEqual('ready', adapter.ready_plan(worker, self.git(worker, 'rev-parse', 'HEAD'), include=includes)['result'])
+
+    def test_reference_move_requires_reachable_obligation_map(self):
+        adapter = self.adapter()
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, live, remote = self.setup_instructions(Path(temporary))
+            (repo / 'contracts/ownership.json').write_text(json.dumps({'capabilities': [{'id': 'kept', 'owner': 'skills/kept'}]}))
+            self.git(repo, 'add', '.')
+            self.git(repo, 'commit', '-m', 'declare skill owner')
+            self.git(repo, 'push', 'origin', 'main')
+            worker = self.worker(repo, 'route-worker')
+            name, reference = 'skills/kept/SKILL.md', 'skills/kept/references/required.md'
+            old = subprocess.check_output(['git', '-C', str(worker), 'show', 'HEAD:' + name])
+            (worker / name).write_bytes(old + b'\nFor release, read [required protocol](references/required.md).\n')
+            ref = worker / reference
+            ref.parent.mkdir()
+            ref.write_bytes(b'Required release protocol.\n')
+            record = {'owner': 'skills/kept', 'basis': 'mechanical-maintenance',
+                'deviation': 'Move a required release protocol into conditional detail.', 'evidence': 'Fixture source route.',
+                'baseline_sufficient': False, 'why_instruction': 'Keep requirement at its owner.', 'alternative': 'Always load every mode.',
+                'artifacts': {name: {'before_sha256': hashlib.sha256(old).hexdigest(), 'after_sha256': hashlib.sha256((worker / name).read_bytes()).hexdigest()},
+                              reference: {'before_sha256': 'absent', 'after_sha256': hashlib.sha256(ref.read_bytes()).hexdigest()}}}
+            receipt_name = 'evals/results/route-test.json'
+            receipt = worker / receipt_name
+            receipt.parent.mkdir(parents=True)
+            receipt.write_text(json.dumps({'instruction_changes': [record]}))
+            self.git(worker, 'add', '.')
+            self.git(worker, 'commit', '-m', 'move required procedure')
+            includes = [name, reference, receipt_name]
+            result = adapter.ready_plan(worker, self.git(worker, 'rev-parse', 'HEAD'), include=includes)
+            self.assertEqual('review-required', result['result'], result)
+            record['loading_review'] = {'entrypoint_reason': 'Common trigger; release detail is conditional.',
+                'checks': 'Release reaches required reference; ordinary repair stays at entrypoint. Static checks only.',
+                'obligations': [{'obligation': 'Release protocol', 'applies_when': 'Release', 'required': True,
+                    'before': [name], 'after': [name, reference], 'disposition': 'preserved',
+                    'load_when': 'Before release', 'reason': 'Only release uses this procedure.'}]}
+            for mutation in (None, {}, {'required': 'true'}, {'after': ['skills/kept/references/missing.md']},
+                             {'after': ['../escape.md']}, {'before': [reference]}, {'applies_when': ''}):
+                changed = json.loads(json.dumps(record))
+                if mutation == {}:
+                    changed['loading_review']['obligations'] = []
+                elif mutation is not None:
+                    changed['loading_review']['obligations'][0].update(mutation)
+                ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': [changed]}))
+                result = adapter.ready_plan(worker, ready, include=includes)
+                self.assertEqual('ready' if mutation is None else 'review-required', result['result'], (mutation, result))
+            # Separate necessity rows must not hide a later restructuring flag.
+            first, second = json.loads(json.dumps(record)), json.loads(json.dumps(record))
+            first['artifacts'] = {name: record['artifacts'][name]}
+            second['artifacts'] = {reference: record['artifacts'][reference]}
+            first.pop('loading_review')
+            second.pop('loading_review')
+            second['restructured'] = True
+            ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': [first, second]}))
+            self.assertEqual('review-required', adapter.ready_plan(worker, ready, include=includes)['result'])
+            second['loading_review'] = record['loading_review']
+            ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': [first, second]}))
+            self.assertEqual('ready', adapter.ready_plan(worker, ready, include=includes)['result'])
+            # An existing but unlinked file cannot count as loaded preservation.
+            orphan = worker / 'skills/kept/references/orphan.md'
+            orphan.write_bytes(b'Unreachable protocol.\n')
+            record['artifacts']['skills/kept/references/orphan.md'] = {
+                'before_sha256': 'absent', 'after_sha256': hashlib.sha256(orphan.read_bytes()).hexdigest()}
+            record['loading_review']['obligations'][0]['after'] = [name, reference, 'skills/kept/references/orphan.md']
+            receipt.write_text(json.dumps({'instruction_changes': [record]}))
+            self.git(worker, 'add', '.')
+            self.git(worker, 'commit', '-m', 'unreachable destination')
+            result = adapter.ready_plan(worker, self.git(worker, 'rev-parse', 'HEAD'), include=includes + ['skills/kept/references/orphan.md'])
+            self.assertEqual('review-required', result['result'], result)
+            self.assertIn('reachable', result['reason'])
+
     def test_omp_generated_overlay_requires_its_canonical_source(self):
         import sys
         sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))

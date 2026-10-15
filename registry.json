@@ -116,7 +116,7 @@
       "name": "instruction-authoring",
       "status": "admitted",
       "license": "MIT",
-      "eval": "evals/results/instruction-authoring-rename-deterministic.json"
+      "eval": "evals/results/authoring-loading-20261015.json"
     },
     {
       "name": "humanizer",

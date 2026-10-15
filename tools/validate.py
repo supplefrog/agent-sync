@@ -13,6 +13,29 @@ NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 
 
+def local_links(text: str) -> set[str]:
+    return {target.strip() for target in LINK_RE.findall(text)
+            if target.strip() and not target.strip().startswith(('#', 'mailto:'))
+            and '://' not in target}
+
+
+def loading_signals(text: str, before: str | None = None) -> dict:
+    """Review signals, never a size-based validity or quality verdict."""
+    _, body = frontmatter(text.replace('\r\n', '\n'))
+    words = len(body.split())
+    old_words = len(frontmatter((before or '').replace('\r\n', '\n'))[1].split())
+    reasons = []
+    if words >= 3000:
+        reasons.append('entrypoint has at least 3000 body words')
+    if len(body.splitlines()) > 500:
+        reasons.append('entrypoint has more than 500 body lines')
+    if before is not None and words - old_words >= 500 and words >= old_words * 1.25:
+        reasons.append('entrypoint grew by at least 500 body words and 25 percent')
+    return {'body_words': words, 'body_bytes': len(body.encode('utf-8')),
+            'body_lines': len(body.splitlines()), 'before_body_words': old_words if before is not None else None,
+            'review_reasons': reasons}
+
+
 def frontmatter(text: str) -> tuple[dict[str, str], str]:
     if not text.startswith("---\n"):
         return {}, text
@@ -52,9 +75,6 @@ def validate_skill(path: Path, *, expected_name: str | None = None) -> list[str]
         errors.append("missing license for public distribution")
     if not body.strip():
         errors.append("empty skill body")
-    if len(text.splitlines()) > 500:
-        errors.append("SKILL.md exceeds 500 lines; move detail into references")
-
     for target in LINK_RE.findall(body):
         target = target.split("#", 1)[0].strip()
         if not target or "://" in target or target.startswith(("#", "mailto:")):
@@ -95,6 +115,9 @@ def main() -> int:
                 print(f"  - {error}")
         else:
             print(f"PASS {path}")
+        signals = loading_signals(path.read_text(encoding='utf-8'))
+        if signals['review_reasons']:
+            print('  REVIEW loading: ' + '; '.join(signals['review_reasons']))
     print(f"{len(files) - failures}/{len(files)} skills valid")
     return 1 if failures else 0
 
