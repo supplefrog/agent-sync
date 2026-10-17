@@ -201,7 +201,13 @@
     "asar": "pass: direct @electron/asar 4.2.0 packs, inventories and extracts a hidden-bundle fixture; extracted main.js SHA-256 matches the source; no REA API called",
     "recovery": "snapshot verification passed; OMP REA declaration removed and artifact digest refreshed",
     "local_deployment": "LeanREA added through scoped fleet deployment and verified by directory hash. Unmodified managed REA skill moved to a private task rollback folder, removed from fleet state under the existing destination lock; no other skills selected.",
-    "native_registration": "REA removed from Codex TOML, Hermes YAML and OMP JSON; parser equality checks prove all unrelated values preserved. Private original-file backups retained."
+    "native_registration": "REA removed from Codex TOML, Hermes YAML and OMP JSON; parser equality checks prove all unrelated values preserved. Private original-file backups retained.",
+    "fresh_discovery": {
+      "codex": "Native debug prompt-input includes leanrea and excludes reverse-engineer-anything; no inference.",
+      "hermes": "Native runtime catalog discovers leanrea, excludes REA, and skill_view loads cloud policy and Windows reference.",
+      "omp": "Fresh --mode rpc --no-session get_available_commands response discovers leanrea and excludes REA; no inference."
+    },
+    "rea_package": "Global rea-agents package and launchers uninstalled after private rollback archive; native configs read back without REA."
   },
   "limits": [
     "No matched current-model quality/cost benchmark; upstream Mac/Claude benchmark is not local proof.",
@@ -211,7 +217,7 @@
   "result": {
     "passed": true
   },
-  "publication_route": "Reviewed admission/retirement through canonical reconcile scoped source-maintenance lane; ready integration rejects registry lifecycle changes. Selected fleet deployment/readback performed explicitly; no coordinator guard is changed.",
+  "publication_route": "Lifecycle replacement reviewed and published through scoped source maintenance; receipt-only ready integration converges the stable published source and source origins after admission.",
   "change_reconciliation": [
     {
       "artifacts": {
