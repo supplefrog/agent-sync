@@ -1,0 +1,377 @@
+{
+  "schema_version": 1,
+  "suite": "leanrea-replacement",
+  "capability": "leanrea",
+  "status": "pass",
+  "baseline_revision": "4439279aef946e5a1c66c2a160845b150474758c",
+  "upstream_revision": "09ba4aa0217f82cd880f855a60b877f59f39b22b",
+  "authority": "Explicit user request on 2026-10-18 to replace REA with github.com/aicodeking/leanrea and retain meaningful Codex Cloud parts.",
+  "instruction_changes": [
+    {
+      "basis": "user-correction",
+      "deviation": "User explicitly requested replacing REA with LeanREA while retaining useful Codex Cloud execution.",
+      "evidence": "User request 2026-10-18; pinned LeanREA source and installed REA 6.4.0 owner/registrations inspected.",
+      "baseline_sufficient": false,
+      "why_instruction": "CLI-specific routing replaces the removed REA API; the user-specific cloud-engine placement and Windows command differences require retained guidance.",
+      "alternative": "No skill plus native shell tools removes more context but omits the selected upstream recipe and durable cloud policy; retaining REA conflicts with the requested replacement.",
+      "owner": "skills/reverse-engineer-anything",
+      "artifacts": {
+        "skills/reverse-engineer-anything/LICENSE": {
+          "before_sha256": "798f9e4d18e49b30bf2f12696c8ced73dc4e1413da375a333d01281543a1ea8b",
+          "after_sha256": "798f9e4d18e49b30bf2f12696c8ced73dc4e1413da375a333d01281543a1ea8b"
+        },
+        "skills/reverse-engineer-anything/provenance.json": {
+          "before_sha256": "70e45a32000ab2fb2c335873849b028d69706b56acf93372dfb3d006660db916",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/SKILL.md": {
+          "before_sha256": "471b730dc0d4c8c04e2d1f5bb625a6dfd5a1f67afd99b76e7fd8d91ce397dee0",
+          "after_sha256": "42d56881189b6ad79830b956f9fb5ef9b53b04ae5afedd41585c2c34ed4c1e61"
+        },
+        "skills/reverse-engineer-anything/references/android-applications.md": {
+          "before_sha256": "412d9cb462d85b07f6fdbc2453dd741ca3da2c0dbba627867d5624df94afa74c",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/connection-and-recovery.md": {
+          "before_sha256": "668e421e2a27b63058f42ebd36bec04db73404c136e5f47611119ab9d4b4f607",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/evidence-workflows.md": {
+          "before_sha256": "dd23217d55342bbe3e98a2bf47a7f208b35a4b41c98645ac160a4d0aac5316f9",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/javascript-applications.md": {
+          "before_sha256": "04cc298e2485d1db7925b8789097fc5fdd042e937ed11980d3eabc29cb176e59",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/native-and-artifacts.md": {
+          "before_sha256": "1947af57448ba7be6a0736ffbe976c7ecdab4105f315ecc06c830727cc5205fe",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/runtime-observation.md": {
+          "before_sha256": "b3eea94dd7d0c6474634de22ac3ccae317f42ba1ba2389d93535ee8dae7d94e1",
+          "after_sha256": "absent"
+        }
+      },
+      "restructured": true,
+      "loading_review": {
+        "entrypoint_reason": "A non-distributed retirement stub remains because the existing registry/ownership schema requires a source entrypoint for retired capabilities. REA operation instructions and references are removed.",
+        "obligations": [
+          {
+            "obligation": "Retired source lifecycle record",
+            "applies_when": "Reviewing capability retirement in canonical source",
+            "required": true,
+            "before": [
+              "skills/reverse-engineer-anything/SKILL.md"
+            ],
+            "after": [
+              "skills/reverse-engineer-anything/SKILL.md"
+            ],
+            "disposition": "changed",
+            "load_when": "Source lifecycle audit only; excluded from live discovery",
+            "reason": "Existing registry/ownership contract requires a source entrypoint for all lifecycle states; no old workflow is installed."
+          },
+          {
+            "obligation": "Remove REA-specific guide protocols",
+            "applies_when": "Old REA workflows",
+            "required": true,
+            "before": [
+              "skills/reverse-engineer-anything/references/android-applications.md",
+              "skills/reverse-engineer-anything/references/connection-and-recovery.md",
+              "skills/reverse-engineer-anything/references/evidence-workflows.md",
+              "skills/reverse-engineer-anything/references/javascript-applications.md",
+              "skills/reverse-engineer-anything/references/native-and-artifacts.md",
+              "skills/reverse-engineer-anything/references/runtime-observation.md"
+            ],
+            "after": [],
+            "disposition": "removed",
+            "load_when": "Retired; replacement belongs to leanrea",
+            "reason": "User-selected CLI replacement; API-specific losses recorded in behavior_preservation."
+          }
+        ],
+        "checks": "All old Markdown sources read or inventoried by mode; behavior preservation map names each retired/migrated mechanism. Git retains exact old bytes; no stale alias remains in active discovery."
+      }
+    },
+    {
+      "basis": "user-correction",
+      "deviation": "User explicitly requested replacing REA with LeanREA while retaining useful Codex Cloud execution.",
+      "evidence": "User request 2026-10-18; pinned LeanREA source and installed REA 6.4.0 owner/registrations inspected.",
+      "baseline_sufficient": false,
+      "why_instruction": "CLI-specific routing replaces the removed REA API; the user-specific cloud-engine placement and Windows command differences require retained guidance.",
+      "alternative": "No skill plus native shell tools removes more context but omits the selected upstream recipe and durable cloud policy; retaining REA conflicts with the requested replacement.",
+      "owner": "skills/leanrea",
+      "artifacts": {
+        "skills/leanrea/LICENSE": {
+          "before_sha256": "absent",
+          "after_sha256": "f126681f66a89b4f610999a64f1a1fc6da98d221a39f65799a6d6bb6e051d922"
+        },
+        "skills/leanrea/provenance.json": {
+          "before_sha256": "absent",
+          "after_sha256": "cb1afec0ee9539cebb0af8b933428fb1fa04a63d6d39e460edaea75f2e851301"
+        },
+        "skills/leanrea/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "ab6a00883bb3c7853a797e0a308a851af1fd9f8ca33339575ceafb5d95ac9675"
+        },
+        "skills/leanrea/references/windows.md": {
+          "before_sha256": "absent",
+          "after_sha256": "f9e2e7bce18ab20cb51caff9db765fe8ca2013e54b9a96f4524c35a83865dac0"
+        }
+      },
+      "restructured": true,
+      "loading_review": {
+        "entrypoint_reason": "Common rules cover host choice, safe artifact handling and source-bound evidence; target-specific commands remain a compact router. Windows commands load only for local Windows work.",
+        "obligations": [
+          {
+            "obligation": "Direct CLI artifact routing, cloud engine placement, evidence and scope",
+            "applies_when": "Shipped-artifact or runtime investigation",
+            "required": true,
+            "before": [],
+            "after": [
+              "skills/leanrea/SKILL.md",
+              "skills/leanrea/references/windows.md"
+            ],
+            "disposition": "added",
+            "load_when": "Shipped-artifact or runtime investigation",
+            "reason": "User-selected replacement and retained cloud policy; Windows reference explicitly read before local commands."
+          }
+        ],
+        "checks": "Source review covers Electron, PE/native, managed, cloud unavailable and complete-source near-miss cases. Windows reference is linked with a required conditional read; no REA tool or local engine dependency remains."
+      }
+    }
+  ],
+  "behavior_preservation": [
+    {
+      "before": "Target identity, source-repository exclusion and package routing",
+      "after": "leanrea description, Rules and Router",
+      "disposition": "adapted"
+    },
+    {
+      "before": "Deferred engines in compatible configured Codex cloud; supply skills and export",
+      "after": "leanrea Choose the execution host",
+      "disposition": "preserved"
+    },
+    {
+      "before": "ASAR/JS, managed, native, APK, firmware and browser/runtime guides",
+      "after": "leanrea Router and Windows reference using direct tools",
+      "disposition": "adapted; detailed REA operation schemas removed"
+    },
+    {
+      "before": "Archive extraction isolation; passive runtime and scope boundaries",
+      "after": "leanrea Rules and host placement",
+      "disposition": "preserved; no promise of REA parser validation or passive-capture redaction"
+    },
+    {
+      "before": "Evidence ledger, graph IDs, paging, bundles, typed comparison/unknown and reconstruction APIs",
+      "after": "Saved raw outputs and artifact/tool identities; native comparisons and task-local findings",
+      "disposition": "intentional API loss; no automatic graph, structured retention or typed proof parity"
+    },
+    {
+      "before": "Specialized EVM/core-file/PE-resource/NativeAOT and platform parsers",
+      "after": "Available direct tools selected as needed; native/cloud route for NativeAOT",
+      "disposition": "REA parser implementations retired; no all-format parity claim"
+    },
+    {
+      "before": "REA doctor/setup/MCP/provider/approval recovery and IDA profiles",
+      "after": "Normal tool availability and host permissions; no REA service",
+      "disposition": "removed with selected mechanism; licensing and host compatibility retained"
+    },
+    {
+      "before": "Broader investigation planning, findings and verification",
+      "after": "Native agent planning plus leanrea evidence rules",
+      "disposition": "generic procedure omitted; specific coverage and unknown boundaries preserved"
+    }
+  ],
+  "alternatives": {
+    "retain_rea": "Rejected by explicit user selection; preserves APIs but retains MCP/package dependency.",
+    "plain_tools_no_skill": "Credible simpler retirement alternative; comparative model value of LeanREA is unmeasured.",
+    "leanrea_adapted": "Selected; preserves requested upstream routing and meaningful cloud policy without a replacement service."
+  },
+  "verification": {
+    "hidden_javascript_search": "pass: rg -uu finds feature channel in hidden .webpack/main.js with line citation",
+    "sqlite_readonly": "pass: bounded read returns expected row; write rejected and input SHA-256 unchanged",
+    "source_cases": {
+      "electron": "CLI extract/search route; no REA service",
+      "native": "cloud engine route retained",
+      "cloud_unavailable": "report limit and continue static work; no local native install",
+      "local_runtime": "PC evidence; authorized target/actions",
+      "complete_source_architecture": "excluded in description",
+      "windows": "required reference before local command choice"
+    },
+    "asar": "pass: direct @electron/asar 4.2.0 packs, inventories and extracts a hidden-bundle fixture; extracted main.js SHA-256 matches the source; no REA API called",
+    "recovery": "snapshot verification passed; OMP REA declaration removed and artifact digest refreshed",
+    "local_deployment": "LeanREA added through scoped fleet deployment and verified by directory hash. Unmodified managed REA skill moved to a private task rollback folder, removed from fleet state under the existing destination lock; no other skills selected.",
+    "native_registration": "REA removed from Codex TOML, Hermes YAML and OMP JSON; parser equality checks prove all unrelated values preserved. Private original-file backups retained."
+  },
+  "limits": [
+    "No matched current-model quality/cost benchmark; upstream Mac/Claude benchmark is not local proof.",
+    "No native decompilation/cloud worker execution or full format parity trial; no target supplied.",
+    "Fresh sessions/reconnect are required to unload the existing REA server."
+  ],
+  "result": {
+    "passed": true
+  },
+  "publication_route": "Reviewed admission/retirement through canonical reconcile scoped source-maintenance lane; ready integration rejects registry lifecycle changes. Selected fleet deployment/readback performed explicitly; no coordinator guard is changed.",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/ownership.json": {
+          "before_sha256": "17c50476a4ee7f0dbfd34cfd42b27e5f3f46ca971113cfeeb9a330bb5b7f565a",
+          "after_sha256": "8f5e343bb72382489b4fedc1aeefb14fce1287ace51901faf9c8d5012cd94a49"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "06e2872a255aa53c76b278f6151dc8c40742631058cca7bb2a301c7549bba33d",
+          "after_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "d2231b30eeff6d2d4087247048f59e54f312907c62021a4ee39db7ad0dec7bbd",
+          "after_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497",
+          "after_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575",
+          "after_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575"
+        },
+        "skills/leanrea/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "ab6a00883bb3c7853a797e0a308a851af1fd9f8ca33339575ceafb5d95ac9675"
+        },
+        "skills/leanrea/references/windows.md": {
+          "before_sha256": "absent",
+          "after_sha256": "f9e2e7bce18ab20cb51caff9db765fe8ca2013e54b9a96f4524c35a83865dac0"
+        },
+        "skills/reverse-engineer-anything/SKILL.md": {
+          "before_sha256": "471b730dc0d4c8c04e2d1f5bb625a6dfd5a1f67afd99b76e7fd8d91ce397dee0",
+          "after_sha256": "42d56881189b6ad79830b956f9fb5ef9b53b04ae5afedd41585c2c34ed4c1e61"
+        },
+        "skills/reverse-engineer-anything/references/android-applications.md": {
+          "before_sha256": "412d9cb462d85b07f6fdbc2453dd741ca3da2c0dbba627867d5624df94afa74c",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/connection-and-recovery.md": {
+          "before_sha256": "668e421e2a27b63058f42ebd36bec04db73404c136e5f47611119ab9d4b4f607",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/evidence-workflows.md": {
+          "before_sha256": "dd23217d55342bbe3e98a2bf47a7f208b35a4b41c98645ac160a4d0aac5316f9",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/javascript-applications.md": {
+          "before_sha256": "04cc298e2485d1db7925b8789097fc5fdd042e937ed11980d3eabc29cb176e59",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/native-and-artifacts.md": {
+          "before_sha256": "1947af57448ba7be6a0736ffbe976c7ecdab4105f315ecc06c830727cc5205fe",
+          "after_sha256": "absent"
+        },
+        "skills/reverse-engineer-anything/references/runtime-observation.md": {
+          "before_sha256": "b3eea94dd7d0c6474634de22ac3ccae317f42ba1ba2389d93535ee8dae7d94e1",
+          "after_sha256": "absent"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Implements or records the user-selected replacement and retained cloud/local policy."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "General ownership/authoring procedures remain valid; no framework or unrelated capability change."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "General ownership/authoring procedures remain valid; no framework or unrelated capability change."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Implements or records the user-selected replacement and retained cloud/local policy."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Implements or records the user-selected replacement and retained cloud/local policy."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "General ownership/authoring procedures remain valid; no framework or unrelated capability change."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "General ownership/authoring procedures remain valid; no framework or unrelated capability change."
+        },
+        {
+          "path": "skills/leanrea/SKILL.md",
+          "disposition": "updated",
+          "reason": "Implements or records the user-selected replacement and retained cloud/local policy."
+        },
+        {
+          "path": "skills/leanrea/references/windows.md",
+          "disposition": "updated",
+          "reason": "Implements or records the user-selected replacement and retained cloud/local policy."
+        },
+        {
+          "path": "skills/reverse-engineer-anything/SKILL.md",
+          "disposition": "updated",
+          "reason": "Implements or records the user-selected replacement and retained cloud/local policy."
+        },
+        {
+          "path": "skills/reverse-engineer-anything/references/android-applications.md",
+          "disposition": "removed",
+          "reason": "REA protocol retired; direct CLI replacement and deliberate API loss recorded in behavior_preservation."
+        },
+        {
+          "path": "skills/reverse-engineer-anything/references/connection-and-recovery.md",
+          "disposition": "removed",
+          "reason": "REA protocol retired; direct CLI replacement and deliberate API loss recorded in behavior_preservation."
+        },
+        {
+          "path": "skills/reverse-engineer-anything/references/evidence-workflows.md",
+          "disposition": "removed",
+          "reason": "REA protocol retired; direct CLI replacement and deliberate API loss recorded in behavior_preservation."
+        },
+        {
+          "path": "skills/reverse-engineer-anything/references/javascript-applications.md",
+          "disposition": "removed",
+          "reason": "REA protocol retired; direct CLI replacement and deliberate API loss recorded in behavior_preservation."
+        },
+        {
+          "path": "skills/reverse-engineer-anything/references/native-and-artifacts.md",
+          "disposition": "removed",
+          "reason": "REA protocol retired; direct CLI replacement and deliberate API loss recorded in behavior_preservation."
+        },
+        {
+          "path": "skills/reverse-engineer-anything/references/runtime-observation.md",
+          "disposition": "removed",
+          "reason": "REA protocol retired; direct CLI replacement and deliberate API loss recorded in behavior_preservation."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "User selected LeanREA as the replacement implementation while retaining meaningful Codex Cloud use; selected requirements and status record that change.",
+      "authority": "Explicit user request on 2026-10-18 to replace REA with github.com/aicodeking/leanrea and retain meaningful Codex Cloud parts.",
+      "checks": "Pinned upstream and full replaced REA package inspected; direct ASAR, hidden JS and readonly SQLite smoke pass; metadata, link and exact source binding checks. Publication/deployment/readback are separately recorded.",
+      "outcome_review": {
+        "expected": "LeanREA direct CLI workflow replaces REA; cloud decompilers remain deferred, local runtime evidence stays local and REA cannot return through OMP recovery.",
+        "observed": "Candidate routes through direct tools and retains explicit cloud/local policy; ASAR fixture preserves bytes, hidden JS feature is found and SQLite writes are rejected. Recovery snapshot drops only REA.",
+        "evidence": "Pinned upstream revision, behavior_preservation, verification and exact before/after artifact hashes in this receipt.",
+        "limitations": "Source and direct tool checks do not prove model-quality/cost improvement, natural selection, cloud readiness or cross-host execution parity."
+      }
+    }
+  ]
+}

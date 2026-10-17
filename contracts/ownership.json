@@ -257,16 +257,29 @@
     {
       "id": "reverse-engineer-anything",
       "owner": "skills/reverse-engineer-anything",
-      "status": "admitted",
-      "selection_state": "selected",
-      "selection_evidence": [
-        "evals/results/reverse-engineer-anything-install-20261011.json"
-      ],
-      "selection_reason": "User explicitly requested REA for their agents and deferred native analysis engines until needed in compatible Codex cloud. Existing native tools do not expose the REA artifact graph and provider bridge. Pinned source inspection, static analysis and MCP smoke establish scoped readiness, not model-quality or full host behavioral parity.",
+      "status": "retired",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "User requested replacement with LeanREA on 2026-10-18. Deferred cloud engines and evidence boundaries move to leanrea; REA MCP/provider graph and Evidence API are deliberately retired.",
       "purpose": {
         "objective": "Explain shipped application behavior using source-bound artifact and optional runtime evidence.",
         "added_value": "REA supplies artifact parsers, evidence retention and native decompiler bridges; the skill routes target types and explains the package-specific recovery protocol. Comparative model-quality benefit remains unmeasured.",
         "retirement_test": "Retire the skill when the current model can reliably discover and use equivalent artifact and provider tools with evidence handling and deferred engine provisioning without these instructions at lower total cost."
+      }
+    },
+    {
+      "id": "leanrea",
+      "owner": "skills/leanrea",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/leanrea-replacement-20261018.json"
+      ],
+      "selection_reason": "Explicit user-selected LeanREA replacement for REA, retaining useful Codex Cloud execution. Direct CLI smoke and source/discovery checks establish only their recorded scope; no comparative speed, cost or quality claim.",
+      "purpose": {
+        "objective": "Explain shipped application behavior using source-bound artifact and optional runtime evidence.",
+        "added_value": "Pinned upstream CLI routing and format traps, plus the user-specific deferred cloud-engine policy and Windows commands. Added model-quality value remains unmeasured.",
+        "retirement_test": "Retire when the current model/native tools reliably cover the same artifact tasks and cloud placement without this guidance at equal or lower total cost."
       }
     }
   ],
@@ -315,6 +328,11 @@
       "path": "skills/skill-creator",
       "replacement": "skills/instruction-authoring",
       "reason": "User-selected rename of the shared instruction author; Codex native scaffolding retains its existing identity."
+    },
+    {
+      "path": "skills/reverse-engineer-anything/references",
+      "replacement": "skills/leanrea",
+      "reason": "Explicit user-selected direct CLI replacement; REA registration/provider and structured-evidence mechanisms are no longer dependencies."
     }
   ]
 }

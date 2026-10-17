@@ -461,7 +461,7 @@
         "reference": "omp:mcp-tools"
       },
       "source_identity": "recovery-artifact:omp:mcp-tools",
-      "version_or_hash": "sha256:a1bb75e9735ba8682f3b50e865636a09e9969202758ee4425de7f63d6949b140"
+      "version_or_hash": "sha256:f04a0277d5f25be59fe20800bf09f569767abba00446f013f133b9771eec023b"
     },
     {
       "category": "native-skill",
@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:bfc29108855ead12bf702b8cd5b73f261489e78de6b319229fd5aaa475116a40"
+      "version_or_hash": "sha256:3a4b07ca0f394c0a188b17e89118ab04198eb1655624ff65f008cffad0f47b5e"
     },
     {
       "category": "native-skill",
@@ -507,7 +507,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:bfc29108855ead12bf702b8cd5b73f261489e78de6b319229fd5aaa475116a40"
+      "version_or_hash": "sha256:3a4b07ca0f394c0a188b17e89118ab04198eb1655624ff65f008cffad0f47b5e"
     },
     {
       "category": "native-skill",
@@ -530,7 +530,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:bfc29108855ead12bf702b8cd5b73f261489e78de6b319229fd5aaa475116a40"
+      "version_or_hash": "sha256:3a4b07ca0f394c0a188b17e89118ab04198eb1655624ff65f008cffad0f47b5e"
     },
     {
       "category": "curator",

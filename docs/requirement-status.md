@@ -53,3 +53,8 @@ Reconcile only the authorized changes and demonstrated dependencies through the 
 ## Behavior contract audit, 2026-10-10
 
 The [behavior audit](behavior-auditing.md) reconstructs legacy outcomes from existing evidence before focused human clarification. `tools/run.py audit behaviors` exposes missing, inferred and user-confirmed task-type metadata. The selected system contract records the user's behavior/parity/quality authority; it cannot fill domain-contract gaps. Mechanism checks and the [receipt](../evals/results/behavior-contract-audit-20261010.json) do not prove natural use, quality improvement or behavioral parity. R01 remains partial until the corresponding behavior requirements and outcomes are resolved.
+
+
+## LeanREA replacement, 2026-10-18
+
+R01/R06/R08/R13: the user-selected owner is [leanrea](../skills/leanrea/SKILL.md); former REA mechanisms and deliberate losses are recorded in the [replacement receipt](../evals/results/leanrea-replacement-20261018.json). R10/R16: direct static smoke and source/discovery/deployment checks cover only their recorded scope. Native cloud decompilation remains task-dependent and unexecuted in this migration. No new cloud environment or native engine is provisioned and no cross-host quality, speed or cost parity is claimed. Publication/deployment state is recorded by the reconciler, separately from these source checks.

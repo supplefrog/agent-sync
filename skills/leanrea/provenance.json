@@ -1,0 +1,14 @@
+{
+  "upstream": "https://github.com/aicodeking/leanrea",
+  "revision": "09ba4aa0217f82cd880f855a60b877f59f39b22b",
+  "source": "leanrea/SKILL.md",
+  "upstream_sha256": "984fbf1b7cc9e8e3427cd6cd774e35de80cac841d243903c9d0856841cddae8b",
+  "license": "MIT",
+  "adaptations": [
+    "Preserve deferred Codex Cloud native engines and local app/runtime ownership",
+    "Windows command reference",
+    "Replace destructive extraction shortcut and fixed turn target",
+    "Preserve artifact-bound raw evidence and action boundaries; remove REA-specific APIs"
+  ],
+  "update": "Review a pinned upstream revision in Agent Sync; merge local adaptations and reconcile. Do not overwrite the installed managed skill with npx skills update."
+}

@@ -13335,7 +13335,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 527,
+      "bytes": 193,
       "format": "json",
       "host": "omp",
       "id": "mcp-tools",
@@ -13344,7 +13344,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "a1bb75e9735ba8682f3b50e865636a09e9969202758ee4425de7f63d6949b140",
+      "sha256": "f04a0277d5f25be59fe20800bf09f569767abba00446f013f133b9771eec023b",
       "snapshot": "hosts/omp/mcp.json",
       "source": "mcp.json",
       "strategy": "merge"
