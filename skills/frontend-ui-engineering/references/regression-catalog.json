@@ -214,12 +214,13 @@
       ],
       "cases": [
         "ordinary-activation",
-        "reported-context"
+        "reported-context",
+        "fast-repeat-feedback"
       ],
       "summary": "Every control completes its advertised task; reported CTA remains context-bound.",
-      "expectation": "Ordinary activation completes the advertised task with usable visible response and relevant focus. When its task is already satisfied or its destination is current, repeat activation from the actual use position and check for unintended scroll or reflow; explicitly promised restart, refresh and return-to-anchor actions remain valid. Replay the reported context independently; one successful full-width replay cannot clear other states.",
-      "nearby_valid": "One 1280px success cannot clear all reported contexts.",
-      "owner": "SKILL.md; references/defect-acceptance.md"
+      "expectation": "Ordinary activation completes the advertised task with usable visible response and relevant focus. When its task is already satisfied or its destination is current, repeat activation from the actual use position and check for unintended scroll or reflow; explicitly promised restart, refresh and return-to-anchor actions remain valid. A visibly operable depicted object is the primary pointer/touch and keyboard input with shared semantic state and accessible fallback; gestures release on cancel and yield outside their hit area. Exercise the object itself on desktop and phone. Replay the reported context independently; one full-width replay cannot clear other states. Fast/repeated asynchronous actions retain stable internal placement and readable feedback without flashing transient labels. Check the active response, not only the outer box or final state.",
+      "nearby_valid": "Perceptible waits and recoverable errors keep honest feedback; useful separate precision controls and noninteractive illustrations remain.",
+      "owner": "SKILL.md; references/defect-acceptance.md; references/design-judgment.md"
     },
     {
       "id": "V01",
@@ -676,11 +677,13 @@
       ],
       "cases": [
         "full-index-use-position",
-        "destination-agreement"
+        "destination-agreement",
+        "position-history",
+        "restored-resume"
       ],
       "summary": "Prev/next usable under actual full long contents.",
-      "expectation": "With the actual long index loaded, previous/next are usable from the reading position without test-runner auto-scroll; destination, current indication and adjacent actions agree after settlement.",
-      "nearby_valid": "Contextual repeated nav remains useful.",
+      "expectation": "With the actual long index loaded, previous/next are usable from the reading position without test-runner auto-scroll; destination, current indication and adjacent actions agree after settlement. In-page movement keeps a shareable position without adding redundant Back stops; test repeated section/search/citation changes, actual Back/Forward, and early/restored Resume against the latest valid location.",
+      "nearby_valid": "Meaningful page navigation and explicitly useful state history remain; contextual repeated nav remains useful.",
       "owner": "references/defect-acceptance.md; SKILL.md"
     },
     {

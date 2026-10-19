@@ -1,0 +1,316 @@
+{
+  "schema_version": 1,
+  "suite": "frontend-interaction-contract-20261020",
+  "capability": "frontend-ui-engineering",
+  "status": "source-checked",
+  "authority": "User requested prevention of the reported section-history, Copy flicker and Resume regressions in future generations.",
+  "deviation": "The handbook tests accepted settled labels/outer geometry and only excluded Back-to-top history, missing sibling fragment actions, transient async feedback and early/restored Resume.",
+  "baseline_assessment": "Existing I25 and motion-design already require active/intermediate observation. No duplicate flicker requirement or new workflow owner was added. The component-state rule and existing P12/I05 cases lacked the specific async/history boundary.",
+  "architectural_owner": "skills/frontend-ui-engineering",
+  "reason_for_prose": "Clarify a user-requested decision boundary in the existing component-state owner and testing catalog; runtime regressions remain executable in the product.",
+  "artifacts": [
+    {
+      "path": "skills/frontend-ui-engineering/SKILL.md",
+      "before_sha256": "5cbe34558c738d2fffcbdde571681c9887d0b76b397f346355d272ab03af831b",
+      "after_sha256": "592d3bd22a7dbbfa08b3f9ad4a37bccd6a7eac7ae1e02de8f825f2e4d88a884a"
+    },
+    {
+      "path": "skills/frontend-ui-engineering/references/component-state.md",
+      "before_sha256": "ddc015d1682d0553451320a8ec600c57ba0d63c31bfb9e8f823efbccb638a96d",
+      "after_sha256": "b48388141845dea9b77995d8b8d7d942c19cbe77b43c0ca867ed78d818d92e31"
+    },
+    {
+      "path": "skills/frontend-ui-engineering/references/regression-catalog.md",
+      "before_sha256": "4fa8cc7e3567b12c570a499fc75cee02a07f11a31e9fe0402554aad196623201",
+      "after_sha256": "7895adf475d16b245dd979cc5d609f6b4dd04975b7602366d0f6ce00fe4dd4f3"
+    },
+    {
+      "path": "skills/frontend-ui-engineering/references/regression-catalog.json",
+      "before_sha256": "98f2294ebc30dd56a7691843b96c964efbfb04a562e62da05add6b82f26bab02",
+      "after_sha256": "06668b0a87b8d16fd76c09733e2f58270916f8987e98ccc293fb4c3bab5bda52"
+    }
+  ],
+  "checks": [
+    "Preserved direct/deep links and meaningful page history as nearby valid cases",
+    "Preserved real progress and error/retry feedback",
+    "Preserved the already active editing/QC contract line in canonical source",
+    "I25 and existing motion verification remain unchanged",
+    "Only P12/I05 executable catalog records changed and exactly match reviewed Markdown fields",
+    "Source-bound dependency dispositions cover changed and unchanged affected guidance without editing unchanged files"
+  ],
+  "limits": [
+    "No claim of guaranteed future-generation behavior or cross-model quality improvement",
+    "Product browser evidence is retained in its project rather than copied into portable instructions"
+  ],
+  "requirement_change": false,
+  "requirement_reason": "Clarifies existing ordinary activation, coherent feedback, navigation and task-contract intent; no host/framework policy changes.",
+  "result": {
+    "passed": true,
+    "claim": "Source/contract checks and product mechanism regression evidence only; no comparative generation-quality claim."
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The handbook tests accepted settled labels/outer geometry and only excluded Back-to-top history, missing sibling fragment actions, transient async feedback and early/restored Resume.",
+      "evidence": "User requested prevention of the reported section-history, Copy flicker and Resume regressions in future generations.",
+      "baseline_sufficient": false,
+      "why_instruction": "Clarify a user-requested decision boundary in the existing component-state owner and testing catalog; runtime regressions remain executable in the product.",
+      "alternative": "Runtime-only fixes leave the missing history/async decision boundary unspecified; duplicating I25 would add no useful rule.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "5cbe34558c738d2fffcbdde571681c9887d0b76b397f346355d272ab03af831b",
+          "after_sha256": "592d3bd22a7dbbfa08b3f9ad4a37bccd6a7eac7ae1e02de8f825f2e4d88a884a"
+        },
+        "skills/frontend-ui-engineering/references/component-state.md": {
+          "before_sha256": "ddc015d1682d0553451320a8ec600c57ba0d63c31bfb9e8f823efbccb638a96d",
+          "after_sha256": "b48388141845dea9b77995d8b8d7d942c19cbe77b43c0ca867ed78d818d92e31"
+        },
+        "skills/frontend-ui-engineering/references/regression-catalog.md": {
+          "before_sha256": "4fa8cc7e3567b12c570a499fc75cee02a07f11a31e9fe0402554aad196623201",
+          "after_sha256": "7895adf475d16b245dd979cc5d609f6b4dd04975b7602366d0f6ce00fe4dd4f3"
+        }
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/ownership.json": {
+          "before_sha256": "8f5e343bb72382489b4fedc1aeefb14fce1287ace51901faf9c8d5012cd94a49",
+          "after_sha256": "b51e42aa07b1e2cd5fbd30aff55596fbbf47a3200ea8913dae3b67ffaca1c940"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919",
+          "after_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7",
+          "after_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7"
+        },
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "5cbe34558c738d2fffcbdde571681c9887d0b76b397f346355d272ab03af831b",
+          "after_sha256": "592d3bd22a7dbbfa08b3f9ad4a37bccd6a7eac7ae1e02de8f825f2e4d88a884a"
+        },
+        "skills/frontend-ui-engineering/references/component-selection.md": {
+          "before_sha256": "9028545890aac4370d5f16c969368c4f2bdf9e7ee7cdbe751b8944b6b27eee6d",
+          "after_sha256": "9028545890aac4370d5f16c969368c4f2bdf9e7ee7cdbe751b8944b6b27eee6d"
+        },
+        "skills/frontend-ui-engineering/references/component-state.md": {
+          "before_sha256": "ddc015d1682d0553451320a8ec600c57ba0d63c31bfb9e8f823efbccb638a96d",
+          "after_sha256": "b48388141845dea9b77995d8b8d7d942c19cbe77b43c0ca867ed78d818d92e31"
+        },
+        "skills/frontend-ui-engineering/references/defect-acceptance.md": {
+          "before_sha256": "d46241c4dcd29a375606bd89273a03fc5321cf55b701b2bbe17cce3f71ab199d",
+          "after_sha256": "d46241c4dcd29a375606bd89273a03fc5321cf55b701b2bbe17cce3f71ab199d"
+        },
+        "skills/frontend-ui-engineering/references/design-mode.md": {
+          "before_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3",
+          "after_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3"
+        },
+        "skills/frontend-ui-engineering/references/implementation-mode.md": {
+          "before_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b",
+          "after_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b"
+        },
+        "skills/frontend-ui-engineering/references/liked-motion-options.md": {
+          "before_sha256": "9821fce6161291587e6e121a902a2063893b695d90a389ed3f48432b72c1ec54",
+          "after_sha256": "9821fce6161291587e6e121a902a2063893b695d90a389ed3f48432b72c1ec54"
+        },
+        "skills/frontend-ui-engineering/references/motion-design.md": {
+          "before_sha256": "6b7c842751423c798a18847d90961639d8baac7f2b684ce4bc5313e974fa0b4d",
+          "after_sha256": "6b7c842751423c798a18847d90961639d8baac7f2b684ce4bc5313e974fa0b4d"
+        },
+        "skills/frontend-ui-engineering/references/personal-design-defaults.md": {
+          "before_sha256": "08c4228d4746fa3f84a1e89d3b526b31d3f1746f94b13f86a9cd01263043c3cb",
+          "after_sha256": "08c4228d4746fa3f84a1e89d3b526b31d3f1746f94b13f86a9cd01263043c3cb"
+        },
+        "skills/frontend-ui-engineering/references/product-workflow.md": {
+          "before_sha256": "51cc57687f5cc601a033c86d090ffb26deed7185796c76935256a291f2d69a06",
+          "after_sha256": "51cc57687f5cc601a033c86d090ffb26deed7185796c76935256a291f2d69a06"
+        },
+        "skills/frontend-ui-engineering/references/prototype-variants.md": {
+          "before_sha256": "9293b8b08ab0d02ba4e3ac7193903cf2705badb6ad23981030dbae0f90c98a55",
+          "after_sha256": "9293b8b08ab0d02ba4e3ac7193903cf2705badb6ad23981030dbae0f90c98a55"
+        },
+        "skills/frontend-ui-engineering/references/provenance.md": {
+          "before_sha256": "575224739df560111408fd9c6c0b13e6d692efeaf09dc209b31b7ca36e5a9bf3",
+          "after_sha256": "575224739df560111408fd9c6c0b13e6d692efeaf09dc209b31b7ca36e5a9bf3"
+        },
+        "skills/frontend-ui-engineering/references/regression-catalog.json": {
+          "before_sha256": "98f2294ebc30dd56a7691843b96c964efbfb04a562e62da05add6b82f26bab02",
+          "after_sha256": "06668b0a87b8d16fd76c09733e2f58270916f8987e98ccc293fb4c3bab5bda52"
+        },
+        "skills/frontend-ui-engineering/references/regression-catalog.md": {
+          "before_sha256": "4fa8cc7e3567b12c570a499fc75cee02a07f11a31e9fe0402554aad196623201",
+          "after_sha256": "7895adf475d16b245dd979cc5d609f6b4dd04975b7602366d0f6ce00fe4dd4f3"
+        },
+        "skills/frontend-ui-engineering/references/resource-catalog.md": {
+          "before_sha256": "c26cbad205afbf2008984d68b0608fb04337d47dd9798b61383180bc40bda588",
+          "after_sha256": "c26cbad205afbf2008984d68b0608fb04337d47dd9798b61383180bc40bda588"
+        },
+        "skills/frontend-ui-engineering/references/selector-feedback.md": {
+          "before_sha256": "68552c02760e938d1a315b2bc1314436b71d0934beccc99f66a8248aec4336b2",
+          "after_sha256": "68552c02760e938d1a315b2bc1314436b71d0934beccc99f66a8248aec4336b2"
+        },
+        "skills/frontend-ui-engineering/references/taste-selection.md": {
+          "before_sha256": "db2556c57c80b0b34d30eac1f9b98c3cd2339adc5cf5d2a23c48684e8d9d6fbf",
+          "after_sha256": "db2556c57c80b0b34d30eac1f9b98c3cd2339adc5cf5d2a23c48684e8d9d6fbf"
+        },
+        "skills/frontend-ui-engineering/references/webpage-workflow.md": {
+          "before_sha256": "23bc2b208284619b3cbcbaa1d018e23c125e560c8def8e0f9c4a012eb3152654",
+          "after_sha256": "23bc2b208284619b3cbcbaa1d018e23c125e560c8def8e0f9c4a012eb3152654"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497",
+          "after_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575",
+          "after_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Only the existing frontend owner selection-evidence pointer changes; admission status, host ownership and all other capabilities remain unchanged."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Already routes frontend preferences and checked improvements to this owner while retaining task evidence locally; no routing or taste-selection change is introduced."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing proportional evidence, preference propagation and actual-host limitations remain truthful; this correction does not upgrade their broader implementation or behavioral-parity status."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing proportional-evidence and scoped propagation outcomes already govern this correction; no new system intent, host policy or framework requirement is introduced."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Bump the package version for the approved component-state/P12/I05 clarification. The previously adopted editing/QC sentence and all other entrypoint behavior remain byte-identical."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/component-selection.md",
+          "disposition": "unchanged",
+          "reason": "Resource and isolated-part selection boundaries remain applicable; this state-contract clarification introduces no external part, supplier or dependency."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/component-state.md",
+          "disposition": "updated",
+          "reason": "Clarifies shareable position versus useful Back history, validated early/restored state and stable fast/repeated feedback; real waits, errors and page navigation remain valid."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/defect-acceptance.md",
+          "disposition": "unchanged",
+          "reason": "Already requires ordinary full-task input, native/restored-state paths and active/intermediate observation; the new decision boundary uses those checks without adding a competing acceptance owner."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/design-mode.md",
+          "disposition": "unchanged",
+          "reason": "Existing planning, approved-direction and comparison routes remain unchanged; the correction does not reopen a creative direction."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/implementation-mode.md",
+          "disposition": "unchanged",
+          "reason": "Already requires reading component-state before relevant state work and exercising keyboard/responsive behavior; that required loading route remains intact."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/liked-motion-options.md",
+          "disposition": "unchanged",
+          "reason": "Its conditional expressive capabilities and legitimate still/reduced-motion alternatives remain unchanged; no effect quota or new animation option is added."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/motion-design.md",
+          "disposition": "unchanged",
+          "reason": "Already requires active-window observation, interruption, reversal and reduced-motion checks; fast-feedback clarification does not duplicate or weaken that owner."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/personal-design-defaults.md",
+          "disposition": "unchanged",
+          "reason": "Existing reusable taste and fitting continuity boundaries remain; the correction adds neither a universal effect nor a model-specific taste rule."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/product-workflow.md",
+          "disposition": "unchanged",
+          "reason": "Its task mapping, inherited commitments and repair-versus-whole-product readiness distinction already cover these cases; no new workflow or mandatory review loop is introduced."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/prototype-variants.md",
+          "disposition": "unchanged",
+          "reason": "Existing isolated variant preview and safe switching procedure is unaffected by these runtime-state and history expectations."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/provenance.md",
+          "disposition": "unchanged",
+          "reason": "Source/license history remains unchanged; this original contract clarification imports no third-party material and claims no new comparative quality evidence."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/regression-catalog.json",
+          "disposition": "updated",
+          "reason": "Registers only the corresponding P12/I05 cases, expectations, valid neighbors and existing owner references from the reviewed Markdown; other catalog records remain identical."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/regression-catalog.md",
+          "disposition": "updated",
+          "reason": "Clarifies existing P12/I05 cases for fast feedback, history and validated Resume; I25 and other motion requirements remain unchanged."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/resource-catalog.md",
+          "disposition": "unchanged",
+          "reason": "Existing local-first supplier discovery and exact-finalist checks remain; no resource source or discovery scope is changed."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/selector-feedback.md",
+          "disposition": "unchanged",
+          "reason": "Existing pointer/keyboard, native-indicator and focus checks remain; no selector implementation or accessibility exception is introduced."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/taste-selection.md",
+          "disposition": "unchanged",
+          "reason": "Existing human choice, comparable previews and approved-repair boundaries remain; a source/contract check is not presented as aesthetic approval."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/webpage-workflow.md",
+          "disposition": "unchanged",
+          "reason": "Existing reference classification, asset provenance and project design-system boundaries remain; no asset or reconstruction workflow is changed."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Its supported-correction, narrow-owner and source-bound publication requirements are followed by correcting this receipt; the authoring procedure itself is unchanged."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Its instruction_changes and change_reconciliation formats are consumed as specified; neither guard behavior nor authoring/restructuring policy changes."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Clarifies existing frontend ordinary-activation, meaningful history and truthful feedback outcomes. No new system intent, routing, settings or host-adoption policy is introduced.",
+      "authority": "Explicit user approval of the frontend-only correction and the matching executable P12/I05 catalog plus evidence-receipt repair. All other owners and host settings remain unselected.",
+      "checks": "Only P12/I05 executable catalog records changed and match reviewed Markdown fields. Existing frontend coverage suite: 50 tests ran, 49 passed and one skipped. Existing instruction_changes.check passed with 26 checked necessity/dependency records. Hashes bind 24 listed dependencies including unchanged guidance. The actual six-file reconcile qualification remains required before publication. Product browser evidence stays in its project.",
+      "outcome_review": {
+        "expected": "Same-document position stays shareable without redundant Back stops; early/restored Resume validates current location; fast/repeated action feedback stays readable and internally stable while genuine waits and retry feedback remain.",
+        "observed": "The reviewed component-state and P12/I05 expectations express these boundaries, and the executable case list now registers them. The published handbook mechanism repairs passed its retained browser regressions including actual Back/Forward, delayed-registry Resume and active Copy feedback. This receipt does not claim natural skill triggering or improved future-generation quality.",
+        "evidence": "Published handbook commit 6e87991ef37b19b561b8172dbd83d5b755f0c6ea; suite SHA256 f8e97a10a14c7872e6e2c5b5047c5a7891bd9ece39faf74991ffb060426b1aa2; manifest SHA256 3fdcc68c23062bc4349ee681d421c2d693bfaabe05941159471a4c6c41722249. Those product observations remain in its project. This Agent Sync receipt binds the instruction/catalog changes and their unchanged dependencies.",
+        "limitations": "Static agreement and publication guards establish source shape, dependency freshness and registered cases, not semantic completeness, human authenticity, model quality, cross-host behavioral parity or guaranteed future outputs. Live discovery/deployment requires separate readback."
+      }
+    }
+  ],
+  "source_reconciliation": {
+    "original_ready": "ad7a455595a987960c6e68de5d0083d316643247",
+    "actual_adopted_base": "15c48029d493c749ff1f0b8fecad8f55456d3150",
+    "scope": "Same approved six files. Refresh before/after bindings against the actual single-origin adoption; preserve the approved QC sentence and all original instruction/catalog payload bytes.",
+    "limits": "Fresh source bindings do not re-label product evidence as model-quality, natural-discovery or complete interaction coverage. The separately requested wheel-takeover acceptance case is excluded."
+  }
+}
