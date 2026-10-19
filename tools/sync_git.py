@@ -47,6 +47,8 @@ def assert_integration_owner(repo: Path, integration_attempt=None):
         if integration_attempt is not None:
             raise SyncBlocked('the ready integration attempt is no longer pending')
         return
+    if journal.get('phase') in {'releasing', 'released'}:
+        raise SyncBlocked('integration release is pending; resume its exact attempt first')
     if (integration_attempt != journal.get('attempt')
             or str(Path(repo).resolve()) != journal.get('integration_repo')):
         raise SyncBlocked('a ready integration is pending; resume its exact ready input and selection first')
@@ -70,6 +72,27 @@ def assert_ready_source(repo: Path, files, integration_attempt):
                     if git(repo, 'ls-tree', tree, '--', name) else 'deleted')
         if captured != expected:
             raise SyncBlocked('selected source differs from the frozen ready tree: ' + name)
+
+
+def mark_integration_deployment_started(repo: Path, integration_attempt):
+    """Monotonic write-ahead evidence; missing legacy history is never eligibility."""
+    if integration_attempt is None:
+        return
+    with lock(repo):
+        assert_integration_owner(repo, integration_attempt)
+        path = common_dir(repo) / 'agent-signal-integration.json'
+        journal = json.loads(path.read_bytes())
+        if journal.get('phase') != 'reconciling':
+            raise SyncBlocked('integration deployment requires its reconciling phase')
+        if journal.get('deployment_started') is True:
+            return
+        journal['deployment_started'] = True
+        temporary = path.with_suffix('.tmp')
+        with temporary.open('w', encoding='utf-8') as handle:
+            handle.write(json.dumps(journal, indent=2) + '\n')
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
 
 
 @contextmanager

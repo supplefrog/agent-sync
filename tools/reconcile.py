@@ -744,6 +744,7 @@ def sync(
         if (sync_git.identities(repo, ready_input["files"]) != ready_input["files"]
                 or _agent_scope_identities(destinations, names) != ready_input["agent_identities"]):
             raise sync_git.SyncBlocked("ready source or selected installed owners changed before mutation")
+        sync_git.mark_integration_deployment_started(repo, ready_input["attempt"])
     states = [_skill_state(repo, fleet_snapshot, destinations, name) for name in names]
     if any(state["mode"] == "review-required" for state in states):
         report = _decision_receipt(

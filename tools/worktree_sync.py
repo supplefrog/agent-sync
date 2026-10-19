@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -336,6 +337,8 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
         with sync_git.lock(repo, timeout=120):
             target = sync_git.destination(primary)
             journal = _read(journal_path)
+            if journal and journal.get('phase') in {'releasing', 'released'}:
+                raise sync_git.SyncBlocked('integration release is pending; resume its exact attempt first')
             if journal:
                 receipt = journal['receipt']
                 if receipt['ready'] != exact or receipt['options'] != options or receipt['target'] != target:
@@ -366,7 +369,8 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                 marker['head'] = base
                 _atomic(marker_path, marker)
                 journal = {'schema_version': 1, 'attempt': uuid.uuid4().hex, 'receipt': receipt,
-                           'base': base, 'phase': 'composing', 'published_repo': str(published), 'integration_repo': str(lane)}
+                           'base': base, 'phase': 'composing', 'deployment_started': False,
+                           'published_repo': str(published), 'integration_repo': str(lane)}
                 _atomic(journal_path, journal)
                 if (lane / 'registry.json').is_file():
                     # The reconciler requires a rendered public baseline even
@@ -419,6 +423,12 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                 result = reconcile.complete_sync(lane, machine=machine, adopt=list(adopt),
                     include=list(include), recovery_roots=recovery_roots or {}, skill_roots=skill_roots,
                     capture_recovery=False, scoped=True, message=message, integration_attempt=journal['attempt'])
+            # The inner reconciler writes monotonic deployment evidence before
+            # touching live roots. Never overwrite it with this caller's cache.
+            current = _read(journal_path)
+            if not current or current.get('attempt') != journal['attempt']:
+                raise sync_git.SyncBlocked('integration journal changed during reconciliation')
+            journal = current
             result.update(ready=exact, base=journal['base'], published_repo=str(published), integration_repo=str(lane),
                           source_base=receipt['source_base'], source_commits=receipt['source_commits'])
             if result.get('result') == 'synced':
@@ -437,3 +447,274 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                 'ready': str(ready), 'published_repo': journal.get('published_repo') if journal else None,
                 'commit': (journal or {}).get('last_result', {}).get('commit'),
                 'publication_verified': bool(journal and journal.get('phase') == 'published')}
+
+
+def _release_paths(common, attempt):
+    if not re.fullmatch('[0-9a-f]{32}', attempt):
+        raise sync_git.SyncBlocked('release requires an exact coordinator attempt identity')
+    archive = common / ('agent-signal-released-' + attempt)
+    return archive, archive / 'integration-worktree', 'agent-sync/released-' + attempt
+
+
+def _release_qualification(path, original, original_bytes):
+    """Bind an explicitly reviewed legacy witness; do not judge its truth."""
+    path = Path(path).absolute()
+    if path.is_symlink() or path.resolve() != path:
+        raise sync_git.SyncBlocked('qualification evidence cannot be redirected')
+    raw = path.read_bytes()
+    value = json.loads(raw)
+    if not isinstance(value, dict) or not isinstance(value.get('review'), dict):
+        raise sync_git.SyncBlocked('legacy qualification requires a reviewed object')
+    review = value.get('review', {})
+    binding = {key: original[key] for key in ('attempt', 'base', 'composed_tree')}
+    binding['ready'] = original['receipt']['ready']
+    if (value.get('schema_version') != 1 or value.get('kind') != 'reviewed-legacy-predeployment'
+            or value.get('journal_sha256') != hashlib.sha256(original_bytes).hexdigest()
+            or value.get('binding') != binding
+            or review.get('decision') != 'qualified-predeployment'
+            or not all(isinstance(review.get(k), str) and review[k].strip()
+                       for k in ('reason', 'reviewer_ref', 'coverage_end', 'no_retry_since_checkpoint'))
+            or not all(isinstance(value.get(k), str) and value[k].strip()
+                       for k in ('original_sync_command_id', 'checkpoint_command_id'))):
+        raise sync_git.SyncBlocked('legacy qualification is not bound to this reviewed attempt')
+    evidence = value['evidence']
+    if (not isinstance(evidence, dict)
+            or set(evidence) != {'execution', 'supplement', 'state', 'remote', 'remote_checkpoint', 'checkpoint'}):
+        raise sync_git.SyncBlocked('legacy qualification requires all six reviewed evidence roles')
+    bundle = {'receipt.json': raw}
+    for record in evidence.values():
+        if not isinstance(record, dict):
+            raise sync_git.SyncBlocked('qualification evidence requires file identities')
+        name = record['file']
+        if (not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*\.json', name)
+                or name in bundle or not re.fullmatch('[0-9a-f]{64}', record['sha256'])):
+            raise sync_git.SyncBlocked('qualification evidence name or identity is invalid')
+        source = path.parent / name
+        if source.is_symlink() or source.resolve() != source.absolute():
+            raise sync_git.SyncBlocked('qualification evidence cannot be redirected')
+        data = source.read_bytes()
+        if hashlib.sha256(data).hexdigest() != record['sha256']:
+            raise sync_git.SyncBlocked('reviewed qualification evidence changed')
+        bundle[name] = data
+    return value, bundle
+
+
+def _release_live_qualification(value, original):
+    # Current equality only corroborates the independently reviewed history.
+    roots = original['origin_destinations']
+    live = value['live']
+    owners = original['receipt']['options']['adopt']
+    if (not isinstance(live, list) or any(not isinstance(row, dict) or not isinstance(row.get('owners'), dict) for row in live)
+            or len(live) != len(roots) or sorted(row['root'] for row in live) != sorted(roots)
+            or any(sorted(row['owners']) != sorted(owners) for row in live)):
+        raise sync_git.SyncBlocked('qualification live scope differs from the frozen attempt')
+    for row in live:
+        root = Path(row['root'])
+        if reconcile.fleet.sha256_file(root / reconcile.fleet.STATE_FILE) != row['managed_state_sha256']:
+            raise sync_git.SyncBlocked('qualified managed state changed')
+        for owner, identity in row['owners'].items():
+            if reconcile.fleet.directory_record(root / owner)['sha256'] != identity:
+                raise sync_git.SyncBlocked('qualified live owner changed')
+
+
+def _retain_release_bytes(path, data):
+    if path.is_symlink() or path.resolve() != path.absolute():
+        raise sync_git.SyncBlocked('release evidence cannot be redirected')
+    existing = path.read_bytes() if path.exists() else b''
+    if not data.startswith(existing):
+        raise sync_git.SyncBlocked('release archived evidence differs')
+    with path.open('ab') as handle:
+        handle.write(data[len(existing):])
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
+def _release_preflight(primary, common, original, archive, archived_lane, archived_branch, qualification=None):
+    """Only the explicit owner-classification stop precedes any publisher action."""
+    result = original.get('last_result', {})
+    allowed_result = {'result', 'reason', 'owners', 'measurements', 'ready', 'base',
+                      'published_repo', 'integration_repo', 'source_base', 'source_commits'}
+    if (original.get('schema_version') != 1 or original.get('phase') != 'reconciling'
+            or not (original.get('deployment_started') is False
+                    or ('deployment_started' not in original and qualification is not None))
+            or result.get('result') != 'review-required'
+            or result.get('reason') != 'selected owner missing, unadmitted, or conflicting'
+            or set(result) - allowed_result
+            or result.get('measurements', {}).get('checks', [])):
+        raise sync_git.SyncBlocked('only a recorded pre-publisher owner-classification rejection can be released')
+    if qualification is not None:
+        _release_live_qualification(qualification, original)
+    target = original['receipt']['target']
+    receipt = original['receipt']
+    if (result.get('ready') != receipt['ready'] or result.get('base') != original['base']
+            or result.get('owners') != sorted(receipt['options']['adopt'])
+            or any(result.get(key) != original[key] for key in ('integration_repo', 'published_repo'))
+            or any(result.get(key) != receipt[key] for key in ('source_base', 'source_commits'))):
+        raise sync_git.SyncBlocked('release rejection is not bound to the pending source and selection')
+    if sync_git.destination(primary) != target:
+        raise sync_git.SyncBlocked('release publication destination changed')
+    old_lane = common / 'agent-signal-integration-worktree'
+    published = common / 'agent-signal-published'
+    if original['integration_repo'] != str(old_lane) or original['published_repo'] != str(published):
+        raise sync_git.SyncBlocked('release worktree paths are not coordinator owned')
+    if old_lane.exists() == archived_lane.exists():
+        raise sync_git.SyncBlocked('release requires exactly one retained integration worktree')
+    lane = old_lane if old_lane.exists() else archived_lane
+    old_marker = common / 'agent-signal-integration-worktree.json'
+    archived_marker = archive / 'integration-marker.json'
+    if old_marker.exists() == archived_marker.exists():
+        raise sync_git.SyncBlocked('release integration marker is missing or ambiguous')
+    marker_path = old_marker if old_marker.exists() else archived_marker
+    for path in (archive, lane, published, marker_path, common / 'agent-signal-published.json'):
+        if path.is_symlink() or path.resolve() != path.absolute():
+            raise sync_git.SyncBlocked('release paths cannot be linked or redirected')
+    marker = _read(marker_path)
+    published_marker = _read(common / 'agent-signal-published.json')
+    for owned, record in ((lane, marker), (published, published_marker)):
+        if (not record or record['common_repo'] != str(common) or record['target'] != target
+                or record['head'] != original['base'] or sync_git.common_dir(owned) != common
+                or sync_git.git(owned, 'rev-parse', 'HEAD') != original['base']):
+            raise sync_git.SyncBlocked('release worktree identity, marker or publication HEAD changed')
+        admin = sync_git.git_dir(owned)
+        pointer = owned / '.git'
+        if (not admin.is_relative_to(common / 'worktrees') or admin.resolve() != admin.absolute()
+                or not pointer.is_file() or pointer.is_symlink()
+                or Path((admin / 'gitdir').read_text(encoding='utf-8').rstrip('\r\n')).resolve() != pointer.absolute()):
+            raise sync_git.SyncBlocked('release worktree registration backlink differs; preserve and inspect the interrupted Git move')
+        configured = sync_git.destination(owned)
+        configured['branch'] = target['branch']
+        if configured != target:
+            raise sync_git.SyncBlocked('release worktree upstream changed')
+        if (sync_git.git_dir(owned) / 'agent-signal-sync.json').exists():
+            raise sync_git.SyncBlocked('publisher evidence exists; release cannot undo deployment or publication')
+    branch = sync_git.git(lane, 'symbolic-ref', '--short', 'HEAD')
+    if branch not in ({INTEGRATION_BRANCH, archived_branch} if lane == old_lane else {archived_branch}):
+        raise sync_git.SyncBlocked('release integration branch changed')
+    if sync_git.git(published, 'symbolic-ref', '--short', 'HEAD') != BRANCH:
+        raise sync_git.SyncBlocked('release published branch changed')
+    if branch == INTEGRATION_BRANCH and sync_git.git(primary, 'for-each-ref', '--format=%(refname)', 'refs/heads/' + archived_branch):
+        raise sync_git.SyncBlocked('release archive branch already exists')
+    for operation in ('MERGE_HEAD', 'CHERRY_PICK_HEAD', 'REVERT_HEAD', 'rebase-merge', 'rebase-apply', 'sequencer'):
+        if (sync_git.git_dir(lane) / operation).exists():
+            raise sync_git.SyncBlocked('release cannot preserve an uncertain Git operation as a finished composition')
+    files = original['composition_files']
+    tree = original['composed_tree']
+    if (not files or sync_git.changed(lane) != set(files)
+            or sync_git.identities(lane, files) != files
+            or sync_git.git(lane, 'write-tree') != sync_git.git(lane, 'rev-parse', original['base'] + '^{tree}')
+            or set(_names(lane, 'diff', '--name-only', '--no-renames', original['base'], tree)) != set(files)):
+        raise sync_git.SyncBlocked('release composition or index changed; preserve the pending attempt')
+    for name, identity in files.items():
+        expected = (hashlib.sha256(sync_git._raw_git(lane, 'show', tree + ':' + name)).hexdigest()
+                    if sync_git.git(lane, 'ls-tree', tree, '--', name) else 'deleted')
+        if identity != expected:
+            raise sync_git.SyncBlocked('release composition differs from its frozen Git tree')
+    return lane, marker_path, branch
+
+
+def release_predeployment(repo, attempt, qualification=None):
+    """Retain the entire rejected attempt, freeing only its coordinator slot.
+
+    No deployment, fetch, reset, checkout, file deletion or baseline update.
+    The releasing phase blocks every publisher and permits exact crash recovery.
+    """
+    try:
+        primary, common = _primary(Path(repo).resolve())
+        archive, archived_lane, archived_branch = _release_paths(common, attempt)
+        journal_path = common / 'agent-signal-integration.json'
+        with sync_git.lock(primary):
+            journal = _read(journal_path)
+            if not journal or journal.get('attempt') != attempt:
+                raise sync_git.SyncBlocked('release requires the exact currently pending attempt')
+            if journal.get('phase') in {'releasing', 'released'}:
+                retained = archive / 'attempt.json'
+                if (archive.is_symlink() or archive.resolve() != archive.absolute()
+                        or retained.is_symlink() or retained.resolve() != retained.absolute()):
+                    raise sync_git.SyncBlocked('release journal evidence cannot be redirected')
+                original_bytes = retained.read_bytes()
+                release = journal.get('release') or {}
+                if (set(release) - {'original_sha256', 'qualification_sha256'}
+                        or release.get('original_sha256') != hashlib.sha256(original_bytes).hexdigest()
+                        or ('qualification_sha256' in release and not re.fullmatch('[0-9a-f]{64}', release['qualification_sha256']))):
+                    raise sync_git.SyncBlocked('release evidence identity changed')
+                original = json.loads(original_bytes)
+                if original.get('attempt') != attempt:
+                    raise sync_git.SyncBlocked('release evidence belongs to another attempt')
+            else:
+                original_bytes = journal_path.read_bytes()
+                original = journal
+            proof, bundle = None, None
+            retained_proof = (journal.get('release') or {}).get('qualification_sha256')
+            if (journal.get('phase') in {'releasing', 'released'} and not retained_proof
+                    and ('deployment_started' not in original or (archive / 'qualification').exists())):
+                raise sync_git.SyncBlocked('retained qualification is missing its release binding')
+            proof_path = archive / 'qualification' / 'receipt.json' if retained_proof else qualification
+            if proof_path is not None:
+                if 'deployment_started' in original:
+                    raise sync_git.SyncBlocked('external qualification applies only to an absent legacy deployment marker')
+                proof, bundle = _release_qualification(proof_path, original, original_bytes)
+                digest = hashlib.sha256(bundle['receipt.json']).hexdigest()
+                if retained_proof and digest != retained_proof:
+                    raise sync_git.SyncBlocked('release qualification identity changed')
+                if retained_proof and set(p.name for p in (archive / 'qualification').iterdir()) != set(bundle):
+                    raise sync_git.SyncBlocked('retained qualification evidence set changed')
+                if retained_proof and qualification is not None and Path(qualification).read_bytes() != bundle['receipt.json']:
+                    raise sync_git.SyncBlocked('retry qualification differs from retained evidence')
+            lane, marker_path, branch = _release_preflight(primary, common, original, archive, archived_lane, archived_branch, proof)
+            if journal.get('phase') not in {'releasing', 'released'}:
+                if archive.exists():
+                    if set(p.name for p in archive.iterdir()) - ({'attempt.json', 'qualification'} if bundle else {'attempt.json'}):
+                        raise sync_git.SyncBlocked('release archive already contains other evidence')
+                else:
+                    archive.mkdir()
+                _retain_release_bytes(archive / 'attempt.json', original_bytes)
+                release = {'original_sha256': hashlib.sha256(original_bytes).hexdigest()}
+                if bundle:
+                    directory = archive / 'qualification'
+                    if directory.is_symlink() or directory.resolve() != directory.absolute():
+                        raise sync_git.SyncBlocked('qualification archive cannot be redirected')
+                    directory.mkdir(exist_ok=True)
+                    if set(p.name for p in directory.iterdir()) - set(bundle):
+                        raise sync_git.SyncBlocked('qualification archive contains other evidence')
+                    for name, data in bundle.items():
+                        _retain_release_bytes(directory / name, data)
+                    release['qualification_sha256'] = hashlib.sha256(bundle['receipt.json']).hexdigest()
+                journal = dict(original, phase='releasing', release=release)
+                _atomic(journal_path, journal)
+            # Recheck exact evidence on retries and between each retained-state move.
+            if branch == INTEGRATION_BRANCH:
+                sync_git.git(lane, 'branch', '-m', archived_branch)
+            lane, marker_path, _ = _release_preflight(primary, common, original, archive, archived_lane, archived_branch, proof)
+            if lane != archived_lane:
+                sync_git.git(primary, 'worktree', 'move', str(lane), str(archived_lane))
+            lane, marker_path, _ = _release_preflight(primary, common, original, archive, archived_lane, archived_branch, proof)
+            if marker_path != archive / 'integration-marker.json':
+                marker_path.rename(archive / 'integration-marker.json')
+            _release_preflight(primary, common, original, archive, archived_lane, archived_branch, proof)
+            if (archive / 'release.json').exists():
+                raise sync_git.SyncBlocked('release completion evidence already exists')
+            journal['phase'] = 'released'
+            _atomic(journal_path, journal)
+            journal_path.rename(archive / 'release.json')
+            return {'result': 'released', 'attempt': attempt, 'archive': str(archive),
+                    'retained_worktree': str(archived_lane), 'retained_branch': archived_branch,
+                    'verification_scope': 'pre-publisher rejection and frozen local composition; no deployment or remote action'}
+    except (OSError, RuntimeError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        return {'result': 'review-required', 'attempt': attempt, 'reason': str(exc)}
+
+
+def main(argv=None):
+    import argparse
+    parser = argparse.ArgumentParser(description='Retain and release a rejected pre-deployment ready attempt.')
+    parser.add_argument('action', choices=['release'])
+    parser.add_argument('--repo', type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument('--attempt', required=True)
+    parser.add_argument('--qualification', type=Path, help='explicitly reviewed, source-bound legacy evidence receipt')
+    args = parser.parse_args(argv)
+    result = release_predeployment(args.repo, args.attempt, args.qualification)
+    print(json.dumps(result, indent=2))
+    return 0 if result['result'] == 'released' else 2
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

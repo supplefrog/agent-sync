@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "id": "predeployment-integration-release-20261019",
+  "claim_scope": "Local coordinator preservation and refusal mechanics only; no model quality, semantic completeness, deployed-content or remote verification claim.",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "8d51deb084b1e361f26d13f7a979fc6887ab44d96a16ed2b6cde561d12867fc5",
+          "after_sha256": "8d51deb084b1e361f26d13f7a979fc6887ab44d96a16ed2b6cde561d12867fc5"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "691c8937fec535fa63e181b8a3c05baac9722dc43fcc57f2572e8f8da1bc63b2",
+          "after_sha256": "691c8937fec535fa63e181b8a3c05baac9722dc43fcc57f2572e8f8da1bc63b2"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "905aea4824a0e3894effb935993fa03903d42613ea5f33406156cd10d58276fe",
+          "after_sha256": "905aea4824a0e3894effb935993fa03903d42613ea5f33406156cd10d58276fe"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/hermes-skill-proposals.md": {
+          "before_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167",
+          "after_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "bf8128bd83ebcfad8a730ca07c501ff8a1d81ac87523b76c90bb6bebd3012a9a",
+          "after_sha256": "bf8128bd83ebcfad8a730ca07c501ff8a1d81ac87523b76c90bb6bebd3012a9a"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919",
+          "after_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7",
+          "after_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "e8a9c15cf6fbe5b893be39d90fc284b2718533bb1712ee88749c44059f56781b",
+          "after_sha256": "7281b16af4617b8ca250f78e22b68e26d98392dd4efff4fafadd84ad692a79bb"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121",
+          "after_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497",
+          "after_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575",
+          "after_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575"
+        },
+        "skills/instruction-authoring/references/useful-behaviors.md": {
+          "before_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4",
+          "after_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4"
+        },
+        "tests/test_integration_release.py": {
+          "before_sha256": "absent",
+          "after_sha256": "ee8b511b269573724a4c38ae707e8755546a84d014fd6b4b5e8eff4e25dac0e5"
+        },
+        "tools/reconcile.py": {
+          "before_sha256": "5a8e3df3795b9c930d2961dfa7cb95b11b719c53aa58722516607eae8e5580b2",
+          "after_sha256": "d97b57c6a8541b1305e9e5789a92095e1033c2a46bcfdd8c2dd89faa55627c6c"
+        },
+        "tools/sync_git.py": {
+          "before_sha256": "bd55bb7e3bb5029d87b27e14b94280cfc117e23447d8b605c7611a9456d7d027",
+          "after_sha256": "b9501edeb05fd54a5e923545da8454f494e0c139f031d6ff3eb438f50424efff"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "6ef580062d8c9d07f02f22c470cffc5ab51b6e97617a771e820666a07a568348",
+          "after_sha256": "798109c85240398908c1315b0bb2a5e86b51a06aeb56be3c50c6f6b3f0eaaf13"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/hermes-skill-proposals.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Document the same narrow recovery operation, including explicitly reviewed legacy evidence and its limits."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "skills/instruction-authoring/references/useful-behaviors.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        },
+        {
+          "path": "tests/test_integration_release.py",
+          "disposition": "updated",
+          "reason": "Existing guidance still requires scoped authorization, source-bound evidence, preserved pending state and drift refusal; external qualification does not deploy or accept instructions."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Repair the existing serialized publication and evidence-preservation workflow; user intent and instruction adoption criteria remain unchanged.",
+      "authority": "User explicitly approved narrow coordinator recovery and subsequent existing frontend reconciliation, relayed by parent task 01a118bf on 2026-10-19.",
+      "checks": "Local Git fixture suite tests exact evidence retention, explicit-marker/default refusal, evidence/source/index/HEAD/registration/live-state drift, lock exclusion and interrupted retention/moves. A legacy route requires an explicitly reviewed exact-journal qualification and six immutable evidence roles; checks bind the reviewed record and current state rather than judge historical semantics. Original source and actual deployment remain untouched pending independent implementation review.",
+      "outcome_review": {
+        "expected": "An exact early owner-classification rejection can free the coordinator slot while retaining the entire frozen attempt; deployed or uncertain states remain blocked.",
+        "observed": "Fixture evidence is recorded in the task-local qualification log; real-state release remains separate and requires fresh review and exclusive owner coordination.",
+        "evidence": "tests/test_integration_release.py",
+        "limitations": "Source bindings establish dependency coverage only. Historical authenticity, coordinated-owner scope and complete no-retry coverage require explicit independent judgment. Current equality cannot exclude transient writes; any later sync or unexplained operation invalidates the review. Fixtures do not establish installed correctness, remote publication or model benefit."
+      }
+    }
+  ]
+}
