@@ -46,6 +46,8 @@ Detailed procedures remain at those owners. Do not load every mode just because 
 
 ## Preserve the task contract
 
+During editing and QC, proactively check the affected flow against this contract and fix basic design inconsistencies within scope.
+
 Keep one compact acceptance contract in the project's existing brief, test record or handoff. Carry the intended experience, useful content/actions, rendered relationships, chosen finishing treatments and complete interaction through planning, implementation and revision. For a new build these come from the brief and applicable personal defaults; for refinement inherit the accepted render and explicit approvals. Distinguish requirements and accepted choices from provisional treatments and unverified observations; a first draft's omissions are not protected approvals. Passing one dimension cannot compensate for failing another; do not replace the contract with the latest criticism or a single overall score. Pass the same commitments to workers and reviewers. For an expressive illustration, carry its intended perceptual payoff and selected behavior or reason for stillness. Review that decision against the intended experience even if no illustration-motion feature was declared; checking only implemented effects cannot catch a missing response. A small repair needs only the commitments it could disturb, not a new document or whole-page exercise.
 
 ## Checks and visual review before commit

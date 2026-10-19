@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "id": "frontend-single-origin-adoption-20261019",
+  "claim_scope": "Exact source/live-origin reconciliation and preservation only; no model-quality or universal-host behavior claim.",
+  "instruction_changes": [
+    {
+      "owner": "skills/frontend-ui-engineering",
+      "basis": "user-correction",
+      "deviation": "The approved editing/QC sentence is installed at one managed origin but absent from canonical source; preserve it before the separately approved frontend patch.",
+      "evidence": "Source and single-origin package identities directly establish the one-sentence difference. Existing user approval covers preserving this installed editing/QC instruction and completing the scoped frontend update.",
+      "baseline_sufficient": false,
+      "why_instruction": "Reconcile an existing approved instruction into its canonical owner without adding another rule or copying runtime state.",
+      "alternative": "Overwriting the installed edit or inventing a managed baseline would discard the approved preference; normal single-origin adoption preserves it.",
+      "artifacts": {
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "a813c31499df9bd4a640a98c8a7178cd1c0c307fe00af74ecdb4845cc4763378",
+          "after_sha256": "5cbe34558c738d2fffcbdde571681c9887d0b76b397f346355d272ab03af831b"
+        }
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919",
+          "after_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7",
+          "after_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7"
+        },
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "a813c31499df9bd4a640a98c8a7178cd1c0c307fe00af74ecdb4845cc4763378",
+          "after_sha256": "5cbe34558c738d2fffcbdde571681c9887d0b76b397f346355d272ab03af831b"
+        },
+        "skills/frontend-ui-engineering/references/component-selection.md": {
+          "before_sha256": "9028545890aac4370d5f16c969368c4f2bdf9e7ee7cdbe751b8944b6b27eee6d",
+          "after_sha256": "9028545890aac4370d5f16c969368c4f2bdf9e7ee7cdbe751b8944b6b27eee6d"
+        },
+        "skills/frontend-ui-engineering/references/design-mode.md": {
+          "before_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3",
+          "after_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3"
+        },
+        "skills/frontend-ui-engineering/references/implementation-mode.md": {
+          "before_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b",
+          "after_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b"
+        },
+        "skills/frontend-ui-engineering/references/liked-motion-options.md": {
+          "before_sha256": "9821fce6161291587e6e121a902a2063893b695d90a389ed3f48432b72c1ec54",
+          "after_sha256": "9821fce6161291587e6e121a902a2063893b695d90a389ed3f48432b72c1ec54"
+        },
+        "skills/frontend-ui-engineering/references/motion-design.md": {
+          "before_sha256": "6b7c842751423c798a18847d90961639d8baac7f2b684ce4bc5313e974fa0b4d",
+          "after_sha256": "6b7c842751423c798a18847d90961639d8baac7f2b684ce4bc5313e974fa0b4d"
+        },
+        "skills/frontend-ui-engineering/references/personal-design-defaults.md": {
+          "before_sha256": "08c4228d4746fa3f84a1e89d3b526b31d3f1746f94b13f86a9cd01263043c3cb",
+          "after_sha256": "08c4228d4746fa3f84a1e89d3b526b31d3f1746f94b13f86a9cd01263043c3cb"
+        },
+        "skills/frontend-ui-engineering/references/prototype-variants.md": {
+          "before_sha256": "9293b8b08ab0d02ba4e3ac7193903cf2705badb6ad23981030dbae0f90c98a55",
+          "after_sha256": "9293b8b08ab0d02ba4e3ac7193903cf2705badb6ad23981030dbae0f90c98a55"
+        },
+        "skills/frontend-ui-engineering/references/provenance.md": {
+          "before_sha256": "575224739df560111408fd9c6c0b13e6d692efeaf09dc209b31b7ca36e5a9bf3",
+          "after_sha256": "575224739df560111408fd9c6c0b13e6d692efeaf09dc209b31b7ca36e5a9bf3"
+        },
+        "skills/frontend-ui-engineering/references/resource-catalog.md": {
+          "before_sha256": "c26cbad205afbf2008984d68b0608fb04337d47dd9798b61383180bc40bda588",
+          "after_sha256": "c26cbad205afbf2008984d68b0608fb04337d47dd9798b61383180bc40bda588"
+        },
+        "skills/frontend-ui-engineering/references/selector-feedback.md": {
+          "before_sha256": "68552c02760e938d1a315b2bc1314436b71d0934beccc99f66a8248aec4336b2",
+          "after_sha256": "68552c02760e938d1a315b2bc1314436b71d0934beccc99f66a8248aec4336b2"
+        },
+        "skills/frontend-ui-engineering/references/taste-selection.md": {
+          "before_sha256": "db2556c57c80b0b34d30eac1f9b98c3cd2339adc5cf5d2a23c48684e8d9d6fbf",
+          "after_sha256": "db2556c57c80b0b34d30eac1f9b98c3cd2339adc5cf5d2a23c48684e8d9d6fbf"
+        },
+        "skills/frontend-ui-engineering/references/webpage-workflow.md": {
+          "before_sha256": "23bc2b208284619b3cbcbaa1d018e23c125e560c8def8e0f9c4a012eb3152654",
+          "after_sha256": "23bc2b208284619b3cbcbaa1d018e23c125e560c8def8e0f9c4a012eb3152654"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Adopt the exact already approved editing/QC sentence from the one managed live origin; all other entrypoint bytes are preserved."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/component-selection.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/design-mode.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/implementation-mode.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/liked-motion-options.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/motion-design.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/personal-design-defaults.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/prototype-variants.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/provenance.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/resource-catalog.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/selector-feedback.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/taste-selection.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/webpage-workflow.md",
+          "disposition": "unchanged",
+          "reason": "The adopted sentence invokes the existing task contract during edits and QC. This source retains its existing detailed procedure, ownership or verification boundary unchanged; no history, Resume, feedback, motion or host behavior is changed in this intermediate adoption."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Preserve an existing approved task-contract checking instruction; no change to intended Agent Sync or host policy.",
+      "authority": "User approved the frontend workflow publication and its sixth catalog file, and explicitly approved narrow recovery followed by completing that update.",
+      "checks": "Exactly one managed origin differs from the real recorded canonical baseline. Only SKILL.md differs and equals the baseline with the exact approved QC sentence inserted; all other package files match. Existing source-bound publication checks are run on the prospective normal adoption candidate.",
+      "outcome_review": {
+        "expected": "Preserve the approved installed sentence in canonical source through normal single-origin adoption before rebasing the six-file change.",
+        "observed": "Prospective byte comparison establishes exactly one approved sentence and unchanged companion files. Actual publication and installed readback remain separate.",
+        "evidence": "Exact before/after artifact bindings and normal scoped reconciliation readback.",
+        "limitations": "Hashes establish identity and dependency coverage, not semantic completeness, human authenticity, model benefit or native discovery."
+      }
+    }
+  ]
+}
