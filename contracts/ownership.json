@@ -248,12 +248,10 @@
     {
       "id": "systematic-debugging",
       "owner": "skills/systematic-debugging",
-      "status": "admitted",
-      "selection_state": "selected",
-      "selection_evidence": [
-        "evals/results/systematic-debugging-deterministic.json"
-      ],
-      "selection_reason": "Explicitly approved byte-preserving port of the existing Hermes debugging procedure and optional Windows diagnostic reference. Structural checks preserve all behavior; no new model-quality or natural-trigger parity is claimed."
+      "status": "retired",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "User-requested retirement after matched debugging claim comparisons found comparable required outcomes without the optional body and higher task-model tokens with it. Original prose/PATH reference and admission history remain recoverable; no executable dependency was found. See evals/results/systematic-debugging-retirement-20261020.json. Publication/deployment state is separate."
     },
     {
       "id": "reverse-engineer-anything",

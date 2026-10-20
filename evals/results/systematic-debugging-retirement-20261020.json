@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "capability": "systematic-debugging",
+  "decision": "retired-source-selection",
+  "authority": "User requested claim-based retirement and clarified that optional prose is not retained for hypothetical untested uses; coordinator authorized source-of-truth reconciliation.",
+  "package_sha256": "e0d7562bb563bed7d23856a182f453607dd71c813b1fb3dbcb671b59d638a4ab",
+  "claim_scope": "Causal diagnosis, owning-mechanism repair and regression/persistence/error verification; matched bounded Python defect repairs on reviewed Windows Hermes/native openai-codex, outgoing gpt-6.1-sol/medium.",
+  "matched_results": {
+    "timeout": {
+      "base_raw": "45/49",
+      "body_raw": "44/49",
+      "separate_adjudication": "49/49 each; postcapture unblinded correction of implementation-specific oracle",
+      "base_tokens": 92928,
+      "body_tokens": 126072
+    },
+    "evidence": {
+      "base": "16/16",
+      "body": "16/16",
+      "base_tokens": 471111,
+      "body_tokens": 568312
+    }
+  },
+  "evidence_identities": {
+    "DESIGN.json": "16b8b9c8851cddbfaade6ca97cc5da32ea1b607b169376e3559159ef0085cf25",
+    "SEMANTIC-ADJUDICATION.json": "3e242a18186aeda96d4b828cfce63d909c2cbe56582495768cb2afc73a299cc5",
+    "baseline-counterpart-20261020\\FINAL-SUMMARY.json": "efc63b66f53de4f3867b07e46037670e836f1bc8d617476bec1fc2a3e8a34c18"
+  },
+  "dependency_review": "Package contains optional Markdown only; no executable/runtime dependency found. No replacement safeguards authored. Existing native safety boundaries remain independent.",
+  "preservation": "Original skill and PATH reference retained in source; original admission receipt and Git history retained. No live fleet apply, permanent deletion or host registration change.",
+  "effect": "Existing fleet renderer selects admitted entries only. Future publication of this retired registry selection excludes this one package from managed distributions; a normal managed removal remains hash-guarded.",
+  "deployment": "Local source candidate only; stable published source and live fleet remain unchanged. Current Hermes has its independently verified native disabled flag; publication and deployment are held.",
+  "limitations": [
+    "Controlled loading; not all-host or all-model quality proof.",
+    "Interrupted/coordinator usage and server-resolved identity remain unknown.",
+    "Historical raw outcomes remain unchanged."
+  ],
+  "rollback": "Restore only this capability admission/selection from recorded prior source after owner review, then use normal scoped publication. Do not revert unrelated registry work.",
+  "lifecycle_review": {
+    "owner": "skills/systematic-debugging",
+    "reviewer": "local integration reviewer; source and dependency inspection under explicit user retirement authorization",
+    "decision": "approved recoverable source-selection retirement; no live fleet removal or statistical/cache qualification",
+    "authority": "User explicitly required retirement when outcomes are comparable and rejected retaining optional debugging prose for hypothetical untested uses; subsequent parent instruction authorized making retirement durable in Agent Sync.",
+    "before_source_package_sha256": "e0d7562bb563bed7d23856a182f453607dd71c813b1fb3dbcb671b59d638a4ab",
+    "preserved_after_package_sha256": "e0d7562bb563bed7d23856a182f453607dd71c813b1fb3dbcb671b59d638a4ab",
+    "registry_changes": [
+      "systematic-debugging"
+    ],
+    "normal_review_route": "Existing capability-curator and instruction-authoring useful-behavior review. Registry lifecycle is intentionally outside worktree_sync ready fast path. Exact source files require normal reviewed publication; live remove/forget remains separately reviewed and hash-guarded.",
+    "render_verified": "Existing fleet renderer excludes the retired target from the owned local snapshot. Other registry entries unchanged.",
+    "limits": "Two bounded task pairs and separate postcapture adjudication do not establish preregistered statistical equivalence, universal benefit/absence, native discovery parity or all-host retirement. The user-directed selection decision is recorded explicitly; no extra trial or replacement safeguard is invented.",
+    "rollback": "Restore only this registry/ownership selection using preserved prior rows and normal reviewed publication; original skill/reference/history remain intact.",
+    "behavior_preservation_map": [
+      {
+        "source": "SKILL.md opening causal loop and reproduction paragraphs",
+        "disposition": "intentional omission from managed loading",
+        "reason": "Advertised causal diagnosis/owning-mechanism repair was exercised by the bounded defect-repair tasks without demonstrated outcome advantage; package remains recoverable."
+      },
+      {
+        "source": "SKILL.md#Safeguards intermittent/competing/local-upstream/stalled investigation",
+        "disposition": "intentional omission of optional diagnostic prose",
+        "reason": "No executable dependency or independently required security constraint. Not retained for imagined untested uses; special advice can be recovered from preserved source."
+      },
+      {
+        "source": "SKILL.md#Safeguards wrong-binary and references/windows-node-path-shadowing.md",
+        "disposition": "preserved source; omitted from managed discovery",
+        "reason": "Conditional diagnostic recipe is Markdown, not a shared runtime/tool dependency. No command, PATH, vendor binary or installation is changed."
+      },
+      {
+        "source": "SKILL.md#Safeguards containment and verification",
+        "disposition": "optional advice omitted; native controls unchanged",
+        "reason": "No forced executable safeguard implemented by this package. Existing host permissions, approval rules and native tool guards remain independent; no replacement safety prose is authored."
+      },
+      {
+        "source": "SKILL.md#Agent-behavior failures",
+        "disposition": "diagnostic prose omitted; durable instruction owner retained",
+        "reason": "instruction-authoring already independently owns durable edits. Its availability is unchanged; no caller requires systematic-debugging to load it."
+      },
+      {
+        "source": "SKILL.md final requested-postmortem route",
+        "disposition": "conditional route omitted; host workflow unchanged",
+        "reason": "No executable or native postmortem workflow is removed; package provides only a prose referral."
+      }
+    ]
+  }
+}

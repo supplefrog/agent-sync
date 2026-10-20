@@ -1,5 +1,7 @@
 """No-model launcher regressions for the inline evaluator's runtime boundary."""
 from __future__ import annotations
+from fixture_workspace import configure as configure_test_workspace
+configure_test_workspace()
 
 import importlib.util
 import json
@@ -56,7 +58,7 @@ class EvaluationRuntimeTests(unittest.TestCase):
 
     def fake_native(self, root, agent="codex", *, tool_event=False, contamination=False,
                     launch_error=False, timeout=False, export_error=False, output_text=None,
-                    metadata_reasoning="high", output_schema=None, returncode=0, interrupt=False, record_out=None):
+                    metadata_reasoning="high", output_schema=None, returncode=0, interrupt=False, record_out=None, prepared_runtime=None):
         source_home, fixture = root / "source-home", root / "fixture"
         for directory in (source_home / ".codex", source_home / ".hermes", source_home / ".agents" / "skills" / "shared", fixture):
             directory.mkdir(parents=True)
@@ -87,6 +89,7 @@ class EvaluationRuntimeTests(unittest.TestCase):
                       "ok": not export_error, "errors": ["synthetic worker failure"] if export_error else [],
                       "source": "native-AIAgent-runtime-metadata", "provider_resolved_identity_verified": False},
                       "prompt_isolation": {"verified": True, "canary_absent": True, "native_tool_names": []},
+                      "native_usage": {"tokens": {"input_tokens": 7}, "coverage": {"complete_for_system_efficiency": False}},
                       "native_result_metadata": {"completed": not export_error, "failed": export_error, "partial": False,
                                                  "interrupted": False, "final_response": output_text if output_text is not None else '{"ok":true}'},
                       "tool_observation": {"source": "native-AIAgent-tool-dispatch-guard", "tool_activity_count": 0,
@@ -146,8 +149,12 @@ class EvaluationRuntimeTests(unittest.TestCase):
              mock.patch.object(runtime, "native_hermes_runtime", return_value=(Path("synthetic-python"), Path("synthetic-native-source"))), \
              mock.patch.object(runtime.subprocess, "run", side_effect=native_run), \
              mock.patch.object(runtime.subprocess, "Popen", side_effect=launch):
-            result = evaluator.run_agent(agent, "synthetic task", fixture, 1, False, "test-model",
-                                         "openai-codex", "high", "none", lifecycle, output_schema=output_schema, require_attestation=True)
+            if prepared_runtime is None:
+                result = evaluator.run_agent(agent, "synthetic task", fixture, 1, False, "test-model",
+                                             "openai-codex", "high", "none", lifecycle, output_schema=output_schema, require_attestation=True)
+            else:
+                result = runtime.run_no_tools(agent, 'synthetic task', fixture, 1, 'test-model',
+                    'openai-codex', 'high', output_schema, True, evaluator.extract_json, prepared_runtime=prepared_runtime)
         lifecycle.register_receipt.assert_not_called()
         record["process"] = process
         return result, record
@@ -245,6 +252,8 @@ class EvaluationRuntimeTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertEqual(result["output"], '{"ok":true}')
         self.assertEqual(result["session_ids"], [])
+        self.assertEqual(result['native_usage']['tokens']['input_tokens'],7)
+        self.assertEqual(result['runtime_contract']['native_usage'],result['native_usage'])
 
     def test_unknown_or_malformed_events_do_not_prove_absence_of_tools(self):
         for text in ('not-json', '{"type":"turn.completed"}', '{"type":"future-tool-event"}'):
@@ -302,6 +311,8 @@ class EvaluationRuntimeTests(unittest.TestCase):
         class Agent:
             model, provider, reasoning_config = "test-model", "openai-codex", {"effort": "high"}
             valid_tool_names = []
+            _environment_probe, _api_max_retries, _auto_recovery_cycles = False, 1, 0
+            _intent_ack_continuation, _empty_guard_enabled = False, False
             def _execute_tool_calls(self, *_args): execution.append("executed")
             def _execute_tool_calls_sequential(self, *_args): execution.append("executed")
             def _execute_tool_calls_concurrent(self, *_args): execution.append("executed")
@@ -316,6 +327,7 @@ class EvaluationRuntimeTests(unittest.TestCase):
         self.assertTrue(factory.call_args.kwargs["skip_memory"])
         self.assertTrue(factory.call_args.kwargs["skip_context_files"])
         self.assertFalse(factory.call_args.kwargs["load_soul_identity"])
+        self.assertEqual(factory.call_args.kwargs["max_iterations"], 1)
 
     def test_hermes_worker_rejects_context_canary_before_model_call(self):
         agent = mock.Mock(valid_tool_names=[])
@@ -324,6 +336,66 @@ class EvaluationRuntimeTests(unittest.TestCase):
             hermes_worker.execute_agent(job, "synthetic-access", lambda **_kwargs: agent, lambda _agent: "CANARY")
         agent.run_conversation.assert_not_called()
 
+
+    def test_no_tool_controls_are_disposable_and_do_not_overwrite(self):
+        with mock.patch.dict(hermes_worker.os.environ, {"HERMES_DISABLE_LAZY_INSTALLS": "1"}), tempfile.TemporaryDirectory() as temp:
+            home = Path(temp)
+            hermes_worker.prepare_no_tool_config(str(home))
+            config = json.loads((home / "config.yaml").read_text())
+            config["agent"]["empty_response_guard"]["cost_threshold_usd"] = 0.25
+            hermes_worker.verify_no_tool_config(config)
+            before = (home / "config.yaml").read_bytes()
+            with self.assertRaises(FileExistsError):
+                hermes_worker.prepare_no_tool_config(str(home))
+            self.assertEqual(before, (home / "config.yaml").read_bytes())
+            config["agent"]["environment_probe"] = True
+            with self.assertRaises(RuntimeError):
+                hermes_worker.verify_no_tool_config(config)
+
+    def test_native_control_mismatch_stops_before_model_or_tool_call(self):
+        agent = mock.Mock(valid_tool_names=[])
+        agent._environment_probe, agent._api_max_retries = True, 3
+        agent._auto_recovery_cycles = 5
+        job = {"model": "test-model", "reasoning": "high", "timeout": 1,
+               "prompt": "task", "canary": "CANARY"}
+        original_tool = agent._execute_tool_calls
+        with self.assertRaisesRegex(RuntimeError, "per-run no-tool controls"):
+            hermes_worker.execute_agent(job, "synthetic-access", lambda **_kw: agent,
+                                        lambda _agent: "native prompt")
+        agent.run_conversation.assert_not_called()
+        original_tool.assert_not_called()
+
+    def test_omitted_no_install_flag_refuses_before_config_or_setup(self):
+        with mock.patch.dict(hermes_worker.os.environ, {}, clear=True), mock.patch.object(Path, 'open') as opened:
+            setup = mock.Mock()
+            with self.assertRaisesRegex(ValueError, "no-install evaluation requires"):
+                hermes_worker.prepare_no_tool_config('unused-no-install-test-path')
+                setup()
+            setup.assert_not_called()
+            opened.assert_not_called()
+        for value in ("", "0", "false"):
+            with self.assertRaises(ValueError):
+                runtime.require_no_install_environment({"HERMES_DISABLE_LAZY_INSTALLS": value})
+
+    def test_worker_missing_no_install_flag_never_imports_native_setup(self):
+        import builtins
+        import io
+        native_imports = []
+        original_import = builtins.__import__
+        def checked_import(name, *args, **kwargs):
+            if name in {"hermes_cli.auth_codex", "hermes_constants", "run_agent"}:
+                native_imports.append(name)
+                raise AssertionError("native setup must remain unreachable")
+            return original_import(name, *args, **kwargs)
+        output = io.StringIO()
+        with mock.patch.dict(hermes_worker.os.environ, {}, clear=True), \
+             mock.patch.object(hermes_worker.sys, "stdin", io.StringIO("{}")), \
+             mock.patch.object(hermes_worker.sys, "stdout", output), \
+             mock.patch("builtins.__import__", side_effect=checked_import):
+            code = hermes_worker.main()
+        self.assertEqual(code, 1)
+        self.assertEqual(native_imports, [])
+        self.assertEqual(json.loads(output.getvalue())["error_type"], "ValueError")
 
 if __name__ == "__main__":
     unittest.main()

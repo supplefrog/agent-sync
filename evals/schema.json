@@ -1,14 +1,28 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
+  "description": "Skill-value and retirement suites must satisfy docs/system-requirements.md#claim-based-testing-and-retirement. Schema validity alone does not establish claim coverage, oracle sensitivity, comparable outcomes or complete overall accounting.",
   "required": ["name", "claim", "cases"],
   "properties": {
     "schema_version": {"type": "integer", "minimum": 1},
     "name": {"type": "string"},
-    "claim": {"type": "string"},
+    "claim": {"type": "string", "description": "State the source-backed skill claim and intended scope, not merely the checker implementation. Link each material claim to representative real-task outcomes and independent failure-sensitive checks in the existing evaluation record."},
+    "comparison_requirements": {
+      "description": "Required before new inference; historical reports remain readable. Predeclare claim fit, equivalent with/without conditions, comparability/tolerances and overall accounting in the governing contract. Unsupported runtime claims fail readiness; these fields alone do not prove semantic adequacy.",
+      "type": "object",
+      "required": ["interaction", "context", "metrics"],
+      "properties": {
+        "interaction": {"enum": ["single-turn", "multi-turn"]},
+        "context": {"enum": ["isolated-text-projection", "full-authored-bundle"]},
+        "metrics": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "physical_call_cap": {"type": ["integer", "null"], "minimum": 0}
+      },
+      "additionalProperties": false
+    },
     "criteria": {"type": "array", "items": {"type": "string"}},
     "receipt_schema": {"type": "object"},
     "stability": {
+      "description": "Declare evidence adequacy, comparability tolerances and trial/order/stopping decisions before running. A non-significant result or underpowered sample is not demonstrated comparability.",
       "type": "object",
       "required": ["trials", "required_win_kinds"],
       "properties": {
@@ -22,6 +36,7 @@
       "additionalProperties": false
     },
     "cases": {
+      "description": "Exercise the skill stated claim on representative real work and material exceptions. Keep prompts outcome-driven; keep acceptance checks independent and demonstrate sensitivity to the claimed failure. A case count is not coverage.",
       "type": "array",
       "minItems": 3,
       "items": {
@@ -34,6 +49,7 @@
           "criteria": {"type": "array", "items": {"type": "string"}},
           "must_contain": {"type": "array", "items": {"type": "string"}},
           "must_not_contain": {"type": "array", "items": {"type": "string"}},
+          "acceptance_review": {"type": "object", "description": "Required by new-launch oracle_preflight; review declarations plus controls, not semantic proof. See docs/evaluations/outcome-efficiency.md.", "required": ["reviewer", "assertions", "controls"], "properties": {"reviewer": {"type": "string", "minLength": 1}, "assertions": {"type": "array"}, "controls": {"type": "array", "minItems": 2}, "alternatives_not_applicable": {"type": "string", "minLength": 1}}},
           "expected_receipt": {"type": "object", "minProperties": 1},
           "semantic_criteria": {
             "type": "array",

@@ -1,0 +1,42 @@
+{
+  "kind": "offline-program-receipt-efficiency-recheck",
+  "model_calls": 0,
+  "source_sha256": {
+    "report.json": "9dbdeebc86d8a8f968e7fe05a7ba3c100217f9e945631b887f3333dc649eac2a",
+    "plan.json": "60de292ecc5a0de098bf08cd6dded4784c1a359d6f35e1675a6921b81260eb5e"
+  },
+  "eligible": false,
+  "errors": [
+    "matched task must use equal or fewer overall tokens"
+  ],
+  "total_token_deltas": [
+    145778
+  ],
+  "execution_authenticated": false,
+  "new_behavioral_proof": false,
+  "native_artifact_validation": {
+    "consistent": true,
+    "source_bytes_complete": false,
+    "source_gaps": [
+      "native-assembled-prompt/9593007f101543a792734d21728501de: source bytes not supplied",
+      "native-assembled-prompt/f30934248b8e4a3cb5606deb6805b6e2: source bytes not supplied"
+    ],
+    "runtime_gaps": [
+      "native user-task input has no separately recorded hash or source-attributed request manifest"
+    ],
+    "errors": [],
+    "admission": false,
+    "positive_decision_sufficient": false,
+    "execution_authenticated": false,
+    "admission_blockers": [
+      "native artifact producer has no source-bound instruction admission contract",
+      "recorded sources and receipts do not authenticate source-to-execution provenance",
+      "leaf case/arm coverage does not establish required acceptance trials or workflow coverage"
+    ]
+  },
+  "source_bindings": {
+    "matched": 46,
+    "declared": 48
+  },
+  "raw_program_publication_bridge": "diagnostic validation integrated; native artifact pilot admission remains false"
+}

@@ -138,9 +138,10 @@
     },
     {
       "name": "systematic-debugging",
-      "status": "admitted",
+      "status": "retired",
       "license": "MIT",
-      "source": "local-converged-port"
+      "source": "local-converged-port",
+      "eval": "evals/results/systematic-debugging-retirement-20261020.json"
     },
     {
       "name": "reverse-engineer-anything",

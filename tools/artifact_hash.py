@@ -10,6 +10,22 @@ from pathlib import Path
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 TEXT_SUFFIXES = {".md", ".txt", ".json", ".yaml", ".yml"}
 MAX_LINKED_BYTES = 100_000
+HARNESS_SOURCES = ("artifact_hash.py", "eval.py", "evaluation_runtime.py",
+                   "evaluation_hermes_worker.py", "evaluation_evidence.py",
+                   "evaluation_measurement.py", "evaluation_usage.py", "fleet.py")
+
+
+def package_hash_from_files(files: dict[str, str]) -> str:
+    """Recompute fleet-package-v1 identity in the captured manifest order.
+
+    This binds declared hashes; callers separately bind each hash to file bytes.
+    """
+    digest = hashlib.sha256()
+    for name, value in files.items():
+        digest.update(name.encode('utf-8'))
+        digest.update(b'\0')
+        digest.update(bytes.fromhex(value))
+    return digest.hexdigest()
 
 
 def harness_hash(harness: Path) -> str:
@@ -21,7 +37,7 @@ def harness_hash(harness: Path) -> str:
     if harness.name != "eval.py":
         return hashlib.sha256(harness.read_bytes()).hexdigest()
     digest = hashlib.sha256()
-    for name in ("artifact_hash.py", "eval.py", "evaluation_runtime.py", "evaluation_hermes_worker.py", "fleet.py"):
+    for name in HARNESS_SOURCES:
         path = harness.parent / name
         digest.update(name.encode("utf-8"))
         digest.update(b"\0")
@@ -127,16 +143,20 @@ def freeze_candidate(candidate: Path) -> dict:
         for path in prompt_order
     ]
     prompt = "\n\n".join(sections)
-    digest = hashlib.sha256()
-    if not package:
+    if package:
+        identity = package_hash_from_files({path.relative_to(root).as_posix(): hashlib.sha256(captured[path]).hexdigest()
+                                            for path in package_order})
+    else:
+        digest = hashlib.sha256()
         digest.update(b"agent-signal-standalone-v2\0")
-    for path in package_order if package else prompt_order:
-        digest.update(path.relative_to(root).as_posix().encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(hashlib.sha256(captured[path]).digest())
+        for path in prompt_order:
+            digest.update(path.relative_to(root).as_posix().encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(hashlib.sha256(captured[path]).digest())
+        identity = digest.hexdigest()
     return {
         "prompt_text": prompt,
-        "package_sha256": digest.hexdigest(),
+        "package_sha256": identity,
         "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
         "projection": "inline-linked-text-only",
         "identity_format": "fleet-package-v1" if package else "standalone-text-v2",

@@ -1,5 +1,7 @@
 """Offline integration against the real frozen producer, with fake transport only."""
 from __future__ import annotations
+from fixture_workspace import configure as configure_test_workspace
+configure_test_workspace()
 
 import copy
 import contextlib
@@ -22,6 +24,7 @@ sys.path.insert(0, str(STAGE / "tools"))
 sys.path.insert(0, str(STAGE / "tests"))
 import test_evaluation_evidence as producer_fixture
 from artifact_hash import harness_hash
+import artifact_hash
 
 SPEC = importlib.util.spec_from_file_location("candidate_retirement", HERE / "tools/instruction_retirement.py")
 adapter = importlib.util.module_from_spec(SPEC)
@@ -34,7 +37,7 @@ def make_bound_fixture(root: Path, *, outcome="win", template_suite=None, cleanu
     (repo / "contracts").mkdir()
     (repo / "surfaces").mkdir()
     (repo / "evals").mkdir()
-    for name in ("artifact_hash.py", "eval.py", "evaluation_runtime.py", "evaluation_hermes_worker.py", "fleet.py"):
+    for name in artifact_hash.HARNESS_SOURCES:
         shutil.copyfile(STAGE / "tools" / name, repo / "tools" / name)
     shutil.copyfile(STAGE / "contracts/instruction-units.schema.json", repo / "contracts/instruction-units.schema.json")
     (repo / "surfaces/owner.md").write_bytes(b"[UNIT] Generic removable guidance.\r\n[KEEP] Existing owner behavior.\r\n")
@@ -82,10 +85,6 @@ def make_bound_fixture(root: Path, *, outcome="win", template_suite=None, cleanu
 class RetirementAdapterTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.previous_tempdir = tempfile.tempdir
-        scratch = HERE / ".tmp"
-        scratch.mkdir(exist_ok=True)
-        tempfile.tempdir = str(scratch)
         cls.temp = tempfile.TemporaryDirectory(prefix="retirement-adapter-tests-")
         cls.root = Path(cls.temp.name)
         allowed_env = {key: value for key, value in os.environ.items() if key.upper() in {"SYSTEMROOT", "WINDIR", "COMSPEC", "PATH", "PATHEXT"}}
@@ -105,7 +104,6 @@ class RetirementAdapterTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.temp.cleanup()
-        tempfile.tempdir = cls.previous_tempdir
 
     def bundle(self, fixture=None):
         fixture = fixture or self.positive

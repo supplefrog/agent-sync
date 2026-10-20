@@ -529,7 +529,7 @@ class AgentRunBudget:
 ATTEMPT_WRAPPER_KEYS = {"attempt", "transient", "attempts", "attempt_count", "transient_retry_count", "run_budget_exhausted"}
 RUN_RESULT_KEYS = {"ok", "execution_ok", "operational_ok", "returncode", "seconds", "output", "stderr",
                    "session_ids", "session_receipt_error", "route_attestation", "runtime_contract", "native_events",
-                   "native_result_metadata", "runtime_error", "failure", "evidence_incomplete"}
+                   "native_result_metadata", "native_usage", "runtime_error", "failure", "evidence_incomplete", "workflow_accounting"}
 
 
 def attempt_result(run: dict[str, Any]) -> dict[str, Any]:
@@ -804,6 +804,71 @@ def deterministic(case: dict[str, Any], output: str) -> tuple[bool, list[str]]:
         if needle.lower() in lowered:
             reasons.append(f"forbidden: {needle}")
     return not reasons, reasons
+
+
+def oracle_preflight(suite: dict[str, Any]) -> dict[str, Any]:
+    """Check declared oracle controls before new inference, without model calls.
+
+    Traceability/risk/semantic labels are reviewer assertions, not proof. The
+    executable part reuses this lane's actual deterministic checker. Historical
+    report validation does not call this new-launch gate.
+    """
+    errors, results = [], []
+    for case in suite.get("cases", []):
+        label = str(case.get("id", "unknown"))
+        review = case.get("acceptance_review")
+        if not isinstance(review, dict):
+            errors.append(label + ": acceptance_review required before new inference")
+            continue
+        checks = {f"{key}:{i}" for key in (("criteria",) if suite_report_version(suite) == 3 else ("criteria", "must_contain", "must_not_contain"))
+                  for i, _ in enumerate(case.get(key, []))}
+        checks.update("semantic_criteria:" + c["id"] for c in case.get("semantic_criteria", []))
+        if suite_report_version(suite) == 3:
+            checks.add("receipt_schema")
+            checks.update("expected_receipt:" + key for key in case.get("expected_receipt", {}))
+        trace = review.get("assertions", [])
+        if not isinstance(trace, list):
+            trace = []
+        traced = [r.get("check") for r in trace if isinstance(r, dict)]
+        if (len(traced) != len(trace) or any(not isinstance(key, str) for key in traced)
+            or len(set(traced)) != len(traced) or set(traced) != checks):
+            errors.append(label + ": assertion trace must cover actual checks exactly once")
+        for row in trace:
+            if (not isinstance(row, dict) or row.get("constraint") not in {"invariant", "required_interface", "safety"}
+                or any(not isinstance(row.get(k), str) or not row[k].strip() for k in ("requirement", "justification"))):
+                errors.append(label + ": every assertion needs requirement, constraint and justification")
+        if not isinstance(review.get("reviewer"), str) or not review["reviewer"].strip():
+            errors.append(label + ": semantic/traceability reviewer required")
+        controls = review.get("controls", [])
+        if not isinstance(controls, list):
+            controls = []
+        identities, outcomes, alternatives = set(), set(), 0
+        for control in controls:
+            if (not isinstance(control, dict) or not isinstance(control.get("id"), str) or not control["id"]
+                or control["id"] in identities or not isinstance(control.get("output"), str)
+                or type(control.get("deterministic_pass")) is not bool
+                or control.get("outcome") not in {"adequate", "broken"}
+                or type(control.get("alternative")) is not bool
+                or not isinstance(control.get("rationale"), str) or not control["rationale"].strip()):
+                errors.append(label + ": malformed or duplicate oracle control")
+                continue
+            identities.add(control["id"]); outcomes.add(control["outcome"])
+            alternatives += int(control["alternative"] and control["outcome"] == "adequate")
+            passed = (structured_receipt_check(case, control["output"], suite["receipt_schema"])["pass"]
+                      if suite_report_version(suite) == 3 else deterministic(case, control["output"])[0])
+            results.append({"case": label, "control": control["id"], "deterministic_pass": passed,
+                            "reviewed_outcome": control["outcome"]})
+            if passed != control["deterministic_pass"] or control["outcome"] == "adequate" and not passed:
+                errors.append(label + ": actual checker contradicts control " + control["id"])
+            if control["outcome"] == "broken" and passed and not (case.get("criteria") or case.get("semantic_criteria")):
+                errors.append(label + ": broken control passes all available checks")
+        if outcomes != {"adequate", "broken"}:
+            errors.append(label + ": adequate and plausible broken controls required")
+        if not alternatives and not (isinstance(review.get("alternatives_not_applicable"), str)
+                                     and review["alternatives_not_applicable"].strip()):
+            errors.append(label + ": valid alternative control or explicit risk-based inapplicability required")
+    return {"ready": not errors, "errors": errors, "controls": results,
+            "scope": "mechanical preflight and recorded reviewer declarations; not semantic adequacy proof"}
 
 
 def judge_prompt(suite: dict[str, Any], case: dict[str, Any], a: str, b: str) -> str:
@@ -1211,6 +1276,13 @@ def main() -> int:
     except ValueError as exc:
         parser.error(str(exc))
     schema_version = suite_report_version(suite)
+    from evaluation_runtime import comparison_readiness
+    readiness = comparison_readiness(suite)
+    if not readiness['ready']:
+        parser.error('comparison not ready: ' + '; '.join(readiness['errors'] + readiness['remedies']))
+    oracle_review = oracle_preflight(suite)
+    if not oracle_review["ready"]:
+        parser.error("oracle not ready: " + "; ".join(oracle_review["errors"]))
     is_v3 = schema_version == 3
     all_cases = suite.get("cases", [])
     if args.case_ids:
@@ -1278,6 +1350,8 @@ def main() -> int:
     report: dict[str, Any] = {
         "schema_version": schema_version,
         "suite": suite.get("name"),
+        "comparison_readiness": readiness,
+        "oracle_preflight": oracle_review,
         "claim": suite.get("claim"),
         "suite_cases": [{"id": case["id"], "kind": case.get("kind")} for case in all_cases],
         "selected_case_ids": [case["id"] for case in cases],
@@ -1662,6 +1736,10 @@ def main() -> int:
         report["operational_ok"] = (report["status"] == "complete"
                                     and all(item.get("operational_ok", True) for item in report["attempt_ledger"])
                                     and all(probe.get("ok") is True for probe in report["version_probes"].values()))
+        # Derived observations reuse the complete attempt ledger, including
+        # failures and judges. They never change the evaluator's decision.
+        from evaluation_measurement import attach_measurements
+        attach_measurements(report)
         finalize_workspace(out, report, lifecycle, workdir)
     print(json.dumps({"status": report["status"], **report["decision"], "operational_ok": report["operational_ok"]}, indent=2))
     print("report:", out if report["report_export"]["written"] else report["report_export"]["recovery_path"] or report["workspace_lifecycle"]["path"])

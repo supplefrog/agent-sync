@@ -30,6 +30,279 @@ STACK_KEYS = (
 SIDES = ("baseline", "candidate")
 
 
+def validate_artifact_evidence(report: dict, plan: dict, *, source_bytes: dict | None = None) -> dict:
+    """Validate bound native leaf receipts without executing paths or oracles.
+
+    source_bytes maps SHA256 to explicitly supplied bytes. No recorded pathname
+    is opened. Source completeness covers declared bytes only, never execution
+    origin, source-to-request attribution, oracle adequacy or publication.
+    """
+    import artifact_hash
+    import evaluation_measurement as measurement
+    from pathlib import PurePosixPath, PureWindowsPath
+    errors, gaps, runtime_gaps, bindings, records = [], [], [], [], []
+    blockers = ['native artifact producer has no source-bound instruction admission contract',
+                'recorded sources and receipts do not authenticate source-to-execution provenance',
+                'leaf case/arm coverage does not establish required acceptance trials or workflow coverage']
+    def require(condition, message):
+        if not condition:
+            errors.append(message)
+    def bind(label, value):
+        if measurement.sha(value) is None:
+            gaps.append(label + ': recorded source hash unavailable')
+            return
+        data = supplied.get(value)
+        matched = isinstance(data, bytes) and hashlib.sha256(data).hexdigest() == value
+        bindings.append({'source': label, 'sha256': value, 'bytes_matched': matched})
+        if data is None:
+            gaps.append(label + ': source bytes not supplied')
+        elif not matched:
+            errors.append(label + ': supplied source bytes mismatch')
+    def files(label, values):
+        require(isinstance(values, dict) and bool(values), label + ': missing file manifest')
+        for name, value in values.items():
+            require(isinstance(name, str) and bool(name) and '\\' not in name
+                    and not name.startswith('/') and ':' not in name
+                    and all(part not in ('', '.', '..') for part in name.split('/')),
+                    label + ': unsafe manifest path')
+            require(measurement.sha(value) is not None, label + ': invalid file hash')
+            bind(label + '/' + name, value)
+    def frame(label, value):
+        require(value.get('identity_format') == 'fleet-package-v1', label + ': unsupported package identity')
+        manifest = value['files']
+        files(label, manifest)
+        require('SKILL.md' in manifest, label + ': missing SKILL.md')
+        require(artifact_hash.package_hash_from_files(manifest) == value.get('package_sha256'),
+                label + ': package identity mismatch')
+        prompt = value['prompt_text']
+        require(hashlib.sha256(prompt.encode('utf-8')).hexdigest() == value.get('prompt_sha256'),
+                label + ': prompt projection hash mismatch')
+    try:
+        supplied = {} if source_bytes is None else source_bytes
+        require(isinstance(supplied, dict), 'source bytes must be an explicit hash map')
+        for value, data in supplied.items():
+            require(measurement.sha(value) is not None and isinstance(data, bytes)
+                    and hashlib.sha256(data).hexdigest() == value, 'supplied source hash/bytes mismatch')
+        require(report['kind'] == plan['kind'] == plan['spec']['purpose'] == 'native-skill-study',
+                'unsupported or mismatched native artifact kind')
+        require(report.get('admission') is False and report.get('workflow_comparison_supported') is False
+                and plan.get('workflow_comparison_supported') is False,
+                'native artifact authority must remain diagnostic only')
+        spec = plan['spec']
+        arms = {row['id']: row for row in spec['arms']}
+        cases = {row['id']: row for row in spec['cases']}
+        require(len(arms) == len(spec['arms']) and len(cases) == len(spec['cases'])
+                and 1 <= len(arms) * len(cases) <= 12, 'invalid native case/arm coverage')
+        jobs, rows = plan['jobs'], report['results']
+        require(len(jobs) == len(arms) * len(cases) == len(rows), 'incomplete native job/result coverage')
+        require(type(report.get('completed_trials')) is int and type(report.get('expected_trials')) is int
+                and report['completed_trials'] == report['expected_trials'] == len(jobs), 'native trial counts mismatch')
+        job_ids = [job['id'] for job in jobs]
+        require(len(set(job_ids)) == len(jobs) and [row['id'] for row in rows] == job_ids,
+                'duplicate, missing or reordered native results')
+        require({(job['case'], job['arm']) for job in jobs} == {(case, arm) for case in cases for arm in arms},
+                'native case/arm job mapping mismatch')
+        for key in ('oracle_sha256', 'controller_sha256', 'worker_sha256', 'native_hermes_worker_sha256',
+                    'runtime_sha256', 'measurement_sha256', 'usage_observer_sha256'):
+            bind(key, plan.get(key))
+        require(set(plan['candidate_snapshots']) == set(arms), 'candidate snapshot arm coverage mismatch')
+        for arm, snapshot in plan['candidate_snapshots'].items():
+            require((snapshot is None) == (arms[arm].get('instructions') is None), 'candidate absence mismatch')
+            if snapshot is not None:
+                frame('candidate/' + arm, snapshot)
+        for name, snapshot in plan.get('common_catalog_snapshots', {}).items():
+            frame('common-catalog/' + str(len(bindings)), snapshot)
+        require(set(plan.get('common_catalog_snapshots', {})) == set(spec.get('catalog', [])),
+                'common native catalog source coverage mismatch')
+        require(set(plan['case_source_trees']) == set(cases), 'fixture source case coverage mismatch')
+        for case, manifest in plan['case_source_trees'].items():
+            files('fixture/' + case, manifest)
+        for job, row in zip(jobs, rows):
+            require(row['arm'] == job['arm'] and row['case'] == job['case'], 'native result case/arm mismatch')
+            require(all(job['initial_tree'].get(name) == value for name, value in plan['case_source_trees'][job['case']].items()),
+                    'native job differs from frozen fixture source')
+            files('final-artifact/' + row['id'], row['final_tree'])
+            native = row['native']
+            route = {key: spec.get(key) for key in ('model', 'provider', 'reasoning')}
+            require(all(isinstance(value, str) and value for value in route.values())
+                    and all(native.get('agent_observed_route', {}).get(key) == value for key, value in route.items()),
+                    'native observed route mismatch or missing')
+            expected_catalog = [snapshot['package_sha256'] for snapshot in plan.get('common_catalog_snapshots', {}).values()]
+            snapshot = plan['candidate_snapshots'][job['arm']]
+            if snapshot and spec.get('instruction_exposure') != 'explicit-body':
+                expected_catalog.append(snapshot['package_sha256'])
+            require(sorted(job['catalog_frames'].values()) == sorted(expected_catalog)
+                    and len(job['catalog']) == len(set(job['catalog']))
+                    and set(job['catalog']) == set(job['catalog_frames']), 'prepared native catalog binding mismatch')
+            known_frames = list(plan.get('common_catalog_snapshots', {}).values()) + ([snapshot] if snapshot else [])
+            frames_by_hash = {value['package_sha256']: value for value in known_frames}
+            expected_tree = dict(plan['case_source_trees'][job['case']])
+            path_type = PureWindowsPath if '\\' in job['fixture'] or ':' in job['fixture'] else PurePosixPath
+            for location, value in job['catalog_frames'].items():
+                relative = path_type(location).relative_to(path_type(job['fixture']))
+                require(len(relative.parts) == 4 and relative.parts[:2] == ('.agents', 'skills')
+                        and relative.parts[2] not in ('.', '..') and relative.parts[-1] == 'SKILL.md',
+                        'native catalog location is outside declared skill staging')
+                prefix = relative.parent.as_posix()
+                expected_tree.update({prefix + '/' + name: digest for name, digest in frames_by_hash[value]['files'].items()})
+            require(job['initial_tree'] == expected_tree, 'native initial tree contains missing, changed or undeclared sources')
+            # The worker hashes build_prompt(agent), not job['prompt']. These
+            # are different inputs; the recorded hash cannot bind the user task.
+            assembled = native.get('catalog_evidence', {}).get('prompt_sha256')
+            require(measurement.sha(assembled) is not None, 'native assembled prompt hash unavailable')
+            bind('native-assembled-prompt/' + row['id'], assembled)
+            runtime_gaps.append('native user-task input has no separately recorded hash or source-attributed request manifest')
+            require(cases[job['case']]['prompt'] in job['prompt'], 'prepared job omits declared case prompt')
+            if snapshot and spec.get('instruction_exposure') == 'explicit-body':
+                require(snapshot['prompt_text'] in job['prompt'], 'prepared job omits declared explicit candidate projection')
+            if native.get('host_version') is None:
+                runtime_gaps.append('native host version not recorded')
+            if native.get('model_launched') is not True:
+                runtime_gaps.append('native model launch not recorded')
+            if native.get('catalog_evidence', {}).get('exact_catalog_verified') is not True:
+                runtime_gaps.append('exact native catalog observation unavailable')
+            lifecycle = native.get('native_usage', {}).get('lifecycle', {})
+            observed_sources = lifecycle.get('native_sources_before', {})
+            if not observed_sources:
+                runtime_gaps.append('native implementation source fingerprints not recorded')
+            else:
+                require(observed_sources == lifecycle.get('native_sources_after'), 'native implementation sources changed during run')
+                for index, value in enumerate(observed_sources.values()):
+                    bind('native-implementation/' + row['id'] + '/' + str(index), value)
+        records = measurement.artifact_records(report, plan)
+        for row, record in zip(rows, records):
+            expected_ok = record['outcome']['execution_ok'] is True and record['outcome']['task_passed'] is True
+            if row.get('exposure_setup_ok') is False:
+                expected_ok = False
+            require(type(row.get('oracle_exit_code')) is int and type(row.get('ok')) is bool
+                    and row['ok'] == expected_ok, 'native outcome contradicts raw execution/oracle receipts')
+        if 'measurements' in report:
+            require(report['measurements'] == records, 'saved native measurements differ from raw receipt projection')
+    except (KeyError, TypeError, ValueError, AttributeError, IndexError) as exc:
+        errors.append('malformed native artifact evidence: ' + type(exc).__name__)
+    return {'errors': sorted(set(errors)), 'source_gaps': sorted(set(gaps)), 'runtime_gaps': sorted(set(runtime_gaps)),
+            'consistent': not errors, 'source_bytes_complete': not errors and not gaps,
+            'source_bindings': bindings, 'records': records,
+            'usage_readiness': measurement.acceptance_readiness(records),
+            'admission': False, 'positive_decision_sufficient': False,
+            'execution_authenticated': False, 'admission_blockers': blockers}
+
+
+def outcome_efficiency(before: list[dict], after: list[dict]) -> dict:
+    """Qualify recorded equal-or-better outcomes at no greater overall tokens.
+
+    Callers retain their source, oracle and harness checks. This consistency
+    result grants neither publication authority nor execution authentication.
+    Inputs must be freshly projected from the bound raw receipts, not a saved
+    comparison's eligibility booleans.
+    """
+    import evaluation_measurement as measurement
+    errors = []
+    comparison = None
+    try:
+        for row in before + after:
+            if row.get('record_sha256') != measurement.digest({
+                    key: value for key, value in row.items() if key != 'record_sha256'}):
+                errors.append('measurement projection digest mismatch')
+            if measurement.sha(row.get('provenance', {}).get('evidence_sha256')) is None:
+                errors.append('measurement source receipt binding missing')
+        comparison = measurement.compare_records(before, after)
+        pairs = comparison['pairs']
+        if not pairs or not comparison['conditional_efficiency']['equivalent_case_coverage']:
+            errors.append('quality-qualified matched case/trial coverage is incomplete')
+        for side, records in (('baseline', before), ('candidate', after)):
+            ready = measurement.acceptance_readiness(records)
+            errors.extend(side + ': ' + gap for gap in ready['gaps'])
+        for pair in pairs:
+            if not pair['conditional_efficiency_eligible']:
+                errors.append('matched task lacks quality-qualified complete overall usage')
+            delta = pair['token_delta_after_minus_before']['total_tokens']
+            if type(delta) is not int or delta > 0:
+                errors.append('matched task must use equal or fewer overall tokens')
+    except (KeyError, TypeError, ValueError, AttributeError) as exc:
+        errors.append('malformed efficiency evidence: ' + type(exc).__name__)
+    return {'eligible': not errors, 'errors': sorted(set(errors)),
+            'comparison': comparison, 'execution_authenticated': False,
+            'behavioral_proof': False}
+
+
+def instruction_improvement(report: dict, suite: dict, *, suite_sha256: str,
+                            harness_sha256: str, route: dict) -> list[str]:
+    """Require a positive measured difference as well as nonregression/accounting.
+
+    Mechanical eligibility does not establish claim coverage, practical benefit,
+    comparability or retention authority. Those remain owner review decisions.
+    """
+    if not isinstance(report, dict) or not isinstance(suite, dict):
+        return ['behavioral measurement and task contract must be objects']
+    checked = validate_report(report, suite)
+    errors = list(checked['errors'])
+    readiness = runtime.comparison_readiness(suite)
+    recorded = report.get('comparison_readiness', {})
+    if not readiness['ready'] or recorded.get('ready') is not True or recorded.get('requirements') != suite.get('comparison_requirements'):
+        errors.append('measurement question did not pass matching readiness')
+    cases = suite.get('cases', [])
+    minimum = report.get('decision_rule', {}).get('min_trials')
+    maximum = report.get('decision_rule', {}).get('max_trials')
+    # The validator recomputes contiguous complete trials and checks stopping
+    # after every trial. Sequential minima are lower bounds; v3 stability is an
+    # exact plan. Do not independently reinterpret a recorded stop decision.
+    completed_trials = len(checked['computed_summary'].get('trial_scores', []))
+    trial_coverage = (type(minimum) is int and type(maximum) is int
+                      and 1 <= minimum <= completed_trials <= maximum
+                      and len(report.get('results', [])) == len(cases) * completed_trials)
+    if suite.get('schema_version') == 3:
+        trial_coverage = trial_coverage and completed_trials == suite.get('stability', {}).get('trials')
+    if (report.get('decision_mode') != 'admission' or not checked['evidence_complete']
+            or (checked['computed_decision'] or {}).get('decision') not in ('admit', 'inconclusive')
+            or checked['operational_errors'] or checked['unpaired_attempts']
+            or report.get('selected_case_ids') != [case.get('id') for case in cases]
+            or not trial_coverage):
+        errors.append('no sufficient full-suite outcome comparison')
+    summary = checked['computed_summary']
+    if any(summary.get(key, 0) for key in ('candidate_losses', 'candidate_hard_failures',
+            'judge_errors', 'judge_disagreements', 'candidate_receipt_failures', 'route_attestation_failures')):
+        errors.append('measurement must preserve outcomes without recorded regressions')
+    import evaluation_measurement as measurement
+    for row in report.get('attempt_ledger', []):
+        if str(row.get('role', '')).startswith('judge') and row.get('workflow_accounting', {}).get('target_arm') not in SIDES:
+            errors.append('shared judge needs explicit target arm; no guessed allocation')
+    records = measurement.inline_records(report)
+    expected = {(row.get('id'), row.get('trial')) for row in report.get('results', [])}
+    for side in SIDES:
+        observed = {(row['identity']['case_id'], row['identity']['trial']) for row in records
+                    if row['identity']['role'] == side}
+        if observed != expected:
+            errors.append('efficiency projection does not cover measured case/trial outcomes')
+    # Supporting calls accompany both views; ambiguous shared judges fail closed
+    # unless the original receipts explicitly attribute them to an arm.
+    before = [row for row in records if row['identity']['arm'] != 'candidate']
+    after = [row for row in records if row['identity']['arm'] != 'baseline']
+    efficiency = outcome_efficiency(before, after)
+    errors.extend(efficiency['errors'])
+    # Noninferiority alone is not improvement. Preserve the existing admission
+    # decision's quality threshold; do not promote individual wins or an
+    # inconclusive quality decision into a supported outcome gain. A strict
+    # token saving can qualify only through complete matched accounting.
+    token_gain = (not efficiency['errors'] and any(
+        pair['token_delta_after_minus_before']['total_tokens'] < 0
+        for pair in (efficiency.get('comparison') or {}).get('pairs', [])))
+    quality_gain = (checked['computed_decision'] or {}).get('decision') == 'admit'
+    if not quality_gain and not token_gain:
+        errors.append('no supported outcome gain or complete overall-token saving; '
+                      'noninferiority is not improvement or retention authority')
+    artifacts = report.get('artifacts', {})
+    if artifacts.get('suite_sha256') != suite_sha256:
+        errors.append('measurement task contract mismatch')
+    if artifacts.get('harness_sha256') != harness_sha256:
+        errors.append('measurement harness is outdated or mismatched')
+    if report.get('agent') != route.get('host') or any(
+            report.get('effective_stack', {}).get(key) != route.get(key)
+            for key in ('model', 'provider', 'reasoning')):
+        errors.append('measurement does not match the current model route')
+    return sorted(set(errors))
+
+
 def execution_ok(run: dict[str, Any]) -> bool:
     """Historical reports used overall ok; current reports separate cleanup."""
     return run.get("execution_ok", run.get("ok")) is True
@@ -84,6 +357,10 @@ validation means the recorded evidence is internally consistent, not authentic.
         require(schema in (2, 3), "unsupported report schema")
         same(schema, evaluator.suite_report_version(suite), "suite/report schema mismatch")
         same(report.get("suite"), suite.get("name"), "suite name mismatch")
+        if "oracle_preflight" in report or any("acceptance_review" in case for case in suite.get("cases", [])):
+            reviewed_oracle = evaluator.oracle_preflight(suite)
+            require(reviewed_oracle["ready"], "declared oracle review fails mechanical preflight")
+            same(report.get("oracle_preflight"), reviewed_oracle, "oracle preflight receipt mismatch")
         mode = report.get("decision_mode")
         require(mode in ("admission", "retirement"), "invalid decision mode")
         require(schema != 3 or mode == "admission", "v3 supports admission only")

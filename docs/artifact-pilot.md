@@ -46,3 +46,10 @@ Read every worker result and replay each saved V3 receipt. Check native completi
 The outer timeout is not a process-tree containment guarantee. Do not use this lane for long-lived services or adversarial code. Any timeout, missing report or cleanup failure requires inspecting owned process/state residue before another run; no automated recovery or retry is implemented. Do not promote the lane as an unattended general-purpose executor on the strength of short successful trials.
 
 Tests cover route refusal, exact-route preservation, bounded inputs, frozen-oracle drift, implicit reprepare rejection, malformed-success rejection, secret-bearing failure-output rejection and durable reporting when native close raises. These controls complement, not replace, real native execution and independent artifact verification.
+
+
+## Consolidated runtime controls, 2026-10-20
+
+The completed reviewed-host runtime interfaces are integrated into the experimental lane: bounded native deadline/interrupt cleanup, disposable no-install LSP configuration, an explicit direct Python argv terminal, preserved workflow accounting, opt-in private request recording and source-bound continuation validation. Request archives require a separately approved private parent; they are never public source or evidence of execution authentication. Old plans remain unchanged and do not gain new capabilities retrospectively.
+
+The optional native tool-study controller and adaptive dispatcher remain outside this source candidate. Their synthetic mechanism checks do not establish native actor/model exposure or skill usefulness, and the adaptive model gate remains closed. Existing privacy, action admission, native tool guards, oracle acceptance and no-fallback boundaries remain prerequisites.

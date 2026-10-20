@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "base": "ec9ef46faaa61804238f0c67fa567a746048a8e7",
+  "selected_paths": [
+    "docs/evaluations/outcome-efficiency.md",
+    "docs/requirement-status.md",
+    "docs/system-requirements.md",
+    "evals/results/outcome-efficiency-gate-reconciliation-20261019.json",
+    "evals/results/outcome-efficiency-gate-replay-20261019.json",
+    "tests/test_instruction_measurements.py",
+    "tests/test_native_artifact_evidence.py",
+    "tests/test_outcome_efficiency.py",
+    "tests/test_retirement_adapter.py",
+    "tools/artifact_hash.py",
+    "tools/evaluation_evidence.py",
+    "tools/evaluation_measurement.py",
+    "tools/evaluation_usage.py",
+    "tools/instruction_changes.py"
+  ],
+  "historical_change_reconciliation": {
+    "original_receipt_sha256": "19feec897dc4d275294eaecf875523bca1034c065ee5e37e5f417386eb954611",
+    "reason": "Original stage/base retained; superseded only as current publication binding by evaluation-consolidation-20261020.json. No historical trial outcome changed.",
+    "records": [
+      {
+        "artifacts": {
+          "contracts/surface-matrix.json": {
+            "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+            "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+          },
+          "docs/evaluations/outcome-efficiency.md": {
+            "before_sha256": "absent",
+            "after_sha256": "30573684b9195a3ba27e27acec4f779b2598d52d8aa4dfed8efc6cbd48e86740"
+          },
+          "docs/instruction-profiles.md": {
+            "before_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569",
+            "after_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569"
+          },
+          "docs/learning-and-taste-update.md": {
+            "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+            "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+          },
+          "docs/native-instruction-diagnostic.md": {
+            "before_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a",
+            "after_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a"
+          },
+          "docs/requirement-status.md": {
+            "before_sha256": "1e9620db1f85ce67ee07c07294b477e7bc3a953845aa8c994d976329a47cea1c",
+            "after_sha256": "c02e20e1d687cbf49a051e0c5df69f7e1329756f0c9ac51ca13a0cae9971db17"
+          },
+          "docs/system-requirements.md": {
+            "before_sha256": "543bd9b8b6c429564b1ac17e66efff22485d6457618af3437ed06675d56a3a04",
+            "after_sha256": "2d9a1b32cc9d4a940c2664e098724618292cb9dfe956d4e5c1ab3bb43d367206"
+          },
+          "evals/results/outcome-efficiency-gate-replay-20261019.json": {
+            "before_sha256": "absent",
+            "after_sha256": "efe70227f0081da198e7b32060180a9140ba1e20d5baced507254e222fe4ead4"
+          },
+          "skills/instruction-authoring/SKILL.md": {
+            "before_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497",
+            "after_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497"
+          },
+          "skills/instruction-authoring/references/change-review.md": {
+            "before_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575",
+            "after_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575"
+          },
+          "tests/test_instruction_measurements.py": {
+            "before_sha256": "ebc554836853bbd8b3e4d65ea51a823844f408d5c01e371a82064f5656075620",
+            "after_sha256": "dc9ffc4259d4fd8ceb300ad7bbd46309a0d56886c5fc10dcebbe0942559cb964"
+          },
+          "tests/test_native_artifact_evidence.py": {
+            "before_sha256": "absent",
+            "after_sha256": "ee9dba8d87b6b416c9a60d596fedf344d99c501f05d483e51cf05ad95670f582"
+          },
+          "tests/test_outcome_efficiency.py": {
+            "before_sha256": "absent",
+            "after_sha256": "7b4053e67177c8f77dcc48bba80adfb3cea0453013e62de47c8a189578808f6a"
+          },
+          "tests/test_retirement_adapter.py": {
+            "before_sha256": "705fddbdd3df455e6a9411977a78bb5a2e78ba303db7bc39317fe75e6f8bb41e",
+            "after_sha256": "554607034e986f32138997bcc92969b989a51b0ff88b4321ba5977594a9a01a9"
+          },
+          "tools/artifact_hash.py": {
+            "before_sha256": "57a9f42a14a96bd394a6d6d5f7aa2d97d24448c760622c7ec4c9089005ee5c14",
+            "after_sha256": "193ba2f816ff0b4741dc39096eb6744424cc262f3f58a41818ecdeef29f84788"
+          },
+          "tools/evaluation_evidence.py": {
+            "before_sha256": "38c181cbce36f6b9a3909b5a1fcc43aea4867422b262550da1e4ff0aef5fcb9a",
+            "after_sha256": "e2612b9d2fc7f16e6dcd8abf7c27519ee75fcce5c74d443a2a2c2f4565f79536"
+          },
+          "tools/evaluation_measurement.py": {
+            "before_sha256": "absent",
+            "after_sha256": "fa18a91431e8790e60fc859d1943693440a9fa8b7c01af2463a8f0e14278ee37"
+          },
+          "tools/evaluation_usage.py": {
+            "before_sha256": "absent",
+            "after_sha256": "d874f14ea54722536d83e7397d1e472e8d873811dd2f1d2198c5a912854a8d0c"
+          },
+          "tools/instruction_changes.py": {
+            "before_sha256": "f39de775d0c006779d8397239091bde044a3d7bbe20134506eb2b7b0440d69d1",
+            "after_sha256": "c3dcd6f341802c0ac9efed6e03368554444f52e1a7586f3401251a11714f8579"
+          }
+        },
+        "obligations": [
+          {
+            "path": "contracts/surface-matrix.json",
+            "disposition": "unchanged",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "docs/evaluations/outcome-efficiency.md",
+            "disposition": "updated",
+            "reason": "Describe mechanism, diagnostic native validation, independently supplied byte binding, and remaining publication/runtime provenance gaps."
+          },
+          {
+            "path": "docs/instruction-profiles.md",
+            "disposition": "unchanged",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "docs/learning-and-taste-update.md",
+            "disposition": "unchanged",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "docs/native-instruction-diagnostic.md",
+            "disposition": "unchanged",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "docs/requirement-status.md",
+            "disposition": "updated",
+            "reason": "Record reviewed sequential fix and diagnostic-only native integration/source gaps; preserve existing user tracking and corrected optimizer scope."
+          },
+          {
+            "path": "docs/system-requirements.md",
+            "disposition": "updated",
+            "reason": "Preserve existing user-authorized outcome/efficiency contract edits; no new requirement is introduced by this gate patch."
+          },
+          {
+            "path": "evals/results/outcome-efficiency-gate-replay-20261019.json",
+            "disposition": "updated",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "skills/instruction-authoring/SKILL.md",
+            "disposition": "unchanged",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "skills/instruction-authoring/references/change-review.md",
+            "disposition": "unchanged",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "tests/test_instruction_measurements.py",
+            "disposition": "updated",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "tests/test_native_artifact_evidence.py",
+            "disposition": "updated",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "tests/test_outcome_efficiency.py",
+            "disposition": "updated",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          },
+          {
+            "path": "tests/test_retirement_adapter.py",
+            "disposition": "updated",
+            "reason": "Existing source and routing guidance retained: this changes recorded eligibility/accounting, not standing authoring instructions or native placement. No quality benefit or complete dependency discovery is inferred from this coverage record."
+          }
+        ],
+        "requirement_change": false,
+        "requirement_reason": "Implement the already-authorized equal-or-better outcome/equal-or-fewer trustworthy overall tokens criterion; no new goal.",
+        "authority": "Explicit delegated user authorization for the operative efficiency gate and subsequent native-evidence dependency: truthful validation only where execution/source admission binding cannot be derived, staged only; authoring remains paused.",
+        "checks": "81 offline unit/regression tests: native artifact evidence 11, outcome efficiency 13, instruction measurements 12, recorded evidence 24, retirement adapter 13, artifact pilot 8. Source binding, diagnostic-only sync boundary, path-free validation and sequential stopping controls included. Real-program replay matches 46/48 source bindings and rejects +145778 tokens; zero model calls.",
+        "outcome_review": {
+          "expected": "Allow equal-quality reductions; reject worse quality, higher cost, missing usage and inconsistent controls without weakening source/profile/current-harness checks.",
+          "observed": "The actual sync boundary validates bound native evidence but always excludes it from admission; positive/negative source consistency controls pass. Real recorded evidence remains consistent with 46/48 source byte bindings and a negative token delta verdict.",
+          "evidence": "tests/test_native_artifact_evidence.py; tests/test_outcome_efficiency.py; tests/test_instruction_measurements.py; evals/results/outcome-efficiency-gate-replay-20261019.json",
+          "limitations": "Synthetic tests are mechanism evidence. Static reverse links do not prove semantic correctness or exhaustive consumers. Native assembled prompt bodies, user-task/request attribution and an acceptance contract/trial bridge remain missing; no authentic execution proof, skill admission, deployment, sync or publication."
+        }
+      }
+    ]
+  }
+}

@@ -1,4 +1,6 @@
 from __future__ import annotations
+from fixture_workspace import configure as configure_test_workspace
+configure_test_workspace()
 
 import importlib.util
 import copy
@@ -175,6 +177,8 @@ class InstructionRetirementTests(unittest.TestCase):
         unit = next(u for u in manifest["units"] if u["status"] == "effective" and u["class"] == "generic-steering")
         base = self.tool.build_experiment(REPO, unit, self.stack())["cache_key"]
         for field, value in (("host", "codex"), ("runtime", "runtime-b"), ("reasoning", "medium"),
+                             ("model", "new-model"), ("model_snapshot", "snapshot-b"),
+                             ("provider_snapshot", "provider-b"), ("evaluator_identity", "eval-b"),
                              ("decision_margin", {"alpha": .05, "margin": .2, "rule": "hoeffding-alpha-spending"})):
             with self.subTest(field=field):
                 changed = self.tool.build_experiment(REPO, unit, self.stack(**{field: value}))["cache_key"]

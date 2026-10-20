@@ -20,6 +20,13 @@ GENERATED = {'recovery/current/hosts/codex/AGENTS.md',
 ADAPTERS = {'adapters/codex.json', 'adapters/hermes.json', 'adapters/omp.json'}
 
 
+def is_instruction_source(name):
+    path = Path(name)
+    return ((name.startswith('skills/') and path.suffix.lower() == '.md') or
+            name == 'surfaces/core.md' or name in ADAPTERS or
+            path.name.upper() in {'AGENTS.MD', 'SOUL.MD', 'RULES.MD', 'SKILL.MD'})
+
+
 def _before(repo, base, name):
     # Read raw blobs: Windows newline conversion must not weaken the binding.
     result = subprocess.run(['git', '-C', str(repo), 'show', base + ':' + name],
@@ -39,6 +46,140 @@ def _hash(data):
 
 
 CONTRACTS = {'docs/system-requirements.md', 'docs/requirement-status.md'}
+
+
+def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations):
+    """Narrow reviewed correction routes after necessity/dependency validation.
+
+    Record validation does not authenticate authority or prove semantic scope.
+    Other instruction adoption still uses the measured-evidence gate.
+    """
+    old = _before(source, base, name)
+    path = candidate / name
+    new = path.read_bytes() if path.is_file() else None
+    kind = row.get('change_kind', 'add-or-change')
+    reason = None
+    if (kind == 'add-or-change' and row.get('basis') == 'mechanical-maintenance'
+            and old is not None and new is not None
+            and old.replace(b'\r\n', b'\n') == new.replace(b'\r\n', b'\n')):
+        reason = 'content-identical line-ending repair'
+    elif kind == 'contract-correction':
+        sections = {'skills/instruction-authoring/SKILL.md': 'Evaluation discipline',
+                    'skills/instruction-authoring/references/change-review.md': 'Publication necessity record'}
+        if (row.get('basis') != 'user-correction' or owner != 'skills/instruction-authoring'
+                or name not in sections or old is None or new is None):
+            raise sync_git.SyncBlocked('contract correction requires the existing explicit authoring owner')
+        def outside_section(data):
+            text = data.decode('utf-8').replace('\r\n', '\n')
+            heading = '## ' + sections[name] + '\n'
+            if text.count(heading) != 1:
+                raise sync_git.SyncBlocked('contract correction has no unique authoring contract section')
+            prefix, section = text.split(heading, 1)
+            _, delimiter, suffix = section.partition('\n## ')
+            return prefix, delimiter + suffix
+        if outside_section(old) != outside_section(new):
+            raise sync_git.SyncBlocked('contract correction changes instructions outside its contract section')
+        matching = [r for r in reconciliations if r.get('requirement_change') is True
+                    and {name, *CONTRACTS} <= set(r.get('artifacts', {}))]
+        if (len(matching) != 1 or not CONTRACTS <= set(paths)
+                or any(_before(source, base, n) == (candidate / n).read_bytes() for n in CONTRACTS)):
+            raise sync_git.SyncBlocked('contract correction requires selected, changed, bound intent and status')
+        reason = 'reviewed explicit authoring contract correction'
+    if reason is None:
+        return None
+    if 'behavior_measurements' in row or 'task_contract' in row:
+        raise sync_git.SyncBlocked('correction cannot substitute for a behavioral-adoption claim')
+    return {'eligible': True, 'reason': reason + '; no behavioral improvement claimed',
+            'behavioral_proof': False, 'approval_authenticated': False}
+
+
+def measurement_eligibility(candidate, source, name, owner, row, base):
+    """Exclude changed instructions lacking matching measured improvement.
+
+    Unchanged deployed instructions are not reclassified. Records establish
+    consistency and coverage, not authenticity or semantic task adequacy.
+    """
+    import artifact_hash
+    import instruction_profile
+    from evaluation_evidence import instruction_improvement
+    try:
+        profile_raw = instruction_profile.current_profile(candidate).read_bytes()
+        profile = json.loads(profile_raw)
+        hosts = set(profile['hosts'])
+        if owner.startswith('recovery:'):
+            hosts &= {owner.split(':')[1]}
+        elif name in ADAPTERS:
+            hosts &= {Path(name).stem}
+        records = row.get('behavior_measurements')
+        contract = row.get('task_contract')
+        if not hosts or not isinstance(records, list) or not isinstance(contract, dict):
+            raise ValueError('missing behavioral measurements or task contract')
+        if not isinstance(contract.get('claim'), str) or not contract['claim'].strip():
+            raise ValueError('missing intended behavioral outcome')
+        harness = artifact_hash.harness_hash(candidate / 'tools/eval.py')
+        seen = set()
+        for measurement in records:
+            if measurement.get('profile_sha256') != _hash(profile_raw):
+                raise ValueError('measurement current-profile binding is outdated or missing')
+            def read(key):
+                relative = sync_git.safe_path(candidate, measurement[key])
+                if not relative.startswith('evals/'):
+                    raise ValueError('measurement must use existing evals records')
+                path = candidate / relative
+                if path.is_symlink() or path.stat().st_size > 8_000_000:
+                    raise ValueError('measurement must be a bounded regular file')
+                raw = path.read_bytes()
+                if _hash(raw) != measurement[key + '_sha256']:
+                    raise ValueError('measurement record bytes mismatch')
+                return json.loads(raw)
+            report, suite = read('report'), read('suite')
+            if report.get('kind') == 'native-skill-study':
+                # Inspect the bound raw plan/report without treating a leaf
+                # study as a legacy admission suite or granting it authority.
+                from evaluation_evidence import validate_artifact_evidence
+                diagnostic = validate_artifact_evidence(report, suite)
+                return {'eligible': False, 'reason': 'instruction excluded: native artifact evidence remains diagnostic only',
+                        'artifact_evidence': {key: diagnostic[key] for key in
+                            ('consistent', 'source_bytes_complete', 'source_gaps', 'runtime_gaps', 'errors',
+                             'admission', 'execution_authenticated', 'admission_blockers')}}
+            host = report.get('agent')
+            if host not in hosts or host in seen:
+                raise ValueError('missing, duplicate or unexpected measurement host')
+            seen.add(host)
+            suite_hash = measurement['suite_sha256']
+            if (contract.get('suite_sha256') != suite_hash or suite.get('claim') != contract['claim']
+                    or contract.get('comparison_requirements') != suite.get('comparison_requirements')):
+                raise ValueError('measurement task contract mismatch')
+            settings = profile['hosts'][host]
+            route = {'host': host, **{key: settings.get(key, profile['target'].get(key))
+                                     for key in ('model', 'provider', 'reasoning')}}
+            errors = instruction_improvement(report, suite, suite_sha256=suite_hash,
+                                             harness_sha256=harness, route=route)
+            if errors:
+                raise ValueError('; '.join(errors))
+            if Path(name).name == 'SKILL.md' and report['artifacts']['candidate_sha256'] != artifact_hash.freeze_candidate(candidate / name)['package_sha256']:
+                raise ValueError('measurement skill package is outdated or mismatched')
+            binding = row['artifacts'][name]
+            for side, digest in (('baseline', binding['before_sha256']), ('candidate', binding['after_sha256'])):
+                snapshot = report.get('input_snapshot', {}).get(side) or {}
+                if digest == 'absent':
+                    if snapshot:
+                        raise ValueError('measurement baseline does not represent absent instruction')
+                elif digest not in snapshot.get('files', {}).values():
+                    raise ValueError('measurement instruction bytes mismatch')
+                data = (_before(source, base, name) if side == 'baseline' else
+                        ((candidate / name).read_bytes() if (candidate / name).is_file() else None))
+                if data and data.decode('utf-8').strip() not in snapshot.get('prompt_text', ''):
+                    raise ValueError('instruction body was not in measured prompt')
+            new = (candidate / name).read_text(encoding='utf-8') if (candidate / name).is_file() else ''
+            if new and new.strip() not in report['input_snapshot']['candidate']['prompt_text']:
+                raise ValueError('changed instruction body was not in measured prompt')
+        if seen != hosts:
+            raise ValueError('missing measured improvement for current target hosts: ' + ', '.join(sorted(hosts - seen)))
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, instruction_profile.ProfileError) as exc:
+        return {'eligible': False, 'reason': 'instruction excluded: ' + str(exc)}
+    return {'eligible': True, 'reason': 'source-bound outcome/accounting checks cover current target routes; '
+            'claim coverage, practical benefit and retention require owner review'}
 
 
 def reconciliation_scope(candidate, source, base, paths):
@@ -254,6 +395,11 @@ def check(candidate: Path, source: Path, base: str, paths):
     # V1 inventories predate declared standing-source ownership. Preserve that
     # migration boundary; a V2 baseline cannot evade this check by deleting it.
     if max(before.get('schema_version', 0), after.get('schema_version', 0)) < 2:
+        for name in paths:
+            path = candidate / name
+            instruction = is_instruction_source(name)
+            if instruction and _before(source, base, name) != (path.read_bytes() if path.is_file() else None):
+                raise sync_git.SyncBlocked('changed instruction excluded: migrate ownership/evidence before qualification: ' + name)
         return []
     if after.get('schema_version') != 2:
         raise sync_git.SyncBlocked('instruction ownership index cannot be removed or downgraded')
@@ -314,9 +460,12 @@ def check(candidate: Path, source: Path, base: str, paths):
     if not required:
         return dependencies
     records = []
+    reconciliation_records = []
     for name in sorted(paths):
         if name.startswith('evals/results/') and name.endswith('.json') and (candidate / name).is_file():
             value = json.loads((candidate / name).read_bytes())
+            if isinstance(value, dict):
+                reconciliation_records.extend(value.get('change_reconciliation', []))
             if isinstance(value, dict) and 'instruction_changes' in value:
                 rows = value['instruction_changes']
                 if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
@@ -324,6 +473,7 @@ def check(candidate: Path, source: Path, base: str, paths):
                 records.extend((name, row) for row in rows)
     used = []
     loading_rows = {}
+    measurement_rows = []
     for name, (owner, old_hash, new_hash) in sorted(required.items()):
         matches = [(receipt, row) for receipt, row in records
                    if isinstance(row.get('artifacts'), dict) and name in row['artifacts']]
@@ -336,7 +486,7 @@ def check(candidate: Path, source: Path, base: str, paths):
         if binding != {'before_sha256': old_hash, 'after_sha256': new_hash}:
             raise sync_git.SyncBlocked('instruction necessity record is not bound to changed bytes: ' + name)
         kind = row.get('change_kind', 'add-or-change')
-        if kind not in {'add-or-change', 'remove'}:
+        if kind not in {'add-or-change', 'remove', 'contract-correction'}:
             raise sync_git.SyncBlocked('invalid instruction change kind: ' + name)
         if kind == 'remove':
             old_data = _before(source, base, name)
@@ -354,6 +504,7 @@ def check(candidate: Path, source: Path, base: str, paths):
         if any(not isinstance(row.get(key), str) or not row[key].strip()
                for key in ('deviation', 'evidence', 'why_instruction', 'alternative')):
             raise sync_git.SyncBlocked('instruction change has incomplete architectural reasoning: ' + name)
+        measurement_rows.append((name, owner, row))
         used.append({'path': name, 'owner': owner, 'receipt': receipt})
         rows, changed = loading_rows.setdefault(owner, ({}, set()))
         rows[id(row)] = row
@@ -370,4 +521,10 @@ def check(candidate: Path, source: Path, base: str, paths):
         if reviews:
             assessment['loading_review'] = reviews[0]
         _loading_review(candidate, source, base, owner, assessment, changed)
+    for name, owner, row in measurement_rows:
+        eligibility = correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliation_records)
+        if eligibility is None:
+            eligibility = measurement_eligibility(candidate, source, name, owner, row, base)
+        if not eligibility['eligible']:
+            raise sync_git.SyncBlocked(eligibility['reason'] + ': ' + name)
     return used + dependencies

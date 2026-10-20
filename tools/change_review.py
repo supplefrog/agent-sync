@@ -56,8 +56,9 @@ def _coverage(repo: Path, candidate: Path, baseline: Path | None,
               routes: list[dict[str, str]], reports: Sequence[Path], suites: Sequence[Path],
               *, strict_reports: bool = False, strict_suites: bool = False) -> dict[str, Any]:
     """Index exact model cells without weakening the existing per-model gate."""
-    from evaluation_evidence import validate_report
+    from evaluation_evidence import validate_report, instruction_improvement
     candidate_hash = artifact_hash.candidate_hash(candidate)
+    current_harness = artifact_hash.harness_hash(Path(__file__).with_name('eval.py'))
     baseline_hash = artifact_hash.candidate_hash(baseline) if baseline else None
     suite_index = {}
     diagnostics = {'unreadable_reports': 0, 'unreadable_suites': 0, 'non_comparative_records': 0}
@@ -92,6 +93,8 @@ def _coverage(repo: Path, candidate: Path, baseline: Path | None,
                'baseline_matches': baseline_hash is not None and artifacts.get('baseline_candidate_sha256') == baseline_hash}
         if not row['candidate_matches'] or not row['baseline_matches']:
             row['status'] = 'different-artifact-or-baseline'
+        elif artifacts.get('harness_sha256') != current_harness:
+            row['status'] = 'outdated-harness'
         else:
             suite = suite_index.get(artifacts.get('suite_sha256'))
             if suite is None:
@@ -104,6 +107,12 @@ def _coverage(repo: Path, candidate: Path, baseline: Path | None,
                            evidence_complete=result['evidence_complete'],
                            operational_errors=result['operational_errors'],
                            limitations=result['limitations'], errors=result['errors'])
+                expected = next((r for r in routes if r['host'] == report.get('agent')
+                                 and all(r[k] == route[k] for k in route)), None)
+                row['improvement_errors'] = instruction_improvement(
+                    report, suite, suite_sha256=artifacts.get('suite_sha256'),
+                    harness_sha256=current_harness, route=expected or {'host': 'unmatched'})
+                row['positive_sufficient'] = result['positive_decision_sufficient'] and not row['improvement_errors']
         observations.append(row)
     for route in routes:
         matched = [o for o in observations if all(o.get(k) == v for k, v in route.items())
@@ -221,6 +230,13 @@ def review(repo: str | Path, target: str, *, candidate: str | Path | None = None
     suite_paths = [Path(p).absolute() for p in suites] if suites else sorted((repo/'evals').glob('*.json'))
     coverage = _coverage(repo, proposed, before, required, report_paths, suite_paths,
                          strict_reports=bool(reports), strict_suites=bool(suites))
+    eligible = bool(required) and bool(suites) and all(
+        row['positive_decision_sufficient_in_record'] for row in coverage['required_routes'])
+    from instruction_changes import is_instruction_source
+    instruction_target = is_instruction_source(target)
+    if instruction_target and not eligible:
+        finding = {**finding, 'disposition': 'excluded-unmeasured-instruction',
+                   'reason': 'No matching measured improvement for the intended task contract and current target routes.'}
     from useful_behavior import compare_sources
     behavior_review = compare_sources(proposed, reference_skills) if reference_skills else {
         'mode':'explicit-source-behavior-review','sources':[], 'automatic_semantic_verdict':False,
@@ -239,6 +255,11 @@ def review(repo: str | Path, target: str, *, candidate: str | Path | None = None
                                         'sources': OFFICIAL_GUIDANCE if any('astra' in r['model'].lower() for r in required) else [],
                                         'retrieval_status': 'model-specific links to consult; this command does not fetch documentation'},
             'measurement': coverage, 'useful_behavior_review': behavior_review,
+            'instruction_eligibility': {'applicable': instruction_target,
+                'eligible_for_sync': eligible if instruction_target else None,
+                'reason': ('Not an instruction target; use implementation/settings checks' if not instruction_target else
+                           'Matching recorded improvement' if eligible else 'Excluded during authoring; measurement missing, invalid, outdated or insufficient'),
+                'limit': 'Recorded consistency is not execution authentication or semantic task adequacy; sync independently rechecks source-bound receipts.'},
             'profile_scope': 'Declared current-profile cells; live settings are not reverified here. --host narrows scope; added models inherit each host provider/reasoning.',
             'next_checks': ['Use the same review before editing and with plan --target after editing.',
                             'Preserve baseline bytes when a comparative behavior claim is intended.',

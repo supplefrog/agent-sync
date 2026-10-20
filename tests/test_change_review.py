@@ -1,4 +1,6 @@
 from __future__ import annotations
+from fixture_workspace import configure as configure_test_workspace
+configure_test_workspace()
 import importlib.util
 import json
 import tempfile
@@ -35,7 +37,8 @@ class ChangeReviewTests(unittest.TestCase):
             repo=self.make_repo(Path(temp)); before={str(p):p.read_bytes() for p in repo.rglob('*') if p.is_file()}
             r=review_tool.review(repo,'skills/kept/SKILL.md')
             self.assertEqual(r['owner'],'skills/kept')
-            self.assertEqual(r['classification']['disposition'],'checks-required')
+            self.assertEqual(r['classification']['disposition'],'excluded-unmeasured-instruction')
+            self.assertFalse(r['instruction_eligibility']['eligible_for_sync'])
             self.assertFalse(r['admission_authority']);self.assertFalse(r['mutation_performed'])
             self.assertEqual(r['catalog']['overlap_candidates'][0]['owner'],'skills/neighbor')
             self.assertTrue(all(x['status']=='missing-current-comparison' for x in r['measurement']['required_routes']))

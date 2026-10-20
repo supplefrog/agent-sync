@@ -1,0 +1,991 @@
+{
+  "schema_version": 1,
+  "claim": "Local executable eligibility/readiness and usage-capture correction; no new runtime instruction or model-quality improvement claim.",
+  "instruction_changes": [],
+  "comparator_inventory": [
+    {
+      "owner": "tools/eval.py",
+      "entry": "suite --candidate PATH --baseline-candidate PATH --model EXACT --provider EXACT --reasoning EXACT --case ID",
+      "use": "Matched isolated inline-text instruction comparison with exact route/artifact bindings, budgets and execution receipts.",
+      "limit": "No-tool lane; cannot reproduce natural skill loading/full harness. Two reversed-order judge runs per pair add cost; do not make this admission machinery compulsory for a simple diagnostic interpretation."
+    },
+    {
+      "owner": "tools/instruction_retirement.py",
+      "entry": "Existing plan/materialize-dir, full/minus selected unit projections and identity-bound receipt reuse",
+      "use": "Reuse for a real redundant unit/removal test; preserves source and freezes surrounding package.",
+      "limit": "Do not invent a unit or invoke whole-library retirement to diagnose one missing log."
+    },
+    {
+      "owner": "tools/evaluation_native_diagnostic.py",
+      "entry": "prepare/probe",
+      "use": "Existing native assembly-only preflight and prompt evidence.",
+      "limit": "Documented runtime guard incompatibility blocks full-stack causal trials; no inference run command. Do not silently bypass controls or retry denied Shunt startup."
+    },
+    {
+      "owner": "tools/eval.py artifact-pilot",
+      "entry": "Existing supervised artifact lane",
+      "use": "Tool-bearing fixture tasks only when required mechanism fits.",
+      "limit": "Explicit instruction injection and disabled normal discovery/delegation do not establish actual current-harness equivalence."
+    }
+  ],
+  "comparison_plan": {
+    "state": "Historical supplied-evidence reporting pilot only; not an active candidate. No further solved-case inference planned."
+  },
+  "incident_assessment": {
+    "supported_failure": "Omitted causal context, overbroad interpretation of a log label, failure to inspect available source before reporting, and categorical phrasing obscuring consent versus technical transport.",
+    "instruction_conflict": "Not established. Standing output guidance asks for enough explanation and preserves uncertainty; verification asks for evidence. Concision does not require omitting material causal context. Exact instruction assembly and matched outputs are missing.",
+    "no_instruction_alternative": "Replay supplied evidence with existing guidance and corrected source/context first; improve evidence capture or execution workflow if those are sufficient. Reporting hypothesis is understandable cause/remedy/uncertainty, not mandated format.",
+    "authority": "Parent-provided summaries plus local read-only extraction of retained result, observer diagnostic, redacted startup/wire log, outbound summary and corrected report; originals bound by digest, private mapping outside publication."
+  },
+  "offline_binding": {
+    "evidence": {
+      "format": "sanitized facts projected from retained evidence; no process launch",
+      "source_digests": {
+        "result": "00719a00b61f62bbe41a4003fa693e74ea2fc588d466776eb3c2a2dfde85f067",
+        "observer": "4a6c68f9890fbf6db303dc82c44dd3ccb764894991adbd5d05e46167cae6c1d9",
+        "startup_log": "85f43b759b7dc2f4c95d4669e9c1ebe9d95d0823aa712e441cfc5d192b40354e",
+        "wire": "ad63dc66037142364440d58fe56382f32399471691c30bd0e17e4e9c218dbc31",
+        "outbound_summary": "63b3c2bd187f3ed159e513f7406561007100500453a36495801f229ff7c20104",
+        "corrected_report": "995a5954db6dce3139fb3b697a1f363994ac052824802c7db13cb2dd09bf1750",
+        "readonly_command": "7713469a27824ff26fd121d97d77de890f66e97076bc53ab7665fcfcfd90d834"
+      },
+      "observer": {
+        "success": false,
+        "errors": [
+          "KeyError: 'directory'"
+        ],
+        "observer_exit": 0,
+        "observer_error_category": "CouldNotAutoloadMatchingModule for Get-Acl; null-valued directory construction; stdout omitted directory",
+        "process_cleanup_verified": true,
+        "socket_cleanup_in_original_result": false,
+        "settings_unchanged": true,
+        "thread_or_turn_requests": 0,
+        "wire_event_directions": [
+          "launch"
+        ]
+      },
+      "remote_control_log_fields": [
+        {
+          "message": "app-server control socket listening"
+        },
+        {
+          "message": "app-server remote control websocket loop started",
+          "initial_desired_state": "Unknown"
+        },
+        {
+          "message": "starting app-server remote control websocket connection cycle",
+          "current_status": "Disabled"
+        },
+        {
+          "message": "waiting to resolve remote control preference until authentication is available",
+          "error": "remote control requires ChatGPT authentication"
+        },
+        {
+          "message": "new"
+        },
+        {
+          "message": "close"
+        }
+      ],
+      "outbound": {
+        "partial_pack_bytes": [
+          7593983
+        ],
+        "network_packet_capture": false,
+        "successful_remote_control_event_observed": false,
+        "credential_transmission_observed": false,
+        "credential_transmission_ruled_out": false,
+        "limit": "Logged targets/processes and partial pack do not establish complete destinations or payloads; source-based curated-sync explanation is report evidence, not packet proof."
+      },
+      "bash": {
+        "exitCode": -1073741502,
+        "stderr_meaning": "Git Bash could not create signal pipe; Win32 error 5",
+        "model_starting_requests": 0
+      },
+      "original_summaries": "Parent-provided summaries are assessment inputs, not independently recovered full original model output or assembled prompt."
+    },
+    "sanitized_fixture_sha256": "4c9c4259cd57558fd39828bbdcd3a361a64fa7fb6576cb807ab2160ec1b88691",
+    "instruction_source": {
+      "revision": "bf0bda395d7f4264a56c1427b549b459ff8b6f24",
+      "path": "recovery/current/hosts/codex/AGENTS.md",
+      "sha256": "7133808408d1a214b6495c2bb0ecfca2dbaddb6ee40ab7d66d4e40375da1e8da",
+      "selector": {
+        "kind": "tagged-line",
+        "value": "[OUTPUT]"
+      },
+      "unit_id": "codex.output",
+      "mechanism": "Existing instruction_retirement._materialize plus artifact_hash.freeze_candidate; no evaluator or runtime added."
+    },
+    "controllable_artifacts": {
+      "current_source_projection": {
+        "relative_task_path": "oc-report-comparison/output-ablation/baseline/AGENTS.md",
+        "file_sha256": "7133808408d1a214b6495c2bb0ecfca2dbaddb6ee40ab7d66d4e40375da1e8da",
+        "package_sha256": "1d7486eacc5b5a624742d1de7348691c799d2d1133fff7c9c0c082b555295d89",
+        "prompt_sha256": "62b36f1ff8cf9ab15fec56f03198909755cefa81e2bd616c7a4012433bdc70c8",
+        "projection": "inline-linked-text-only",
+        "identity_format": "standalone-text-v2",
+        "bytes": 4167
+      },
+      "minus_output_unit": {
+        "relative_task_path": "oc-report-comparison/output-ablation/candidate/AGENTS.md",
+        "file_sha256": "5e00ddb41d8378a6e056b9e12fad6b82e6f55a6a951b2bcbf6bf1d6352b2461c",
+        "package_sha256": "34ee977cb177bd22517745ca0caa3a5a4db00fc8ec8156d9137d6430c5b067a2",
+        "prompt_sha256": "96fdae69b5e697a3cbe2f36263ff59bef18c58f949ecd90cf07ba50aa24b9408",
+        "projection": "inline-linked-text-only",
+        "identity_format": "standalone-text-v2",
+        "bytes": 3887
+      },
+      "plus_reporting_hypothesis": {
+        "relative_task_path": "oc-report-comparison/reporting-hypothesis/AGENTS.md",
+        "file_sha256": "c03cda925dbbe2b6af70d152aa42609717ab219f2c83827a2aa63965092b3ff8",
+        "package_sha256": "769a38f0bc31cae2f2c0261545caf96914b03aa82f48cd7d71f5deb9d67c386a",
+        "prompt_sha256": "48a13697bacb777ab9840e0d876f56ece83f937bc5040b6cc54a1f8652963133",
+        "projection": "inline-linked-text-only",
+        "identity_format": "standalone-text-v2",
+        "bytes": 4395
+      },
+      "no_optional_artifact": {
+        "relative_task_path": "oc-report-comparison/no-optional-artifact/AGENTS.md",
+        "file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "package_sha256": "763eec9840903b682d3d7cebf7cc1a3da49f503ac06d75c4423eb290aa88e02f",
+        "prompt_sha256": "c6b7b10db9307e3da89c5fa15c3a6836262e39d4e12de8792d1c673ca9d6a3ae",
+        "projection": "inline-linked-text-only",
+        "identity_format": "standalone-text-v2",
+        "bytes": 0
+      }
+    },
+    "reporting_hypothesis": "When reporting an execution failure, use the supplied log fields and available source to explain what failed, the supported remedy and remaining uncertainty; distinguish human consent, native permission and approval transport.",
+    "common_task_constraint": "Read only the supplied incident facts. No process, network, account, permission or state changes. Explain the observed failure and what remains unproved. Apply identically across any future arms.",
+    "limits": [
+      "These are frozen controllable instruction projections, not the original failed report prompt or a full current native stack.",
+      "Original diagnostic recorded zero model turns: it supplies runtime facts, not a model behavioral baseline.",
+      "Platform/system/developer prompts, tool descriptions and actual future assembly cannot be stripped or fully attested by these artifacts. They remain in force and must be recorded where observable. No raw-base claim.",
+      "No-optional-artifact means zero optional text in this artifact; shared task constraints and unavoidable platform rules remain.",
+      "Removal and addition are diagnostic candidates only; no instruction conflict or improved reporting is established. Do not launch all arms automatically.",
+      "A reporting-only supplied-evidence comparison needs no Shunt startup; actual inference remains unrun under the explicit no-inference scope. Exact future model/provider/effort and admitted execution/assembly route are not pinned.",
+      "Full Shunt model-plus-harness comparison additionally remains technically unqualified; never reuse a denied startup as a workaround.",
+      "Public-safe facts omit source log identifiers/paths; task-local provenance manifest binds original files."
+    ]
+  },
+  "value_review_scope": {
+    "state": "No broad campaign or deployed instruction disablement. Changed instructions must qualify; legacy migration requires a separate user decision."
+  },
+  "bounded_reporting_batch": {
+    "status": "Historical two-arm CLI proposal superseded by the three-arm design; no inference was executed. Source inspection stopped the current native worker before inference.",
+    "existing_entrypoint": "tools/run.py eval -> tools/eval.py -> evaluation_runtime.run_no_tools -> evaluation_hermes_worker.execute_agent",
+    "suite_sha256": "c0e7cc862dfc09f5febab3ec1b47f8fc3aa85d6ee4d83562549fab795da48559",
+    "suite_task_relative": "oc-report-comparison/reporting-cases.json",
+    "arms": [
+      "current_source_projection",
+      "no_optional_artifact"
+    ],
+    "route": {
+      "agent": "Hermes native AIAgent API, codex_responses",
+      "model": "gpt-6.1-sol",
+      "provider": "openai-codex",
+      "reasoning": "medium",
+      "identity_status": "Proposed fixed route matching earlier configured-default evidence, not an attestation of the parent model or current provider availability. Pin/attest actual runtime before interpreting results.",
+      "auth": "Existing Hermes native resolver; access token stays in child memory; refresh_if_expiring=False; no Codex credential copy or API-provider fallback. Availability/expiry not checked in this offline task.",
+      "endpoint": "https://chatgpt.com/backend-api/codex"
+    },
+    "bound": {
+      "cases": 4,
+      "trials": 1,
+      "answer_calls": 8,
+      "existing_reversed_order_judge_calls": 8,
+      "max_agent_runs": 16,
+      "transient_retries": 0,
+      "timeout_seconds_per_child": 120,
+      "maximum_child_timeout_sum_seconds": 1920,
+      "wall_limit": "1920 seconds plus setup/cleanup; existing CLI does not impose a single global wall timer",
+      "tokens_or_billed_cost": "No independent token/dollar ceiling exposed by this CLI; record observed tokens and keep unobserved billed cost unknown. Do not label free or statistically decisive."
+    },
+    "effect_boundary": {
+      "codex_app_server_or_tui": "No explicit Codex executable, app-server, proxy, TUI or Shunt launch in the Hermes no-tool branch.",
+      "live_access_changes": "No live security/default changes in this branch; per-run disposable homes and native in-memory auth resolution. Reading ordinary Hermes source/auth and model endpoint calls are required effects.",
+      "isolation_limit": "Fresh homes and blocked tool dispatch are not an OS security sandbox or proof of complete startup egress. Native import/startup dependencies still require normal admission; stop on unexpected behavior, no alternate-route retry.",
+      "codex_alternative": "Codex no-tool branch invokes debug prompt-input and exec, not explicit app-server, but isolated startup/credential staging and current-build support need qualification; not the lean recommendation for this narrower task."
+    },
+    "approval": "New explicit bounded inference/data-scope approval is required because this turn forbids inference and no permission for this batch is established. It does not require approval of the stopped Shunt/sandbox smoke, and cannot authorize it. Same-model under Hermes is only the declared isolated response-quality claim.",
+    "no_new_machinery": "Reuses existing wrappers and budget controls; no new runtime, judge, orchestrator or mandatory benchmark. Historical plan; latest clarification requires normal judgment, not special frontend review.",
+    "claim_limits": "This tests responses to corrected supplied facts, not whether the model would seek source, interpret unseen original logs, naturally load skills or execute Shunt under the original harness. One trial per case remains exploratory; do not promote/retire from its aggregate label. Existing suite schema requires a held-out category: this case is frozen before outputs but known to the author, not an independent hidden test; the label adds no independence evidence.",
+    "working_directory_task_relative": "oc",
+    "argv": [
+      "tools/run.py",
+      "eval",
+      "../oc-report-comparison/reporting-cases.json",
+      "--candidate",
+      "../oc-report-comparison/no-optional-artifact/AGENTS.md",
+      "--baseline-candidate",
+      "../oc-report-comparison/output-ablation/baseline/AGENTS.md",
+      "--agent",
+      "hermes",
+      "--judge-agent",
+      "hermes",
+      "--model",
+      "gpt-6.1-sol",
+      "--provider",
+      "openai-codex",
+      "--reasoning",
+      "medium",
+      "--min-trials",
+      "1",
+      "--max-trials",
+      "1",
+      "--max-agent-runs",
+      "16",
+      "--transient-retries",
+      "0",
+      "--timeout",
+      "120",
+      "--tool-policy",
+      "none",
+      "--prompt-assembly",
+      "isolated-anonymous-artifact-v3",
+      "--context-policy",
+      "fresh-session-per-output",
+      "--equivalence-group",
+      "incident-reporting-hermes-projection-only",
+      "--rollback",
+      "No live change: retain current sources and discard candidate projection from consideration.",
+      "--out",
+      "../oc-report-comparison/UNRUN-report.json"
+    ]
+  },
+  "three_arm_reporting_attempt": {
+    "status": "Historical source-based stop retained; superseded by supported per-run control repair and subsequent completed six-answer batch.",
+    "authorization": "User explicitly authorized bounded subscription reporting comparison; no denied app-server/sandbox retry, no new access, no fallback, no retries or unexpected tools.",
+    "design": {
+      "three_arms": {
+        "minimal": "No optional reporting instruction text; identical user task/evidence, output schema and unavoidable Hermes/platform instructions remain.",
+        "current": "Only the exact deployed-source [OUTPUT] unit; no authoring skill or unrelated standing package.",
+        "edited": "Same current reporting unit plus one hypothesis addressing log semantics, failure/remedy/uncertainty and permission/transport distinction."
+      },
+      "case_ids": [
+        "observer-and-remote",
+        "bash-and-approval"
+      ],
+      "planned_answer_calls": 6,
+      "planned_judge_calls": 0,
+      "total_authorized_cap": 16,
+      "used_model_calls": 0,
+      "remaining_model_calls": 16,
+      "plan_sha256": "37c76b3bb7699940118def88d2e48886699b9a8c0801537b8c3092dd5a0c06f7",
+      "instruction_artifacts": {
+        "minimal": {
+          "file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "package_sha256": "763eec9840903b682d3d7cebf7cc1a3da49f503ac06d75c4423eb290aa88e02f",
+          "prompt_sha256": "c6b7b10db9307e3da89c5fa15c3a6836262e39d4e12de8792d1c673ca9d6a3ae",
+          "content": ""
+        },
+        "current": {
+          "file_sha256": "190ddc95de47ec311b6ecb3151a7bba8c34f564afc95ed4669580b87ebeebbcc",
+          "package_sha256": "2bbffcad751db62b5c504145f18455ceabc072f8e55b98e8acd91cc82580b3e7",
+          "prompt_sha256": "a3433654be93fe953e10524b6be256ed5ec96143d638ff9478b395be85564812",
+          "content": "[OUTPUT] Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence. Changed artifacts: `Changed:` links; for many, one diff/index.\n"
+        },
+        "edited": {
+          "file_sha256": "b416fa1c65284fe603c2655a115e0685e543096a2cc5bdeb3042f36818f6d99e",
+          "package_sha256": "371df6d88a89a1e71ae65d73e0cf807d67e90f62b4cd89ee8e93dc0065626bc8",
+          "prompt_sha256": "e85a49c718228de27565cb822abcaaa5c37b1dc572c3b3e342d836cd70fe870a",
+          "content": "[OUTPUT] Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence. Changed artifacts: `Changed:` links; for many, one diff/index.\n\nWhen reporting an execution failure, use the supplied log fields and available source to explain what failed, the supported remedy and remaining uncertainty; distinguish human consent, native permission and approval transport.\n"
+        }
+      }
+    },
+    "model_support": {
+      "operation": "native read-only model catalog; no model inference, no credential output",
+      "requested_model": "gpt-6.1-sol",
+      "requested_provider": "openai-codex",
+      "refresh_or_login_allowed": false,
+      "live_catalog": true,
+      "catalog_kind": "list",
+      "requested_model_listed": true,
+      "model_count": 14,
+      "endpoint": "https://chatgpt.com/backend-api/codex",
+      "supported": true,
+      "suppressed_diagnostic_characters": 0
+    },
+    "runtime_blocker": {
+      "type": "Installed native defaults not controlled by existing no-tool worker",
+      "source_evidence": {
+        "agent/agent_init.py": "c2bc7e3ff0c5d508ea7fdf7169e3672878fdb1b8b723188bf18f6263af4579dc",
+        "agent/conversation_loop.py": "5a2b1973189300f0f07a990e39c6f5ddf200288aaec1032205685bef3437e4bf",
+        "tools/evaluation_hermes_worker.py": "3a4d5bb27bc310675b06710cfdb6d04cb60fb7a2d7a979db099fa8d93c5f8e9c"
+      },
+      "facts": [
+        "Native _apply_agent_section defaults environment_probe to True and warms it via tools.env_probe.warm_environment_probe_async during construction.",
+        "Native api_max_retries defaults to 3 attempts; native auto_recovery_cycles defaults to 5.",
+        "The existing no-tool worker passes enabled_toolsets none and blocks model tool dispatch after factory construction, but does not constrain these constructor-time probe/retry/recovery settings.",
+        "Outer evaluator transient_retries=0 does not remove native internal retry/recovery."
+      ],
+      "meaning": "A model capability or auth failure was not observed. This is source-established harness/authorization mismatch; no model execution was attempted to prove it by side effect.",
+      "next_step": "Qualify a supported per-run way to disable constructor-time environment probing and enforce one native API attempt with recovery disabled in the existing worker; preserve normal auth and all permission boundaries. No new framework, global setting or startup workaround."
+    },
+    "outcomes": {
+      "reports": [],
+      "paired_examples": "Unavailable: no answer calls were started.",
+      "objective_fact_results": "No behavioral result; offline evidence bindings only.",
+      "manual_quality_judgment": "Deferred; neither passed nor failed.",
+      "model_tokens": null,
+      "billed_cost": null,
+      "native_model_turns": 0,
+      "catalog_http_request_count": "Not instrumented; one normal read-only catalog operation, not model inference.",
+      "inference_seconds": 0
+    },
+    "actions_not_taken": [
+      "No Codex exec/app-server/TUI/sandbox or Shunt startup",
+      "No native agent factory constructed for inference",
+      "No native settings edits, grants, login, token refresh request, paid fallback, deployment or push",
+      "No retries or silent rerun of an earlier experiment"
+    ]
+  },
+  "per_run_control_repair": {
+    "paths": [
+      "tools/evaluation_hermes_worker.py",
+      "tools/evaluation_runtime.py",
+      "tests/test_evaluation_runtime.py",
+      "docs/instruction-profiles.md"
+    ],
+    "authority": "Explicit delegated user authorization for task-local comparator repair and bounded subscription experiment; no new approval needed for ordinary repair, no shared runtime/security changes.",
+    "mechanism": "Normal native config.yaml in disposable HERMES_HOME before factory import/construction; native effective attribute check before inference. One iteration, one API attempt, no auto recovery, environment probe, empty-answer retry or intent-ack continuation. No monkeypatch in production."
+  },
+  "observed_three_arm_reporting": {
+    "status": "six calls completed",
+    "model": "gpt-6.1-sol",
+    "provider": "openai-codex",
+    "reasoning": "medium",
+    "model_identity_limit": "Native runtime metadata matched requested route; provider-resolved model identity is not independently verified.",
+    "calls": {
+      "agent_attempts": 6,
+      "observed_native_api_calls": 6,
+      "judges": 0,
+      "retries": 0,
+      "authorized_cap": 16,
+      "unused_cap": 10
+    },
+    "seconds": {
+      "batch_wall": 75.594,
+      "per_cell_including_native_setup": [
+        {
+          "case": "observer-and-remote",
+          "arm": "current",
+          "seconds_including_setup": 19.968,
+          "api_calls": 1,
+          "model_tool_calls": 0,
+          "native_controls": {
+            "_environment_probe": false,
+            "_api_max_retries": 1,
+            "_auto_recovery_cycles": 0,
+            "_intent_ack_continuation": false,
+            "_empty_guard_enabled": false
+          },
+          "structured_receipt_passed": true,
+          "report_sha256": "5504dd4afe0f869f27764786cbdf2e21ad7c96e3f7423478c9673ca3daab29ce",
+          "native_prompt_sha256": "77e42dce1c5d78d561850d33ec2f5522270ad36a14bfeaae04191379c7e4d953"
+        },
+        {
+          "case": "observer-and-remote",
+          "arm": "edited",
+          "seconds_including_setup": 14.25,
+          "api_calls": 1,
+          "model_tool_calls": 0,
+          "native_controls": {
+            "_environment_probe": false,
+            "_api_max_retries": 1,
+            "_auto_recovery_cycles": 0,
+            "_intent_ack_continuation": false,
+            "_empty_guard_enabled": false
+          },
+          "structured_receipt_passed": true,
+          "report_sha256": "0fbc2c3557873e1ac16042462450004c6ab62a2529f866d6482b7e6304ee6f23",
+          "native_prompt_sha256": "3143d70eb5d128d4cb18ffc98270f2ebcf843e5cf52ac36598698e1ea63432fd"
+        },
+        {
+          "case": "observer-and-remote",
+          "arm": "minimal",
+          "seconds_including_setup": 11.937,
+          "api_calls": 1,
+          "model_tool_calls": 0,
+          "native_controls": {
+            "_environment_probe": false,
+            "_api_max_retries": 1,
+            "_auto_recovery_cycles": 0,
+            "_intent_ack_continuation": false,
+            "_empty_guard_enabled": false
+          },
+          "structured_receipt_passed": true,
+          "report_sha256": "c70a346ec6a670807124cb066cda360b792256fac0f6a55d76474b00e8d4817c",
+          "native_prompt_sha256": "913f073fe44ca0b86e2d9f1eb7d74052b0abfd6060712217fcd874967aa48bf1"
+        },
+        {
+          "case": "bash-and-approval",
+          "arm": "minimal",
+          "seconds_including_setup": 9.329,
+          "api_calls": 1,
+          "model_tool_calls": 0,
+          "native_controls": {
+            "_environment_probe": false,
+            "_api_max_retries": 1,
+            "_auto_recovery_cycles": 0,
+            "_intent_ack_continuation": false,
+            "_empty_guard_enabled": false
+          },
+          "structured_receipt_passed": true,
+          "report_sha256": "7f3bc4e4a81756928e63322ad799b938fdfb75612cf0082ce0f1b881f94d2f13",
+          "native_prompt_sha256": "f08cf9f2dd148f04cdb6bd9da8e9802a6358238793cf67bb77d63cecbdc3a35a"
+        },
+        {
+          "case": "bash-and-approval",
+          "arm": "current",
+          "seconds_including_setup": 9.953,
+          "api_calls": 1,
+          "model_tool_calls": 0,
+          "native_controls": {
+            "_environment_probe": false,
+            "_api_max_retries": 1,
+            "_auto_recovery_cycles": 0,
+            "_intent_ack_continuation": false,
+            "_empty_guard_enabled": false
+          },
+          "structured_receipt_passed": true,
+          "report_sha256": "cec6c6703a595bdd72ca80ed065fbef48755f151691cf498ee46dc8ee49188a2",
+          "native_prompt_sha256": "7a63cf0d95c013f9bbf98717f671b94674cd6267ddeeb0ab4ae9c471212099a2"
+        },
+        {
+          "case": "bash-and-approval",
+          "arm": "edited",
+          "seconds_including_setup": 9.922,
+          "api_calls": 1,
+          "model_tool_calls": 0,
+          "native_controls": {
+            "_environment_probe": false,
+            "_api_max_retries": 1,
+            "_auto_recovery_cycles": 0,
+            "_intent_ack_continuation": false,
+            "_empty_guard_enabled": false
+          },
+          "structured_receipt_passed": true,
+          "report_sha256": "c5eb881a5bd8156e711a2652410c2852bbd1754fcea5914e10ac73f6ebb5a7d7",
+          "native_prompt_sha256": "8da7bea5aee842fc41a2732fe0e0166b6281cee475edddfe0abf2cf840f453a0"
+        }
+      ]
+    },
+    "token_usage": null,
+    "billed_cost": null,
+    "objective_review": {
+      "method": "Agent inspection against frozen retained facts, plus existing structured receipt/route/control checks. Not an independent semantic oracle.",
+      "observer_case": "All three distinguish failed observer/missing directory from exit-zero, unknown/disabled remote preference from successful connection, and propose investigation/fix as future work.",
+      "bash_case": "All three identify startup signal-pipe failure, zero model-starting requests and no Shunt-login requirement. They keep approval distinct from the proposed TUI carrier.",
+      "remedy_evidence": "All provide a concrete next step and do not claim an implemented/verified fix. No reassurance-only promise was identified in these two cells.",
+      "limitations": "These are supplied corrected facts; the experiment does not measure whether the model would fetch source or diagnose the original incident unaided. One sample/cell establishes no reliability."
+    },
+    "manual_review": {
+      "state": "scoped user preference received",
+      "judgments": "User prefers Minimal in these two supplied-evidence samples because unnecessary wording complicates understanding.",
+      "criterion": "Evidence-backed remedy or concrete next step; distinguish proposed, implemented and verified.",
+      "limits": "Two samples establish no general model/instruction superiority or reliability; no special visual-review stage follows from this feedback."
+    },
+    "harness_comparability": {
+      "normalized_native_prompt_hashes": [
+        "36592b75661949feaba14b56b9ba3d920ad59893a4516e46bac14970ac5c892f",
+        "36592b75661949feaba14b56b9ba3d920ad59893a4516e46bac14970ac5c892f",
+        "36592b75661949feaba14b56b9ba3d920ad59893a4516e46bac14970ac5c892f",
+        "36592b75661949feaba14b56b9ba3d920ad59893a4516e46bac14970ac5c892f",
+        "36592b75661949feaba14b56b9ba3d920ad59893a4516e46bac14970ac5c892f",
+        "36592b75661949feaba14b56b9ba3d920ad59893a4516e46bac14970ac5c892f"
+      ],
+      "same_after_fixture_and_disposable_runtime_path_normalization": true,
+      "limits": "Actual assembled hashes differ with fresh paths. Path normalization is a narrow assembly check, not raw-base access or original Codex/full-harness equivalence."
+    },
+    "conclusion": "No objective factual advantage for added reporting steering in two supplied-evidence cases; user prefers Minimal because extra wording complicates understanding. Do not promote or retire based on these two cases or claim cost/reliability savings.",
+    "safety_readback": {
+      "monitored_live_files_unchanged": true,
+      "all_cleanup_passed": true,
+      "model_tool_calls": 0,
+      "unexpected_downloads_in_model_calls": "None observed in retained diagnostics; no packet-level or whole-process side-effect audit.",
+      "live_native_probe_execution": "Effective _environment_probe was false in all six actual agents. Offline probe rejection used a test double and is not itself live proof."
+    },
+    "qualification_failure_retained": {
+      "first_readback": "An earlier no-inference readback omitted the evaluator's existing HERMES_DISABLE_LAZY_INSTALLS flag and triggered native dependency preparation; owned process tree was stopped and task artifacts retained. Network transfer contents/count were not captured.",
+      "correction": "One new readback used the existing documented no-lazy-install environment; actual installed config loader/mapping applied supported task-local settings. No shared runtime patch or security change.",
+      "offline_tests": "20 passed, 12 subtests passed. One initial test assertion incorrectly inspected a replaced guard function; corrected to inspect the original mock."
+    }
+  },
+  "prohibited_setup_accounting": {
+    "authorization": "User prohibited downloads/install setup in the experiment. The earlier dependency preparation was not authorized; it is not normalized as an approved step.",
+    "initiating_command": "Native Hermes venv Python -B check_native_controls.py in the task directory; the original task readback omitted the existing no-install environment flag. Full original environment was not captured.",
+    "observed": "Python process creation and PM installation occurred; 270 retained task-root files, 3,555,302 summed logical bytes. Four package distributions and a selected PM generation exist.",
+    "manager": "uv 0.12.3, Python 3.14.7; their shared executable creation timestamps predate the incident (2026-09-25).",
+    "packages": [
+      "packaging==26.0",
+      "ruamel.yaml==0.18.16",
+      "tomli_w==1.2.0",
+      "truststore==0.10.4"
+    ],
+    "source": "Hermes native PM runtime_stage.py / environment.py, pinned pm/pyproject.toml and uv.lock. Lockfile sources are declarations, not captured network destinations.",
+    "scope_and_limits": {
+      "process_creation": "Confirmed for the readback Python processes; stopped tree reported four processes. uv subprocess creation is supported by installed environment and native source, but exact uv process record was not retained.",
+      "package_installation": "Confirmed by installed dist-info metadata and selected PM generation.",
+      "network_download": "Unresolved. New task-local archives/files prove materialization, not whether bytes came from network, payload seed or existing cache; no packet/uv transport capture.",
+      "shared_effects": "Native default-home resolution honors HERMES_HOME, explaining the retained task-local cache. The normal host shared uv cache had no scanned mtime entries in the broad incident window (36,420 files scanned), but no pre-incident inventory exists and preserved mtimes can miss cache additions. Cannot certify no shared-cache or other transient effects.",
+      "credentials": "No credential files read by this audit; original readback was config-only, not a model/auth invocation."
+    },
+    "process_state": "Known owned tree was terminated; subsequent read-only command-line query found zero matching owned processes. Not a whole-machine audit.",
+    "evidence_sha256": {
+      "inventory": "853916994004be42df3d6a766699a90d012db40a86f22c2258bbdad9518ab7d7",
+      "accounting": "343616db723e90d3c3f8e2dea906278477e23cf03a794294a2153afb12edecf7",
+      "native_pm_sources": {
+        "pm/pyproject.toml": "35f379288ba23c169b0f3437acc4d156e2d507ced2ac34a2819d2757328a0ec5",
+        "pm/uv.lock": "735e1e9847f7b3c5f2c50ae9818573d18f71d02f6f0ea12be80a55ce03e8d831",
+        "pm/runtime_stage.py": "08a2afcd50b026757b703086c632b0d3572be1bcc6d5ce4d93bb1d4fcb110693",
+        "pm/runtime.py": "68d6ae47d2e0143f3cc377e462e3588abbb0e857bbc9f22442a3f66ebe54c478",
+        "pm/environment.py": "5a8aa0c65a49e29d7e341f07139363f32e6d8889c5e3faf52528a6219ed16337",
+        "pm/packages.py": "b90ad2878c6289f7bd831cb40cc4315e1e81705768f2001af44666da7e703ccc",
+        "hermes_cli/venv_sync.py": "a36725aac0b3878f96cbb407c51d22b3607cdd3536bb6a759d0dec4826159ecd"
+      }
+    },
+    "prevention": {
+      "scope": "Existing Agent Sync isolated evaluator and task-local readback; ordinary intentional native installers unchanged.",
+      "mechanism": "Existing HERMES_DISABLE_LAZY_INSTALLS flag still supplied by runtime_environment. New require_no_install_environment guard rejects absent/disabled flag before worker native imports/launch and config preparation; readback script also calls it before creating the temporary home or importing Hermes.",
+      "offline_evidence": "22 tests and 12 subtests passed, including omitted/disabled flag rejection and a worker-entrypoint test proving native setup imports remain unreachable. Test doubles establish the control boundary, not a repeat native install trial.",
+      "new_inference_calls": 0
+    },
+    "trial_boundary": "This guard was added after the completed six-call comparison. The original run source hashes and raw outputs remain unchanged. No additional inference/native setup ran; guard behavior was verified offline only."
+  },
+  "review_packet": {
+    "task_artifact": "reporting-three-arm/review-packet.json",
+    "sha256": "00e308259f29b5909decadb450b95035c35396fcf8e7ea3f69dc38f0d3fd27aa",
+    "contents": "Historical exact two cases, six report texts and edited hypothesis retained locally. Scoped Minimal preference now received; any earlier special frontend-review interpretation is superseded."
+  },
+  "reconciliation_20261018": {
+    "base_commit": "4de2d8bfa145c6b9e116deeeff82d4409e29b961",
+    "previous_local_commit": "985321f67a53ca63729dfa40a0ed83a8d822a580",
+    "method": "Selected raw source overlay with clean three-way merges for requirements/status; all unselected tracked source preserved at base.",
+    "deployment": "not performed; not authorized",
+    "new_inference_calls": 0,
+    "feedback_scope": "Minimal preferred in two supplied-evidence reporting samples, not a general model/instruction verdict.",
+    "latest_decision_rule": "Use normal model judgment, including visual and abstract work. Before committing a consequential or preference-sensitive intermediate choice, surface the meaningful branches, consequences and recommendation and clarify the choice with the user; a broad goal does not silently settle it. Ask before destructive actions under applicable policy. Routine implementation details need no added approval step.",
+    "offline_tests": {
+      "evaluation_runtime": 22,
+      "instruction_retirement": 13,
+      "instruction_changes": 12,
+      "retirement_adapter": 13,
+      "total": 60,
+      "result": "passed",
+      "limits": "Offline tests and exact-source coverage do not prove model quality; temporary local Git repositories only."
+    }
+  },
+  "rejected_instruction_proposal": {
+    "commit": "afdb0c1f017f14e84366f468de57e3b36c24636e",
+    "status": "user-rejected; excluded from active proposed sync set",
+    "reason": "Unproved 309-word authoring expansion; no measured behavioral improvement. History and original evidence remain, no new recovery variant.",
+    "current_owner": "Exact published4de2d8b instruction-authoring bytes restored."
+  },
+  "measured_eligibility_implementation": {
+    "source": "Existing instruction_changes, change_review, evaluation_evidence and eval/runtime owners; no new runner or model judge.",
+    "coverage": "Changed instructions require exact before/after measured bodies, intended task contract, current-profile bytes, matching model route and current harness. Existing report validation recomputes positive improvement for all current target hosts. Native route attestations retain their explicit limits; provider-resolved deployment identity is not invented.",
+    "readiness": "Inline lane requires explicit question requirements; multi-turn/full-authored-bundle/usage-cost/physical-call-cap questions fail before runtime creation or inference. This does not solve missing capability.",
+    "usage_fix": "Existing native route allowlists canonical counters/estimates, preserving available main-agent usage even on failure. No overlapping token sums; billed dollars remain unknown. Single completed-response coverage can use actual last-response usage; larger-call coverage, failed physical attempts and auxiliary totals remain unknown/unverified.",
+    "legacy": "Unchanged deployed instructions are not reclassified. Changing legacy unindexed instruction source requires ownership/evidence migration. Portable targets without suitable model/host evidence remain excluded, not auto-disabled or auto-evaluated.",
+    "no_new_runtime_prompt": "Instruction-authoring exactly matches published4de2d8b; no standing, generated or skill prompt text is added by this proposal."
+  },
+  "measured_gate_offline_validation": {
+    "instruction_measurements": 10,
+    "native_usage_capture": 5,
+    "authoring_review": 12,
+    "evaluation_evidence": 24,
+    "evaluation_runtime": 22,
+    "instruction_changes": 12,
+    "retirement_adapter": 13,
+    "instruction_retirement": 13,
+    "total": 111,
+    "scope": "Offline suites across targeted runs; fake transport/native objects only. Model calls0; no instruction improvement claim. Current raw-byte reconciliation is checked after normalization."
+  },
+  "test_portability_validation": {
+    "status": "99 passed; 12 Git-transport setup errors remain blocked, not passed",
+    "scope": "Tests/fixtures only; production eligibility/readiness/usage code unchanged from9ff7d812.",
+    "workspace": "Explicit AGENT_SYNC_TEST_WORKSPACE must be a pre-provisioned permitted absolute directory; ordinary create/read/write/delete preflight, inherited child creation. No fallback path or permission repair.",
+    "pure_cases": "CLI readiness and missing-no-install-flag assertions use objects/mocks instead of unnecessary directories; assertions before runtime/model/config write remain enforced.",
+    "git_fixture_lifetime": "Explicit externally managed provided workspaces retained for inspection; paths recorded separately. This is not a successful production cleanup claim. Non-Git temporary cleanup errors propagate.",
+    "run": {
+      "tests": 111,
+      "passed_tests": 99,
+      "blocked_tests": 12,
+      "suites": [
+        {
+          "suite": "test_native_usage_capture.py",
+          "exit_code": 0,
+          "tests": 5
+        },
+        {
+          "suite": "test_instruction_measurements.py",
+          "exit_code": 0,
+          "tests": 10
+        },
+        {
+          "suite": "test_change_review.py",
+          "exit_code": 0,
+          "tests": 12
+        },
+        {
+          "suite": "test_evaluation_evidence.py",
+          "exit_code": 0,
+          "tests": 24
+        },
+        {
+          "suite": "test_evaluation_runtime.py",
+          "exit_code": 0,
+          "tests": 22
+        },
+        {
+          "suite": "test_instruction_changes.py",
+          "exit_code": 1,
+          "tests": 12
+        },
+        {
+          "suite": "test_retirement_adapter.py",
+          "exit_code": 0,
+          "tests": 13
+        },
+        {
+          "suite": "test_instruction_retirement.py",
+          "exit_code": 0,
+          "tests": 13
+        }
+      ]
+    },
+    "failed_evidence": "Local fixture-portability-failed-attempt.json and portability-test_instruction_changes.log; independent prior FROZEN-9FF7D812-REVIEW-RESUMED.json stays with its testing owner.",
+    "blocker": "Git local-remote setup invokes sh.exe, which fails to create signal pipe with Win32error5 before the12 publication assertions. No retry, transport substitution, permission change, error suppression or inferred authentication issue.",
+    "new_model_calls": 0,
+    "deployment": "not performed"
+  },
+  "readiness_specificity_correction": {
+    "parent": "e37b7cf1484fb65fd6d03a1b5d88bd9e793d2256",
+    "scope": "Test-only; production mechanisms and12end-to-end publication tests unchanged.",
+    "defect": "Any SystemExit previously passed the negative CLI test, including missing-jsonschema validation failure before readiness.",
+    "correction": "Require exit2, exact readiness-specific stderr and one real comparison_readiness call with the intended suite; still assert no runtime directory and no model call.",
+    "eligibility_units": "Seven units use an explicit baseline-store double and real report validation. subprocess.Popen is forbidden throughout each unit; no Git setup/push/transport is involved. End-to-end Git assertions remain separate and blocked.",
+    "validation": {
+      "python": "3.11.15",
+      "jsonschema": "4.26.0",
+      "tests": 10,
+      "passed": 10,
+      "eligibility_units": 7,
+      "readiness_checks": 3
+    },
+    "unchanged_blocker": "12 publication tests blocked by sh.exe signal-pipe startup; no retry, transport substitution, hook/configoverride or permission repair.",
+    "new_model_calls": 0,
+    "deployment": "not performed"
+  },
+  "prepared_runtime_correction": {
+    "parent": "61f8e33ece93f979e53f72d0de01ff0717e224dd",
+    "scope": "Task-local evaluator source only; no shared runtime/config, ACL or transport change.",
+    "original_failure": "Sanitized PermissionError at setup with empty controls, before worker launch. Installed tempfile.py uses mkdir(...,0o700); symptoms fit the observed test portability issue, but the old record cannot distinguish runtime child creation from native-source discovery. No denied path inspection or live retry.",
+    "remaining_state": "agent-signal-runtime-r_uxaviu is timestamp-correlated only; original result did not bind its actual runtime path. Cleanup state_removed=false. Ownership/ordinary access must be established by the original testing owner before any exact owned-state removal; no blanket deletion or repair attempted.",
+    "mechanism": "Keep default private allocation unchanged. Optional explicit prepared_runtime requires caller-authorized private provisioning, regular absolute empty directory outside fixture and exclusive claim. Ordinary child/file preflight precedes setup; denial has no automatic fallback. Named operation and owned path are recorded in local results.",
+    "isolation": "Fresh homes, no-install guard, context/tool controls, in-memory Hermes credential resolution and normal admission are retained. Access probes do not prove ACL privacy or authorize a model call.",
+    "tests": {
+      "passed": 43,
+      "suites": [
+        {
+          "suite": "test_prepared_runtime.py",
+          "exit_code": 0,
+          "tests": 6
+        },
+        {
+          "suite": "test_evaluation_runtime.py",
+          "exit_code": 0,
+          "tests": 22
+        },
+        {
+          "suite": "test_native_usage_capture.py",
+          "exit_code": 0,
+          "tests": 5
+        },
+        {
+          "suite": "test_instruction_measurements.py",
+          "exit_code": 0,
+          "tests": 10
+        }
+      ]
+    },
+    "limits": "Mocked native process only; no successful live usage capture or efficiency result. Default allocation failure can still raise before a runtime exists. The12 Git publication tests remain blocked and unattempted.",
+    "new_model_calls": 0,
+    "deployment": "not performed"
+  },
+  "historical_change_reconciliation": {
+    "original_receipt_sha256": "da4814b47844e3c9f68fa148bfdbf6eedf730538a136e3ccee74fdd610688aeb",
+    "reason": "Original stage/base retained; superseded only as current publication binding by evaluation-consolidation-20261020.json. No historical trial outcome changed.",
+    "records": [
+      {
+        "artifacts": {
+          "contracts/surface-matrix.json": {
+            "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+            "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+          },
+          "docs/architecture.md": {
+            "before_sha256": "691c8937fec535fa63e181b8a3c05baac9722dc43fcc57f2572e8f8da1bc63b2",
+            "after_sha256": "d94c22bcccc1495dc66887b1b831c75bda0ada3a2738c20644a059bc138092dc"
+          },
+          "docs/artifact-pilot.md": {
+            "before_sha256": "5aeac57a78735421eb626f3d19fc180f341fe36ac80174a644b2ec7645a4a8a3",
+            "after_sha256": "5aeac57a78735421eb626f3d19fc180f341fe36ac80174a644b2ec7645a4a8a3"
+          },
+          "docs/grounded-verification.md": {
+            "before_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7",
+            "after_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7"
+          },
+          "docs/instruction-profiles.md": {
+            "before_sha256": "995c39bb05038d299037f2e707f661119b145ddf874cdd6f89bed60dbe0799c4",
+            "after_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569"
+          },
+          "docs/learning-and-taste-update.md": {
+            "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+            "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+          },
+          "docs/native-instruction-diagnostic.md": {
+            "before_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a",
+            "after_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a"
+          },
+          "docs/requirement-status.md": {
+            "before_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919",
+            "after_sha256": "1e9620db1f85ce67ee07c07294b477e7bc3a953845aa8c994d976329a47cea1c"
+          },
+          "docs/system-requirements.md": {
+            "before_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7",
+            "after_sha256": "543bd9b8b6c429564b1ac17e66efff22485d6457618af3437ed06675d56a3a04"
+          },
+          "evals/schema.json": {
+            "before_sha256": "dcff97dc41e8f2970c7ab8f917471bf95c03635bfbf7f3f2b0d2c4333e904074",
+            "after_sha256": "6b8c4d4f76e31d1edc7f5a2b2ca0536f64ad4e314ee33e9bfba8611c20ed86ce"
+          },
+          "skills/capability-curator/SKILL.md": {
+            "before_sha256": "d6caa0472e4c29e3295d12a28e4b165c5b55af43b7df5ee4009d7aaa71176ae0",
+            "after_sha256": "d6caa0472e4c29e3295d12a28e4b165c5b55af43b7df5ee4009d7aaa71176ae0"
+          },
+          "skills/capability-curator/references/instruction-retirement.md": {
+            "before_sha256": "ad16e0493f8ac6a8581d24ff404d8ad818f07b6b06c8792ac6356dad8d3eecaa",
+            "after_sha256": "ad16e0493f8ac6a8581d24ff404d8ad818f07b6b06c8792ac6356dad8d3eecaa"
+          },
+          "skills/instruction-authoring/SKILL.md": {
+            "before_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497",
+            "after_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497"
+          },
+          "skills/instruction-authoring/references/change-review.md": {
+            "before_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575",
+            "after_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575"
+          },
+          "skills/surface-convergence/SKILL.md": {
+            "before_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70",
+            "after_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70"
+          },
+          "tools/artifact_hash.py": {
+            "before_sha256": "101d2f30d005a3145336afd88cc7747d95d41b407fd39a68b95d9d443b2ffd98",
+            "after_sha256": "57a9f42a14a96bd394a6d6d5f7aa2d97d24448c760622c7ec4c9089005ee5c14"
+          },
+          "tools/change_review.py": {
+            "before_sha256": "66b574b760cde345e48eca3d1354b6aabd036bb34cdbcc996ef086df922a6be9",
+            "after_sha256": "71630b8a7a945bea65b10b17965a09240605cfcf3bb7ffded1ed279bfc637ed1"
+          },
+          "tools/eval.py": {
+            "before_sha256": "cbd13b72d303701a996fe11df876b2570cb71cd6025389c53b41a0a8d7d45c4e",
+            "after_sha256": "9b423faac8c24d86a6f99f5a02e422e64c68389d0fd796010c90f63623fd1ccd"
+          },
+          "tools/evaluation_evidence.py": {
+            "before_sha256": "b8af436a571bdf78728f43396a77c5226d93cf8e204693cfa0f6875af7d6478d",
+            "after_sha256": "38c181cbce36f6b9a3909b5a1fcc43aea4867422b262550da1e4ff0aef5fcb9a"
+          },
+          "tools/evaluation_hermes_worker.py": {
+            "before_sha256": "3a4d5bb27bc310675b06710cfdb6d04cb60fb7a2d7a979db099fa8d93c5f8e9c",
+            "after_sha256": "dc79c1474325f10b113a4eaef9280c8045bfd1c3f2627811e817a972294b2af4"
+          },
+          "tools/evaluation_runtime.py": {
+            "before_sha256": "de29f278632d6a80902a30c29c9989ca145a7ceebfaf811f132f44794fa42814",
+            "after_sha256": "9541407f31737c6d2fc1497e6021ee4810137a4840e152c88ecbfc68a3ce9bfd"
+          },
+          "tools/instruction_changes.py": {
+            "before_sha256": "81ecac3c57a3c6dcc12e4970fb5e9cf2c46bb8dd6f8ba4c8fd888c47d2473047",
+            "after_sha256": "f39de775d0c006779d8397239091bde044a3d7bbe20134506eb2b7b0440d69d1"
+          },
+          "tests/fixture_workspace.py": {
+            "before_sha256": "absent",
+            "after_sha256": "ab2bfb9f30651d614b7736f14fdcbd94d9f9a7d43ae082a96bb090f670371cb6"
+          },
+          "tests/test_instruction_measurements.py": {
+            "before_sha256": "absent",
+            "after_sha256": "ebc554836853bbd8b3e4d65ea51a823844f408d5c01e371a82064f5656075620"
+          },
+          "tests/test_native_usage_capture.py": {
+            "before_sha256": "absent",
+            "after_sha256": "7091b636bf61dfe68193fc2181c6dd98a0d5ab34ae8ec32cf4f996b26cc38836"
+          },
+          "tests/test_change_review.py": {
+            "before_sha256": "65fd2c790af990234ddb9e052ff0e8a91d363e19a9c24b5042ca8ecaf89fd93e",
+            "after_sha256": "2c730ca1e4ad6d112748062bf1a72981e2b4ce9b7e013cdf4ef9f0fab3ca9334"
+          },
+          "tests/test_evaluation_evidence.py": {
+            "before_sha256": "e2528aa8fd6a8da369737eb845d9c8df3ebd8f094dd42eaeafba8a50c00253a8",
+            "after_sha256": "2accf24f99b31e1029f516a2b82651183041daa645038a068a527fac30ee3046"
+          },
+          "tests/test_evaluation_runtime.py": {
+            "before_sha256": "0b89c21e10c0cc6421bb085eeda1ba3073e9a68cdf19a6560b37569123189e9c",
+            "after_sha256": "f893da615ef6d8959579e12cecad4e3fe254b3ef3461155f1723a187ddb11eff"
+          },
+          "tests/test_instruction_changes.py": {
+            "before_sha256": "3cac6731b036109dfb725e06aadd1e2de000a9b32345549ca2d95cb5c9621823",
+            "after_sha256": "c7262fd887f8d46846a85d6e56bfd30906772c8baeec306333f253c1fb54fb52"
+          },
+          "tests/test_retirement_adapter.py": {
+            "before_sha256": "f2a9046eabba361a0901742cf918efab074e309b2f7114ab35af7c38f83aee91",
+            "after_sha256": "705fddbdd3df455e6a9411977a78bb5a2e78ba303db7bc39317fe75e6f8bb41e"
+          },
+          "tests/test_instruction_retirement.py": {
+            "before_sha256": "00cb30cc9ef73e44b9a5407cacdafc929ecc4ae252dfa8ce950f47fb6d1b4893",
+            "after_sha256": "474c9bf5b441c839d96587e337070e6fa201e9a476afe952145c487772220423"
+          },
+          "tests/test_prepared_runtime.py": {
+            "before_sha256": "absent",
+            "after_sha256": "6c34f71ec166645b3b8cae50dcddc64f89834f154e1186cd4aeeda7526f17772"
+          }
+        },
+        "requirement_change": true,
+        "requirement_reason": "Explicit measured-behavior eligibility and readiness boundary; interaction outcome is task progress with topic-specific adaptation and missing context. No learner-profile infrastructure or prompt rule is selected.",
+        "authority": "User explicitly rejected the unmeasured authoring expansion and authorized executable measured-behavior admission/readiness fixes and supported native usage capture. Local source/offline tests only; no model calls, shared runtime/config writes, deployment, publication, credential inspection or new auth/transport.",
+        "checks": "Source-bound reconciliation; offline native-usage capture, measurement eligibility/readiness, authoring review, report evidence, runtime and publication/loading tests. Full results recorded in local task evidence after final run; no new models.",
+        "outcome_review": {
+          "expected": "Exclude unmeasured instruction changes before sync and during authoring; fail unsupported measurement readiness before spend; preserve existing route usage without claiming full efficiency.",
+          "observed": "Executable guards and native counter projection added at existing owners. Rejected authoring source restored. Offline negative/positive mechanism tests use fake transport; no new live model inference.",
+          "evidence": "Current source bindings and local offline test results; retained six-call evidence remains historical.",
+          "limitations": "Consistency cannot authenticate fabricated records or prove semantic task adequacy. Current native resolved identity, multi-turn/full-bundle isolation and full-system attempt/auxiliary accounting remain incomplete. No instruction qualifies from unit tests."
+        },
+        "obligations": [
+          {
+            "path": "contracts/surface-matrix.json",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "docs/architecture.md",
+            "disposition": "updated",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "docs/artifact-pilot.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "docs/grounded-verification.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "docs/learning-and-taste-update.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "docs/native-instruction-diagnostic.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "docs/requirement-status.md",
+            "disposition": "updated",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "docs/system-requirements.md",
+            "disposition": "updated",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "evals/schema.json",
+            "disposition": "updated",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "skills/capability-curator/SKILL.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "skills/capability-curator/references/instruction-retirement.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "skills/instruction-authoring/SKILL.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "skills/instruction-authoring/references/change-review.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "skills/surface-convergence/SKILL.md",
+            "disposition": "unchanged",
+            "reason": "Existing owner retained for its procedures and scope; executable measured-improvement/readiness checks and lossless bounded usage capture do not add runtime prompt guidance. Changed contracts/schema describe selected behavior and explicit evidence limits; unchanged neighbors retain required loading and safety procedures."
+          },
+          {
+            "path": "tests/fixture_workspace.py",
+            "disposition": "updated",
+            "reason": "Test portability: explicit permitted workspace preflight and ordinary fixture creation; Git fixture retention is explicit and external. Assertions and production cleanup behavior remain enforced; environmental errors are recorded, not suppressed."
+          },
+          {
+            "path": "tests/test_instruction_measurements.py",
+            "disposition": "updated",
+            "reason": "Readiness must fail for its actual unsupported question, not missing dependencies. Direct eligibility units isolate the baseline-read seam and prohibit child processes; publication/Git transport validation remains separate and blocked."
+          },
+          {
+            "path": "tests/test_native_usage_capture.py",
+            "disposition": "updated",
+            "reason": "Test portability: explicit permitted workspace preflight and ordinary fixture creation; Git fixture retention is explicit and external. Assertions and production cleanup behavior remain enforced; environmental errors are recorded, not suppressed."
+          },
+          {
+            "path": "tests/test_change_review.py",
+            "disposition": "updated",
+            "reason": "Test portability: explicit permitted workspace preflight and ordinary fixture creation; Git fixture retention is explicit and external. Assertions and production cleanup behavior remain enforced; environmental errors are recorded, not suppressed."
+          },
+          {
+            "path": "tests/test_evaluation_evidence.py",
+            "disposition": "updated",
+            "reason": "Test portability: explicit permitted workspace preflight and ordinary fixture creation; Git fixture retention is explicit and external. Assertions and production cleanup behavior remain enforced; environmental errors are recorded, not suppressed."
+          },
+          {
+            "path": "tests/test_instruction_changes.py",
+            "disposition": "updated",
+            "reason": "Test portability: explicit permitted workspace preflight and ordinary fixture creation; Git fixture retention is explicit and external. Assertions and production cleanup behavior remain enforced; environmental errors are recorded, not suppressed."
+          },
+          {
+            "path": "tests/test_retirement_adapter.py",
+            "disposition": "updated",
+            "reason": "Test portability: explicit permitted workspace preflight and ordinary fixture creation; Git fixture retention is explicit and external. Assertions and production cleanup behavior remain enforced; environmental errors are recorded, not suppressed."
+          },
+          {
+            "path": "tests/test_instruction_retirement.py",
+            "disposition": "updated",
+            "reason": "Test portability: explicit permitted workspace preflight and ordinary fixture creation; Git fixture retention is explicit and external. Assertions and production cleanup behavior remain enforced; environmental errors are recorded, not suppressed."
+          },
+          {
+            "path": "tests/test_evaluation_runtime.py",
+            "disposition": "updated",
+            "reason": "Explicit prepared disposable runtime access and precise setup/cleanup provenance; preserve private default allocation, normal admission, no fallback after denial and existing isolation. No new runtime instruction guidance or live success claim."
+          },
+          {
+            "path": "tests/test_prepared_runtime.py",
+            "disposition": "updated",
+            "reason": "Explicit prepared disposable runtime access and precise setup/cleanup provenance; preserve private default allocation, normal admission, no fallback after denial and existing isolation. No new runtime instruction guidance or live success claim."
+          },
+          {
+            "path": "docs/instruction-profiles.md",
+            "disposition": "updated",
+            "reason": "Explicit prepared disposable runtime access and precise setup/cleanup provenance; preserve private default allocation, normal admission, no fallback after denial and existing isolation. No new runtime instruction guidance or live success claim."
+          }
+        ]
+      }
+    ]
+  }
+}

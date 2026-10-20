@@ -1,8 +1,10 @@
 """Instruction publication must have a bound architectural reason, not just valid bytes."""
+from fixture_workspace import configure as configure_test_workspace
+from fixture_workspace import provided_workspace
+configure_test_workspace()
 from pathlib import Path
 import hashlib
 import json
-import tempfile
 import subprocess
 import unittest
 
@@ -12,7 +14,7 @@ import test_worktree_sync as fixtures
 class InstructionChangeTests(unittest.TestCase):
     def test_later_restructuring_declaration_is_checked_with_unchanged_routes(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             entry, detail = 'skills/kept/SKILL.md', 'skills/kept/references/protocol.md'
             (repo / 'contracts/ownership.json').write_text(json.dumps({'capabilities': [{'id': 'kept', 'owner': 'skills/kept'}]}))
@@ -51,11 +53,11 @@ class InstructionChangeTests(unittest.TestCase):
                     'before': [entry, detail], 'after': [entry, detail], 'disposition': 'preserved',
                     'load_when': 'Before release', 'reason': 'Keep the existing required route.'}]}
             ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': rows}))
-            self.assertEqual('ready', adapter.ready_plan(worker, ready, include=includes)['result'])
+            self.assertEqual('review-required', adapter.ready_plan(worker, ready, include=includes)['result'])
 
     def test_loading_review_blocks_dense_entrypoint_and_accepts_required_workflow(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             owner = repo / 'contracts/ownership.json'
             owner.write_text(json.dumps({'capabilities': [{'id': 'kept', 'owner': 'skills/kept'}]}))
@@ -95,18 +97,18 @@ class InstructionChangeTests(unittest.TestCase):
                     'load_when': 'Read entrypoint before execution', 'reason': 'All modes share the protocol.'}]}
             ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': [record]}))
             result = adapter.ready_plan(worker, ready, include=includes)
-            self.assertEqual('ready', result['result'], result)
+            self.assertEqual('review-required', result['result'], result)
             # The same justified required workflow remains valid over 500 lines.
             target.write_bytes(old + b'\n' + b'Required step.\n' * 501)
             record['artifacts'][name]['after_sha256'] = hashlib.sha256(target.read_bytes()).hexdigest()
             receipt.write_text(json.dumps({'instruction_changes': [record]}))
             self.git(worker, 'add', '.')
             self.git(worker, 'commit', '-m', 'valid multi-line compulsory protocol')
-            self.assertEqual('ready', adapter.ready_plan(worker, self.git(worker, 'rev-parse', 'HEAD'), include=includes)['result'])
+            self.assertEqual('review-required', adapter.ready_plan(worker, self.git(worker, 'rev-parse', 'HEAD'), include=includes)['result'])
 
     def test_reference_move_requires_reachable_obligation_map(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             (repo / 'contracts/ownership.json').write_text(json.dumps({'capabilities': [{'id': 'kept', 'owner': 'skills/kept'}]}))
             self.git(repo, 'add', '.')
@@ -147,7 +149,7 @@ class InstructionChangeTests(unittest.TestCase):
                     changed['loading_review']['obligations'][0].update(mutation)
                 ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': [changed]}))
                 result = adapter.ready_plan(worker, ready, include=includes)
-                self.assertEqual('ready' if mutation is None else 'review-required', result['result'], (mutation, result))
+                self.assertEqual('review-required', result['result'], (mutation, result))
             # Separate necessity rows must not hide a later restructuring flag.
             first, second = json.loads(json.dumps(record)), json.loads(json.dumps(record))
             first['artifacts'] = {name: record['artifacts'][name]}
@@ -159,7 +161,7 @@ class InstructionChangeTests(unittest.TestCase):
             self.assertEqual('review-required', adapter.ready_plan(worker, ready, include=includes)['result'])
             second['loading_review'] = record['loading_review']
             ready = self.commit(worker, receipt_name, json.dumps({'instruction_changes': [first, second]}))
-            self.assertEqual('ready', adapter.ready_plan(worker, ready, include=includes)['result'])
+            self.assertEqual('review-required', adapter.ready_plan(worker, ready, include=includes)['result'])
             # An existing but unlinked file cannot count as loaded preservation.
             orphan = worker / 'skills/kept/references/orphan.md'
             orphan.write_bytes(b'Unreachable protocol.\n')
@@ -178,7 +180,7 @@ class InstructionChangeTests(unittest.TestCase):
         sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
         import instruction_changes
         import sync_git
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, _, _ = self.setup_instructions(Path(temporary))
             name = 'recovery/current/hosts/omp/AGENTS.md'
             target = repo / name
@@ -212,7 +214,7 @@ class InstructionChangeTests(unittest.TestCase):
 
     def test_ready_blocks_unjustified_instruction_before_deploy(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             worker = self.worker(repo, 'instruction-worker')
             ready = self.commit(worker, 'surfaces/core.md', 'Always write another instruction.\n')
@@ -225,7 +227,7 @@ class InstructionChangeTests(unittest.TestCase):
 
     def test_bound_correction_passes_but_sufficient_baseline_and_stale_receipts_block(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             worker = self.worker(repo, 'instruction-worker')
             target = worker / 'surfaces/core.md'
@@ -247,7 +249,7 @@ class InstructionChangeTests(unittest.TestCase):
             ready = self.git(worker, 'rev-parse', 'HEAD')
             includes = ['surfaces/core.md', 'evals/results/instruction-test.json']
             result = adapter.ready_plan(worker, ready, include=includes)
-            self.assertEqual('ready', result['result'], result)
+            self.assertEqual('review-required', result['result'], result)
             original = json.loads(json.dumps(record))
             for key, value in [('owner', 'skills/random'), ('basis', 'guess'),
                                ('evidence', ''), ('why_instruction', None),
@@ -279,7 +281,7 @@ class InstructionChangeTests(unittest.TestCase):
 
     def test_random_instruction_file_rejects_and_ordinary_code_needs_no_instruction_record(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             worker = self.worker(repo, 'instruction-worker')
             ready = self.commit(worker, 'tools/helper.py', 'value = 1\n')
@@ -294,7 +296,7 @@ class InstructionChangeTests(unittest.TestCase):
 
     def test_shared_checkout_is_gated_before_publication(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             (repo / 'surfaces/core.md').write_bytes(b'Unjustified new rule.\n')
             before = self.snapshot(repo), self.git(remote, 'rev-parse', 'main')
@@ -306,7 +308,7 @@ class InstructionChangeTests(unittest.TestCase):
 
     def test_generated_copy_cannot_use_an_unchanged_source_as_exemption(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             name = 'recovery/current/hosts/codex/AGENTS.md'
             target = repo / name
@@ -321,7 +323,7 @@ class InstructionChangeTests(unittest.TestCase):
 
     def test_broad_publication_is_also_gated_before_writes(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             (repo / 'surfaces/core.md').write_bytes(b'Unjustified new standing rule.\n')
             before = self.snapshot(repo), self.git(remote, 'rev-parse', 'main')
@@ -337,7 +339,7 @@ class InstructionChangeTests(unittest.TestCase):
 
     def test_broad_live_origin_adoption_is_gated_before_other_agents_change(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             owner = repo / 'contracts/ownership.json'
             owner.write_text(json.dumps({'capabilities': [{'id': 'kept', 'owner': 'skills/kept'}]}))
@@ -357,7 +359,7 @@ class InstructionChangeTests(unittest.TestCase):
 
     def test_sufficient_baseline_allows_pure_removal_but_not_a_disguised_rewrite(self):
         adapter = self.adapter()
-        with tempfile.TemporaryDirectory() as temporary:
+        with provided_workspace() as temporary:
             repo, live, remote = self.setup_instructions(Path(temporary))
             worker = self.worker(repo, 'instruction-worker')
             target = worker / 'surfaces/core.md'
@@ -377,7 +379,8 @@ class InstructionChangeTests(unittest.TestCase):
             self.git(worker, 'commit', '-m', 'remove redundant instruction')
             includes = ['surfaces/core.md', 'evals/results/instruction-test.json']
             result = adapter.ready_plan(worker, self.git(worker, 'rev-parse', 'HEAD'), include=includes)
-            self.assertEqual('ready', result['result'], result)
+            self.assertEqual('review-required', result['result'], result)
+            self.assertIn('instruction excluded', result['reason'])
             target.write_bytes(b'A newly invented requirement.\n')
             record['artifacts']['surfaces/core.md']['after_sha256'] = hashlib.sha256(target.read_bytes()).hexdigest()
             receipt.write_bytes(json.dumps({'instruction_changes': [record]}).encode())

@@ -1,4 +1,6 @@
 from __future__ import annotations
+from fixture_workspace import configure as configure_test_workspace
+configure_test_workspace()
 
 import contextlib
 import copy
@@ -48,7 +50,7 @@ def historical_report(report: dict) -> dict:
     return report
 
 
-def make_evaluation(root: Path, *, version: int | None = 3, outcome: str = "tie", agent: str = "codex", retain: bool = False, mode: str = "admission", baseline: bool = True, case_ids: list[str] | None = None, retry_first: bool = False, cleanup_failure: bool = False, judge_agent: str = "codex") -> dict:
+def make_evaluation(root: Path, *, version: int | None = 3, outcome: str = "tie", agent: str = "codex", retain: bool = False, mode: str = "admission", baseline: bool = True, case_ids: list[str] | None = None, retry_first: bool = False, cleanup_failure: bool = False, judge_agent: str = "codex", native_usage: dict | None = None) -> dict:
     """Run the actual report producer with fake transport, no network or models.
 
     Returned paths and bytes are real fixture inputs; receipt checks, judgment
@@ -64,7 +66,8 @@ def make_evaluation(root: Path, *, version: int | None = 3, outcome: str = "tie"
     # More observations let the genuine v2 confidence rule admit strong evidence.
     copies = 12 if version != 3 and outcome == "win" else 1
     cases = [{"id": f"{kind}-{index}", "kind": kind, "prompt": f"Decide whether to hold {kind}-{index}.", "criteria": ["Give the correct decision."], "must_contain": ["hold"]} for index in range(copies) for kind in kinds]
-    suite = {"schema_version": version, "name": "real-producer-fixture", "claim": "Correct decision receipts.", "cases": cases}
+    suite = {"schema_version": version, "name": "real-producer-fixture", "claim": "Correct decision receipts.", "cases": cases,
+             "comparison_requirements": {"interaction": "single-turn", "context": "isolated-text-projection", "metrics": ["outcome_correctness"]}}
     if version is None:
         del suite["schema_version"]
     if version == 3:
@@ -74,6 +77,18 @@ def make_evaluation(root: Path, *, version: int | None = 3, outcome: str = "tie"
         )
         for case in cases:
             case.update(expected_receipt={"decision": "hold"}, semantic_criteria=[{"id": "sound", "text": "Reasoning supports the decision."}])
+    for case in cases:
+        checks = ["criteria:0", "must_contain:0"]
+        if version == 3:
+            checks = ["criteria:0", "semantic_criteria:sound", "receipt_schema", "expected_receipt:decision"]
+        case["acceptance_review"] = {
+            "reviewer": "synthetic fixture; no semantic validation claim",
+            "assertions": [{"check": key, "requirement": "Fixture requires a hold decision receipt",
+                            "constraint": "required_interface", "justification": "Synthetic explicit receipt contract"} for key in checks],
+            "controls": [{"id": "alternative", "output": json.dumps({"decision":"hold","reason":"Keep pending"}) if version == 3 else "hold pending",
+                          "deterministic_pass": True, "outcome": "adequate", "alternative": True, "rationale": "Different valid reason wording"},
+                         {"id": "broken", "output": json.dumps({"decision":"go","reason":"Proceed"}) if version == 3 else "go",
+                          "deterministic_pass": False, "outcome": "broken", "alternative": False, "rationale": "Wrong required decision"}]}
     suite_raw = (json.dumps(suite, indent=2) + "\n").encode()
     suite_path.write_bytes(suite_raw)
     cap = len(cases) * 5 * 2
@@ -116,6 +131,8 @@ def make_evaluation(root: Path, *, version: int | None = 3, outcome: str = "tie"
             "session_ids": [], "session_receipt_error": None,
             "route_attestation": {"required": True, "ok": True, "errors": [], "provider_resolved_identity_verified": False, "source": "native-runtime-metadata" if run_agent == "codex" else "native-AIAgent-runtime-metadata", "requested": {"model": model, "provider": provider, "reasoning": reasoning, "tool_policy": tool_policy}, "observed": observed},
         }
+        if native_usage is not None:
+            run['native_usage'] = copy.deepcopy(native_usage)
         assembled = "Synthetic native prompt without personal context."
         contract = {
             "lane": "inline-text-no-tools-v1", "tool_policy": "none", "credentials_outside_fixture": True,
@@ -432,3 +449,15 @@ class EvaluationEvidenceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def attribute_fixture_judges(report):
+    """Synthetic fixture attribution must agree across paired runs and ledger."""
+    for result in report['results']:
+        for judgment in result['judgments']:
+            run = judgment['run']
+            for value in [run, *run['attempts']]:
+                value['workflow_accounting'] = {'target_arm': 'candidate'}
+    for entry in report['attempt_ledger']:
+        if str(entry.get('role', '')).startswith('judge'):
+            entry['workflow_accounting'] = {'target_arm': 'candidate'}

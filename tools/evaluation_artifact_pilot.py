@@ -6,6 +6,7 @@ retries, fallback, configuration mutation, or new workflow scheduler lives here.
 """
 from __future__ import annotations
 import argparse
+import datetime as dt
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
@@ -29,16 +30,39 @@ def tree(root):
             if p.is_file() and '__pycache__' not in p.parts and '.git' not in p.parts}
 
 
+def is_native(spec):
+    return spec.get('purpose') in ('native-skill-study', 'native-runtime-smoke')
+
+
+def native_prompt(spec, case, frozen):
+    prompt = case['prompt']
+    if spec.get('instruction_exposure', 'native-discovery') == 'explicit-body' and frozen:
+        prompt += '\n\n<optional-instruction-exposure>\n' + frozen['prompt_text'] + '\n</optional-instruction-exposure>'
+    return prompt
+
+
 def validate(spec):
-    if spec.get('purpose') not in ('runtime-smoke', 'injected-instruction-study', 'native-skill-study'):
-        raise ValueError('Explicit purpose required: runtime-smoke, injected-instruction-study or native-skill-study. '
+    if spec.get('purpose') not in ('runtime-smoke', 'injected-instruction-study', 'native-skill-study', 'native-runtime-smoke'):
+        raise ValueError('Explicit purpose required: runtime-smoke, injected-instruction-study, native-runtime-smoke or native-skill-study. '
                          'This leaf runner cannot evaluate architecture or delegation workflows.')
-    if spec['purpose'] == 'native-skill-study':
-        if (spec.get('agent') not in ('codex', 'hermes') or spec.get('provider') != 'openai-codex' or spec.get('model') != 'gpt-6-sol' or spec.get('reasoning') != 'medium'):
-            raise ValueError('Native skill study requires an explicit codex or hermes host/openai-codex/gpt-6-sol/medium')
-        if len(spec['arms']) != 2 or sum(a.get('instructions') is None for a in spec['arms']) != 1:
-            raise ValueError('Native study requires one absent-target baseline and one candidate')
-    if spec['purpose'] == 'runtime-smoke' and len(spec['arms']) * len(spec['cases']) != 1:
+    if is_native(spec):
+        if spec.get('instruction_exposure', 'native-discovery') not in ('native-discovery', 'explicit-body'):
+            raise ValueError('Unknown native instruction exposure')
+        if spec.get('instruction_exposure') == 'explicit-body' and spec.get('agent') != 'hermes':
+            raise ValueError('Explicit body diagnostic currently supported only on Hermes')
+        if spec.get('instruction_exposure') == 'explicit-body' and spec.get('max_workers') != 1:
+            raise ValueError('Explicit exposure diagnostic is sequential with setup verification between jobs')
+        if (spec.get('agent') not in ('codex', 'hermes') or spec.get('provider') != 'openai-codex'
+                or not isinstance(spec.get('model'), str) or not spec['model'].strip()
+                or spec.get('reasoning') not in ('low', 'medium', 'high', 'xhigh')):
+            raise ValueError('Native skill study requires an explicit codex or hermes host/openai-codex/model/reasoning')
+        if spec['purpose'] == 'native-skill-study' and (len(spec['arms']) not in (2, 3) or sum(a.get('instructions') is None for a in spec['arms']) != 1):
+            raise ValueError('Native study requires one absent-target baseline and one or two candidates')
+        if spec['purpose'] == 'native-runtime-smoke' and (len(spec['arms']) != 1 or spec['arms'][0].get('instructions') is not None or spec.get('catalog')):
+            raise ValueError('Native runtime smoke requires one absent optional-skill arm and empty optional catalog')
+        if spec.get('prepared_runtime_parent') is not None and spec['agent'] != 'hermes':
+            raise ValueError('Explicit prepared runtime parent is supported only by the Hermes adapter')
+    if spec['purpose'] in ('runtime-smoke', 'native-runtime-smoke') and len(spec['arms']) * len(spec['cases']) != 1:
         raise ValueError('A runtime smoke is limited to one trial, not a workflow comparison')
     if not 1 <= len(spec['arms']) * len(spec['cases']) <= 12:
         raise ValueError('A pilot is limited to twelve model trials')
@@ -46,7 +70,7 @@ def validate(spec):
         raise ValueError('Invalid worker/iteration ceiling')
     if not 1 <= spec['timeout'] <= 600:
         raise ValueError('Invalid time ceiling')
-    if not isinstance(spec['quota_remaining'], (int, float)) or not 0 < spec['quota_remaining'] <= 100:
+    if (not isinstance(spec['quota_remaining'], (int, float)) or not 0 < spec['quota_remaining'] <= 100):
         raise ValueError('An observed nonzero subscription quota is required')
     if len({a['id'] for a in spec['arms']}) != len(spec['arms']):
         raise ValueError('Duplicate arm')
@@ -64,7 +88,7 @@ def prepare(spec, out):
     frames = {a['id']: freeze_candidate(Path(a['instructions'])) if a.get('instructions') else None for a in spec['arms']}
     source_trees = {}
     common_catalog = {}
-    if spec['purpose'] == 'native-skill-study':
+    if is_native(spec):
         source_trees = {case['id']: tree(Path(case['fixture'])) for case in spec['cases']}
         common_catalog = {str(Path(source)): freeze_candidate(Path(source)) for source in spec.get('catalog', [])}
     jobs = []
@@ -75,11 +99,11 @@ def prepare(spec, out):
             ident = uuid.uuid4().hex
             fixture = workroot / ident
             shutil.copytree(case['fixture'], fixture)
-            if spec['purpose'] == 'native-skill-study':
+            if is_native(spec):
                 if tree(fixture) != source_trees[case['id']]:
                     raise ValueError('Copied fixture differs from shared frozen source')
                 sources = [(Path(source), common_catalog[str(Path(source))]) for source in spec.get('catalog', [])]
-                if arm.get('instructions'):
+                if arm.get('instructions') and spec.get('instruction_exposure') != 'explicit-body':
                     sources.append((Path(arm['instructions']), frames[arm['id']]))
                 catalog = []
                 catalog_frames = {}
@@ -108,24 +132,55 @@ def prepare(spec, out):
                 catalog_frames = {}
                 instructions = frames[arm['id']]['prompt_text']
             prompt = case['prompt'] + '\n\nProject: ' + str(fixture) + '\nWork only in this project. Do not delegate, use network services, or modify parent directories.'
-            if spec['purpose'] == 'native-skill-study':
-                prompt = case['prompt']
+            if is_native(spec):
+                prompt = native_prompt(spec, case, frames[arm['id']])
             jobs.append({'catalog_frames': catalog_frames, 'catalog': catalog, 'id': ident, 'arm': arm['id'], 'case': case['id'],
                          'fixture': str(fixture), 'initial_tree': tree(fixture),
                          'instructions': instructions, 'prompt': prompt})
     plan = {'spec': spec, 'jobs': jobs, 'candidate_snapshots': frames,
+            'prepared_timestamp_utc': dt.datetime.now(dt.timezone.utc).isoformat(),
             'oracle_sha256': sha(spec['oracle']), 'controller_sha256': sha(__file__),
             'worker_sha256': sha(Path(__file__).with_name('evaluation_artifact_worker.py')),
             'native_hermes_worker_sha256': sha(Path(__file__).with_name('evaluation_hermes_worker.py')),
             'runtime_sha256': sha(Path(__file__).with_name('evaluation_runtime.py')),
+            'measurement_sha256': sha(Path(__file__).with_name('evaluation_measurement.py')),
+            'usage_observer_sha256': sha(Path(__file__).with_name('evaluation_usage.py')),
             'kind': spec['purpose'], 'workflow_comparison_supported': False,
             'resource_limits': {'timeout_seconds': spec['timeout'],
                                 'max_iterations': spec['max_iterations'] if spec.get('agent') == 'hermes' else None,
                                 'iteration_limit_enforced': spec.get('agent') == 'hermes'}}
-    if spec['purpose'] == 'native-skill-study':
+    if is_native(spec):
         plan.update(case_source_trees=source_trees, common_catalog_snapshots=common_catalog)
     (out / 'plan.json').write_text(json.dumps(plan, indent=2) + '\n', encoding='utf-8')
     return plan
+
+
+def prior_attempts(plan):
+    """Bind completed attempt receipts; never authorize a retry or grant admission."""
+    refs = plan.get('prior_attempts', [])
+    if not refs:
+        return {}
+    if not is_native(plan['spec']):
+        raise ValueError('Attempt continuation requires the native artifact owner')
+    bound = {}
+    jobs = {job['id']: job for job in plan['jobs']}
+    for ref in refs:
+        if sha(ref['report']) != ref['report_sha256'] or sha(ref['plan']) != ref['plan_sha256']:
+            raise ValueError('Prior attempt source binding changed')
+        old_plan = json.loads(Path(ref['plan']).read_bytes())
+        report = json.loads(Path(ref['report']).read_bytes())
+        for key in ('agent', 'provider', 'model', 'reasoning', 'timeout', 'max_iterations', 'instruction_exposure', 'terminal_backend'):
+            if old_plan['spec'].get(key) != plan['spec'].get(key):
+                raise ValueError('Prior attempt task/runtime route changed')
+        for ident in ref['job_ids']:
+            rows = [r for r in report['results'] if r['id'] == ident]
+            old = [j for j in old_plan['jobs'] if j['id'] == ident]
+            if ident in bound or ident not in jobs or len(rows) != 1 or len(old) != 1 or old[0] != jobs[ident]:
+                raise ValueError('Prior attempt is missing, duplicated or differs from original job')
+            if (rows[0]['arm'], rows[0]['case']) != (jobs[ident]['arm'], jobs[ident]['case']):
+                raise ValueError('Prior attempt membership mismatch')
+            bound[ident] = rows[0]
+    return bound
 
 
 def validate_jobs(plan):
@@ -138,7 +193,8 @@ def validate_jobs(plan):
     cases = {case['id']: case for case in spec['cases']}
     expected = {(arm['id'], case) for arm in spec['arms'] for case in cases}
     jobs = plan['jobs']
-    if spec['purpose'] == 'native-skill-study':
+    prior = prior_attempts(plan)
+    if is_native(spec):
         if set(plan.get('case_source_trees', {})) != set(cases):
             raise ValueError('Shared frozen fixture inventory changed')
         if set(plan.get('common_catalog_snapshots', {})) != {str(Path(source)) for source in spec.get('catalog', [])}:
@@ -147,6 +203,24 @@ def validate_jobs(plan):
         raise ValueError('Prepared trial count differs from the declared suite')
     seen_pairs, seen_ids = set(), set()
     workroot = Path(spec['workspace_root']).resolve()
+    if spec.get('request_recording_parent'):
+        parent = Path(spec['request_recording_parent'])
+        if (spec.get('agent') != 'hermes' or not parent.is_absolute() or parent.resolve() != parent.absolute()
+                or not parent.is_dir() or parent == Path(parent.anchor)):
+            raise ValueError('Request recording needs a caller-provisioned canonical Hermes archive parent')
+        for item in jobs:
+            fixture = Path(item['fixture']).resolve()
+            if parent.is_relative_to(fixture) or fixture.is_relative_to(parent):
+                raise ValueError('Request recording parent must be separate from all actor fixtures')
+    if spec.get('prepared_runtime_parent'):
+        parent = Path(spec['prepared_runtime_parent'])
+        if (not parent.is_absolute() or parent == Path(parent.anchor) or parent.resolve() != parent.absolute()
+                or not parent.is_dir() or any(parent.iterdir())):
+            raise ValueError('Prepared runtime parent must be a fresh caller-provisioned canonical private directory')
+        for item in jobs:
+            fixture = Path(item['fixture']).resolve()
+            if parent.is_relative_to(fixture) or fixture.is_relative_to(parent):
+                raise ValueError('Prepared runtime parent must be separate from every model fixture')
     for item in jobs:
         pair = (item['arm'], item['case'])
         ident = item['id']
@@ -160,11 +234,11 @@ def validate_jobs(plan):
         if fixture != workroot / ident or not fixture.is_dir():
             raise ValueError('Prepared fixture location changed')
         prompt = cases[item['case']]['prompt'] + '\n\nProject: ' + item['fixture'] + '\nWork only in this project. Do not delegate, use network services, or modify parent directories.'
-        if spec['purpose'] == 'native-skill-study':
-            prompt = cases[item['case']]['prompt']
+        if is_native(spec):
             arm = next(a for a in spec['arms'] if a['id'] == item['arm'])
+            prompt = native_prompt(spec, cases[item['case']], plan['candidate_snapshots'][item['arm']])
             sources = [(Path(source), plan['common_catalog_snapshots'][str(Path(source))]) for source in spec.get('catalog', [])]
-            if arm.get('instructions'):
+            if arm.get('instructions') and spec.get('instruction_exposure') != 'explicit-body':
                 sources.append((Path(arm['instructions']), plan['candidate_snapshots'][item['arm']]))
             expected_tree = dict(plan['case_source_trees'][item['case']])
             declared_catalog = {}
@@ -189,9 +263,10 @@ def validate_jobs(plan):
                 raise ValueError('Native study cannot inject instructions')
         if item['prompt'] != prompt:
             raise ValueError('Prepared prompt differs from the declared case')
-        if spec['purpose'] != 'native-skill-study' and item['instructions'] != plan['candidate_snapshots'][item['arm']]['prompt_text']:
+        if not is_native(spec) and item['instructions'] != plan['candidate_snapshots'][item['arm']]['prompt_text']:
             raise ValueError('Prepared instructions differ from the frozen candidate')
-        if tree(fixture) != item['initial_tree']:
+        expected_current = prior[ident]['final_tree'] if ident in prior else item['initial_tree']
+        if tree(fixture) != expected_current:
             raise ValueError('Prepared fixture contents changed')
 
 
@@ -203,8 +278,12 @@ def run(plan, out):
         raise ValueError('Frozen oracle changed')
     if sha(__file__) != plan['controller_sha256'] or sha(Path(__file__).with_name('evaluation_artifact_worker.py')) != plan['worker_sha256']:
         raise ValueError('Frozen execution code changed')
+    if sha(Path(__file__).with_name('evaluation_measurement.py')) != plan.get('measurement_sha256'):
+        raise ValueError('Frozen measurement projection changed')
+    if sha(Path(__file__).with_name('evaluation_usage.py')) != plan.get('usage_observer_sha256'):
+        raise ValueError('Frozen usage observer changed')
     validate_jobs(plan)
-    if spec['purpose'] == 'native-skill-study':
+    if is_native(spec):
         if sha(Path(__file__).with_name('evaluation_runtime.py')) != plan['runtime_sha256']:
             raise ValueError('Frozen native runtime changed')
         if spec['agent'] == 'hermes' and sha(Path(__file__).with_name('evaluation_hermes_worker.py')) != plan['native_hermes_worker_sha256']:
@@ -288,8 +367,11 @@ def run(plan, out):
     with ThreadPoolExecutor(max_workers=spec['max_workers']) as pool:
         results = list(pool.map(one, plan['jobs']))
     report = {'kind': spec['purpose'], 'workflow_comparison_supported': False,
+              'timestamp_utc': dt.datetime.now(dt.timezone.utc).isoformat(),
               'results': results, 'seconds': time.monotonic() - started,
               'completed_trials': len(results), 'expected_trials': len(plan['jobs']), 'admission': False}
+    from evaluation_measurement import attach_measurements
+    attach_measurements(report, plan)
     (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     return report
 
@@ -298,6 +380,10 @@ def run(plan, out):
 def run_native_plan(plan, out):
     from evaluation_runtime import run_native_skill_study
     spec = plan['spec']
+    if spec.get('agent') == 'hermes' and not spec.get('request_recording_parent'):
+        raise ValueError('New Hermes runs require an explicit evaluator-owned request_recording_parent; no fallback')
+    prior = prior_attempts(plan)
+    pending = [job for job in plan['jobs'] if job['id'] not in prior]
     def one(item):
         path = out / item['id']
         if path.exists():
@@ -306,8 +392,43 @@ def run_native_plan(plan, out):
         fixture = Path(item['fixture'])
         result = {'id': item['id'], 'arm': item['arm'], 'case': item['case'], 'ok': False, 'oracle_seconds': None}
         started = time.monotonic()
+        recording = None
+        if spec.get('request_recording_parent'):
+            from evaluation_measurement import digest
+            recording = {'directory': str(Path(spec['request_recording_parent']) / ('requests-' + item['id'])),
+                'binding': {'run_id': item['id'], 'case_id': item['case'], 'arm': item['arm'],
+                    'plan_sha256': digest(plan), 'task_sha256': hashlib.sha256(item['prompt'].encode()).hexdigest(),
+                    'oracle_sha256': plan['oracle_sha256']}}
+        prepared = None
+        if spec.get('prepared_runtime_parent'):
+            # Provisioning/privacy authority belongs to the explicit caller.
+            # No alternate allocation is selected if this operation fails.
+            parent = Path(spec['prepared_runtime_parent'])
+            if not parent.is_absolute() or parent.resolve() != parent.absolute() or not parent.is_dir():
+                raise ValueError('Prepared runtime parent must be a caller-provisioned canonical private directory')
+            prepared = parent / item['id']
+            prepared.mkdir()
         worker = run_native_skill_study(item['prompt'], fixture, spec['timeout'], item['catalog'],
-                                       agent=spec['agent'], max_iterations=spec['max_iterations'])
+                                       agent=spec['agent'], max_iterations=spec['max_iterations'],
+                                       model=spec['model'], reasoning=spec['reasoning'], prepared_runtime=prepared,
+                                       **({'terminal_backend':spec['terminal_backend']} if spec.get('terminal_backend') else {}),
+                                       **({'request_recording': recording} if recording else {}))
+        if spec.get('terminal_backend'):
+            observed_backend = worker.get('terminal_backend', {})
+            result['backend_setup_ok'] = (observed_backend.get('name') == spec['terminal_backend']
+                                           and observed_backend.get('registration_verified') is True)
+            if not result['backend_setup_ok']:
+                worker['ok'] = False
+                worker['failure_attribution'] = {'category':'evaluator-setup',
+                    'evidence_sha256':hashlib.sha256(json.dumps(observed_backend,sort_keys=True).encode()).hexdigest()}
+        if spec.get('instruction_exposure') == 'explicit-body':
+            trace = worker.get('native_usage', {}).get('lifecycle', {}).get('exposure_events', [])
+            expected_body = next(arm for arm in spec['arms'] if arm['id'] == item['arm']).get('instructions') is not None
+            result['exposure_setup_ok'] = bool(trace and trace[0].get('optional_body_present') is expected_body
+                and trace[0].get('terminal_contract_present') is True and (trace[0].get('tool_count') or 0)>0)
+            if not result['exposure_setup_ok']:
+                worker['failure_attribution'] = {'category':'evaluator-setup',
+                    'evidence_sha256': hashlib.sha256(json.dumps(trace,sort_keys=True).encode()).hexdigest()}
         (path / 'worker.json').write_text(json.dumps(worker, indent=2)+'\n', encoding='utf-8')
         result['native'] = worker
         try:
@@ -325,14 +446,45 @@ def run_native_plan(plan, out):
             result['error'] = type(exc).__name__ + ': ' + str(exc)
         result['seconds_including_verification'] = time.monotonic() - started
         result['final_tree'] = tree(fixture)
+        if recording:
+            from evaluation_measurement import digest
+            from evaluation_usage import bind_recorded_output
+            try:
+                result['request_recording'] = bind_recorded_output(recording['directory'],
+                    worker.get('request_recording', {}), recording['binding'],
+                    {'oracle_sha256': plan['oracle_sha256'], 'oracle_exit_code': result.get('oracle_exit_code'),
+                     'oracle_result_sha256': digest(result.get('oracle')), 'task_passed': result['ok'],
+                     'final_tree_sha256': digest(result['final_tree']),
+                     'final_response_sha256': hashlib.sha256((worker.get('final_response') or '').encode()).hexdigest()})
+                if not result['request_recording']['complete']:
+                    result['ok'] = False
+            except Exception as exc:
+                result['request_recording'] = {'complete': False, 'error_type': type(exc).__name__,
+                                               'execution_authenticated': False}
+                result['ok'] = False
         (path / 'result.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
         return result
     started = time.monotonic()
-    with ThreadPoolExecutor(max_workers=spec['max_workers']) as pool:
-        results = list(pool.map(one, plan['jobs']))
-    report = {'kind': 'native-skill-study', 'workflow_comparison_supported': False, 'admission': False,
-              'results': results, 'seconds': time.monotonic()-started, 'completed_trials': len(results), 'expected_trials': len(plan['jobs']),
+    if spec.get('instruction_exposure') == 'explicit-body' or spec.get('request_recording_parent'):
+        results = []
+        for item in pending:
+            result = one(item)
+            results.append(result)
+            if (spec.get('instruction_exposure') == 'explicit-body' and not result.get('exposure_setup_ok')
+                    or spec.get('terminal_backend') and not result.get('backend_setup_ok')
+                    or spec.get('request_recording_parent') and not result.get('request_recording', {}).get('complete')):
+                break  # Fix recording/exposure setup before spending further model calls.
+    else:
+        with ThreadPoolExecutor(max_workers=spec['max_workers']) as pool:
+            results = list(pool.map(one, pending))
+    report = {'kind': spec['purpose'], 'workflow_comparison_supported': False, 'admission': False,
+              'timestamp_utc': dt.datetime.now(dt.timezone.utc).isoformat(),
+              'results': results, 'seconds': time.monotonic()-started, 'completed_trials': len(results), 'expected_trials': len(pending),
+              'full_suite_expected_trials': len(plan['jobs']),
+              'prior_attempt_ids': sorted(prior), 'prior_attempt_refs': plan.get('prior_attempts', []),
               'limits': ['selected leaf skill only', 'provider resolved model identity unverified', 'subscription dollar cost unavailable']}
+    from evaluation_measurement import attach_measurements
+    attach_measurements(report, plan)
     (out / 'report.json').write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
     return report
 

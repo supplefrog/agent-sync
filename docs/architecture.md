@@ -145,10 +145,10 @@ The shared layer specifies outcomes. It does not emulate these mechanisms unless
 
 Skills and global agent files are model inputs, not permanent capabilities. When a changed model stack is selected for an active route, Agent Sync performs a bounded inverse-admission pass:
 
-1. remove deterministic duplicates and dead mappings without model calls;
+1. identify deterministic duplicates and dead mappings without model calls; present findings, dependencies and possible loss, and ask the user before removal;
 2. reopen only model-sensitive generic steering, not stable commands, local procedures, or protected guarantees;
-3. compare the bare model, the current full owner, and full-minus-one-unit on a compact owning suite plus canaries;
-4. prefer deletion on a clean tie, use binary splitting only when overlapping units preserve a demonstrated gain, and escalate subjective judging only at the boundary; and
+3. use the smallest decisive comparison of the current owner, full-minus-one-unit or a minimal hosted setup on relevant cases plus canaries; retained platform instructions mean this is not a raw base model;
+4. propose the simpler adequate option on a clean tie; obtain approval before removal. Use binary splitting only when overlapping units preserve a demonstrated gain; and
 5. cache by the effective model/provider/reasoning/tool/prompt stack plus unit, suite, and harness hashes.
 
 The release cron may produce a retirement plan and evidence only after recommending the model for an active route. It never edits live surfaces or runs the whole skill library through an LLM curator.

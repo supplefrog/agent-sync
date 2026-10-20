@@ -37,6 +37,33 @@ def supported_lane(agent: str, provider: str | None, tool_policy: str, full_tool
         raise ValueError("unsupported evaluator provider: only the built-in OpenAI/Codex route is implemented")
 
 
+def comparison_readiness(suite: dict) -> dict:
+    """Reject questions this existing lane cannot answer, before any call."""
+    requirements = suite.get('comparison_requirements')
+    errors, remedies = [], []
+    if not isinstance(requirements, dict):
+        return {'ready': False, 'errors': ['comparison requirements must state interaction, context and metrics'],
+                'remedies': ['Record the actual comparison question in the suite before launching.']}
+    if requirements.get('interaction') != 'single-turn' or any('turns' in c for c in suite.get('cases', [])):
+        errors.append('inline-text lane cannot measure multi-turn adaptation')
+        remedies.append('Use a supported conversation route preserving successive user turns and inspect final artifacts; do not flatten the dialogue into a solved-case prompt.')
+    if requirements.get('context') != 'isolated-text-projection':
+        errors.append('required full-context isolation/loading is not observable in this lane')
+        remedies.append('Use a route with observed authored-bundle loading/isolation or narrow the claim to explicit text projection.')
+    metrics = requirements.get('metrics')
+    if not isinstance(metrics, list) or not metrics or any(not isinstance(m, str) or m not in {'outcome_correctness', 'wall_seconds'} for m in metrics):
+        errors.append('required usage/cost/context measurement is unavailable')
+        remedies.append('Obtain supported usage accounting or narrow the question to observable correctness; wall time alone cannot establish total efficiency.')
+    if requirements.get('physical_call_cap') is not None:
+        errors.append('physical-call cap cannot be enforced by the logical agent-run budget')
+        remedies.append('Use provider-level attempt accounting and a hard stop, or obtain an explicitly revised run/time scope before spending.')
+    unknown = set(requirements) - {'interaction', 'context', 'metrics', 'physical_call_cap'}
+    if unknown:
+        errors.append('unsupported comparison requirements: ' + ', '.join(sorted(unknown)))
+    return {'ready': not errors, 'errors': errors, 'remedies': remedies,
+            'requirements': requirements, 'scope': 'single-turn explicit text; runtime isolation still verified before each inference'}
+
+
 def runtime_environment(source: dict[str, str], root: Path) -> dict[str, str]:
     """Do not inherit provider secrets, host connectors, profiles, or agent state."""
     env = {key: value for key, value in source.items() if key.upper() in SYSTEM_ENV_KEYS}
@@ -57,6 +84,12 @@ def _token_projection(tokens: Any) -> dict[str, str]:
         return {}
     return {key: value for key, value in tokens.items()
             if key in {"access_token", "refresh_token", "id_token", "account_id"} and isinstance(value, str)}
+
+
+def require_no_install_environment(env: dict[str, str]) -> None:
+    """Fail before native imports/launch in the isolated no-install evaluator lane."""
+    if env.get("HERMES_DISABLE_LAZY_INSTALLS", "").lower() not in {"1", "true", "yes"}:
+        raise ValueError("no-install evaluation requires HERMES_DISABLE_LAZY_INSTALLS before native imports")
 
 
 def stage_auth(agent: str, source: dict[str, str], env: dict[str, str]) -> None:
@@ -366,9 +399,47 @@ def cleanup_runtime(root: Path, fixture: Path) -> dict[str, Any]:
     return {"credentials_removed": credentials_removed, "state_removed": not root.exists(), "errors": errors}
 
 
+def prepared_runtime_directory(root: Path, fixture: Path) -> Path:
+    """Accept an explicitly provisioned, private disposable directory.
+
+    The caller owns its privacy/provisioning authorization. This checks fresh
+    isolation, not ACLs, and never falls back after a denied operation.
+    """
+    root = Path(root)
+    if (not root.is_absolute() or root == Path(root.anchor) or not root.is_dir()
+            or root.resolve() != root.absolute()):
+        raise ValueError('prepared runtime must be an existing regular absolute directory')
+    if root == fixture or root.is_relative_to(fixture):
+        raise ValueError('prepared runtime must be outside the model fixture')
+    if any(root.iterdir()):
+        raise ValueError('prepared runtime must be empty and exclusively disposable')
+    # Claim before returning ownership to the caller. A concurrent claimant
+    # cannot make a failed preparation clean another run's directory.
+    with (root / '.agent-signal-runtime-owner').open('x', encoding='utf-8') as owner:
+        owner.write('exclusive disposable evaluator runtime')
+    return root
+
+
+def runtime_access_preflight(root: Path) -> None:
+    """Ordinary owned-file access only; no permission inspection or repair."""
+    directory = root / '.agent-signal-runtime-access-probe'
+    directory.mkdir()
+    probe = directory / 'file'
+    with probe.open('x', encoding='utf-8') as stream:
+        stream.write('created')
+    if probe.read_text(encoding='utf-8') != 'created':
+        raise RuntimeError('runtime access preflight could not read its owned file')
+    with probe.open('a', encoding='utf-8') as stream:
+        stream.write('-updated')
+    if probe.read_text(encoding='utf-8') != 'created-updated':
+        raise RuntimeError('runtime access preflight could not read its update')
+    probe.unlink()
+    directory.rmdir()
+
+
 def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: str, provider: str,
                  reasoning: str, output_schema: dict | None, require_attestation: bool,
-                 strict_json: Callable[[str], dict]) -> dict[str, Any]:
+                 strict_json: Callable[[str], dict], *, prepared_runtime: Path | None = None) -> dict[str, Any]:
     supported_lane(agent, provider, "none", False)
     # Windows command shims can consult the original LOCALAPPDATA or execute
     # a user PowerShell profile. Resolve the native Codex binary before isolation.
@@ -377,13 +448,16 @@ def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: st
         raise ValueError(f"{agent} executable unavailable")
     fixture = fixture.resolve()
     fixture.mkdir(parents=True, exist_ok=True)
-    runtime = Path(tempfile.mkdtemp(prefix="agent-signal-runtime-"))
+    runtime = (prepared_runtime_directory(prepared_runtime, fixture) if prepared_runtime is not None
+               else Path(tempfile.mkdtemp(prefix="agent-signal-runtime-")))
     if runtime.resolve().is_relative_to(fixture):
         raise ValueError("disposable runtime must be outside the model fixture")
     source = dict(os.environ)
     started = time.monotonic()
     requested = {"model": model, "provider": provider, "reasoning": reasoning, "tool_policy": "none"}
     contract = {"lane": "inline-text-no-tools-v1", "tool_policy": "none", "credentials_outside_fixture": True,
+                "owned_runtime_directory": str(runtime),
+                "runtime_directory_source": "explicit-prepared-directory" if prepared_runtime is not None else "private-mkdtemp",
                 "personal_config_copied": False, "global_session_cleanup_authority": False,
                 "credential_owner": agent, "cross_host_credential_fallback": False,
                 "tool_schema_absence_verified": False, "controls": {},
@@ -399,7 +473,12 @@ def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: st
     process = None
     contract["phase"] = "setup"
     try:
+        contract['setup_operation'] = 'runtime-access-preflight'
+        runtime_access_preflight(runtime)
+        contract['setup_operation'] = 'runtime-environment'
         env = runtime_environment(source, runtime)
+        if agent == "hermes":
+            require_no_install_environment(env)
         output_file = fixture / f"last-{time.time_ns()}.txt"
         if agent == "codex":
             common = codex_common(fixture, model, reasoning)
@@ -419,7 +498,9 @@ def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: st
             command.append("-")
             input_text = prompt
         else:
+            contract['setup_operation'] = 'native-hermes-runtime-discovery'
             native_python, native_source = native_hermes_runtime(exe)
+            contract['setup_operation'] = 'worker-command-construction'
             contract["controls"] = {"adapter": "native-AIAgent-API", "safe_mode": True, "toolsets": "none", "ignore_rules": True,
                                     "ignore_user_config": True, "fresh_user_home": True, "fresh_runtime_home": True,
                                     "skip_context_files": True, "skip_memory": True, "load_soul_identity": False,
@@ -461,12 +542,19 @@ def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: st
         else:
             worker = strict_json(stdout)
             result["failure"] = worker.get("failure")
+            # Preserve available usage even if the worker failed before route
+            # metadata, without converting that failure into a valid receipt.
+            result["native_usage"] = worker.get("native_usage", {})
+            contract["worker_cleanup_errors"] = worker.get("worker_cleanup_errors", [])
             if "route_attestation" not in worker:
                 raise ValueError("native Hermes worker failed before producing route metadata")
             result["output"] = worker["output"]
             attestation = worker["route_attestation"]
             contract["prompt_isolation"] = worker["prompt_isolation"]
             contract["tool_observation"] = worker["tool_observation"]
+            contract["native_controls"] = worker.get("native_controls", {})
+            result["native_usage"] = worker.get("native_usage", {})
+            contract["native_usage"] = result["native_usage"]
             contract["output_source"] = "native-AIAgent-final-response"
             result["native_result_metadata"] = worker.get("native_result_metadata", {})
             native_result = result["native_result_metadata"]
@@ -505,7 +593,8 @@ def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: st
         contract["cleanup"] = cleanup_runtime(runtime, fixture)
         result["operational_ok"] = (contract["cleanup"]["credentials_removed"] is True
                                     and contract["cleanup"]["state_removed"] is True
-                                    and not contract["cleanup"]["errors"])
+                                    and not contract["cleanup"]["errors"]
+                                    and not contract.get("worker_cleanup_errors"))
         if not result["operational_ok"] and result["failure"] is None:
             result["failure"] = {"kind": "cleanup", "source": "runtime-control", "code": "native-runtime-cleanup-failed"}
         result["ok"] = result["execution_ok"] and result["operational_ok"]
@@ -571,8 +660,8 @@ def skill_study_events(text: str, expected_skills: list[str]) -> dict[str, Any]:
 
 
 def skill_study_preflight(exe: str, fixture: Path, env: dict[str, str], source: dict[str, str],
-                          expected_skills: list[str]) -> tuple[list[str], dict[str, Any]]:
-    common = codex_common(fixture, "gpt-6-sol", "medium")
+                          expected_skills: list[str], *, model: str = "gpt-6-sol", reasoning: str = "medium") -> tuple[list[str], dict[str, Any]]:
+    common = codex_common(fixture, model, reasoning)
     common += ["-c", 'default_permissions=":workspace"', "--enable", "shell_tool", "--enable", "code_mode_host"]
     # Preserve shell tools and native discovery while removing unrelated state.
     required_features = {"shell_tool", "code_mode_host"}
@@ -612,15 +701,21 @@ def skill_study_preflight(exe: str, fixture: Path, env: dict[str, str], source: 
                     "sha256": hashlib.sha256(raw.encode()).hexdigest(), "disabled_skill_count": len(disabled)}
 
 
-def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only=False):
+def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only=False, *, model="gpt-6-sol", reasoning="medium", prepared_runtime=None, request_recording=None, terminal_backend=None):
     """Explicit native host adapter; never chooses a route or falls back."""
     from artifact_hash import freeze_candidate
-    runtime = Path(tempfile.mkdtemp(prefix="agent-signal-hermes-study-"))
+    fixture = Path(fixture).resolve()
+    runtime = (prepared_runtime_directory(prepared_runtime, fixture) if prepared_runtime is not None
+               else Path(tempfile.mkdtemp(prefix="agent-signal-hermes-study-")))
     started = time.monotonic()
     result = {"ok": False, "tokens": None, "dollars": None, "timings": {},
+              "owned_runtime_directory": str(runtime), "runtime_directory_source": "explicit-prepared-directory" if prepared_runtime is not None else "private-mkdtemp",
               "resource_limits": {"timeout_seconds": timeout, "max_iterations": max_iterations,
                                   "iteration_limit_enforced": True}}
     try:
+        result['setup_operation'] = 'runtime-access-preflight'
+        runtime_access_preflight(runtime)
+        result['setup_operation'] = 'runtime-environment'
         source = dict(os.environ)
         env = runtime_environment(source, runtime)
         python, native = native_hermes_runtime(native_executable("hermes"))
@@ -643,8 +738,18 @@ def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterat
         job = {"purpose": "native-skill-study", "assembly_only": assembly_only,
                "native_source": str(native), "credential_owner_home": str(hermes_owner_home(source)),
                "runtime_home": env["HERMES_HOME"], "fixture": str(fixture), "catalog": catalog,
-               "prompt": prompt, "model": "gpt-6-sol", "reasoning": "medium",
+               "prompt": prompt, "model": model, "reasoning": reasoning,
                "max_iterations": max_iterations, "timeout": timeout}
+        if terminal_backend is not None:
+            if terminal_backend != 'direct-python-argv': raise ValueError('Unsupported terminal backend')
+            job['terminal_backend'] = terminal_backend
+        if request_recording is not None:
+            archive = Path(request_recording['directory'])
+            if (not archive.is_absolute() or archive.parent.resolve() != archive.parent or archive.exists()
+                    or not archive.parent.is_dir() or archive.is_relative_to(fixture)
+                    or archive.is_relative_to(runtime) or fixture.is_relative_to(archive)):
+                raise ValueError('Recording must use a fresh caller-provisioned parent outside fixture and disposable runtime')
+            job['request_recording'] = request_recording
         result["timings"]["preflight"] = time.monotonic() - started
         before = time.monotonic()
         proc = subprocess.run([str(python), str(Path(__file__).with_name("evaluation_hermes_worker.py"))],
@@ -683,9 +788,15 @@ def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterat
     return result
 
 
-def run_native_skill_study(prompt: str, fixture: Path, timeout: int, expected_skills: list[str], *, agent: str = "codex", max_iterations: int = 24, assembly_only: bool = False) -> dict[str, Any]:
+def run_native_skill_study(prompt: str, fixture: Path, timeout: int, expected_skills: list[str], *, agent: str = "codex", max_iterations: int = 24, assembly_only: bool = False, model: str = "gpt-6-sol", reasoning: str = "medium", prepared_runtime: Path | None = None, request_recording: dict | None = None, terminal_backend: str | None = None) -> dict[str, Any]:
     if agent == "hermes":
-        return run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only)
+        return run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only, model=model, reasoning=reasoning, prepared_runtime=prepared_runtime, request_recording=request_recording, terminal_backend=terminal_backend)
+    if terminal_backend is not None:
+        raise ValueError('Task-local terminal backend is supported only by the Hermes adapter')
+    if request_recording is not None:
+        raise ValueError('Final-request recording is supported only by the existing Hermes observer')
+    if prepared_runtime is not None:
+        raise ValueError('prepared native study runtime is supported only by the Hermes host adapter')
     if agent != "codex" or assembly_only:
         raise ValueError("Unsupported native study host or probe")
     started = time.monotonic()
@@ -712,7 +823,7 @@ def run_native_skill_study(prompt: str, fixture: Path, timeout: int, expected_sk
         clean_auth.pop("OPENAI_API_KEY", None)
         staged.write_text(json.dumps(clean_auth), encoding="utf-8")
         before = time.monotonic()
-        common, result["catalog_evidence"] = skill_study_preflight(exe, fixture, env, source, expected_skills)
+        common, result["catalog_evidence"] = skill_study_preflight(exe, fixture, env, source, expected_skills, model=model, reasoning=reasoning)
         result["timings"]["preflight"] = time.monotonic() - before
         command = [exe, "exec", *common, "--ignore-user-config", "--ignore-rules", "--skip-git-repo-check",
                    "--ephemeral", "--json", "-"]
@@ -726,7 +837,11 @@ def run_native_skill_study(prompt: str, fixture: Path, timeout: int, expected_sk
         result["runtime_headers"] = [line for line in proc.stderr.splitlines()
             if re.match(r"^(model|provider|reasoning effort|sandbox|approval):", line)]
         result["ok"] = result["ok"] and proc.returncode == 0
-        result["requested_route"] = {"model": "gpt-6-sol", "reasoning": "medium", "provider": "openai-codex"}
+        result["requested_route"] = {"model": model, "reasoning": reasoning, "provider": "openai-codex"}
+        headers = dict(line.split(':', 1) for line in result['runtime_headers'])
+        result['agent_observed_route'] = {'model': headers.get('model', '').strip(),
+                                           'reasoning': headers.get('reasoning effort', '').strip().split(' ')[0]}
+        result['ok'] = result['ok'] and result['agent_observed_route'] == {'model': model, 'reasoning': reasoning}
         result["provider_resolved_identity_verified"] = False
         if not result["ok"]:
             result["failure"] = "native execution or event evidence failed"

@@ -1,0 +1,359 @@
+{
+  "schema_version": 1,
+  "status": "approved-sanitized-source-publication-candidate-no-live-deployment",
+  "scope": "Existing canonical evaluation readiness, oracle contract/controls, source-bound outcome/usage checks, approved retirement selection and offline regression portability.",
+  "verification": {
+    "independent_oracle_review_tests": 86,
+    "combined_offline_regressions": 232,
+    "new_model_trials": 0,
+    "semantic_adequacy_automated": false,
+    "combined_seconds": 76.475,
+    "combined_log_sha256": "fe6bc6974ac18f7becde1628e08be6616cf22de1e1f3f31e6d40d0cfd2f5e30a",
+    "previous_initial_candidate_regressions": 155,
+    "final_approved_release_regressions": 269,
+    "final_approved_release_logs": [
+      {
+        "passed": 258,
+        "sha256": "2ea9844bd72dbc36fec53f78fa958de7f20f807440be9000beb8d4bf0fb54bad"
+      },
+      {
+        "passed": 11,
+        "sha256": "54a30d8f7ee077ccbff55367ee56f6a0841554ff3e3fab656611b50d01ab7996"
+      }
+    ]
+  },
+  "review_findings": {
+    "blocking_in_declared_mechanical_scope": [],
+    "limits": [
+      "Requirement references/reviewer labels and alternative coverage remain review judgments.",
+      "Only the existing eval.py lane has the new automatic preflight; other runners are not implicitly qualified.",
+      "No integrated visual/browser/motion/blinded-visual skill-value evaluation."
+    ]
+  },
+  "retirement": "systematic-debugging excluded from admitted selection; original package/PATH prose preserved; live Hermes disabled separately. No automatic cross-host deployment.",
+  "incomplete": [
+    "Adaptive synthetic dispatcher is mechanism-tested; actor/model exposure gate closed.",
+    "Shunt/Luna, R21/R22, full coordinator accounting and server-resolved identity remain incomplete."
+  ],
+  "preservation": "No raw requests, native histories, private profiles, credentials or machine configuration are included. Existing diagnostic/historical evidence is not reclassified.",
+  "publication": "Approved exact 44-file sanitized source scope to PUBLIC supplefrog/agent-sync origin/main; no separate deployment. Remote readback remains required before reporting publication.",
+  "runtime_integration": {
+    "bound_files": 12,
+    "integrated_interfaces": [
+      "eval.py",
+      "evaluation_artifact_pilot.py",
+      "evaluation_hermes_worker.py",
+      "evaluation_runtime.py",
+      "evaluation_measurement.py",
+      "evaluation_usage.py"
+    ],
+    "already_coherent": [
+      "artifact_hash.py",
+      "evaluation_artifact_worker.py"
+    ],
+    "retained_published_implementations": [
+      "fleet.py",
+      "public_check.py",
+      "sync_git.py"
+    ],
+    "reason": "Completed collection, accounting, recording, deadline, direct-terminal and continuation interfaces integrated; newer published fleet/public_check/sync_git retained. Optional unfinished tool-study route removed from this candidate without changing its frozen source.",
+    "new_model_trials": 0,
+    "deferred_optional": [
+      "evaluation_tool_study.py and adaptive fixtures/dispatch: separate unfinished owner snapshot, not required for coherent native-skill collection runtime.",
+      "New frontend lane: separate evaluator-owned task-local staging, not part of this frozen integration."
+    ]
+  },
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/ownership.json": {
+          "before_sha256": "b51e42aa07b1e2cd5fbd30aff55596fbbf47a3200ea8913dae3b67ffaca1c940",
+          "after_sha256": "98efd09b5aaed6f1da9f48e10beb72cdd2b0aafef882b471831829097bbe968a"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "691c8937fec535fa63e181b8a3c05baac9722dc43fcc57f2572e8f8da1bc63b2",
+          "after_sha256": "d94c22bcccc1495dc66887b1b831c75bda0ada3a2738c20644a059bc138092dc"
+        },
+        "docs/artifact-pilot.md": {
+          "before_sha256": "5aeac57a78735421eb626f3d19fc180f341fe36ac80174a644b2ec7645a4a8a3",
+          "after_sha256": "5e1a17ae4c5d0bd1847652cd23898f8c4d137ba8fc39925596b39923a8f31cb8"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "absent",
+          "after_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6"
+        },
+        "docs/grounded-verification.md": {
+          "before_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7",
+          "after_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7"
+        },
+        "docs/instruction-profiles.md": {
+          "before_sha256": "995c39bb05038d299037f2e707f661119b145ddf874cdd6f89bed60dbe0799c4",
+          "after_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-instruction-diagnostic.md": {
+          "before_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a",
+          "after_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "0f080cf6d57d7650c850f4b4b63aaec82fd362468da8b53537366dcf9bc2b919",
+          "after_sha256": "b5d0a5c17f638bb2fb5cdb7581d39910fed5baad9365950dd3e4a8a7ffee7080"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "b0044a21ac08be804ce94884aaca656e209d0a72aa680f607b29b21e413323f7",
+          "after_sha256": "0f7f45a2e9fcdf24a142840e14efea5b9743f13a318cc12e9ae7a98940c4b309"
+        },
+        "skills/capability-curator/SKILL.md": {
+          "before_sha256": "d6caa0472e4c29e3295d12a28e4b165c5b55af43b7df5ee4009d7aaa71176ae0",
+          "after_sha256": "d6caa0472e4c29e3295d12a28e4b165c5b55af43b7df5ee4009d7aaa71176ae0"
+        },
+        "skills/capability-curator/references/instruction-retirement.md": {
+          "before_sha256": "ad16e0493f8ac6a8581d24ff404d8ad818f07b6b06c8792ac6356dad8d3eecaa",
+          "after_sha256": "ad16e0493f8ac6a8581d24ff404d8ad818f07b6b06c8792ac6356dad8d3eecaa"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497",
+          "after_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575",
+          "after_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a"
+        },
+        "skills/surface-convergence/SKILL.md": {
+          "before_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70",
+          "after_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70"
+        },
+        "tools/artifact_hash.py": {
+          "before_sha256": "101d2f30d005a3145336afd88cc7747d95d41b407fd39a68b95d9d443b2ffd98",
+          "after_sha256": "193ba2f816ff0b4741dc39096eb6744424cc262f3f58a41818ecdeef29f84788"
+        },
+        "tools/change_review.py": {
+          "before_sha256": "66b574b760cde345e48eca3d1354b6aabd036bb34cdbcc996ef086df922a6be9",
+          "after_sha256": "71630b8a7a945bea65b10b17965a09240605cfcf3bb7ffded1ed279bfc637ed1"
+        },
+        "tools/eval.py": {
+          "before_sha256": "cbd13b72d303701a996fe11df876b2570cb71cd6025389c53b41a0a8d7d45c4e",
+          "after_sha256": "006ac3caa4527bfdb4b67770afcb7f84d9424010cc37f71a6b3a977c2f664419"
+        },
+        "tools/evaluation_artifact_pilot.py": {
+          "before_sha256": "088ab4631e6192e26755a19b06cf0df26db2d8d450abc97f8fde6579376a7eff",
+          "after_sha256": "d21f07da8451e605eb20b0decc532b756a1945e843c26ed76904780c5d9a4304"
+        },
+        "tools/evaluation_evidence.py": {
+          "before_sha256": "b8af436a571bdf78728f43396a77c5226d93cf8e204693cfa0f6875af7d6478d",
+          "after_sha256": "c093b1c3c2cd1d7a8a44043f10bed389cac3f63273ff251d2fbb0d095ff28edf"
+        },
+        "tools/evaluation_hermes_worker.py": {
+          "before_sha256": "3a4d5bb27bc310675b06710cfdb6d04cb60fb7a2d7a979db099fa8d93c5f8e9c",
+          "after_sha256": "4b587dd33c406385fa890e06d2a57c69c6cfd79721cc5bdcdad462e83cb15812"
+        },
+        "tools/evaluation_measurement.py": {
+          "before_sha256": "absent",
+          "after_sha256": "2ffae8f351c9936f00b89c5beb7741d8f3933a4f54764d615bcd1103cdac1241"
+        },
+        "tools/evaluation_runtime.py": {
+          "before_sha256": "de29f278632d6a80902a30c29c9989ca145a7ceebfaf811f132f44794fa42814",
+          "after_sha256": "3c851cf07420565ec7b83038521eb6bf72c98d59e73111758ae3ee7fc2694ed2"
+        },
+        "tools/evaluation_usage.py": {
+          "before_sha256": "absent",
+          "after_sha256": "2008b6f5deb593e9833db9f5d4c27b88fcac142981695568c1cddb9eaaf9721e"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "81ecac3c57a3c6dcc12e4970fb5e9cf2c46bb8dd6f8ba4c8fd888c47d2473047",
+          "after_sha256": "34cb09b92ae00cc0b8f0dab936afba39aee52a8367f1e3a06fd6578ed1d579fb"
+        }
+      },
+      "requirement_change": true,
+      "requirement_reason": "Explicitly approved claim-based test/retirement correction and narrow R02 release distinction; requirements/status selected together. No optional instruction adoption or measured model-benefit claim.",
+      "authority": "Explicit user approval: publication Sentinel_58be2eeec14c819184607d2cea8e50e4; narrow R02 clarification and 44-file scope Sentinel_1b2e39f6ae548191be15edc1071c2bbf. Parent governance review and execution handoff: 01a157d6-12b4-7273-ba40-a0cb25c6e012. No live deployment authority.",
+      "checks": "Final approved source: 269 offline regressions (258 integrated, 11 dependency). Structural audit, public-safe checks, existing source-bound qualification and retirement selection verified. No model calls; records and static checks do not prove semantic scope or approval authenticity.",
+      "outcome_review": {
+        "expected": "Pre-inference mechanical controls reject known broken outputs and representation-specific oracle requirements, retain valid alternatives and account for observable work without asserting semantic proof.",
+        "observed": "Independent review confirmed these controls in their declared lane; historical raw scores remain separate from postcapture adjudication. The integrated runtime retains the oracle checks, no-install/native guards and unknown accounting.",
+        "evidence": "Source-bound artifacts in this receipt; independently reviewed oracle packet and local regression logs retained by the integration owner. No model trials added.",
+        "limitations": "Human assertion relevance, adequate alternatives and practical significance are not proved by link/hash checks. Instruction publication still has an unresolved mandatory measurement policy conflict; native artifact evidence remains diagnostic."
+      },
+      "obligations": [
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Only approved systematic-debugging lifecycle row changes; other capability owners and unresolved selections preserved."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing modality and cross-host safeguards preserved; no runtime parity or frontend quality claim added."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "updated",
+          "reason": "Retains one evaluation owner, runtime seam and unknown-cost boundaries."
+        },
+        {
+          "path": "docs/artifact-pilot.md",
+          "disposition": "updated",
+          "reason": "Updated experimental runtime interface and explicit private archive/continuation boundaries; no natural workflow or adaptive model-exposure claim."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "updated",
+          "reason": "Updated source-bound accounting, assertion controls and integrated/runtime versus incomplete/adaptive capability boundaries."
+        },
+        {
+          "path": "docs/grounded-verification.md",
+          "disposition": "unchanged",
+          "reason": "Separate structured verifier artifact; no new quality or retirement authority granted."
+        },
+        {
+          "path": "docs/instruction-profiles.md",
+          "disposition": "updated",
+          "reason": "Preserves route/profile/readiness separation and prepared-runtime privacy prerequisites."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Historical learning/communication update; personal profiles and native state remain excluded."
+        },
+        {
+          "path": "docs/native-instruction-diagnostic.md",
+          "disposition": "unchanged",
+          "reason": "Historical no-go milestone remains accurate for its frozen diagnostic; later experimental runner does not retroactively qualify it."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Updated status for approved distinction, retaining partial/unverified model evidence."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Explicitly approved narrow R02 clarification; normative contract correction, no behavior improvement claim."
+        },
+        {
+          "path": "skills/capability-curator/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Admission and statistical retirement guidance remains unchanged; no statistical equivalence is claimed for the explicitly user-approved recoverable retirement."
+        },
+        {
+          "path": "skills/capability-curator/references/instruction-retirement.md",
+          "disposition": "unchanged",
+          "reason": "Existing formal retirement/cache gate remains unchanged; this receipt records user-authorized source selection and its bounded evidence, not cache qualification."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Only Evaluation discipline paragraph changes, requiring claim-based assertion relevance, valid alternatives and retirement under explicit user correction."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "updated",
+          "reason": "Approved R02 distinction documented within Publication necessity record; ownership, loading, framework and source checks retained. Other prose/adoption remains measured."
+        },
+        {
+          "path": "skills/surface-convergence/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing multi-host promotion/parity gate remains unchanged; no broad deployment or all-host evidence asserted."
+        }
+      ],
+      "framework_review": {
+        "affected": [
+          "contracts/ownership.json",
+          "contracts/surface-matrix.json",
+          "docs/architecture.md",
+          "docs/artifact-pilot.md",
+          "docs/evaluations/outcome-efficiency.md",
+          "docs/grounded-verification.md",
+          "docs/instruction-profiles.md",
+          "docs/learning-and-taste-update.md",
+          "docs/native-instruction-diagnostic.md",
+          "docs/requirement-status.md",
+          "docs/system-requirements.md",
+          "skills/capability-curator/SKILL.md",
+          "skills/capability-curator/references/instruction-retirement.md",
+          "skills/instruction-authoring/SKILL.md",
+          "skills/instruction-authoring/references/change-review.md",
+          "skills/surface-convergence/SKILL.md"
+        ],
+        "selection_reason": "Independent reviewer of the evaluation owner implementation inspected the changed Evaluation discipline paragraph, its exact requirement destination and transitive source callers/consumers. This is the existing affected-owner assessment, not author self-approval of measured benefit.",
+        "unaffected_reason": "Only authoring evaluation/publication contract sections change. Existing model-benefit, native diagnostic, admission and lifecycle safeguards remain. No unrelated instruction, private state, optional tool-study or unfinished frontend/adaptive work is adopted.",
+        "checks": "Requirement-to-assertion controls, reviewed positive alternatives/broken controls, pre-inference refusal, consumer recomputation and actual source/graph inspection. No automatic semantic or model-quality verdict. Approved five-file proposal independently reviewed by parent governance coordinator and user; 69 offline regressions exercise accepted corrections and rejected unmeasured adoption. Explicit user approval: publication Sentinel_58be2eeec14c819184607d2cea8e50e4; narrow R02 clarification and 44-file scope Sentinel_1b2e39f6ae548191be15edc1071c2bbf. Parent governance review and execution handoff: 01a157d6-12b4-7273-ba40-a0cb25c6e012. No live deployment authority."
+      }
+    }
+  ],
+  "instruction_changes": [
+    {
+      "owner": "skills/instruction-authoring",
+      "artifacts": {
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "9f61d0416bf762c7e82504907cfaa16b04ae341acd7a965c13697e6ba4863497",
+          "after_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "64dfb512dd20c9e0c77c5dcdf7083d088ee666b34c792aa2a8aeafcf78b96575",
+          "after_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a"
+        }
+      },
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "Earlier guidance did not explicitly require assertions to trace the claim and admit valid alternative representations, nor implement the clarified comparable-outcome retirement policy. R02 previously made the normative correction require a model-benefit comparison; the explicitly approved distinction now keeps behavioral adoption measured and contract corrections reviewed.",
+      "evidence": "Explicit user correction plus independent oracle review showing literal representation checks rejected an adequate implementation. Historical raw evidence preserved. Explicit user approval: publication Sentinel_58be2eeec14c819184607d2cea8e50e4; narrow R02 clarification and 44-file scope Sentinel_1b2e39f6ae548191be15edc1071c2bbf. Parent governance review and execution handoff: 01a157d6-12b4-7273-ba40-a0cb25c6e012. No live deployment authority.",
+      "why_instruction": "The user changed the authoring/testing contract; runtime checks enforce mechanical preflight but cannot select semantically appropriate task claims or review alternatives.",
+      "alternative": "Runtime-only repair would leave the authorized testing/retirement contract unstated; no instruction change would retain the documented gap. No model-benefit claim is made.",
+      "loading_review": {
+        "entrypoint_reason": "Evaluation discipline remains a common entrypoint paragraph and links the existing normative requirements before evaluation decisions.",
+        "checks": "Both approved changes stay within existing Evaluation discipline and Publication necessity record sections; all other entrypoint/reference obligations remain byte-preserved. Existing local reference route remains reachable. No natural loading or quality proof claimed.",
+        "obligations": [
+          {
+            "obligation": "Claim-based test relevance, valid alternatives, bounded evidence and user-directed retirement",
+            "applies_when": "Authoring or evaluating a skill claim and deciding retention/retirement",
+            "load_when": "Evaluation discipline before planning scored comparisons or making a retention decision",
+            "reason": "Preserves the authoring route while binding the corrected normative testing contract; no separate universal framework.",
+            "required": true,
+            "disposition": "changed",
+            "before": [
+              "skills/instruction-authoring/SKILL.md#Evaluation discipline"
+            ],
+            "after": [
+              "skills/instruction-authoring/SKILL.md#Evaluation discipline"
+            ]
+          },
+          {
+            "obligation": "Distinguish measured behavioral adoption from explicitly reviewed contract corrections and content-identical line-ending repair",
+            "applies_when": "Qualifying authoring source publication under R02",
+            "required": true,
+            "disposition": "changed",
+            "before": [
+              "skills/instruction-authoring/references/change-review.md#Publication necessity record"
+            ],
+            "after": [
+              "skills/instruction-authoring/references/change-review.md#Publication necessity record"
+            ],
+            "load_when": "Existing publication necessity review before qualification",
+            "reason": "The approved distinction belongs to the existing record and owner; no self-issued maintenance label or optional prose exemption."
+          }
+        ]
+      },
+      "change_kind": "contract-correction"
+    }
+  ],
+  "publication_blockers": [],
+  "release_contract_review": {
+    "scope": "Explicit authoring evaluation/publication contract correction; no optional instruction adoption or quality claim.",
+    "authority": "Explicit user approval: publication Sentinel_58be2eeec14c819184607d2cea8e50e4; narrow R02 clarification and 44-file scope Sentinel_1b2e39f6ae548191be15edc1071c2bbf. Parent governance review and execution handoff: 01a157d6-12b4-7273-ba40-a0cb25c6e012. No live deployment authority.",
+    "authoring_owner_thread": "01a140d1-3ac8-764d-9fe1-f57a84e920e6",
+    "independent_governance_review_thread": "01a157d6-12b4-7273-ba40-a0cb25c6e012",
+    "reviewed_patch_sha256": "e884397af33185ad18cd3d471bc0c1a72e914c4fa74da2453f03c8fe33a2ba80",
+    "policy_and_publication_approved": true,
+    "actual_authority_automatically_authenticated": false,
+    "checks": "69 offline proposal regressions and exact source-bound patch; existing necessity/dependency/loading/framework checks retained. Labels alone do not waive behavioral adoption.",
+    "limitations": "Semantic scope and authority require actual review; the checker validates source consistency, not human authenticity or semantic benefit."
+  }
+}
