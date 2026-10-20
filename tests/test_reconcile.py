@@ -46,6 +46,8 @@ class ReconcileTests(unittest.TestCase):
     def setUp(self) -> None:
         self.reconcile = load_tool("reconcile")
         self.fleet = load_tool("fleet")
+        native = patch('install.verify_fleet_discovery', create=True, return_value={'verified': True, 'fixture_native': True})
+        native.start(); self.addCleanup(native.stop)
 
     def fixture(self, root: Path) -> tuple[Path, Path]:
         repo = root / "repo"

@@ -19,6 +19,8 @@ class CompleteSyncTests(unittest.TestCase):
 
     def setup_git(self, root):
         repo, live = self.fixture(root)
+        # Git/adoption tests change a support artifact, not unmeasured prose.
+        (repo / 'skills/kept/fixture.txt').write_text('baseline\n', encoding='utf-8')
         # Real governance owners are required by complete sync.
         registry = json.loads((repo / 'registry.json').read_text())
         for name in ('cross-agent-surface-engineering', 'fleet-sync'):
@@ -31,6 +33,8 @@ class CompleteSyncTests(unittest.TestCase):
         self.git(repo, 'init', '-b', 'main')
         self.git(repo, 'config', 'user.name', 'Sync Test')
         self.git(repo, 'config', 'user.email', 'sync@example.invalid')
+        # Fixture source identities must match committed bytes on Windows.
+        self.git(repo, 'config', 'core.autocrlf', 'false')
         self.git(repo, 'add', '.')
         self.git(repo, 'commit', '-m', 'baseline')
         remote = root / 'remote.git'
@@ -48,16 +52,17 @@ class CompleteSyncTests(unittest.TestCase):
     def test_complete_sync_adopts_commits_pushes_and_repeats_without_new_commit(self):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))
-            target = live / 'kept/SKILL.md'
+            target = live / 'kept/fixture.txt'
             target.write_text(target.read_text() + '\nchanged from an agent\n')
             report = self.run_sync(repo, live)
             self.assertEqual('synced', report['result'])
             head = self.git(repo, 'rev-parse', 'HEAD')
             self.assertEqual(head, self.git(remote, 'rev-parse', 'refs/heads/main'))
             self.assertEqual('', self.git(repo, 'status', '--porcelain'))
-            self.assertIn('changed from an agent', (repo / 'skills/kept/SKILL.md').read_text())
-            self.assertEqual([], self.fleet.verify_snapshot(repo / 'render/fleet', live))
-            self.assertEqual('synced', self.run_sync(repo, live)['result'])
+            self.assertIn('changed from an agent', (repo / 'skills/kept/fixture.txt').read_text())
+            self.assertEqual([], self.fleet.verify_snapshot(Path(report['published_repo']) / 'render/fleet', live))
+            repeated = self.run_sync(repo, live)
+            self.assertEqual('synced', repeated['result'], repeated)
             self.assertEqual(head, self.git(repo, 'rev-parse', 'HEAD'))
 
     def test_unreviewed_dirty_work_blocks_before_any_agent_write(self):
@@ -85,7 +90,7 @@ class CompleteSyncTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))
             paths = [f'reviewed/{i:04d}-' + 'x' * 80 + '.md' for i in range(450)]
-            paths.append('reviewed/literal [x] ü.md')
+            paths.append('reviewed/literal [x] Ã¼.md')
             self.assertGreater(len(subprocess.list2cmdline(['git', 'add', '--', *paths])), 32767)
             (repo / 'reviewed').mkdir()
             for name in paths:
@@ -110,7 +115,8 @@ class CompleteSyncTests(unittest.TestCase):
             self.assertEqual('push', report['failed_step'])
             head = self.git(repo, 'rev-parse', 'HEAD')
             hook.unlink()
-            self.assertEqual('synced', self.run_sync(repo, live)['result'])
+            repeated = self.run_sync(repo, live)
+            self.assertEqual('synced', repeated['result'], repeated)
             self.assertEqual(head, self.git(repo, 'rev-parse', 'HEAD'))
             self.assertEqual(head, self.git(remote, 'rev-parse', 'refs/heads/main'))
 
@@ -164,7 +170,8 @@ class CompleteSyncTests(unittest.TestCase):
             self.assertEqual(head, self.git(repo, 'rev-parse', 'HEAD'))
             self.assertEqual('', self.git(repo, 'diff', '--cached', '--name-only'))
             hook.unlink()
-            self.assertEqual('synced', self.run_sync(repo, live)['result'])
+            repeated = self.run_sync(repo, live)
+            self.assertEqual('synced', repeated['result'], repeated)
             self.assertEqual(self.git(repo, 'rev-parse', 'HEAD'), self.git(remote, 'rev-parse', 'refs/heads/main'))
 
     def test_failed_push_does_not_authorize_edited_content_on_retry(self):

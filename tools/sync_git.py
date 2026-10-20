@@ -552,7 +552,7 @@ def _publish_scoped(repo, pending, *, verify, readback, integration_attempt=None
             if (_index_entries(repo) != index or git(repo, 'rev-parse', 'HEAD') != commit
                     or destination(repo) != target):
                 raise SyncBlocked('repository changed before final verification')
-        result = {'result': 'synced', 'commit': commit, 'remote': target['remote'],
+        result = {'result': 'published', 'rollout_verified': False, 'commit': commit, 'remote': target['remote'],
                   'branch': target['branch'], 'agents_verified': bool(pending.get('agents_verified')),
                   'remote_verified': True}
         if integration_attempt is not None:
@@ -670,7 +670,7 @@ def _publish_unlocked(repo: Path, pending, *, verify, readback, integration_atte
         if changed(repo) or git(repo, 'rev-parse', 'HEAD') != commit:
             raise SyncBlocked('repository changed before final verification')
         (git_dir(repo) / 'agent-signal-sync.json').unlink()
-        return {'result': 'synced', 'commit': commit, 'remote': target['remote'],
+        return {'result': 'published', 'rollout_verified': False, 'commit': commit, 'remote': target['remote'],
                 'branch': target['branch'], 'agents_verified': True, 'remote_verified': True}
     except (OSError, RuntimeError, subprocess.SubprocessError) as exc:
         return {'result': 'incomplete', 'failed_step': step, 'reason': str(exc),

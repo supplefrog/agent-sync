@@ -34,7 +34,7 @@ class ScopedReconcileTests(unittest.TestCase):
                         repo / 'contracts/host-deltas.schema.json')
         manifest = json.loads((repo / 'host-deltas.json').read_text())
         for name in ('kept', 'other'):
-            relative = f'skills/{name}/SKILL.md'
+            relative = f'skills/{name}/' + ('fixture.txt' if name == 'kept' else 'SKILL.md')
             digest = self.fleet.sha256_file(repo / relative)
             manifest['entries'].append({
                 'id': name, 'host': 'codex', 'category': 'native-skill',
@@ -54,7 +54,7 @@ class ScopedReconcileTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))
             baseline = self.binding_fixture(repo, live)
-            selected = repo / 'skills/kept/SKILL.md'
+            selected = repo / 'skills/kept/fixture.txt'
             selected.write_text(selected.read_text() + '\nselected change\n')
             foreign = repo / 'skills/other/SKILL.md'
             foreign.write_text(foreign.read_text() + '\nforeign pending change\n')
@@ -77,13 +77,13 @@ class ScopedReconcileTests(unittest.TestCase):
             self.assertEqual(live_before, (live / 'other/SKILL.md').read_bytes())
             self.assertNotEqual(foreign.read_text().strip(), self.git(remote, 'show', 'main:skills/other/SKILL.md'))
             self.assertIn('host-deltas.json', report['pending_files'])
-            self.assertEqual(selected.read_bytes(), (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(selected.read_bytes(), (live / 'kept/fixture.txt').read_bytes())
 
     def test_projected_manifest_retry_keeps_foreign_hashes_unpublished(self):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))
             baseline = self.binding_fixture(repo, live)
-            selected = repo / 'skills/kept/SKILL.md'
+            selected = repo / 'skills/kept/fixture.txt'
             selected.write_text(selected.read_text() + '\nselected change\n')
             foreign = repo / 'skills/other/SKILL.md'
             foreign.write_text(foreign.read_text() + '\nforeign change\n')
@@ -107,10 +107,10 @@ class ScopedReconcileTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))
             self.binding_fixture(repo, live)
-            selected = repo / 'skills/kept/SKILL.md'
+            selected = repo / 'skills/kept/fixture.txt'
             selected.write_text(selected.read_text() + '\nselected change\n')
             head = self.git(remote, 'rev-parse', 'main')
-            original = (live / 'kept/SKILL.md').read_bytes()
+            original = (live / 'kept/fixture.txt').read_bytes()
             def check(*_):
                 manifest = json.loads((repo / 'host-deltas.json').read_text())
                 manifest['entries'][1]['version_or_hash'] = 'sha256:' + 'a' * 64
@@ -121,7 +121,7 @@ class ScopedReconcileTests(unittest.TestCase):
                     skill_roots=[live], adopt=['kept'])
             self.assertEqual('incomplete', report['result'], report)
             self.assertIn('selected files or agent owners changed', report['reason'])
-            self.assertEqual(original, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(original, (live / 'kept/fixture.txt').read_bytes())
             self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
             self.assertEqual('sha256:' + 'a' * 64, json.loads((repo / 'host-deltas.json').read_text())['entries'][1]['version_or_hash'])
 
@@ -134,12 +134,12 @@ class ScopedReconcileTests(unittest.TestCase):
             path.write_text(json.dumps(manifest))
             working = path.read_bytes()
             head = self.git(remote, 'rev-parse', 'main')
-            installed = (live / 'kept/SKILL.md').read_bytes()
+            installed = (live / 'kept/fixture.txt').read_bytes()
             report = self.run_sync(repo, live, adopt=['kept'])
             self.assertEqual('incomplete', report['result'], report)
             self.assertIn('unselected host-delta fields differ', report['reason'])
             self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
-            self.assertEqual(installed, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(installed, (live / 'kept/fixture.txt').read_bytes())
             self.assertEqual(working, path.read_bytes())
 
     def test_foreign_binding_policy_still_requires_review(self):
@@ -147,7 +147,7 @@ class ScopedReconcileTests(unittest.TestCase):
             with self.subTest(field=field), tempfile.TemporaryDirectory() as temp:
                 repo, live, remote = self.setup_git(Path(temp))
                 manifest = self.binding_fixture(repo, live)
-                selected = repo / 'skills/kept/SKILL.md'
+                selected = repo / 'skills/kept/fixture.txt'
                 selected.write_text(selected.read_text() + '\nselected change\n')
                 if field == 'readback-path':
                     manifest['entries'][1]['readback']['path'] = 'different/file.md'
@@ -155,18 +155,18 @@ class ScopedReconcileTests(unittest.TestCase):
                     manifest['entries'][1][field] = 'new policy'
                 (repo / 'host-deltas.json').write_text(json.dumps(manifest))
                 head = self.git(remote, 'rev-parse', 'main')
-                original = (live / 'kept/SKILL.md').read_bytes()
+                original = (live / 'kept/fixture.txt').read_bytes()
                 report = self.run_sync(repo, live, adopt=['kept'])
                 self.assertEqual('incomplete', report['result'], report)
                 self.assertIn('unselected host-delta fields differ', report['reason'])
                 self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
-                self.assertEqual(original, (live / 'kept/SKILL.md').read_bytes())
+                self.assertEqual(original, (live / 'kept/fixture.txt').read_bytes())
 
     def test_explicit_manifest_include_publishes_reviewed_foreign_fields(self):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))
             manifest = self.binding_fixture(repo, live)
-            selected = repo / 'skills/kept/SKILL.md'
+            selected = repo / 'skills/kept/fixture.txt'
             selected.write_text(selected.read_text() + '\nselected change\n')
             manifest['entries'][1]['desired_state'] = 'reviewed new policy'
             (repo / 'host-deltas.json').write_text(json.dumps(manifest))
@@ -179,7 +179,7 @@ class ScopedReconcileTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))
             self.extra_owner(repo, live)
-            selected = repo / 'skills/kept/SKILL.md'
+            selected = repo / 'skills/kept/fixture.txt'
             selected.write_text(selected.read_text() + '\nselected improvement\n')
             other_source = repo / 'skills/other/SKILL.md'
             other_live = live / 'other/SKILL.md'
@@ -191,11 +191,14 @@ class ScopedReconcileTests(unittest.TestCase):
             staged = self.git(repo, 'diff', '--cached', '--raw')
             source_before, live_before = other_source.read_bytes(), other_live.read_bytes()
             report = self.run_sync(repo, live, adopt=['kept'])
-            self.assertEqual('synced', report['result'], report)
+            self.assertEqual('incomplete', report['result'], report)
+            self.assertIn('publication_verified', report, report)
+            self.assertTrue(report['publication_verified'])
+            self.assertFalse(report['rollout_verified'])
             self.assertEqual(source_before, other_source.read_bytes())
             self.assertEqual(live_before, other_live.read_bytes())
             self.assertEqual(staged, self.git(repo, 'diff', '--cached', '--raw'))
-            self.assertEqual(selected.read_bytes(), (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(selected.read_bytes(), (live / 'kept/fixture.txt').read_bytes())
             self.assertEqual(self.git(repo, 'rev-parse', 'HEAD'), self.git(remote, 'rev-parse', 'main'))
             self.assertNotIn('private-unrelated.md', self.git(remote, 'ls-tree', '-r', '--name-only', 'main').splitlines())
             self.assertEqual(['kept'], report['verified_owners'])
@@ -205,22 +208,22 @@ class ScopedReconcileTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, _ = self.setup_git(Path(temp))
             (repo / 'notes.md').write_text('reviewed')
-            selected = repo / 'skills/kept/SKILL.md'
+            selected = repo / 'skills/kept/fixture.txt'
             selected.write_text(selected.read_text() + '\nunrelated owner pending\n')
-            original_live = (live / 'kept/SKILL.md').read_bytes()
-            report = self.run_sync(repo, live, include=['notes.md'])
-            self.assertEqual('synced', report['result'], report)
+            original_live = (live / 'kept/fixture.txt').read_bytes()
+            report = self.run_sync(repo, live, include=['notes.md'], source_only=True)
+            self.assertEqual('published', report['result'], report)
             self.assertFalse(report['agents_verified'])
             self.assertEqual([], report['verified_owners'])
-            self.assertEqual(original_live, (live / 'kept/SKILL.md').read_bytes())
-            self.assertIn('skills/kept/SKILL.md', report['pending_files'])
+            self.assertEqual(original_live, (live / 'kept/fixture.txt').read_bytes())
+            self.assertIn('skills/kept/fixture.txt', report['pending_files'])
 
     def test_selected_change_during_checks_stops_before_deployment(self):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, remote = self.setup_git(Path(temp))
-            selected = repo / 'skills/kept/SKILL.md'
+            selected = repo / 'skills/kept/fixture.txt'
             selected.write_text(selected.read_text() + '\nrequested\n')
-            original = (live / 'kept/SKILL.md').read_bytes()
+            original = (live / 'kept/fixture.txt').read_bytes()
             head = self.git(remote, 'rev-parse', 'main')
             def check(*_):
                 selected.write_text(selected.read_text() + '\nconcurrent change\n')
@@ -229,7 +232,7 @@ class ScopedReconcileTests(unittest.TestCase):
                 report = self.reconcile.complete_sync(repo, machine='test', recovery_roots={},
                     skill_roots=[live], adopt=['kept'])
             self.assertEqual('incomplete', report['result'], report)
-            self.assertEqual(original, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(original, (live / 'kept/fixture.txt').read_bytes())
             self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
             self.assertIn('concurrent change', selected.read_text())
 
@@ -301,9 +304,9 @@ class ScopedReconcileTests(unittest.TestCase):
     def test_changed_snapshot_location_blocks_before_deployment(self):
         with tempfile.TemporaryDirectory() as temp:
             repo, live, _ = self.setup_git(Path(temp))
-            selected = repo / 'skills/kept/SKILL.md'
+            selected = repo / 'skills/kept/fixture.txt'
             selected.write_text(selected.read_text() + '\nrequested\n')
-            original = (live / 'kept/SKILL.md').read_bytes()
+            original = (live / 'kept/fixture.txt').read_bytes()
             def check(*_):
                 config = json.loads((repo / 'fleet.json').read_text())
                 config['snapshot_root'] = 'render/new-location'
@@ -314,7 +317,7 @@ class ScopedReconcileTests(unittest.TestCase):
                     skill_roots=[live], adopt=['kept'])
             self.assertEqual('incomplete', report['result'], report)
             self.assertIn('dependency changed', report['reason'])
-            self.assertEqual(original, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(original, (live / 'kept/fixture.txt').read_bytes())
 
     def test_live_adoption_does_not_overwrite_source_changed_during_backup(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -398,8 +401,8 @@ class ScopedReconcileTests(unittest.TestCase):
             repo, live, _ = self.setup_git(Path(temp))
             (repo / 'notes.md').write_text('reviewed documentation')
             (repo / 'fleet.json').write_text('unfinished unrelated configuration')
-            report = self.run_sync(repo, live, include=['notes.md'])
-            self.assertEqual('synced', report['result'], report)
+            report = self.run_sync(repo, live, include=['notes.md'], source_only=True)
+            self.assertEqual('published', report['result'], report)
             self.assertFalse(report['agents_verified'])
             self.assertFalse(report['installed_verified'])
             self.assertEqual('unfinished unrelated configuration', (repo / 'fleet.json').read_text())

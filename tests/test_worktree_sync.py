@@ -94,19 +94,19 @@ class WorktreeSyncTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             repo, live, remote = self.setup_git(Path(temporary))
             a, b, c = (self.worker(repo, name) for name in ('a', 'b', 'c'))
-            name = 'skills/kept/SKILL.md'
+            name = 'skills/kept/fixture.txt'
             original = (a / name).read_text()
             ready_a = self.commit(a, name, original.replace('baseline', 'version A'))
             ready_b = self.commit(b, name, original.replace('baseline', 'version B'))
             ready_c = self.commit(c, 'c.md', 'independent\n')
             self.assertEqual('synced', self.run_ready(adapter, a, ready_a, live, adopt=['kept'])['result'])
-            before_b, before_live = self.snapshot(b), (live / 'kept/SKILL.md').read_bytes()
+            before_b, before_live = self.snapshot(b), (live / 'kept/fixture.txt').read_bytes()
             before_remote = self.git(remote, 'rev-parse', 'main')
             result = self.run_ready(adapter, b, ready_b, live, adopt=['kept'])
             self.assertEqual('conflict', result['result'], result)
             self.assertEqual([name], result['conflicts'])
             self.assertEqual(before_b, self.snapshot(b))
-            self.assertEqual(before_live, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(before_live, (live / 'kept/fixture.txt').read_bytes())
             self.assertEqual(before_remote, self.git(remote, 'rev-parse', 'main'))
             result = self.run_ready(adapter, c, ready_c, live, include=['c.md'])
             self.assertEqual('synced', result['result'], result)
@@ -183,8 +183,8 @@ class WorktreeSyncTests(unittest.TestCase):
             a, b = self.worker(repo, 'a'), self.worker(repo, 'b')
             ready = []
             for worker, owner, digit in ((a, 'kept', 'a'), (b, 'other', 'b')):
-                name = 'skills/' + owner + '/SKILL.md'
-                (worker / name).write_text((worker / name).read_text() + '\nready ' + owner + '\n')
+                name = 'skills/' + owner + '/fixture.txt'
+                (worker / name).write_text(((worker / name).read_text() if (worker / name).exists() else 'baseline\n') + '\nready ' + owner + '\n')
                 changed = json.loads((worker / 'host-deltas.json').read_text())
                 changed['entries'][0]['version_or_hash'] = 'sha256:' + digit * 64
                 (worker / 'host-deltas.json').write_text(json.dumps(changed))
@@ -198,8 +198,8 @@ class WorktreeSyncTests(unittest.TestCase):
             lane = Path(result['published_repo'])
             self.assertEqual('sha256:' + adapter.reconcile.host_deltas._canonical_fleet_digest(lane),
                              published['entries'][0]['version_or_hash'])
-            self.assertIn('ready kept', self.git(remote, 'show', 'main:skills/kept/SKILL.md'))
-            self.assertIn('ready other', self.git(remote, 'show', 'main:skills/other/SKILL.md'))
+            self.assertIn('ready kept', self.git(remote, 'show', 'main:skills/kept/fixture.txt'))
+            self.assertIn('ready other', self.git(remote, 'show', 'main:skills/other/fixture.txt'))
 
     def test_selected_same_source_readback_policy_is_not_stripped(self):
         adapter = self.adapter()
@@ -222,7 +222,7 @@ class WorktreeSyncTests(unittest.TestCase):
             worker = self.worker(repo, 'a')
             ready = self.commit(worker, 'a.md', 'ready\n')
             with patch.object(adapter.reconcile.fleet, 'migrate_source_origin', side_effect=RuntimeError('injected origin failure')):
-                result = self.run_ready(adapter, worker, ready, live, include=['a.md'])
+                result = self.run_ready(adapter, worker, ready, live, include=['a.md'], adopt=['kept'])
             self.assertEqual('incomplete', result['result'], result)
             self.assertTrue(result['publication_verified'])
             pushed = self.git(remote, 'rev-parse', 'main')
@@ -237,7 +237,7 @@ class WorktreeSyncTests(unittest.TestCase):
             (worker / 'a.md').write_text('next unfinished change\n')
             before = self.snapshot(worker)
             with patch.object(adapter.reconcile, 'complete_sync', side_effect=AssertionError('published retry must not deploy again')):
-                result = self.run_ready(adapter, worker, ready, live, include=['a.md'])
+                result = self.run_ready(adapter, worker, ready, live, include=['a.md'], adopt=['kept'])
             self.assertEqual('synced', result['result'], result)
             self.assertEqual(successor, self.git(remote, 'rev-parse', 'main'))
             self.assertEqual(pushed, self.git(Path(result['published_repo']), 'rev-parse', 'HEAD'))
@@ -312,12 +312,12 @@ class WorktreeSyncTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             repo, live, remote = self.setup_git(Path(temporary))
             worker = self.worker(repo, 'a')
-            name = 'skills/kept/SKILL.md'
+            name = 'skills/kept/fixture.txt'
             ready = self.commit(worker, name, (worker / name).read_text() + '\nchecked ready\n')
             complete = adapter.reconcile.complete_sync
             def crash_after_real_completion(*args, **kwargs):
                 result = complete(*args, **kwargs)
-                self.assertEqual('synced', result['result'], result)
+                self.assertEqual('published', result['result'], result)
                 raise SimulatedProcessCrash()
             with patch.object(adapter.reconcile, 'complete_sync', side_effect=crash_after_real_completion):
                 with self.assertRaises(SimulatedProcessCrash):
@@ -325,23 +325,23 @@ class WorktreeSyncTests(unittest.TestCase):
             pushed = self.git(remote, 'rev-parse', 'main')
             lane = sync_git.common_dir(repo) / 'agent-signal-integration-worktree'
             pending = sync_git.read_pending(lane)
-            self.assertEqual('synced', pending['completion']['result'])
+            self.assertEqual('published', pending['completion']['result'])
             self.assertEqual(pushed, pending['completion']['commit'])
-            checked_live = (live / 'kept/SKILL.md').read_bytes()
-            (live / 'kept/SKILL.md').write_bytes(checked_live + b'\nunreviewed live edit\n')
-            changed_live = (live / 'kept/SKILL.md').read_bytes()
+            checked_live = (live / 'kept/fixture.txt').read_bytes()
+            (live / 'kept/fixture.txt').write_bytes(checked_live + b'\nunreviewed live edit\n')
+            changed_live = (live / 'kept/fixture.txt').read_bytes()
             with patch.object(adapter.reconcile, 'complete_sync', side_effect=AssertionError('completed publication must not deploy again')):
                 result = self.run_ready(adapter, worker, ready, live, adopt=['kept'])
             self.assertEqual('incomplete', result['result'], result)
             self.assertIn('selected installed owners changed', result['reason'])
             self.assertEqual(pushed, self.git(remote, 'rev-parse', 'main'))
-            self.assertEqual(changed_live, (live / 'kept/SKILL.md').read_bytes())
-            (live / 'kept/SKILL.md').write_bytes(checked_live)
+            self.assertEqual(changed_live, (live / 'kept/fixture.txt').read_bytes())
+            (live / 'kept/fixture.txt').write_bytes(checked_live)
             with patch.object(adapter.reconcile, 'complete_sync', side_effect=AssertionError('unchanged completion retry must only finish publication')):
                 result = self.run_ready(adapter, worker, ready, live, adopt=['kept'])
             self.assertEqual('synced', result['result'], result)
             self.assertEqual(pushed, self.git(remote, 'rev-parse', 'main'))
-            self.assertEqual(checked_live, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(checked_live, (live / 'kept/fixture.txt').read_bytes())
             self.assertIsNone(sync_git.read_pending(lane))
 
     def test_ready_source_cannot_adopt_unchanged_selected_owner_live_drift(self):
@@ -401,7 +401,7 @@ class WorktreeSyncTests(unittest.TestCase):
             complete = adapter.reconcile.complete_sync
             def crash_after_completion(*args, **kwargs):
                 result = complete(*args, **kwargs)
-                self.assertEqual('synced', result['result'], result)
+                self.assertEqual('published', result['result'], result)
                 raise SimulatedProcessCrash()
             with patch.object(adapter.reconcile, 'complete_sync', side_effect=crash_after_completion):
                 with self.assertRaises(SimulatedProcessCrash):
@@ -413,7 +413,8 @@ class WorktreeSyncTests(unittest.TestCase):
                 result = self.run_ready(adapter, worker, ready, live, include=['a.md'])
             self.assertEqual('synced', result['result'], result)
             self.assertTrue(result['completion_recovered'])
-            self.assertFalse(result['installed_verified'])
+            self.assertTrue(result['installed_verified'])
+            self.assertTrue(result['rollout_verified'])
             self.assertEqual(pushed, self.git(remote, 'rev-parse', 'main'))
             self.assertIsNone(sync_git.read_pending(lane))
             origin = json.loads((live / self.fleet.STATE_FILE).read_text())['source_snapshot']
@@ -459,10 +460,10 @@ class WorktreeSyncTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             repo, live, remote = self.setup_git(Path(temporary))
             worker = self.worker(repo, 'a')
-            source = 'skills/kept/SKILL.md'
+            source = 'skills/kept/fixture.txt'
             ready = self.commit(worker, source, (worker / source).read_text() + '\nchecked source change\n')
             before = self.git(remote, 'rev-parse', 'main')
-            live_before = (live / 'kept/SKILL.md').read_bytes()
+            live_before = (live / 'kept/fixture.txt').read_bytes()
             original = adapter.reconcile.sync
             def racing_sync(lane, **options):
                 (lane / source).write_bytes((lane / source).read_bytes() + b'\nunreviewed deployment race\n')
@@ -472,7 +473,7 @@ class WorktreeSyncTests(unittest.TestCase):
             self.assertEqual('incomplete', result['result'], result)
             self.assertIn('frozen ready', result['reason'])
             self.assertEqual(before, self.git(remote, 'rev-parse', 'main'))
-            self.assertEqual(live_before, (live / 'kept/SKILL.md').read_bytes())
+            self.assertEqual(live_before, (live / 'kept/fixture.txt').read_bytes())
 
 
     def test_raw_legacy_blobs_do_not_block_owned_worktree_publication(self):

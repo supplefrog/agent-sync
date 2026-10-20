@@ -17,6 +17,142 @@ from pathlib import Path
 TRANSIENT_NAMES = {"__pycache__", ".pytest_cache", ".pytest-cache"}
 
 
+def _codex_fleet_readback(executable, root, required):
+    """Native skills/list + fs/readFile; no thread, turn or model request."""
+    import base64
+    import queue
+    import threading
+    messages = queue.Queue()
+    process = subprocess.Popen([executable, 'app-server', '--stdio'], cwd=Path.home(),
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        text=True, encoding='utf-8', creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
+    def receive():
+        for line in process.stdout:
+            try: messages.put(json.loads(line))
+            except ValueError: pass
+        messages.put(None)
+    reader = threading.Thread(target=receive,daemon=True);reader.start()
+    def drain_diagnostics():
+        for _ in process.stderr: pass
+    discard = threading.Thread(target=drain_diagnostics,daemon=True);discard.start()
+    sequence = 0
+    def request(method, params):
+        nonlocal sequence
+        sequence += 1
+        process.stdin.write(json.dumps({'id':sequence,'method':method,'params':params})+'\n');process.stdin.flush()
+        import time
+        deadline=time.monotonic()+30
+        while True:
+            value=messages.get(timeout=max(.01,deadline-time.monotonic()))
+            if value is None: raise RuntimeError('Codex readback process closed before its reply')
+            if value.get('method') and 'id' in value: raise RuntimeError('Codex readback requires an interactive action')
+            if value.get('id')==sequence:
+                if 'error' in value: raise RuntimeError('Codex native read-only request failed: '+method)
+                return value['result']
+    try:
+        # Explicit auth is a connection-only capability: this readback must not
+        # initiate a browser login. No standing configuration is written.
+        request('initialize',{'clientInfo':{'name':'agent-sync-readback','version':'1'},
+                              'capabilities':{'explicitGatewayOauth':True}})
+        process.stdin.write(json.dumps({'method':'initialized'})+'\n');process.stdin.flush()
+        catalog=request('skills/list',{'cwds':[str(Path.home())],'forceReload':True})
+        entries=[row for group in catalog['data'] for row in group['skills'] if row.get('enabled',True)]
+        by_name={row['name']:row for row in entries}
+        reads={}
+        for name in required:
+            row=by_name.get(name)
+            if not row or Path(row['path']).resolve()!=(root/name/'SKILL.md').resolve():
+                reads[name]=False;continue
+            content=request('fs/readFile',{'path':row['path']})
+            data=base64.b64decode(content['dataBase64'],validate=True)
+            reads[name]=data==(root/name/'SKILL.md').read_bytes()
+        return {'names':sorted(by_name),'body_reads':reads,'thread_created':False,
+                'catalog_sha256':hashlib.sha256(json.dumps(catalog,sort_keys=True).encode()).hexdigest()}
+    except queue.Empty:
+        raise RuntimeError('Codex read-only app-server request timed out')
+    finally:
+        process.stdin.close()
+        try: process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.terminate();process.wait(timeout=5)
+        reader.join(timeout=2);discard.join(timeout=2)
+        process.stdout.close();process.stderr.close()
+
+
+def verify_fleet_discovery(host: str, root: Path, required: list[str], retired: list[str]) -> dict:
+    """Read fresh native catalogues and managed bodies without inference.
+
+    This verifies global discovery/readability, not an already-running session's
+    cached prompt or comparative behavior. Never retain assembled private input.
+    """
+    result = {'host': host, 'verified': False, 'model_calls': 0,
+              'scope': 'fresh native global catalogue and managed-body readback; existing sessions may cache instructions'}
+    try:
+        if host == 'hermes':
+            home = hermes_home(); runtime = home / 'hermes-agent'
+            python = runtime / ('.venv/Scripts/python.exe' if os.name == 'nt' else '.venv/bin/python')
+            code = """import sys,json,hashlib
+from pathlib import Path
+sys.path.insert(0,sys.argv[1])
+from tools.skills_tool import find_all_skills,skill_view
+from hermes_cli.config import load_config_readonly
+root=Path(sys.argv[2]); required=json.loads(sys.argv[3]); retired=json.loads(sys.argv[4])
+catalog=find_all_skills(); names=[x['name'] for x in catalog]
+config=load_config_readonly(); dirs=config.get('skills',{}).get('external_dirs',[])
+reads={}
+for name in required:
+    view=json.loads(skill_view(name,preprocess=False))
+    text=view.get('content','').replace('\\r\\n','\\n')
+    body=(root/name/'SKILL.md').read_text(encoding='utf-8').replace('\\r\\n','\\n')
+    if body.startswith('---\\n'): body=body.split('---',2)[2]
+    reads[name]=not view.get('error') and body.strip() in text
+print(json.dumps({'names':names,'body_reads':reads,'root_configured':any(Path(x).expanduser().resolve()==root.resolve() for x in dirs)}))
+"""
+            p = subprocess.run([str(python), '-B', '-c', code, str(runtime), str(root), json.dumps(required), json.dumps(retired)],
+                               capture_output=True, text=True, encoding='utf-8', timeout=45)
+            if p.returncode: raise RuntimeError('Hermes native catalogue read failed')
+            value = json.loads(p.stdout.splitlines()[-1]); names = set(value['names'])
+            loaded = all(value['body_reads'].values()) and value['root_configured']
+        elif host == 'codex':
+            executable = shutil.which('codex.exe' if os.name == 'nt' else 'codex')
+            if not executable and os.name == 'nt':
+                directory = Path(os.environ['LOCALAPPDATA']) / 'OpenAI/Codex/bin'
+                candidates = list(directory.glob('*/codex.exe'))
+                candidates.sort(key=lambda p: (p.stat().st_mtime_ns, str(p)), reverse=True)
+                executable = str(candidates[0]) if candidates else None
+            if not executable: raise RuntimeError('Codex native executable unavailable')
+            value = _codex_fleet_readback(executable, root, required)
+            names=set(value['names']);loaded=all(value['body_reads'].values())
+            result.update(catalog_sha256=value['catalog_sha256'],thread_created=value['thread_created'])
+        elif host == 'omp':
+            executable = shutil.which('omp')
+            if not executable: raise RuntimeError('OMP native executable unavailable')
+            p = subprocess.run([executable, '--mode', 'rpc', '--no-session'],
+                               input=json.dumps({'type':'get_available_commands','id':'agent-sync-readback'})+'\n',
+                               cwd=Path.home(), capture_output=True, text=True, encoding='utf-8', timeout=45)
+            messages = []
+            for line in p.stdout.splitlines():
+                try: messages.append(json.loads(line))
+                except ValueError: pass
+            replies = [v for v in messages if v.get('id')=='agent-sync-readback' and v.get('success') is True]
+            if p.returncode or len(replies)!=1: raise RuntimeError('OMP native catalogue read failed')
+            names = {v['name'].removeprefix('skill:') for v in replies[0]['data']['commands'] if v.get('source')=='skill'}
+            loaded = True
+            for name in required:
+                path = root/name/'SKILL.md'
+                view = subprocess.run([executable, 'read', str(path)+':raw'], cwd=Path.home(), capture_output=True,
+                                      text=True, encoding='utf-8', timeout=30)
+                loaded = loaded and view.returncode==0 and view.stdout.replace('\r\n','\n').strip()==path.read_text(encoding='utf-8').replace('\r\n','\n').strip()
+        else:
+            raise RuntimeError('Unsupported configured host: ' + host)
+        result.update(required_present=sorted(set(required)&names), required_missing=sorted(set(required)-names),
+                      retired_offered=sorted(set(retired)&names), loading_verified=bool(loaded))
+        result['verified'] = not result['required_missing'] and not result['retired_offered'] and bool(loaded)
+    except (OSError, ValueError, KeyError, TypeError, RuntimeError, subprocess.SubprocessError) as exc:
+        result['reason'] = str(exc)[:300]
+    return result
+
+
 def verify_generated_instructions(repo: Path, adapters: dict) -> None:
     if any(adapter["instructions"]["strategy"] == "generated" for adapter in adapters.values()):
         import render_instructions

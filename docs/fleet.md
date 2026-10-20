@@ -21,6 +21,8 @@ to any declared machine.
 The managed root's global source origin points to the stable published Git
 worktree after ready publication. Develop independent source changes in separate
 worktrees and use the [worktree publication contract](worktree-publication.md).
+Default `tools/reconcile.py sync` completes publication, stable-cache refresh, configured-root deployment and fresh native readback through one resumable integration receipt. Only all-target verification reports `synced`. Explicit source-only publication reports `published` and leaves rollout incomplete; native readback does not replace instructions already cached in running conversations.
+
 The low-level commands below do not publish source changes; direct maintenance
 does not edit the stable published checkout.
 

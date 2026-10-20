@@ -38,6 +38,14 @@ For an accumulated system audit, recover existing evidence and infer behavior cl
 | Drift intake | `tools/capability_intake.py` | Read-only metadata scan across recovery and fleet state; classify owner, route, disposition, and bounded automatic eligibility without exposing file bodies |
 | Drift and release | `tools/audit.py`, `tools/install.py` | Detect stale mappings and expose only admitted artifacts |
 
+## Sync completion and installed targets
+
+The default `tools/reconcile.py sync` and `tools/reconcile.py sync --ready <commit>` paths continue a verified publication through the existing managed stable cache, fleet render, configured-root apply and native readback. `tools/sync_git.py` reports the source stage as `published`; only all configured targets passing installed hashes and fresh native catalogue/body readback produces `synced`. These checks establish distribution and readability, not semantic correctness, model quality or replacement of instructions already cached in an active conversation.
+
+The common integration journal records each root independently. Managed drift, disconnected transport, unavailable native tools or denied operations retain an incomplete receipt while independent targets can finish. Repeating the exact attempt rechecks completed targets and applies only remaining changes. Ordinary sync binds its retained published receipt to the original source selection before resuming. An unchanged repeat can reuse publication only when the source is clean at the owned cache commit and installed content/state still matches that cache; a changed marker, origin, manifest or content retains review. Existing locks, source identities, publication guards and recoverable package/state backups remain in force. No active session is restarted. A configured remote machine requires its actual execution transport; a local CLI cannot stand in for it.
+
+Deliberate `--source-only` publication returns `published` with rollout incomplete, never `synced`. Its receipt is archived without holding the active integration lock. `python tools/run.py worktree_sync rollout --repo <checkout> --commit <exact-published-commit>` resumes a previously published release through the same managed workflow. Once deployment has started, resume that exact attempt before selecting another release; source-only cannot discard partial deployment.
+
 ## Capability-librarian intake
 
 `python tools/capability_intake.py scan --machine local-windows` composes the existing recovery dry-run and fleet planner. It reports only bounded metadata: surface, target identifier, current owner, route, change class, and review disposition. It has no apply command, does not read capability bodies into its report, and does not route live work through a staged owner.

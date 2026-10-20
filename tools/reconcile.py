@@ -1606,8 +1606,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 "completed_checks": exc.completed_checks if isinstance(exc, CheckFailure) else []}
 
 
-@_measure_completion
-def complete_sync(
+def _complete_source_sync(
     repo: str | Path,
     *,
     machine: str = "local-windows",
@@ -1820,6 +1819,41 @@ def complete_sync(
 
 
 @_measure_completion
+def complete_sync(repo, *, source_only=False, **options):
+    """Default completion includes the published cache and configured targets."""
+    if source_only:
+        if options.get('adopt') or options.get('capture_recovery') or options.get('recovery_artifacts') or not options.get('include'):
+            return {'result':'review-required','reason':'source-only requires exact included files without native selectors'}
+        options['capture_recovery'] = False
+    if not source_only and not options.get('integration_attempt'):
+        import worktree_sync
+        request = worktree_sync.publication_request(options)
+        retry = worktree_sync.published_retry(repo, request)
+        if retry is not None:
+            return worktree_sync.rollout_published(repo, retry, machine=options.get('machine', 'local-windows'), request=request)
+    result = _complete_source_sync(repo, **options)
+    if not source_only and not options.get('integration_attempt') and not any(
+            options.get(key) for key in ('adopt', 'include', 'recovery_artifacts')):
+        findings = result.get('findings', [])
+        if result.get('result') == 'review-required' and findings and all(
+                row.get('surface') == 'fleet' and row.get('source_action') == 'reconcile-state'
+                and row.get('target') == fleet.STATE_FILE for row in findings):
+            import worktree_sync
+            commit = worktree_sync.unchanged_published(repo, machine=options.get('machine', 'local-windows'),
+                                                     skill_roots=options.get('skill_roots'))
+            if commit is not None:
+                return worktree_sync.rollout_published(repo, commit, machine=options.get('machine', 'local-windows'), request=request)
+    if result.get('result') not in {'published', 'synced'} or options.get('integration_attempt'):
+        return result
+    if source_only:
+        return dict(result, result='published', rollout_verified=False, installed_verified=False,
+                    reason='explicit source-only publication; configured rollout remains incomplete')
+    import worktree_sync
+    rollout = worktree_sync.rollout_published(repo, result['commit'], machine=options.get('machine','local-windows'), request=request)
+    return dict(result, **rollout)
+
+
+@_measure_completion
 def complete_defaults_sync(repo, *, hosts=None, **options):
     """Reconcile approved native selectors, their observations, and publication."""
     import sync_git
@@ -2004,8 +2038,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="scope this operation to skills/repository files; do not capture native settings")
     parser.add_argument("--capture-artifact", action="append", default=None, metavar="HOST:ID", help="capture only an exact existing recovery artifact")
     parser.add_argument("--include", action="append", default=[], metavar="FILE",
-                        help="exact additional repository file already reviewed for commit; does not authorize deployment")
+                        help="exact additional repository file already reviewed for commit; does not expand configured fleet or admission")
     parser.add_argument("--ready", metavar="COMMIT", help="integrate an exact ready commit from isolated development onto the latest published base")
+    parser.add_argument("--source-only", action="store_true", help="publish exact included source files; explicitly leave configured rollout incomplete")
     parser.add_argument("--shared-checkout", action="store_true", help="explicit legacy scoped publication from this working checkout")
     parser.add_argument("--message", default="chore: reconcile checked agent changes")
     parser.add_argument("--full", action="store_true", help="explicitly retain broad reconciliation when owner/file selectors are present")
@@ -2022,6 +2057,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--suite", action="append", default=[], type=Path)
     parser.add_argument("--reference-skill", action="append", default=[], type=Path)
     args = parser.parse_args(argv)
+    if args.source_only and (args.action != 'sync' or args.adopt or args.full or args.capture_artifact or args.reconcile_defaults):
+        parser.error('source-only applies to exact include-only sync without native/default selectors')
     authoring = bool(args.target or args.candidate or args.baseline or args.host or args.model or
                      args.evidence or args.suite or args.reference_skill)
     if authoring and (args.action == "sync" or not args.target):
@@ -2060,7 +2097,7 @@ def main(argv: list[str] | None = None) -> int:
         operation = worktree_sync.ready_plan if args.action == "plan" else worktree_sync.ready_sync
         report = operation(args.repo, args.ready, machine=args.machine, adopt=args.adopt,
                            include=args.include, recovery_roots=roots, skill_roots=args.skill_root or None,
-                           message=args.message)
+                           message=args.message, **({'source_only':True} if args.source_only else {}))
     elif args.action == "review":
         import change_review
         report = change_review.review(args.repo, **options)
@@ -2086,9 +2123,10 @@ def main(argv: list[str] | None = None) -> int:
         extra = {"hosts": default_hosts} if use_defaults else {}
         report = operation(args.repo, machine=args.machine, adopt=args.adopt, recovery_roots=roots,
                                skill_roots=args.skill_root or None, capture_recovery=args.capture_recovery,
-                               include=args.include, message=args.message, scoped=False if args.full else None, recovery_artifacts=args.capture_artifact, **extra)
+                               include=args.include, message=args.message, scoped=False if args.full else None, recovery_artifacts=args.capture_artifact,
+                               **({'source_only':True} if args.source_only else {}), **extra)
     print(json.dumps(report, indent=2, sort_keys=True))
-    return 0 if args.action in {"review", "plan"} or report.get("result") == "synced" else 2
+    return 0 if args.action in {"review", "plan"} or report.get("result") == "synced" or (args.source_only and report.get('result') == 'published') else 2
 
 
 if __name__ == "__main__":

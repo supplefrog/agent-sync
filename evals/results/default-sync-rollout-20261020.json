@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-20",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "8d51deb084b1e361f26d13f7a979fc6887ab44d96a16ed2b6cde561d12867fc5",
+          "after_sha256": "8d51deb084b1e361f26d13f7a979fc6887ab44d96a16ed2b6cde561d12867fc5"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "d94c22bcccc1495dc66887b1b831c75bda0ada3a2738c20644a059bc138092dc",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6",
+          "after_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "905aea4824a0e3894effb935993fa03903d42613ea5f33406156cd10d58276fe",
+          "after_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/hermes-skill-proposals.md": {
+          "before_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167",
+          "after_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "bf8128bd83ebcfad8a730ca07c501ff8a1d81ac87523b76c90bb6bebd3012a9a",
+          "after_sha256": "bf8128bd83ebcfad8a730ca07c501ff8a1d81ac87523b76c90bb6bebd3012a9a"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "b5d0a5c17f638bb2fb5cdb7581d39910fed5baad9365950dd3e4a8a7ffee7080",
+          "after_sha256": "4bc3463a282d2f2eb72706e2ddeba6263381c3549663ab8f02154aff076019a7"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "0f7f45a2e9fcdf24a142840e14efea5b9743f13a318cc12e9ae7a98940c4b309",
+          "after_sha256": "0f7f45a2e9fcdf24a142840e14efea5b9743f13a318cc12e9ae7a98940c4b309"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "7281b16af4617b8ca250f78e22b68e26d98392dd4efff4fafadd84ad692a79bb",
+          "after_sha256": "c758843a88673373b9b50dd1739607d77fcced414049dbe1b6656345a4aee328"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121",
+          "after_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5",
+          "after_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a",
+          "after_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a"
+        },
+        "skills/instruction-authoring/references/useful-behaviors.md": {
+          "before_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4",
+          "after_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4"
+        },
+        "tools/install.py": {
+          "before_sha256": "8c72790f4acf27167bcc7c9a8c56883921baa940da86ddf261987b181bc5d08d",
+          "after_sha256": "da0172c9d0be8a9531f56b7c0c9cf16758e0e20c2cbc8a843e737e1dc4f8193b"
+        },
+        "tools/reconcile.py": {
+          "before_sha256": "d97b57c6a8541b1305e9e5789a92095e1033c2a46bcfdd8c2dd89faa55627c6c",
+          "after_sha256": "17fb0ffd2bc19522cdfd4888541e70e5be5bb33505b0fdb160e39e87a6f3cc1a"
+        },
+        "tools/sync_git.py": {
+          "before_sha256": "b9501edeb05fd54a5e923545da8454f494e0c139f031d6ff3eb438f50424efff",
+          "after_sha256": "40dd3c8e240dbb5dc7de8685229edde9d7bb577d806ff2a224394ec036266bb1"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "798109c85240398908c1315b0bb2a5e86b51a06aeb56be3c50c6f6b3f0eaaf13",
+          "after_sha256": "c90e246fed2a98338809b0403c7c2978e5ed55d9b0254784f3aafe955cec3369"
+        }
+      },
+      "requirement_change": false,
+      "requirement_reason": "Implements existing R16 honest completion and R19 tool/guidance reconciliation under the explicit user correction that configured rollout is default. Requirements already prohibit calling partial sync complete. No new behavioral skill or model-performance claim.",
+      "authority": "Explicit user correction: this is supposed to be default behavior; the mechanism should work as such. Publication of this additional source remains pending exact-scope approval.",
+      "checks": "Real Git and synthetic native regression fixtures exercise first sync, unchanged repeat, forged cache/provenance refusal, actual target drift, disconnected target, exact-selection recovery, source-only status and native readback. The prior released behavior fails the stale-target product assertion. Existing source-bound dependency, public-safe and structural qualification checks are retained. No model trials or live mechanism deployment.",
+      "outcome_review": {
+        "expected": "A source push alone is published. Default sync reaches every configured installed root, then requires fresh native catalogue/body verification before synced. Partial failures preserve evidence and independent progress.",
+        "observed": "The reviewed a3d763c release completed actual rollout on the one configured shared root for Hermes, Codex and OMP, with all fifteen package hashes and affected native views passing. New local real-Git tests pass for unchanged repeat and exact-command recovery after disconnection while retaining real drift; final suite outcome is retained in the review packet. The installed release remains a3d763c.",
+        "evidence": "tests/test_rollout_completion.py; tests/test_worktree_sync.py; tests/test_sync_completion.py; tests/test_sync_git_scoped.py. Source-bound artifact hashes below and retained private installed/native receipt.",
+        "limitations": "Catalogue/readability and deterministic dependency bindings do not prove semantic correctness, model-quality benefit, refresh of cached active conversations or remote transport not configured here. No new model calls or experiments."
+      },
+      "obligations": [
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "updated",
+          "reason": "Update default completion, explicit source-only and resumable rollout documentation to match the corrected implementation."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "updated",
+          "reason": "Update default completion, explicit source-only and resumable rollout documentation to match the corrected implementation."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "docs/hermes-skill-proposals.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Update default completion, explicit source-only and resumable rollout documentation to match the corrected implementation."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Update default completion, explicit source-only and resumable rollout documentation to match the corrected implementation."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        },
+        {
+          "path": "skills/instruction-authoring/references/useful-behaviors.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance retains its owner, authorization, native-verification and recovery obligations. The correction implements those obligations without changing instruction selection, model-quality claims, admission, recovery allowlists or security settings. Exact link coverage is not a semantic proof."
+        }
+      ]
+    }
+  ]
+}

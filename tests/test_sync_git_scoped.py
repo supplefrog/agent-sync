@@ -92,7 +92,7 @@ class ScopedGitTests(unittest.TestCase):
         (sync.common_dir(self.repo) / 'agent-signal-integration.json').write_text(json.dumps(
             {'attempt': 'ready-attempt', 'integration_repo': str(self.repo)}))
         result = sync.publish(self.repo, pending, verify=lambda: None, integration_attempt='ready-attempt')
-        self.assertEqual('synced', result['result'], result)
+        self.assertEqual('published', result['result'], result)
         durable = sync.read_pending(self.repo)
         self.assertEqual('ready-attempt', durable['integration_attempt'])
         self.assertEqual(result, durable['completion'])
@@ -110,7 +110,7 @@ class ScopedGitTests(unittest.TestCase):
         pending = self.pending()
         sync.preflight(self.repo, pending['target'], files=pending['files'], scoped=True)
         report = self.publish(pending)
-        self.assertEqual('synced', report['result'], report)
+        self.assertEqual('published', report['result'], report)
         self.assertFalse(report['agents_verified'])
         self.assertEqual(before, self.git('ls-files', '--stage', '-z').split('\0')[0])
         self.assertEqual(b'unrelated unstaged\n', (self.repo / 'other.md').read_bytes())
@@ -134,7 +134,7 @@ class ScopedGitTests(unittest.TestCase):
             pending['tree'] = tree
         sync.save_pending(self.repo, pending)
         report = self.publish(pending)
-        self.assertEqual('synced', report['result'], report)
+        self.assertEqual('published', report['result'], report)
         self.assertEqual(working, path.read_bytes())
         self.assertEqual({'selected': 'reviewed', 'foreign': 'baseline'},
                          json.loads(self.git('show', 'HEAD:host-deltas.json')))
@@ -198,7 +198,7 @@ class ScopedGitTests(unittest.TestCase):
         self.assertEqual('commit', report['failed_step'])
         self.assertEqual(before, sync._index_entries(self.repo))
         hook.unlink()
-        self.assertEqual('synced', self.publish(pending)['result'])
+        self.assertEqual('published', self.publish(pending)['result'])
 
     def test_push_failure_retry_ignores_new_unrelated_work(self):
         self.dirty()
@@ -210,7 +210,7 @@ class ScopedGitTests(unittest.TestCase):
         head = self.git('rev-parse', 'HEAD')
         hook.unlink()
         (self.repo / 'newer.md').write_text('unrelated')
-        self.assertEqual('synced', self.publish(pending)['result'])
+        self.assertEqual('published', self.publish(pending)['result'])
         self.assertEqual(head, self.git('rev-parse', 'HEAD'))
 
     def test_dirty_allowlist_cannot_authorize_selected_secret(self):
@@ -340,7 +340,7 @@ class ScopedGitTests(unittest.TestCase):
         self.assertEqual(b'owned by another operation', index_lock.read_bytes())
         head = self.git('rev-parse', 'HEAD')
         index_lock.unlink()
-        self.assertEqual('synced', self.publish(pending)['result'])
+        self.assertEqual('published', self.publish(pending)['result'])
         self.assertEqual(head, self.git('rev-parse', 'HEAD'))
 
     def test_index_replace_cleanup_does_not_remove_next_operators_lock(self):
