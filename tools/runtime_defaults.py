@@ -65,7 +65,8 @@ def _parse_preferences(text: str) -> dict[str, Any]:
             or type(value["schema_version"]) is not int or value["schema_version"] != 1):
         raise DefaultsError("unsupported preference contract")
     roles = value["roles"]
-    if not isinstance(roles, dict) or set(roles) != {"reviewer", "worker", "linear", "hermes"}:
+    if (not isinstance(roles, dict) or not {"reviewer", "worker", "linear", "hermes"} <= set(roles)
+            or not set(roles) <= {"reviewer", "worker", "linear", "hermes", "coordinator"}):
         raise DefaultsError("unsupported preference roles")
     for name, role in roles.items():
         if (not isinstance(role, dict) or set(role) != {"model", "reasoning"}

@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "base": "bf88b874a76892af718d49d9b14514ab1fa40a65",
+  "scope": "preference-data only; reference packaging and policy proposal excluded",
+  "selected_paths": [
+    "surfaces/core.md",
+    "tools/runtime_defaults.py",
+    "tools/instruction_changes.py",
+    "tests/test_preference_data_classification.py",
+    "evals/results/preference-reference-publication-20261021.json"
+  ],
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "preference_roles": [
+        "reviewer",
+        "coordinator"
+      ],
+      "deviation": "Explicit user preference is reviewer and coordinator gpt-6.1-sol/xhigh; published selector data is reviewer high with coordinator absent. Worker remains medium.",
+      "evidence": "Original positive case rejected;70 offline regressions pass after the data-only classification correction. Surrounding prose, other JSON values and default mappings are unchanged.",
+      "why_instruction": "This is selector data in the existing authoritative preference block, not new behavioral guidance. R02 already separates non-instruction settings and concrete runtime fixes.",
+      "alternative": "Do not change native global defaults, duplicate the preference owner, run a model trial or adopt the pending reference-policy exception.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "56be5bd62e0d39fe9928921478c764f5d8fa6f255859019416679592975a6d69",
+          "after_sha256": "06cc6b8c34a148116d42aff8aac8e515a16c2f6ae72373732baaec2e6d9d62c3"
+        }
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6",
+          "after_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "4bc3463a282d2f2eb72706e2ddeba6263381c3549663ab8f02154aff076019a7",
+          "after_sha256": "4bc3463a282d2f2eb72706e2ddeba6263381c3549663ab8f02154aff076019a7"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "0f7f45a2e9fcdf24a142840e14efea5b9743f13a318cc12e9ae7a98940c4b309",
+          "after_sha256": "0f7f45a2e9fcdf24a142840e14efea5b9743f13a318cc12e9ae7a98940c4b309"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5",
+          "after_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a",
+          "after_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "56be5bd62e0d39fe9928921478c764f5d8fa6f255859019416679592975a6d69",
+          "after_sha256": "06cc6b8c34a148116d42aff8aac8e515a16c2f6ae72373732baaec2e6d9d62c3"
+        },
+        "tests/test_preference_data_classification.py": {
+          "before_sha256": "absent",
+          "after_sha256": "b49850568c4bfed153c07f22066be0730ffe213d03471ff7065e4f912a3e39df"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "34cb09b92ae00cc0b8f0dab936afba39aee52a8367f1e3a06fd6578ed1d579fb",
+          "after_sha256": "467c02c6a1b26fcc6f797d6e7c7edced9c3134bc32885050d1cd1191d65867bc"
+        },
+        "tools/runtime_defaults.py": {
+          "before_sha256": "0f1e2ec8307f246fd0d0bbf557cb1f4fbc6e4760f3dd287ce30cc82551b6ce34",
+          "after_sha256": "9ba11c5b2724f7a3032e6e9fb911c59cc81136b62d45673f46dd479a51ae73b9"
+        }
+      },
+      "requirement_change": false,
+      "requirement_reason": "Implement the existing R02 distinction for non-instruction settings; no requirements, policy text, instruction wording, trigger, route admission or native-default mappings change.",
+      "authority": "User explicitly requested Sol/xhigh reviewer and coordinator with worker unchanged and authorized the narrow data-only classifier correction. Publication/rollout remain held pending the separate reference decision.",
+      "checks": "70 offline tests including explicit-data positive, JSON layout alternatives, typed non-selector preservation, outer necessity/owner/hash checks, prose fallback, existing measured adoption/contract correction and denied reference packaging. No provider/model calls.",
+      "outcome_review": {
+        "expected": "Only declared role-selector values can use existing source checks; ordinary prose and reference changes retain their current gates.",
+        "observed": "Data-only correction returns eligible with behavioral_proof=false and approval_authenticated=false;70 tests pass. No reference exception is in this implementation.",
+        "evidence": "Bound source hashes below and the owner-retained before/after test results. The original source rejected the positive selector-data case.",
+        "limitations": "Structural classification and record validation do not authenticate user authority, native model availability or behavioral benefit. Qualification is source-only; no push, installation or running-session adoption is claimed."
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Authorized model-role data/classifier/regression change; surrounding instructions and policy remain unchanged."
+        },
+        {
+          "path": "tests/test_preference_data_classification.py",
+          "disposition": "updated",
+          "reason": "Authorized model-role data/classifier/regression change; surrounding instructions and policy remain unchanged."
+        }
+      ]
+    }
+  ],
+  "classifier_outcome": {
+    "allowed_category": "explicit user model-selector data under existing R02",
+    "model_quality_claim": false,
+    "reference_packaging_exception_added": false,
+    "policy_documents_changed": false,
+    "worker_remains_medium": true,
+    "push_performed": false,
+    "rollout_performed": false,
+    "offline_regressions": {
+      "tests": 70,
+      "failures": 0,
+      "errors": 0,
+      "passed": true,
+      "model_calls": 0
+    },
+    "actual_eligibility": {
+      "eligible": true,
+      "reason": "explicit user model-selector data; standing instructions unchanged; no behavioral improvement claimed",
+      "behavioral_proof": false,
+      "approval_authenticated": false
+    },
+    "normal_source_record_check": "passed",
+    "reference_gate_unchanged": {
+      "result": "review-required",
+      "reason": "instruction excluded: missing behavioral measurements or task contract: skills/instruction-authoring/SKILL.md",
+      "exception": "SyncBlocked"
+    },
+    "reference_policy_adopted": false
+  },
+  "reference_repair_status": "Separate validated local repair retained; its release-policy decision remains pending. Default rollout of this preference-only source would regress that package and is prohibited in this turn."
+}

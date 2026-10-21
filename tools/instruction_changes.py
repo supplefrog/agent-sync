@@ -48,6 +48,63 @@ def _hash(data):
 CONTRACTS = {'docs/system-requirements.md', 'docs/requirement-status.md'}
 
 
+def _preference_data_only(old, new, row):
+    """Recognize role-selector data, never standing prose or native-default mapping."""
+    if old is None or new is None:
+        return False
+    start, end = b"<!-- agent-sync-preferences -->", b"<!-- /agent-sync-preferences -->"
+    def parts(data):
+        if data.count(start) != 1 or data.count(end) != 1:
+            return None
+        prefix, block = data.split(start)
+        block, suffix = block.split(end)
+        match = re.fullmatch(rb"\s*```json\s*\r?\n(.*?)\r?\n```\s*", block, re.S)
+        if match is None:
+            return None
+        def unique(pairs):
+            result = {}
+            for key, value in pairs:
+                if key in result:
+                    raise ValueError("duplicate preference key")
+                result[key] = value
+            return result
+        return prefix, suffix, json.loads(match[1], object_pairs_hook=unique)
+    try:
+        before, after = parts(old), parts(new)
+        roles = row.get('preference_roles')
+        if (before is None or after is None or before[:2] != after[:2]
+                or not isinstance(roles, list) or not roles
+                or any(not isinstance(role, str) for role in roles)
+                or len(roles) != len(set(roles))):
+            return False
+        left, right = before[2], after[2]
+        if not isinstance(left, dict) or not isinstance(right, dict):
+            return False
+        old_roles, new_roles = left.get('roles'), right.get('roles')
+        if not isinstance(old_roles, dict) or not isinstance(new_roles, dict):
+            return False
+        old_other = json.dumps({k:v for k,v in left.items() if k != 'roles'}, sort_keys=True, allow_nan=False)
+        new_other = json.dumps({k:v for k,v in right.items() if k != 'roles'}, sort_keys=True, allow_nan=False)
+        if old_other != new_other:
+            return False
+        # Preserve all existing roles; coordinator is the sole supported addition.
+        if not set(old_roles) <= set(new_roles) or set(new_roles) - set(old_roles) - {'coordinator'}:
+            return False
+        changed = {k for k in new_roles if old_roles.get(k) != new_roles[k]}
+        if changed != set(roles) or not changed <= (set(old_roles) | {'coordinator'}):
+            return False
+        for role in changed:
+            value = new_roles[role]
+            if (not isinstance(value, dict) or set(value) != {'model', 'reasoning'}
+                    or not isinstance(value['model'], str)
+                    or not re.fullmatch(r'[a-z0-9][a-z0-9._-]+', value['model'])
+                    or value['reasoning'] not in {'none','minimal','low','medium','high','xhigh','max','ultra'}):
+                return False
+        return True
+    except (ValueError, TypeError, AttributeError):
+        return False
+
+
 def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations):
     """Narrow reviewed correction routes after necessity/dependency validation.
 
@@ -63,6 +120,9 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
             and old is not None and new is not None
             and old.replace(b'\r\n', b'\n') == new.replace(b'\r\n', b'\n')):
         reason = 'content-identical line-ending repair'
+    elif (kind == 'add-or-change' and name == owner == 'surfaces/core.md'
+            and row.get('basis') == 'user-correction' and _preference_data_only(old, new, row)):
+        reason = 'explicit user model-selector data; standing instructions unchanged'
     elif kind == 'contract-correction':
         sections = {'skills/instruction-authoring/SKILL.md': 'Evaluation discipline',
                     'skills/instruction-authoring/references/change-review.md': 'Publication necessity record'}

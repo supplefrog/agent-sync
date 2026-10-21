@@ -36,7 +36,8 @@ This block owns approved desired values. Native adapters read it; observations a
 {
   "schema_version": 1,
   "roles": {
-    "reviewer": {"model": "gpt-6.1-sol", "reasoning": "high"},
+    "reviewer": {"model": "gpt-6.1-sol", "reasoning": "xhigh"},
+    "coordinator": {"model": "gpt-6.1-sol", "reasoning": "xhigh"},
     "worker": {"model": "gpt-6.1-sol", "reasoning": "medium"},
     "linear": {"model": "gpt-6.1-sol", "reasoning": "high"},
     "hermes": {"model": "gpt-6.1-sol", "reasoning": "medium"}
