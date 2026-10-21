@@ -90,7 +90,7 @@ def _preference_data_only(old, new, row):
         # Preserve all existing roles; coordinator is the sole supported addition.
         if not set(old_roles) <= set(new_roles) or set(new_roles) - set(old_roles) - {'coordinator'}:
             return False
-        changed = {k for k in new_roles if old_roles.get(k) != new_roles[k]}
+        changed = {k for k in new_roles if k not in old_roles or old_roles[k] != new_roles[k]}
         if changed != set(roles) or not changed <= (set(old_roles) | {'coordinator'}):
             return False
         for role in changed:

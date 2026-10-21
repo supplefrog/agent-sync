@@ -51,6 +51,10 @@ class PreferenceDataClassificationTests(unittest.TestCase):
   self.row['basis']='mechanical-maintenance';self.assertIsNone(self.eligible())
  def test_undeclared_worker_change_rejected(self):
   self.new['roles']['worker']['reasoning']='low';self.put(self.name,self.core(self.new));self.assertIsNone(self.eligible())
+ def test_undeclared_null_coordinator_is_a_change_and_is_rejected(self):
+  self.new['roles']['coordinator']=None;self.row['preference_roles']=['reviewer'];self.put(self.name,self.core(self.new));self.assertIsNone(self.eligible())
+ def test_declared_null_coordinator_is_rejected(self):
+  self.new['roles']['coordinator']=None;self.put(self.name,self.core(self.new));self.assertIsNone(self.eligible())
  def test_declared_existing_role_change_remains_data(self):
   self.new['roles']['worker']['reasoning']='high';self.row['preference_roles'].append('worker');self.put(self.name,self.core(self.new));self.assertTrue(self.eligible()['eligible'])
  def test_json_layout_and_key_order_do_not_define_acceptance(self):

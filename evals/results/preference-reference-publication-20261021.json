@@ -67,11 +67,11 @@
         },
         "tests/test_preference_data_classification.py": {
           "before_sha256": "absent",
-          "after_sha256": "b49850568c4bfed153c07f22066be0730ffe213d03471ff7065e4f912a3e39df"
+          "after_sha256": "d88ad92c0e5addf288e3d79da7aac936f76e05f9ebbe008f1eef62f9388d10e3"
         },
         "tools/instruction_changes.py": {
           "before_sha256": "34cb09b92ae00cc0b8f0dab936afba39aee52a8367f1e3a06fd6578ed1d579fb",
-          "after_sha256": "467c02c6a1b26fcc6f797d6e7c7edced9c3134bc32885050d1cd1191d65867bc"
+          "after_sha256": "1ec15d5a71c368be22b3f7e28af27fdaf45e3370e0a8e760e5c3ff596b861f8d"
         },
         "tools/runtime_defaults.py": {
           "before_sha256": "0f1e2ec8307f246fd0d0bbf557cb1f4fbc6e4760f3dd287ce30cc82551b6ce34",
@@ -81,10 +81,10 @@
       "requirement_change": false,
       "requirement_reason": "Implement the existing R02 distinction for non-instruction settings; no requirements, policy text, instruction wording, trigger, route admission or native-default mappings change.",
       "authority": "User explicitly requested Sol/xhigh reviewer and coordinator with worker unchanged and authorized the narrow data-only classifier correction. Publication/rollout remain held pending the separate reference decision.",
-      "checks": "70 offline tests including explicit-data positive, JSON layout alternatives, typed non-selector preservation, outer necessity/owner/hash checks, prose fallback, existing measured adoption/contract correction and denied reference packaging. No provider/model calls.",
+      "checks": "72 offline regressions pass, including declared and undeclared null coordinator rejection. Exact prior malformed case fails before the missing-key repair. Existing measured gates, owner and source checks retained.",
       "outcome_review": {
         "expected": "Only declared role-selector values can use existing source checks; ordinary prose and reference changes retain their current gates.",
-        "observed": "Data-only correction returns eligible with behavioral_proof=false and approval_authenticated=false;70 tests pass. No reference exception is in this implementation.",
+        "observed": "72 offline tests pass after correcting the absent-key versus null comparison; no policy or reference exception in this preference-only freeze.",
         "evidence": "Bound source hashes below and the owner-retained before/after test results. The original source rejected the positive selector-data case.",
         "limitations": "Structural classification and record validation do not authenticate user authority, native model availability or behavioral benefit. Qualification is source-only; no push, installation or running-session adoption is claimed."
       },
@@ -146,11 +146,12 @@
     "push_performed": false,
     "rollout_performed": false,
     "offline_regressions": {
-      "tests": 70,
+      "tests": 72,
       "failures": 0,
       "errors": 0,
       "passed": true,
-      "model_calls": 0
+      "model_calls": 0,
+      "fixture_root": "task-owned test directory"
     },
     "actual_eligibility": {
       "eligible": true,
@@ -164,7 +165,8 @@
       "reason": "instruction excluded: missing behavioral measurements or task contract: skills/instruction-authoring/SKILL.md",
       "exception": "SyncBlocked"
     },
-    "reference_policy_adopted": false
+    "reference_policy_adopted": false,
+    "review_fix": "Count added role keys as changes before validating declarations and selector shape."
   },
   "reference_repair_status": "Separate validated local repair retained; its release-policy decision remains pending. Default rollout of this preference-only source would regress that package and is prohibited in this turn."
 }
