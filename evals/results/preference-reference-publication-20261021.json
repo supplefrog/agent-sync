@@ -1,13 +1,16 @@
 {
   "schema_version": 1,
   "base": "bf88b874a76892af718d49d9b14514ab1fa40a65",
-  "scope": "preference-data only; reference packaging and policy proposal excluded",
+  "scope": "Explicit selector data plus one exact user-authorized published reference transport; no general release-policy exception.",
   "selected_paths": [
+    "evals/results/preference-reference-publication-20261021.json",
+    "skills/instruction-authoring/SKILL.md",
+    "skills/instruction-authoring/references/claim-based-testing-and-retirement.md",
     "surfaces/core.md",
-    "tools/runtime_defaults.py",
-    "tools/instruction_changes.py",
     "tests/test_preference_data_classification.py",
-    "evals/results/preference-reference-publication-20261021.json"
+    "tests/test_reference_transport.py",
+    "tools/instruction_changes.py",
+    "tools/runtime_defaults.py"
   ],
   "instruction_changes": [
     {
@@ -28,6 +31,49 @@
           "after_sha256": "06cc6b8c34a148116d42aff8aac8e515a16c2f6ae72373732baaec2e6d9d62c3"
         }
       }
+    },
+    {
+      "baseline_sufficient": false,
+      "deviation": "Published skill links outside its installed package to a contract section absent there.",
+      "evidence": "User specifically approved copying this already-published section unchanged and repairing its link after identical-text/loading checks, without a new behavioral comparison. Exact hashes, package validation and negative controls enforce only that repair.",
+      "why_instruction": "Restore the existing reference at its existing Evaluation discipline decision point. No requirement, prose, trigger, obligation or procedure is rewritten.",
+      "alternative": "Keep the broken installed route or adopt a broader release-policy waiver. Neither is necessary; this authorization covers the exact existing reference transport only.",
+      "owner": "skills/instruction-authoring",
+      "basis": "user-correction",
+      "artifacts": {
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5",
+          "after_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed"
+        },
+        "skills/instruction-authoring/references/claim-based-testing-and-retirement.md": {
+          "before_sha256": "absent",
+          "after_sha256": "fce6e25097ec08dcb3fce3ccf9b99c02efaa4462b91bd9f92eb251dce303670e"
+        }
+      },
+      "restructured": false,
+      "loading_review": {
+        "checks": "Exact link-only substitution, source-section byte equality, installed package reference/anchor validation and negative missing/escape checks passed. Existing Evaluation decision point is unchanged; no natural triggering or model benefit is established.",
+        "entrypoint_reason": "Existing Evaluation discipline remains in the entrypoint; only its resource URL is repaired.",
+        "obligations": [
+          {
+            "obligation": "Apply the existing published claim-based testing and retirement contract.",
+            "applies_when": "The existing Evaluation discipline reference is needed for a comparison/retirement review.",
+            "required": true,
+            "before": [
+              "skills/instruction-authoring/SKILL.md"
+            ],
+            "after": [
+              "skills/instruction-authoring/SKILL.md",
+              "skills/instruction-authoring/references/claim-based-testing-and-retirement.md"
+            ],
+            "disposition": "preserved",
+            "load_when": "At the existing Evaluation discipline link; no new standing injection.",
+            "reason": "Verbatim existing source section; the outside-owner canonical document is separately hash-bound in the dependency record."
+          }
+        ]
+      },
+      "change_kind": "reference-transport",
+      "user_authorized_transport": true
     }
   ],
   "change_reconciliation": [
@@ -55,11 +101,15 @@
         },
         "skills/instruction-authoring/SKILL.md": {
           "before_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5",
-          "after_sha256": "d9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5"
+          "after_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed"
         },
         "skills/instruction-authoring/references/change-review.md": {
           "before_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a",
           "after_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a"
+        },
+        "skills/instruction-authoring/references/claim-based-testing-and-retirement.md": {
+          "before_sha256": "absent",
+          "after_sha256": "fce6e25097ec08dcb3fce3ccf9b99c02efaa4462b91bd9f92eb251dce303670e"
         },
         "surfaces/core.md": {
           "before_sha256": "56be5bd62e0d39fe9928921478c764f5d8fa6f255859019416679592975a6d69",
@@ -69,9 +119,13 @@
           "before_sha256": "absent",
           "after_sha256": "d88ad92c0e5addf288e3d79da7aac936f76e05f9ebbe008f1eef62f9388d10e3"
         },
+        "tests/test_reference_transport.py": {
+          "before_sha256": "absent",
+          "after_sha256": "92df905dd0ff566e043089a9e82ef6b6041e16ab573d08ec88ab2d95e83af2c9"
+        },
         "tools/instruction_changes.py": {
           "before_sha256": "34cb09b92ae00cc0b8f0dab936afba39aee52a8367f1e3a06fd6578ed1d579fb",
-          "after_sha256": "1ec15d5a71c368be22b3f7e28af27fdaf45e3370e0a8e760e5c3ff596b861f8d"
+          "after_sha256": "fd8db0553808b63accaba5caf042a70bf442849adbbf53930c68fe00b9fdadb1"
         },
         "tools/runtime_defaults.py": {
           "before_sha256": "0f1e2ec8307f246fd0d0bbf557cb1f4fbc6e4760f3dd287ce30cc82551b6ce34",
@@ -79,94 +133,106 @@
         }
       },
       "requirement_change": false,
-      "requirement_reason": "Implement the existing R02 distinction for non-instruction settings; no requirements, policy text, instruction wording, trigger, route admission or native-default mappings change.",
-      "authority": "User explicitly requested Sol/xhigh reviewer and coordinator with worker unchanged and authorized the narrow data-only classifier correction. Publication/rollout remain held pending the separate reference decision.",
-      "checks": "72 offline regressions pass, including declared and undeclared null coordinator rejection. Exact prior malformed case fails before the missing-key repair. Existing measured gates, owner and source checks retained.",
+      "requirement_reason": "Restore an existing required reference using exact published bytes at the same decision point. Existing requirements/status and general publication policy remain byte-identical; only this explicitly authorized transport receives a fixed-source qualification, not a generic mechanical exception.",
+      "authority": "Explicit user preference correction and separate approval of this exact unchanged published reference copy/link repair after identity and loading checks. This preparation grants no publication, rollout, new route or unrelated instruction authority.",
+      "checks": "90 offline regressions including null-role guards, exact-reference/source/loading controls, prose rejection and existing measured/contract gates. Normal readiness is separately recorded for the frozen candidate.",
       "outcome_review": {
-        "expected": "Only declared role-selector values can use existing source checks; ordinary prose and reference changes retain their current gates.",
-        "observed": "72 offline tests pass after correcting the absent-key versus null comparison; no policy or reference exception in this preference-only freeze.",
-        "evidence": "Bound source hashes below and the owner-retained before/after test results. The original source rejected the positive selector-data case.",
-        "limitations": "Structural classification and record validation do not authenticate user authority, native model availability or behavioral benefit. Qualification is source-only; no push, installation or running-session adoption is claimed."
+        "expected": "Approved model selector data and this exact unchanged reference transport qualify; changed prose, different sources, rewritten contracts, missing resources or loading errors fail.",
+        "observed": "Exact published section copied unchanged and URL alone substituted. All package-local references resolve in a copied package without the repository document. No model calls or deployed state changes.",
+        "evidence": "Source-bound artifacts below; before/after controls and full normal source qualification retained by the owner.",
+        "limitations": "Hashes and loading checks establish exact transport, not semantic improvement, natural discovery/selection, approval authenticity, remote publication or adoption by a running process."
+      },
+      "framework_review": {
+        "affected": [
+          "skills/instruction-authoring/SKILL.md",
+          "skills/instruction-authoring/references/claim-based-testing-and-retirement.md",
+          "skills/instruction-authoring/references/change-review.md",
+          "docs/system-requirements.md",
+          "docs/requirement-status.md"
+        ],
+        "selection_reason": "The authoring framework entrypoint has one broken installed reference. Its verbatim source section, existing loading map and publication owner are affected by restoring that existing route.",
+        "unaffected_reason": "Existing Evaluation wording, load condition, remaining authoring guidance, other skills, registry, native settings and paused experiments retain their existing responsibilities and bytes. This does not authorize other mechanical/prose exceptions.",
+        "checks": "Before/after entrypoint equality except one URL; immutable source and section hashes; copied package validator and exact resource read; negative rewritten/source/anchor/owner/missing-file cases; existing measured gates retained."
       },
       "obligations": [
         {
           "path": "contracts/surface-matrix.json",
           "disposition": "unchanged",
-          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+          "reason": "Existing owner and obligations remain correct: original Evaluation load point and published contract content retained; source reconciliation does not claim semantic proof."
         },
         {
           "path": "docs/evaluations/outcome-efficiency.md",
           "disposition": "unchanged",
-          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+          "reason": "Existing owner and obligations remain correct: original Evaluation load point and published contract content retained; source reconciliation does not claim semantic proof."
         },
         {
           "path": "docs/learning-and-taste-update.md",
           "disposition": "unchanged",
-          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+          "reason": "Existing owner and obligations remain correct: original Evaluation load point and published contract content retained; source reconciliation does not claim semantic proof."
         },
         {
           "path": "docs/requirement-status.md",
           "disposition": "unchanged",
-          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+          "reason": "Existing owner and obligations remain correct: original Evaluation load point and published contract content retained; source reconciliation does not claim semantic proof."
         },
         {
           "path": "docs/system-requirements.md",
           "disposition": "unchanged",
-          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+          "reason": "Existing owner and obligations remain correct: original Evaluation load point and published contract content retained; source reconciliation does not claim semantic proof."
         },
         {
           "path": "skills/instruction-authoring/SKILL.md",
-          "disposition": "unchanged",
-          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+          "disposition": "updated",
+          "reason": "Authorized selector data/classification or exact reference transport/loading regression; no behavioral instruction adoption."
         },
         {
           "path": "skills/instruction-authoring/references/change-review.md",
           "disposition": "unchanged",
-          "reason": "Existing reverse-reference/intent owner retains its responsibility and bytes; static coverage is not semantic proof."
+          "reason": "Existing owner and obligations remain correct: original Evaluation load point and published contract content retained; source reconciliation does not claim semantic proof."
+        },
+        {
+          "path": "skills/instruction-authoring/references/claim-based-testing-and-retirement.md",
+          "disposition": "updated",
+          "reason": "Authorized selector data/classification or exact reference transport/loading regression; no behavioral instruction adoption."
         },
         {
           "path": "surfaces/core.md",
           "disposition": "updated",
-          "reason": "Authorized model-role data/classifier/regression change; surrounding instructions and policy remain unchanged."
+          "reason": "Authorized selector data/classification or exact reference transport/loading regression; no behavioral instruction adoption."
         },
         {
           "path": "tests/test_preference_data_classification.py",
           "disposition": "updated",
-          "reason": "Authorized model-role data/classifier/regression change; surrounding instructions and policy remain unchanged."
+          "reason": "Authorized selector data/classification or exact reference transport/loading regression; no behavioral instruction adoption."
+        },
+        {
+          "path": "tests/test_reference_transport.py",
+          "disposition": "updated",
+          "reason": "Authorized selector data/classification or exact reference transport/loading regression; no behavioral instruction adoption."
         }
       ]
     }
   ],
   "classifier_outcome": {
-    "allowed_category": "explicit user model-selector data under existing R02",
+    "allowed_categories": [
+      "explicit user role-selector data",
+      "fixed-source explicitly authorized unchanged reference transport"
+    ],
     "model_quality_claim": false,
-    "reference_packaging_exception_added": false,
+    "approval_authenticated": false,
+    "generic_reference_exception_added": false,
     "policy_documents_changed": false,
     "worker_remains_medium": true,
     "push_performed": false,
     "rollout_performed": false,
     "offline_regressions": {
-      "tests": 72,
+      "tests": 90,
       "failures": 0,
       "errors": 0,
       "passed": true,
       "model_calls": 0,
       "fixture_root": "task-owned test directory"
-    },
-    "actual_eligibility": {
-      "eligible": true,
-      "reason": "explicit user model-selector data; standing instructions unchanged; no behavioral improvement claimed",
-      "behavioral_proof": false,
-      "approval_authenticated": false
-    },
-    "normal_source_record_check": "passed",
-    "reference_gate_unchanged": {
-      "result": "review-required",
-      "reason": "instruction excluded: missing behavioral measurements or task contract: skills/instruction-authoring/SKILL.md",
-      "exception": "SyncBlocked"
-    },
-    "reference_policy_adopted": false,
-    "review_fix": "Count added role keys as changes before validating declarations and selector shape."
+    }
   },
-  "reference_repair_status": "Separate validated local repair retained; its release-policy decision remains pending. Default rollout of this preference-only source would regress that package and is prohibited in this turn."
+  "reference_repair_status": "Prepared exact transport only. No publication or rollout in this turn. Generic mechanical/prose policy proposal remains isolated and unadopted."
 }

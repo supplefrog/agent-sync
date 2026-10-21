@@ -105,6 +105,51 @@ def _preference_data_only(old, new, row):
         return False
 
 
+def _approved_reference_transport(candidate, source, name, owner, row, base, paths):
+    """One explicitly approved transport, not a reusable prose-adoption waiver.
+
+    The fixed published bytes and URL define this authorization's whole scope.
+    This proves content identity and package loading, not natural selection,
+    behavioral benefit, or authenticity of the recorded user authorization.
+    """
+    entry = 'skills/instruction-authoring/SKILL.md'
+    document = 'docs/system-requirements.md'
+    resource = 'skills/instruction-authoring/references/claim-based-testing-and-retirement.md'
+    old_url = b'../../docs/system-requirements.md#claim-based-testing-and-retirement'
+    new_url = b'references/claim-based-testing-and-retirement.md#claim-based-testing-and-retirement'
+    if (owner != 'skills/instruction-authoring' or name not in {entry, resource}
+            or row.get('basis') != 'user-correction'
+            or row.get('user_authorized_transport') is not True
+            or not {entry, resource} <= set(paths)):
+        raise sync_git.SyncBlocked('reference transport is outside the explicit approved repair')
+    before = _before(source, base, entry)
+    published = _before(source, base, document)
+    after = candidate / entry
+    packaged = candidate / resource
+    canonical = candidate / document
+    if any(not f.is_file() or f.is_symlink() for f in (after, packaged, canonical)):
+        raise sync_git.SyncBlocked('reference transport requires regular source and package files')
+    source_bytes, entry_bytes, resource_bytes = canonical.read_bytes(), after.read_bytes(), packaged.read_bytes()
+    if (_hash(before) != 'd9f488eb442c862ac4a8e60ae80dfd3dd990baa8ff5183d4ccf77326c81069e5'
+            or _hash(published) != '0f7f45a2e9fcdf24a142840e14efea5b9743f13a318cc12e9ae7a98940c4b309'
+            or source_bytes != published
+            or _before(source, base, resource) is not None
+            or before.count(old_url) != 1
+            or entry_bytes != before.replace(old_url, new_url)
+            or _hash(entry_bytes) != 'efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed'):
+        raise sync_git.SyncBlocked('reference transport changes the approved published source or link-only repair')
+    section = re.search(rb'^## Claim-based testing and retirement\r?\n.*?(?=^## |\Z)', published, re.M | re.S)
+    if (section is None or resource_bytes != section.group()
+            or _hash(resource_bytes) != 'fce6e25097ec08dcb3fce3ccf9b99c02efaa4462b91bd9f92eb251dce303670e'):
+        raise sync_git.SyncBlocked('reference transport must copy the exact approved published section')
+    # Check the actual package validator as well as the normal owner loading map.
+    # The unchanged link label/decision point plus exact target heading preserves
+    # this address; this is not evidence of natural triggering by a model.
+    if validate.validate_skill(after):
+        raise sync_git.SyncBlocked('reference transport package loading validation failed')
+    return 'explicitly authorized exact published reference transport with checked package loading'
+
+
 def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations):
     """Narrow reviewed correction routes after necessity/dependency validation.
 
@@ -123,6 +168,8 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
     elif (kind == 'add-or-change' and name == owner == 'surfaces/core.md'
             and row.get('basis') == 'user-correction' and _preference_data_only(old, new, row)):
         reason = 'explicit user model-selector data; standing instructions unchanged'
+    elif kind == 'reference-transport':
+        reason = _approved_reference_transport(candidate, source, name, owner, row, base, paths)
     elif kind == 'contract-correction':
         sections = {'skills/instruction-authoring/SKILL.md': 'Evaluation discipline',
                     'skills/instruction-authoring/references/change-review.md': 'Publication necessity record'}
@@ -546,7 +593,7 @@ def check(candidate: Path, source: Path, base: str, paths):
         if binding != {'before_sha256': old_hash, 'after_sha256': new_hash}:
             raise sync_git.SyncBlocked('instruction necessity record is not bound to changed bytes: ' + name)
         kind = row.get('change_kind', 'add-or-change')
-        if kind not in {'add-or-change', 'remove', 'contract-correction'}:
+        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport'}:
             raise sync_git.SyncBlocked('invalid instruction change kind: ' + name)
         if kind == 'remove':
             old_data = _before(source, base, name)
