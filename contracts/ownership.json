@@ -280,6 +280,21 @@
         "added_value": "Pinned upstream CLI routing and format traps, plus the user-specific deferred cloud-engine policy and Windows commands. Added model-quality value remains unmeasured.",
         "retirement_test": "Retire when the current model/native tools reliably cover the same artifact tasks and cloud placement without this guidance at equal or lower total cost."
       }
+    },
+    {
+      "id": "learnharness",
+      "owner": "skills/learnharness",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/learnharness-reader-installation-20261023.json"
+      ],
+      "selection_reason": "Explicit user request to install the unchanged pinned local-history reader. Source identity, read-only boundary, package validation and upstream fixture tests establish technical readiness only; no adaptive-answer or comparative model benefit is established.",
+      "purpose": {
+        "objective": "Expose an explicitly requested read-only interface to local LearnHarness history without publishing personal records or credentials.",
+        "added_value": "Upstream format-aware session/graph readers and interpretation reference; comparative benefit over native file tools is unmeasured.",
+        "retirement_test": "Retire this optional reader package if it is no longer requested or its format-specific access is sufficiently replaced by the remaining supported native interface; do not infer mastery or adaptive-answer benefit from structural readiness."
+      }
     }
   ],
   "retired_artifacts": [

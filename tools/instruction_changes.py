@@ -150,6 +150,50 @@ def _approved_reference_transport(candidate, source, name, owner, row, base, pat
     return 'explicitly authorized exact published reference transport with checked package loading'
 
 
+def _approved_requested_reader(candidate, source, name, owner, row, base, paths):
+    """Exact user-selected LearnHarness installation; no comparative authority.
+
+    Package/evidence declarations are checked after normal source/owner/loading
+    review. They do not authenticate approval, execution or semantic adequacy.
+    Any changed reader, other owner or behavioral-benefit claim remains excluded.
+    """
+    import fleet
+    package = 'skills/learnharness'
+    pin = '6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb'
+    expected = {'LICENSE': '0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0', 'SKILL.md': '0f29a1a5bd9c6f629d76ec442c78799b9d95a83a0322c3a84e71c2c442df09bb', 'references/data-format.md': 'b34f020e9cca38950548c9e21e8cdf86df35d781154bcf2942fe3e323553d926', 'scripts/_data.py': 'fb4abe3f3e99133a9f5a6e28a0733437d1ec37b5e92ba8413102911145cd2883', 'scripts/graph.py': '95d05acebef77764a215439a95b39b1bc0a81d2595c67349d90053e548e236ed', 'scripts/sessions.py': '864368dfde5a8c7550ebf80ec77671d9f159f80c0859b248cce20fe799b95dc7'}
+    required = {package + '/' + relative for relative in expected}
+    acceptance = row.get('reader_acceptance')
+    checks = {'source-pin-and-license', 'package-validation',
+              'synthetic-session-and-graph-results', 'source-bytes-mtimes-tree-unchanged',
+              'synthetic-only-no-credentials-network-app', 'explicit-local-fork-data-dir'}
+    if (owner != package or name not in {package + '/SKILL.md', package + '/references/data-format.md'}
+            or row.get('basis') != 'user-correction' or not required <= set(paths)
+            or not isinstance(acceptance, dict)
+            or acceptance.get('classification') != 'requested-read-only-capability'
+            or acceptance.get('upstream_commit') != pin
+            or acceptance.get('package_sha256') != '3cc55b7c53159b111a0b791e46f65305b8a0449c5d94fccd0c69953520970f32'
+            or acceptance.get('model_benefit_claim') is not False):
+        raise sync_git.SyncBlocked('requested reader is outside the approved capability installation')
+    verified = acceptance.get('verified_checks')
+    if (not isinstance(verified, list) or any(not isinstance(v, str) for v in verified)
+            or len(verified) != len(set(verified)) or set(verified) != checks):
+        raise sync_git.SyncBlocked('requested reader lacks source-bound read-only/privacy acceptance')
+    if acceptance.get('deployment_checks_required') != ['native-hermes-codex-omp-catalogue-body', 'repeat-sync-preserves-source']:
+        raise sync_git.SyncBlocked('requested reader must retain native loading and repeat-sync verification')
+    if any(_before(source, base, path) is not None for path in required):
+        raise sync_git.SyncBlocked('requested reader category cannot authorize changed deployed instructions')
+    actual = fleet.directory_record(candidate / package)
+    if actual['files'] != expected or actual['sha256'] != acceptance['package_sha256']:
+        raise sync_git.SyncBlocked('requested reader differs from the exact approved upstream package')
+    rows = [item for item in fleet.registry(candidate).values() if item.get('name') == 'learnharness']
+    if (len(rows) != 1 or rows[0].get('status') != 'admitted' or rows[0].get('license') != 'AGPL-3.0-only'
+            or rows[0].get('source') != 'https://github.com/amosblomqvist/learnharness@' + pin):
+        raise sync_git.SyncBlocked('requested reader registry/provenance does not match its approved pin')
+    if validate.validate_skill(candidate / package / 'SKILL.md'):
+        raise sync_git.SyncBlocked('requested reader package validation failed')
+    return 'explicitly requested pinned read-only reader; functional acceptance, no comparative model-benefit claim'
+
+
 def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations):
     """Narrow reviewed correction routes after necessity/dependency validation.
 
@@ -168,6 +212,8 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
     elif (kind == 'add-or-change' and name == owner == 'surfaces/core.md'
             and row.get('basis') == 'user-correction' and _preference_data_only(old, new, row)):
         reason = 'explicit user model-selector data; standing instructions unchanged'
+    elif kind == 'requested-reader':
+        reason = _approved_requested_reader(candidate, source, name, owner, row, base, paths)
     elif kind == 'reference-transport':
         reason = _approved_reference_transport(candidate, source, name, owner, row, base, paths)
     elif kind == 'contract-correction':
@@ -593,7 +639,7 @@ def check(candidate: Path, source: Path, base: str, paths):
         if binding != {'before_sha256': old_hash, 'after_sha256': new_hash}:
             raise sync_git.SyncBlocked('instruction necessity record is not bound to changed bytes: ' + name)
         kind = row.get('change_kind', 'add-or-change')
-        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport'}:
+        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-reader'}:
             raise sync_git.SyncBlocked('invalid instruction change kind: ' + name)
         if kind == 'remove':
             old_data = _before(source, base, name)

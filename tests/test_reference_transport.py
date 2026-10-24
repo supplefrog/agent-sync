@@ -20,9 +20,11 @@ class ReferenceTransportTests(unittest.TestCase):
         self.repo = Path(self.temp.name)
         shutil.copytree(ROOT / 'skills/instruction-authoring', self.repo / 'skills/instruction-authoring')
         (self.repo / 'docs').mkdir()
-        shutil.copyfile(ROOT / DOCUMENT, self.repo / DOCUMENT)
+        # Freeze the approved historical source, not mutable current policy.
+        published_document = ROOT / 'tests/fixtures/reference-transport/system-requirements-approved.md'
+        shutil.copyfile(published_document, self.repo / DOCUMENT)
         self.baseline = {ENTRY: (ROOT / ENTRY).read_bytes().replace(NEW, OLD),
-                         DOCUMENT: (ROOT / DOCUMENT).read_bytes()}
+                         DOCUMENT: published_document.read_bytes()}
         self.row = {'change_kind': 'reference-transport', 'basis': 'user-correction',
                     'user_authorized_transport': True}
         self.paths = [ENTRY, RESOURCE]

@@ -156,6 +156,13 @@
       "license": "MIT",
       "source": "https://github.com/aicodeking/leanrea/tree/09ba4aa0217f82cd880f855a60b877f59f39b22b/leanrea",
       "eval": "evals/results/leanrea-replacement-20261018.json"
+    },
+    {
+      "name": "learnharness",
+      "status": "admitted",
+      "license": "AGPL-3.0-only",
+      "source": "https://github.com/amosblomqvist/learnharness@6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb",
+      "eval": "evals/results/learnharness-reader-installation-20261023.json"
     }
   ]
 }

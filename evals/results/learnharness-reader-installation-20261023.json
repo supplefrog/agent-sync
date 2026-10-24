@@ -1,0 +1,380 @@
+{
+  "suite": "learnharness",
+  "capability": "learnharness",
+  "status": "pass",
+  "qualification_scope": "Explicit requested read-only capability installation, not comparative answer improvement or adaptive-answer adoption.",
+  "source": {
+    "repository": "https://github.com/amosblomqvist/learnharness",
+    "commit": "6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb",
+    "version": "0.3.4",
+    "files": {
+      "skills/learnharness/LICENSE": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "skills/learnharness/SKILL.md": "0f29a1a5bd9c6f629d76ec442c78799b9d95a83a0322c3a84e71c2c442df09bb",
+      "skills/learnharness/references/data-format.md": "b34f020e9cca38950548c9e21e8cdf86df35d781154bcf2942fe3e323553d926",
+      "skills/learnharness/scripts/_data.py": "fb4abe3f3e99133a9f5a6e28a0733437d1ec37b5e92ba8413102911145cd2883",
+      "skills/learnharness/scripts/graph.py": "95d05acebef77764a215439a95b39b1bc0a81d2595c67349d90053e548e236ed",
+      "skills/learnharness/scripts/sessions.py": "864368dfde5a8c7550ebf80ec77671d9f159f80c0859b248cce20fe799b95dc7"
+    }
+  },
+  "tests_from_setup_owner": {
+    "passed": 50,
+    "skipped": 3,
+    "skip_reason": "Windows symlink privilege unavailable",
+    "independently_rerun_here": false
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/learnharness",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "User explicitly requested this existing pinned reader and approved public code/registry admission so normal sync retains it. Baseline has no LearnHarness package.",
+      "evidence": "Explicit user-selected capability acceptance; unchanged six-file upstream package, focused functional/read-only/privacy checks and retained setup evidence. Native loading/repeat verification remain required for completed sync; no comparative model-benefit claim.",
+      "why_instruction": "Install the existing upstream reader with its source-authored format guide and read-only interpretation boundary unchanged. This does not author an adaptive-answer policy.",
+      "alternative": "User approved requested-capability acceptance rather than comparative answer-improvement. Keep other skills on measured adoption; do not relabel native diagnostics or run a comparison merely to satisfy the former category.",
+      "artifacts": {
+        "skills/learnharness/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "0f29a1a5bd9c6f629d76ec442c78799b9d95a83a0322c3a84e71c2c442df09bb"
+        },
+        "skills/learnharness/references/data-format.md": {
+          "before_sha256": "absent",
+          "after_sha256": "b34f020e9cca38950548c9e21e8cdf86df35d781154bcf2942fe3e323553d926"
+        }
+      },
+      "loading_review": {
+        "entrypoint_reason": "Unchanged upstream entrypoint describes the reader trigger, read-only boundary and local commands; linked format reference retains its explicit read instruction.",
+        "checks": "Package validator and exact source/link checks. Source reachability is not natural triggering or behavioral benefit.",
+        "obligations": [
+          {
+            "obligation": "Use the upstream read-only reader and linked native-format interpretation under its existing trigger.",
+            "applies_when": "Explicit LearnHarness history reading request.",
+            "required": true,
+            "before": [],
+            "after": [
+              "skills/learnharness/SKILL.md",
+              "skills/learnharness/references/data-format.md"
+            ],
+            "disposition": "added",
+            "load_when": "At the unchanged upstream reader entrypoint and its explicit format-reference read.",
+            "reason": "Requested upstream package installation; no instruction rewrite or adaptive-answer adoption."
+          }
+        ]
+      },
+      "change_kind": "requested-reader",
+      "reader_acceptance": {
+        "classification": "requested-read-only-capability",
+        "upstream_commit": "6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb",
+        "package_sha256": "3cc55b7c53159b111a0b791e46f65305b8a0449c5d94fccd0c69953520970f32",
+        "model_benefit_claim": false,
+        "verified_checks": [
+          "source-pin-and-license",
+          "package-validation",
+          "synthetic-session-and-graph-results",
+          "source-bytes-mtimes-tree-unchanged",
+          "synthetic-only-no-credentials-network-app",
+          "explicit-local-fork-data-dir"
+        ],
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      }
+    },
+    {
+      "owner": "skills/instruction-authoring",
+      "change_kind": "contract-correction",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "Existing release contract has no requested-reader installation category; user explicitly selected a reader-specific functional/read-only/privacy/native acceptance instead of comparative answer improvement.",
+      "evidence": "Direct user decision plus source-bound changed R02/status, exact-package guarded category and positive/negative/functional regressions.",
+      "why_instruction": "Reconcile the existing Publication necessity record at its owner with this reader-specific user decision; do not change unrelated skill methods or comparative categories.",
+      "alternative": "Retain the prior block or implement a generalized native-admission framework; neither implements the approved bounded reader classification.",
+      "artifacts": {
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a",
+          "after_sha256": "232cb5a4c062560fa14ee0aeae67c96fbe9afb459df3b55f6a5b6cf9d837e4d9"
+        }
+      },
+      "loading_review": {
+        "entrypoint_reason": "Existing authoring entrypoint still links Publication necessity; only the explicitly authorized reader category is clarified there.",
+        "checks": "Existing section/load point retained; exact changed source and framework graph bound below. No model superiority or natural triggering claimed.",
+        "obligations": [
+          {
+            "obligation": "Apply existing publication governance, now including only the exact approved requested-reader category.",
+            "applies_when": "Reviewing managed instruction publication.",
+            "required": true,
+            "before": [
+              "skills/instruction-authoring/references/change-review.md"
+            ],
+            "after": [
+              "skills/instruction-authoring/references/change-review.md"
+            ],
+            "disposition": "changed",
+            "load_when": "At the existing authoring review link and Publication necessity section.",
+            "reason": "User-directed classification correction; unchanged owner/load route and other comparative requirements retained."
+          }
+        ]
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/ownership.json": {
+          "before_sha256": "98efd09b5aaed6f1da9f48e10beb72cdd2b0aafef882b471831829097bbe968a",
+          "after_sha256": "36ae18269e15e2d1c5f48cadddba5194469756ccd287c40ea47cc9ea8eadd67a"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6",
+          "after_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "4bc3463a282d2f2eb72706e2ddeba6263381c3549663ab8f02154aff076019a7",
+          "after_sha256": "48016bdf27ce7853a227e620b1628ce28e957e21ab9e1725a0919356bb127a40"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "0f7f45a2e9fcdf24a142840e14efea5b9743f13a318cc12e9ae7a98940c4b309",
+          "after_sha256": "3f49af724b579cacb769347ec7fa96d3cdba86076ed91223ad0b5c17c09bba74"
+        },
+        "host-deltas.json": {
+          "before_sha256": "80f3b9016bc036c9ef36619843fac5a32823b8bdd5f77cfb5d1f6beaea1573f8",
+          "after_sha256": "bf05191fcb15dc64e72440ea476dc036586e6a885e7fac6efffc646c6e8f22a7"
+        },
+        "registry.json": {
+          "before_sha256": "fd172ab05ae268c04ebf89fc6c95db3850c24b4320ff88ffc1385fcf43dfeb2f",
+          "after_sha256": "27e5c03eae019dbd2bed384d4251341d9a978e7596a34aef7e636d03d596feb8"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed",
+          "after_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "82310b577c4fd1f89ca503fa009f4fc448d5cbbf69e0daf0f4754ec12528cd0a",
+          "after_sha256": "232cb5a4c062560fa14ee0aeae67c96fbe9afb459df3b55f6a5b6cf9d837e4d9"
+        },
+        "skills/learnharness/LICENSE": {
+          "before_sha256": "absent",
+          "after_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+        },
+        "skills/learnharness/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "0f29a1a5bd9c6f629d76ec442c78799b9d95a83a0322c3a84e71c2c442df09bb"
+        },
+        "skills/learnharness/references/data-format.md": {
+          "before_sha256": "absent",
+          "after_sha256": "b34f020e9cca38950548c9e21e8cdf86df35d781154bcf2942fe3e323553d926"
+        },
+        "skills/learnharness/scripts/_data.py": {
+          "before_sha256": "absent",
+          "after_sha256": "fb4abe3f3e99133a9f5a6e28a0733437d1ec37b5e92ba8413102911145cd2883"
+        },
+        "skills/learnharness/scripts/graph.py": {
+          "before_sha256": "absent",
+          "after_sha256": "95d05acebef77764a215439a95b39b1bc0a81d2595c67349d90053e548e236ed"
+        },
+        "skills/learnharness/scripts/sessions.py": {
+          "before_sha256": "absent",
+          "after_sha256": "864368dfde5a8c7550ebf80ec77671d9f159f80c0859b248cce20fe799b95dc7"
+        },
+        "tests/fixtures/reference-transport/system-requirements-approved.md": {
+          "before_sha256": "absent",
+          "after_sha256": "0f7f45a2e9fcdf24a142840e14efea5b9743f13a318cc12e9ae7a98940c4b309"
+        },
+        "tests/test_reference_transport.py": {
+          "before_sha256": "92df905dd0ff566e043089a9e82ef6b6041e16ab573d08ec88ab2d95e83af2c9",
+          "after_sha256": "8a51d80bdd4700ca544a100faebf697fc2eba543c021aa61b1c692373120b7e1"
+        },
+        "tests/test_requested_reader_installation.py": {
+          "before_sha256": "absent",
+          "after_sha256": "81fa487a6a8733c1024a123f319486ee0a94c621d86b74572a5c1839152e3a1e"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "fd8db0553808b63accaba5caf042a70bf442849adbbf53930c68fe00b9fdadb1",
+          "after_sha256": "86c1ef89e4b5d04577a5b6054ca677a0dd95ee97418de51c3b7ac52eca2c25b0"
+        }
+      },
+      "requirement_change": true,
+      "requirement_reason": "Explicit user-directed reader-specific acceptance classification in R02, status and Publication necessity; no change to comparative requirements for other skills or native diagnostic authority.",
+      "authority": "User explicitly approved treating this exact pinned reader as requested capability installation with source-bound correct read-only behavior, privacy, native discovery/loading and repeat-sync preservation, not comparative answer improvement. Existing scoped reader publication/install authority remains.",
+      "checks": "Focused exact-reader category, changed/other-owner/false-claim/missing-privacy rejection and actual synthetic CLI read/no-write/no-fallback tests; existing measured instruction eligibility units remain. Source/package validation, standard public-safe/structural release checks and live native/repeat readback required.",
+      "outcome_review": {
+        "expected": "Only the exact unchanged requested reader can qualify functionally; other skills and comparative/native evidence limits retain existing gates. Complete sync requires native discovery/loading and repeat preservation.",
+        "observed": "Exact pinned synthetic session/graph reads and read-only/privacy/fork-selection checks pass; local native catalogue/body discovery passes on Hermes/Codex/OMP and selected repeat preserves state. Full published rollout/repeat remain required and will have separate operational receipts.",
+        "evidence": "Exact source hashes, retained fifty-test upstream readiness and new focused test result/hash. Deployment receipts are separate operational evidence, not fabricated prior passes.",
+        "limitations": "Metadata/source checks do not authenticate approval or execute history, prove model benefit, natural triggering or refresh running sessions. Capability software behavior is checked on synthetic data; live user history is excluded."
+      },
+      "framework_review": {
+        "affected": [
+          "skills/instruction-authoring/SKILL.md",
+          "skills/instruction-authoring/references/change-review.md",
+          "skills/learnharness/SKILL.md",
+          "skills/learnharness/references/data-format.md",
+          "contracts/ownership.json",
+          "docs/system-requirements.md",
+          "docs/requirement-status.md"
+        ],
+        "selection_reason": "A reader-specific publication category changes existing authoring governance and admits one new pinned capability. Inspect its owner and unchanged comparative constraints; reconcile existing intent/status and package loading.",
+        "unaffected_reason": "All other optional skills retain measured-improvement requirements. No global model, privacy rule, runtime access, adaptive workflow or user profile changes.",
+        "checks": "Package pin, source/necessity/loading graph and negative category controls, actual read-only fixture behavior; comparative native studies remain diagnostic."
+      },
+      "obligations": [
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing owner retains its obligations and bytes; other instructions/measurement requirements remain effective. Static coverage is not semantic proof."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner retains its obligations and bytes; other instructions/measurement requirements remain effective. Static coverage is not semantic proof."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner retains its obligations and bytes; other instructions/measurement requirements remain effective. Static coverage is not semantic proof."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "registry.json",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner retains its obligations and bytes; other instructions/measurement requirements remain effective. Static coverage is not semantic proof."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "skills/learnharness/LICENSE",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "skills/learnharness/SKILL.md",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "skills/learnharness/references/data-format.md",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "tests/fixtures/reference-transport/system-requirements-approved.md",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "tests/test_reference_transport.py",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        },
+        {
+          "path": "tests/test_requested_reader_installation.py",
+          "disposition": "updated",
+          "reason": "Explicitly authorized requested-reader package/classification/admission and directly required existing bookkeeping only."
+        }
+      ]
+    }
+  ],
+  "focused_checks": {
+    "tests": {
+      "tests": 46,
+      "failures": 0,
+      "errors": 0,
+      "passed": true,
+      "model_calls": 0,
+      "scope": "New exact-reader classification/functional CLI and existing instruction eligibility units; no broad suites."
+    },
+    "log_sha256": "72bcbfa678ba8c4c4831ca7a66139432ac18355a06a569bc2365b35812ff56d2",
+    "prior_synthetic_reader_queries": 5,
+    "valid_alternatives": 2,
+    "broken_controls": 8,
+    "provider_calls": 0
+  },
+  "model_benefit_claim": false,
+  "selected_paths": [
+    "contracts/ownership.json",
+    "docs/requirement-status.md",
+    "docs/system-requirements.md",
+    "evals/results/learnharness-reader-installation-20261023.json",
+    "host-deltas.json",
+    "registry.json",
+    "skills/instruction-authoring/references/change-review.md",
+    "skills/learnharness/LICENSE",
+    "skills/learnharness/SKILL.md",
+    "skills/learnharness/references/data-format.md",
+    "skills/learnharness/scripts/_data.py",
+    "skills/learnharness/scripts/graph.py",
+    "skills/learnharness/scripts/sessions.py",
+    "tests/fixtures/reference-transport/system-requirements-approved.md",
+    "tests/test_reference_transport.py",
+    "tests/test_requested_reader_installation.py",
+    "tools/instruction_changes.py"
+  ],
+  "capability_installation_readback": {
+    "native_catalogue_and_body": {
+      "hermes": {
+        "verified": true,
+        "required_present": [
+          "instruction-authoring",
+          "learnharness"
+        ],
+        "retired_offered": []
+      },
+      "codex": {
+        "verified": true,
+        "required_present": [
+          "instruction-authoring",
+          "learnharness"
+        ],
+        "retired_offered": []
+      },
+      "omp": {
+        "verified": true,
+        "required_present": [
+          "instruction-authoring",
+          "learnharness"
+        ],
+        "retired_offered": []
+      }
+    },
+    "selected_repeat_unchanged": true,
+    "other_packages_unchanged": true,
+    "provider_calls": 0,
+    "session_restarts": 0,
+    "full_published_repeat_pending": true
+  }
+}
