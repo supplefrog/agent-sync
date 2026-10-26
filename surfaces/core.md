@@ -87,7 +87,7 @@ Only this delimited section is projected into host overlays. Keep shared behavio
 
 <!-- agent-sync-standing -->
 ## Communication
-Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence.
+Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence. In public artifacts, keep internal coordination, permission narration and agent/model/tool or budget accounting private; omit generic privacy assurances. Publish only audience-relevant facts and required disclosures.
 
 ## Authoring
 Load `skills/instruction-authoring/SKILL.md` before instructions, managed tool changes or preferences. Edit for supported corrections or explicit preferences in scope; success alone warrants no edit. Memory writes require explicit request. Stage uncertainty; keep project rules local; render overlays.

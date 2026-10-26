@@ -194,6 +194,44 @@ def _approved_requested_reader(candidate, source, name, owner, row, base, paths)
     return 'explicitly requested pinned read-only reader; functional acceptance, no comparative model-benefit claim'
 
 
+PUBLIC_AUDIENCE_PAIR = {
+    'surfaces/core.md': ('surfaces/core.md',
+        '06cc6b8c34a148116d42aff8aac8e515a16c2f6ae72373732baaec2e6d9d62c3',
+        '994ce832c51ef670cf0a65b760719e2d2ca8214e82e44cf0f2fe976e35b75051'),
+    'skills/humanizer/SKILL.md': ('skills/humanizer',
+        '7b087ef814d61896cd6e8ba13996158bfd7648098f5357a65b782668b9388729',
+        '03ae59a428b8723ccc73798d57088b98ce403b6c442b5eddba2b08b2c5be457f'),
+}
+PUBLIC_AUDIENCE_ACCEPTANCE = {
+    'decision': 'public-audience-r2-20261026',
+    'source_freeze_sha256': 'd3bf90395bd133d5bd359d024e892e203c45100d35948d7ade7a742189d0656a',
+    'recovery_freeze_sha256': 'b8e9dfc51e8235edbfd373400cebdd83b1d495f6af87f6fbfa306359ea73bb34',
+    'no_behavioral_improvement_claim': True,
+}
+
+
+def _approved_public_audience(candidate, source, name, owner, row, base, paths, reconciliations):
+    """One exact user-approved correction; records do not authenticate approval."""
+    required = set(PUBLIC_AUDIENCE_PAIR) | CONTRACTS
+    if (name not in PUBLIC_AUDIENCE_PAIR or owner != PUBLIC_AUDIENCE_PAIR[name][0]
+            or row.get('basis') != 'user-correction'
+            or row.get('public_audience_acceptance') != PUBLIC_AUDIENCE_ACCEPTANCE
+            or row['public_audience_acceptance'].get('no_behavioral_improvement_claim') is not True
+            or not required <= set(paths)):
+        raise sync_git.SyncBlocked('public audience correction requires the exact approved pair and decision')
+    for target, (_, old_hash, new_hash) in PUBLIC_AUDIENCE_PAIR.items():
+        path = candidate / target
+        if (not path.is_file() or _hash(_before(source, base, target)) != old_hash
+                or _hash(path.read_bytes()) != new_hash):
+            raise sync_git.SyncBlocked('public audience correction differs from approved source bytes: ' + target)
+    bound = [r for r in reconciliations if r.get('requirement_change') is True
+             and required <= set(r.get('artifacts', {}))]
+    if len(bound) != 1 or any(_before(source, base, n) == (candidate / n).read_bytes() for n in CONTRACTS):
+        raise sync_git.SyncBlocked('public audience correction requires bound changed intent and status')
+    # Dependency review checks these same bindings and declared authority before this dispatcher.
+    return 'exact user-approved public audience R2 correction; source/recovery review, no behavioral proof'
+
+
 def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations):
     """Narrow reviewed correction routes after necessity/dependency validation.
 
@@ -216,6 +254,8 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
         reason = _approved_requested_reader(candidate, source, name, owner, row, base, paths)
     elif kind == 'reference-transport':
         reason = _approved_reference_transport(candidate, source, name, owner, row, base, paths)
+    elif kind == 'public-audience-correction':
+        reason = _approved_public_audience(candidate, source, name, owner, row, base, paths, reconciliations)
     elif kind == 'contract-correction':
         sections = {'skills/instruction-authoring/SKILL.md': 'Evaluation discipline',
                     'skills/instruction-authoring/references/change-review.md': 'Publication necessity record'}
@@ -639,7 +679,7 @@ def check(candidate: Path, source: Path, base: str, paths):
         if binding != {'before_sha256': old_hash, 'after_sha256': new_hash}:
             raise sync_git.SyncBlocked('instruction necessity record is not bound to changed bytes: ' + name)
         kind = row.get('change_kind', 'add-or-change')
-        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-reader'}:
+        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-reader', 'public-audience-correction'}:
             raise sync_git.SyncBlocked('invalid instruction change kind: ' + name)
         if kind == 'remove':
             old_data = _before(source, base, name)

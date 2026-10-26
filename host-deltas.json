@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:a2081994a39813ed8c70ec974335f9ebcce4978d6575a664aa49382d098dce43"
+      "version_or_hash": "sha256:c0846302bff87dc53c17732ea636435c18e3baba1e28530f0f1ae4001099373a"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:7133808408d1a214b6495c2bb0ecfca2dbaddb6ee40ab7d66d4e40375da1e8da"
+      "version_or_hash": "sha256:610f3ad9a9ecd6ed55620c6f30f2709cca7bb109c1a7529473511be417166813"
     },
     {
       "category": "instructions",
@@ -218,7 +218,7 @@
         "reference": "omp:global-instructions"
       },
       "source_identity": "recovery-artifact:omp:global-instructions",
-      "version_or_hash": "sha256:9d21f0e4160c64644e139b5d53f9d1ec2a702e4540ff9967b5630880cb1da9c4"
+      "version_or_hash": "sha256:cc7fcd0556f903fc471783dd731df921cfd166c597b7687007bce56a28e230b5"
     },
     {
       "category": "hook",
@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:078f9b511dcdaf4cd880425483ed141cc1d2188ddc0591a0d427c6065018f16c"
+      "version_or_hash": "sha256:02754b4ab6d449fefe83d69e52a1d4cdc7f28d139ffc42000b34cc0711793ced"
     },
     {
       "category": "native-skill",
@@ -507,7 +507,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:078f9b511dcdaf4cd880425483ed141cc1d2188ddc0591a0d427c6065018f16c"
+      "version_or_hash": "sha256:02754b4ab6d449fefe83d69e52a1d4cdc7f28d139ffc42000b34cc0711793ced"
     },
     {
       "category": "native-skill",
@@ -530,7 +530,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:078f9b511dcdaf4cd880425483ed141cc1d2188ddc0591a0d427c6065018f16c"
+      "version_or_hash": "sha256:02754b4ab6d449fefe83d69e52a1d4cdc7f28d139ffc42000b34cc0711793ced"
     },
     {
       "category": "curator",

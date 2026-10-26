@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "base": "4533fce339f6b188411c9ac0ddf77a883b006015",
+  "scope": "Source qualification for the exact public-audience R2 correction, two baseline replacement permissions, and matching standing-profile artifact bindings and exact byte ceilings. No behavioral improvement or installed-state result is asserted.",
+  "selected_paths": [
+    "surfaces/core.md",
+    "skills/humanizer/SKILL.md",
+    "tools/instruction_changes.py",
+    "tests/test_public_audience_correction.py",
+    "docs/system-requirements.md",
+    "docs/requirement-status.md",
+    "skills/instruction-authoring/references/change-review.md",
+    "recovery.json",
+    "recovery/current/manifest.json",
+    "recovery/current/hosts/codex/AGENTS.md",
+    "recovery/current/hosts/hermes/SOUL.md",
+    "recovery/current/hosts/omp/AGENTS.md",
+    "host-deltas.json",
+    "evals/results/public-audience-correction-20261026.json",
+    "profiles/current-observed-defaults.json"
+  ],
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "change_kind": "public-audience-correction",
+      "basis": "user-correction",
+      "public_audience_acceptance": {
+        "decision": "public-audience-r2-20261026",
+        "source_freeze_sha256": "d3bf90395bd133d5bd359d024e892e203c45100d35948d7ade7a742189d0656a",
+        "recovery_freeze_sha256": "b8e9dfc51e8235edbfd373400cebdd83b1d495f6af87f6fbfa306359ea73bb34",
+        "no_behavioral_improvement_claim": true
+      },
+      "baseline_sufficient": false,
+      "deviation": "Maintainer-facing writing must separate reproducible technical facts from internal process narration.",
+      "evidence": "Exact source-pair and recovery bindings define the R2 category. In-memory controls check the admission boundary, not writing behavior.",
+      "why_instruction": "The existing communication and public-writing owners carry this boundary while retaining prior prose and technical-disclosure checks.",
+      "alternative": "Retain prior source unchanged; no general instruction-adoption exception is introduced.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "06cc6b8c34a148116d42aff8aac8e515a16c2f6ae72373732baaec2e6d9d62c3",
+          "after_sha256": "994ce832c51ef670cf0a65b760719e2d2ca8214e82e44cf0f2fe976e35b75051"
+        }
+      }
+    },
+    {
+      "owner": "skills/humanizer",
+      "change_kind": "public-audience-correction",
+      "basis": "user-correction",
+      "public_audience_acceptance": {
+        "decision": "public-audience-r2-20261026",
+        "source_freeze_sha256": "d3bf90395bd133d5bd359d024e892e203c45100d35948d7ade7a742189d0656a",
+        "recovery_freeze_sha256": "b8e9dfc51e8235edbfd373400cebdd83b1d495f6af87f6fbfa306359ea73bb34",
+        "no_behavioral_improvement_claim": true
+      },
+      "baseline_sufficient": false,
+      "deviation": "Maintainer-facing writing must separate reproducible technical facts from internal process narration.",
+      "evidence": "Exact source-pair and recovery bindings define the R2 category. In-memory controls check the admission boundary, not writing behavior.",
+      "why_instruction": "The existing communication and public-writing owners carry this boundary while retaining prior prose and technical-disclosure checks.",
+      "alternative": "Retain prior source unchanged; no general instruction-adoption exception is introduced.",
+      "artifacts": {
+        "skills/humanizer/SKILL.md": {
+          "before_sha256": "7b087ef814d61896cd6e8ba13996158bfd7648098f5357a65b782668b9388729",
+          "after_sha256": "03ae59a428b8723ccc73798d57088b98ce403b6c442b5eddba2b08b2c5be457f"
+        }
+      }
+    },
+    {
+      "owner": "skills/instruction-authoring",
+      "change_kind": "contract-correction",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The closed correction category must be represented consistently in the admission consumer and release contract.",
+      "evidence": "Source-pair restrictions and required reconciliation remain intact; other instruction categories retain their existing qualification rules.",
+      "why_instruction": "The Publication necessity record describes the exact consumer category and its limits.",
+      "alternative": "Keep the prior categories without this correction; do not create a general prose waiver or substitute source checks for behavioral proof.",
+      "artifacts": {
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "232cb5a4c062560fa14ee0aeae67c96fbe9afb459df3b55f6a5b6cf9d837e4d9",
+          "after_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1"
+        }
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6",
+          "after_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "48016bdf27ce7853a227e620b1628ce28e957e21ab9e1725a0919356bb127a40",
+          "after_sha256": "4b547698e601de0c867a2f60dc2fbe9e8c02f493077ecf1ce6c9bf2c31723f5b"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "3f49af724b579cacb769347ec7fa96d3cdba86076ed91223ad0b5c17c09bba74",
+          "after_sha256": "8f9a173ef7f97ed477345d94611ad10f0238c93fad75978102ff80d8dec7de0c"
+        },
+        "skills/humanizer/SKILL.md": {
+          "before_sha256": "7b087ef814d61896cd6e8ba13996158bfd7648098f5357a65b782668b9388729",
+          "after_sha256": "03ae59a428b8723ccc73798d57088b98ce403b6c442b5eddba2b08b2c5be457f"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed",
+          "after_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "232cb5a4c062560fa14ee0aeae67c96fbe9afb459df3b55f6a5b6cf9d837e4d9",
+          "after_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "06cc6b8c34a148116d42aff8aac8e515a16c2f6ae72373732baaec2e6d9d62c3",
+          "after_sha256": "994ce832c51ef670cf0a65b760719e2d2ca8214e82e44cf0f2fe976e35b75051"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "86c1ef89e4b5d04577a5b6054ca677a0dd95ee97418de51c3b7ac52eca2c25b0",
+          "after_sha256": "2828c56564e5aa574abae06e49ab7d783506f6227048bb08af9452837435a508"
+        },
+        "profiles/current-observed-defaults.json": {
+          "before_sha256": "01de036457b90a08879fba1bf47b8f465400daedf9360ff927b95dab2956f9be",
+          "after_sha256": "53fa484b003b981c8b4b03ce79559ad83f2b150d1c4a53031946dd21c65824fe"
+        }
+      },
+      "requirement_change": true,
+      "requirement_reason": "R02 retains the exact R2 category; the standing profile binds the same source artifacts with ceilings equal to their source lengths. Model/runtime observations and all other eligibility rules are unchanged.",
+      "authority": "Scope is limited to the public-audience R2 source pair, two replacement transitions and matching profile artifacts/ceilings. This record does not grant adoption or publication authority.",
+      "checks": "Twelve in-memory admission controls passed. Source qualification and renderer checks passed. Filesystem fixture checks were blocked by access errors and are not counted as passes.",
+      "outcome_review": {
+        "expected": "Only the fixed R2 pair qualifies through this category; the standing profile matches exact source hashes and its specified ceilings. Substituted or unrelated instructions retain their existing gates.",
+        "observed": "The exact-source admission controls and source consistency checks pass. No installed-state or writing-quality result is asserted.",
+        "evidence": "tests/test_public_audience_correction.py and the artifact digests in this record provide the reproducible decision controls and source bindings.",
+        "limitations": "In-memory and artifact-only checks do not establish filesystem integration, natural discovery, installed state or behavioral benefit. Source-bound declarations do not authenticate approval."
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, loading and safety obligations remain unchanged and applicable."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, loading and safety obligations remain unchanged and applicable."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, loading and safety obligations remain unchanged and applicable."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Exact R2 category or derived source dependency updated; unrelated obligations retained."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Exact R2 category or derived source dependency updated; unrelated obligations retained."
+        },
+        {
+          "path": "skills/humanizer/SKILL.md",
+          "disposition": "updated",
+          "reason": "Exact R2 category or derived source dependency updated; unrelated obligations retained."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, loading and safety obligations remain unchanged and applicable."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "updated",
+          "reason": "Exact R2 category or derived source dependency updated; unrelated obligations retained."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Exact R2 category or derived source dependency updated; unrelated obligations retained."
+        },
+        {
+          "path": "profiles/current-observed-defaults.json",
+          "disposition": "updated",
+          "reason": "Bind exact retained standing artifacts and exact source-byte ceilings; preserve all configured-default/runtime observations and no-active-session claim."
+        }
+      ],
+      "framework_review": {
+        "affected": [
+          "skills/instruction-authoring/SKILL.md",
+          "skills/instruction-authoring/references/change-review.md",
+          "skills/humanizer/SKILL.md"
+        ],
+        "selection_reason": "The authoring category, its reference contract and the two fixed instruction owners are affected.",
+        "unaffected_reason": "Other instruction categories, triggers, workflow grants, safety rules and model preferences are unchanged.",
+        "checks": "Existing owner boundaries and conditional loading remain intact. Original Humanizer prose checks and technical-disclosure exceptions are retained."
+      }
+    }
+  ]
+}

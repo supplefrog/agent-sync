@@ -1,7 +1,7 @@
 ---
 name: humanizer
 description: "Use for public or recipient-facing writing artifacts, or explicit humanize/voice-matching requests: GitHub issues/PRs, release notes, engineering updates, published explanations, email, Slack and posts. Ordinary chat answers and progress replies use standing communication preferences. Code, private reasoning, strict schemas and specialist creative work keep their domain owners."
-version: 3.0.1
+version: 3.0.2
 author: Hermes Agent; derived from Siqi Chen's Humanizer
 license: MIT
 metadata:
@@ -29,4 +29,4 @@ The domain skill owns facts, required fields, safety, and publication mechanics.
 
 ## Final read
 
-Read once as the recipient. Remove repeated summaries, decorative headings, mechanical bold labels, forced groups of three, stock transitions, vague authority, fake emotion, and writer-centered process narration. Make a sentence specific or delete it if it could fit an unrelated report unchanged; remove sections that do not change understanding or action. This checks the artifact rather than requiring a second writing pass.
+Read the exact publishable body as the recipient, separately from private permission and evidence checks. Exclude internal coordination, approval narration, agent/model/tool work or budget accounting, private workflow quotations, and generic assurances about omitted private data. Keep only facts needed to reproduce, interpret or act on the result, plus required disclosures; relevant environment/model/tool facts are valid technical evidence. Minimize personal paths and session identifiers, using consistent synthetic examples when exact values are unnecessary. Remove repeated summaries, decorative headings, mechanical bold labels, forced groups of three, stock transitions, vague authority, fake emotion, and writer-centered process narration. Make a sentence specific or delete it if it could fit an unrelated report unchanged; remove sections that do not change understanding or action. An accurate, sanitized, authorized or successfully posted body can still fail this audience check. This checks the artifact rather than requiring a second writing pass.
