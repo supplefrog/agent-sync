@@ -69,7 +69,7 @@ def classify_fleet_action(
         "source_action": action,
         "registry_status": status,
         "owner": f"skills/{name}" if registry_entry is not None and name else "unresolved",
-        "route": "capability-curator",
+        "route": "cross-agent-surface-engineering",
         "change_class": "unmanaged-capability",
         "disposition": "stage-for-review",
         "eligible_after_checks": False,
@@ -96,7 +96,7 @@ def classify_fleet_action(
     if action == "conflict":
         finding.update(
             change_class=("managed-skill-conflict" if admitted else "unmanaged-collision"),
-            route=("cross-agent-surface-engineering" if admitted else "capability-curator"),
+            route=("cross-agent-surface-engineering" if admitted else "cross-agent-surface-engineering"),
             disposition="review-required" if admitted else "stage-for-review",
         )
         return finding

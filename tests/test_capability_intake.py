@@ -183,7 +183,7 @@ class CapabilityIntakeTests(unittest.TestCase):
 
             unmanaged = by_key[("fleet", "unmanaged-new")]
             self.assertEqual(unmanaged["change_class"], "unmanaged-capability")
-            self.assertEqual(unmanaged["route"], "capability-curator")
+            self.assertEqual(unmanaged["route"], "cross-agent-surface-engineering")
             self.assertEqual(unmanaged["disposition"], "stage-for-review")
             self.assertFalse(unmanaged["auto_apply_eligible"])
 
@@ -228,6 +228,32 @@ class CapabilityIntakeTests(unittest.TestCase):
                 checked=True,
                 **kwargs,
             )
+            self.assertFalse(finding["auto_apply_eligible"])
+
+
+    def test_staged_update_routes_to_admitted_operator_without_eligibility(self) -> None:
+        for checked in (False, True):
+            finding = self.intake.classify_fleet_action(
+                {"name": "design-guide", "action": "update"},
+                {"name": "design-guide", "status": "staged"},
+                destination_id="fixture-only", checked=checked,
+            )
+            self.assertEqual(finding["route"], "cross-agent-surface-engineering")
+            self.assertEqual(finding["change_class"], "staged-capability-change")
+            self.assertEqual(finding["disposition"], "stage-for-review")
+            self.assertFalse(finding["eligible_after_checks"])
+            self.assertFalse(finding["auto_apply_eligible"])
+
+    def test_unmanaged_conflict_routes_to_admitted_operator_without_eligibility(self) -> None:
+        for checked in (False, True):
+            finding = self.intake.classify_fleet_action(
+                {"name": "unknown-guide", "action": "conflict"}, None,
+                destination_id="fixture-only", checked=checked,
+            )
+            self.assertEqual(finding["route"], "cross-agent-surface-engineering")
+            self.assertEqual(finding["change_class"], "unmanaged-collision")
+            self.assertEqual(finding["disposition"], "stage-for-review")
+            self.assertFalse(finding["eligible_after_checks"])
             self.assertFalse(finding["auto_apply_eligible"])
 
 

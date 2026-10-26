@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "kind": "deterministic-change-reconciliation",
+  "base": "587df7a8677d9c3689ed542f36fc8d777b6fce6f",
+  "scope": "Two advisory classifier route labels and their focused regression coverage. No skill adoption, retirement, workflow measurement, runtime or installation result.",
+  "instruction_changes": [],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6",
+          "after_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "4b547698e601de0c867a2f60dc2fbe9e8c02f493077ecf1ce6c9bf2c31723f5b",
+          "after_sha256": "4b547698e601de0c867a2f60dc2fbe9e8c02f493077ecf1ce6c9bf2c31723f5b"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "8f9a173ef7f97ed477345d94611ad10f0238c93fad75978102ff80d8dec7de0c",
+          "after_sha256": "8f9a173ef7f97ed477345d94611ad10f0238c93fad75978102ff80d8dec7de0c"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed",
+          "after_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1",
+          "after_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1"
+        },
+        "tools/capability_intake.py": {
+          "before_sha256": "4bd4951da41867fa357f186e3b42efd43c8c5992e948ae77c2869fac73174dc5",
+          "after_sha256": "cb9ddc488f74dab52dd60f3f07dc243c2a806582b7b3787983f789b071393808"
+        }
+      },
+      "requirement_change": false,
+      "requirement_reason": "Existing operational ownership already selects cross-agent-surface-engineering; only advisory labels were inconsistent.",
+      "authority": "This technical reconciliation record covers the exact classifier/test change and grants no adoption, installation or publication authority.",
+      "checks": "Retained focused regression evidence: original 3 tests had 2 assertion failures and 0 errors; candidate 3 tests passed. Pure comparison: 960 variants, 528 route-only differences, all non-route fields identical. Independent source review confirmed this bounded delta. These unchanged controls were not rerun.",
+      "outcome_review": {
+        "expected": "Unmanaged/staged findings route to the admitted cross-agent owner while all eligibility, risk, disposition, retirement and no-change behavior remains identical.",
+        "observed": "Retained failure-sensitive controls and independent source inspection support the exact two-label correction; public-base source matches the reviewed baseline.",
+        "evidence": "Focused deterministic test and pure-classifier comparison results; no live state or model output used.",
+        "limitations": "No filesystem integration scan, runtime/model trial, installed readback, broader semantic proof, cost saving or behavioral skill-benefit claim."
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing ownership modalities and admitted/staged distinction already select the effective cross-agent owner; no matrix semantics change."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Architecture already names cross-agent-surface-engineering as operational owner and capability-curator as staged; corrected labels now agree."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "No evaluator behavior, usage accounting or benefit decision changes; retained pure checks address route labels only."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "No learning, memory, activation or instruction discovery behavior changes."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Requirement statuses remain unchanged; this fixes classifier conformance rather than introducing an adoption result."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership and review/admission requirements remain; no new authority, requirement or waiver."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing authoring and semantic review obligations remain; no instruction text or framework policy changes."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing source-bound reconciliation, eligibility and measurement rules remain unchanged."
+        }
+      ]
+    }
+  ]
+}
