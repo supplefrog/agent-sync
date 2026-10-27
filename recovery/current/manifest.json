@@ -92,7 +92,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 16877,
+      "bytes": 17778,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -297,7 +297,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "8e6d0c6c0cbd02e1f838b8e96d580ae84ca1758076cd65fa9c6661103d34f297",
+      "sha256": "b348e01d45870a1b797f3ddc9ae9f0c7dc99d224f14070ec1a1d514977b320aa",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"

@@ -40,7 +40,7 @@
       "timeout": 120
     },
     "compression": {
-      "model": "gpt-6-luna-900k",
+      "model": "gpt-6-luna",
       "provider": "openai-codex",
       "reasoning_effort": "high",
       "timeout": 120
@@ -149,7 +149,7 @@
     "abort_on_summary_failure": false,
     "codex_gpt55_autoraise": true,
     "codex_responses_compact_threshold": 200000,
-    "codex_responses_native": true,
+    "codex_responses_native": false,
     "enabled": true,
     "hygiene_hard_message_limit": 400,
     "in_place": true,
@@ -166,7 +166,7 @@
     "cua_telemetry": false
   },
   "context": {
-    "engine": "lcm"
+    "engine": "compressor"
   },
   "context_file_max_chars": 20000,
   "cron": {
@@ -433,13 +433,13 @@
       "image_gen/fal",
       "mnemosyne-dashboard",
       "video_gen/fal",
-      "homeassistant"
+      "homeassistant",
+      "hermes-lcm"
     ],
     "enabled": [
       "browserclaw",
       "disk-cleanup",
       "hermes-auto-titler",
-      "hermes-lcm",
       "hermes-memory-ui",
       "image_gen/openai-codex",
       "prompt-optimizer",
@@ -649,10 +649,48 @@
   },
   "tools": {
     "tool_search": {
-      "enabled": "auto",
-      "max_search_limit": 20,
+      "defer": [
+        "browser_vault",
+        "clarify",
+        "computer_use",
+        "cronjob_manage",
+        "desktop_preview",
+        "desktop_project",
+        "drive_preview",
+        "gui_tour",
+        "image_generate",
+        "lcm_compile_evidence",
+        "lcm_compute",
+        "lcm_describe",
+        "lcm_doctor",
+        "lcm_evidence_pack",
+        "lcm_expand",
+        "lcm_expand_query",
+        "lcm_grep",
+        "lcm_inspect",
+        "lcm_load_session",
+        "lcm_query_state",
+        "lcm_recall",
+        "lcm_recent",
+        "lcm_retrieve",
+        "lcm_status",
+        "manage_catalog",
+        "memory",
+        "read_window_below",
+        "session_search",
+        "set_theme",
+        "show_tip",
+        "skill_manage",
+        "skill_view",
+        "skills_list",
+        "todo_list"
+      ],
+      "enabled": "on",
+      "listing": "auto",
+      "listing_max_tokens": 4000,
+      "max_search_limit": 25,
       "search_default_limit": 5,
-      "threshold_pct": 10
+      "threshold_pct": 5
     }
   },
   "toolsets": [
