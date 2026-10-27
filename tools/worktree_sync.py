@@ -179,6 +179,20 @@ def _origin_destinations(lane, options, common):
     return [str(path) for _, path in destinations]
 
 
+def _unpublished_owner_updates(actions, managed_state, snapshot, selected_owners=()):
+    """Unselected local-authoring state is not permission to replace it with public bytes."""
+    protected = []
+    for action in actions:
+        name = action['name']
+        if name in selected_owners or action['action'] not in {'update', 'remove', 'repair'}:
+            continue
+        origin = managed_state.get('skills', {}).get(name, {}).get('source_snapshot',
+                    managed_state.get('source_snapshot'))
+        if origin and Path(origin).resolve() != Path(snapshot).resolve():
+            protected.append(name)
+    return sorted(protected)
+
+
 def _rollout_targets(published, journal, save, *, verify_native=None):
     """Extend the existing integration receipt with independently resumable roots."""
     if verify_native is None:
@@ -214,6 +228,10 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
                 raise sync_git.SyncBlocked('native execution transport unavailable for configured machine: ' + ', '.join(configured['unavailable_transport']))
             with fleet._path_locks([snapshot, root]):
                 actions = fleet.plan_snapshot(snapshot, root)
+                protected = _unpublished_owner_updates(actions, fleet.load_state(root), snapshot,
+                    journal.get('receipt', {}).get('options', {}).get('adopt', ()))
+                if protected:
+                    raise sync_git.SyncBlocked('unpublished managed owners require their existing authoring outcome: ' + ', '.join(protected))
                 conflicts = [a['name'] for a in actions if a['action'] == 'conflict']
                 if conflicts:
                     raise sync_git.SyncBlocked('managed drift/unmanaged collision: ' + ', '.join(conflicts))
@@ -263,6 +281,95 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
     return all(rollout['targets'][path].get('verified') is True for path in roots)
 
 
+_ABSENT_CONFIG_VALUE = object()
+
+
+def _config_value_equal(left, right):
+    """JSON structural equality without Python's boolean/number coercion."""
+    if type(left) is not type(right):
+        return False
+    if isinstance(left, dict):
+        return left.keys() == right.keys() and all(_config_value_equal(left[k], right[k]) for k in left)
+    if isinstance(left, list):
+        return len(left) == len(right) and all(_config_value_equal(a, b) for a, b in zip(left, right))
+    return left == right
+
+
+def _changed_config_matches(before, desired, current, path=()):
+    """Check only the authored delta; unrelated saved values are not restore targets."""
+    missing = _ABSENT_CONFIG_VALUE
+    if before is missing and isinstance(desired, dict):
+        before = {}
+    if isinstance(before, dict) and isinstance(desired, dict):
+        if not isinstance(current, dict):
+            return False
+        return all(_changed_config_matches(before.get(k, missing), desired.get(k, missing),
+                                          current.get(k, missing), path + (k,))
+                   for k in before.keys() | desired.keys()
+                   if not _config_value_equal(before.get(k, missing), desired.get(k, missing)))
+    if path in {('plugins', 'enabled'), ('plugins', 'disabled')} and before is missing:
+        before = []
+    if path in {('plugins', 'enabled'), ('plugins', 'disabled')} and all(
+            isinstance(v, list) and all(isinstance(x, str) for x in v) for v in (before, desired, current)):
+        return set(desired) - set(before) <= set(current) and not (set(before) - set(desired)) & set(current)
+    # JSON booleans must not compare equal to integer settings.
+    return _config_value_equal(desired, current)
+
+
+def _native_destination_completion(lane, journal, *, recovery_module=None):
+    """Read-only saved-state check; never restore broad snapshots or restart sessions."""
+    if recovery_module is None:
+        import recovery as recovery_module
+    recovery = recovery_module
+    commit = journal['last_result']['commit']
+    # The actual published commit's parent preserves selection on source-only resume.
+    paths = set(_names(lane, 'diff', '--name-only', commit + '^', commit))
+    selected = sorted(p for p in paths if p.startswith('recovery/current/') and p != 'recovery/current/manifest.json')
+    result = {'saved_verified': True, 'loaded_verified': None, 'targets': {}}
+    if not selected:
+        return result
+    try:
+        policy = recovery._load_policy(lane / 'recovery.json')
+        recovery.verify_snapshot(lane / 'recovery.json', lane / 'recovery/current')
+        artifacts = {'recovery/current/' + a['snapshot']: (host, a)
+                     for host, a in recovery._policy_artifacts(policy)}
+    except (OSError, RuntimeError, ValueError, KeyError) as exc:
+        return dict(result, saved_verified=False, targets={'snapshot': {'verified': False,
+                    'reason': str(exc), 'resumption_event': 'Repair and qualify the exact snapshot/policy before retry.'}})
+    roots = journal['receipt']['options'].get('recovery_roots') or {}
+    for name in selected:
+        state = {'verified': False, 'loaded_verified': None,
+                 'resumption_event': 'Native owner reconciles the exact selected values, then resume this published attempt; user restarts later.'}
+        result['targets'][name] = state
+        try:
+            host, artifact = artifacts[name]
+            _, resolved = recovery._selected_roots(roots, [host])
+            target = recovery._safe_join(resolved[host], artifact['source'], must_exist=True)
+            identity = recovery._file_identity(target)
+            desired_bytes = sync_git.git(lane, 'show', commit + ':' + name)
+            old_bytes = sync_git.git(lane, 'show', commit + '^:' + name)
+            if artifact['kind'] != 'config':
+                raise sync_git.SyncBlocked('Selected native text requires its existing recovery owner readback; skill catalogue is insufficient.')
+            home = recovery._target_home(resolved, [host])
+            # Bootstrap/restore from the managed published checkout owns the saved source anchor.
+            anchor = Path(journal['published_repo'])
+            before = recovery._expand(json.loads(old_bytes), resolved, anchor, home=home)
+            desired = recovery._expand(json.loads(desired_bytes), resolved, anchor, home=home)
+            current = recovery._read_config(target, artifact['format'])
+            state['verified'] = _changed_config_matches(before, desired, current)
+            if recovery._file_identity(target) != identity:
+                state['verified'] = False
+                state['reason'] = 'Native target changed during readback.'
+            elif not state['verified']:
+                state['reason'] = 'Selected native configuration delta is stale; no broad restore was attempted.'
+            else:
+                state['resumption_event'] = 'Saved values verified; loading is separate and may await the user-managed restart.'
+        except (OSError, RuntimeError, ValueError, KeyError) as exc:
+            state['reason'] = str(exc)
+        result['saved_verified'] = result['saved_verified'] and state['verified']
+    return result
+
+
 def _finish_published(primary, common, target, lane, published, published_marker_path, published_marker, journal, *, source_only=False):
     sync_git.assert_integration_owner(lane, journal['attempt'])
     result = dict(journal['last_result'])
@@ -288,7 +395,9 @@ def _finish_published(primary, common, target, lane, published, published_marker
         if journal.get('deployment_started'):
             raise sync_git.SyncBlocked('rollout already started; resume the exact installed-target attempt')
         result.update(result='published', rollout_verified=False, installed_verified=False,
-                      reason='explicit source-only publication; configured rollout remains incomplete')
+                      reason='explicit source-only publication; configured rollout remains incomplete',
+                      sync_complete=False, activation_verified=None,
+                      resumption_event='Resume the exact published release through normal rollout; retain native saved/loading dependencies.')
         journal['last_result'] = result
         _atomic(common / ('agent-signal-integration-published-' + journal['attempt'] + '.json'), journal)
         if pending:
@@ -339,6 +448,14 @@ def _finish_published(primary, common, target, lane, published, published_marker
     if not _rollout_targets(published, journal, lambda: _atomic(common / 'agent-signal-integration.json', journal)):
         return dict(result, result='incomplete', failed_step='configured-rollout', publication_verified=True,
                     rollout_verified=False, targets=journal['rollout']['targets'])
+    native = _native_destination_completion(lane, journal)
+    journal['native_destinations'] = native
+    _atomic(common / 'agent-signal-integration.json', journal)
+    if not native['saved_verified']:
+        return dict(result, result='incomplete', failed_step='native-saved-verification',
+                    publication_verified=True, rollout_verified=False, installed_verified=False,
+                    sync_complete=False, activation_verified=None, native_destinations=native,
+                    targets=journal['rollout']['targets'])
     owners = journal['receipt']['options']['adopt']
     migrations = []
     for path in journal['origin_destinations']:
@@ -347,7 +464,8 @@ def _finish_published(primary, common, target, lane, published, published_marker
             raise sync_git.SyncBlocked('selected installed owners changed before source origin migration')
         migrations.append(reconcile.fleet.migrate_source_origin(snapshot, destination,
                           expected_state=reconcile.fleet.state_identity(destination)))
-    result.update(result='synced', published_repo=str(published), integration_repo=str(lane), source_origin_migrations=migrations,
+    result.update(result='synced', sync_complete=True, activation_verified=None, native_destinations=native,
+                  published_repo=str(published), integration_repo=str(lane), source_origin_migrations=migrations,
                   agents_verified=True, installed_verified=True, rollout_verified=True, targets=journal['rollout']['targets'],
                   verification_scope='configured installed hashes and fresh native catalogue/body readback; no model behavior or cached-session refresh claim')
     pending = sync_git.read_pending(lane)
@@ -447,7 +565,11 @@ def rollout_published(repo, commit, *, source_only=False, machine='local-windows
                 sync_git.git(lane, 'merge-base', '--is-ancestor', lane_marker['head'], exact)
                 _checkout_git(lane, 'reset', '--hard', exact)
                 lane_marker['head'] = exact; _atomic(lane_marker_path, lane_marker)
-                options = _options((), (), machine, None, {}, 'resume published rollout')
+                # Preserve explicit roots on resume; otherwise use the existing native-root resolver.
+                import recovery
+                roots = (recovery._default_roots() if request is None or request.get('default_recovery_roots')
+                         else request.get('recovery_roots') or {})
+                options = _options((), (), machine, None, roots, 'resume published rollout')
                 journal = {'schema_version':1, 'attempt':uuid.uuid4().hex, 'phase':'published',
                            'base':exact, 'deployment_started':False, 'published_repo':str(published),
                            'integration_repo':str(lane), 'origin_destinations':[],
@@ -784,12 +906,31 @@ def _retain_release_bytes(path, data):
         os.fsync(handle.fileno())
 
 
+def _release_source_kind(original):
+    """Classify truthful pre-publisher evidence, never manufacture a rejection."""
+    result = original.get('last_result')
+    receipt = original.get('receipt')
+    options = receipt.get('options') if isinstance(receipt, dict) else None
+    if (original.get('schema_version') == 1 and original.get('phase') == 'reconciling'
+            and original.get('deployment_started') is False and result is None
+            and isinstance(options, dict) and options.get('adopt') == []
+            and isinstance(options.get('include'), list) and options['include']
+            and original.get('origin_destinations') == []
+            and isinstance(original.get('composition_files'), dict) and original['composition_files']
+            and set(options['include']) == set(original['composition_files'])
+            and isinstance(original.get('composed_tree'), str)
+            and re.fullmatch('[0-9a-f]{40}', original['composed_tree'])):
+        return 'interrupted-include-only'
+    return 'owner-classification'
+
+
 def _release_preflight(primary, common, original, archive, archived_lane, archived_branch, qualification=None):
-    """Only the explicit owner-classification stop precedes any publisher action."""
-    result = original.get('last_result', {})
+    """Verify an exact rejected or interrupted source before any publisher action."""
+    interrupted = _release_source_kind(original) == 'interrupted-include-only'
+    result = original.get('last_result') or {}
     allowed_result = {'result', 'reason', 'owners', 'measurements', 'ready', 'base',
                       'published_repo', 'integration_repo', 'source_base', 'source_commits'}
-    if (original.get('schema_version') != 1 or original.get('phase') != 'reconciling'
+    if not interrupted and (original.get('schema_version') != 1 or original.get('phase') != 'reconciling'
             or not (original.get('deployment_started') is False
                     or ('deployment_started' not in original and qualification is not None))
             or result.get('result') != 'review-required'
@@ -801,7 +942,7 @@ def _release_preflight(primary, common, original, archive, archived_lane, archiv
         _release_live_qualification(qualification, original)
     target = original['receipt']['target']
     receipt = original['receipt']
-    if (result.get('ready') != receipt['ready'] or result.get('base') != original['base']
+    if not interrupted and (result.get('ready') != receipt['ready'] or result.get('base') != original['base']
             or result.get('owners') != sorted(receipt['options']['adopt'])
             or any(result.get(key) != original[key] for key in ('integration_repo', 'published_repo'))
             or any(result.get(key) != receipt[key] for key in ('source_base', 'source_commits'))):
@@ -827,9 +968,15 @@ def _release_preflight(primary, common, original, archive, archived_lane, archiv
     published_marker = _read(common / 'agent-signal-published.json')
     for owned, record in ((lane, marker), (published, published_marker)):
         if (not record or record['common_repo'] != str(common) or record['target'] != target
-                or record['head'] != original['base'] or sync_git.common_dir(owned) != common
-                or sync_git.git(owned, 'rev-parse', 'HEAD') != original['base']):
+                or (owned == lane and record['head'] != original['base'])
+                or (not interrupted and record['head'] != original['base'])
+                or sync_git.common_dir(owned) != common
+                or sync_git.git(owned, 'rev-parse', 'HEAD') != record['head']):
             raise sync_git.SyncBlocked('release worktree identity, marker or publication HEAD changed')
+        if interrupted and owned == published:
+            # Source-only history can leave the stable cache behind the published base.
+            # It is not modified by release; only an exact owned ancestor is acceptable.
+            sync_git.git(published, 'merge-base', '--is-ancestor', record['head'], original['base'])
         admin = sync_git.git_dir(owned)
         pointer = owned / '.git'
         if (not admin.is_relative_to(common / 'worktrees') or admin.resolve() != admin.absolute()
@@ -868,7 +1015,7 @@ def _release_preflight(primary, common, original, archive, archived_lane, archiv
 
 
 def release_predeployment(repo, attempt, qualification=None):
-    """Retain the entire rejected attempt, freeing only its coordinator slot.
+    """Retain an exact rejected or interrupted source attempt, freeing its coordinator slot.
 
     No deployment, fetch, reset, checkout, file deletion or baseline update.
     The releasing phase blocks every publisher and permits exact crash recovery.
@@ -953,7 +1100,7 @@ def release_predeployment(repo, attempt, qualification=None):
             journal_path.rename(archive / 'release.json')
             return {'result': 'released', 'attempt': attempt, 'archive': str(archive),
                     'retained_worktree': str(archived_lane), 'retained_branch': archived_branch,
-                    'verification_scope': 'pre-publisher rejection and frozen local composition; no deployment or remote action'}
+                    'verification_scope': 'truthful pre-publisher disposition and frozen local composition; no deployment or remote action'}
     except (OSError, RuntimeError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as exc:
         return {'result': 'review-required', 'attempt': attempt, 'reason': str(exc)}
 

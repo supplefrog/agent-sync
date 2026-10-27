@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "scope": "checked-ready/resume saved-state completion, unpublished-owner preservation and truthful pre-publisher source recovery implementation repair",
+  "source_files": {
+    "tools/worktree_sync.py": "194f0f01bf43287b4e679523f3aed929f2beb9b8491c5638d0fa21763c45181e",
+    "tests/test_native_sync_completion.py": "a0dd166305a0ad35c90e06114e1e42954d5f7a1869b40ce423828e757db4f512"
+  },
+  "checks": {
+    "pure_tests": 15,
+    "predecessor_failed_subcases": 9,
+    "scoped_native_saved_readback": "verified",
+    "native_writes": 0,
+    "loaded_state": "unverified",
+    "model_calls": 0,
+    "retained_pure_tests": 15,
+    "focused_integration_test_methods": 5,
+    "recovery_negative_classifications": 10,
+    "prepublisher_recovery": "verified locally; original journal/composition retained; no deployment or remote action",
+    "default_activation": "not performed"
+  },
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e",
+          "after_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "4b547698e601de0c867a2f60dc2fbe9e8c02f493077ecf1ce6c9bf2c31723f5b",
+          "after_sha256": "4b547698e601de0c867a2f60dc2fbe9e8c02f493077ecf1ce6c9bf2c31723f5b"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "8f9a173ef7f97ed477345d94611ad10f0238c93fad75978102ff80d8dec7de0c",
+          "after_sha256": "8f9a173ef7f97ed477345d94611ad10f0238c93fad75978102ff80d8dec7de0c"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "c758843a88673373b9b50dd1739607d77fcced414049dbe1b6656345a4aee328",
+          "after_sha256": "c758843a88673373b9b50dd1739607d77fcced414049dbe1b6656345a4aee328"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed",
+          "after_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1",
+          "after_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "c90e246fed2a98338809b0403c7c2978e5ed55d9b0254784f3aafe955cec3369",
+          "after_sha256": "194f0f01bf43287b4e679523f3aed929f2beb9b8491c5638d0fa21763c45181e"
+        }
+      },
+      "requirement_change": false,
+      "requirement_reason": "Preserve existing truthful local-and-remote completion intent; add missing native saved-state verification to the checked-ready/resume implementation.",
+      "authority": "Implementation maintenance of the existing checked-sync outcome; no instruction adoption, deployment or new destination grant.",
+      "checks": "Retained fifteen source-cleared saved-state controls; five focused owner-preservation/recovery test methods including ten negative classifications; actual saved-state readback and exact pre-publisher recovery verified locally.",
+      "outcome_review": {
+        "expected": "Configured skills alone cannot certify changed native configuration. Publication and saved destinations complete together; activation remains separate.",
+        "observed": "Saved native configuration verification discriminates stale values. Unselected unpublished owners are held before replacement. Exact interrupted include-only source can be retained through existing recovery without fabricating a rejection or deployment.",
+        "evidence": "Bound code/test identities and declared check scope in this technical record; native readback record retained privately, not embedded.",
+        "limitations": "No publication, default activation, whole-fleet success, restart, loaded-session adoption, universal parent adherence or model-quality claim. Protected authoring owners may keep configured rollout explicitly incomplete; their existing independent outcome is not silently overwritten or counted verified."
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing checked-sync, native-maintenance, truthful partial status and source-bound reconciliation obligations are retained; this repair supplies the missing native saved-state completion check."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Existing checked-sync, native-maintenance, truthful partial status and source-bound reconciliation obligations are retained; this repair supplies the missing native saved-state completion check."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing checked-sync, native-maintenance, truthful partial status and source-bound reconciliation obligations are retained; this repair supplies the missing native saved-state completion check."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing checked-sync, native-maintenance, truthful partial status and source-bound reconciliation obligations are retained; this repair supplies the missing native saved-state completion check."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing checked-sync, native-maintenance, truthful partial status and source-bound reconciliation obligations are retained; this repair supplies the missing native saved-state completion check."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "unchanged",
+          "reason": "Existing checked-sync, native-maintenance, truthful partial status and source-bound reconciliation obligations are retained; this repair supplies the missing native saved-state completion check."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing checked-sync, native-maintenance, truthful partial status and source-bound reconciliation obligations are retained; this repair supplies the missing native saved-state completion check."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing checked-sync, native-maintenance, truthful partial status and source-bound reconciliation obligations are retained; this repair supplies the missing native saved-state completion check."
+        }
+      ]
+    }
+  ]
+}
