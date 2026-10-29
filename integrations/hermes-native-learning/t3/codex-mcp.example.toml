@@ -1,0 +1,11 @@
+# TEMPLATE ONLY. Resolve stable local paths; do not sync private enrollment.
+# This uses T3's existing Codex provider MCP configuration, not a new provider.
+# Do not enable/register this process or grant private access just by syncing it.
+[mcp_servers.learnharness_native]
+enabled = false
+command = "REPLACE_WITH_ABSOLUTE_NODE24_EXECUTABLE"
+args = [
+  "REPLACE_WITH_INSTALLED_PACKAGE/src/t3/server.mjs",
+  "--config", "REPLACE_WITH_PRIVATE_BINDINGS_JSON",
+  "--sdk-root", "REPLACE_WITH_EXISTING_MCP_SDK132_RUNTIME"
+]

@@ -1,0 +1,824 @@
+{
+  "schema_version": 1,
+  "base": "ab48410f2189ad14b0a82de97c45de45a9036cf2",
+  "scope": "Proposed closed source admission for the exact requested native-learning V3 package; no publication, activation or comparative benefit assertion.",
+  "instruction_changes": [
+    {
+      "owner": "integrations/hermes-native-learning",
+      "change_kind": "requested-native-learning",
+      "basis": "user-correction",
+      "native_learning_acceptance": {
+        "manifest_sha256": "de0e5cf960ac6bc7c1cc849dde7bd72d12a94ea6e71cb62c7a275bbfb4313a9f",
+        "source_review_sha256": "ec6c83f3e10d58136a8690ff47fee09807415632cac2e490dfa8a36cce2f607a",
+        "basis": "requested-capability-source",
+        "hermes_evidence": "bounded native walkthrough",
+        "t3_evidence": "reviewed source/components; no live qualification",
+        "activation": "separate",
+        "behavioral_benefit_claim": false
+      },
+      "baseline_sufficient": false,
+      "deviation": "The requested opt-in native-learning capability requires its package-owned teacher/caller/use protocols with the runtime source.",
+      "evidence": "Pinned V3 source passed independent source review; retained Hermes walkthrough and T3 source/component build have their stated limits. No extra live trial is required or claimed.",
+      "why_instruction": "Existing integration-owned protocols remain conditional source references, not global standing instructions or a newly admitted shared skill.",
+      "alternative": "Keep source unshipped; do not hide/rename instruction files, invent model superiority or invoke another closed exception.",
+      "artifacts": {
+        "integrations/hermes-native-learning/docs/KNOWLEDGE.md": {
+          "before_sha256": "absent",
+          "after_sha256": "5f74d691b35296a8567a91474c1606610bf1b40db041e1abf96d845910e81bbc"
+        },
+        "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md": {
+          "before_sha256": "absent",
+          "after_sha256": "7ec0310ef36c641f6ad3ef70eb9ea2fbbadc7070de538e234269b782e1dd97c4"
+        },
+        "integrations/hermes-native-learning/docs/PROTOCOL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "f48c0d69b6910cabf261f544dc22b76ede3d908a6cf82e94af74a0a2c051f7a4"
+        },
+        "integrations/hermes-native-learning/reference/planning.md": {
+          "before_sha256": "absent",
+          "after_sha256": "166d50043b48d3bc3cc75e7b6536c59587c98f256f22f604ac450f5cac08dbb4"
+        },
+        "integrations/hermes-native-learning/reference/practice-base.md": {
+          "before_sha256": "absent",
+          "after_sha256": "4deb62fb06d82387c1b7836d67fea3b0b1756b5ac87307ef51188ef61abe6ced"
+        },
+        "integrations/hermes-native-learning/reference/practice-doctrine.md": {
+          "before_sha256": "absent",
+          "after_sha256": "4f1838b703689ecae9416e8247261e49c316142b7401bb7db7fcd11802a54a79"
+        },
+        "integrations/hermes-native-learning/reference/probe-doctrine.md": {
+          "before_sha256": "absent",
+          "after_sha256": "c15f5182229ac60713907a9b02094a14f35ade58cf355c29bec51a6ad0ec870d"
+        },
+        "integrations/hermes-native-learning/reference/teacher-cycle.md": {
+          "before_sha256": "absent",
+          "after_sha256": "9a8519f5d794d484fbc6de0d273c08ea52296eb1a629e47c7c060ed6844cc280"
+        },
+        "integrations/hermes-native-learning/reference/teacher-step.md": {
+          "before_sha256": "absent",
+          "after_sha256": "6cbe1f5c81d4ba4bb7da38c20006bf23e90830cbcb2a5eba9eb4993b1c4faf95"
+        },
+        "integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "137f6e53bf73a81b03088d4a379752e5ae339650ee12fe9442eca495901b0119"
+        },
+        "integrations/hermes-native-learning/t3/AGENT-PROTOCOL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "b721d349be19d4781f7d999b568b4444c7f4b6af5035869c7d56d7da882af139"
+        }
+      }
+    }
+  ],
+  "qualification_state": "Private source composition for focused overlap/binding review. Separate source reviews are retained; combined eligibility/full release checks are not run.",
+  "limits": "Review receipt hash is a consistency binding, not authenticated approval. No live T3, syntax/server import, teaching-quality, cross-host equivalence or cost improvement is established. Examples remain disabled; private data/grants are excluded.",
+  "selected_paths": [
+    "contracts/instruction-surfaces.json",
+    "docs/recovery.md",
+    "docs/requirement-status.md",
+    "docs/system-requirements.md",
+    "docs/worktree-publication.md",
+    "evals/results/item-review-maintenance.json",
+    "evals/results/native-learning-source-binding.json",
+    "evals/results/published-partial-successor.json",
+    "host-deltas.json",
+    "integrations/hermes-native-learning/.gitignore",
+    "integrations/hermes-native-learning/LICENSE",
+    "integrations/hermes-native-learning/NOTICE.md",
+    "integrations/hermes-native-learning/PUBLIC-FILES.json",
+    "integrations/hermes-native-learning/README.md",
+    "integrations/hermes-native-learning/REFERENCE-SOURCES.json",
+    "integrations/hermes-native-learning/bindings.example.json",
+    "integrations/hermes-native-learning/build-t3.mjs",
+    "integrations/hermes-native-learning/build.mjs",
+    "integrations/hermes-native-learning/desktop/plugin.js",
+    "integrations/hermes-native-learning/docs/FEATURE-MAP.md",
+    "integrations/hermes-native-learning/docs/INSTALL.md",
+    "integrations/hermes-native-learning/docs/KNOWLEDGE.md",
+    "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md",
+    "integrations/hermes-native-learning/docs/PROTOCOL.md",
+    "integrations/hermes-native-learning/docs/QUALIFICATION.md",
+    "integrations/hermes-native-learning/docs/T3-INTEGRATION.md",
+    "integrations/hermes-native-learning/package.json",
+    "integrations/hermes-native-learning/reference/planning.md",
+    "integrations/hermes-native-learning/reference/practice-base.md",
+    "integrations/hermes-native-learning/reference/practice-doctrine.md",
+    "integrations/hermes-native-learning/reference/probe-doctrine.md",
+    "integrations/hermes-native-learning/reference/teacher-cycle.md",
+    "integrations/hermes-native-learning/reference/teacher-step.md",
+    "integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md",
+    "integrations/hermes-native-learning/src/adapter.mjs",
+    "integrations/hermes-native-learning/src/bridge.mjs",
+    "integrations/hermes-native-learning/src/catalogue.mjs",
+    "integrations/hermes-native-learning/src/cli.mjs",
+    "integrations/hermes-native-learning/src/commands.mjs",
+    "integrations/hermes-native-learning/src/config.mjs",
+    "integrations/hermes-native-learning/src/connect-export.mjs",
+    "integrations/hermes-native-learning/src/context-page.mjs",
+    "integrations/hermes-native-learning/src/desktop-entry.mjs",
+    "integrations/hermes-native-learning/src/imports.mjs",
+    "integrations/hermes-native-learning/src/inline/artifacts.mjs",
+    "integrations/hermes-native-learning/src/inline/build-inline.mjs",
+    "integrations/hermes-native-learning/src/inline/hermes-contribution.mjs",
+    "integrations/hermes-native-learning/src/inline/hermes-native-port.mjs",
+    "integrations/hermes-native-learning/src/inline/host-actions.mjs",
+    "integrations/hermes-native-learning/src/inline/host/host-session.mjs",
+    "integrations/hermes-native-learning/src/inline/host/native-session.mjs",
+    "integrations/hermes-native-learning/src/inline/inline-client.mjs",
+    "integrations/hermes-native-learning/src/inline/inline-template.html",
+    "integrations/hermes-native-learning/src/inline/lesson-prose.mjs",
+    "integrations/hermes-native-learning/src/inline/practice-client.mjs",
+    "integrations/hermes-native-learning/src/jobs.mjs",
+    "integrations/hermes-native-learning/src/knowledge.mjs",
+    "integrations/hermes-native-learning/src/materials.mjs",
+    "integrations/hermes-native-learning/src/practice-state.mjs",
+    "integrations/hermes-native-learning/src/propositions.mjs",
+    "integrations/hermes-native-learning/src/store.mjs",
+    "integrations/hermes-native-learning/src/t3/app.mjs",
+    "integrations/hermes-native-learning/src/t3/boundary.mjs",
+    "integrations/hermes-native-learning/src/t3/job-port.mjs",
+    "integrations/hermes-native-learning/src/t3/server.mjs",
+    "integrations/hermes-native-learning/src/vendor/runtime/chains.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/clusters.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/coverage.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/demo-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/graph.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/input-parser.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/job-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/mermaid-plan.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/native-scans.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/notes-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/pending.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/plan-contract.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/plan-tree.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/practice-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/probe-ack.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/question-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/session-clusters.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/target-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/value-debris.ts",
+    "integrations/hermes-native-learning/src/workflow.mjs",
+    "integrations/hermes-native-learning/t3/AGENT-PROTOCOL.md",
+    "integrations/hermes-native-learning/t3/BUILD.json",
+    "integrations/hermes-native-learning/t3/SOURCES.json",
+    "integrations/hermes-native-learning/t3/app.html",
+    "integrations/hermes-native-learning/t3/bindings.example.json",
+    "integrations/hermes-native-learning/t3/codex-mcp.example.toml",
+    "integrations/hermes-native-learning/test/artifacts.dom.test.mjs",
+    "integrations/hermes-native-learning/test/backend.test.mjs",
+    "integrations/hermes-native-learning/test/knowledge.test.mjs",
+    "integrations/hermes-native-learning/test/material-jobs.test.mjs",
+    "integrations/hermes-native-learning/test/package-repair.test.mjs",
+    "integrations/hermes-native-learning/test/panels.dom.test.mjs",
+    "integrations/hermes-native-learning/test/presentation.test.mjs",
+    "integrations/hermes-native-learning/test/propositions.test.mjs",
+    "skills/instruction-authoring/SKILL.md",
+    "skills/instruction-authoring/references/item-review-loop.md",
+    "tests/test_authoring_maintenance_scope.py",
+    "tests/test_integration_reference_binding.py",
+    "tests/test_native_learning_acceptance.py",
+    "tests/test_published_successor.py",
+    "tests/test_raw_git_composition.py",
+    "tools/audit.py",
+    "tools/instruction_changes.py",
+    "tools/reconcile.py",
+    "tools/sync_git.py",
+    "tools/worktree_sync.py"
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "8d51deb084b1e361f26d13f7a979fc6887ab44d96a16ed2b6cde561d12867fc5",
+          "after_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e",
+          "after_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/hermes-skill-proposals.md": {
+          "before_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167",
+          "after_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "bf8128bd83ebcfad8a730ca07c501ff8a1d81ac87523b76c90bb6bebd3012a9a",
+          "after_sha256": "5d01136066bb128cb70223b876a2d6fd5a89cc07fd1ea1fa2414716b9625316e"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "4b547698e601de0c867a2f60dc2fbe9e8c02f493077ecf1ce6c9bf2c31723f5b",
+          "after_sha256": "0308f47552aa4ddc9ebb97786886d40c524eed5d7b43ab007ac7767e71da21b0"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "8f9a173ef7f97ed477345d94611ad10f0238c93fad75978102ff80d8dec7de0c",
+          "after_sha256": "d9ff350d7f93ccf161f2bc04cc8f891f8ce19074749e6c6cbf3689139b2de320"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "c758843a88673373b9b50dd1739607d77fcced414049dbe1b6656345a4aee328",
+          "after_sha256": "6d4475a509a8ac59909ddcc5dffa38913171c3b6f180f584d3d12fb903caca6d"
+        },
+        "host-deltas.json": {
+          "before_sha256": "4475a17757c49b3f978c6dbd7ebc511bfdb677a1d9fbb71c706087e144d18b13",
+          "after_sha256": "ef708638aa13819c00cde505c0e77d75ae1215e052490c69de579404d371bbba"
+        },
+        "integrations/hermes-native-learning/.gitignore": {
+          "before_sha256": "absent",
+          "after_sha256": "9f050ca86f876288160c04189a92bc5cefac3e0afbe15e72c8ecf61365809afa"
+        },
+        "integrations/hermes-native-learning/LICENSE": {
+          "before_sha256": "absent",
+          "after_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+        },
+        "integrations/hermes-native-learning/NOTICE.md": {
+          "before_sha256": "absent",
+          "after_sha256": "e9d093f53ed7232513aa2667acfbe27b3adc530f8a9a21297235f13a4682be54"
+        },
+        "integrations/hermes-native-learning/PUBLIC-FILES.json": {
+          "before_sha256": "absent",
+          "after_sha256": "de0e5cf960ac6bc7c1cc849dde7bd72d12a94ea6e71cb62c7a275bbfb4313a9f"
+        },
+        "integrations/hermes-native-learning/README.md": {
+          "before_sha256": "absent",
+          "after_sha256": "dbf0fa5bab81e57455fbd74b3d03ee800a7d059ae1d94f12087e99f2b84ee90b"
+        },
+        "integrations/hermes-native-learning/REFERENCE-SOURCES.json": {
+          "before_sha256": "absent",
+          "after_sha256": "b31e222fd884cfef88afbecfb98ac90888374d6138f130c1fbdc56e72fb032ac"
+        },
+        "integrations/hermes-native-learning/bindings.example.json": {
+          "before_sha256": "absent",
+          "after_sha256": "d61b58a45436ec6cad2c46b1cea15254c0c198a27121ff8c0430e58fbcb2db34"
+        },
+        "integrations/hermes-native-learning/build-t3.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "e7e228ff411403ea289955002514aef71cae9a051823d65ae873f550b6a07637"
+        },
+        "integrations/hermes-native-learning/build.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "9c62b0e9288841221576e5f11418d08b801205c292a2ee3769b5dfc26c34407a"
+        },
+        "integrations/hermes-native-learning/desktop/plugin.js": {
+          "before_sha256": "absent",
+          "after_sha256": "bdb0c975f5eef484a7f0b19c3783e33855c0c1e0fa708365413b1e6fcc938376"
+        },
+        "integrations/hermes-native-learning/docs/FEATURE-MAP.md": {
+          "before_sha256": "absent",
+          "after_sha256": "7831c78eba674758c35dacca003562c55b8090981295d9fa82acf6598c922fbb"
+        },
+        "integrations/hermes-native-learning/docs/INSTALL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "7320dbe29c3971b2af4a167a3ee21902406dab184e5c578f53c56f61d25a7259"
+        },
+        "integrations/hermes-native-learning/docs/KNOWLEDGE.md": {
+          "before_sha256": "absent",
+          "after_sha256": "5f74d691b35296a8567a91474c1606610bf1b40db041e1abf96d845910e81bbc"
+        },
+        "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md": {
+          "before_sha256": "absent",
+          "after_sha256": "7ec0310ef36c641f6ad3ef70eb9ea2fbbadc7070de538e234269b782e1dd97c4"
+        },
+        "integrations/hermes-native-learning/docs/PROTOCOL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "f48c0d69b6910cabf261f544dc22b76ede3d908a6cf82e94af74a0a2c051f7a4"
+        },
+        "integrations/hermes-native-learning/docs/QUALIFICATION.md": {
+          "before_sha256": "absent",
+          "after_sha256": "cadb2657d26d64a2d90725c6e5280f1735646aba3c25dd1c1b080d7f92e94d45"
+        },
+        "integrations/hermes-native-learning/docs/T3-INTEGRATION.md": {
+          "before_sha256": "absent",
+          "after_sha256": "1beca69fcdd82866375f71e318c54c32d4a871e16c1082a200833e993f2c7c93"
+        },
+        "integrations/hermes-native-learning/package.json": {
+          "before_sha256": "absent",
+          "after_sha256": "ee6cea2d53f8d3a83356d529bc66beb9054f59ad27e13152c856374e54d2a95f"
+        },
+        "integrations/hermes-native-learning/reference/planning.md": {
+          "before_sha256": "absent",
+          "after_sha256": "166d50043b48d3bc3cc75e7b6536c59587c98f256f22f604ac450f5cac08dbb4"
+        },
+        "integrations/hermes-native-learning/reference/practice-base.md": {
+          "before_sha256": "absent",
+          "after_sha256": "4deb62fb06d82387c1b7836d67fea3b0b1756b5ac87307ef51188ef61abe6ced"
+        },
+        "integrations/hermes-native-learning/reference/practice-doctrine.md": {
+          "before_sha256": "absent",
+          "after_sha256": "4f1838b703689ecae9416e8247261e49c316142b7401bb7db7fcd11802a54a79"
+        },
+        "integrations/hermes-native-learning/reference/probe-doctrine.md": {
+          "before_sha256": "absent",
+          "after_sha256": "c15f5182229ac60713907a9b02094a14f35ade58cf355c29bec51a6ad0ec870d"
+        },
+        "integrations/hermes-native-learning/reference/teacher-cycle.md": {
+          "before_sha256": "absent",
+          "after_sha256": "9a8519f5d794d484fbc6de0d273c08ea52296eb1a629e47c7c060ed6844cc280"
+        },
+        "integrations/hermes-native-learning/reference/teacher-step.md": {
+          "before_sha256": "absent",
+          "after_sha256": "6cbe1f5c81d4ba4bb7da38c20006bf23e90830cbcb2a5eba9eb4993b1c4faf95"
+        },
+        "integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "137f6e53bf73a81b03088d4a379752e5ae339650ee12fe9442eca495901b0119"
+        },
+        "integrations/hermes-native-learning/src/adapter.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "c296892aa2c750e6d59e76b025ffb37e0e6e463233398a2fc08616d6a1a98131"
+        },
+        "integrations/hermes-native-learning/src/bridge.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "d8f93f18f4ce3cbe19df3899632d85aaa3fc0f4ed125a555a2ba31699f70868a"
+        },
+        "integrations/hermes-native-learning/src/catalogue.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "0ca5d42fa681454658ae4efcffea974ef14acfb97bcc42494d97b4eb08f9b73e"
+        },
+        "integrations/hermes-native-learning/src/cli.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "df43a129f94a7d7756daa3335ee4156507a4fb8d7c1de888a4da2faeed2afb45"
+        },
+        "integrations/hermes-native-learning/src/commands.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "4ef4b7acb29203e9b39cdd4aa4fd500e1824f9c04f201363817784538410f726"
+        },
+        "integrations/hermes-native-learning/src/config.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "5db8cc310ff8590938fd79fc7c1eacbca9ad98be8b6718030498b4826c146bd4"
+        },
+        "integrations/hermes-native-learning/src/connect-export.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "9fadea6f9ac0dc448389f4acf20ee3669c228ca639a1c9a00072ee7302479535"
+        },
+        "integrations/hermes-native-learning/src/context-page.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "d3e36a143d4701f605b395ee199a81657c431b1585578f7578f01cb75aec4e7d"
+        },
+        "integrations/hermes-native-learning/src/desktop-entry.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "a342f7d3422f2b516f411462390f9a4eec442ec6ab2d22806e75f4a4db1cfaf9"
+        },
+        "integrations/hermes-native-learning/src/imports.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "8ca9420f0fb857bbee3e80b9e990947a3d43ff2d94af262c59c73679f9bf4c98"
+        },
+        "integrations/hermes-native-learning/src/inline/artifacts.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "69aaeb1751473c8e95f7cfdd77e1c855e3b87a41cf9e8100635d28038f71bc98"
+        },
+        "integrations/hermes-native-learning/src/inline/build-inline.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "52c0b7f62a2c60a893b78cbcfd98dea59e760644fcba9d6b5d61a9f0da4cf5e5"
+        },
+        "integrations/hermes-native-learning/src/inline/hermes-contribution.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "d62b795f36e4fa4c552c06e74ae51e19f4822406929c075594cff05daa21fdc8"
+        },
+        "integrations/hermes-native-learning/src/inline/hermes-native-port.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "37b30956a86354752a35f6a00791c555f0d1fc69991ca6d15b5a2e18210b487d"
+        },
+        "integrations/hermes-native-learning/src/inline/host-actions.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "1fedd73f3ef0b297da9bc0ba4f08a49e31c5790d85b2174da00624c8a812b105"
+        },
+        "integrations/hermes-native-learning/src/inline/host/host-session.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "0e5d088c56e6ed686a337cc6da0772001a8c6238fd844c1ef175f4ef70a0c058"
+        },
+        "integrations/hermes-native-learning/src/inline/host/native-session.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "9bd0b25d70378e13195ad87a3f80cd9db0f26328cc182dd4591fc32cfcf70eae"
+        },
+        "integrations/hermes-native-learning/src/inline/inline-client.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "b0ff4bea46188a0c37d0a280b0d7dc07cacbcdae3e4fa37f3fc8d89aab562df3"
+        },
+        "integrations/hermes-native-learning/src/inline/inline-template.html": {
+          "before_sha256": "absent",
+          "after_sha256": "37af828a5c19be0eb725888ace208dba48669e84e0c2f6560e96086facbe7046"
+        },
+        "integrations/hermes-native-learning/src/inline/lesson-prose.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "6dab6e1b4fe99d23f1743f7f52c9fe165844476c73e8b4580ae467db99a88a27"
+        },
+        "integrations/hermes-native-learning/src/inline/practice-client.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "981257aad622d0d17b629cc1534d546f77db0a8d48a68b67fc1c6082d7043f35"
+        },
+        "integrations/hermes-native-learning/src/jobs.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "bb05b83f2b0e9d63738a14915a1c484b17a54f4acaec8038cb9872971f8b10bb"
+        },
+        "integrations/hermes-native-learning/src/knowledge.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "e4c30f272d269d6f7ec1cbbc3ef51e2cf7cb90706b1e72a6cf6fb182bde44998"
+        },
+        "integrations/hermes-native-learning/src/materials.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "7c9e20841be4c7f9611b43e8f49f5ec664b5a82f41809290e2471a51feab36e4"
+        },
+        "integrations/hermes-native-learning/src/practice-state.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "056ca6e928a76b720bb95f0f640dcd2cacb796d4c917f27b1242595dda398966"
+        },
+        "integrations/hermes-native-learning/src/propositions.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "23a16b41f639981773ecea5eb30267bdeffab31f3554710bc85f47f6e74b8a49"
+        },
+        "integrations/hermes-native-learning/src/store.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "5adb7e0c887dd272e82fa4e5dbf839aa7f10348907ebde3986c2811339b53d3a"
+        },
+        "integrations/hermes-native-learning/src/t3/app.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "39a74a5001e3ac03164e704c9da933d428b180765ee7a6fedd97e7dc36fc04ab"
+        },
+        "integrations/hermes-native-learning/src/t3/boundary.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "ec444068047bed09850bcac7897c6a68639764e21442d0f0493899da9b14c6dd"
+        },
+        "integrations/hermes-native-learning/src/t3/job-port.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "bc44e15f4579d8b8f38b5f924d184e2981a19ed6f9fc9cb52c3531b71cde05d4"
+        },
+        "integrations/hermes-native-learning/src/t3/server.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "ba1e0f598e7d1b999829894aeb05f862786797761e0ed57be2289af4c4abec04"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/chains.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "a30557d54d032cf2ddd454b2dc06ef3a4e0ecbddda659ea4b925940b99da688d"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/clusters.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "370b325e143ca2b3c6edce010976e4c4e77b54b288716b62e5d77d58381e8318"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/coverage.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "e66b8119a58442b45c64d4ba98819af067079b9105590ce1cc85c59bc92275f5"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/demo-pure.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "2f44e8a225cc69433625c39b086565695dfa343aa92f3b7edd813a634c6246f6"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/graph.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "0ef741d3977eec27b4d533130a39a695866d1a5d96f00f7758236e19c82d3117"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/input-parser.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "708ce8ddaa5e9e78c7f5f69ce2802e925e333f6720580caf20ccb6f6b768f503"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/job-pure.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "d3e558a35f639cd5a1cb521984a893c7ea31ddeaa058fc932754a38dbc81c5c6"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/mermaid-plan.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "5246b6922ff86b372e37fe96fe36e874357e84b9f72dba0ff7e710e7dec034d4"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/native-scans.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "d5d99580e410d7320835faa5d56da4b55d896cac32da7d0e0533a0aeda8861dd"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/notes-pure.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "00e3f93bb0abcfd4765c31a6dafffcbc1f043722f346d819b9a4ce990e7e3975"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/pending.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "8ea5a8040b78fa490cbd4b67f2821449bb7a312e2f1f4cefb55665ecc467fe43"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/plan-contract.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "a842ae327119c3e38e777703b85dc1bd1b80357817f2af3c4399a61b828ded36"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/plan-tree.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "5e2c83a209080d14ca49de9edd3b4b905b914521f1f6da56467085afe6ea7e7d"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/practice-pure.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "25f8a6e83c85cdabd720275087d84820f1fa9f56733c82f4c2b1d80e3e7157bb"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/probe-ack.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "7bc0c76e8144bc5c1920f7fef0550088dcdae27722a7249d4cf97a8534d0062d"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/question-pure.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "a58205c3edc2b42312c4451a66dd7a5ff98de05ae7107dbf3bdc0f9e5462f27d"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/session-clusters.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "75b848a19c36828c57ed7c8ce081c7ba388ff21e2b08a82d4fd74eb993dab3aa"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/target-pure.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "c5630b5030bb0b15b9401016db60b8943f0d8952e8eb129594c5fed9b9bd5b6f"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/value-debris.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "af1a3733a15bcc0527977350bee43fc4d06f691941b5f61d8375a863ad794d4e"
+        },
+        "integrations/hermes-native-learning/src/workflow.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "9ef50b8a6779d78980766eb696cad9f8bda3041da24db7a39216fbd5a4189669"
+        },
+        "integrations/hermes-native-learning/t3/AGENT-PROTOCOL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "b721d349be19d4781f7d999b568b4444c7f4b6af5035869c7d56d7da882af139"
+        },
+        "integrations/hermes-native-learning/t3/BUILD.json": {
+          "before_sha256": "absent",
+          "after_sha256": "4036c66e1f9fe544a370ce700fe8e827d53a2b2856f5d7b13df0f58011723735"
+        },
+        "integrations/hermes-native-learning/t3/SOURCES.json": {
+          "before_sha256": "absent",
+          "after_sha256": "26c7466385095b5a117860ee0e908514ee1b77cce2d094027902d44c3243924d"
+        },
+        "integrations/hermes-native-learning/t3/app.html": {
+          "before_sha256": "absent",
+          "after_sha256": "99b632e08f0dd9a2e78504ccf1c4588d16a041a9e0ccc3e894f3b84b40976bbd"
+        },
+        "integrations/hermes-native-learning/t3/bindings.example.json": {
+          "before_sha256": "absent",
+          "after_sha256": "d34854c87254968bee3c6eaceace6f90b3e15a5a1b0f642c4b3b589ad19455d1"
+        },
+        "integrations/hermes-native-learning/t3/codex-mcp.example.toml": {
+          "before_sha256": "absent",
+          "after_sha256": "d634d2cb22cea170227dcf13752ba7e119304423fd052ba44b954abc158f4ad4"
+        },
+        "integrations/hermes-native-learning/test/artifacts.dom.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "53fbc8772610fcf9e9992b6e46f830e62d778bb05cb0f943e4b62453816f0394"
+        },
+        "integrations/hermes-native-learning/test/backend.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "d16b292156b9fc1965c069fe6926e5d4c2f1add5880de01797092d6777deedd9"
+        },
+        "integrations/hermes-native-learning/test/knowledge.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "ea75c8206568e7bb2c4de3b902a8079a6d79d70a340de7c2a22aeef9dc0aa158"
+        },
+        "integrations/hermes-native-learning/test/material-jobs.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "b8878e4f7e01ce1791217c5c3202eaa65b7d93c92ac8ad5c3714c837d2923475"
+        },
+        "integrations/hermes-native-learning/test/package-repair.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "2e4572a96fc2ab6624ad2b07a51410ab0d8696b276eb06c8a43e4d74a3aeb037"
+        },
+        "integrations/hermes-native-learning/test/panels.dom.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "9d2b13f7b481b3df0776ba99e7f7922622b95863a2a96748dc75b58291e87331"
+        },
+        "integrations/hermes-native-learning/test/presentation.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "e358a49dcdb4989fc4ccf601322bd5fe0a8d5f03be2177a33eaad74ece4315e7"
+        },
+        "integrations/hermes-native-learning/test/propositions.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "3cdfa3b6374e59546aaa38be9a16472cf0ab8ba0ca94c29d6c7e4527ab89f3f4"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121",
+          "after_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1",
+          "after_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1"
+        },
+        "skills/instruction-authoring/references/item-review-loop.md": {
+          "before_sha256": "absent",
+          "after_sha256": "70b4ecf1c7d893fb519aa2907306acb3fea4ef9397a8252adf310a0648ba7e02"
+        },
+        "skills/instruction-authoring/references/useful-behaviors.md": {
+          "before_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4",
+          "after_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4"
+        },
+        "tests/test_authoring_maintenance_scope.py": {
+          "before_sha256": "absent",
+          "after_sha256": "cb482711912d10d9166970ab18892180b8ff04bda5515315873c07d16649d067"
+        },
+        "tests/test_integration_reference_binding.py": {
+          "before_sha256": "absent",
+          "after_sha256": "3439f28b528a21df89b5d0b44513b81b31c0535d826a2de957a09ec9d5202210"
+        },
+        "tests/test_native_learning_acceptance.py": {
+          "before_sha256": "absent",
+          "after_sha256": "cad3d0898eeeef1bbf5388b26af5951d86177fada4a1b5452caf03e5361ebf74"
+        },
+        "tests/test_published_successor.py": {
+          "before_sha256": "absent",
+          "after_sha256": "d90f46b65e64a417a62d4a2c9044da2ce72a6f4ce48b321e31b9f3e95caf23b1"
+        },
+        "tests/test_raw_git_composition.py": {
+          "before_sha256": "absent",
+          "after_sha256": "a8f178d0fbef8452c15b53a28401c65df6ad588cb6ed682ce530db8f31e49a88"
+        },
+        "tools/audit.py": {
+          "before_sha256": "f9349a1532537d9d48f47a4b42566f0b81326fe77ef7d489068ac964917b77bb",
+          "after_sha256": "cf4295248f1ea4483a360ead8409f649262d937e9d4b60266487801e2a74f1d2"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "2828c56564e5aa574abae06e49ab7d783506f6227048bb08af9452837435a508",
+          "after_sha256": "cd625a2649cd41d9cbe63835af47b6e5d6fd68fb2e34d62af873329404b07dbb"
+        },
+        "tools/reconcile.py": {
+          "before_sha256": "17fb0ffd2bc19522cdfd4888541e70e5be5bb33505b0fdb160e39e87a6f3cc1a",
+          "after_sha256": "a6535029d1152556a552c8d34797e78f1006764c1a750ea4b51c65be87fbaa5a"
+        },
+        "tools/sync_git.py": {
+          "before_sha256": "40dd3c8e240dbb5dc7de8685229edde9d7bb577d806ff2a224394ec036266bb1",
+          "after_sha256": "1ec4c31bc9311dc30c46dfb43bd00a747580eb4048781c4880ff245a7b2342e6"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "194f0f01bf43287b4e679523f3aed929f2beb9b8491c5638d0fa21763c45181e",
+          "after_sha256": "a0cc9a5f97dca5bf9f09a1b4b0d8020d4271e9ced12f3e7b5027ac9f69033dab"
+        }
+      },
+      "requirement_change": true,
+      "requirement_reason": "Compose the two separately scoped source decisions: exact operational-maintenance authoring pair with conditional extra review, and exact requested native-learning V3 source capability without comparative-benefit claims. Both clauses remain bounded and ordinary source/runtime/publication/permission rules remain.",
+      "authority": "The record binds source consistency only. Separate maintenance/capability decisions do not grant public disclosure, live activation, private enrollment or recovery execution. No general behavioral-adoption waiver is introduced.",
+      "checks": "Retained independent source reviews cover bounded authoring/learning, conditional-reference audit, raw Git GB1/GB2 and source-conflict/SC1 corrections. Raw/diagnostic controls have62 retained unique passes; transition/presence controls have55 retained passes, with overlapping predecessor controls not summed. The omitted-metadata Temp control remains blocked and excluded. Prior108-file structural qualification passed but composition failed; its allowance is consumed. This exact111-file revision has not run normal qualification, recovery or publication.",
+      "outcome_review": {
+        "expected": "Preserve both reviewed purposes and safeguards in one exact consumer/requirements composition, with one unambiguous source reconciliation record.",
+        "observed": "The same authoring products and90 learning package files remain. Raw composition/discovery preserves exact bytes with strict drift and bounded safe diagnostics. Reviewed source-conflict continuation archives failed source history separately, carries published/native/backup/target obligations and requires literal inner-receipt absence before decode and replacement. No live result or new authority is inferred.",
+        "evidence": "Exact source bindings, both necessity rows, existing framework assessment and selected source references. The two technical receipts share this single dependency record to prevent duplicate reconciliation matches.",
+        "limitations": "Source and offline controls do not prove original unretained Git cause, actual Temp reconstruction, crash safety against arbitrary uncooperative writers, native behavior/loading or measured benefit. Real state-bound recovery, normal qualification and action authority remain unexecuted. Separate evaluator release and T3 settings are excluded."
+      },
+      "obligations": [
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/hermes-skill-proposals.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "skills/instruction-authoring/references/item-review-loop.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "skills/instruction-authoring/references/useful-behaviors.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "tests/test_authoring_maintenance_scope.py",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "tests/test_integration_reference_binding.py",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "tests/test_native_learning_acceptance.py",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "tests/test_published_successor.py",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        },
+        {
+          "path": "tests/test_raw_git_composition.py",
+          "disposition": "updated",
+          "reason": "Preserve the existing owning intent, bounded source admissions and unresolved-target safeguards. Raw composition/discovery preserves exact reviewed bytes and rejects actual drift; diagnostics remain sanitized. No behavioral benefit, expanded activation or source-conflict release authority is inferred."
+        }
+      ],
+      "framework_review": {
+        "affected": [
+          "skills/instruction-authoring/SKILL.md",
+          "skills/instruction-authoring/references/item-review-loop.md",
+          "docs/system-requirements.md",
+          "docs/requirement-status.md"
+        ],
+        "selection_reason": "The optional authoring procedure, entrypoint and its exact eligibility contract change together.",
+        "unaffected_reason": "Other skills, model routes, evaluator measurements, discovery/runtime capabilities and all permission/recovery safeguards remain unchanged.",
+        "checks": "Exact product source review passed; unchanged single-owner/exclusive-writer/grant protections were retained. This owner assessment is not independent consumer approval."
+      }
+    }
+  ],
+  "composition_scope": "Authoring maintenance and requested learning V3 source only; no candidate execution or expanded authority.",
+  "final_composition_scope": "Exact authoring maintenance, requested learning V3 source and bounded published-partial continuation repair; T3 settings excluded. No authority expansion.",
+  "derived_metadata_scope": "host-deltas.json refreshes 7 existing selected fleet/repository version hashes only; no policy/settings or headroom changes.",
+  "conditional_reference_audit_repair": {
+    "reference": "integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md",
+    "scope": "Exact existing requested-capability source category; no new instruction-adoption exception or global registration.",
+    "checks": "18 retained file-free controls passed; scoped independent source review passed. Normal successor qualification not run.",
+    "failure_reporting": "Ready-plan and ready-sync retain existing sanitized structured command, diagnostic, exit code and completed checks; temporary log retention remains unknown.",
+    "new_product_or_model_tests": 0
+  },
+  "raw_composition_repair": {
+    "scope": "Existing Git/coordinator mechanism, raw identity discovery and sanitized failure propagation; no new framework or behavioral-adoption waiver.",
+    "checks": "62 retained unique passes, one blocked omitted-metadata execution control. Separate independent source closure foundGB1/GB2 repaired.",
+    "technical_limit": "Source-conflict rebind and SC1 literal receipt-absence source review closed; no live transition, reset or phase relabel is implied."
+  },
+  "final_source_preparation": "Exact reviewed authoring/learning, conditional-reference audit and raw Git mechanism composition. Normal qualification and guarded recovery/publication remain unexecuted; blocked control and unfinished target obligations remain.",
+  "source_conflict_rebind": {
+    "scope": "Existing bounded continuation route; failed source is not labeled a publication, retained obligations/backups remain, stale source/options/target state and any inner-receipt path presence reject.",
+    "checks": "55 retained offline controls; SC1 source closure passed. No live recovery or qualification.",
+    "authority": "New exact normal qualification and guarded action authority remain separate; prior allowance consumed."
+  }
+}

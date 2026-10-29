@@ -1,0 +1,47 @@
+{
+  "built": "t3/app.html",
+  "bytes": 42349,
+  "sha256": "99b632e08f0dd9a2e78504ccf1c4588d16a041a9e0ccc3e894f3b84b40976bbd",
+  "esbuild": "0.28.2",
+  "builder": {
+    "path": "build-t3.mjs",
+    "sha256": "e7e228ff411403ea289955002514aef71cae9a051823d65ae873f550b6a07637"
+  },
+  "style": {
+    "path": "src/inline/inline-template.html",
+    "sha256": "37af828a5c19be0eb725888ace208dba48669e84e0c2f6560e96086facbe7046"
+  },
+  "inputs": [
+    {
+      "path": "src/vendor/runtime/value-debris.ts",
+      "sha256": "af1a3733a15bcc0527977350bee43fc4d06f691941b5f61d8375a863ad794d4e"
+    },
+    {
+      "path": "src/vendor/runtime/question-pure.ts",
+      "sha256": "a58205c3edc2b42312c4451a66dd7a5ff98de05ae7107dbf3bdc0f9e5462f27d"
+    },
+    {
+      "path": "src/inline/practice-client.mjs",
+      "sha256": "981257aad622d0d17b629cc1534d546f77db0a8d48a68b67fc1c6082d7043f35"
+    },
+    {
+      "path": "src/inline/inline-client.mjs",
+      "sha256": "b0ff4bea46188a0c37d0a280b0d7dc07cacbcdae3e4fa37f3fc8d89aab562df3"
+    },
+    {
+      "path": "src/vendor/runtime/demo-pure.ts",
+      "sha256": "2f44e8a225cc69433625c39b086565695dfa343aa92f3b7edd813a634c6246f6"
+    },
+    {
+      "path": "src/inline/artifacts.mjs",
+      "sha256": "69aaeb1751473c8e95f7cfdd77e1c855e3b87a41cf9e8100635d28038f71bc98"
+    },
+    {
+      "path": "src/t3/app.mjs",
+      "sha256": "39a74a5001e3ac03164e704c9da933d428b180765ee7a6fedd97e7dc36fc04ab"
+    }
+  ],
+  "hostActivation": false,
+  "providerCalls": 0,
+  "scope": "Artifact generation only; no server syntax/runtime or live host test."
+}

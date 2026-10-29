@@ -105,3 +105,50 @@ The file-restore phase is rollback-safe, but `bootstrap --apply` composes fleet 
 ### OMP reduction compatibility on upgrade
 
 The reduced context uses supported system-template, before_agent_start and before_provider_request seams. When upgrading OMP or changing the provider transport, verify an actual private request capture with `bun tools/check_omp_reduction.ts <capture.json>` (or Node 24 with TypeScript stripping). The checker performs no inference and prints only a verdict; a changed contract requires inspection, not silent acceptance. Use a loopback-only dummy-provider assembly check when no model run is needed. `get_state` alone does not establish request-description or footer-hook behavior. Keep captures private; the tool does not log prompt or account data. No per-turn compatibility audit or reviewer swarm is added.
+
+
+## Published partial rollout and a reviewed successor
+
+An already-published rollout may be blocked by intentional local authoring. Repeating
+publication, deleting its journal or using predeployment release cannot resolve it.
+The normal `reconcile.py sync --ready COMMIT` route may take an explicit
+`--continue-published REQUEST.json` only after the successor has passed ordinary
+source/adoption/publication checks and the continuation action is authorized.
+
+The bounded request binds schema_version1, old attempt, exact raw journal SHA256,
+published_commit, successor_ready, canonical successor-options SHA256 and every
+old configured target's current managed-state/content fingerprint. It is private
+operational evidence, not a public release artifact or authorization credential.
+The coordinator rechecks these under its existing single-writer lock, requires
+clean owned worktrees, an exact remote and settled actor/Git state, retains the old
+journal and any completed publisher receipt byte-for-byte, and replaces the active
+slot atomically with the qualified successor. Existing backups remain untouched.
+
+Every inherited target still needs fresh successor verification. Removed/offline
+targets remain incomplete; prior verification is not reused for changed source.
+Inherited native saved-state obligations are derived from every predecessor's
+published artifact delta, even if its readback phase was never reached. They need
+fresh current readback. A different desired value requires the exact artifact in
+the qualified successor selection; target redirection remains unresolved. No
+settings are restored to close history. Predeployment release cannot discard a
+successor carrying published obligations through either of its admission routes.
+Source-only continuation is rejected. A composition failure retains the active
+successor and predecessor evidence for inspection; it does not silently release
+the obligations. Native loading/restarts remain separate. None of this admits new
+skills, waives measurement or public-disclosure requirements, or authorizes
+overwriting unselected local owners. A request with changed bytes/state is blocked.
+
+A settled `source-conflict` successor with inherited published obligations may
+use that same bounded continuation request to bind a newly qualified descendant.
+The failed attempt must be undeployed, conflict-free, have no inner publisher or
+unfinished Git operation, and leave both owned worktrees at the verified public
+base with no raw/index drift. The request binds its exact failed-journal digest,
+new source/options and every inherited target's fresh fingerprint. Existing
+selected files and owner/root scope cannot be dropped or redirected. The failed
+attempt is never relabeled as published: its exact journal is retained in a
+separate source-failure archive, and its receipt, backup references, prior failure
+history and all published predecessors remain bound to the new successor-pending
+attempt. Target state is rechecked before the atomic replacement. Existing
+predeployment release cannot discard either history, and retries validate the
+retained bytes and obligations. This route records consistency, not action
+permission; a consumed qualification allowance is not renewed by a request.

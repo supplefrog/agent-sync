@@ -1,0 +1,785 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>
+  #lh-inline-lesson { color: var(--foreground); font-family: inherit; max-width: 46rem; }
+  #lh-inline-lesson h3 { font-size: inherit; font-weight: 500; margin: .65rem 0; }
+  #lh-inline-lesson p { white-space: pre-wrap; overflow-wrap: anywhere; }
+  #lh-inline-lesson button, #lh-inline-lesson textarea, #lh-inline-lesson input { font: inherit; color: inherit; }
+  #lh-inline-lesson button { cursor: var(--cursor-interaction, pointer); }
+  #lh-inline-lesson .lh-dock { border: 1px solid var(--border); border-radius: .8rem; padding: .85rem; background: var(--card); }
+  #lh-inline-lesson .lh-heading, #lh-inline-lesson .lh-footer, #lh-inline-lesson .lh-confidence { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+  #lh-inline-lesson .lh-heading, #lh-inline-lesson .lh-footer { justify-content: space-between; }
+  #lh-inline-lesson .lh-kind, #lh-inline-lesson .lh-field-label, #lh-inline-lesson .lh-secondary { color: var(--muted-foreground); }
+  #lh-inline-lesson .lh-secondary { display: block; }
+  #lh-inline-lesson .lh-field { display: grid; gap: .4rem; margin: .85rem 0; }
+  #lh-inline-lesson .lh-field-label { font-weight: 500; }
+  #lh-inline-lesson textarea { box-sizing: border-box; width: 100%; resize: vertical; padding: .65rem; border: 1px solid var(--border); border-radius: .5rem; background: transparent; }
+  #lh-inline-lesson .lh-option { display: block; box-sizing: border-box; width: 100%; text-align: left; padding: .75rem; margin: .35rem 0; border: 1px solid var(--border); border-radius: .5rem; background: transparent; overflow-wrap: anywhere; }
+  #lh-inline-lesson .lh-option[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: var(--accent); }
+  #lh-inline-lesson .lh-confidence { margin: .9rem 0; }
+  #lh-inline-lesson .lh-confidence input { flex: 1; min-width: 8rem; accent-color: var(--accent); }
+  #lh-inline-lesson .lh-submit { background: var(--foreground); color: var(--background, var(--card)); border: 1px solid var(--foreground); border-radius: .4rem; padding: .6rem .9rem; }
+  #lh-inline-lesson .lh-submit:disabled { opacity: .45; cursor: default; }
+  #lh-inline-lesson .lh-close, #lh-inline-lesson .lh-reveal, #lh-inline-lesson .lh-resume { background: transparent; border: 0; padding: .5rem 0; }
+  #lh-inline-lesson .lh-reveal { width: 100%; text-align: left; font-weight: 500; }
+  #lh-inline-lesson .lh-plan { margin: .9rem 0; }
+  #lh-inline-lesson .lh-plan summary { cursor: var(--cursor-interaction, pointer); }
+  #lh-inline-lesson .lh-plan ol { padding-left: 1.4rem; }
+  #lh-inline-lesson [role="alert"] { color: var(--destructive, var(--foreground)); }
+  @media (max-width: 400px) { #lh-inline-lesson .lh-footer { align-items: stretch; } #lh-inline-lesson .lh-submit { width: 100%; } }
+</style></head><body><p id="lh-notice" role="status">Connecting to the owning T3 conversation.</p><button type="button" id="lh-refresh">Refresh saved lesson</button><button type="button" id="lh-save-draft" disabled>Save draft privately</button><div id="lh-inline-lesson"></div><section id="lh-jobs" aria-label="Materials and supporting work"></section><script>(() => {
+  // native-product-two-host-repair-01/integrations/hermes-native-learning/src/vendor/runtime/question-pure.ts
+  var CONFIDENCE_STOPS = [0, 30, 50, 70, 90, 100];
+  var DEFAULT_CONFIDENCE_INDEX = 2;
+  var emptyDockSelection = () => ({ selected: /* @__PURE__ */ new Set(), otherSelected: false, dontKnow: false });
+  function toggleOption(mode, sel, idx) {
+    if (mode === "multi-select") {
+      const selected = new Set(sel.selected);
+      if (selected.has(idx)) selected.delete(idx);
+      else selected.add(idx);
+      return { selected, otherSelected: sel.otherSelected, dontKnow: false };
+    }
+    return { selected: /* @__PURE__ */ new Set([idx]), otherSelected: false, dontKnow: false };
+  }
+  function toggleOther(mode, sel) {
+    if (mode === "multi-select") return { ...sel, otherSelected: !sel.otherSelected, dontKnow: false };
+    return { selected: /* @__PURE__ */ new Set(), otherSelected: true, dontKnow: false };
+  }
+
+  // native-product-two-host-repair-01/integrations/hermes-native-learning/src/inline/practice-client.mjs
+  function mountPractice(root2, initialView, options = {}) {
+    const doc = root2.ownerDocument, win = doc.defaultView;
+    let view2 = initialView, text = "", open = true, pending2 = false;
+    const key = () => `${view2.chatId}:practice:${view2.activeProblem?.toolCallId ?? "between"}`;
+    const node2 = (tag, value, attrs = {}) => {
+      const e = doc.createElement(tag);
+      if (value !== null) e.textContent = value;
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v));
+      return e;
+    };
+    const button = (label, fn, attrs = {}) => {
+      const e = node2("button", label, { type: "button", ...attrs });
+      e.addEventListener("click", fn);
+      return e;
+    };
+    const status2 = (message, error = false) => {
+      const e = root2.querySelector("[data-status]");
+      if (e) {
+        e.textContent = message;
+        e.setAttribute("role", error ? "alert" : "status");
+      }
+    };
+    function save() {
+      try {
+        options.drafts?.write(key(), { key: key(), text, open });
+      } catch {
+        status2("The draft could not be saved. Keep this view open.", true);
+      }
+    }
+    function restore() {
+      try {
+        const cached = options.drafts?.read(key());
+        if (cached?.key === key() && typeof cached.text === "string" && cached.text.length <= 16e3) {
+          text = cached.text;
+          open = cached.open !== false;
+        }
+      } catch {
+      }
+    }
+    restore();
+    async function send2(type, input) {
+      if (pending2) return;
+      pending2 = true;
+      render();
+      try {
+        if (typeof options.send !== "function") throw new Error("Use the connected practice browser to save.");
+        const result = await options.send({ type, chatId: view2.chatId, ...input ? { input } : {} });
+        if (result?.delivered === true) {
+          status2("Delivered to the owning agent. Waiting for the saved practice response.");
+          return;
+        }
+        if (!result?.view || !(result.persisted || result.loaded)) throw new Error("No saved practice response received.");
+        const oldKey = key(), same = result.view.activeProblem?.toolCallId === view2.activeProblem?.toolCallId;
+        view2 = result.view;
+        pending2 = false;
+        if (input?.type === "thinking" || !same) {
+          try {
+            options.drafts?.remove(oldKey);
+          } catch {
+          }
+          text = "";
+          open = true;
+        }
+        if (!same) restore();
+        render();
+        status2(result.loaded ? "Saved practice reopened." : input?.type === "next" ? "Next problem requested." : "Thinking saved.");
+      } catch (error) {
+        pending2 = false;
+        render();
+        status2(error.message, true);
+      }
+    }
+    function render() {
+      root2.replaceChildren();
+      options.onPresentation?.({ open });
+      const active2 = view2.activeProblem;
+      if (view2.conclusion && !options.richProse) {
+        root2.append(node2("h3", "Problem review"), node2("p", view2.conclusion.statement));
+        for (const thought of view2.conclusion.thinking ?? []) root2.append(node2("p", `Your thinking: ${thought}`));
+        root2.append(node2("p", view2.conclusion.verdict), node2("h3", "Committed solution"), node2("p", view2.conclusion.modelSolution));
+      }
+      if (view2.conclusion && options.richProse) for (const thought of view2.conclusion.thinking ?? []) root2.append(node2("p", `Your thinking: ${thought}`));
+      if (!options.richProse) for (const entry of view2.discussion ?? []) root2.append(node2("p", entry.role === "user" ? `Your question: ${entry.text}` : entry.text));
+      if (active2) {
+        const dock = node2("section", null, { class: "lh-dock" });
+        root2.append(dock);
+        if (!open) dock.append(button("Practice problem \xB7 Reopen", () => {
+          open = true;
+          save();
+          render();
+        }, { class: "lh-reveal" }));
+        else {
+          const heading = node2("div", null, { class: "lh-heading" });
+          heading.append(node2("span", "Practice problem"), button("Close", () => {
+            open = false;
+            save();
+            render();
+          }, { class: "lh-close" }));
+          dock.append(heading);
+          if (!options.richProse) dock.append(node2("h3", active2.statement));
+          for (const thought of view2.thinking) dock.append(node2("p", `Your thinking: ${thought}`));
+          if (!options.richProse) for (const entry of view2.feedback ?? []) dock.append(node2("p", entry.text, { "data-practice-feedback": entry.id }));
+          const label = node2("label", null, { class: "lh-field" });
+          label.append(node2("span", "Your thinking", { class: "lh-field-label" }));
+          const field = node2("textarea", null, { rows: 4, "data-practice-thinking": "", maxlength: 16e3, placeholder: "Work here, think out loud." });
+          field.value = text;
+          field.addEventListener("input", () => {
+            text = field.value;
+            save();
+            const submit2 = root2.querySelector("[data-practice-send]");
+            if (submit2) submit2.disabled = pending2 || !text.trim();
+          });
+          field.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" && (!event.shiftKey || event.metaKey || event.ctrlKey)) {
+              event.preventDefault();
+              if (text.trim()) void send2("practice-input", { type: "thinking", problemCallId: active2.toolCallId, text });
+            }
+          });
+          label.append(field);
+          dock.append(label, node2("span", "Enter sends \xB7 Shift+Enter newline", { class: "lh-secondary" }));
+          const submit = button("Submit thinking", () => void send2("practice-input", { type: "thinking", problemCallId: active2.toolCallId, text }), { class: "lh-submit", "data-practice-send": "" });
+          submit.disabled = pending2 || !text.trim();
+          dock.append(submit);
+        }
+      } else if (view2.conclusion) {
+        const next = button("Next problem", () => void send2("practice-input", { type: "next" }), { class: "lh-submit" });
+        next.disabled = pending2 || view2.nextAllowed;
+        root2.append(next);
+        if (view2.nextAllowed) root2.append(node2("p", "Next problem requested."));
+      } else root2.append(node2("p", "No practice problem has been posed."));
+      root2.append(node2("p", pending2 ? "Saving\u2026" : "", { "data-status": "", "aria-live": "polite", role: "status" }), button("Resume saved lesson", () => options.onResume ? void options.onResume() : void send2("resume"), { class: "lh-resume" }));
+    }
+    render();
+    return { destroy() {
+    }, readDraft: () => ({ text, open, pending: pending2 }) };
+  }
+
+  // native-product-two-host-repair-01/integrations/hermes-native-learning/src/inline/inline-client.mjs
+  var INLINE_PREFIX = "lh.inline ";
+  function nativeTransport(win) {
+    return async (action) => {
+      const prompt = INLINE_PREFIX + JSON.stringify(action);
+      if (typeof win.hermes?.send === "function") {
+        if (prompt.length > 500) throw new Error("This answer is too long for Hermes\u2019s inline send. Keep the draft and use the host file/tool lane; nothing has been truncated.");
+        const ack = await win.hermes.send(prompt);
+        if (!ack?.ok) throw new Error(`Delivery failed: ${ack?.error ?? "undelivered"}. Your draft is retained.`);
+        return { delivered: true };
+      }
+      if (typeof win.openai?.sendFollowUpMessage === "function") {
+        await win.openai.sendFollowUpMessage({ prompt, title: action.type === "answer" ? "Submit this lesson answer" : "Resume the saved lesson" });
+        return { requested: true };
+      }
+      throw new Error("Open this lesson in the host chat to submit. Your draft is retained.");
+    };
+  }
+  function mountInline(root2, initialView, options = {}) {
+    if (initialView.kind === "practice") return mountPractice(root2, initialView, options);
+    const win = root2.ownerDocument.defaultView;
+    const doc = root2.ownerDocument;
+    const send2 = options.send ?? nativeTransport(win);
+    let view2 = initialView;
+    let state = {
+      selection: emptyDockSelection(),
+      text: "",
+      other: "",
+      thinking: "",
+      readingThinking: "",
+      confidenceIndex: DEFAULT_CONFIDENCE_INDEX,
+      open: view2.question?.open ?? true,
+      pending: false
+    };
+    const draftKey = () => `${view2.chatId}:${view2.question?.toolCallId ?? "idle"}`;
+    function setStatus(message, error = false) {
+      const status2 = root2.querySelector("[data-status]");
+      if (status2) {
+        status2.textContent = message;
+        status2.setAttribute("role", error ? "alert" : "status");
+      }
+    }
+    function save() {
+      const snapshot = {
+        key: draftKey(),
+        selected: [...state.selection.selected],
+        otherSelected: state.selection.otherSelected,
+        dontKnow: state.selection.dontKnow,
+        text: state.text,
+        other: state.other,
+        thinking: state.thinking,
+        readingThinking: state.readingThinking,
+        confidenceIndex: state.confidenceIndex,
+        open: state.open,
+        pending: state.pending
+      };
+      if (!options.drafts && typeof win.openai?.setWidgetState !== "function") return;
+      const payload = { modelContent: null, privateContent: { lhInlineDraft: snapshot } };
+      if (new TextEncoder().encode(JSON.stringify(payload)).length > 16 * 1024) {
+        setStatus("This draft exceeds the host\u2019s saved-state limit. Keep this view open.", true);
+        return;
+      }
+      try {
+        Promise.resolve(options.drafts ? options.drafts.write(snapshot.key, payload) : win.openai.setWidgetState(payload)).catch(() => setStatus("The host could not save this draft. Keep this view open.", true));
+      } catch {
+        setStatus("The host could not save this draft. Keep this view open.", true);
+      }
+    }
+    function restore(widgetState) {
+      const s = widgetState?.privateContent?.lhInlineDraft;
+      if (!s || s.key !== draftKey() || !view2.question) return;
+      const count = view2.question.options.length;
+      if (!Array.isArray(s.selected) || !s.selected.every((i) => Number.isInteger(i) && i >= 0 && i < count)) return;
+      state = {
+        ...state,
+        selection: { selected: new Set(s.selected), otherSelected: s.otherSelected === true, dontKnow: s.dontKnow === true },
+        text: typeof s.text === "string" ? s.text : "",
+        other: typeof s.other === "string" ? s.other : "",
+        thinking: typeof s.thinking === "string" ? s.thinking : "",
+        readingThinking: typeof s.readingThinking === "string" ? s.readingThinking : "",
+        confidenceIndex: Number.isInteger(s.confidenceIndex) && s.confidenceIndex >= 0 && s.confidenceIndex < CONFIDENCE_STOPS.length ? s.confidenceIndex : DEFAULT_CONFIDENCE_INDEX,
+        open: typeof s.open === "boolean" ? s.open : state.open,
+        pending: false
+      };
+    }
+    let draftLoadError = false;
+    try {
+      restore(options.drafts ? options.drafts.read(draftKey()) : win.openai?.widgetState);
+    } catch {
+      draftLoadError = true;
+    }
+    function node2(tag, text, attributes = {}) {
+      const element = doc.createElement(tag);
+      if (text !== null) element.textContent = text;
+      for (const [key, value] of Object.entries(attributes)) if (value !== void 0) element.setAttribute(key, String(value));
+      return element;
+    }
+    function button(text, handler, attributes = {}) {
+      const b = node2("button", text, { type: "button", ...attributes });
+      b.addEventListener("click", handler);
+      return b;
+    }
+    function field(label, name, placeholder) {
+      const wrap = node2("label", null, { class: "lh-field" });
+      wrap.append(node2("span", label, { class: "lh-field-label" }));
+      const input = node2("textarea", null, { rows: view2.phase === "teach" ? 3 : 1, "data-field": name, placeholder });
+      input.value = state[name];
+      input.addEventListener("input", () => {
+        state[name] = input.value;
+        save();
+        updateSubmit();
+      });
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && (!event.shiftKey || event.metaKey || event.ctrlKey)) {
+          event.preventDefault();
+          if (name === "readingThinking" && !state.open) {
+            state.open = true;
+            save();
+            render();
+          } else if (name !== "readingThinking") void submit();
+        }
+      });
+      wrap.append(input);
+      return wrap;
+    }
+    function canSubmit() {
+      const q = view2.question;
+      return q && !state.pending && (q.mode === "text" ? state.text.trim().length > 0 : state.selection.dontKnow || state.selection.selected.size > 0 || state.selection.otherSelected && state.other.trim().length > 0);
+    }
+    function renderLessonPanels() {
+      if (view2.assessment) {
+        const assessment = node2("details", null, { "data-assessment": "" });
+        assessment.append(node2("summary", "Starting assessment"));
+        if (view2.assessment.summary) assessment.append(node2("p", view2.assessment.summary));
+        for (const strand of view2.assessment.strands) assessment.append(node2("p", `${strand.strand}: ${strand.assessment}`));
+        root2.append(assessment);
+      }
+      if (view2.knowledge?.nodes?.length) {
+        const knowledge = node2("details", null, { "data-knowledge": "" });
+        knowledge.append(node2("summary", "Propositions from this lesson"));
+        knowledge.append(node2("p", view2.knowledge.scope));
+        for (const proposition of view2.knowledge.nodes) {
+          const detail = node2("details", null, { "data-proposition": proposition.id });
+          detail.append(node2("summary", proposition.name), node2("p", proposition.statement));
+          for (const passage of proposition.passages ?? []) detail.append(node2("blockquote", passage));
+          knowledge.append(detail);
+        }
+        root2.append(knowledge);
+      }
+    }
+    function updateSubmit() {
+      const b = root2.querySelector("[data-submit]");
+      if (b) b.disabled = !canSubmit();
+    }
+    function answerRequest() {
+      const q = view2.question;
+      const request = {};
+      if (q.mode === "text") request.text = state.text;
+      else {
+        request.dontKnow = state.selection.dontKnow;
+        request.values = [...state.selection.selected].map((i) => q.options[i].value);
+        if (state.selection.otherSelected) request.other = state.other;
+        if (state.thinking.trim()) request.thinking = state.thinking;
+        if (q.kind === "quiz" && !state.selection.dontKnow) request.confidence = CONFIDENCE_STOPS[state.confidenceIndex];
+      }
+      if (state.readingThinking.trim()) request.readingThinking = state.readingThinking;
+      return request;
+    }
+    async function deliver(action) {
+      try {
+        const ack = await send2(action);
+        if (ack?.view && (ack.persisted === true || ack.loaded === true)) {
+          applyView(ack.view);
+          setStatus(ack.loaded ? "Saved lesson reopened." : action.type === "approve" ? "Plan approval saved." : "Answer saved.");
+          return;
+        }
+        setStatus(ack?.delivered ? "Delivered to the host. Waiting for the saved lesson response." : "Host action requested. Waiting for the saved lesson response.");
+      } catch (error) {
+        state.pending = false;
+        save();
+        updateSubmit();
+        setStatus(error.message, true);
+      }
+    }
+    async function submit() {
+      if (!canSubmit()) return;
+      const action = { type: "answer", chatId: view2.chatId, toolCallId: view2.question.toolCallId, request: answerRequest() };
+      state.pending = true;
+      save();
+      updateSubmit();
+      setStatus("Sending answer\u2026");
+      await deliver(action);
+    }
+    function renderPlan() {
+      if (!view2.plan) return;
+      const details = node2("details", null, { class: "lh-plan" });
+      details.append(node2("summary", view2.plan.approved ? "Lesson plan" : "Proposed lesson plan"));
+      const list = node2("ol", null);
+      for (const item of view2.plan.nodes) list.append(node2("li", `${item.title} \xB7 ${item.status}`, { "data-node-id": item.id }));
+      details.append(list);
+      if (!view2.plan.approved) {
+        details.open = true;
+        details.append(button("Start this plan", () => {
+          state.pending = true;
+          save();
+          void deliver({ type: "approve", chatId: view2.chatId, planRevision: view2.plan.planRevision, text: "Start this plan." });
+        }, { class: "lh-submit", "data-approve": "" }));
+      }
+      root2.append(details);
+    }
+    function render() {
+      root2.replaceChildren();
+      renderLessonPanels();
+      options.onPresentation?.({ open: state.open });
+      const q = view2.question;
+      if (!q) {
+        const last = view2.answers.at(-1);
+        if (last) {
+          if (!options.richProse) root2.append(node2("h3", last.questionText));
+          root2.append(node2("p", last.text ?? (last.dontKnow ? "I don\u2019t know" : last.answers.map((a) => a.label).join(", "))));
+          if (last.thinking) root2.append(node2("p", `Your thinking: ${last.thinking}`));
+          if (last.readingThinking) root2.append(node2("p", `Thinking while reading: ${last.readingThinking}`));
+          if (last.correct !== void 0) root2.append(node2("p", last.correct ? "Correct" : "Review this step"));
+          if (last.committed && !options.richProse) root2.append(node2("p", last.committed));
+          if (last.explanation && !options.richProse) root2.append(node2("p", last.explanation));
+        }
+        renderPlan();
+      } else {
+        if (view2.teachingText && !options.richProse) root2.append(node2("p", view2.teachingText, { class: "lh-teaching" }));
+        if (q.needsReveal) root2.append(field("Thinking while reading", "readingThinking", "Whatever comes to mind as you read."));
+        const dock = node2("section", null, { class: "lh-dock" });
+        root2.append(dock);
+        if (!state.open) {
+          dock.append(button(q.needsReveal ? "Check your understanding \xB7 Open" : `${q.questionType === "predict" ? "Prediction" : "Question"} \xB7 Reopen`, () => {
+            state.open = true;
+            save();
+            render();
+          }, { class: "lh-reveal", "data-reveal": "" }));
+        } else {
+          const heading = node2("div", null, { class: "lh-heading" });
+          const label = q.questionType === "predict" ? "Prediction" : q.tool === "probe" ? "Probe" : q.tool === "recall" ? "Recall" : q.kind === "ask" ? "Question" : "Check";
+          heading.append(node2("span", label, { class: "lh-kind" }), button("Close", () => {
+            state.open = false;
+            save();
+            render();
+          }, { class: "lh-close", "data-close": "" }));
+          dock.append(heading);
+          if (!options.richProse) dock.append(node2("h3", q.question));
+          if (q.context && !options.richProse) dock.append(node2("p", q.context));
+          if (q.mode !== "text") {
+            const group = node2("div", null, { role: "group", "aria-label": q.mode === "multi-select" ? "Choose all that apply" : "Choose an answer" });
+            q.options.forEach((option, index) => {
+              const row = button(
+                `${index + 1}. ${option.label}`,
+                () => {
+                  state.selection = toggleOption(q.mode, state.selection, index);
+                  save();
+                  render();
+                },
+                { class: "lh-option", "aria-pressed": state.selection.selected.has(index), "data-option": option.value }
+              );
+              if (option.description) row.append(node2("span", option.description, { class: "lh-secondary" }));
+              group.append(row);
+            });
+            if (q.kind === "ask") {
+              group.append(button("Other\u2026", () => {
+                state.selection = toggleOther(q.mode, state.selection);
+                save();
+                render();
+              }, { class: "lh-option", "aria-pressed": state.selection.otherSelected }));
+              if (state.selection.otherSelected) group.append(field("Other", "other", "Your response."));
+            }
+            group.append(button(
+              "I don\u2019t know",
+              () => {
+                state.selection = { selected: /* @__PURE__ */ new Set(), otherSelected: false, dontKnow: !state.selection.dontKnow };
+                save();
+                render();
+              },
+              { class: "lh-option", "aria-pressed": state.selection.dontKnow, "data-dont-know": "" }
+            ));
+            dock.append(group);
+            if (q.kind === "quiz") {
+              const confidence = node2("label", null, { class: "lh-confidence" });
+              const slider = node2("input", null, {
+                type: "range",
+                min: 0,
+                max: CONFIDENCE_STOPS.length - 1,
+                step: 1,
+                "aria-label": "Confidence \u2014 the probability your selected answer is correct",
+                "data-confidence": ""
+              });
+              slider.value = state.confidenceIndex;
+              slider.disabled = state.selection.dontKnow;
+              const value = node2("output", state.selection.dontKnow ? "\u2014" : `${CONFIDENCE_STOPS[state.confidenceIndex]}%`);
+              slider.addEventListener("input", () => {
+                state.confidenceIndex = Number(slider.value);
+                value.textContent = `${CONFIDENCE_STOPS[state.confidenceIndex]}%`;
+                save();
+              });
+              confidence.append(node2("span", "Confidence"), slider, value);
+              dock.append(confidence);
+            }
+          }
+          dock.append(q.mode === "text" ? field("Your answer", "text", "Type your answer.") : field("Your thinking", "thinking", "Why this answer? Whatever comes to mind."));
+          const footer = node2("div", null, { class: "lh-footer" });
+          footer.append(node2("span", "Enter submits \xB7 Shift+Enter newline", { class: "lh-secondary" }), button("Submit answer", () => void submit(), { class: "lh-submit", "data-submit": "" }));
+          dock.append(footer);
+        }
+        renderPlan();
+      }
+      root2.append(node2("p", state.pending ? "Waiting for the saved lesson response." : "", { "data-status": "", "aria-live": "polite", role: "status" }));
+      root2.append(button("Resume saved lesson", () => {
+        if (options.onResume) {
+          void options.onResume();
+          return;
+        }
+        state.pending = true;
+        save();
+        void deliver({ type: "resume", chatId: view2.chatId });
+      }, { class: "lh-resume", "data-resume": "" }));
+      updateSubmit();
+    }
+    function applyView(next) {
+      if (next.chatId !== view2.chatId) throw new Error("The saved response belongs to a different lesson.");
+      const same = next.question?.toolCallId === view2.question?.toolCallId;
+      const previousKey = draftKey();
+      view2 = next;
+      if (!same) state = { selection: emptyDockSelection(), text: "", other: "", thinking: "", readingThinking: "", confidenceIndex: DEFAULT_CONFIDENCE_INDEX, open: next.question?.open ?? true, pending: false };
+      else state.pending = false;
+      if (!same && options.drafts) {
+        try {
+          options.drafts.remove(previousKey);
+        } catch {
+        }
+        try {
+          restore(options.drafts.read(draftKey()));
+        } catch {
+        }
+      }
+      render();
+    }
+    const onGlobals = (event) => {
+      restore(event.detail?.globals?.widgetState);
+      render();
+    };
+    win.addEventListener("openai:set_globals", onGlobals);
+    render();
+    if (draftLoadError) setStatus("The saved draft could not be restored. The saved lesson is unchanged.", true);
+    return {
+      applyView,
+      submit,
+      readDraft: () => ({ ...state, selection: { ...state.selection, selected: new Set(state.selection.selected) } }),
+      destroy: () => win.removeEventListener("openai:set_globals", onGlobals)
+    };
+  }
+
+  // native-product-two-host-repair-01/integrations/hermes-native-learning/src/inline/artifacts.mjs
+  async function readArtifact(files, binding, descriptor) {
+    if (!descriptor || !["demo", "visual"].includes(descriptor.kind) || !/^[a-f0-9]{64}$/.test(descriptor.sha256 ?? "") || descriptor.file !== `asset-${descriptor.kind}-${descriptor.sha256}.${descriptor.kind === "demo" ? "html" : "svg"}` || !Number.isSafeInteger(descriptor.size) || descriptor.size < 1 || descriptor.size > 1048576) throw new Error("Invalid saved artifact identity.");
+    const result = await files.readText(binding.folder, descriptor.file);
+    if (!result.ok || typeof result.text !== "string") throw new Error("The granted artifact is unavailable.");
+    const bytes = new TextEncoder().encode(result.text);
+    if (bytes.length !== descriptor.size) throw new Error("Artifact size changed.");
+    const sum = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), (value) => value.toString(16).padStart(2, "0")).join("");
+    if (sum !== descriptor.sha256) throw new Error("Artifact differs from its saved identity.");
+    return result.text;
+  }
+
+  // native-product-two-host-repair-01/integrations/hermes-native-learning/src/t3/app.mjs
+  var root = document.querySelector("#lh-inline-lesson");
+  var notice = document.querySelector("#lh-notice");
+  var jobs = document.querySelector("#lh-jobs");
+  var pending = /* @__PURE__ */ new Map();
+  var cache = /* @__PURE__ */ new Map();
+  var nextId = 0;
+  var active = true;
+  var initialized = false;
+  var owner = null;
+  var view = null;
+  var controller = null;
+  var fresh = false;
+  var initialRefresh = false;
+  var object = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+  var byteSize = (v) => new TextEncoder().encode(JSON.stringify(v)).length;
+  var keyOf = (v) => v.kind === "practice" ? `${v.chatId}:practice:${v.activeProblem?.toolCallId ?? "between"}` : `${v.chatId}:${v.question?.toolCallId ?? "idle"}`;
+  function status(text, error = false) {
+    notice.textContent = text;
+    notice.setAttribute("role", error ? "alert" : "status");
+  }
+  function post(message) {
+    if (!active) throw new Error("This app was closed.");
+    window.parent.postMessage(message, "*");
+  }
+  function rpc(method, params) {
+    if (pending.size >= 8) return Promise.reject(new Error("A host request is already pending; wait for its outcome."));
+    return new Promise((resolve, reject) => {
+      const id = "learning-" + ++nextId, timer = setTimeout(() => {
+        pending.delete(id);
+        reject(new Error("Host outcome is unknown. Inspect the thread before repeating the action."));
+      }, 6e4);
+      pending.set(id, { resolve, reject, timer });
+      post({ jsonrpc: "2.0", id, method, params });
+    });
+  }
+  async function call(name, args) {
+    if (!initialized) throw new Error("The MCP App host has not initialized.");
+    const result = await rpc("tools/call", { name, arguments: args });
+    if (result?.isError) throw new Error("Learning tool refused the operation. Inspect the owning thread; no automatic retry.");
+    return result;
+  }
+  function applyTheme(context) {
+    if (context?.theme === "light" || context?.theme === "dark") document.documentElement.style.colorScheme = context.theme;
+    for (const [key, value] of Object.entries(context?.styles?.variables ?? {}))
+      if (/^--[a-zA-Z0-9_-]{1,100}$/.test(key) && typeof value === "string" && value.length <= 500) document.documentElement.style.setProperty(key, value);
+  }
+  async function send(action, bound) {
+    if (action.chatId !== bound.chatId) throw new Error("Input belongs to another lesson.");
+    if (action.type === "resume") {
+      const result = await call("learning_view", { chatId: bound.chatId });
+      return { loaded: true, view: result.structuredContent.view };
+    }
+    if (!active || !fresh || view?.chatId !== bound.chatId || view?.revision !== bound.revision) throw new Error("Refresh current state before sending; this is a saved historical snapshot.");
+    const allowed = bound.kind === "practice" ? ["practice-input", "job-error"] : ["answer", "approve", "job-error"];
+    if (!allowed.includes(action.type)) throw new Error("Unsupported learner action.");
+    const event = { chatId: bound.chatId, kind: bound.kind === "practice" ? "practice" : "teach", expectedRevision: bound.revision, action };
+    const text = "lh.t3 " + JSON.stringify(event);
+    if (new TextEncoder().encode(text).length > 65536) throw new Error("Input exceeds64KiB; it was not sent or truncated.");
+    await rpc("ui/message", { role: "user", content: [{ type: "text", text }] });
+    return { delivered: true };
+  }
+  function show(result, isFresh = false) {
+    const next = result?.structuredContent?.view, meta = result?._meta;
+    if (!object(next) || !Number.isSafeInteger(next.revision) || typeof next.chatId !== "string" || typeof meta?.ownerThreadId !== "string" || !meta.ownerThreadId || meta.ownerThreadId.trim() !== meta.ownerThreadId || meta.ownerThreadId === "new" || byteSize(result) > 256 * 1024) throw new Error("No valid bound lesson result received.");
+    if (owner !== null && (owner !== meta.ownerThreadId || view.chatId !== next.chatId || view.revision > next.revision))
+      throw new Error("Refusing a different owner/lesson or stale replacement.");
+    if (next.question && ["correctIndices", "committedAnswer", "explanation"].some((k) => k in next.question)) throw new Error("Active commitment exposed.");
+    if (next.activeProblem && Object.keys(next.activeProblem).some((k) => !["toolCallId", "statement"].includes(k))) throw new Error("Hidden solution exposed.");
+    owner = meta.ownerThreadId;
+    view = next;
+    fresh = isFresh;
+    const key = keyOf(next);
+    if (meta.draftKey !== key || !Number.isSafeInteger(meta.draft?.version)) throw new Error("Saved draft identity differs.");
+    const current = cache.get(key);
+    if (!current?.dirty) cache.set(key, { version: meta.draft.version, payload: meta.draft.payload, dirty: false });
+    controller?.destroy();
+    const bound = structuredClone(next);
+    controller = mountInline(root, next, { send: (action) => send(action, bound), onResume: refresh, drafts: {
+      read: (requested) => cache.get(requested)?.payload ?? null,
+      write(requested, payload) {
+        if (requested !== key || byteSize(payload) > 16384) throw new Error("Draft identity/size differs.");
+        const old = cache.get(key) ?? { version: -1 };
+        cache.set(key, { ...old, payload: structuredClone(payload), dirty: true });
+        status("Draft is local. Use Save draft to preserve it across reopen.");
+      },
+      remove: (requested) => {
+        const old = cache.get(requested);
+        if (old) cache.set(requested, { ...old, payload: null, dirty: true });
+      }
+    } });
+    root.inert = !fresh;
+    document.querySelector("#lh-save-draft").disabled = !fresh;
+    void renderJobs(next, bound);
+    status(fresh ? "Current saved lesson loaded. The existing agent remains the teacher." : "Historical snapshot loaded; refreshing without a model turn.");
+  }
+  function node(tag, text) {
+    const e = document.createElement(tag);
+    e.textContent = text;
+    return e;
+  }
+  async function renderJobs(next, bound) {
+    jobs.replaceChildren();
+    for (const material of next.materials ?? []) jobs.append(node("p", `Attached: ${material.label} (${material.kind})`));
+    for (const job of next.jobs?.jobs ?? []) {
+      if (!active || view !== next) return;
+      const section = document.createElement("section");
+      section.append(node("h3", `${job.kind}: ${job.activity}`));
+      jobs.append(section);
+      if (job.error) section.append(node("pre", job.error));
+      const report = job.research ?? job.pdf;
+      if (report?.brief) section.append(node("p", report.brief));
+      for (const source of job.research?.sources ?? []) {
+        const link = node("button", source.title);
+        link.type = "button";
+        link.addEventListener("click", () => void rpc("ui/open-link", { url: source.url }).catch((e) => status(e.message, true)));
+        section.append(link);
+      }
+      if (job.pdf) section.append(node("p", `Reader-reported pages: ${job.pdf.pagesRead.join(", ")}; consulted: ${job.pdf.pagesConsulted.join(", ")}.`));
+      if (job.artifact?.kind === "visual") {
+        try {
+          const source = await readArtifact({ readText: async (_, file) => ({ ok: true, ...(await call("learning_asset", { chatId: next.chatId, file }))._meta }) }, { folder: "bound" }, job.artifact);
+          if (!active || view !== next) return;
+          const image = document.createElement("img");
+          image.alt = job.artifact.title;
+          image.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+          image.style.maxWidth = "100%";
+          section.append(image);
+        } catch {
+          section.append(node("p", "Saved figure unavailable; inspect the owning session before trying again."));
+        }
+      }
+      if (job.artifact?.kind === "demo") {
+        section.append(node("p", "Demo saved. The MCP App CSP does not permit the nested demo frame; use the existing T3 native visual publisher."));
+        const button = node("button", "Ask teacher to open saved demo");
+        button.type = "button";
+        button.dataset.lhModelAction = "demo";
+        button.disabled = !active || !fresh || view !== next;
+        button.addEventListener("click", () => {
+          if (!active || !fresh || view !== next) {
+            status("Refresh current state before asking the teacher to open this saved demo.", true);
+            return;
+          }
+          void rpc("ui/message", { role: "user", content: [{ type: "text", text: "Open the existing saved demo for " + JSON.stringify({ chatId: bound.chatId, jobId: job.id, file: job.artifact.file }) + " using learning_artifact_source and the supported T3 native visual publisher. Do not regenerate it, change learner state, install a preview browser or claim a test that did not run." }] }).catch((e) => status(e.message, true));
+        });
+        section.append(button);
+      }
+    }
+  }
+  document.querySelector("#lh-save-draft").addEventListener("click", async () => {
+    if (!view || !fresh) return;
+    const key = keyOf(view), saved = cache.get(key);
+    if (!saved?.dirty) {
+      status("No changed draft to save.");
+      return;
+    }
+    const captured = JSON.stringify(saved.payload), baseRevision = view.revision, chatId = view.chatId;
+    try {
+      const result = await call("learning_draft", { chatId, key, baseRevision, expectedVersion: saved.version, payload: JSON.parse(captured) });
+      const version = result.structuredContent?.version;
+      if (!Number.isSafeInteger(version)) throw new Error("Draft save outcome is unknown.");
+      const current = cache.get(key);
+      if (current) cache.set(key, { ...current, version, dirty: JSON.stringify(current.payload) !== captured });
+      status(cache.get(key)?.dirty ? "Earlier draft saved; newer typing is still local." : "Draft saved privately. No answer or model turn was submitted.");
+    } catch (error) {
+      status(error.message, true);
+    }
+  });
+  async function refresh() {
+    if (!view) return;
+    fresh = false;
+    root.inert = true;
+    document.querySelector("#lh-save-draft").disabled = true;
+    for (const button of jobs.querySelectorAll("[data-lh-model-action]")) button.disabled = true;
+    try {
+      show(await call("learning_view", { chatId: view.chatId }), true);
+    } catch (error) {
+      status("Current state unavailable. Resume the originating T3 conversation, then Refresh. " + error.message, true);
+    }
+  }
+  document.querySelector("#lh-refresh").addEventListener("click", () => void refresh());
+  async function receive(event) {
+    if (!active || event.source !== window.parent || !object(event.data) || event.data.jsonrpc !== "2.0") return;
+    const message = event.data;
+    if (byteSize(message) > 256 * 1024) return;
+    if (message.method === "ui/resource-teardown" && message.id !== void 0) {
+      controller?.destroy();
+      post({ jsonrpc: "2.0", id: message.id, result: {} });
+      active = false;
+      for (const row2 of pending.values()) {
+        clearTimeout(row2.timer);
+        row2.reject(new Error("App closed; inspect outcome before repeating an action."));
+      }
+      pending.clear();
+      return;
+    }
+    if (message.method === "ui/notifications/tool-result") {
+      try {
+        show(message.params);
+        if (!initialRefresh) {
+          initialRefresh = true;
+          void refresh();
+        }
+      } catch (e) {
+        status(e.message, true);
+      }
+      return;
+    }
+    if (message.method === "ui/notifications/host-context-changed") {
+      applyTheme(message.params);
+      return;
+    }
+    const row = pending.get(message.id);
+    if (!row) return;
+    pending.delete(message.id);
+    clearTimeout(row.timer);
+    if (message.error) row.reject(new Error(typeof message.error.message === "string" ? message.error.message : "Host refused the operation."));
+    else row.resolve(message.result);
+  }
+  window.addEventListener("message", receive);
+  var observer = new ResizeObserver(() => {
+    if (initialized && active) post({ jsonrpc: "2.0", method: "ui/notifications/size-changed", params: { height: Math.min(2e3, Math.max(80, document.body.scrollHeight)) } });
+  });
+  observer.observe(document.body);
+  rpc("ui/initialize", { protocolVersion: "2026-01-26", appInfo: { name: "learnharness-native", version: "0.1.0-dev" }, appCapabilities: {} }).then((result) => {
+    if (result?.hostInfo?.name !== "t3-code") throw new Error("This adapter requires the supported T3 MCP App host.");
+    applyTheme(result.hostContext);
+    initialized = true;
+    post({ jsonrpc: "2.0", method: "ui/notifications/initialized", params: {} });
+  }).catch((error) => status(error.message, true));
+})();
+</script></body></html>

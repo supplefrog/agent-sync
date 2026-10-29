@@ -1,0 +1,7 @@
+*.local.json
+.hermes-learning/
+private/
+data/
+exports/
+test-output/
+node_modules/

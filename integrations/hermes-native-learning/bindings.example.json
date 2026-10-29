@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "lessons": [
+    {
+      "ownerSessionId": "REPLACE_WITH_VERIFIED_HERMES_CONVERSATION_ID",
+      "chatId": "lesson-1",
+      "kind": "teach",
+      "stateRoot": "private/state",
+      "exportRoot": "exports"
+    }
+  ]
+}

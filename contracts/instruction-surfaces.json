@@ -297,6 +297,193 @@
       "backup": "captured",
       "note": "Supported before_agent_start footer correction and before_provider_request description reductions. Project-file text, schemas and critical guarantees remain unchanged; compatibility is checked on demand after upgrades. Stock runtime and tooling are not captured.",
       "assembly_order": 115
+    },
+    {
+      "id": "learning.native-source.0",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/docs/KNOWLEDGE.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.1",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.2",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/docs/PROTOCOL.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.3",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/reference/planning.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.4",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/reference/practice-base.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.5",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/reference/practice-doctrine.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.6",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/reference/probe-doctrine.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.7",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/reference/teacher-cycle.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.8",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/reference/teacher-step.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.9",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
+    },
+    {
+      "id": "learning.native-source.10",
+      "hosts": [
+        "hermes",
+        "codex"
+      ],
+      "kind": "portable-reference",
+      "scope": "project",
+      "status": "reference",
+      "owner": "integrations/hermes-native-learning",
+      "artifact": "integrations/hermes-native-learning/t3/AGENT-PROTOCOL.md",
+      "target": "Explicit opt-in native-learning protocol and conditional support; T3 uses its Codex MCP App adapter. No global discovery or native activation follows from source sync.",
+      "model_sensitive": true,
+      "backup": "not-effective",
+      "assembly_order": 0,
+      "note": "Reference-only source ownership, not an observed runtime assembly position. The existing native-learning integration owns the conditional instruction. Private enrollment, data permissions, model calls and host registration remain separate."
     }
   ]
 }

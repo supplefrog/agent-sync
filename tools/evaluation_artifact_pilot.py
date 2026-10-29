@@ -489,11 +489,81 @@ def run_native_plan(plan, out):
     return report
 
 
+def attach_completed_review(report, attachment, sources, *, plan=None):
+    """Existing artifact lane's offline completed-review consumer, no dispatch."""
+    import copy
+    from evaluation_evidence import completed_artifact_decision,quality_tradeoff_decision
+    result=copy.deepcopy(report)
+    decision=completed_artifact_decision(result,attachment,sources)
+    result['completed_review']=copy.deepcopy(attachment)
+    result['completed_review_decision']=decision
+    for row in result['results']:
+        reviewed=decision.get('deliveries',{}).get(row['id'])
+        if reviewed:
+            row['completed_review_outcome']=reviewed
+            # Keep the raw captured assessment intact. The separate completed
+            # assessment cannot upgrade unknown source/provenance retroactively.
+            row['completed_outcome_assessment']={**row.get('outcome_assessment',{}),
+                'semantic_adequacy':{'status':'completed' if decision['ready'] else 'unusable-review',
+                    'passed':reviewed['reviewed_artifact_adequate'] if decision['ready'] else None},
+                'task_passed':reviewed['task_passed'],
+                'comparative_preference':decision.get('quality_disposition')}
+    result['current_quality_recommendation']=quality_tradeoff_decision(decision,attachment.get('quality_policy',{}),sources)
+    result['deployment_authority']=False
+    result['adoption_authority']=False
+    if plan is not None:
+        from evaluation_measurement import attach_measurements
+        result['pre_review_measurements']=copy.deepcopy(report.get('measurements'))
+        attach_measurements(result,plan,source_bytes=sources)
+    return result
+
+
+def rendered_review_input(report, out, config):
+    """Join supplied human rendered evidence through the existing offline review consumer."""
+    import base64
+    from evaluation_measurement import digest
+    from evaluation_evidence import completed_artifact_decision
+    sources={}
+    root=Path(config['sources_root']).resolve()
+    manifest=json.loads(Path(config['sources_manifest']).read_bytes())
+    for name, expected in manifest.items():
+        path=root/name
+        if path.is_symlink() or not path.resolve().is_relative_to(root) or not path.is_file():
+            raise ValueError('Manifest member missing/outside root: '+name)
+        data=path.read_bytes()
+        actual=hashlib.sha256(data).hexdigest()
+        if actual!=expected: raise ValueError('Manifest source changed: '+name)
+        sources[actual]=data
+    packet=Path(config['outcome_packet']).read_bytes();packet_hash=hashlib.sha256(packet).hexdigest();sources[packet_hash]=packet
+    if sum(map(len,sources.values()))>32*1024*1024:raise ValueError('Explicit source bundle exceeds32MiB; no truncation')
+    attachment={'review_kind':'human-rendered-outcome','output_kind':'rendered-product',
+        'outcome_packet_sha256':packet_hash,'results_sha256':digest(report['results'])}
+    decision=completed_artifact_decision(report,attachment,sources)
+    if not decision['ready']:raise ValueError('Rendered outcome rejected: '+'; '.join(decision['gaps']))
+    out=Path(out);out.mkdir(parents=True,exist_ok=False)
+    def save(name,value):
+        with (out/name).open('xb') as stream:stream.write((json.dumps(value,indent=2)+'\n').encode())
+    save('review-attachment.json',attachment)
+    save('review-sources.base64.json',{h:base64.b64encode(b).decode() for h,b in sources.items()})
+    save('review-input-check.json',decision)
+    followup=attach_completed_review(report,attachment,sources)
+    followup['completed_outcome_assessment']=decision
+    save('report-with-outcome.json',followup)
+    return {'attachment':str(out/'review-attachment.json'),'report':str(out/'report-with-outcome.json'),
+        'provider_calls':0,'finished_result_acceptance':decision['finished_result_acceptance'],'adoption_authority':False}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['prepare', 'run'])
+    parser.add_argument('action', choices=['prepare', 'run','attach-review','review-input'])
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--suite', type=Path)
+    parser.add_argument('--input-report',type=Path)
+    parser.add_argument('--input-plan',type=Path)
+    parser.add_argument('--review-attachment',type=Path)
+    parser.add_argument('--source-bundle',type=Path)
+    parser.add_argument('--reviewed-output',type=Path)
+    parser.add_argument('--operator-input',type=Path)
     args = parser.parse_args(argv)
     out = args.out.resolve()
     if args.action == 'prepare':
@@ -501,10 +571,35 @@ def main(argv=None):
             parser.error('prepare requires --suite')
         result = prepare(json.loads(args.suite.read_text(encoding='utf-8')), out)
         print(json.dumps({'prepared_jobs': len(result['jobs']), 'plan': str(out / 'plan.json')}))
+    elif args.action=='review-input':
+        if args.operator_input is None:parser.error('review-input requires --operator-input')
+        report=json.loads((args.input_report or out/'report.json').read_bytes())
+        result=rendered_review_input(report,out,json.loads(args.operator_input.read_bytes()))
+        print(json.dumps(result));return 0
+    elif args.action=='attach-review':
+        import base64
+        if any(value is None for value in (args.review_attachment,args.source_bundle,args.reviewed_output)):
+            parser.error('attach-review requires --review-attachment, --source-bundle and --reviewed-output')
+        if args.reviewed_output.exists():raise FileExistsError('Reviewed successor output must be fresh; raw evidence cannot be overwritten')
+        raw=json.loads(args.source_bundle.read_text(encoding='utf-8'))
+        sources={key:base64.b64decode(value,validate=True) for key,value in raw.items()}
+        if sum(map(len,sources.values()))>32*1024*1024:raise ValueError('Review source bundle exceeds32MiB')
+        report=json.loads((args.input_report or out/'report.json').read_text(encoding='utf-8'))
+        attachment=json.loads(args.review_attachment.read_text(encoding='utf-8'))
+        plan=json.loads(args.input_plan.read_text(encoding='utf-8')) if args.input_plan else None
+        if report.get('kind')=='native-skill-study' and plan is None:
+            raise ValueError('Native completed-review projection requires its bound input plan')
+        result=attach_completed_review(report,attachment,sources,plan=plan)
+        with args.reviewed_output.open('x',encoding='utf-8') as stream:json.dump(result,stream,indent=2)
+        print(json.dumps({'review_ready':result['completed_review_decision']['ready'],
+            'quality_scope':result['completed_review_decision']['scope'],'deployment_authority':False,
+            'report':str(args.reviewed_output)}))
+        return 0 if result['completed_review_decision']['ready'] else 1
     else:
         result = run(json.loads((out / 'plan.json').read_text(encoding='utf-8')), out)
         print(json.dumps({'completed_trials': result['completed_trials'], 'report': str(out / 'report.json')}))
     return 0
+
 
 
 if __name__ == '__main__':

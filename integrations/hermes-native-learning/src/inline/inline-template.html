@@ -1,0 +1,31 @@
+<style>
+  #lh-inline-lesson { color: var(--foreground); font-family: inherit; max-width: 46rem; }
+  #lh-inline-lesson h3 { font-size: inherit; font-weight: 500; margin: .65rem 0; }
+  #lh-inline-lesson p { white-space: pre-wrap; overflow-wrap: anywhere; }
+  #lh-inline-lesson button, #lh-inline-lesson textarea, #lh-inline-lesson input { font: inherit; color: inherit; }
+  #lh-inline-lesson button { cursor: var(--cursor-interaction, pointer); }
+  #lh-inline-lesson .lh-dock { border: 1px solid var(--border); border-radius: .8rem; padding: .85rem; background: var(--card); }
+  #lh-inline-lesson .lh-heading, #lh-inline-lesson .lh-footer, #lh-inline-lesson .lh-confidence { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+  #lh-inline-lesson .lh-heading, #lh-inline-lesson .lh-footer { justify-content: space-between; }
+  #lh-inline-lesson .lh-kind, #lh-inline-lesson .lh-field-label, #lh-inline-lesson .lh-secondary { color: var(--muted-foreground); }
+  #lh-inline-lesson .lh-secondary { display: block; }
+  #lh-inline-lesson .lh-field { display: grid; gap: .4rem; margin: .85rem 0; }
+  #lh-inline-lesson .lh-field-label { font-weight: 500; }
+  #lh-inline-lesson textarea { box-sizing: border-box; width: 100%; resize: vertical; padding: .65rem; border: 1px solid var(--border); border-radius: .5rem; background: transparent; }
+  #lh-inline-lesson .lh-option { display: block; box-sizing: border-box; width: 100%; text-align: left; padding: .75rem; margin: .35rem 0; border: 1px solid var(--border); border-radius: .5rem; background: transparent; overflow-wrap: anywhere; }
+  #lh-inline-lesson .lh-option[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: var(--accent); }
+  #lh-inline-lesson .lh-confidence { margin: .9rem 0; }
+  #lh-inline-lesson .lh-confidence input { flex: 1; min-width: 8rem; accent-color: var(--accent); }
+  #lh-inline-lesson .lh-submit { background: var(--foreground); color: var(--background, var(--card)); border: 1px solid var(--foreground); border-radius: .4rem; padding: .6rem .9rem; }
+  #lh-inline-lesson .lh-submit:disabled { opacity: .45; cursor: default; }
+  #lh-inline-lesson .lh-close, #lh-inline-lesson .lh-reveal, #lh-inline-lesson .lh-resume { background: transparent; border: 0; padding: .5rem 0; }
+  #lh-inline-lesson .lh-reveal { width: 100%; text-align: left; font-weight: 500; }
+  #lh-inline-lesson .lh-plan { margin: .9rem 0; }
+  #lh-inline-lesson .lh-plan summary { cursor: var(--cursor-interaction, pointer); }
+  #lh-inline-lesson .lh-plan ol { padding-left: 1.4rem; }
+  #lh-inline-lesson [role="alert"] { color: var(--destructive, var(--foreground)); }
+  @media (max-width: 400px) { #lh-inline-lesson .lh-footer { align-items: stretch; } #lh-inline-lesson .lh-submit { width: 100%; } }
+</style>
+<div id="lh-inline-lesson" aria-label="Learning interaction"></div>
+<!-- INLINE_PAYLOAD -->
+<!-- INLINE_RUNTIME -->

@@ -1,0 +1,134 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Synthetic source integration controls; not native caller/model qualification.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { loadConfiguration, bindingForCaller } from '../src/config.mjs';
+import { executeLearningCommand } from '../src/commands.mjs';
+import { lessonCatalogue } from '../src/catalogue.mjs';
+import { TeachingAdapter } from '../src/adapter.mjs';
+function setup(t,kind='teach') {
+  const base=fs.mkdtempSync(path.join(os.tmpdir(),'lh-portable-control-'));
+  t.after(()=>fs.rmSync(base,{recursive:true,force:true}));
+  const file=path.join(base,'bindings.local.json');
+  const input={version:1,lessons:[{ownerSessionId:'synthetic-owner',chatId:'synthetic-lesson',kind,stateRoot:'private/state',exportRoot:'exports'}]};
+  const save=()=>fs.writeFileSync(file,JSON.stringify(input));save();
+  const binding=loadConfiguration(file).lessons[0];
+  const run=command=>executeLearningCommand(binding,{chatId:binding.chatId,...command});
+  const learner=(view,action)=>run({op:'learner',envelope:{v:1,kind,ownerSessionId:binding.ownerSessionId,chatId:binding.chatId,expectedRevision:view.revision,action:{chatId:binding.chatId,...action}}});
+  const tool=(view,name,id,input)=>run({op:'tool',expectedRevision:view.revision,authorship:'synthetic-fixture',name,toolCallId:id,input});
+  return {base,file,input,save,binding,run,learner,tool};
+}
+test('private config has no active-session fallback or path-selected-by-message',t=>{
+  const s=setup(t),config=loadConfiguration(s.file);
+  assert.equal(bindingForCaller(config,s.binding.chatId,{HERMES_UI_SESSION_ID:'synthetic-owner'}).chatId,s.binding.chatId);
+  for(const env of [{},{HERMES_SESSION_ID:'other'},{HERMES_SESSION_ID:' synthetic-owner '}]) assert.throws(()=>bindingForCaller(config,s.binding.chatId,env));
+  for(const value of ['../outside','exports/raw']) {s.input.lessons[0].stateRoot=value;s.save();assert.throws(()=>loadConfiguration(s.file));}
+  s.input.lessons[0].stateRoot='private/state';s.input.lessons[0].ownerSessionId='new';s.save();assert.throws(()=>loadConfiguration(s.file));
+});
+test('diagnostic assessment has the upstream minimum but no invented ten-strand ceiling',t=>{
+  const s=setup(t);const created=s.run({op:'init',title:'Synthetic assessment',goal:'Contract parity'});
+  const strands=Array.from({length:11},(_,index)=>({strand:`Dependency ${index}`,assessment:'Synthetic evidence only.'}));
+  const result=s.tool(created.view,'probe_done','assessment-eleven',{assessment:{strands,summary:'Synthetic synthesis'}});
+  assert.equal(result.view.assessment.strands.length,11);
+  assert.equal(result.view.phase,'plan');
+});
+test('owner-scoped catalogue and rename preserve activity, messages and revision safety',t=>{
+  const s=setup(t);s.run({op:'init',title:'Original title',goal:'Synthetic lifecycle check'});
+  const file=path.join(s.binding.root,s.binding.chatId+'.json'),record=JSON.parse(fs.readFileSync(file));
+  record.updatedAt='2000-01-01T00:00:00.000Z';fs.writeFileSync(file,JSON.stringify(record));
+  const renamed=s.run({op:'rename',title:' Renamed lesson ',expectedRevision:record.adapter.revision,authorship:'synthetic-fixture'});
+  const saved=JSON.parse(fs.readFileSync(file));assert.equal(saved.title,'Renamed lesson');
+  assert.equal(saved.updatedAt,record.updatedAt);assert.deepEqual(saved.messages,record.messages);
+  assert.equal(saved.adapter.revision,record.adapter.revision+1);
+  assert.throws(()=>s.run({op:'rename',title:'Stale change',expectedRevision:record.adapter.revision,authorship:'synthetic-fixture'}));
+  const foreign={...s.binding,ownerSessionId:'other-owner',chatId:'foreign'};
+  fs.writeFileSync(path.join(s.binding.root,'foreign.json'),'DO NOT READ THIS OTHER OWNER');
+  const config={lessons:[s.binding,foreign]};
+  const catalogue=lessonCatalogue(config,{HERMES_UI_SESSION_ID:'synthetic-owner'});
+  assert.equal(catalogue.lessons.length,1);assert.equal(catalogue.lessons[0].title,'Renamed lesson');
+  assert.throws(()=>lessonCatalogue(config,{}));
+  assert.throws(()=>lessonCatalogue(config,{HERMES_UI_SESSION_ID:'synthetic-owner',HERMES_SESSION_ID:'other-owner'}));
+  assert.equal(s.run({op:'view'}).view.revision,renamed.view.revision);
+});
+test('large lesson context pages preserve active commitments and reject stale navigation',t=>{
+  const s=setup(t);let r=s.run({op:'init',title:'Synthetic long lesson',goal:'Lossless continuation'});
+  r=s.tool(r.view,'probe_done','assessment',{assessment:{strands:[{strand:'Ratio',assessment:'Synthetic only'}]}});
+  r=s.tool(r.view,'plan_init','plan',{mermaid:'graph TD\n ratio[Ratio] --> secant[Secant]'});
+  r=s.learner(r.view,{type:'approve',planRevision:r.view.plan.planRevision,text:'Synthetic approval'});
+  const adapter=new TeachingAdapter(s.binding.root);
+  adapter.store.change(s.binding.chatId,record=>{
+    record.messages.unshift({id:'public-prose-only',role:'assistant',content:[{type:'thinking',thinking:'PRIVATE_PROVIDER_THOUGHT'},{type:'text',text:'Visible teacher prose'}]});
+    for(let i=0;i<30;i++)record.messages.push({id:`synthetic-long-${i}`,role:'assistant',content:[{type:'text',text:'Synthetic earlier teaching. '.repeat(500)}]});
+    return{record,result:{ok:true}};
+  });
+  r=s.tool(adapter.view(s.binding.chatId),'quiz','prediction',{type:'predict',nodeId:'ratio',question:'Synthetic prediction?',options:[{label:'Two',value:'two'},{label:'Three',value:'three'}],correctAnswer:'two',explanation:'Synthetic commitment.'});
+  assert.equal(r.persisted,true);assert.equal(r.presentation.code,'view_too_large');assert.equal(r.directive,null);
+  const pending=adapter.view(s.binding.chatId).question.toolCallId;assert.equal(pending,'prediction');
+  assert.throws(()=>s.run({op:'context'}),error=>error.code==='host_context_too_large');
+  const page=s.run({op:'context-page',limit:2});assert.equal(page.context.pendingToolCall.id,'prediction');
+  const first=s.run({op:'context-page',offset:0,limit:1,expectedRevision:r.view.revision});
+  assert.equal(first.context.pendingToolCall.arguments.correctAnswer,'two');
+  assert.ok(!JSON.stringify(first).includes('PRIVATE_PROVIDER_THOUGHT'));
+  assert.equal(first.context.messages[0].content[0].text,'Visible teacher prose');
+  assert.ok(first.context.page.nextOffset!==null);
+  s.run({op:'rename',title:'Renamed long lesson',authorship:'synthetic-fixture',expectedRevision:r.view.revision});
+  assert.throws(()=>s.run({op:'context-page',offset:1,limit:1,expectedRevision:r.view.revision}),error=>error.code==='stale_host_revision');
+});
+test('portable teaching command lane retains commitment, one reaction, check feedback and durable reopen',t=>{
+  const s=setup(t);let r=s.run({op:'init',title:'Synthetic control only',goal:'Verify portable commands'});
+  assert.throws(()=>s.run({op:'init',title:'Overwrite',goal:'Forbidden'}));
+  r=s.tool(r.view,'probe_done','assessment',{assessment:{strands:[{strand:'Ratio',assessment:'Synthetic diagnostic result.'}]}});
+  r=s.tool(r.view,'plan_init','plan',{mermaid:'graph TD\n ratio[Ratio] --> secant[Secant]'});
+  r=s.learner(r.view,{type:'approve',planRevision:r.view.plan.planRevision,text:'Synthetic explicit approval.'});
+  r=s.tool(r.view,'quiz','predict',{type:'predict',nodeId:'ratio',question:'Synthetic: 6 divided by 3?',options:[{label:'2',value:'two'},{label:'3',value:'three'}],correctAnswer:'two',explanation:'Six divided by three is two.'});
+  assert.ok(!JSON.stringify(r.view).includes('correctAnswer'));
+  const original=r.view;
+  r=s.learner(original,{type:'answer',toolCallId:'predict',request:{values:['two'],thinking:'Synthetic calculation',confidence:80}});
+  assert.throws(()=>s.learner(original,{type:'answer',toolCallId:'predict',request:{values:['two']}}));
+  const claimed=s.run({op:'continue'}),again=s.run({op:'continue'});
+  assert.equal(claimed.continuation.id,again.continuation.id);
+  r=s.run({op:'teach',expectedRevision:claimed.view.revision,authorship:'synthetic-fixture',continuationId:claimed.continuation.id,nodeId:'ratio',predictionCallId:'predict',text:'Synthetic teacher explanation: divide rise by run.'});
+  r=s.tool(r.view,'quiz','check',{type:'check',nodeId:'ratio',question:'Synthetic check: 8 divided by 4?',options:[{label:'2',value:'two'},{label:'4',value:'four'}],correctAnswer:'two',explanation:'Eight divided by four is two.'});
+  r=s.learner(r.view,{type:'answer',toolCallId:'check',request:{values:['two']}});
+  const reaction=s.run({op:'continue'});
+  r=s.run({op:'reply',expectedRevision:reaction.view.revision,continuationId:reaction.continuation.id,authorship:'synthetic-fixture',afterToolCallId:'check',text:'Synthetic feedback: consistent ratio reasoning.'});
+  assert.equal(r.view.continuationOwed,false);
+  const reopened=s.run({op:'view'});assert.equal(reopened.view.revision,r.view.revision);
+  assert.match(JSON.stringify(s.run({op:'context'})),/consistent ratio reasoning/);
+  assert.equal(fs.readFileSync(reopened.snapshot.viewFile,'utf8'),JSON.stringify(reopened.view));
+  assert.throws(()=>s.run({op:'view',chatId:'other'}));
+});
+test('portable practice commits hidden solution, saves thinking, concludes and requires explicit next',t=>{
+  const s=setup(t,'practice');let r=s.run({op:'init',title:'Synthetic practice',goal:'Source integration control'});
+  assert.equal(s.run({op:'context'}).workflow.stage,'pose-practice');
+  r=s.tool(r.view,'problem','p1',{statement:'Synthetic: state two plus two.',mode:'recall',modelSolution:'HIDDEN-SYNTHETIC-SOLUTION'});
+  assert.equal(s.run({op:'context'}).workflow.stage,'await-thinking');
+  assert.ok(!JSON.stringify(r.view).includes('HIDDEN-SYNTHETIC-SOLUTION'));
+  assert.match(JSON.stringify(s.run({op:'context'})),/HIDDEN-SYNTHETIC-SOLUTION/);
+  const before=r.view;r=s.learner(r.view,{type:'practice-input',input:{type:'thinking',problemCallId:'p1',text:'Synthetic work only'}});
+  assert.throws(()=>s.learner(before,{type:'practice-input',input:{type:'thinking',problemCallId:'p1',text:'Duplicate'}}));
+  assert.throws(()=>s.learner(r.view,{type:'practice-input',input:{type:'next'}}));
+  assert.deepEqual(s.run({op:'view'}).view.thinking,['Synthetic work only']);
+  const thinking=s.run({op:'context'}).context.messages.at(-1);
+  assert.equal(s.run({op:'context'}).workflow.stage,'practice-reaction');
+  const reply={op:'practice-reply',expectedRevision:r.view.revision,authorship:'synthetic-fixture',problemCallId:'p1',afterThinkingId:thinking.id,text:'Synthetic hint: count the two pairs.'};
+  r=s.run(reply);assert.throws(()=>s.run(reply));
+  assert.deepEqual(s.run({op:'view'}).view.feedback.map(e=>e.text),['Synthetic hint: count the two pairs.']);
+  assert.ok(!JSON.stringify(r.view).includes('HIDDEN-SYNTHETIC-SOLUTION'));
+  assert.throws(()=>s.run({...reply,expectedRevision:r.view.revision}));
+  r=s.tool(r.view,'conclude','c1',{outcome:'movedOn',verdict:'Synthetic control, no learner assessment.',rung:null,missClass:null,retest:false});
+  assert.equal(r.view.conclusion.modelSolution,'HIDDEN-SYNTHETIC-SOLUTION');
+  assert.equal(s.run({op:'context'}).workflow.stage,'practice-pause');
+  r=s.learner(r.view,{type:'practice-input',input:{type:'text',text:'Synthetic clarification, not Next.'}});
+  const pause=s.run({op:'context'});assert.equal(pause.workflow.stage,'practice-discussion');
+  const discussion={op:'practice-discuss',expectedRevision:r.view.revision,authorship:'synthetic-fixture',afterMessageId:pause.workflow.afterMessageId,text:'Synthetic clarification response.'};
+  r=s.run(discussion);assert.throws(()=>s.run({...discussion,expectedRevision:r.view.revision}));
+  assert.equal(s.run({op:'view'}).view.discussion.at(-1).text,'Synthetic clarification response.');
+  assert.equal(s.run({op:'context'}).workflow.stage,'practice-pause');
+  assert.throws(()=>s.tool(r.view,'problem','p2',{statement:'Too early',mode:'recall',modelSolution:'No'}));
+  r=s.learner(r.view,{type:'practice-input',input:{type:'next'}});
+  assert.equal(r.view.nextAllowed,true);assert.equal(s.run({op:'view'}).view.activeProblem,null);
+});

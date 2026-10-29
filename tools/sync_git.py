@@ -18,12 +18,50 @@ class SyncBlocked(RuntimeError):
     pass
 
 
+class GitFailure(SyncBlocked):
+    """Safe command identity and diagnostics, never raw helper/remote output."""
+    def __init__(self, repo, args, result):
+        operations = {'cherry-pick', 'merge-tree', 'read-tree', 'write-tree', 'reset',
+                      'checkout', 'cat-file', 'ls-tree', 'hash-object', 'update-index',
+                      'status', 'diff', 'ls-files', 'rev-parse', 'fetch', 'push'}
+        operation = next((arg for arg in args if arg in operations), 'command')
+        local = operation not in {'fetch', 'push', 'command'}
+        def diagnostic(value):
+            if not local:
+                return 'remote/helper diagnostic withheld'
+            if isinstance(value, bytes):
+                value = value.decode('utf-8', 'replace')
+            lines = []
+            for line in (value or '').splitlines():
+                if re.search(r'(?i)(credential|authorization|bearer|password|secret|token|api[_-]?key|askpass|helper|[a-z][a-z0-9+.-]*://|[\w.+-]+@[\w.-]+:)', line):
+                    lines.append('sensitive Git diagnostic line withheld')
+                    continue
+                line = line.replace(str(repo), '<repo>').replace(str(Path.home()), '<home>')
+                line = re.sub(r"(?:[A-Za-z]:[\\/]|/)(?:[^\s:'\"<>]+[\\/])+[^\s:'\"<>]*", '<path>', line)
+                lines.append(line)
+            safe = '\n'.join(lines)[-4096:]
+            import recovery
+            try:
+                recovery._assert_public_safe(safe.encode('utf-8'), label='git-diagnostic')
+            except recovery.RecoveryError:
+                return 'diagnostic withheld by public-safety validation'
+            return safe
+        flags = {'--no-commit', '--write-tree', '--hard', '--mixed', '--cached', '--binary', '--3way'}
+        merge_bases = [arg for arg in args if re.fullmatch(r'--merge-base=(?:[0-9a-f]{40}|[0-9a-f]{64})', arg)]
+        identity = ['git', operation] + [arg for arg in args if arg in flags or re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', arg) or arg in merge_bases]
+        self.detail = {'command': ' '.join(identity), 'operation': operation,
+                       'commit_ids': [arg for arg in args if re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', arg)] + [arg.split('=',1)[1] for arg in merge_bases],
+                       'exit_code': result.returncode, 'stderr': diagnostic(result.stderr),
+                       'stdout': diagnostic(result.stdout)}
+        message = self.detail['stderr'] or self.detail['stdout'] or 'no diagnostic'
+        super().__init__('git ' + operation + ' failed (exit ' + str(result.returncode) + '): ' + message)
+
+
 def git(repo: Path, *args: str, env=None, input=None) -> str:
     result = subprocess.run(['git', '-c', 'core.longpaths=true', '-C', str(repo), *args], capture_output=True,
                             text=True, encoding='utf-8', env=env, input=input, timeout=120)
     if result.returncode:
-        # Do not persist remote URLs, credential-helper output, or hook secrets.
-        raise SyncBlocked('git ' + args[0] + ' failed; inspect the repository or remote')
+        raise GitFailure(repo, args, result)
     return result.stdout if '-z' in args else result.stdout.strip()
 
 
@@ -189,20 +227,26 @@ def changed(repo: Path) -> set[str]:
     entries = git(repo, 'diff', '--raw', '--no-renames', '-z', 'HEAD', '--').split('\0')
     tracked = {entries[i + 1]: entries[i].split() for i in range(0, len(entries) - 1, 2)}
     new = git(repo, 'ls-files', '--others', '--exclude-standard', '-z')
-    paths = {p for p in set(tracked) | set(new.split('\0')) if p and not re.fullmatch(r"\.agent-signal-path-[0-9a-f]{64}\.lock", Path(p).name)}
     staged = set(git(repo, 'diff', '--cached', '--name-only', '-z', 'HEAD', '--').split('\0')) - {''}
-    # Legacy CRLF blobs under text/eol attributes can look dirty immediately
-    # after checkout. Publication uses raw bytes; never conceal staged work.
-    for name, metadata in tracked.items():
-        if name in staged or metadata[0] != ':' + metadata[1]:
+    paths = {p for p in set(tracked) | set(new.split('\0')) | staged if p and not re.fullmatch(r"\.agent-signal-path-[0-9a-f]{64}\.lock", Path(p).name)}
+    # Filters can both invent dirt (legacy CRLF index) and hide raw differences
+    # (LF index, CRLF working bytes). Every tracked HEAD blob must participate;
+    # a filtered diff is not the raw-byte inventory used by publication.
+    entries = _tree_entries(repo, 'HEAD')
+    blobs = _blobs(repo, entries)
+    for name, (_, oid) in entries.items():
+        metadata = tracked.get(name)
+        if name in staged or (metadata is not None and metadata[0] != ':' + metadata[1]):
             continue
         try:
             safe_path(repo, name)
             target = repo / name
-            if target.is_file() and target.read_bytes() == _raw_git(repo, 'show', 'HEAD:' + name):
+            if target.is_file() and target.read_bytes() == blobs[oid]:
                 paths.discard(name)
+            else:
+                paths.add(name)
         except (OSError, SyncBlocked):
-            pass
+            paths.add(name)
     return paths
 
 
@@ -295,7 +339,7 @@ def _raw_git(repo, *args, input=None, env=None):
     result = subprocess.run(['git', '-c', 'core.longpaths=true', '-C', str(repo), *args], input=input,
                             capture_output=True, env=env, timeout=120)
     if result.returncode:
-        raise SyncBlocked('git ' + args[0] + ' failed; inspect the repository or remote')
+        raise GitFailure(repo, args, result)
     return result.stdout
 
 
@@ -334,6 +378,50 @@ def _blobs(repo, entries):
     if offset != len(raw):
         raise SyncBlocked('candidate blob readback has unexpected data')
     return blobs
+
+
+def raw_composition(repo, base, ready, merge_base, selected):
+    """Merge committed objects without asking checkout filters to rewrite bytes.
+
+    Remote changes outside selected paths survive. A merge that changes reviewed
+    selected bytes needs a new source review, not an implicit normalization.
+    This function writes Git objects only, never the worktree or its index.
+    """
+    for value in (base, ready, merge_base):
+        if not re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', value):
+            raise SyncBlocked('raw composition requires exact commit identities')
+    output = git(repo, 'merge-tree', '--write-tree', '--merge-base=' + merge_base, base, ready).splitlines()
+    if not output:
+        raise SyncBlocked('raw composition returned no tree')
+    tree = output[0]
+    if not re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', tree):
+        raise SyncBlocked('raw composition did not return an exact tree')
+    old, new, approved = (_tree_entries(repo, value) for value in (base, tree, ready))
+    selected = set(selected)
+    changed = {name for name in old.keys() | new.keys() if old.get(name) != new.get(name)}
+    if not changed <= selected:
+        raise SyncBlocked('raw composition changes an unselected path')
+    if any(new.get(name) != approved.get(name) for name in selected):
+        raise SyncBlocked('merge changes reviewed selected bytes; source review required')
+    aliases = {}
+    for name in new:
+        safe_path(repo, name)
+        for count in range(1, len(name.split('/')) + 1):
+            prefix = '/'.join(name.split('/')[:count]); key = prefix.casefold()
+            if key in aliases and aliases[key] != prefix:
+                raise SyncBlocked('raw composition has aliased paths')
+            aliases[key] = prefix
+    for name in changed & new.keys():
+        expected_mode = old[name][0] if name in old else '100644'
+        if new[name][0] != expected_mode:
+            raise SyncBlocked('raw composition mode change requires supported explicit handling')
+    previous = {name: old[name] for name in changed if name in old}
+    desired = {name: new[name] for name in changed if name in new}
+    before_blobs, after_blobs = _blobs(repo, previous), _blobs(repo, desired)
+    before = {name: hashlib.sha256(before_blobs[old[name][1]]).hexdigest() if name in old else 'deleted' for name in changed}
+    content = {name: after_blobs[new[name][1]] if name in new else None for name in changed}
+    files = {name: hashlib.sha256(data).hexdigest() if data is not None else 'deleted' for name, data in content.items()}
+    return {'tree': tree, 'before': before, 'files': files, 'content': content}
 
 
 @contextmanager

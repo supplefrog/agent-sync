@@ -1,0 +1,107 @@
+{
+  "license": "AGPL-3.0-only",
+  "author": "Amos Blomqvist and contributors",
+  "commit": "6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb",
+  "contentForm": "Public upstream prompt text; file endings normalized by source patch",
+  "files": [
+    {
+      "file": "reference/probe-doctrine.md",
+      "upstreamPath": "src/agent/prompts/prober/10-probe-doctrine.md",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/agent/prompts/prober/10-probe-doctrine.md",
+      "sha256": "c15f5182229ac60713907a9b02094a14f35ade58cf355c29bec51a6ad0ec870d"
+    },
+    {
+      "file": "reference/planning.md",
+      "upstreamPath": "src/agent/prompts/teacher/10-planning.md",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/agent/prompts/teacher/10-planning.md",
+      "sha256": "166d50043b48d3bc3cc75e7b6536c59587c98f256f22f604ac450f5cac08dbb4"
+    },
+    {
+      "file": "reference/teacher-step.md",
+      "upstreamPath": "src/agent/prompts/teacher/20-teaching.md",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/agent/prompts/teacher/20-teaching.md",
+      "sha256": "6cbe1f5c81d4ba4bb7da38c20006bf23e90830cbcb2a5eba9eb4993b1c4faf95"
+    },
+    {
+      "file": "reference/teacher-cycle.md",
+      "upstreamPath": "src/agent/prompts/teacher/28-predictions.md",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/agent/prompts/teacher/28-predictions.md",
+      "sha256": "9a8519f5d794d484fbc6de0d273c08ea52296eb1a629e47c7c060ed6844cc280"
+    },
+    {
+      "file": "reference/practice-base.md",
+      "upstreamPath": "src/agent/prompts/practice/00-base.md",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/agent/prompts/practice/00-base.md",
+      "sha256": "4deb62fb06d82387c1b7836d67fea3b0b1756b5ac87307ef51188ef61abe6ced"
+    },
+    {
+      "file": "reference/practice-doctrine.md",
+      "upstreamPath": "src/agent/prompts/practice/10-doctrine.md",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/agent/prompts/practice/10-doctrine.md",
+      "sha256": "4f1838b703689ecae9416e8247261e49c316142b7401bb7db7fcd11802a54a79"
+    },
+    {
+      "file": "src/vendor/runtime/target-pure.ts",
+      "upstreamPath": "src/core/chains.ts#resolveTargetId",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/core/chains.ts",
+      "sha256": "c5630b5030bb0b15b9401016db60b8943f0d8952e8eb129594c5fed9b9bd5b6f",
+      "adaptation": "Exact function body; type-only GraphNode alias and relative value-debris import"
+    },
+    {
+      "file": "src/vendor/runtime/coverage.ts",
+      "upstreamPath": "src/core/coverage.ts",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/core/coverage.ts",
+      "sha256": "e66b8119a58442b45c64d4ba98819af067079b9105590ce1cc85c59bc92275f5",
+      "adaptation": "Complete pinned file body plus SPDX/provenance header; runtime imports unchanged, type-only imports erased by selected Node/ESM toolchain."
+    },
+    {
+      "file": "src/vendor/runtime/graph.ts",
+      "upstreamPath": "src/core/graph.ts",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/core/graph.ts",
+      "sha256": "0ef741d3977eec27b4d533130a39a695866d1a5d96f00f7758236e19c82d3117",
+      "adaptation": "Complete pinned file body plus SPDX/provenance header; runtime imports unchanged, type-only imports erased by selected Node/ESM toolchain."
+    },
+    {
+      "file": "src/vendor/runtime/chains.ts",
+      "upstreamPath": "src/core/chains.ts",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/core/chains.ts",
+      "sha256": "a30557d54d032cf2ddd454b2dc06ef3a4e0ecbddda659ea4b925940b99da688d",
+      "adaptation": "Complete pinned file body plus SPDX/provenance header; runtime imports unchanged, type-only imports erased by selected Node/ESM toolchain."
+    },
+    {
+      "file": "src/vendor/runtime/session-clusters.ts",
+      "upstreamPath": "src/core/session-clusters.ts",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/core/session-clusters.ts",
+      "sha256": "75b848a19c36828c57ed7c8ce081c7ba388ff21e2b08a82d4fd74eb993dab3aa",
+      "adaptation": "Complete pinned file body plus SPDX/provenance header; runtime imports unchanged, type-only imports erased by selected Node/ESM toolchain."
+    },
+    {
+      "file": "src/vendor/runtime/clusters.ts",
+      "upstreamPath": "src/core/clusters.ts",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/core/clusters.ts",
+      "sha256": "370b325e143ca2b3c6edce010976e4c4e77b54b288716b62e5d77d58381e8318",
+      "adaptation": "Complete pinned file body plus SPDX/provenance header; runtime imports unchanged, type-only imports erased by selected Node/ESM toolchain."
+    },
+    {
+      "sha256": "d3e558a35f639cd5a1cb521984a893c7ea31ddeaa058fc932754a38dbc81c5c6",
+      "adaptation": "Pure job contracts/steer/usage; unrelated probe handoff runtime helper removed",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/core/contracts/jobs.ts",
+      "upstreamPath": "src/core/contracts/jobs.ts",
+      "file": "src/vendor/runtime/job-pure.ts"
+    },
+    {
+      "sha256": "00e3f93bb0abcfd4765c31a6dafffcbc1f043722f346d819b9a4ce990e7e3975",
+      "adaptation": "Exact chunkNotes function only",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/agent/subagents/extraction.ts",
+      "upstreamPath": "src/agent/subagents/extraction.ts",
+      "file": "src/vendor/runtime/notes-pure.ts"
+    },
+    {
+      "sha256": "2f44e8a225cc69433625c39b086565695dfa343aa92f3b7edd813a634c6246f6",
+      "adaptation": "Pure srcdoc bridge/state reducer only; React component excluded",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/components/artifacts/demo-card.tsx",
+      "upstreamPath": "components/artifacts/demo-card.tsx",
+      "file": "src/vendor/runtime/demo-pure.ts"
+    }
+  ]
+}

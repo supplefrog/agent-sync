@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "t3Commit": "cc0b86ddf12a34bd65dce88d6f2ae1f069ef841e",
+  "t3Files": [
+    "https://github.com/pingdotgg/t3code/blob/cc0b86ddf12a34bd65dce88d6f2ae1f069ef841e/docs/user/html-renders.md",
+    "https://github.com/pingdotgg/t3code/blob/cc0b86ddf12a34bd65dce88d6f2ae1f069ef841e/apps/web/src/components/chat/McpAppFrame.tsx",
+    "https://github.com/pingdotgg/t3code/blob/cc0b86ddf12a34bd65dce88d6f2ae1f069ef841e/apps/server/src/mcpApps/McpAppRequests.ts",
+    "https://github.com/pingdotgg/t3code/blob/cc0b86ddf12a34bd65dce88d6f2ae1f069ef841e/apps/server/src/orchestration-v2/Adapters/CodexAdapterV2.ts",
+    "https://github.com/pingdotgg/t3code/blob/cc0b86ddf12a34bd65dce88d6f2ae1f069ef841e/packages/client-runtime/src/mcpApps/host.ts"
+  ],
+  "codexMetadataCommit": "6b3b67d71f51db1922813dfcf64c424d3f68e5d3",
+  "codexMetadataFiles": [
+    "https://github.com/openai/codex/blob/6b3b67d71f51db1922813dfcf64c424d3f68e5d3/codex-rs/app-server/src/request_processors/mcp_processor.rs",
+    "https://github.com/openai/codex/blob/6b3b67d71f51db1922813dfcf64c424d3f68e5d3/codex-rs/core/src/mcp_tool_call.rs",
+    "https://github.com/openai/codex/blob/6b3b67d71f51db1922813dfcf64c424d3f68e5d3/codex-rs/core/tests/suite/rmcp_client.rs"
+  ],
+  "codexWorkerCommit": "e344f4b6fc2ae01acc9ec0e3e0d797ffe0c00b85",
+  "codexWorkerFiles": [
+    "codex-rs/core/src/tools/handlers/multi_agents/spawn.rs",
+    "codex-rs/core/src/tools/handlers/multi_agents/wait.rs",
+    "codex-rs/core/src/tools/handlers/multi_agents/send_input.rs",
+    "codex-rs/core/src/tools/handlers/multi_agents/close_agent.rs",
+    "codex-rs/protocol/src/protocol.rs"
+  ],
+  "existingMcpSdkVersion": "1.32.0",
+  "mcpAppProtocol": "2026-01-26",
+  "buildTool": "esbuild0.28.2 existing toolchain",
+  "copiedSdkOrT3Source": false,
+  "claims": "Interface/source evidence only, not installed build identity or live T3 verification. No credentials or machine paths included."
+}

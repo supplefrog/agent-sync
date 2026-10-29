@@ -295,7 +295,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:17fb0ffd2bc19522cdfd4888541e70e5be5bb33505b0fdb160e39e87a6f3cc1a"
+      "version_or_hash": "sha256:a6535029d1152556a552c8d34797e78f1006764c1a750ea4b51c65be87fbaa5a"
     },
     {
       "category": "hook",
@@ -318,7 +318,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:17fb0ffd2bc19522cdfd4888541e70e5be5bb33505b0fdb160e39e87a6f3cc1a"
+      "version_or_hash": "sha256:a6535029d1152556a552c8d34797e78f1006764c1a750ea4b51c65be87fbaa5a"
     },
     {
       "category": "plugin",
@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:02754b4ab6d449fefe83d69e52a1d4cdc7f28d139ffc42000b34cc0711793ced"
+      "version_or_hash": "sha256:ffa9ea91ee4386bd7f23c5e5bbc3aa1016f03d8f37e7e6a016816e405ae00a76"
     },
     {
       "category": "native-skill",
@@ -507,7 +507,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:02754b4ab6d449fefe83d69e52a1d4cdc7f28d139ffc42000b34cc0711793ced"
+      "version_or_hash": "sha256:ffa9ea91ee4386bd7f23c5e5bbc3aa1016f03d8f37e7e6a016816e405ae00a76"
     },
     {
       "category": "native-skill",
@@ -530,7 +530,7 @@
         "reference": "rendered admitted fleet and recovery adapters"
       },
       "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:02754b4ab6d449fefe83d69e52a1d4cdc7f28d139ffc42000b34cc0711793ced"
+      "version_or_hash": "sha256:ffa9ea91ee4386bd7f23c5e5bbc3aa1016f03d8f37e7e6a016816e405ae00a76"
     },
     {
       "category": "curator",
@@ -576,7 +576,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:17fb0ffd2bc19522cdfd4888541e70e5be5bb33505b0fdb160e39e87a6f3cc1a"
+      "version_or_hash": "sha256:a6535029d1152556a552c8d34797e78f1006764c1a750ea4b51c65be87fbaa5a"
     },
     {
       "category": "curator",
@@ -599,7 +599,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:17fb0ffd2bc19522cdfd4888541e70e5be5bb33505b0fdb160e39e87a6f3cc1a"
+      "version_or_hash": "sha256:a6535029d1152556a552c8d34797e78f1006764c1a750ea4b51c65be87fbaa5a"
     },
     {
       "category": "plugin",

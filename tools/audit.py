@@ -181,6 +181,13 @@ def _validate_current_evidence(repo: Path, registry: dict[str, Any]) -> list[str
     return errors
 
 
+def _integration_reference_error(repo, name):
+    from instruction_changes import native_learning_source_reference
+    if native_learning_source_reference(repo, name):
+        return None
+    return 'skill entrypoint outside canonical skills tree: ' + name
+
+
 def validate_repo(repo: Path, live: bool = False, *, current_evidence: bool = True) -> list[str]:
     errors: list[str] = []
     try:
@@ -479,10 +486,9 @@ def validate_repo(repo: Path, live: bool = False, *, current_evidence: bool = Tr
     integration_root = repo / "integrations"
     if integration_root.is_dir():
         for skill_path in sorted(integration_root.rglob("SKILL.md")):
-            errors.append(
-                "skill entrypoint outside canonical skills tree: "
-                + skill_path.relative_to(repo).as_posix()
-            )
+            rejection = _integration_reference_error(repo, skill_path.relative_to(repo).as_posix())
+            if rejection:
+                errors.append(rejection)
 
     capability_records = ownership.get("capabilities")
     if not isinstance(capability_records, list):

@@ -121,18 +121,63 @@ def _qualify(repo, ready, options):
             'integration_repo': str(common / 'agent-signal-integration-worktree'), 'completed_checks': checks}
 
 
+def _direct_ready_check_failure(exc, repo):
+    """Keep existing sanitized diagnostics after temporary candidate cleanup."""
+    if isinstance(exc, sync_git.GitFailure):
+        return {'git_failure': dict(exc.detail)}
+    if not isinstance(exc, reconcile.CheckFailure):
+        return {}
+    detail = {key: reconcile._safe_diagnostic(str(exc.detail.get(key, '')), Path(repo))
+              for key in ('command', 'diagnostic')}
+    detail['exit_code'] = exc.detail.get('exit_code')
+    local = exc.detail.get('local_log')
+    if isinstance(local, str) and not Path(local).is_absolute() and '..' not in Path(local).parts:
+        detail['local_log'] = local
+        detail['local_log_scope'] = 'temporary candidate log; retention is not guaranteed'
+    return {'check_failure': detail,
+            'completed_checks': [reconcile._safe_diagnostic(str(label), Path(repo))
+                                 for label in exc.completed_checks]}
+
+
+def _ready_check_failure(exc, repo):
+    """Retain a safe primary error when cleanup masks it; never dump a chain."""
+    direct = _direct_ready_check_failure(exc, repo)
+    if direct:
+        return direct
+    queue = [exc.__cause__, exc.__context__]
+    seen = {id(exc)}
+    while queue and len(seen) < 8:
+        current = queue.pop(0)
+        if current is None or id(current) in seen:
+            continue
+        seen.add(id(current))
+        projected = _direct_ready_check_failure(current, repo)
+        if projected:
+            return {**projected, 'outer_failure': {'type': type(exc).__name__,
+                'diagnostic': reconcile._safe_diagnostic(str(exc), Path(repo))},
+                'failure_context_inspected': len(seen)}
+        queue.extend((current.__cause__, current.__context__))
+    return {'failure_context_limit_reached': True} if queue else {}
+
+
 def ready_plan(repo, ready, *, adopt=(), include=(), machine='local-windows',
                skill_roots=None, recovery_roots=None, message='chore: integrate checked ready change',
-               capture_recovery=False, recovery_artifacts=None, **unsupported):
+               capture_recovery=False, recovery_artifacts=None, continue_published=None, **unsupported):
     """Read-only Git/source qualification; no fetch, checkout, config, or deploy."""
     try:
         if capture_recovery or recovery_artifacts or unsupported:
             raise sync_git.SyncBlocked('ready integration supports explicit source/portable scopes only')
         options = _options(adopt, include, machine, skill_roots, recovery_roots, message)
         result = _qualify(Path(repo).resolve(), ready, options)
-        return dict(result, result='ready', verification_scope='frozen source candidate checks; no live or remote verification')
+        if continue_published is not None:
+            _, _, binding, _, _ = _published_successor_preflight(Path(repo).resolve(), result, continue_published)
+            result['predecessor'] = binding
+        return dict(result, result='ready', verification_scope=(
+            'frozen source checks and read-only published-successor preflight; no mutation or action authorization'
+            if continue_published is not None else 'frozen source candidate checks; no live or remote verification'))
     except (OSError, RuntimeError, ValueError, KeyError, subprocess.SubprocessError) as exc:
-        return {'result': 'review-required', 'reason': str(exc), 'failed_step': 'ready-qualification'}
+        return {'result': 'review-required', 'reason': reconcile._safe_diagnostic(str(exc), Path(repo)), 'failed_step': 'ready-qualification',
+                **_ready_check_failure(exc, repo)}
 
 
 def _owned_worktree(primary, common, target, name, branch):
@@ -162,6 +207,269 @@ def _owned_worktree(primary, common, target, name, branch):
     marker = {'schema_version': 1, 'common_repo': str(common), 'target': target, 'head': base}
     _atomic(marker_path, marker)
     return lane, marker_path, marker
+
+
+def _canonical_hash(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+
+def _successor_binding(original, original_sha256, request, receipt, target_states):
+    """Consistency only: source qualification and action permission remain separate."""
+    keys = {'schema_version', 'attempt', 'journal_sha256', 'published_commit',
+            'successor_ready', 'successor_options_sha256', 'target_states'}
+    if (not isinstance(request, dict) or set(request) != keys
+            or type(request['schema_version']) is not int or request['schema_version'] != 1):
+        raise sync_git.SyncBlocked('published continuation requires an exact bounded request')
+    if original.get('phase') == 'source-conflict':
+        return _source_conflict_binding(original, original_sha256, request, receipt, target_states)
+    result = original.get('last_result') or {}
+    targets = original.get('rollout', {}).get('targets', {})
+    if (original.get('phase') != 'published' or original.get('deployment_started') is not True
+            or result.get('result') not in {'published', 'synced'}
+            or result.get('remote_verified') is not True
+            or result.get('sync_complete') is True or result.get('rollout_verified') is True
+            or not targets or any(row.get('phase') not in
+                {'blocked', 'verified', 'native-verification-incomplete', 'installed'} for row in targets.values())
+            or all(row.get('verified') is True for row in targets.values())):
+        raise sync_git.SyncBlocked('only a settled published partial rollout can continue with a successor')
+    old_options = original['receipt']['options']
+    if (request['attempt'] != original['attempt'] or request['journal_sha256'] != original_sha256
+            or request['published_commit'] != result.get('commit')
+            or request['successor_ready'] != receipt['ready']
+            or request['successor_options_sha256'] != _canonical_hash(receipt['options'])
+            or receipt['target'] != original['receipt']['target']
+            or receipt['options']['machine'] != old_options['machine']
+            or receipt['options']['skill_roots'] != old_options['skill_roots']
+            or receipt['options']['recovery_roots'] != old_options['recovery_roots']
+            or set(request['target_states']) != set(targets)
+            or request['target_states'] != target_states):
+        raise sync_git.SyncBlocked('published continuation source, selection, target state or destination changed')
+    # Carry every previously configured root; verified rows are not proof for new bytes.
+    return {'attempt': original['attempt'], 'journal_sha256': original_sha256,
+            'published_commit': result['commit'], 'targets': json.loads(json.dumps(targets)),
+            'sync_complete': False, 'target_states': dict(target_states)}
+
+
+def _continuation_targets(original):
+    targets = json.loads(json.dumps(original.get('rollout', {}).get('targets', {})))
+    if original.get('phase') == 'source-conflict':
+        for predecessor in original.get('predecessors', []):
+            targets.update(json.loads(json.dumps(predecessor['targets'])))
+    return targets
+
+
+def _source_conflict_binding(original, original_sha256, request, receipt, target_states):
+    """Bind settled source-only failure; never relabel it as a publication."""
+    previous = original.get('receipt', {})
+    old_options = previous.get('options', {})
+    targets = _continuation_targets(original)
+    predecessors = original.get('predecessors', [])
+    if (type(original.get('schema_version')) is not int or original.get('schema_version') != 1
+            or original.get('deployment_started') is not False
+            or not predecessors or not targets or original.get('last_result') is not None
+            or original.get('conflicts') != [] or not original.get('reason')
+            or predecessors[-1].get('published_commit') != original.get('base')):
+        raise sync_git.SyncBlocked('only a settled undeployed inherited source failure can rebind')
+    if (request['attempt'] != original.get('attempt') or request['journal_sha256'] != original_sha256
+            or request['published_commit'] != original['base']
+            or request['successor_ready'] != receipt['ready'] or receipt['ready'] == previous.get('ready')
+            or request['successor_options_sha256'] != _canonical_hash(receipt['options'])
+            or receipt['target'] != previous.get('target')
+            or any(receipt['options'].get(key) != old_options.get(key)
+                   for key in ('machine', 'skill_roots', 'recovery_roots', 'adopt'))
+            or not set(old_options.get('include', [])) <= set(receipt['options']['include'])
+            or set(request['target_states']) != set(targets)
+            or request['target_states'] != target_states):
+        raise sync_git.SyncBlocked('failed-source continuation identity, scope or target state changed')
+    return {'source_failure': True, 'attempt': original['attempt'], 'journal_sha256': original_sha256,
+            'published_commit': original['base'], 'targets': targets, 'target_states': dict(target_states),
+            'failed_ready': previous['ready'], 'failed_receipt_sha256': _canonical_hash(previous),
+            'inherited_predecessors_sha256': _canonical_hash(predecessors), 'sync_complete': False}
+
+
+def _continuation_root_state(root):
+    fleet = reconcile.fleet
+    state = fleet.load_state(root)
+    owners = state.get('skills', {})
+    if not owners or any(not fleet.SKILL_NAME_RE.fullmatch(name) for name in owners):
+        raise sync_git.SyncBlocked('continuation requires existing named managed owners')
+    return _canonical_hash({'state': fleet.state_identity(root),
+                            'owners': {name: fleet.installed_hash(root/name) for name in sorted(owners)}})
+
+
+def _require_absent_inner_receipt(lane):
+    """Absence is a path fact, not the truthiness of a decoded receipt."""
+    admin = sync_git.git_dir(lane)
+    if not admin.is_dir():
+        raise sync_git.SyncBlocked('inner publisher receipt location is uncertain')
+    path = admin/'agent-signal-sync.json'
+    try:
+        path.lstat()  # Includes directories and dangling symlinks; no decoding.
+    except FileNotFoundError:
+        if not admin.is_dir():
+            raise sync_git.SyncBlocked('inner publisher receipt location changed')
+        return
+    except OSError as exc:
+        raise sync_git.SyncBlocked('inner publisher receipt path state is uncertain') from exc
+    raise sync_git.SyncBlocked('failed-source continuation cannot replace any inner publisher receipt path')
+
+
+def _published_successor_preflight(repo, receipt, request):
+    primary, common = _primary(repo)
+    path = common/'agent-signal-integration.json'
+    raw = path.read_bytes(); original = json.loads(raw)
+    if original.get('phase') == 'source-conflict':
+        _validate_predecessors(common, original)
+    states = {name: _continuation_root_state(Path(name)) for name in _continuation_targets(original)}
+    binding = _successor_binding(original, hashlib.sha256(raw).hexdigest(), request, receipt, states)
+    target = sync_git.destination(primary)
+    for name in ('agent-signal-integration-worktree', 'agent-signal-published'):
+        if not (common/name).is_dir() or not (common/(name+'.json')).is_file():
+            raise sync_git.SyncBlocked('continuation requires existing owned worktrees, not recreation')
+    lane, _, marker = _owned_worktree(primary, common, target, 'agent-signal-integration-worktree', INTEGRATION_BRANCH)
+    published, _, public_marker = _owned_worktree(primary, common, target, 'agent-signal-published', BRANCH)
+    commit = binding['published_commit']
+    if (target != receipt['target'] or sync_git.changed(lane) or sync_git.changed(published)
+            or sync_git.git(lane, 'rev-parse', 'HEAD') != commit or marker['head'] != commit
+            or sync_git.git(published, 'rev-parse', 'HEAD') != commit or public_marker['head'] != commit
+            or sync_git.git(lane, 'ls-remote', '--refs', target['remote'], target['ref']).split() != [commit, target['ref']]):
+        raise sync_git.SyncBlocked('continuation requires clean owned worktrees and the exact published remote')
+    sync_git.git(lane, 'merge-base', '--is-ancestor', commit, receipt['ready'])
+    if binding.get('source_failure'):
+        sync_git.git(lane, 'merge-base', '--is-ancestor', original['receipt']['ready'], receipt['ready'])
+    for operation in ('MERGE_HEAD', 'CHERRY_PICK_HEAD', 'REVERT_HEAD', 'rebase-merge', 'rebase-apply', 'sequencer'):
+        if (sync_git.git_dir(lane)/operation).exists():
+            raise sync_git.SyncBlocked('continuation cannot replace an uncertain Git operation')
+    if binding.get('source_failure'):
+        _require_absent_inner_receipt(lane)
+        pending = None
+    else:
+        pending = sync_git.read_pending(lane)
+    if pending:
+        _validate_pending(lane, original, pending)
+        if not pending.get('completion'):
+            raise sync_git.SyncBlocked('continuation cannot replace an unsettled inner publisher')
+        _verify_completion(lane, original, pending)
+    binding['native_obligations'] = _publication_native_obligations(lane, commit)
+    binding['source_backups'] = original.get('source_backup')
+    return original, raw, binding, lane, pending
+
+
+def _begin_published_successor_unlocked(repo, receipt, request):
+    """Called only under the existing integration lock after normal qualification."""
+    original, raw, binding, lane, pending = _published_successor_preflight(repo, receipt, request)
+    _, common = _primary(repo)
+    failed_source = binding.get('source_failure') is True
+    prefix = 'agent-signal-integration-source-failure-' if failed_source else 'agent-signal-integration-predecessor-'
+    archive = common/(prefix + original['attempt'])
+    if archive.is_symlink() or archive.resolve() != archive.absolute():
+        raise sync_git.SyncBlocked('predecessor archive must be an owned literal path')
+    archive.mkdir(exist_ok=True)
+    def retain(name, data):
+        path = archive/name
+        if path.is_symlink():
+            raise sync_git.SyncBlocked('predecessor evidence cannot be a link')
+        if path.exists():
+            if path.read_bytes() != data:
+                raise sync_git.SyncBlocked('retained predecessor evidence changed')
+        else:
+            temporary = archive/(name+'.tmp')
+            if temporary.is_symlink() or (temporary.exists() and temporary.read_bytes() != data):
+                raise sync_git.SyncBlocked('uncertain predecessor temporary evidence must be inspected')
+            temporary.write_bytes(data); os.replace(temporary, path)
+    retain('journal.json', raw)
+    pending_path = sync_git.git_dir(lane)/'agent-signal-sync.json'
+    if pending:
+        retain('publisher-pending.json', pending_path.read_bytes())
+    binding['archive'] = str(archive)
+    predecessors = list(original.get('predecessors', [])) + ([] if failed_source else [binding])
+    source_failures = list(original.get('source_failures', [])) + ([binding] if failed_source else [])
+    successor = {'schema_version': 1, 'attempt': uuid.uuid4().hex,
+                 'phase': 'successor-pending', 'deployment_started': False,
+                 'base': binding['published_commit'], 'receipt': receipt,
+                 'published_repo': original['published_repo'], 'integration_repo': str(lane),
+                 'predecessors': predecessors, 'continuation_request_sha256': _canonical_hash(request)}
+    if source_failures:
+        successor['source_failures'] = source_failures
+    if {name: _continuation_root_state(Path(name)) for name in binding['targets']} != binding['target_states']:
+        raise sync_git.SyncBlocked('installed targets changed while retaining predecessor evidence')
+    if failed_source:
+        _require_absent_inner_receipt(lane)
+    # The only removed inner receipt is verified completed and retained byte-for-byte.
+    # Before atomic replacement, the original journal and retained evidence remain
+    # intact. Re-evaluate the exact request; never relabel a source failure.
+    if pending:
+        pending_path.unlink()
+    _atomic(common/'agent-signal-integration.json', successor)
+    return successor
+
+
+def _begin_published_successor(repo, receipt, request):
+    _, common = _primary(repo)
+    original = _read(common/'agent-signal-integration.json')
+    roots = [Path(name) for name in _continuation_targets(original)]
+    with sync_git.path_locks(roots):
+        return _begin_published_successor_unlocked(repo, receipt, request)
+
+
+def _validate_predecessors(common, journal):
+    for row in journal.get('predecessors', []):
+        if not re.fullmatch('[0-9a-f]{32}', row['attempt']):
+            raise sync_git.SyncBlocked('invalid retained predecessor identity')
+        archive = common/('agent-signal-integration-predecessor-' + row['attempt'])
+        if str(archive) != row['archive'] or archive.is_symlink():
+            raise sync_git.SyncBlocked('predecessor archive location changed')
+        raw = (archive/'journal.json').read_bytes()
+        value = json.loads(raw)
+        if (hashlib.sha256(raw).hexdigest() != row['journal_sha256']
+                or value['attempt'] != row['attempt'] or value['phase'] != 'published'
+                or value['last_result']['commit'] != row['published_commit']
+                or value.get('rollout', {}).get('targets') != row['targets']
+                or row['sync_complete'] is not False
+                or row.get('native_obligations') != _publication_native_obligations(
+                    Path(value['integration_repo']), row['published_commit'])):
+            raise sync_git.SyncBlocked('retained predecessor evidence or target obligations changed')
+    for row in journal.get('source_failures', []):
+        if not re.fullmatch('[0-9a-f]{32}', row['attempt']):
+            raise sync_git.SyncBlocked('invalid retained source-failure identity')
+        archive = common/('agent-signal-integration-source-failure-' + row['attempt'])
+        if str(archive) != row['archive'] or archive.is_symlink() or archive.resolve() != archive.absolute():
+            raise sync_git.SyncBlocked('source-failure archive location changed')
+        raw = (archive/'journal.json').read_bytes()
+        if hashlib.sha256(raw).hexdigest() != row['journal_sha256']:
+            raise sync_git.SyncBlocked('retained source-failure bytes changed')
+        value = json.loads(raw)
+        inherited = {_canonical_hash(item) for item in journal.get('predecessors', [])}
+        failures = {_canonical_hash(item) for item in journal.get('source_failures', [])}
+        if (row.get('source_failure') is not True or row.get('sync_complete') is not False
+                or value.get('attempt') != row['attempt'] or value.get('phase') != 'source-conflict'
+                or value.get('deployment_started') is not False or value.get('last_result') is not None
+                or value.get('base') != row['published_commit']
+                or value['receipt']['ready'] != row['failed_ready']
+                or _canonical_hash(value['receipt']) != row['failed_receipt_sha256']
+                or _canonical_hash(value.get('predecessors', [])) != row['inherited_predecessors_sha256']
+                or _continuation_targets(value) != row['targets']
+                or row.get('source_backups') != value.get('source_backup')
+                or any(_canonical_hash(item) not in inherited for item in value.get('predecessors', []))
+                or any(_canonical_hash(item) not in failures for item in value.get('source_failures', []))):
+            raise sync_git.SyncBlocked('retained source failure or inherited obligations changed')
+
+
+def _carried_target_holds(journal, targets):
+    required = {name for predecessor in journal.get('predecessors', [])
+                for name in predecessor['targets']}
+    return sorted(name for name in required if targets.get(name, {}).get('verified') is not True)
+
+
+def _ready_receipt(repo, exact, options, observed, continuation):
+    if continuation is not None:
+        if observed and observed.get('continuation_request_sha256') == _canonical_hash(continuation):
+            receipt = observed['receipt']
+            if receipt['ready'] != exact or receipt['options'] != options:
+                raise sync_git.SyncBlocked('continued successor requires its exact ready input and selection')
+            return receipt
+        return _qualify(repo, exact, options)
+    return observed['receipt'] if observed else _qualify(repo, exact, options)
 
 
 def _origin_destinations(lane, options, common):
@@ -278,7 +586,11 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
         except (OSError, RuntimeError, ValueError, KeyError) as exc:
             state.update(verified=False, phase='blocked', reason=str(exc))
         save()
-    return all(rollout['targets'][path].get('verified') is True for path in roots)
+    carried_holds = _carried_target_holds(journal, rollout['targets'])
+    if carried_holds:
+        rollout['carried_target_holds'] = carried_holds
+        save()
+    return not carried_holds and all(rollout['targets'][path].get('verified') is True for path in roots)
 
 
 _ABSENT_CONFIG_VALUE = object()
@@ -316,17 +628,65 @@ def _changed_config_matches(before, desired, current, path=()):
     return _config_value_equal(desired, current)
 
 
+def _committed_bytes(lane, commit, name):
+    result = subprocess.run(['git', '-c', 'core.longpaths=true', '-C', str(lane),
+                             'show', commit + ':' + name], capture_output=True)
+    if result.returncode:
+        raise sync_git.SyncBlocked('native obligation source bytes are unavailable')
+    return result.stdout
+
+
+def _native_target_spec(host, artifact):
+    return {'host': host, **{key: artifact.get(key) for key in ('id', 'source', 'kind', 'format')}}
+
+
+def _publication_native_obligations(lane, commit):
+    paths = _names(lane, 'diff', '--name-only', commit + '^', commit)
+    selected = sorted(name for name in paths if name.startswith('recovery/current/')
+                      and name != 'recovery/current/manifest.json')
+    if not selected:
+        return []
+    policy = json.loads(_committed_bytes(lane, commit, 'recovery.json'))
+    artifacts = {'recovery/current/' + artifact['snapshot']: (host, artifact)
+                 for host, spec in policy['hosts'].items() for artifact in spec.get('artifacts', [])}
+    obligations = []
+    for name in selected:
+        host, artifact = artifacts[name]
+        existed = bool(sync_git.git(lane, 'ls-tree', '--name-only', commit + '^', '--', name))
+        old = _committed_bytes(lane, commit + '^', name) if existed else None
+        desired = _committed_bytes(lane, commit, name)
+        obligations.append({'artifact': name, 'publication_commit': commit,
+                            'before_sha256': hashlib.sha256(old).hexdigest() if old is not None else 'absent',
+                            'after_sha256': hashlib.sha256(desired).hexdigest(),
+                            'target_spec': _native_target_spec(host, artifact)})
+    return obligations
+
+
+def _native_source_obligations(lane, journal):
+    obligations = _publication_native_obligations(lane, journal['last_result']['commit'])
+    for predecessor in journal.get('predecessors', []):
+        # Derive from the publication even when its native phase was never reached.
+        actual = _publication_native_obligations(lane, predecessor['published_commit'])
+        if predecessor.get('native_obligations') != actual:
+            raise sync_git.SyncBlocked('inherited native source obligations changed or are missing')
+        obligations.extend(actual)
+    return obligations
+
+
 def _native_destination_completion(lane, journal, *, recovery_module=None):
-    """Read-only saved-state check; never restore broad snapshots or restart sessions."""
+    """Fresh read-only delta checks, including every inherited source obligation."""
     if recovery_module is None:
         import recovery as recovery_module
     recovery = recovery_module
     commit = journal['last_result']['commit']
-    # The actual published commit's parent preserves selection on source-only resume.
-    paths = set(_names(lane, 'diff', '--name-only', commit + '^', commit))
-    selected = sorted(p for p in paths if p.startswith('recovery/current/') and p != 'recovery/current/manifest.json')
     result = {'saved_verified': True, 'loaded_verified': None, 'targets': {}}
-    if not selected:
+    try:
+        obligations = _native_source_obligations(lane, journal)
+    except (OSError, RuntimeError, ValueError, KeyError, TypeError) as exc:
+        return dict(result, saved_verified=False, targets={'inherited-source': {
+            'verified': False, 'reason': str(exc),
+            'resumption_event': 'Reconcile the exact retained publication/source obligations before retry.'}})
+    if not obligations:
         return result
     try:
         policy = recovery._load_policy(lane / 'recovery.json')
@@ -337,40 +697,65 @@ def _native_destination_completion(lane, journal, *, recovery_module=None):
         return dict(result, saved_verified=False, targets={'snapshot': {'verified': False,
                     'reason': str(exc), 'resumption_event': 'Repair and qualify the exact snapshot/policy before retry.'}})
     roots = journal['receipt']['options'].get('recovery_roots') or {}
-    for name in selected:
+    selected_paths = set(journal['receipt'].get('paths', []))
+    changed = set(_names(lane, 'diff', '--name-only', commit + '^', commit))
+    grouped = {}
+    for obligation in obligations:
+        grouped.setdefault(obligation['artifact'], []).append(obligation)
+    for name, rows in sorted(grouped.items()):
         state = {'verified': False, 'loaded_verified': None,
-                 'resumption_event': 'Native owner reconciles the exact selected values, then resume this published attempt; user restarts later.'}
+                 'source_obligations': rows,
+                 'resumption_event': 'Native owner reconciles the exact selected values, then resume; user restarts later.'}
         result['targets'][name] = state
         try:
             host, artifact = artifacts[name]
+            if any(row['target_spec'] != _native_target_spec(host, artifact) for row in rows):
+                raise sync_git.SyncBlocked('native target changed; inherited target requires explicit owner reconciliation')
+            if artifact['kind'] != 'config':
+                raise sync_git.SyncBlocked('Selected native text requires its existing recovery owner readback; skill catalogue is insufficient.')
             _, resolved = recovery._selected_roots(roots, [host])
             target = recovery._safe_join(resolved[host], artifact['source'], must_exist=True)
             identity = recovery._file_identity(target)
-            desired_bytes = sync_git.git(lane, 'show', commit + ':' + name)
-            old_bytes = sync_git.git(lane, 'show', commit + '^:' + name)
-            if artifact['kind'] != 'config':
-                raise sync_git.SyncBlocked('Selected native text requires its existing recovery owner readback; skill catalogue is insufficient.')
+            desired_raw = _committed_bytes(lane, commit, name)
+            desired_hash = hashlib.sha256(desired_raw).hexdigest()
             home = recovery._target_home(resolved, [host])
-            # Bootstrap/restore from the managed published checkout owns the saved source anchor.
             anchor = Path(journal['published_repo'])
-            before = recovery._expand(json.loads(old_bytes), resolved, anchor, home=home)
-            desired = recovery._expand(json.loads(desired_bytes), resolved, anchor, home=home)
+            desired = recovery._expand(json.loads(desired_raw), resolved, anchor, home=home)
             current = recovery._read_config(target, artifact['format'])
-            state['verified'] = _changed_config_matches(before, desired, current)
+            verified = True
+            for row in rows:
+                prior = row['publication_commit']
+                old_raw = (_committed_bytes(lane, prior + '^', name)
+                           if row['before_sha256'] != 'absent' else None)
+                prior_raw = _committed_bytes(lane, prior, name)
+                if ((hashlib.sha256(old_raw).hexdigest() if old_raw is not None else 'absent') != row['before_sha256']
+                        or hashlib.sha256(prior_raw).hexdigest() != row['after_sha256']):
+                    raise sync_git.SyncBlocked('native obligation raw source binding changed')
+                if (desired_hash != row['after_sha256'] and
+                        not (name in changed and name in selected_paths)):
+                    raise sync_git.SyncBlocked('native desired-value supersession is not selected in the qualified successor')
+                old = recovery._expand(json.loads(old_raw) if old_raw is not None else {}, resolved, anchor, home=home)
+                prior_desired = recovery._expand(json.loads(prior_raw), resolved, anchor, home=home)
+                # Both sides preserve the old changed keys even when a qualified
+                # successor deliberately reverts a value to its original baseline.
+                verified = (verified and _changed_config_matches(old, desired, current)
+                            and _changed_config_matches(prior_desired, desired, current))
+            state['verified'] = verified
             if recovery._file_identity(target) != identity:
                 state['verified'] = False
                 state['reason'] = 'Native target changed during readback.'
             elif not state['verified']:
-                state['reason'] = 'Selected native configuration delta is stale; no broad restore was attempted.'
+                state['reason'] = 'Selected or inherited native configuration is stale; no restore was attempted.'
             else:
-                state['resumption_event'] = 'Saved values verified; loading is separate and may await the user-managed restart.'
-        except (OSError, RuntimeError, ValueError, KeyError) as exc:
+                state['resumption_event'] = 'Saved values verified; loading remains separate and may await the user-managed restart.'
+        except (OSError, RuntimeError, ValueError, KeyError, TypeError) as exc:
             state['reason'] = str(exc)
         result['saved_verified'] = result['saved_verified'] and state['verified']
     return result
 
 
 def _finish_published(primary, common, target, lane, published, published_marker_path, published_marker, journal, *, source_only=False):
+    _validate_predecessors(common, journal)
     sync_git.assert_integration_owner(lane, journal['attempt'])
     result = dict(journal['last_result'])
     commit = result['commit']
@@ -392,6 +777,8 @@ def _finish_published(primary, common, target, lane, published, published_marker
     if sync_git.git(lane, 'ls-remote', '--refs', target['remote'], target['ref']).split() != [remote_tip, target['ref']]:
         raise sync_git.SyncBlocked('remote changed during published source refresh verification')
     if source_only:
+        if journal.get('predecessors'):
+            raise sync_git.SyncBlocked('inherited rollout obligations require normal continuation, not source-only')
         if journal.get('deployment_started'):
             raise sync_git.SyncBlocked('rollout already started; resume the exact installed-target attempt')
         result.update(result='published', rollout_verified=False, installed_verified=False,
@@ -588,13 +975,13 @@ def rollout_published(repo, commit, *, source_only=False, machine='local-windows
                 'attempt':journal.get('attempt') if journal else None}
 
 
-def _sanitized_commit(repo, commit):
+def _sanitized_commit(repo, commit, metadata_base=None):
     """Remove only already-qualified generated metadata from a Git source diff."""
     parent = sync_git.git(repo, 'rev-parse', commit + '^')
     with tempfile.TemporaryDirectory(prefix='agent-signal-ready-index-') as temporary:
         env = dict(os.environ, GIT_INDEX_FILE=str(Path(temporary) / 'index'))
         sync_git.git(repo, 'read-tree', commit, env=env)
-        row = sync_git.git(repo, 'ls-tree', parent, '--', 'host-deltas.json')
+        row = sync_git.git(repo, 'ls-tree', metadata_base or parent, '--', 'host-deltas.json')
         if row:
             metadata, name = row.split('\t', 1)
             mode, _, oid = metadata.split()
@@ -608,11 +995,35 @@ def _sanitized_commit(repo, commit):
 def _archive(common, journal, reason, conflicts=()):
     journal.update(phase='source-conflict', reason=reason, conflicts=list(conflicts))
     _atomic(common / ('agent-signal-integration-failed-' + journal['attempt'] + '.json'), journal)
-    (common / 'agent-signal-integration.json').unlink()
+    if journal.get('predecessors') or journal.get('source_failures'):
+        _atomic(common / 'agent-signal-integration.json', journal)
+    else:
+        (common / 'agent-signal-integration.json').unlink()
 
 
 def _abort_composition(lane, base, journal):
     files = journal.get('composition_files', {})
+    if journal.get('composition_mode') == 'raw-tree':
+        before = journal['composition_before']
+        if (sync_git.git(lane, 'rev-parse', 'HEAD') != base
+                or sync_git.git(lane, 'diff', '--cached', '--name-only', '-z', 'HEAD', '--')):
+            raise sync_git.SyncBlocked('raw composition index/HEAD changed; preserve state')
+        actual = sync_git.identities(lane, files)
+        if any(actual[name] not in (before[name], files[name]) for name in files):
+            raise sync_git.SyncBlocked('raw composition changed concurrently; preserve user bytes')
+        for name in sorted(files):
+            if actual[name] == before[name]:
+                continue
+            path = lane / sync_git.safe_path(lane, name)
+            if before[name] == 'deleted':
+                path.unlink()
+            else:
+                data = sync_git._raw_git(lane, 'show', base + ':' + name)
+                if hashlib.sha256(data).hexdigest() != before[name]:
+                    raise sync_git.SyncBlocked('raw rollback source binding changed')
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(data)
+        return
     if files and sync_git.identities(lane, files) != files:
         raise sync_git.SyncBlocked('owned composition changed concurrently; preserve integration bytes for inspection')
     sync_git.git(lane, 'cherry-pick', '--quit')
@@ -626,6 +1037,32 @@ def _abort_composition(lane, base, journal):
                 if sync_git.identities(lane, [name])[name] != identity:
                     raise sync_git.SyncBlocked('owned new file changed during composition rollback')
                 path.unlink()
+
+
+def _stage_raw_composition(lane, base, receipt, journal, save):
+    """Plan from objects, journal ownership, then write exact scoped raw bytes."""
+    journal.update(composition_mode='raw-tree', composition_before={}, composition_files={})
+    if (sync_git.git(lane, 'rev-parse', 'HEAD') != base or sync_git.changed(lane)
+            or sync_git.git(lane, 'diff', '--cached', '--name-only', '-z', 'HEAD', '--')):
+        raise sync_git.SyncBlocked('raw composition requires unchanged owned source/index')
+    plan = sync_git.raw_composition(lane, base, receipt['ready'], receipt['source_base'], receipt['paths'])
+    if sync_git.identities(lane, plan['before']) != plan['before']:
+        raise sync_git.SyncBlocked('raw composition baseline bytes changed')
+    journal.update(composition_mode='raw-tree', composition_before=plan['before'],
+                   composition_files=plan['files'], composed_tree=plan['tree'])
+    save()  # Write-ahead ownership: a partial write is never unrecorded.
+    for name, data in sorted(plan['content'].items()):
+        if sync_git.identities(lane, [name])[name] != plan['before'][name]:
+            raise sync_git.SyncBlocked('raw composition path changed before write')
+        path = lane / sync_git.safe_path(lane, name)
+        if data is None:
+            path.unlink()
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+    if sync_git.identities(lane, plan['files']) != plan['files']:
+        raise sync_git.SyncBlocked('raw composition readback differs from reviewed objects')
+    return plan['tree']
 
 
 def _validate_pending(lane, journal, pending):
@@ -696,11 +1133,13 @@ def _verify_completion(lane, journal, pending):
 
 def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                skill_roots=None, recovery_roots=None, message='chore: integrate checked ready change',
-               capture_recovery=False, recovery_artifacts=None, source_only=False, **unsupported):
+               capture_recovery=False, recovery_artifacts=None, source_only=False, continue_published=None, **unsupported):
     repo = Path(repo).resolve()
     phase = 'ready-qualification'
     journal = None
     try:
+        if source_only and continue_published is not None:
+            raise sync_git.SyncBlocked('published successor cannot discard rollout through source-only')
         if source_only and adopt:
             raise sync_git.SyncBlocked('source-only requires include-only publication without native owner selectors')
         if capture_recovery or recovery_artifacts or unsupported:
@@ -710,13 +1149,21 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
         exact = sync_git.git(repo, 'rev-parse', '--verify', str(ready) + '^{commit}')
         journal_path = common / 'agent-signal-integration.json'
         observed = _read(journal_path)
-        receipt = observed['receipt'] if observed else _qualify(repo, exact, options)
+        receipt = _ready_receipt(repo, exact, options, observed, continue_published)
         with sync_git.lock(repo, timeout=120):
             target = sync_git.destination(primary)
             journal = _read(journal_path)
             if journal and journal.get('phase') in {'releasing', 'released'}:
                 raise sync_git.SyncBlocked('integration release is pending; resume its exact attempt first')
+            if continue_published is not None:
+                if journal and journal.get('continuation_request_sha256') == _canonical_hash(continue_published):
+                    if journal['receipt'] != receipt:
+                        raise sync_git.SyncBlocked('resumed successor qualification changed')
+                else:
+                    phase = 'published-successor-preflight'
+                    journal = _begin_published_successor(repo, receipt, continue_published)
             if journal:
+                _validate_predecessors(common, journal)
                 receipt = journal['receipt']
                 if receipt['ready'] != exact or receipt['options'] != options or receipt['target'] != target:
                     raise sync_git.SyncBlocked('pending integration requires the same exact ready input, scope, and destination')
@@ -731,7 +1178,7 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
             if journal and journal['phase'] == 'published':
                 phase = 'published-source-refresh'
                 return _finish_published(primary, common, target, lane, published, published_marker_path, published_marker, journal, source_only=source_only)
-            if not journal:
+            if not journal or journal['phase'] == 'successor-pending':
                 if sync_git.read_pending(lane) or sync_git.changed(lane):
                     raise sync_git.SyncBlocked('published integration worktree has unowned pending or dirty state')
                 if sync_git.git(lane, 'rev-parse', 'HEAD') != marker['head']:
@@ -745,9 +1192,11 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                 _checkout_git(lane, 'reset', '--hard', base)
                 marker['head'] = base
                 _atomic(marker_path, marker)
+                inherited = {key: journal[key] for key in ('predecessors', 'source_failures', 'continuation_request_sha256', 'attempt')
+                             if journal and key in journal}
                 journal = {'schema_version': 1, 'attempt': uuid.uuid4().hex, 'receipt': receipt,
                            'base': base, 'phase': 'composing', 'deployment_started': False,
-                           'published_repo': str(published), 'integration_repo': str(lane)}
+                           'published_repo': str(published), 'integration_repo': str(lane), **inherited}
                 _atomic(journal_path, journal)
                 if (lane / 'registry.json').is_file():
                     # The reconciler requires a rendered public baseline even
@@ -755,14 +1204,15 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                     reconcile.fleet.render_snapshot(lane, reconcile._snapshot(lane))
                 phase = 'composing'
                 try:
-                    for commit in receipt['source_commits']:
-                        applying = _sanitized_commit(lane, commit) if receipt['omit_metadata'] else commit
-                        _checkout_git(lane, 'cherry-pick', '--no-commit', applying)
-                    composed = sync_git.git(lane, 'write-tree')
-                    journal['composition_files'] = sync_git.identities(lane, sync_git.changed(lane))
-                    _atomic(journal_path, journal)
-                    sync_git.git(lane, 'reset', '--mixed', base)
+                    journal.update(composition_mode='raw-tree', composition_before={}, composition_files={})
+                    ready = (_sanitized_commit(lane, receipt['ready'], receipt['source_base'])
+                             if receipt['omit_metadata'] else receipt['ready'])
+                    raw_receipt = dict(receipt, ready=ready)
+                    composed = _stage_raw_composition(lane, base, raw_receipt, journal,
+                        lambda: _atomic(journal_path, journal))
                     files = sync_git.identities(lane, sync_git.changed(lane))
+                    if files != journal['composition_files']:
+                        raise sync_git.SyncBlocked('raw composition contains unexpected source changes')
                     with sync_git.prepare_candidate(lane, files, base=base) as (_, recreated):
                         if recreated != composed:
                             raise sync_git.SyncBlocked('scoped publication cannot reproduce the composed Git tree')
@@ -770,6 +1220,8 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                     journal['origin_destinations'] = _origin_destinations(lane, options, common)
                     _atomic(journal_path, journal)
                 except sync_git.SyncBlocked as exc:
+                    if isinstance(exc, sync_git.GitFailure):
+                        journal['git_failure'] = dict(exc.detail)
                     conflicts = _names(lane, 'diff', '--name-only', '--diff-filter=U')
                     # Source-only failure: retain exact commit/conflict evidence,
                     # then abort only our owned composition, before any deploy.
@@ -777,7 +1229,8 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                     _archive(common, journal, str(exc), conflicts)
                     return {'result': 'conflict' if conflicts else 'incomplete', 'reason': str(exc),
                             'conflicts': conflicts, 'ready': exact, 'base': base,
-                            'published_repo': str(published), 'integration_repo': str(lane)}
+                            'published_repo': str(published), 'integration_repo': str(lane),
+                            **_ready_check_failure(exc, lane)}
             elif journal['phase'] not in {'composed', 'reconciling'}:
                 raise sync_git.SyncBlocked('interrupted integration requires inspection of its owned composition')
             phase = 'reconciling'
@@ -820,10 +1273,11 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                 _atomic(journal_path, journal)
             return result
     except (OSError, RuntimeError, ValueError, KeyError, subprocess.SubprocessError) as exc:
-        return {'result': 'incomplete', 'failed_step': phase, 'reason': str(exc),
+        return {'result': 'incomplete', 'failed_step': phase, 'reason': reconcile._safe_diagnostic(str(exc), Path(repo)),
                 'ready': str(ready), 'published_repo': journal.get('published_repo') if journal else None,
                 'commit': (journal or {}).get('last_result', {}).get('commit'),
-                'publication_verified': bool(journal and journal.get('phase') == 'published')}
+                'publication_verified': bool(journal and journal.get('phase') == 'published'),
+                **_ready_check_failure(exc, repo)}
 
 
 def _release_paths(common, attempt):
@@ -926,6 +1380,8 @@ def _release_source_kind(original):
 
 def _release_preflight(primary, common, original, archive, archived_lane, archived_branch, qualification=None):
     """Verify an exact rejected or interrupted source before any publisher action."""
+    if original.get('predecessors') or original.get('source_failures'):
+        raise sync_git.SyncBlocked('inherited published obligations cannot use predeployment release')
     interrupted = _release_source_kind(original) == 'interrupted-include-only'
     result = original.get('last_result') or {}
     allowed_result = {'result', 'reason', 'owners', 'measurements', 'ready', 'base',

@@ -943,3 +943,301 @@ def validate_native_diagnostic(report: Any) -> dict[str, Any]:
         errors.append('malformed diagnostic evidence')
     return {'valid': not errors, 'errors': sorted(set(errors)),
             'admission_eligible': False, 'decision': 'diagnostic-only' if not errors else 'inconclusive'}
+
+
+def strict_review_json(text):
+    def pairs(items):
+        result={}
+        for key,value in items:
+            if key in result:raise ValueError('duplicate review key')
+            result[key]=value
+        return result
+    def constant(value):raise ValueError('nonfinite review value')
+    return json.loads(text,object_pairs_hook=pairs,parse_constant=constant)
+
+
+def substantive_review(parsed, packet_files, source_bytes):
+    """Resolve cited packet evidence and reject internally unsound preference.
+
+    This establishes source consistency, not that a reason is true or a reviewer
+    is independent. No receipt-selected path is opened or code executed.
+    """
+    gaps=[];resolved=[];dimensions={}
+    def text_or_list(value,nonempty=False):
+        if isinstance(value,str):return bool(value.strip())
+        return isinstance(value,list) and (not nonempty or bool(value)) and all(isinstance(v,str) and bool(v.strip()) for v in value)
+    def strings(value):
+        if isinstance(value,str):return [value]
+        if isinstance(value,list):return [text for item in value for text in strings(item)]
+        if isinstance(value,dict):return [text for item in value.values() for text in strings(item)]
+        return []
+    try:
+        deliveries=parsed['deliveries']
+        if set(deliveries)!={'A','B'}:raise ValueError('two anonymous deliveries required')
+        program_key='program_adequacy' if 'program_adequacy' in deliveries['A'] else 'semantic_adequacy'
+        handoff_key='handoff_adequacy' if 'handoff_adequacy' in deliveries['A'] else 'explanation_utility'
+        preference_keys=('comparative_program_preference','comparative_handoff_preference') if program_key=='program_adequacy' else ('comparative_preference','explanation_preference')
+        for label,row in deliveries.items():
+            if any(row.get(k) not in ('adequate','inadequate','uncertain') for k in (program_key,handoff_key)):
+                gaps.append(label+': adequacy missing/invalid')
+            if not text_or_list(row.get('limitations')):
+                gaps.append(label+': limitations missing/invalid')
+            evidence=row.get('evidence')
+            structured=(program_key=='semantic_adequacy' and isinstance(evidence,list) and bool(evidence)
+                and all(isinstance(item,dict) and text_or_list(item.get('locations'),True)
+                    and isinstance(item.get('reason'),str) and bool(item['reason'].strip())
+                    and ('aspect' not in item or isinstance(item['aspect'],str) and bool(item['aspect'].strip())) for item in evidence))
+            if not (text_or_list(evidence,True) or structured):gaps.append(label+': evidence missing/invalid')
+            count=0
+            for text in strings(row.get('evidence')):
+                for match in re.finditer(r'(?<![\w/])((?:A|B|starting-source)/[A-Za-z0-9_.@+-]+(?:/[A-Za-z0-9_.@+-]+)*)(?::(\d+)(?:-(\d+))?)?',text):
+                    name=match[1].rstrip('.');digest=packet_files.get(name);data=source_bytes.get(digest)
+                    if not isinstance(data,bytes) or hashlib.sha256(data).hexdigest()!=digest:
+                        gaps.append('unresolved review evidence: '+name);continue
+                    if match[2]:
+                        start=int(match[2]);end=int(match[3] or start)
+                        try:length=len(data.decode('utf-8-sig').splitlines())
+                        except UnicodeError:length=0
+                        if not 1<=start<=end<=length:
+                            gaps.append('out-of-range review evidence: '+name);continue
+                    resolved.append({'delivery':label,'path':name,'sha256':digest,'start':match[2],'end':match[3]})
+                    if name.startswith(label+'/'):count+=1
+            if not count:gaps.append(label+': no resolved own-delivery evidence')
+        limits=parsed.get('overall_limits',parsed.get('overall_limitations'))
+        if not text_or_list(limits):gaps.append('overall limitations missing/invalid')
+        for dimension,key,preference in zip(('program','handoff'),(program_key,handoff_key),preference_keys):
+            choice=parsed.get(preference)
+            if choice not in ('A','B','tie','inconclusive'):gaps.append('invalid '+dimension+' preference')
+            adequate=[label for label in ('A','B') if deliveries[label].get(key)=='adequate']
+            if len(adequate)==1 and choice not in (adequate[0],'inconclusive'):
+                gaps.append(dimension+': preference contradicts adequacy')
+            if choice in ('A','B') and deliveries[choice].get(key)!='adequate':
+                gaps.append(dimension+': preferred delivery is not adequate')
+            dimensions[dimension]={'preference':choice,'adequacy':{label:deliveries[label].get(key) for label in ('A','B')}}
+    except (KeyError,TypeError,ValueError,AttributeError):gaps.append('malformed substantive review')
+    return {'ready':not gaps,'gaps':sorted(set(gaps)),'resolved_evidence':resolved,'dimensions':dimensions,
+        'semantic_truth_automatically_proven':False}
+
+
+def rendered_outcome_decision(report, attachment, source_bytes):
+    """Join a scoped human judgment to finished renders; never fabricate a judge.
+
+    This checks bindings and consumes explicit semantic assessments. It cannot
+    discover omitted requirements, authenticate a human or infer task success
+    from a preference. Positive release/efficiency controls remain separate.
+    """
+    import evaluation_measurement as m
+    gaps=[]
+    def raw(sha):
+        data=source_bytes.get(sha)
+        if not isinstance(data,bytes) or hashlib.sha256(data).hexdigest()!=sha:
+            raise ValueError('missing/changed outcome evidence: '+str(sha))
+        return data
+    def doc(sha): return strict_review_json(raw(sha))
+    def citation(value):
+        excerpt=value.get('excerpt')
+        if not isinstance(excerpt,str) or not excerpt.strip() or excerpt not in raw(value['sha256']).decode('utf-8'):
+            raise ValueError('outcome citation does not resolve')
+    try:
+        if attachment.get('output_kind')!='rendered-product': raise ValueError('explicit rendered-product scope required')
+        p=doc(attachment['outcome_packet_sha256'])
+        if p.get('kind')!='human-rendered-outcome-v1': raise ValueError('unsupported outcome packet')
+        # Re-entry receives the wrapper's annotated rows. Bind only the original
+        # captured result for BOTH its digest and every source/capture join.
+        # Raw outcome_assessment and all unknown/raw fields remain authoritative.
+        rows=[{k:v for k,v in row.items()
+               if k not in ('completed_review_outcome','completed_outcome_assessment')}
+              for row in report['results']]
+        ids=[r['id'] for r in rows]
+        if len(ids)!=len(set(ids)) or len(ids)<2: raise ValueError('one row per actual invocation required')
+        if attachment.get('results_sha256')!=m.digest(rows): raise ValueError('outcome/result binding changed')
+        for key in ('product_goal','intervention_description','actor_assignment'): citation(p[key])
+        doc(p['assessment_sha256'])
+        mapping=doc(p['mapping_sha256']); joins=doc(p['source_joins_sha256'])
+        if mapping['source_joins_sha256']!=p['source_joins_sha256']: raise ValueError('mapping/source join changed')
+        if {j['id'] for j in joins}!=set(ids) or len(joins)!=len(ids): raise ValueError('incomplete source roster')
+        for j in joins:
+            r=next(r for r in rows if r['id']==j['id'])
+            original=doc(j['report_sha256'])
+            if (sum(x==r for x in original['results'])!=1 or m.digest(r['final_tree'])!=j['final_tree_sha256']
+                    or j['arm']!=r['arm']):
+                raise ValueError('final result/source identity changed')
+            if r.get('collection',{}).get('schema_sha256')!=p['assessment_sha256']:
+                raise ValueError('assessment differs from collected result schema')
+            for sha in r['final_tree'].values(): raw(sha)
+        label_ids={}; seen_views=set()
+        for view in mapping['views']:
+            if view['view'] in seen_views: raise ValueError('duplicate human view identity')
+            seen_views.add(view['view'])
+            for label in view['map']:
+                j=next(j for j in joins if j['id']==label['id'])
+                if label['final_tree_sha256']!=j['final_tree_sha256'] or label['arm']!=j['arm']:
+                    raise ValueError('label/source identity changed')
+                if (view['view'],label['label']) in label_ids: raise ValueError('duplicate human label identity')
+                label_ids[(view['view'],label['label'])]=j['id']
+        seen=set()
+        for cap in mapping['captures']:
+            j=next(j for j in joins if j['id']==cap['id'])
+            request=doc(cap['request_sha256']); reply=doc(cap['reply_sha256']); delivery=doc(cap['delivery_sha256'])
+            raw(cap['capture_sha256'])
+            if (cap['final_tree_sha256']!=j['final_tree_sha256'] or request['job_id']!=j['id']
+                    or request['artifact_tree_sha256']!=j['final_tree_sha256']
+                    or request['artifact_tree']!=next(r for r in rows if r['id']==j['id'])['final_tree']
+                    or reply['request_sha256']!=cap['request_sha256'] or reply['request_id']!=request['request_id']
+                    or delivery['request_id']!=request['request_id'] or delivery['artifact_tree_sha256']!=j['final_tree_sha256']
+                    or reply['state']!=cap['state'] or reply['state_reached'] is not True
+                    or reply['capture_sha256']!=cap['capture_sha256'] or delivery['capture_sha256']!=cap['capture_sha256']):
+                raise ValueError('render/source/request binding changed')
+            seen.add(j['id'])
+        if seen!=set(ids): raise ValueError('a judged output has no bound capture')
+        human=doc(p['human_judgment_sha256'])
+        if human['mapping_sha256']!=p['mapping_sha256']: raise ValueError('stale human judgment mapping')
+        raw(human['human_quote_sha256']); raw(human['correction_quote_sha256'])
+        if not p.get('human_provenance') or p.get('labels_known') not in (True,False,None):
+            raise ValueError('human provenance/label knowledge required')
+        # This retained receipt format names two pair views sharing current A.
+        # Derive semantic aliases from that actual mapping, never caller choice.
+        alias_pairs={'base/B1':('view-1','B'),'current/shared A':('view-1','A'),'edited/B2':('view-2','B')}
+        if (set(label_ids)!={('view-1','A'),('view-1','B'),('view-2','A'),('view-2','B')}
+                or label_ids[('view-1','A')]!=label_ids[('view-2','A')]
+                or p['human_labels']!={name:list(pair) for name,pair in alias_pairs.items()}):
+            raise ValueError('human aliases contradict retained pair mapping')
+        aliases={name:label_ids[pair] for name,pair in alias_pairs.items()}
+        if (len(set(aliases.values()))!=3 or set(aliases.values())!=set(ids)
+                or any(next(j for j in joins if j['id']==ident)['arm']!=name.split('/')[0]
+                       for name,ident in aliases.items())):
+            raise ValueError('human aliases contradict retained arm identities')
+        selected=human['selected_visual_copy_direction']
+        selected_join=next(j for j in joins if j['id']==selected['id'])
+        if (aliases[human['preferred_visual_output']]!=selected['id']
+                or any(selected.get(k)!=selected_join[k] for k in ('arm','report_sha256','final_tree_sha256'))):
+            raise ValueError('human preferred output contradicts selected artifact')
+        preferences=[]
+        for relation in human['all_supported_pairwise_preferences']:
+            a,b=relation.split(' over ')
+            preferences.append({'preferred':aliases[a],'over':aliases[b]})
+        unresolved=p['undecided_pair']
+        if (human['edited_versus_current']!='undecided' or len(unresolved)!=2 or len(set(unresolved))!=2
+                or set(unresolved)!=set(ids)-{selected['id']}):
+            raise ValueError('partial-order/undecided judgment changed')
+        requirements=p['requirements']
+        if not requirements or len({r['id'] for r in requirements})!=len(requirements): raise ValueError('goal requirements missing/duplicated')
+        for r in requirements:
+            citation(r['goal_citation'])
+            if r['goal_citation']['sha256']!=p['product_goal']['sha256']: raise ValueError('requirement not grounded in product description')
+            if r['coverage'] not in ('covered','scope-mismatch','unassessed') or r['adequacy'] not in ('adequate','inadequate','unassessed'):
+                raise ValueError('explicit coverage/adequacy required')
+            if not r['evidence']: raise ValueError('requirement evidence/limit missing')
+            for e in r['evidence']: citation(e)
+            if r['adequacy']=='adequate' and r['coverage']!='covered': raise ValueError('uncovered outcome cannot pass')
+        coverage_failed=any(r['coverage']=='scope-mismatch' for r in requirements)
+        # Known scope failure is a terminal non-acceptance, not endless pending.
+        # These human preferences alone never establish whole-product adequacy.
+        return {'ready':True,'gaps':[], 'execution_complete':all(r.get('ok') is True for r in rows),
+            'outcome_coverage':'failed' if coverage_failed else 'partial',
+            'finished_result_acceptance':'not-accepted' if coverage_failed else 'not-established',
+            'requirements':requirements,'quality_disposition':{'scope':p['judgment_scope'],'preferences':preferences,'undecided_pair':unresolved},
+            'deliveries':{i:{'task_passed':None,'reviewed_artifact_adequate':None,'final_source_exactly_reviewed':False,
+                'scope':'human visual/copy preference; no whole-product adequacy judgment'} for i in ids},
+            'disposition':'do-not-promote-intervention; finish actual product goal' if coverage_failed else 'bounded-human-preference-only',
+            'human_provenance':p['human_provenance'],'labels_known':p['labels_known'],'review_identity_authenticated':False,
+            'deployment_authority':False,'adoption_authority':False,'whole_workflow_efficiency_qualified':False,
+            'source_bound_current_quality':False,'scope':'Description-derived coverage and bound human rendered preference; no causal or release clearance'}
+    except (KeyError,TypeError,ValueError,AttributeError,StopIteration) as error:
+        gaps.append('malformed rendered outcome: '+str(error))
+    return {'ready':False,'gaps':gaps,'finished_result_acceptance':'not-established','deployment_authority':False,'adoption_authority':False}
+
+
+def completed_artifact_decision(report, attachment, source_bytes):
+    """Consume frozen packet-bound substantive review, without granting rollout.
+
+    Historical replays may establish reviewed-view quality while final-source
+    projection or execution provenance remains limited; no backfilled proof.
+    """
+    if attachment.get('review_kind') == 'human-rendered-outcome':
+        return rendered_outcome_decision(report, attachment, source_bytes)
+    import evaluation_measurement as m
+    gaps=[];assessment={};outcomes={}
+    def blob(key):
+        value=attachment[key];data=source_bytes.get(value)
+        if not isinstance(data,bytes) or hashlib.sha256(data).hexdigest()!=value:raise ValueError(key+' bytes unavailable/changed')
+        return data
+    try:
+        if attachment.get('output_kind') not in ('program','text'):
+            gaps.append('nonvisual completed-review consumer requires explicit program/text scope; rendered capture/review remains separate')
+        packet=strict_review_json(blob('packet_sha256'));review=strict_review_json(blob('review_sha256'));seal=strict_review_json(blob('review_freeze_sha256'))
+        for name,value in seal.get('files',{}).items():
+            data=source_bytes.get(value)
+            if not isinstance(data,bytes) or hashlib.sha256(data).hexdigest()!=value:gaps.append('frozen review member missing/changed: '+name)
+        native_hash=seal.get('files',{}).get(attachment.get('native_file'))
+        native_data=source_bytes.get(native_hash)
+        if not isinstance(native_data,bytes) or hashlib.sha256(native_data).hexdigest()!=native_hash:
+            gaps.append('frozen native review receipt missing/changed')
+        else:
+            native=strict_review_json(native_data)
+            if native.get('ok') is not True:gaps.append('reviewer runtime did not complete')
+            reply=native.get('final_response')
+            if not isinstance(reply,str) or not reply.strip():gaps.append('retained native judgment text missing')
+            else:
+                authoritative=strict_review_json(reply)
+                if authoritative!=review.get('parsed'):gaps.append('parsed review contradicts retained native judgment')
+                for name,value in seal.get('files',{}).items():
+                    if name.upper().endswith('-RAW.TXT') or name==attachment.get('raw_judgment_file'):
+                        if strict_review_json(source_bytes[value])!=authoritative:gaps.append('frozen raw judgment contradicts native reply: '+name)
+        if review.get('readonly') is not True or review.get('both_sources_read') is not True:
+            gaps.append('reviewer observation/read-only evidence missing')
+        if not (review.get('recording_complete') is True or review.get('request_recording',{}).get('complete') is True):
+            gaps.append('reviewer request recording incomplete')
+        if seal.get('phase')!='before-unblinding':gaps.append('review not frozen before unblinding')
+        if seal.get('files',{}).get(attachment['review_file'])!=attachment['review_sha256']:
+            gaps.append('raw review differs from freeze')
+        if attachment['packet_sha256'] not in (seal.get('packet_sha256'),*seal.get('files',{}).values()):
+            gaps.append('review freeze does not bind packet')
+        manifest=packet['files']
+        for name,value in manifest.items():
+            data=source_bytes.get(value)
+            if not isinstance(data,bytes) or hashlib.sha256(data).hexdigest()!=value:gaps.append('packet bytes missing/changed: '+name)
+        raw_results=[{key:value for key,value in row.items() if key not in ('completed_review_outcome','completed_outcome_assessment')}
+                     for row in report['results']]
+        if attachment.get('results_sha256')!=m.digest(raw_results):gaps.append('review attachment/result binding changed')
+        if set(attachment['label_to_result'])!={'A','B'} or len(set(attachment['label_to_result'].values()))!=2:
+            gaps.append('ambiguous delivery mapping')
+        assessment=substantive_review(review['parsed'],manifest,source_bytes);gaps.extend(assessment['gaps'])
+        for label,ident in attachment['label_to_result'].items():
+            row=next(r for r in report['results'] if r['id']==ident)
+            viewed={name[len(label+'/source/'):]:value for name,value in manifest.items() if name.startswith(label+'/source/')}
+            exact=row.get('final_tree')==viewed
+            adequate=assessment['dimensions'].get('program',{}).get('adequacy',{}).get(label)=='adequate'
+            dimensions=row.get('outcome_assessment',{})
+            runtime=(row.get('runtime_completed',dimensions.get('runtime_completed',row.get('native',{}).get('ok'))) is True
+                and row.get('deterministic_invariants_passed',dimensions.get('deterministic_invariants_passed')) is True)
+            outcomes[ident]={'reviewed_artifact_adequate':adequate,'final_source_exactly_reviewed':exact,
+                'task_passed':bool(adequate and runtime) if exact and runtime else None,
+                'scope':'exact final source plus recorded runtime/invariants' if exact and runtime else 'frozen reviewed view; execution/projection linkage not promoted'}
+    except (KeyError,TypeError,ValueError,AttributeError,StopIteration) as error:gaps.append('malformed completed review: '+str(error))
+    ready=not gaps
+    if not ready:
+        for row in outcomes.values():row['task_passed']=None
+    return {'ready':ready,'gaps':sorted(set(gaps)),'quality_disposition':assessment.get('dimensions',{}),
+        'deliveries':outcomes,'packet_source_consistent':ready,'execution_authenticated':False,
+        'deployment_authority':False,'adoption_authority':False,'whole_workflow_efficiency_qualified':False,
+        'legacy_efficiency':report.get('legacy_efficiency'),
+        'source_bound_current_quality':bool(ready and outcomes and all(row['final_source_exactly_reviewed'] for row in outcomes.values())),
+        'scope':'Bounded artifact quality; no skill-wide retirement, fresh-receiver or complete cost proof'}
+
+
+def quality_tradeoff_decision(quality, policy, source_bytes):
+    """Current source-bound quality preference, alongside legacy efficiency."""
+    quality=quality if isinstance(quality,dict) else {}
+    source_bytes=source_bytes if isinstance(source_bytes,dict) else {}
+    valid=False
+    if isinstance(policy,dict):
+        raw=source_bytes.get(policy.get('source_sha256'))
+        valid=(isinstance(raw,bytes) and hashlib.sha256(raw).hexdigest()==policy.get('source_sha256')
+            and policy.get('allow_more_tokens_for_better_quality') is True
+            and isinstance(policy.get('excerpt'),str) and bool(policy['excerpt'].strip())
+            and policy['excerpt'] in raw.decode('utf-8',errors='replace'))
+    return {'policy_source_verified':valid,'quality_recommendation_sufficient':bool(valid and quality.get('ready') and quality.get('source_bound_current_quality',True)),
+        'quality_disposition':quality.get('quality_disposition'), 'legacy_efficiency_independent':True,
+        'unknown_cost_is_zero':False,'deployment_authority':False,'adoption_authority':False}
+

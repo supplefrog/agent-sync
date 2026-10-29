@@ -72,3 +72,37 @@ The independently reviewed oracle contract passes 86 offline regressions; the in
 The completed reviewed-host collection/runtime interfaces are integrated with the newer oracle checks; their native model runs remain source-bound historical observations and do not automatically qualify or replace this canonical lane. The isolated adaptive dispatcher has 24 offline registry tests and eight representative synthetic calls, but no native actor assembly or returned role-tool/provider-request exposure was observed. Its model gate remains closed. Private profiles and global tool registration are outside this consolidation. Shunt/Luna and R21/R22 remain incomplete.
 
 This evaluator has no integrated screenshot/motion review, browser functional acceptance or blinded visual judging. Inline judges receive text. It cannot fairly decide frontend visual skill value from these lanes; a text or code pass is not that evidence. No frontend implementation is added here.
+
+
+## Completed product outcomes and supplied judgment
+
+The offline artifact-pilot entrypoint can join supplied final artifacts, stated
+product-goal/intervention/actor citations and an existing human rendered assessment:
+
+```bash
+python tools/evaluation_artifact_pilot.py review-input --input-report REPORT.json --operator-input INPUT.json --out FRESH_DIRECTORY
+```
+
+INPUT.json selects outcome_packet, sources_root and sources_manifest. Each manifest
+member must remain inside that explicit source root and match its digest; the
+source bundle is bounded to32MiB without truncation. The consumer checks actual
+result/capture/mapping/assessment bindings and rejects coherent alias or assessment
+substitution. It does not launch an actor, infer a missing goal, authenticate a
+human, establish blind conduct or treat preference as finished-product adequacy.
+The supported rendered format is a retained two-view, three-result judgment with
+one shared current output; other formats remain unsupported.
+
+The existing attach-review CLI route consumes an explicit completed attachment and
+source bundle into a fresh successor report. Native-study attachment requires its
+bound input plan. Raw captured assessment is preserved separately from completed
+review. A valid negative or partial result remains negative/partial; unknown task
+fitness or usage is never upgraded or counted as zero. Quality preference and
+legacy efficiency remain separate, with deployment/adoption authority false.
+This offline consumption is not a new comparison or automatic instruction release.
+Keep any private assessment/source material outside the public repository; source
+publication includes the consumer, not the supplied human records or artifacts.
+
+The completed-outcome source path uses the existing published usage APIs.
+Their required HOOKS/reconcile_program_usage definitions and TOKEN_KEYS/counter/seconds
+dependencies are unchanged; native observer/request-path upgrades remain separate
+source work and are not implied by shipping this offline result consumer.

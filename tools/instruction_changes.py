@@ -14,6 +14,11 @@ import sync_git
 import validate
 
 INDEX = 'contracts/instruction-surfaces.json'
+NATIVE_LEARNING_OWNER = 'integrations/hermes-native-learning'
+NATIVE_LEARNING_REFERENCE = NATIVE_LEARNING_OWNER + '/skills/hermes-native-learning/SKILL.md'
+NATIVE_LEARNING_MANIFEST_SHA256 = 'de0e5cf960ac6bc7c1cc849dde7bd72d12a94ea6e71cb62c7a275bbfb4313a9f'
+NATIVE_LEARNING_INDEX_SHA256 = '5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032'
+
 GENERATED = {'recovery/current/hosts/codex/AGENTS.md',
              'recovery/current/hosts/hermes/SOUL.md',
              'recovery/current/hosts/omp/AGENTS.md'}
@@ -232,6 +237,127 @@ def _approved_public_audience(candidate, source, name, owner, row, base, paths, 
     return 'exact user-approved public audience R2 correction; source/recovery review, no behavioral proof'
 
 
+def native_learning_source_reference(repo, name):
+    """Recognize one pinned package reference, never a global skill/adoption grant."""
+    if name != NATIVE_LEARNING_REFERENCE:
+        return False
+    try:
+        def read(relative):
+            if sync_git.safe_path(repo, relative) != relative:
+                raise sync_git.SyncBlocked('native reference path is not exact')
+            return (repo / relative).read_bytes()
+        index_raw = read(INDEX)
+        if _hash(index_raw) != NATIVE_LEARNING_INDEX_SHA256:
+            return False
+        index = json.loads(index_raw)
+        rows = [row for row in index['surfaces'] if row.get('artifact') == name]
+        expected = {'id': 'learning.native-source.9', 'owner': NATIVE_LEARNING_OWNER,
+                    'artifact': name, 'kind': 'portable-reference', 'scope': 'project',
+                    'status': 'reference', 'model_sensitive': True, 'backup': 'not-effective',
+                    'assembly_order': 0, 'hosts': ['hermes', 'codex']}
+        if len(rows) != 1 or any(rows[0].get(key) != value for key, value in expected.items()):
+            return False
+        manifest_raw = read(NATIVE_LEARNING_OWNER + '/PUBLIC-FILES.json')
+        if _hash(manifest_raw) != NATIVE_LEARNING_MANIFEST_SHA256:
+            return False
+        manifest = json.loads(manifest_raw)
+        members = manifest['files']
+        if (manifest.get('fileCount') != 89 or manifest.get('publicationFileCount') != 90
+                or len(members) != 89 or len({row['path'] for row in members}) != len(members)):
+            return False
+        reference = None
+        for row in members:
+            relative = NATIVE_LEARNING_OWNER + '/' + row['path']
+            data = read(relative)
+            if _hash(data) != row['sha256'] or len(data) != row['bytes']:
+                return False
+            if relative == name:
+                reference = data
+        if reference is None:
+            return False
+        registry = json.loads(read('registry.json'))
+        for row in registry['skills']:
+            canonical = 'skills/' + row['name'] + '/SKILL.md'
+            if row['name'] == 'hermes-native-learning':
+                return False
+            if (repo / canonical).is_file():
+                # A registered global copy is not the conditional source category,
+                # even if its different name or CRLF encoding hides the duplication.
+                if read(canonical).replace(b'\r\n', b'\n') == reference.replace(b'\r\n', b'\n'):
+                    return False
+        if (repo / 'skills/hermes-native-learning/SKILL.md').is_file():
+            return False
+        return True
+    except (OSError, RuntimeError, ValueError, KeyError, TypeError, AttributeError):
+        return False
+
+
+def _approved_native_learning_source(candidate, source, name, owner, row, base, paths, reconciliations):
+    """One pinned requested-capability source package, never an activation grant."""
+    prefix = NATIVE_LEARNING_OWNER
+    model_sources = ['integrations/hermes-native-learning/docs/KNOWLEDGE.md', 'integrations/hermes-native-learning/docs/MATERIALS-JOBS.md', 'integrations/hermes-native-learning/docs/PROTOCOL.md', 'integrations/hermes-native-learning/reference/planning.md', 'integrations/hermes-native-learning/reference/practice-base.md', 'integrations/hermes-native-learning/reference/practice-doctrine.md', 'integrations/hermes-native-learning/reference/probe-doctrine.md', 'integrations/hermes-native-learning/reference/teacher-cycle.md', 'integrations/hermes-native-learning/reference/teacher-step.md', 'integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md', 'integrations/hermes-native-learning/t3/AGENT-PROTOCOL.md']
+    if owner != prefix or name not in model_sources or row.get("basis") != "user-correction":
+        return None
+    expected_acceptance = {'manifest_sha256': NATIVE_LEARNING_MANIFEST_SHA256, 'source_review_sha256': 'ec6c83f3e10d58136a8690ff47fee09807415632cac2e490dfa8a36cce2f607a', 'basis': 'requested-capability-source', 'hermes_evidence': 'bounded native walkthrough', 't3_evidence': 'reviewed source/components; no live qualification', 'activation': 'separate', 'behavioral_benefit_claim': False}
+    if row.get("native_learning_acceptance") != expected_acceptance:
+        raise sync_git.SyncBlocked("native learning source acceptance is not the selected V3 scope")
+    manifest_name = prefix + "/PUBLIC-FILES.json"
+    manifest_raw = (candidate / manifest_name).read_bytes()
+    if _hash(manifest_raw) != expected_acceptance["manifest_sha256"]:
+        raise sync_git.SyncBlocked("native learning package manifest mismatch")
+    manifest = json.loads(manifest_raw)
+    required = {prefix + "/" + item["path"] for item in manifest["files"]} | {manifest_name, INDEX} | CONTRACTS
+    if (manifest.get("fileCount") != 89 or manifest.get("publicationFileCount") != 90
+            or not required <= set(paths)):
+        raise sync_git.SyncBlocked("native learning requires its complete selected package and intent/status")
+    for item in manifest["files"]:
+        data = (candidate / (prefix + "/" + item["path"])).read_bytes()
+        if _hash(data) != item["sha256"] or len(data) != item["bytes"]:
+            raise sync_git.SyncBlocked("native learning source bytes differ from the reviewed package")
+    if (_hash(_before(source, base, INDEX)) != '8d51deb084b1e361f26d13f7a979fc6887ab44d96a16ed2b6cde561d12867fc5'
+            or _hash((candidate / INDEX).read_bytes()) != NATIVE_LEARNING_INDEX_SHA256
+            or any(_before(source, base, target) is not None for target in model_sources)):
+        raise sync_git.SyncBlocked("native learning source ownership/baseline differs from the selected scope")
+    matching = [record for record in reconciliations if record.get("requirement_change") is True
+                and (set(model_sources) | {INDEX} | CONTRACTS) <= set(record.get("artifacts", {}))]
+    if len(matching) != 1 or any(_before(source, base, target) == (candidate / target).read_bytes() for target in CONTRACTS):
+        raise sync_git.SyncBlocked("native learning requires one bound changed-intent record")
+    if _hash((candidate / 'docs/system-requirements.md').read_bytes()) != 'd9ff350d7f93ccf161f2bc04cc8f891f8ce19074749e6c6cbf3689139b2de320':
+        raise sync_git.SyncBlocked("native learning changes intent outside the selected source decision")
+    if _hash((candidate / 'docs/requirement-status.md').read_bytes()) != '0308f47552aa4ddc9ebb97786886d40c524eed5d7b43ab007ac7767e71da21b0':
+        raise sync_git.SyncBlocked("native learning changes intent outside the selected source decision")
+    for target in set(model_sources) | {INDEX} | CONTRACTS:
+        expected = {"before_sha256": _hash(_before(source, base, target)),
+                    "after_sha256": _hash((candidate / target).read_bytes())}
+        if matching[0]["artifacts"][target] != expected:
+            raise sync_git.SyncBlocked("native learning intent/source binding mismatch: " + target)
+    return "exact requested native-learning capability source; no runtime activation or behavioral improvement claimed"
+
+
+def _approved_item_review_maintenance(candidate, source, name, owner, row, base, paths, reconciliations):
+    """Closed, explicitly selected operational correction; no behavioral proof."""
+    guide = "skills/instruction-authoring/references/item-review-loop.md"
+    if (name != guide or owner != "skills/instruction-authoring"
+            or row.get("basis") != "user-correction"):
+        return None
+    pins = {'skills/instruction-authoring/SKILL.md': ('efa9a626ea0683fc5bd5305107511f8a03f1b90a89c232230457288d8a357fed', 'dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d'), 'skills/instruction-authoring/references/item-review-loop.md': ('absent', '70b4ecf1c7d893fb519aa2907306acb3fea4ef9397a8252adf310a0648ba7e02'), 'docs/system-requirements.md': ('8f9a173ef7f97ed477345d94611ad10f0238c93fad75978102ff80d8dec7de0c', 'd9ff350d7f93ccf161f2bc04cc8f891f8ce19074749e6c6cbf3689139b2de320'), 'docs/requirement-status.md': ('4b547698e601de0c867a2f60dc2fbe9e8c02f493077ecf1ce6c9bf2c31723f5b', '0308f47552aa4ddc9ebb97786886d40c524eed5d7b43ab007ac7767e71da21b0')}
+    if not set(pins) <= set(paths):
+        raise sync_git.SyncBlocked("item-review maintenance requires both exact products and changed intent/status")
+    for path, (old_hash, new_hash) in pins.items():
+        target = candidate / path
+        current = target.read_bytes() if target.is_file() else None
+        if _hash(_before(source, base, path)) != old_hash or _hash(current) != new_hash:
+            raise sync_git.SyncBlocked("item-review maintenance is outside the approved byte pairs")
+    matching = [record for record in reconciliations if record.get("requirement_change") is True
+                and set(pins) <= set(record.get("artifacts", {}))]
+    if len(matching) != 1:
+        raise sync_git.SyncBlocked("item-review maintenance needs one bound changed-intent record")
+    for path, (old_hash, new_hash) in pins.items():
+        if matching[0]["artifacts"][path] != {"before_sha256": old_hash, "after_sha256": new_hash}:
+            raise sync_git.SyncBlocked("item-review maintenance reconciliation binding mismatch")
+    return "exact reviewed item-review operational maintenance"
+
+
 def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations):
     """Narrow reviewed correction routes after necessity/dependency validation.
 
@@ -250,12 +376,17 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
     elif (kind == 'add-or-change' and name == owner == 'surfaces/core.md'
             and row.get('basis') == 'user-correction' and _preference_data_only(old, new, row)):
         reason = 'explicit user model-selector data; standing instructions unchanged'
+    elif kind == 'requested-native-learning':
+        reason = _approved_native_learning_source(candidate, source, name, owner, row, base, paths, reconciliations)
     elif kind == 'requested-reader':
         reason = _approved_requested_reader(candidate, source, name, owner, row, base, paths)
     elif kind == 'reference-transport':
         reason = _approved_reference_transport(candidate, source, name, owner, row, base, paths)
     elif kind == 'public-audience-correction':
         reason = _approved_public_audience(candidate, source, name, owner, row, base, paths, reconciliations)
+    elif (kind == 'contract-correction'
+            and name == 'skills/instruction-authoring/references/item-review-loop.md'):
+        reason = _approved_item_review_maintenance(candidate, source, name, owner, row, base, paths, reconciliations)
     elif kind == 'contract-correction':
         sections = {'skills/instruction-authoring/SKILL.md': 'Evaluation discipline',
                     'skills/instruction-authoring/references/change-review.md': 'Publication necessity record'}
@@ -679,7 +810,7 @@ def check(candidate: Path, source: Path, base: str, paths):
         if binding != {'before_sha256': old_hash, 'after_sha256': new_hash}:
             raise sync_git.SyncBlocked('instruction necessity record is not bound to changed bytes: ' + name)
         kind = row.get('change_kind', 'add-or-change')
-        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-reader', 'public-audience-correction'}:
+        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-reader', 'requested-native-learning', 'public-audience-correction'}:
             raise sync_git.SyncBlocked('invalid instruction change kind: ' + name)
         if kind == 'remove':
             old_data = _before(source, base, name)

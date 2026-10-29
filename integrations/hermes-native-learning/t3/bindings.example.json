@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "lessons": [{
+    "ownerSessionId": "replace-with-host-written-native-Codex-thread-id",
+    "chatId": "example-topic",
+    "kind": "teach",
+    "stateRoot": "private/state",
+    "exportRoot": "private/exports"
+  }]
+}

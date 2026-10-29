@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "base": "ab48410f2189ad14b0a82de97c45de45a9036cf2",
+  "selected_paths": [
+    "contracts/instruction-surfaces.json",
+    "docs/evaluations/outcome-efficiency.md",
+    "docs/recovery.md",
+    "docs/requirement-status.md",
+    "docs/system-requirements.md",
+    "docs/worktree-publication.md",
+    "evals/results/completed-outcome-consumer.json",
+    "evals/results/item-review-maintenance.json",
+    "evals/results/native-learning-source-binding.json",
+    "evals/results/published-partial-successor.json",
+    "host-deltas.json",
+    "integrations/hermes-native-learning/.gitignore",
+    "integrations/hermes-native-learning/LICENSE",
+    "integrations/hermes-native-learning/NOTICE.md",
+    "integrations/hermes-native-learning/PUBLIC-FILES.json",
+    "integrations/hermes-native-learning/README.md",
+    "integrations/hermes-native-learning/REFERENCE-SOURCES.json",
+    "integrations/hermes-native-learning/bindings.example.json",
+    "integrations/hermes-native-learning/build-t3.mjs",
+    "integrations/hermes-native-learning/build.mjs",
+    "integrations/hermes-native-learning/desktop/plugin.js",
+    "integrations/hermes-native-learning/docs/FEATURE-MAP.md",
+    "integrations/hermes-native-learning/docs/INSTALL.md",
+    "integrations/hermes-native-learning/docs/KNOWLEDGE.md",
+    "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md",
+    "integrations/hermes-native-learning/docs/PROTOCOL.md",
+    "integrations/hermes-native-learning/docs/QUALIFICATION.md",
+    "integrations/hermes-native-learning/docs/T3-INTEGRATION.md",
+    "integrations/hermes-native-learning/package.json",
+    "integrations/hermes-native-learning/reference/planning.md",
+    "integrations/hermes-native-learning/reference/practice-base.md",
+    "integrations/hermes-native-learning/reference/practice-doctrine.md",
+    "integrations/hermes-native-learning/reference/probe-doctrine.md",
+    "integrations/hermes-native-learning/reference/teacher-cycle.md",
+    "integrations/hermes-native-learning/reference/teacher-step.md",
+    "integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md",
+    "integrations/hermes-native-learning/src/adapter.mjs",
+    "integrations/hermes-native-learning/src/bridge.mjs",
+    "integrations/hermes-native-learning/src/catalogue.mjs",
+    "integrations/hermes-native-learning/src/cli.mjs",
+    "integrations/hermes-native-learning/src/commands.mjs",
+    "integrations/hermes-native-learning/src/config.mjs",
+    "integrations/hermes-native-learning/src/connect-export.mjs",
+    "integrations/hermes-native-learning/src/context-page.mjs",
+    "integrations/hermes-native-learning/src/desktop-entry.mjs",
+    "integrations/hermes-native-learning/src/imports.mjs",
+    "integrations/hermes-native-learning/src/inline/artifacts.mjs",
+    "integrations/hermes-native-learning/src/inline/build-inline.mjs",
+    "integrations/hermes-native-learning/src/inline/hermes-contribution.mjs",
+    "integrations/hermes-native-learning/src/inline/hermes-native-port.mjs",
+    "integrations/hermes-native-learning/src/inline/host-actions.mjs",
+    "integrations/hermes-native-learning/src/inline/host/host-session.mjs",
+    "integrations/hermes-native-learning/src/inline/host/native-session.mjs",
+    "integrations/hermes-native-learning/src/inline/inline-client.mjs",
+    "integrations/hermes-native-learning/src/inline/inline-template.html",
+    "integrations/hermes-native-learning/src/inline/lesson-prose.mjs",
+    "integrations/hermes-native-learning/src/inline/practice-client.mjs",
+    "integrations/hermes-native-learning/src/jobs.mjs",
+    "integrations/hermes-native-learning/src/knowledge.mjs",
+    "integrations/hermes-native-learning/src/materials.mjs",
+    "integrations/hermes-native-learning/src/practice-state.mjs",
+    "integrations/hermes-native-learning/src/propositions.mjs",
+    "integrations/hermes-native-learning/src/store.mjs",
+    "integrations/hermes-native-learning/src/t3/app.mjs",
+    "integrations/hermes-native-learning/src/t3/boundary.mjs",
+    "integrations/hermes-native-learning/src/t3/job-port.mjs",
+    "integrations/hermes-native-learning/src/t3/server.mjs",
+    "integrations/hermes-native-learning/src/vendor/runtime/chains.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/clusters.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/coverage.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/demo-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/graph.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/input-parser.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/job-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/mermaid-plan.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/native-scans.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/notes-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/pending.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/plan-contract.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/plan-tree.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/practice-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/probe-ack.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/question-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/session-clusters.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/target-pure.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/value-debris.ts",
+    "integrations/hermes-native-learning/src/workflow.mjs",
+    "integrations/hermes-native-learning/t3/AGENT-PROTOCOL.md",
+    "integrations/hermes-native-learning/t3/BUILD.json",
+    "integrations/hermes-native-learning/t3/SOURCES.json",
+    "integrations/hermes-native-learning/t3/app.html",
+    "integrations/hermes-native-learning/t3/bindings.example.json",
+    "integrations/hermes-native-learning/t3/codex-mcp.example.toml",
+    "integrations/hermes-native-learning/test/artifacts.dom.test.mjs",
+    "integrations/hermes-native-learning/test/backend.test.mjs",
+    "integrations/hermes-native-learning/test/knowledge.test.mjs",
+    "integrations/hermes-native-learning/test/material-jobs.test.mjs",
+    "integrations/hermes-native-learning/test/package-repair.test.mjs",
+    "integrations/hermes-native-learning/test/panels.dom.test.mjs",
+    "integrations/hermes-native-learning/test/presentation.test.mjs",
+    "integrations/hermes-native-learning/test/propositions.test.mjs",
+    "skills/instruction-authoring/SKILL.md",
+    "skills/instruction-authoring/references/item-review-loop.md",
+    "tests/test_authoring_maintenance_scope.py",
+    "tests/test_integration_reference_binding.py",
+    "tests/test_native_learning_acceptance.py",
+    "tests/test_published_successor.py",
+    "tests/test_raw_git_composition.py",
+    "tools/audit.py",
+    "tools/evaluation_artifact_pilot.py",
+    "tools/evaluation_evidence.py",
+    "tools/evaluation_measurement.py",
+    "tools/instruction_changes.py",
+    "tools/reconcile.py",
+    "tools/sync_git.py",
+    "tools/worktree_sync.py"
+  ],
+  "scope": "Completed-outcome evaluator integration composed with retained authoring/native-learning source and reviewed recovery mechanisms. No new model trial, learning activation or measured-benefit claim.",
+  "composition": {
+    "evidence_added_functions": [
+      "completed_artifact_decision",
+      "quality_tradeoff_decision",
+      "rendered_outcome_decision",
+      "strict_review_json",
+      "substantive_review"
+    ],
+    "pilot_added_functions": [
+      "attach_completed_review",
+      "rendered_review_input"
+    ],
+    "pilot_changed_functions": [
+      "main"
+    ],
+    "remaining_public_functions_ast_identical": true,
+    "measurement_usage": "Current required measurement API with exact existing public usage exports. Native usage observer upgrades are unnecessary for this scoped path and remain unshipped in the untouched primary checkout.",
+    "coordinator": "Retain newer reviewed source-conflict, raw-byte recovery and inherited-obligation support; do not replace with older standalone coordinator."
+  },
+  "checks": {
+    "retained_valid_negative_packet": true,
+    "coherent_alias_substitution_rejected": true,
+    "coherent_assessment_substitution_rejected": true,
+    "offline_review_input_attach_path": true,
+    "three_unique_results": true,
+    "partial_preference_preserved": true,
+    "task_adequacy_unknown": true,
+    "raw_input_unchanged": true,
+    "new_model_or_provider_calls": 0,
+    "full_source_release_qualification": "not run for this composed source candidate",
+    "representation_limit": "The current primary quality object omits a historical measurement_binding_verified:false field; no true binding is invented. Every other joined-result field matches the retained historical outcome.",
+    "dependency_compatibility": "Required usage exports HOOKS/reconcile_program_usage and imported TOKEN_KEYS/counter/seconds are AST-identical across public/current versions. No privacy allowlist or guard suppression is introduced.",
+    "source_readiness_history": "The first isolated12-file plan stopped at the public-safety guard in an unnecessary copied usage module. This11-file successor retains the already-published compatible usage version. No source/adoption or release pass is inferred before actual readiness.",
+    "rendered_attachment_reentry": {
+      "scope": "Offline retained rendered-result consumer and existing native-plan measurement path; no new runtime/model or semantic assessment.",
+      "predecessor_reproduced": "Wrapper-owned annotations invalidated the raw result digest and source-row joins.",
+      "repair": "Exclude exactly completed_review_outcome and completed_outcome_assessment from the rendered raw projection for both hashing and source/capture joins.",
+      "observed": "Raw retained negative, annotated recheck and actual attachment/native-plan measurement re-entry agree; three measurements produced. Altered raw and rehashed raw assessments, unknown fields, captures, aliases and foreign assessment remain rejected.",
+      "limits": "Product remains not accepted; task adequacy and complete cost/behavior benefit remain unproved. Input report, judgment, source bytes and native plan unchanged.",
+      "new_model_or_provider_calls": 0,
+      "successor_normal_source_readiness": "Not run for this source-only repair revision."
+    }
+  },
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/instruction-profiles.md": {
+          "before_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569",
+          "after_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569"
+        },
+        "docs/native-instruction-diagnostic.md": {
+          "before_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a",
+          "after_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a"
+        },
+        "tools/evaluation_artifact_pilot.py": {
+          "before_sha256": "d21f07da8451e605eb20b0decc532b756a1945e843c26ed76904780c5d9a4304",
+          "after_sha256": "9b593e16ea558b2ceb4256aadb9eb8c7d7bd3df57e6b732d744620eb5e02054f"
+        },
+        "tools/evaluation_evidence.py": {
+          "before_sha256": "c093b1c3c2cd1d7a8a44043f10bed389cac3f63273ff251d2fbb0d095ff28edf",
+          "after_sha256": "fc8ed3896a206388b8f968f5700de5f77d2c81a3fcf2a2a5d2e1747a0e9e9dc5"
+        },
+        "tools/evaluation_measurement.py": {
+          "before_sha256": "2ffae8f351c9936f00b89c5beb7741d8f3933a4f54764d615bcd1103cdac1241",
+          "after_sha256": "b3a294aaa92d81c2599c33ecb0e05885d9166eadc19791981ff95f70eef01616"
+        },
+        "tools/evaluation_usage.py": {
+          "before_sha256": "2008b6f5deb593e9833db9f5d4c27b88fcac142981695568c1cddb9eaaf9721e",
+          "after_sha256": "2008b6f5deb593e9833db9f5d4c27b88fcac142981695568c1cddb9eaaf9721e"
+        }
+      },
+      "requirement_change": false,
+      "requirement_reason": "Existing outcome-first evaluation and source/cost integrity intent is preserved. This supplies the missing offline completed-product/judgment consumption route; it does not add an automatic grader, new runtime, model authority or behavioral-adoption waiver.",
+      "authority": "Source consistency does not authenticate judgments or grant publication, actor/ledger access, learning activation, native rollout, restart or unselected-owner writes. Exact public release and guarded continuation need applicable authorization.",
+      "checks": "Public-base wrapper composition preserves all other legacy evidence/pilot functions by AST. Ported functions match actual primary source. The retained valid negative, two coherent substitutions and real offline CLI path were checked without models; separate primary/producer source reviews are reused, with actual projection/dependency review still required.",
+      "outcome_review": {
+        "expected": "Join clarified outcome citations, actual final artifacts and supplied judgment; preserve valid negative results, independent binding rejects, unknown accounting and absent adoption authority.",
+        "observed": "The isolated source produced the retained negative/partial outcome and rejected both binding substitutions through the offline helper/CLI path. It used only its own source/tools module path; primary dirty modules and rollback were unchanged.",
+        "evidence": "Source projection/AST preservation and the existing retained negative/alternative/broken inputs. Private raw human/actor/source evidence is not a public changed file.",
+        "limitations": "This is offline composition evidence, not a new model comparison, final product acceptance, semantic completeness, human authentication, native runner/collector qualification, release qualification or runtime loading proof."
+      },
+      "obligations": [
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "updated",
+          "reason": "Keep existing owner, source/cost/provenance and permission boundaries. Public usage APIs remain unchanged; the required offline outcome/measurement path is selected without native observer expansion."
+        },
+        {
+          "path": "docs/instruction-profiles.md",
+          "disposition": "unchanged",
+          "reason": "Keep existing owner, source/cost/provenance and permission boundaries. Public usage APIs remain unchanged; the required offline outcome/measurement path is selected without native observer expansion."
+        },
+        {
+          "path": "docs/native-instruction-diagnostic.md",
+          "disposition": "unchanged",
+          "reason": "Keep existing owner, source/cost/provenance and permission boundaries. Public usage APIs remain unchanged; the required offline outcome/measurement path is selected without native observer expansion."
+        },
+        {
+          "path": "tools/evaluation_usage.py",
+          "disposition": "unchanged",
+          "reason": "Keep existing owner, source/cost/provenance and permission boundaries. Public usage APIs remain unchanged; the required offline outcome/measurement path is selected without native observer expansion."
+        }
+      ]
+    }
+  ]
+}

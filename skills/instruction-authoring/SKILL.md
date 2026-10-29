@@ -108,6 +108,8 @@ For OpenAI model-specific prompt changes, use the installed OpenAI Docs procedur
 
 ## Evaluation discipline
 
+For an explicitly commissioned skill/tool backlog assessment and repair, use the optional [item review loop](references/item-review-loop.md). Keep ordinary bounded edits local; this reference adds no launch or publication authority.
+
 Do not force a fixed benchmark, subagent fan-out, viewer, exact wording assertion, or quantitative harness onto every skill edit.
 
 Use baseline/candidate runs when model behavior or trigger selection is genuinely uncertain. Keep the model/runtime/tool context equivalent; native skill comparisons keep other catalog entries and tool access matched. Deterministic checks should enforce artifacts or true invariants, not paraphrasable prose. Use independent review only when complexity, risk, or author bias makes it materially useful.

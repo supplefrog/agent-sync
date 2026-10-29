@@ -1,0 +1,24 @@
+# Product implementation map
+
+Reference: LearnHarness v0.3.4, `6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb`. This map separates source implementation from an actual host qualification. It is not a percentage or learning-outcome claim.
+
+| Reference behavior | Native implementation | Remaining boundary |
+| --- | --- | --- |
+| Diagnose prerequisites and persist assessment | Original question/input contracts, evidence-bearing `probe_done`, persistent assessment panel | Actual host must diagnose from genuine answers; model quality unqualified |
+| Plan dependency DAG, initial approval, legitimate rewrites | Pinned plan parser/tree/status semantics, stable IDs, initial approval retained across rewrites | Native learner approval round trip awaits final acceptance |
+| Predict → explain → check → repair/progress | Committed answer, deterministic choices, one question, claim-once actual teacher reaction, pinned doctrine/workflow | Agent judgment is not replaced by a synthetic rubric or visited=mastery |
+| Reasoning, confidence, reveal, close/reopen | Original inputs, immutable commitments, draft identity, retained feedback and pending question | Host caller/loading/cross-window behavior remains to qualify; SDK has no atomic cross-window CAS |
+| Practice problem, thinking, hint, conclusion and explicit Next | Committed hidden solution, actual thinking-linked feedback, pause questions, conclusion reveal, explicit Next | Real native practice dialogue remains unqualified |
+| Saved lessons and history | Existing atomic store, owner-scoped explicit catalogue/create/resume/rename, lossless context pages | No host-wide history scanner or implicit conversation creation |
+| Teacher proposition graph and coverage | Pinned coverage/batching/identity union/argument simplification/graph derivation, findings/audit/merge, source-linked review | An independent source-blind auditor needs an actual fresh authorized context; data projections alone are not actor isolation |
+| Graph-linked practice | Fresh canonical proposition resolution and target validation; imported notes can join explicitly attached lesson context | No graph/data root enrolled; graph evidence is not mastery |
+| Notes/material import | Explicit enrolled notes/PDF attachments, fingerprints, bounded notes reads, serialized whole-source re-import and partial durable graph progress | No automatic URL download/OCR or broad source scan. Actual extraction/audit work remains the owning agent's supported orchestration |
+| Research/demo/visual/PDF subagent jobs | Original result/steer/usage contracts, prepared native delegation, real-admission binding, fixed result-file intake, queued results and actual teacher acknowledgement | Normal GUI background consumer required; no fake joined/background equivalence, automatic replacement, new model runner or paid child call performed |
+| Interactive demo and figure cards | Granted immutable assets, SHA/size validation, opaque scripted iframe and source-checked bridge; SVG image mode; explicit error-to-owning-teacher control | Real host pixels/test receipts/provider-child execution still require final acceptance. Browser sandbox is not an OS network guarantee |
+| Markdown, math, diagrams and rich choices | Public Hermes renderer with literal fallback for active resource fences/links/HTML, validated plan/proposition Mermaid, reveal-safe rich option projection | Working traces/authoritative choice widgets remain plain text; no native raw PDF page viewer or graph editing canvas is claimed |
+
+No bespoke Hermes/T3 application fork, custom Codex frontend, HTTP teaching server or universal compatibility layer is part of this candidate. The T3 source adapter now exposes the existing backend and controls through a standard stdio MCP server/App, with host-written native Codex caller metadata and native Codex worker receipts; see T3-INTEGRATION.md. This is implemented adapter source, not a live T3 qualification. Standalone LearnHarness remains separate.
+
+The shortened Hermes acceptance subsequently established one genuine native answer→owning-teacher feedback→saved follow-up check→reopen at revision16. Temporary access was removed. Other live feature variants and supporting-child return were not exercised. The user's accepted component-based T3 compatibility is not converted into an observed run or a claim of full parity. The successor's T3/caller/draft/worker changes need source review; prior component results are not silently assigned to new code.
+
+The remaining engineering/runtime boundary is supported caller provenance and package loading, actual native folder/iframe/renderer behavior, and real authorized teacher/child execution with genuine learner input. These do not justify inventing learner answers or treating offline fixture explanations as teaching. Consolidate acceptance after source review; do not repeat mechanism-only trials as product evaluation.

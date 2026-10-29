@@ -23,6 +23,91 @@ def counter(value):
     return value if type(value) is int and value >= 0 else None
 
 
+def whole_job_readiness(records, manifest, expected_sha256):
+    """Closed, explicitly attributed inventory; compare the SAME whole-job scope.
+
+    Cold/setup/development remain visible. A reuse view needs frozen exclusion
+    and reuse evidence; unknown recurring usage never becomes zero.
+    """
+    from fractions import Fraction
+    gaps=[]
+    if not isinstance(manifest,dict) or sha(expected_sha256) is None or digest(manifest)!=expected_sha256:
+        return {'ready':False,'gaps':['frozen whole-job inventory missing or changed'],'overall_tokens':None}
+    arms=manifest.get('arms',[])
+    if not isinstance(arms,list) or not arms or len(set(arms))!=len(arms) or any(not isinstance(a,str) or not a for a in arms):
+        return {'ready':False,'gaps':['explicit comparison arms required'],'overall_tokens':None}
+    view=manifest.get('comparison_view')
+    if view not in ('cold-start','recurring-reuse'):gaps.append('explicit cost comparison view required')
+    if manifest.get('closed') is not True:gaps.append('whole-job inventory not closed')
+    declared={}
+    for call in manifest.get('calls',[]):
+        if (not isinstance(call,dict) or not isinstance(call.get('call_id'),str) or not call['call_id']
+                or call['call_id'] in declared or call.get('cost_class') not in ('recurring','one-time-setup','development')
+                or not isinstance(call.get('run_id'),str) or not call['run_id']
+                or call.get('target_arm') not in arms+['shared']):
+            gaps.append('invalid/duplicate invocation or missing explicit target arm');continue
+        declared[call['call_id']]=call
+    if not declared:gaps.append('empty invocation inventory')
+    stages=manifest.get('stages',{});covered=set()
+    for stage in ('actor','retries','failures','support','review','coordinator','setup'):
+        row=stages.get(stage,{});ids=row.get('call_ids')
+        if not isinstance(ids,list) or any(not isinstance(i,str) or i not in declared for i in ids):
+            gaps.append(stage+': invocation coverage missing');continue
+        if not ids and sha(row.get('observed_zero_evidence_sha256')) is None:gaps.append(stage+': absence is not observed zero')
+        covered.update(ids)
+    if covered!=set(declared):gaps.append('inventory calls omitted from coverage')
+    observed={}
+    for row in records:
+        account=row.get('workflow_accounting',{});ident=account.get('call_id')
+        if ident not in declared or ident in observed:gaps.append('undeclared/duplicate recorded invocation');continue
+        observed[ident]=row
+        if row.get('record_sha256')!=digest({k:v for k,v in row.items() if k!='record_sha256'}):gaps.append(ident+': projection changed')
+        if any(account.get(k)!=declared[ident].get(k) for k in ('run_id','target_arm','cost_class')):
+            gaps.append(ident+': attribution mismatch')
+    if set(observed)!=set(declared):gaps.append('required whole-job receipt missing')
+    charges={arm:Fraction(0) for arm in arms};recurring={arm:Fraction(0) for arm in arms}
+    classes={kind:[] for kind in ('recurring','one-time-setup','development')};excluded=[]
+    for ident,row in observed.items():
+        call=declared[ident];kind=call['cost_class'];usage=row.get('usage',{})
+        total=counter(usage.get('tokens',{}).get('total_tokens'))
+        complete=(total is not None and usage.get('coverage',{}).get('whole_system_complete') is True
+            and counter(usage.get('provider_physical_attempt_count')) is not None and row.get('retries',{}).get('history_complete') is True)
+        classes[kind].append(total if complete else None)
+        exclude=view=='recurring-reuse' and kind!='recurring'
+        if exclude:
+            gaps.append(ident+': cost exclusions/reuse classification are not supported by this receipt contract; use cold-start accounting')
+            if sha(call.get('exclusion_evidence_sha256')) is None or sha(call.get('reuse_evidence_sha256')) is None:
+                gaps.append(ident+': setup/development exclusion not evidenced and reusable')
+            excluded.append({'call_id':ident,'cost_class':kind,'tokens':total if complete else None})
+        elif not complete:gaps.append(ident+': required usage/history incomplete')
+        if call['target_arm']=='shared':
+            allocation=manifest.get('shared_allocations',{}).get(ident,{})
+            try:
+                weights={arm:Fraction(*allocation['weights'][arm]) for arm in arms}
+                if (set(allocation['weights'])!=set(arms) or any(w<0 for w in weights.values())
+                        or sum(weights.values())!=1 or sha(allocation.get('review_evidence_sha256')) is None):raise ValueError()
+            except (KeyError,TypeError,ValueError,ZeroDivisionError):
+                gaps.append(ident+': reviewed shared allocation missing/invalid');continue
+        else:weights={arm:Fraction(int(arm==call['target_arm'])) for arm in arms}
+        if complete:
+            for arm,weight in weights.items():
+                if kind=='recurring':recurring[arm]+=weight*total
+                if not exclude:charges[arm]+=weight*total
+    totals={kind:sum(values) if None not in values else None for kind,values in classes.items()}
+    # A partial/open inventory is not a zero-cost job. Retain individual raw
+    # observations, but do not expose their subtotal as the required total.
+    if gaps:
+        totals={kind:None for kind in classes}
+    rational=lambda values:{arm:{'numerator':v.numerator,'denominator':v.denominator} for arm,v in values.items()}
+    return {'ready':not gaps,'gaps':sorted(set(gaps)),
+            'overall_tokens':sum(totals.values()) if None not in totals.values() else None,
+            'tokens_by_cost_class':totals,'comparison_view':view,
+            'comparison_tokens_by_arm':rational(charges) if not gaps else None,
+            'recurring_tokens_by_arm':rational(recurring) if not gaps else None,
+            'excluded_setup_development':excluded,'execution_authenticated':False,
+            'scope':'Closed attributed whole-job inventory; unknown excluded setup visible, no cold-total or origin authentication inferred'}
+
+
 def seconds(value):
     return value if type(value) in (int, float) and math.isfinite(value) and value >= 0 else None
 
@@ -163,6 +248,8 @@ def observation(run, context, quality=None):
                     'provider_retries': None},
         'usage': observed_usage(run, context.get('host'))}
     result['trial_validity'] = trial_validity(run, context, result['outcome'])
+    if isinstance(quality.get('dimensions'), dict):
+        result['outcome']['assessment_dimensions'] = quality['dimensions']
     if isinstance(run.get('request_recording'), dict):
         recording = run['request_recording']
         result['request_recording'] = {key: sha(recording.get(key)) for key in
@@ -177,7 +264,9 @@ def observation(run, context, quality=None):
              'exclusion_evidence_sha256','reuse_evidence_sha256','supporting') if k in accounting}
     trace = (result['usage'].get('lifecycle_observation') or {}).get('exposure_events', [])
     result['harness']['effective_initial_tool_schema_sha256'] = (trace[0]['tool_schema_sha256']
-        if trace and (trace[0].get('tool_count') or 0)>0 and trace[0].get('terminal_contract_present') is True else None)
+        if trace and ((trace[0].get('tool_count') or 0)>0 and trace[0].get('terminal_contract_present') is True
+                      or trace[0].get('tool_count')==0 and context.get('tool_policy')=='none'
+                      and trace[0].get('tool_schema_sha256')==hashlib.sha256(b'[]').hexdigest()) else None)
     performance = run.get('performance') if isinstance(run.get('performance'), dict) else {}
     result['performance'] = {**{key: counter(performance.get(key)) for key in
                                ('workflow_retry_count', 'workflow_repair_count', 'human_intervention_count')},
@@ -187,6 +276,38 @@ def observation(run, context, quality=None):
                              'elapsed': result['elapsed'], 'scope': 'Observed invocation only; missing friction metrics remain unknown'}
     result['record_sha256'] = digest(result)
     return result
+
+
+def attribution_resolution(run, context):
+    """Resolve causal-review bytes against this raw run and supplied sources.
+
+    A digest alone grants no setup exclusion. Causal truth remains reviewed;
+    tool friction cannot erase a later timeout or unknown usage.
+    """
+    review=run.get('failure_attribution') or {};raw=review.get('evidence_source')
+    gaps=[];scope=None
+    try:
+        if not isinstance(raw,str) or hashlib.sha256(raw.encode()).hexdigest()!=review.get('evidence_sha256'):
+            raise ValueError('causal evidence bytes missing/changed')
+        evidence=json.loads(raw)
+        raw_run={key:value for key,value in run.items() if key!='failure_attribution'}
+        if evidence.get('run_sha256')!=digest(raw_run):gaps.append('causal review belongs to a different raw run')
+        if evidence.get('failure_sha256')!=digest(run.get('failure',{})):gaps.append('causal review does not bind observed failure')
+        scope=evidence.get('scope')
+        if scope not in ('whole-trial','specific-tool-failure'):gaps.append('causal scope missing')
+        if not isinstance(evidence.get('cause'),str) or not evidence['cause'].strip():gaps.append('causal explanation missing')
+        sources=context.get('attribution_source_bytes',{})
+        refs=evidence.get('supporting_sources')
+        if not isinstance(refs,list) or not refs:raise ValueError('supporting causal observations required')
+        for ref in refs:
+            data=sources.get(ref.get('sha256'))
+            if isinstance(data,str):data=data.encode()
+            if (not isinstance(data,bytes) or hashlib.sha256(data).hexdigest()!=ref.get('sha256')
+                    or not isinstance(ref.get('excerpt'),str) or not ref['excerpt']
+                    or ref['excerpt'] not in data.decode('utf-8',errors='replace')):
+                gaps.append('causal observation unavailable/changed')
+    except (ValueError,KeyError,TypeError,AttributeError) as error:gaps.append(str(error))
+    return {'resolved':not gaps,'scope':scope,'gaps':sorted(set(gaps)),'causation_automatically_proven':False}
 
 
 def trial_validity(run, context, outcome):
@@ -199,24 +320,28 @@ def trial_validity(run, context, outcome):
     if scenario not in ('steady-state', 'cold-start'): scenario = 'unknown'
     review = run.get('failure_attribution') if isinstance(run.get('failure_attribution'), dict) else {}
     evidence = sha(review.get('evidence_sha256'))
-    category = review.get('category') if evidence else None
+    resolution=attribution_resolution(run,context) if review else {'resolved':False,'scope':None,'gaps':['no causal review']}
+    category = review.get('category') if resolution['resolved'] else None
     reuse = sha(review.get('reuse_evidence_sha256'))
     failure = run.get('failure') if isinstance(run.get('failure'), dict) else {}
     contract = run.get('runtime_contract') if isinstance(run.get('runtime_contract'), dict) else {}
-    prelaunch_setup = (failure.get('source') == 'runtime-control' and failure.get('kind') == 'isolation'
+    prelaunch_setup = (run.get('model_launched') is False and failure.get('source') == 'runtime-control' and failure.get('kind') == 'isolation'
                        and contract.get('phase') in ('setup', 'preflight'))
     if scenario == 'unknown':
         status, reason, category = 'unresolved', 'benchmark scenario unavailable', 'unknown'
-    elif prelaunch_setup or category == 'evaluator-setup':
+    elif prelaunch_setup or (category == 'evaluator-setup' and resolution['scope']=='whole-trial' and run.get('model_launched') is False):
         status, reason = 'invalid-setup', 'evaluator/tool prerequisites failed; not workflow performance'
         if prelaunch_setup: evidence = digest({'failure': failure, 'phase': contract.get('phase'), 'operation': contract.get('setup_operation')})
         category = 'evaluator-setup'
+    elif category == 'evaluator-setup':
+        status,reason,category='unresolved','specific tool defect or postlaunch attribution does not erase incomplete trial','partially-supported-tool-defect'
     elif run.get('blocked_requests') and category not in ('workflow', 'one-time-workflow-setup'):
         status, reason, category = 'unresolved', 'tool-guard rejection observed; workflow versus evaluator causation not established', 'unknown'
         evidence = digest({'blocked_request_count': len(run['blocked_requests'])})
     elif category == 'one-time-workflow-setup' and scenario == 'steady-state':
         status, reason = (('one-time-setup', 'reusable setup excluded from steady-state; fresh-run reuse evidence supplied')
-                          if reuse else ('unresolved', 'one-time setup claimed without fresh-run reuse evidence'))
+                          if reuse and isinstance(review.get('reuse_evidence_source'),str) and hashlib.sha256(review['reuse_evidence_source'].encode()).hexdigest()==reuse
+                          else ('unresolved', 'one-time setup claimed without resolved fresh-run reuse evidence'))
     elif category in ('workflow', 'one-time-workflow-setup'):
         status, reason = 'valid', 'evidence-linked workflow effort/failure; cold-start setup included when explicitly selected'
     elif outcome.get('execution_ok') is True and outcome.get('operational_ok') is True:
@@ -227,11 +352,34 @@ def trial_validity(run, context, outcome):
         category = 'unknown'
     return {'status': status, 'category': category, 'reason': reason, 'evidence_sha256': evidence,
             'benchmark_scenario': scenario, 'reuse_evidence_sha256': reuse,
-            'prerequisites_sha256': sha(context.get('prerequisites_sha256'))}
+            'prerequisites_sha256': sha(context.get('prerequisites_sha256')),'causal_review':resolution}
 
 
-def inline_records(report):
+def measurement_sources(report, source_bytes=None):
+    """Explicit bounded hash-addressed evidence; source integrity, not causation."""
+    import base64
+    sources=dict(source_bytes or {})
+    bundle=report.get('measurement_source_bundle')
+    if bundle is not None:
+        if not isinstance(bundle,dict) or set(bundle)!= {'version','encoding','files'} or bundle['version']!=1 or bundle['encoding']!='base64' or not isinstance(bundle['files'],dict):
+            raise ValueError('Malformed measurement source bundle')
+        if len(bundle['files'])>512 or any(not isinstance(v,str) for v in bundle['files'].values()) or sum(len(v) for v in bundle['files'].values())>12*1024*1024:
+            raise ValueError('Encoded measurement source bounds exceeded')
+        for key,value in bundle['files'].items():
+            if not isinstance(value,str):raise ValueError('Invalid measurement source encoding')
+            data=base64.b64decode(value,validate=True)
+            if key in sources and sources[key]!=data:raise ValueError('Conflicting measurement evidence')
+            sources[key]=data
+    if len(sources)>512 or any(not isinstance(v,bytes) for v in sources.values()) or sum(map(len,sources.values()))>8*1024*1024:
+        raise ValueError('Measurement sources exceed bounded byte contract')
+    if any(sha(k) is None or hashlib.sha256(v).hexdigest()!=k for k,v in sources.items()):
+        raise ValueError('Measurement source hash mismatch')
+    return sources
+
+
+def inline_records(report, *, source_bytes=None):
     """Use the canonical attempt ledger once, including interrupted orphan runs."""
+    sources=measurement_sources(report,source_bytes)
     stack, artifacts = report.get('effective_stack', {}), report.get('artifacts', {})
     try:
         suite = json.loads(report.get('input_snapshot', {}).get('suite_source', '{}'))
@@ -276,7 +424,7 @@ def inline_records(report):
             if row.get('judge_errors'):
                 quality['passed'] = None
         route = {key: stack.get(('judge_' if judge else '')+key, stack.get(key)) for key in ('model', 'provider', 'reasoning')}
-        context = {'evidence_sha256': evidence, 'timestamp_utc': report.get('timestamp_utc'),
+        context = {'evidence_sha256': evidence, 'attribution_source_bytes':sources, 'timestamp_utc': report.get('timestamp_utc'),
                    'case_id': case_id, 'arm': side if not judge else 'judge', 'role': role,
                    'trial': entry.get('trial'), 'attempt': entry.get('attempt'),
                    'attempt_history_complete': complete_history,
@@ -288,12 +436,24 @@ def inline_records(report):
         context.update(benchmark_scenario=cases.get(case_id, {}).get('benchmark_scenario', 'steady-state'),
                        prerequisites_sha256=cases.get(case_id, {}).get('prerequisites_sha256'))
         records.append(observation(entry, context, quality))
+    for item in report.get('supporting_receipts',[]):
+        run=item['run'];identity=item['identity'];account=item['workflow_accounting']
+        records.append(observation({**run,'workflow_accounting':{**account,'supporting':True}},
+            {'evidence_sha256':digest(run),'attribution_source_bytes':sources,'timestamp_utc':report.get('timestamp_utc'),
+             'case_id':identity.get('case_id'),'trial':identity.get('trial'),'attempt':identity.get('attempt',1),
+             'role':identity['role'],'arm':'support','host':item['host'],'host_version':item['host_version'],
+             'route':item['route'],'attempt_history_complete':item.get('attempt_history_complete') is True},
+            {'source':'supporting-native-receipt; not task-quality verdict'}))
     return records
 
 
-def artifact_records(report, plan):
+def artifact_records(report, plan, *, source_bytes=None):
     """Project the existing independently checked artifact pilot; no new judge."""
     records = []
+    completed={}
+    if isinstance(report.get('completed_review'),dict) and source_bytes is not None:
+        from evaluation_evidence import completed_artifact_decision
+        completed=completed_artifact_decision(report,report['completed_review'],source_bytes)
     cases = {case['id']: case for case in plan['spec']['cases']}
     for row in report.get('results', []):
         case = cases.get(row['case'], {})
@@ -312,7 +472,21 @@ def artifact_records(report, plan):
         operational = (cleanup.get('state_removed') is True and not cleanup.get('errors') and not native.get('worker_cleanup_errors')) if cleanup else row.get('isolated_runtime_removed')
         recording = ({'request_recording': row.get('request_recording') or {'complete': False}}
                      if spec.get('request_recording_parent') else {})
-        records.append(observation({**native, **recording, 'execution_ok': native.get('ok', row.get('worker_ok')),
+        dimensions = row.get('outcome_assessment') or {
+            'runtime_completed':native.get('ok',row.get('worker_ok')),
+            'deterministic_invariants_passed':passed,
+            'semantic_adequacy':{'status':'pending','passed':None},
+            'comparative_preference':{'status':'not-assessed','winner':None},
+            'projection_note':'New conservative projection; original legacy records remain unchanged'}
+        # Oracle success is necessary evidence, never a substantive artifact review.
+        full_quality = False if passed is False else None
+        final_review=completed.get('deliveries',{}).get(row['id'],{})
+        if completed.get('source_bound_current_quality') and final_review.get('task_passed') is not None:
+            full_quality=final_review['task_passed']
+            dimensions={**dimensions,'semantic_adequacy':{'status':'completed-packet-review','passed':final_review['reviewed_artifact_adequate']},
+                'comparative_preference':completed.get('quality_disposition'),'task_passed':full_quality}
+        runtime_completed = dimensions.get('runtime_completed', native.get('ok', row.get('worker_ok')))
+        records.append(observation({**native, **recording, 'execution_ok': runtime_completed,
                                     'operational_ok': operational, 'seconds': row.get('seconds_including_verification')},
             {'case_id': row['case'], 'arm': row['arm'], 'role': 'worker', 'trial': 0, 'attempt': 1,
              'timestamp_utc': report.get('timestamp_utc'),
@@ -324,8 +498,10 @@ def artifact_records(report, plan):
              'runtime_lane': plan.get('kind'), 'tool_policy': 'native-study-request-gate' if plan.get('kind') in ('native-skill-study','native-runtime-smoke') else 'routed-native-child', 'context_policy': 'fresh-runtime-per-output',
              'benchmark_scenario': case.get('benchmark_scenario', 'steady-state'),
              'prerequisites_sha256': case.get('prerequisites_sha256'),
-             'evidence_sha256': digest(row)},
-            {'passed': passed, 'source': 'existing-artifact-oracle', 'evidence_sha256': digest(checked) if checked else None}))
+             'evidence_sha256': digest(row),'attribution_source_bytes':source_bytes or {}},
+            {'passed': full_quality, 'source': 'packet-bound-substantive-review' if full_quality is not None and completed.get('ready') else 'artifact-oracle-invariants; substantive-review-pending',
+             'dimensions':dimensions,'evidence_sha256':report.get('completed_review',{}).get('review_sha256')
+                if completed.get('ready') and full_quality is not None else digest(checked) if checked else None}))
     return records
 
 
@@ -408,9 +584,11 @@ def workflow_usage(row, records=()):
                    if included and all(counter(r.get('usage',{}).get('tokens',{}).get(key)) is not None for _,r in included) else None)
               for key in TOKEN_KEYS}
     attempts=[counter(r.get('usage',{}).get('provider_physical_attempt_count')) for _,r in included]
+    if gaps:
+        tokens={key:None for key in TOKEN_KEYS}
     return {'tokens':tokens,'gaps':sorted(set(gaps)),'included_call_ids':[c for c,_ in included],
             'logical_invocation_count':len(included),
-            'physical_attempt_count':sum(attempts) if attempts and None not in attempts else None,
+              'physical_attempt_count':sum(attempts) if not gaps and attempts and None not in attempts else None,
             'call_observations':[{'call_id':c,'native_seconds':r.get('performance',{}).get('native_conversation_seconds'),
                                   'physical_attempts':r.get('usage',{}).get('provider_physical_attempt_count')} for c,r in included],
             'excluded_calls':excluded,'scope':'Recurring task-model invocations, deduplicated; evidenced development/one-time setup separate',
@@ -427,6 +605,9 @@ def quality_eligibility(row):
         reasons.append('required prompt/request recording or output-check binding incomplete')
     if outcome.get('execution_ok') is not True: reasons.append('execution not successful')
     if outcome.get('operational_ok') is not True: reasons.append('cleanup not successful or unverified')
+    provenance = outcome.get('assessment_dimensions', {}).get('execution_provenance', {})
+    if provenance.get('required') is True and provenance.get('final_artifact_program_linked') is not True:
+        reasons.append('executed program bytes not linked to final artifact')
     if outcome.get('quality_passed') is False or outcome.get('task_passed') is False:
         reasons.append('task output below quality bar')
     elif outcome.get('quality_passed') is not True or outcome.get('task_passed') is not True:
@@ -576,7 +757,7 @@ def compare_records(before, after, *, changed='instruction'):
     qualified_keys_b = {key(row) for row in after if quality_eligibility(row)['eligible']}
     return {'schema_version': 1, 'changed': changed, 'pairs': pairs, 'unmatched': unmatched,
             'reliability': {'before': reliability_summary(before), 'after': reliability_summary(after)},
-            'conditional_efficiency': {'scope': 'Complete overall usage of quality-qualified matched runs; not all-attempt cost',
+            'conditional_efficiency': {'scope': 'Recorded case-scoped usage; separate closed whole-job attribution required for overall efficiency',
                 'eligible_pair_count': sum(pair['conditional_efficiency_eligible'] for pair in pairs),
                 'eligible_case_ids': sorted({pair['case_id'] for pair in pairs if pair['conditional_efficiency_eligible']}),
                 'observed_case_ids': {'before': cases(before), 'after': cases(after)},
@@ -612,10 +793,14 @@ def acceptance_readiness(records):
             'scope': 'Conditional on quality-qualified outputs; excludes failed/below-bar runs from efficiency, not reliability; no all-attempt cost or improvement verdict'}
 
 
-def attach_measurements(report, plan=None):
+def attach_measurements(report, plan=None, *, source_bytes=None):
     """Measurement errors cannot prevent export of original execution evidence."""
     try:
-        records = inline_records(report) if plan is None else artifact_records(report, plan)
+        if plan is None and source_bytes is not None:
+            import base64
+            sources=measurement_sources(report,source_bytes)
+            report['measurement_source_bundle']={'version':1,'encoding':'base64','files':{k:base64.b64encode(v).decode('ascii') for k,v in sources.items()}}
+        records = inline_records(report,source_bytes=source_bytes) if plan is None else artifact_records(report, plan,source_bytes=source_bytes)
         report['measurements'] = records
         report['measurement_status'] = {'projection_ok': True, 'acceptance': acceptance_readiness(records)}
     except Exception as exc:

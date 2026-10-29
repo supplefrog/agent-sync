@@ -2040,6 +2040,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--include", action="append", default=[], metavar="FILE",
                         help="exact additional repository file already reviewed for commit; does not expand configured fleet or admission")
     parser.add_argument("--ready", metavar="COMMIT", help="integrate an exact ready commit from isolated development onto the latest published base")
+    parser.add_argument("--continue-published", type=Path, help="exact reviewed published-partial successor request; requires ready sync and retains all rollout obligations")
     parser.add_argument("--source-only", action="store_true", help="publish exact included source files; explicitly leave configured rollout incomplete")
     parser.add_argument("--shared-checkout", action="store_true", help="explicit legacy scoped publication from this working checkout")
     parser.add_argument("--message", default="chore: reconcile checked agent changes")
@@ -2057,6 +2058,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--suite", action="append", default=[], type=Path)
     parser.add_argument("--reference-skill", action="append", default=[], type=Path)
     args = parser.parse_args(argv)
+    if args.continue_published and (args.action not in {'plan', 'sync'} or not args.ready or args.source_only):
+        parser.error('continue-published requires normal ready plan/sync; no source-only or capture/default route')
     if args.source_only and (args.action != 'sync' or args.adopt or args.full or args.capture_artifact or args.reconcile_defaults):
         parser.error('source-only applies to exact include-only sync without native/default selectors')
     authoring = bool(args.target or args.candidate or args.baseline or args.host or args.model or
@@ -2097,7 +2100,9 @@ def main(argv: list[str] | None = None) -> int:
         operation = worktree_sync.ready_plan if args.action == "plan" else worktree_sync.ready_sync
         report = operation(args.repo, args.ready, machine=args.machine, adopt=args.adopt,
                            include=args.include, recovery_roots=roots, skill_roots=args.skill_root or None,
-                           message=args.message, **({'source_only':True} if args.source_only else {}))
+                           message=args.message, **({'source_only':True} if args.source_only else {}),
+                           **({'continue_published': json.loads(args.continue_published.read_bytes())}
+                              if args.continue_published else {}))
     elif args.action == "review":
         import change_review
         report = change_review.review(args.repo, **options)
