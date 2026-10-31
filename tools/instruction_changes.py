@@ -155,6 +155,130 @@ def _approved_reference_transport(candidate, source, name, owner, row, base, pat
     return 'explicitly authorized exact published reference transport with checked package loading'
 
 
+def _approved_requested_import(candidate, source, name, owner, row, base, paths):
+    """Bind an initial instruction-only installation to locally available Git blobs.
+
+    Source authenticity and human authorization remain the caller's responsibility.
+    No upstream code is executed and no runtime activation is authorized here.
+    """
+    import fleet
+    acceptance = row.get('requested_import_acceptance', {})
+    if not isinstance(owner, str) or not isinstance(name, str):
+        raise sync_git.SyncBlocked('requested import requires a canonical owner')
+    package = owner.removeprefix('skills/')
+    if (not re.fullmatch(r'skills/[a-z0-9]+(?:-[a-z0-9]+)*', owner)
+            or row.get('basis') != 'user-correction'
+            or not name.startswith(owner + '/') or not isinstance(acceptance, dict)
+            or acceptance.get('classification') != 'requested-instruction-package'
+            or acceptance.get('runtime_activation') is not False
+            or acceptance.get('model_benefit_claim') is not False
+            or set(acceptance) != {'classification', 'source_repository', 'source_commit', 'source_path',
+                                   'license', 'package_sha256', 'files', 'runtime_activation',
+                                   'model_benefit_claim', 'deployment_checks_required'}):
+        raise sync_git.SyncBlocked('requested import requires explicit instruction-only acceptance')
+    repo, pin, upstream = (acceptance.get(k) for k in ('source_repository', 'source_commit', 'source_path'))
+    license = acceptance.get('license')
+    if (not isinstance(repo, str) or not re.fullmatch(r'https://github.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repo)
+            or not isinstance(pin, str) or not re.fullmatch(r'[0-9a-f]{40}', pin)
+            or not isinstance(upstream, str) or sync_git.safe_path(candidate, upstream + "/SKILL.md") != upstream + "/SKILL.md"
+            or not isinstance(license, str) or not re.fullmatch(r'[A-Za-z0-9.+-]+', license)):
+        raise sync_git.SyncBlocked('requested import requires an immutable source pin, path and license')
+    if sync_git.git(source, 'cat-file', '-t', pin) != 'commit':
+        raise sync_git.SyncBlocked('requested import source pin must be a commit object')
+    if acceptance.get('deployment_checks_required') != ['native-hermes-codex-omp-catalogue-body', 'repeat-sync-preserves-source']:
+        raise sync_git.SyncBlocked('requested import must retain native loading and repeat-sync checks')
+    files = acceptance.get('files')
+    actual = fleet.directory_record(candidate / owner)
+    disk_files = {p.relative_to(candidate / owner).as_posix()
+                  for p in (candidate / owner).rglob('*') if p.is_file()}
+    if disk_files != set(actual['files']):
+        raise sync_git.SyncBlocked('requested import cannot contain ignored or transient extra files')
+    if (not isinstance(files, dict) or set(files) != set(actual['files'])
+            or not {'SKILL.md', 'LICENSE'} <= set(files)
+            or actual['sha256'] != acceptance.get('package_sha256')
+            or not {owner + '/' + f for f in files} <= set(paths)):
+        raise sync_git.SyncBlocked('requested import requires the complete selected package')
+    baseline = sync_git.git(source, 'ls-tree', '-r', '--name-only', base, '--', owner)
+    if baseline:
+        raise sync_git.SyncBlocked('requested import cannot change an existing source package')
+    # A source path denotes a complete package, not a handpicked projection.
+    upstream_names = set(sync_git.git(source, 'ls-tree', '-r', '--name-only', pin, '--', upstream).splitlines())
+    bound = set()
+    for relative, binding in files.items():
+        target = owner + '/' + relative
+        if (sync_git.safe_path(candidate, target) != target
+                or (Path(relative).suffix.lower() != '.md' and relative != 'LICENSE')
+                or not isinstance(binding, dict)
+                or set(binding) != {'upstream_path', 'upstream_sha256', 'installed_sha256', 'transformation'}):
+            raise sync_git.SyncBlocked('requested import permits only bound Markdown and LICENSE files')
+        origin = binding['upstream_path']
+        if (not isinstance(origin, str) or sync_git.safe_path(candidate, origin) != origin
+                or (relative != 'LICENSE' and origin != upstream + '/' + relative)
+                or origin in bound):
+            raise sync_git.SyncBlocked('requested import has invalid upstream file mapping')
+        bound.add(origin)
+        mode = sync_git.git(source, 'ls-tree', pin, '--', origin).split()
+        if not mode or mode[0] != '100644':
+            raise sync_git.SyncBlocked('requested import upstream must contain regular nonexecutable files')
+        original = _before(source, pin, origin)
+        installed = (candidate / target).read_bytes()
+        expected = original
+        transformation = binding['transformation']
+        if transformation == 'license-frontmatter' and relative == 'SKILL.md' and original is not None:
+            if not original.startswith(b'---\n') or b'\n---\n' not in original[4:]:
+                raise sync_git.SyncBlocked('requested import requires LF YAML frontmatter for license insertion')
+            front, rest = original[4:].split(b'\n---\n', 1)
+            if re.search(rb'^license\s*:', front, re.M):
+                raise sync_git.SyncBlocked('requested import cannot replace an upstream license field')
+            expected = b'---\n' + front + b'\nlicense: ' + license.encode() + b'\n---\n' + rest
+        elif transformation != 'identity':
+            raise sync_git.SyncBlocked('requested import has an unsupported transformation')
+        if (original is None or _hash(original) != binding['upstream_sha256']
+                or _hash(installed) != binding['installed_sha256'] or installed != expected):
+            raise sync_git.SyncBlocked('requested import differs from the pinned upstream bytes')
+    if not upstream_names or upstream_names - bound:
+        raise sync_git.SyncBlocked('requested import omits upstream package files')
+    registered = fleet.registry(candidate).get(package, {})
+    old_registry = json.loads(_before(source, base, 'registry.json'))
+    if (any(r['name'] == package for r in old_registry['skills'])
+            or registered.get('status') != 'admitted' or registered.get('license') != license
+            or registered.get('source') != repo + '/tree/' + pin + '/' + upstream):
+        raise sync_git.SyncBlocked('requested import registry does not match its new source pin')
+    metadata, _ = validate.frontmatter((candidate / owner / 'SKILL.md').read_text(encoding='utf-8'))
+    if metadata.get('license') != license:
+        raise sync_git.SyncBlocked('requested import license disagrees with skill frontmatter')
+    ownership = json.loads((candidate / 'contracts/ownership.json').read_bytes())
+    if [r.get('owner') for r in ownership.get('capabilities', []) if r.get('id') == package] != [owner]:
+        raise sync_git.SyncBlocked('requested import requires one canonical capability owner')
+    if validate.validate_skill(candidate / owner / 'SKILL.md'):
+        raise sync_git.SyncBlocked('requested import package validation failed')
+    return 'explicitly requested pinned instruction package'
+
+
+def requested_import_owners(candidate, source, base, paths):
+    """Return only source-bound new owners from selected necessity receipts."""
+    owners = set()
+    for name in paths:
+        if name.startswith('evals/results/') and name.endswith('.json') and (candidate / name).is_file():
+            value = json.loads((candidate / name).read_bytes())
+            if not isinstance(value, dict):
+                raise sync_git.SyncBlocked('invalid instruction change evidence: ' + name)
+            rows = value.get('instruction_changes', [])
+            if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+                raise sync_git.SyncBlocked('invalid instruction change evidence: ' + name)
+            for row in rows:
+                if row.get('change_kind') != 'requested-import':
+                    continue
+                owner = row.get('owner', '')
+                if not isinstance(owner, str):
+                    raise sync_git.SyncBlocked('requested import requires a canonical owner')
+                _approved_requested_import(candidate, source, owner + '/SKILL.md', owner, row, base, paths)
+                if 'behavior_measurements' in row or 'task_contract' in row:
+                    raise sync_git.SyncBlocked('requested import cannot carry behavioral-adoption claims')
+                owners.add(owner.removeprefix('skills/'))
+    return owners
+
+
 def _approved_requested_reader(candidate, source, name, owner, row, base, paths):
     """Exact user-selected LearnHarness installation; no comparative authority.
 
@@ -378,6 +502,8 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
         reason = 'explicit user model-selector data; standing instructions unchanged'
     elif kind == 'requested-native-learning':
         reason = _approved_native_learning_source(candidate, source, name, owner, row, base, paths, reconciliations)
+    elif kind == 'requested-import':
+        reason = _approved_requested_import(candidate, source, name, owner, row, base, paths)
     elif kind == 'requested-reader':
         reason = _approved_requested_reader(candidate, source, name, owner, row, base, paths)
     elif kind == 'reference-transport':
@@ -810,7 +936,7 @@ def check(candidate: Path, source: Path, base: str, paths):
         if binding != {'before_sha256': old_hash, 'after_sha256': new_hash}:
             raise sync_git.SyncBlocked('instruction necessity record is not bound to changed bytes: ' + name)
         kind = row.get('change_kind', 'add-or-change')
-        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-reader', 'requested-native-learning', 'public-audience-correction'}:
+        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-import', 'requested-reader', 'requested-native-learning', 'public-audience-correction'}:
             raise sync_git.SyncBlocked('invalid instruction change kind: ' + name)
         if kind == 'remove':
             old_data = _before(source, base, name)

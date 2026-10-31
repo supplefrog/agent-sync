@@ -108,6 +108,29 @@ def _destinations(
     return [(f"{machine}:skill-root-{index}", root) for index, root in enumerate(unique, start=1)]
 
 
+def _ready_requested_imports(repo):
+    """An owned ready journal is the only authority for an initial installation."""
+    import sync_git
+    import instruction_changes
+    if not (repo / '.git').exists():
+        return set()
+    journal_path = sync_git.common_dir(repo) / 'agent-signal-integration.json'
+    if not journal_path.is_file():
+        return set()
+    journal = json.loads(journal_path.read_bytes())
+    if (journal.get('phase') not in {'composed', 'reconciling'}
+            or Path(journal.get('integration_repo', '')).resolve() != repo.resolve()):
+        return set()
+    receipt = journal.get('receipt', {})
+    selected = set(receipt.get('requested_imports', []))
+    if not selected:
+        return set()
+    actual = instruction_changes.requested_import_owners(repo, repo, receipt['source_base'], receipt['paths'])
+    if actual != selected or not selected <= set(receipt['options']['adopt']):
+        raise sync_git.SyncBlocked('requested import differs from qualified ready scope')
+    return actual
+
+
 def _skill_state(repo: Path, snapshot: Path, destinations: list[tuple[str, Path]], name: str) -> dict[str, Any]:
     registry = fleet.registry(repo)
     entry = registry.get(name)
@@ -142,6 +165,12 @@ def _skill_state(repo: Path, snapshot: Path, destinations: list[tuple[str, Path]
     }
     if entry is None or entry.get("status") != "admitted":
         state["reason"] = "owner is not admitted"
+    elif (baseline is None and canonical is not None and name in _ready_requested_imports(repo)
+          and rendered in {None, canonical} and not prior_values
+          and all(name not in fleet.load_state(path).get("skills", {})
+                  and not (path / name).exists() and not (path / name).is_symlink()
+                  for _, path in destinations)):
+        state.update(mode="deploy-canonical", reason="qualified requested initial instruction installation")
     elif (canonical is None or rendered is None or baseline is None
           or any(digest is None for _, _, digest in live)
           or any(not isinstance(digest, str) for _, _, digest in managed)):

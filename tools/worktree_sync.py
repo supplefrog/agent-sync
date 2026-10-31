@@ -64,13 +64,17 @@ def _qualify(repo, ready, options):
     paths = set()
     def admission(commit):
         value = json.loads(sync_git.git(repo, 'show', commit + ':registry.json'))
-        return sorted((row['name'], row.get('status')) for row in value['skills'])
+        rows = [(row['name'], row.get('status')) for row in value['skills']]
+        if len(dict(rows)) != len(rows):
+            raise sync_git.SyncBlocked('ready registry contains duplicate owners')
+        return sorted(rows)
     public_admission = admission(base)
     for commit in commits:
         parents = sync_git.git(repo, 'rev-list', '--parents', '-n', '1', commit).split()
         if len(parents) != 2:
             raise sync_git.SyncBlocked('ready integration requires a linear non-merge commit range')
-        if admission(commit) != public_admission:
+        current = dict(admission(commit))
+        if any(current.get(name) != status for name, status in public_admission):
             raise sync_git.SyncBlocked('ready integration cannot change registry admission or lifecycle; normal review is required')
         paths.update(_names(repo, 'diff-tree', '--no-commit-id', '--no-renames', '--name-only', '-r', commit))
     owners = set(options['adopt'])
@@ -83,10 +87,24 @@ def _qualify(repo, ready, options):
         registry = reconcile.fleet.registry(candidate) if owners else {}
         if any(registry[name].get('status') != 'admitted' for name in owners):
             raise sync_git.SyncBlocked('ready owners must already be admitted')
+        import instruction_changes
+        added_names = set(dict(admission(exact))) - set(dict(public_admission))
+        imports = (instruction_changes.requested_import_owners(candidate, repo, base, paths)
+                   if added_names else set())
+        if not imports <= owners:
+            raise sync_git.SyncBlocked('requested imports require explicit selected owners')
+        for owner in imports:
+            entries = sync_git.git(repo, 'ls-tree', '-r', tree, '--', 'skills/' + owner).splitlines()
+            if any(entry.split()[0] != '100644' for entry in entries):
+                raise sync_git.SyncBlocked('requested import installed files must be regular and nonexecutable')
+        for commit in commits:
+            added = set(dict(admission(commit))) - set(dict(public_admission))
+            if not added <= imports or any(dict(admission(commit))[name] != 'admitted' for name in added):
+                raise sync_git.SyncBlocked('ready registry additions require bound requested imports')
         if owners:
             published_registry = json.loads(sync_git.git(repo, 'show', base + ':registry.json'))
             admitted = {row['name'] for row in published_registry['skills'] if row.get('status') == 'admitted'}
-            if not owners <= admitted:
+            if not owners <= admitted | imports:
                 raise sync_git.SyncBlocked('ready integration cannot admit a new owner')
         for name in included:
             if sync_git.safe_path(candidate, name) != name:
@@ -114,8 +132,17 @@ def _qualify(repo, ready, options):
         if (candidate / 'registry.json').is_file():
             reconcile.fleet.render_snapshot(candidate, reconcile._snapshot(candidate))
         checks = reconcile._run_candidate_checks(candidate, reconcile._candidate_commands(candidate, owners, selected_paths), tree)
+        if imports:
+            roots = {path for _, path in reconcile._destinations(candidate, options['machine'], options['skill_roots'])}
+            for spec in reconcile.fleet.load_fleet(candidate)['machines'].values():
+                roots.update(reconcile.fleet.resolve_template(p) for p in spec['skill_roots'])
+            for root in roots:
+                for owner in imports:
+                    if ((root / owner).exists() or (root / owner).is_symlink()
+                            or owner in reconcile.fleet.load_state(root).get('skills', {})):
+                        raise sync_git.SyncBlocked('requested import destination collision: ' + owner)
     return {'ready': exact, 'source_base': base, 'source_commits': commits,
-            'paths': selected_paths, 'omit_metadata': omit_metadata, 'target': target,
+            'paths': selected_paths, 'requested_imports': sorted(imports), 'omit_metadata': omit_metadata, 'target': target,
             'source_repo': str(repo), 'common_repo': str(common), 'options': options,
             'published_repo': str(common / 'agent-signal-published'),
             'integration_repo': str(common / 'agent-signal-integration-worktree'), 'completed_checks': checks}

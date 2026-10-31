@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "scope": "Initial explicitly requested pinned instruction-package import admission and rollout; no runtime activation or comparative model-benefit adoption.",
+  "status": "source-and-targeted-mechanism-checked",
+  "verification": {
+    "final_requested_import_module": "4 tests passed through real Git ready/publication seams; native host boundary mocked.",
+    "license_countercontrol": "New regression first reproduced contradictory-license publication, then passed after frontmatter consistency guard.",
+    "nearby_regressions": "73 of 75 passed on the initial admission patch. The two merge-composition failures also reproduce identically on unchanged baseline 6c40eca; no new neighboring failure found. Final license guard is covered by the complete import module rerun.",
+    "review": "Bounded source and disposable-repository review found the license mismatch; corrected and verified directly. Failed-push and native-readback retry, missing package member, upstream executable mode and stale-managed controls passed.",
+    "live_rollout": "Pending canonical sync; no installed/native or comparative model-benefit claim in this source receipt."
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/instruction-authoring",
+      "change_kind": "contract-correction",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The current publication path rejects a requested initial upstream instruction-package import as a registry lifecycle change, then demands comparative model-benefit evidence for installation. The user explicitly selected fixing admission and synchronizing the prepared skill.",
+      "evidence": "The pinned PhotoCraft candidate fails real ready qualification and the instruction checker before this correction. Actual upstream commit blobs were fetched and checked. Targeted real Git/local-remote acceptance and rejection checks exercise the corrected path; selected verification results accompany this source-bound receipt.",
+      "why_instruction": "Update the existing Publication necessity record and R02 intent/status to describe the corrected installation category. Enforcement and recovery remain in the existing publication and instruction-change tools.",
+      "alternative": "Leaving the package staged does not fulfill the selected outcome. Another hardcoded package exemption duplicates the existing requested-reader special case. Bypassing fleet checks loses required ownership/collision/rollback guarantees; model comparisons do not verify the requested installation claim. The existing checked pipeline is extended instead.",
+      "artifacts": {
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1",
+          "after_sha256": "3e15bda48df3cedca6ac102209cb639f29672da7f2d7e964c9aeeea289f8bcc8"
+        }
+      },
+      "restructured": false
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032",
+          "after_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e",
+          "after_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/hermes-skill-proposals.md": {
+          "before_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167",
+          "after_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "5d01136066bb128cb70223b876a2d6fd5a89cc07fd1ea1fa2414716b9625316e",
+          "after_sha256": "5d01136066bb128cb70223b876a2d6fd5a89cc07fd1ea1fa2414716b9625316e"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "0308f47552aa4ddc9ebb97786886d40c524eed5d7b43ab007ac7767e71da21b0",
+          "after_sha256": "79740ee80cf7edae9a41db3951dce04aa0fa1d987cbc9611625a6db2ab455f6c"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "d9ff350d7f93ccf161f2bc04cc8f891f8ce19074749e6c6cbf3689139b2de320",
+          "after_sha256": "d0d3d6817871fad5c6fa61f9cca42256d33b03b850a29e1a0b4e2d61518a15d7"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "6d4475a509a8ac59909ddcc5dffa38913171c3b6f180f584d3d12fb903caca6d",
+          "after_sha256": "6d4475a509a8ac59909ddcc5dffa38913171c3b6f180f584d3d12fb903caca6d"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121",
+          "after_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "67ccea10fa184914ba5334be7c3834c851f2697166bae9a1b86cb5a9ccecfad1",
+          "after_sha256": "3e15bda48df3cedca6ac102209cb639f29672da7f2d7e964c9aeeea289f8bcc8"
+        },
+        "skills/instruction-authoring/references/useful-behaviors.md": {
+          "before_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4",
+          "after_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "cd625a2649cd41d9cbe63835af47b6e5d6fd68fb2e34d62af873329404b07dbb",
+          "after_sha256": "78edc7680312723d24a6388fa0fbf1da05d219bc3bbd92e5460e4237034bd3e0"
+        },
+        "tools/reconcile.py": {
+          "before_sha256": "a6535029d1152556a552c8d34797e78f1006764c1a750ea4b51c65be87fbaa5a",
+          "after_sha256": "5014415213870efc97b83ef9843bc6d189bc9210c3936f0bac8a5ead313ab5bc"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "a0cc9a5f97dca5bf9f09a1b4b0d8020d4271e9ced12f3e7b5027ac9f69033dab",
+          "after_sha256": "c1bf745b7742c150f2032ceaf027f6e4f1c03629e19b3c9c544dd12bdbe42fbd"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/hermes-skill-proposals.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Add the source-bound initial requested instruction-package import path; preserve all existing admission, collision, runtime and behavioral-evidence rules."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Add the source-bound initial requested instruction-package import path; preserve all existing admission, collision, runtime and behavioral-evidence rules."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "updated",
+          "reason": "Add the source-bound initial requested instruction-package import path; preserve all existing admission, collision, runtime and behavioral-evidence rules."
+        },
+        {
+          "path": "skills/instruction-authoring/references/useful-behaviors.md",
+          "disposition": "unchanged",
+          "reason": "Existing procedure remains applicable: explicit scope, source ownership, truthful evidence and normal rollout safeguards remain required. No change to this owner is needed for the initial-import correction."
+        },
+        {
+          "path": "tools/instruction_changes.py",
+          "disposition": "updated",
+          "reason": "Add the source-bound initial requested instruction-package import path; preserve all existing admission, collision, runtime and behavioral-evidence rules."
+        },
+        {
+          "path": "tools/reconcile.py",
+          "disposition": "updated",
+          "reason": "Add the source-bound initial requested instruction-package import path; preserve all existing admission, collision, runtime and behavioral-evidence rules."
+        },
+        {
+          "path": "tools/worktree_sync.py",
+          "disposition": "updated",
+          "reason": "Add the source-bound initial requested instruction-package import path; preserve all existing admission, collision, runtime and behavioral-evidence rules."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "The user expressly selected a scoped admission-path correction after the concrete import was blocked. R02 and its status map now distinguish initial package installation acceptance from comparative behavioral-benefit adoption.",
+      "authority": "Current explicit author decision to fix admission and sync the selected skill; runtime installation remains deferred.",
+      "checks": "Final requested-import module: 4 tests pass. License mismatch regression fails before and passes after repair. Nearby suite: 73/75 pass; both failures reproduce on unchanged baseline. Independent disposal-repository retry/refusal controls pass. Source bindings preserve unchanged dependent guidance; native rollout remains required.",
+      "outcome_review": {
+        "expected": "A selected source-pinned instruction-only import can reach normal checked ready publication and first install, while existing-owner changes, executable imports, stale bytes, invalid provenance and collisions remain rejected before mutation.",
+        "observed": "The original rejection and review-found license mismatch were reproduced and corrected. Final import tests pass. Both neighboring merge-test failures reproduce on unchanged baseline; composition semantics were preserved. Real native fleet rollout and repeat sync remain separate completion checks.",
+        "evidence": "Selected tools/tests and this exact-source receipt; original blocked plan and import candidate preserved in the task record.",
+        "limitations": "Offline mechanism tests do not authenticate user approval or repository URL ownership, establish model quality or replace native installed-content/readback checks. The two pre-existing merge-composition test failures remain outside this admission correction."
+      },
+      "framework_review": {
+        "affected": [
+          "skills/instruction-authoring/references/change-review.md",
+          "docs/system-requirements.md",
+          "docs/requirement-status.md"
+        ],
+        "selection_reason": "The Publication necessity record owns the new non-comparative installation category; R02 and the status map own its intended acceptance boundary.",
+        "unaffected_reason": "Existing skill owners, standing instructions, runtime defaults and quality-comparison rules remain applicable and unchanged. The import path is initial instruction-only package installation and grants no independent runtime activation or replacement authority.",
+        "checks": "Inspect the complete ready -> qualification -> integration -> first-install -> native-rollout path; test a genuine bound new import and fail-closed controls. Reconcile exact reverse references without restructuring unrelated skills."
+      }
+    }
+  ]
+}
