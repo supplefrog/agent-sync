@@ -295,6 +295,21 @@
         "added_value": "Upstream format-aware session/graph readers and interpretation reference; comparative benefit over native file tools is unmeasured.",
         "retirement_test": "Retire this optional reader package if it is no longer requested or its format-specific access is sufficiently replaced by the remaining supported native interface; do not infer mastery or adaptive-answer benefit from structural readiness."
       }
+    },
+    {
+      "id": "photocraft",
+      "owner": "skills/photocraft",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/photocraft-import-20261031.json"
+      ],
+      "selection_reason": "Explicitly selected initial upstream instruction-package import. Actual pinned Git blobs, complete package/license identities and metadata-only license insertion are verified through requested-import acceptance. Runtime installation is deferred; no comparative model-benefit claim. Completed deployment and native readback are reported by the canonical rollout receipt.",
+      "purpose": {
+        "objective": "Create, inspect, edit, composite and export images through a configured PhotoCraft MCP connection.",
+        "added_value": "Source-authored guidance covers stateful document selection, command discovery, non-atomic batches, previews and layered save/export. Added value over current native models and tools is unmeasured; the MCP server is a separate unavailable dependency.",
+        "retirement_test": "Compare representative layered editing and interrupted export tasks with current native tools and no skill. Retire if document identity, recovery, original pixels and verified saved/exported artifacts remain adequate at acceptable total cost."
+      }
     }
   ],
   "retired_artifacts": [

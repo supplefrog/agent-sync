@@ -1,0 +1,68 @@
+{
+  "$schema": "../../contracts/change-request.schema.json",
+  "artifacts": [
+    {
+      "after_sha256": "f09a8544c4636e9537a7fad434fcce7c01a4eaa12b17643a6b1b96982a5b0e0e",
+      "before_sha256": "f09a8544c4636e9537a7fad434fcce7c01a4eaa12b17643a6b1b96982a5b0e0e",
+      "owner": "photocraft",
+      "source": "canonical"
+    },
+    {
+      "after_sha256": "4c4ccc0a4c416fe449d610f7f6cfe0904dcbcedf501a34a9a390efa0f6aafb96",
+      "before_sha256": "5eefef3281315aa0f8e777cb9d3bb8dad166f38fb87e3ba282cf0d4394ae73cf",
+      "owner": "host-deltas",
+      "source": "canonical"
+    }
+  ],
+  "checks": [],
+  "disposition": "applied",
+  "machine": "local-windows",
+  "operation": "deploy-canonical-owner",
+  "owners": [
+    "photocraft",
+    "host-deltas"
+  ],
+  "phase": "completed",
+  "phases": [
+    {
+      "name": "classify",
+      "status": "completed"
+    },
+    {
+      "name": "preflight",
+      "status": "completed"
+    },
+    {
+      "name": "canonicalize",
+      "status": "completed"
+    },
+    {
+      "name": "render",
+      "status": "completed"
+    },
+    {
+      "name": "validate",
+      "status": "completed"
+    },
+    {
+      "name": "deploy",
+      "status": "completed"
+    },
+    {
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "name": "receipt",
+      "status": "completed"
+    }
+  ],
+  "request_id": "f73c89da3583b3eb760110a7b0a75124eafb1804d48e30f4c3687434fa83c5da",
+  "result": "applied",
+  "risk": "low",
+  "schema_version": 1,
+  "source": {
+    "host": "canonical",
+    "surface": "fleet"
+  }
+}

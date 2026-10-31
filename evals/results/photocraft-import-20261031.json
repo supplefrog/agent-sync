@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "capability": "photocraft",
+  "status": "source-checked-requested-installation",
+  "source": {
+    "url": "https://github.com/ChrisTitusTech/titstack/tree/b9b7fb03bd347e4b514c5a6ccff397dbc909b65c/.agents/skills/photocraft",
+    "commit": "b9b7fb03bd347e4b514c5a6ccff397dbc909b65c",
+    "skill_blob": "c447fd761865b36e889796e9e06ae04e52cedd11",
+    "license_blob": "f26e671b850600502bf6f5f18385e60a40d64a1b"
+  },
+  "scope": "Requested skill import; no MCP installation/configuration, image edits, host defaults or unrelated workflow changes.",
+  "checks": {
+    "upstream_git_blob_identity": true,
+    "license_identity": true,
+    "procedural_body_unchanged": true,
+    "license_frontmatter_added": true,
+    "photocraft_mcp_connected": false,
+    "behavioral_advantage": "unassessed",
+    "actual_upstream_git_commit_and_blobs": true
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/photocraft",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The user requested this upstream skill in the fleet; the current fleet has no PhotoCraft skill. This assesses installation availability, not native model quality.",
+      "evidence": "Explicitly selected initial package installation. Actual local upstream Git commit blobs, MIT license, full package and metadata-only license insertion checked. Agent Sync and Codex metadata validators pass. Runtime installation and comparative benefit are not claimed; native catalogue/body and repeat-sync remain completed-rollout obligations.",
+      "why_instruction": "Preserve the selected upstream tool procedure in its existing portable Agent Skill form, separate from server activation.",
+      "alternative": "Leave the capability absent or reference upstream manually; neither fulfills the requested fleet import. Installing/configuring the MCP server or rewriting existing image guidance is outside this import.",
+      "artifacts": {
+        "skills/photocraft/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "1ace05cf6e7bc40d21015a26b5dd867544b2d1d6c45c849c12bf467accd55f74"
+        }
+      },
+      "change_kind": "requested-import",
+      "requested_import_acceptance": {
+        "classification": "requested-instruction-package",
+        "source_repository": "https://github.com/ChrisTitusTech/titstack",
+        "source_commit": "b9b7fb03bd347e4b514c5a6ccff397dbc909b65c",
+        "source_path": ".agents/skills/photocraft",
+        "license": "MIT",
+        "package_sha256": "f09a8544c4636e9537a7fad434fcce7c01a4eaa12b17643a6b1b96982a5b0e0e",
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ],
+        "files": {
+          "SKILL.md": {
+            "upstream_path": ".agents/skills/photocraft/SKILL.md",
+            "upstream_sha256": "9badb860ce59ee0097e17103cec1299443edb235cf7e2586bbfb2608e7625e11",
+            "installed_sha256": "1ace05cf6e7bc40d21015a26b5dd867544b2d1d6c45c849c12bf467accd55f74",
+            "transformation": "license-frontmatter"
+          },
+          "LICENSE": {
+            "upstream_path": "LICENSE",
+            "upstream_sha256": "96447390db20fc9bec245d9cc686ea4bc0a442f1afc2718e64337512f83f3312",
+            "installed_sha256": "96447390db20fc9bec245d9cc686ea4bc0a442f1afc2718e64337512f83f3312",
+            "transformation": "identity"
+          }
+        }
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/ownership.json": {
+          "before_sha256": "36ae18269e15e2d1c5f48cadddba5194469756ccd287c40ea47cc9ea8eadd67a",
+          "after_sha256": "e122aa48737656d32f20a1604b56bfe407e090c215b369d9c8c37c4ac816ac89"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "79740ee80cf7edae9a41db3951dce04aa0fa1d987cbc9611625a6db2ab455f6c",
+          "after_sha256": "79740ee80cf7edae9a41db3951dce04aa0fa1d987cbc9611625a6db2ab455f6c"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "d0d3d6817871fad5c6fa61f9cca42256d33b03b850a29e1a0b4e2d61518a15d7",
+          "after_sha256": "d0d3d6817871fad5c6fa61f9cca42256d33b03b850a29e1a0b4e2d61518a15d7"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "3e15bda48df3cedca6ac102209cb639f29672da7f2d7e964c9aeeea289f8bcc8",
+          "after_sha256": "3e15bda48df3cedca6ac102209cb639f29672da7f2d7e964c9aeeea289f8bcc8"
+        },
+        "skills/photocraft/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "1ace05cf6e7bc40d21015a26b5dd867544b2d1d6c45c849c12bf467accd55f74"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Add the requested initial PhotoCraft package and canonical owner; retain every existing capability."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing requested-import, ownership, collision, quality and rollout rules continue unchanged; server activation remains separate."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing requested-import, ownership, collision, quality and rollout rules continue unchanged; server activation remains separate."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing requested-import, ownership, collision, quality and rollout rules continue unchanged; server activation remains separate."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing requested-import, ownership, collision, quality and rollout rules continue unchanged; server activation remains separate."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing requested-import, ownership, collision, quality and rollout rules continue unchanged; server activation remains separate."
+        },
+        {
+          "path": "skills/photocraft/SKILL.md",
+          "disposition": "updated",
+          "reason": "Add the requested initial PhotoCraft package and canonical owner; retain every existing capability."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Existing R02/R03/R07/R10/R16 admission, ownership, evidence and truthful rollout intent are retained. The user requests one optional capability rather than a change to governance or standing behavior.",
+      "authority": "Current user request: copy over the photocraft skill in our fleet.",
+      "checks": "Actual upstream Git commit/blob identity, MIT license, complete source package and sole license-metadata insertion checked. Native installed-content/catalogue/body and repeat-sync evidence remains the canonical rollout completion boundary.",
+      "outcome_review": {
+        "expected": "A licensed, source-pinned optional skill distributed via the canonical reconciler; no unrelated owners or runtime settings changed.",
+        "observed": "Checked initial instruction-only import prepared against the repaired published admission path. Runtime setup deferred. No visual-edit or comparative quality result is claimed.",
+        "evidence": "Pinned source, package hashes and canonical plan result; no model-comparison evidence fabricated.",
+        "limitations": "Structural checks cannot establish visual correctness, tool availability, natural triggering or comparative quality."
+      }
+    }
+  ]
+}

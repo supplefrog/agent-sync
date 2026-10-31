@@ -163,6 +163,13 @@
       "license": "AGPL-3.0-only",
       "source": "https://github.com/amosblomqvist/learnharness@6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb",
       "eval": "evals/results/learnharness-reader-installation-20261023.json"
+    },
+    {
+      "name": "photocraft",
+      "status": "admitted",
+      "license": "MIT",
+      "source": "https://github.com/ChrisTitusTech/titstack/tree/b9b7fb03bd347e4b514c5a6ccff397dbc909b65c/.agents/skills/photocraft",
+      "eval": "evals/results/photocraft-import-20261031.json"
     }
   ]
 }
