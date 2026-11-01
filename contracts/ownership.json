@@ -14,9 +14,15 @@
       "selection_state": "selected",
       "selection_evidence": [
         "evals/results/breadcrumb-records-deterministic.json",
-        "evals/results/project-lifecycle-2026-10-05.json"
+        "evals/results/project-lifecycle-2026-10-05.json",
+        "evals/results/breadcrumb-question-map-20261101.json"
       ],
-      "selection_reason": "User selected the existing continuity owner for proportionate project promotion, organization, handoff and recoverable closeout, with a short managed standing trigger. Local helper and native Codex association checks passed; two explicitly loaded fresh-agent tasks exercised small work, promotion and independent continuation. This does not establish natural triggering, universal quality or Hermes/OMP parity. No watcher, provider or memory change is selected."
+      "selection_reason": "User selected the existing continuity owner for proportionate project promotion, organization, handoff and recoverable closeout, with a short managed standing trigger. Local helper and native Codex association checks passed; two explicitly loaded fresh-agent tasks exercised small work, promotion and independent continuation. This does not establish natural triggering, universal quality or Hermes/OMP parity. No watcher, provider or memory change is selected. The explicit 2026-11-01 choice adds a conditional question map in existing records. No standalone planning skill, new helper schema or comparative model-benefit claim is adopted.",
+      "purpose": {
+        "objective": "Preserve project intent, ownership, decision reasons, evidence and safe continuation across work, handoffs and recoverable closeout.",
+        "added_value": "Agent Sync lifecycle and native association rules plus optional record/archive helpers supply environment-specific mechanisms. The explicitly selected dependent-question map keeps uncertainty navigable in existing records; comparative model-quality and cost benefit remain unmeasured.",
+        "retirement_test": "Compare representative project work, fresh handoff and recoverable artifact cleanup with current native models/tools without this skill. Retire when that path preserves intent, dependent questions, canonical decisions, ownership, evidence, native association and hash-checked recovery at acceptable total cost, with necessary deterministic helpers owned elsewhere."
+      }
     },
     {
       "id": "capability-curator",

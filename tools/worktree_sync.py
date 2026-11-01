@@ -97,6 +97,24 @@ def _qualify(repo, ready, options):
             entries = sync_git.git(repo, 'ls-tree', '-r', tree, '--', 'skills/' + owner).splitlines()
             if any(entry.split()[0] != '100644' for entry in entries):
                 raise sync_git.SyncBlocked('requested import installed files must be regular and nonexecutable')
+        # Git executable modes cannot be recovered from materialized files on
+        # Windows. Inspect the actual ready tree before instruction admission.
+        requested_edits = set()
+        for name in paths:
+            if name.startswith('evals/results/') and name.endswith('.json') and (candidate / name).is_file():
+                value = json.loads((candidate / name).read_bytes())
+                if isinstance(value, dict) and isinstance(value.get('instruction_changes', []), list):
+                    for row in value.get('instruction_changes', []):
+                        if isinstance(row, dict) and row.get('change_kind') == 'requested-edit':
+                            owner = row.get('owner')
+                            if isinstance(owner, str) and owner in {'skills/' + n for n in owners}:
+                                requested_edits.add(owner)
+        for owner in requested_edits:
+            def modes(revision):
+                return {line.split('\t', 1)[1]: line.split()[0] for line in
+                        sync_git.git(repo, 'ls-tree', '-r', revision, '--', owner).splitlines()}
+            if modes(base) != modes(tree):
+                raise sync_git.SyncBlocked('requested edit cannot change package file set or Git modes')
         for commit in commits:
             added = set(dict(admission(commit))) - set(dict(public_admission))
             if not added <= imports or any(dict(admission(commit))[name] != 'admitted' for name in added):

@@ -1,9 +1,10 @@
 ---
 name: breadcrumb-records
 description: Use when work grows into a project, or at project release, handoff, interruption and closeout. Organize owned files and preserve decision reasons, evidence and safe continuation.
-version: 1.1.3
 license: UNLICENSED
-compatibility: Python 3.11+; local evidence files; one writer per record.
+metadata:
+  version: 1.1.4
+  compatibility: Python 3.11+; local evidence files; one writer per record.
 ---
 
 # Breadcrumb Records
@@ -37,6 +38,19 @@ Before interruption or delegation, save state and next action; do not mark unfin
 At completion, verify deliverables, commands, links and record completeness; report material gaps and update the result/limits. Keep consequential architecture rationale beside the decision, using an ADR when a later maintainer may revisit it. Use concise outcome-first prose.
 
 Route supported reusable methods/corrections to the existing `instruction-authoring` owner under current authorization; project facts/taste stay local and memory obeys host authorization. Completion alone requires no new skill and grants no shared admission or publication authority.
+
+## Map unresolved questions when useful
+
+For work with several dependent or still vague decisions, keep a small question map in the existing project record. Use a separate linked map only when it improves navigation. Clear, bounded work can keep its lightweight record.
+
+List each precise question once, with a stable ID and descriptive name; use names in prose and IDs for links. Track:
+
+- **Frontier:** a precise unanswered question with no unresolved dependency.
+- **Blocked:** a precise question waiting on a named question or prerequisite; link that dependency.
+- **Fog:** an in-scope area that needs investigation before a precise question can be stated.
+- **Completed:** an answered question linked to its one canonical decision entry.
+
+Map decisions and investigations rather than implementation tasks. When resolving or reopening a question, update its state and dependent questions. Keep the answer, rationale, evidence, consequences and reopening condition in the existing decision record; link to it instead of repeating it. Update settled requirements at their existing owner. Keep out-of-scope ideas outside the map, and distinguish an answered question from implementation completion or action approval.
 
 ## Release history for maintained repositories
 

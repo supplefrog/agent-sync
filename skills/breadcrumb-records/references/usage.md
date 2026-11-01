@@ -25,6 +25,8 @@ Complete a copy of the initialized scaffold as INPUT, preserving its ID; later u
 
 Map decision reasons and material alternatives to `change.text`, and evidence that would reopen a decision to `checks.limits`. Record missing intent provenance explicitly. For research or non-deployment work, state that deployment/rollback is not applicable; use `planned`/`in_progress` for unfinished work, never `deployed`. This schema has no generic completed-research status.
 
+For a question map, use the existing `change.text` field or link a Markdown map through `change.refs`. Keep each answer in one canonical decision entry. The helper validates record structure and referenced files, not question states or dependencies; no additional JSON fields are needed.
+
 The helper does not fetch URLs. Use an already-authorized local source extract with its original URL in prose, or an existing research record. Interpret actual evidence using the record rules in the entrypoint; validation alone grants no action authority.
 
 ## Record shape

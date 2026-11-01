@@ -256,6 +256,150 @@ def _approved_requested_import(candidate, source, name, owner, row, base, paths)
     return 'explicitly requested pinned instruction package'
 
 
+def _approved_requested_edit(candidate, source, name, owner, row, base, paths):
+    """Bind a user-selected prose edit of an existing admitted portable owner.
+
+    This checks scope and bytes, not human authenticity or model benefit.
+    Executable, metadata, ownership and lifecycle changes retain their gates.
+    """
+    import fleet
+    acceptance = row.get('requested_edit_acceptance')
+    keys = {'classification', 'baseline_commit', 'license', 'before_package_sha256',
+            'after_package_sha256', 'files', 'runtime_activation', 'model_benefit_claim',
+            'deployment_checks_required'}
+    if (not isinstance(owner, str) or not re.fullmatch(r'skills/[a-z0-9]+(?:-[a-z0-9]+)*', owner)
+            or not isinstance(name, str) or not name.startswith(owner + '/')
+            or row.get('basis') != 'user-correction' or not isinstance(acceptance, dict)
+            or set(acceptance) != keys
+            or acceptance.get('classification') != 'requested-existing-instruction-edit'
+            or not isinstance(acceptance.get('baseline_commit'), str)
+            or not re.fullmatch(r'[0-9a-f]{40}', acceptance['baseline_commit'])
+            or not isinstance(acceptance.get('license'), str)
+            or not re.fullmatch(r'[A-Za-z0-9.+-]+', acceptance['license'])
+            or acceptance.get('runtime_activation') is not False
+            or acceptance.get('model_benefit_claim') is not False
+            or acceptance.get('deployment_checks_required') !=
+                ['native-hermes-codex-omp-catalogue-body', 'repeat-sync-preserves-source']):
+        raise sync_git.SyncBlocked('requested edit requires explicit source-bound instruction-only acceptance')
+    reviewed = acceptance['baseline_commit']
+    # Publication composes onto the current remote. Keep the reviewed identity
+    # immutable while permitting unrelated commits between review and rollout.
+    try:
+        ancestor = (sync_git.git(source, 'cat-file', '-t', reviewed) == 'commit'
+                    and sync_git.git(source, 'merge-base', reviewed, base) == reviewed)
+    except sync_git.GitFailure as exc:
+        raise sync_git.SyncBlocked('requested edit cannot resolve its reviewed ancestor commit') from exc
+    if not ancestor:
+        raise sync_git.SyncBlocked('requested edit requires a real reviewed ancestor commit')
+    if (sync_git.git(source, 'ls-tree', '-r', '-z', reviewed, '--', owner) !=
+            sync_git.git(source, 'ls-tree', '-r', '-z', base, '--', owner)):
+        raise sync_git.SyncBlocked('requested edit reviewed package changed before publication')
+    registry_bytes = _before(source, base, 'registry.json')
+    if registry_bytes != (candidate / 'registry.json').read_bytes():
+        raise sync_git.SyncBlocked('requested edit cannot change registry or lifecycle')
+    package = owner.removeprefix('skills/')
+    registered = fleet.registry(candidate).get(package, {})
+    reviewed_registry_bytes = _before(source, reviewed, 'registry.json')
+    if reviewed_registry_bytes is None:
+        raise sync_git.SyncBlocked('requested edit requires a reviewed admission registry')
+    reviewed_registry = fleet.registry(candidate, captured=reviewed_registry_bytes)
+    if (registered != reviewed_registry.get(package) or registered.get('status') != 'admitted'
+            or registered.get('license') != acceptance['license']):
+        raise sync_git.SyncBlocked('requested edit requires an existing admitted owner and unchanged license')
+    for data in (_before(source, reviewed, 'contracts/ownership.json'),
+                 _before(source, base, 'contracts/ownership.json'),
+                 (candidate / 'contracts/ownership.json').read_bytes()):
+        if data is None or [r.get('owner') for r in json.loads(data).get('capabilities', [])
+                            if r.get('id') == package] != [owner]:
+            raise sync_git.SyncBlocked('requested edit requires the existing canonical capability owner')
+    entries = sync_git.git(source, 'ls-tree', '-r', '-z', base, '--', owner).split('\0')
+    before_files = {}
+    modes = {}
+    for entry in filter(None, entries):
+        metadata, target = entry.split('\t', 1)
+        relative = target.removeprefix(owner + '/')
+        modes[relative] = metadata.split()[0]
+        before_files[relative] = _hash(_before(source, base, target))
+    actual = fleet.directory_record(candidate / owner)
+    disk_files = {p.relative_to(candidate / owner).as_posix()
+                  for p in (candidate / owner).rglob('*') if p.is_file()}
+    files = acceptance['files']
+    if (not isinstance(files, dict) or not before_files or set(files) != set(before_files)
+            or set(files) != set(actual['files']) or disk_files != set(files)):
+        raise sync_git.SyncBlocked('requested edit requires the complete unchanged package file set')
+    digest = hashlib.sha256()
+    changed = {}
+    # Match directory_record's native Path ordering on both Windows and POSIX.
+    for relative in sorted(files, key=Path):
+        target = owner + '/' + relative
+        if sync_git.safe_path(candidate, target) != target:
+            raise sync_git.SyncBlocked('requested edit has an invalid package address')
+        expected = {'before_sha256': before_files[relative], 'after_sha256': actual['files'][relative]}
+        if files[relative] != expected:
+            raise sync_git.SyncBlocked('requested edit has stale package bytes')
+        digest.update(relative.encode('utf-8') + b'\0' + bytes.fromhex(before_files[relative]))
+        if expected['before_sha256'] != expected['after_sha256']:
+            if (Path(relative).suffix.lower() != '.md' or modes[relative] != '100644'
+                    or target not in paths):
+                raise sync_git.SyncBlocked('requested edit permits only selected existing nonexecutable Markdown edits')
+            changed[target] = expected
+    if (name not in changed or row.get('artifacts') != changed
+            or acceptance['before_package_sha256'] != digest.hexdigest()
+            or acceptance['after_package_sha256'] != actual['sha256']):
+        raise sync_git.SyncBlocked('requested edit requires exact full-package and changed-source bindings')
+    entry = owner + '/SKILL.md'
+    import yaml
+    def parsed_metadata(data):
+        text = data.decode('utf-8').replace('\r\n', '\n')
+        if not text.startswith('---\n') or '\n---\n' not in text[4:]:
+            raise sync_git.SyncBlocked('requested edit requires skill frontmatter')
+        class UniqueLoader(yaml.SafeLoader):
+            pass
+        def unique_mapping(loader, node):
+            result = {}
+            for key, value in node.value:
+                key = loader.construct_object(key)
+                if not isinstance(key, str) or key in result:
+                    raise sync_git.SyncBlocked('requested edit has invalid or duplicate metadata keys')
+                result[key] = loader.construct_object(value)
+            return result
+        UniqueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, unique_mapping)
+        try:
+            metadata = yaml.load(text[4:].split('\n---\n', 1)[0], Loader=UniqueLoader)
+        except yaml.YAMLError as exc:
+            raise sync_git.SyncBlocked('requested edit has invalid skill metadata') from exc
+        if not isinstance(metadata, dict):
+            raise sync_git.SyncBlocked('requested edit requires structured skill frontmatter')
+        return metadata
+    old_metadata = parsed_metadata(_before(source, base, entry))
+    new_metadata = parsed_metadata((candidate / entry).read_bytes())
+    def stable_metadata(metadata):
+        metadata = dict(metadata)
+        nested = metadata.get('metadata', {})
+        if not isinstance(nested, dict):
+            raise sync_git.SyncBlocked('requested edit requires structured skill metadata')
+        nested = dict(nested)
+        for version in (metadata.get('version'), nested.get('version')):
+            if version is not None and (isinstance(version, bool) or not isinstance(version, (str, int, float))):
+                raise sync_git.SyncBlocked('requested edit requires informational version metadata')
+        compatibility = metadata.pop('compatibility', None)
+        if 'compatibility' in nested:
+            if compatibility is not None and compatibility != nested['compatibility']:
+                raise sync_git.SyncBlocked('requested edit has conflicting compatibility declarations')
+            compatibility = nested.pop('compatibility')
+        metadata.pop('version', None)
+        nested.pop('version', None)
+        metadata['compatibility'] = compatibility
+        metadata['metadata'] = nested
+        return metadata
+    if (stable_metadata(old_metadata) != stable_metadata(new_metadata) or old_metadata.get('name') != package
+            or old_metadata.get('license') != acceptance['license']):
+        raise sync_git.SyncBlocked('requested edit cannot change skill metadata or license')
+    if validate.validate_skill(candidate / entry):
+        raise sync_git.SyncBlocked('requested edit package validation failed')
+    return 'explicitly requested existing-owner instruction edit'
+
+
 def requested_import_owners(candidate, source, base, paths):
     """Return only source-bound new owners from selected necessity receipts."""
     owners = set()
@@ -508,6 +652,8 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
         reason = _approved_native_learning_source(candidate, source, name, owner, row, base, paths, reconciliations)
     elif kind == 'requested-import':
         reason = _approved_requested_import(candidate, source, name, owner, row, base, paths)
+    elif kind == 'requested-edit':
+        reason = _approved_requested_edit(candidate, source, name, owner, row, base, paths)
     elif kind == 'requested-reader':
         reason = _approved_requested_reader(candidate, source, name, owner, row, base, paths)
     elif kind == 'reference-transport':
@@ -940,7 +1086,7 @@ def check(candidate: Path, source: Path, base: str, paths):
         if binding != {'before_sha256': old_hash, 'after_sha256': new_hash}:
             raise sync_git.SyncBlocked('instruction necessity record is not bound to changed bytes: ' + name)
         kind = row.get('change_kind', 'add-or-change')
-        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-import', 'requested-reader', 'requested-native-learning', 'public-audience-correction'}:
+        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-import', 'requested-edit', 'requested-reader', 'requested-native-learning', 'public-audience-correction'}:
             raise sync_git.SyncBlocked('invalid instruction change kind: ' + name)
         if kind == 'remove':
             old_data = _before(source, base, name)

@@ -1,0 +1,356 @@
+{
+  "schema_version": 1,
+  "capability": "breadcrumb-records",
+  "scope": "Selected optional question-map fold in existing breadcrumb-records; no template, PR workflow, runtime or new skill installation.",
+  "source": {
+    "url": "https://github.com/ChrisTitusTech/titstack/blob/b9b7fb03bd347e4b514c5a6ccff397dbc909b65c/.agents/skills/wayfinder/SKILL.md",
+    "sha256": "d90746cdba219cad48912385486d41ba6dc79d8ed0706990cbab7d5971e28f19",
+    "license": "MIT",
+    "reuse": "Question-map concepts re-expressed in new wording; no upstream template/assets copied. Titstack itself credits Matt Pocock Wayfinder."
+  },
+  "behavior_preservation": [
+    {
+      "source": "Wayfinder stable question IDs, statuses and named dependencies",
+      "disposition": "adapted",
+      "destination": "skills/breadcrumb-records/SKILL.md#Map unresolved questions when useful",
+      "reason": "Keep one precise question entry with a stable identity and move it as prerequisites resolve."
+    },
+    {
+      "source": "Wayfinder one detailed answer, updated settled requirements and newly exposed questions",
+      "disposition": "adapted",
+      "destination": "skills/breadcrumb-records/SKILL.md#Map unresolved questions when useful",
+      "reason": "Use existing canonical decisions/requirements instead of duplicating ANSWERS/SPEC files."
+    },
+    {
+      "source": "Wayfinder explicit-only invocation, three fixed files and planning-only Chart/Advance/Refresh modes",
+      "disposition": "not-selected",
+      "destination": "skills/breadcrumb-records/SKILL.md#Record, continue and close out",
+      "reason": "Only the map is folded. Existing lifecycle/user scope governs work; a map neither grants action approval nor requires a separate planning bundle."
+    },
+    {
+      "source": "Existing breadcrumb handoff, records, releases, ownership and hash-checked recovery",
+      "disposition": "preserved",
+      "destination": "skills/breadcrumb-records/SKILL.md",
+      "reason": "No existing obligation or helper implementation removed or weakened."
+    }
+  ],
+  "verification": {
+    "metadata": "Canonical skill validator and current Codex validator pass after supported informational metadata migration.",
+    "record_mechanism": "Actual existing CLI init/update/check/render passes with map text in existing fields; resolved dependency becomes actionable and prior state remains historical.",
+    "template_decision": "Bounded baseline check produced filled SPEC/ROADMAP/TASKS/AGENTS from project facts without Titstack templates, and changed only README for a typo. No missing file-creation capability found in that case; no templates added. This is not universal workflow/host equivalence.",
+    "publisher_tests": "Final requested-edit module: 6 methods pass, including real publication/readback/repeat, unrelated upstream publication/registry preservation and 26 refusal controls. Relevant existing run 76/77; existing native-artifact consistency failure reproduces with original d6f2fc8 instruction_changes source. No native diagnostic admitted.",
+    "review_fix": "Review reproduced a false refusal after unrelated publication. Keep the immutable reviewed ancestor, require unchanged selected package blobs/modes and registry row against the actual publication base, and reject invalid/nonancestor pins or selected-scope drift. Real red reproduction and final positive/inverse controls pass; no receipt rebasing or composition bypass.",
+    "limits": "No comparative model-benefit or natural-trigger improvement claim. Live installed hashes, fresh native catalogue/body and remote/repeat checks remain required for completed sync."
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/breadcrumb-records",
+      "change_kind": "requested-edit",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The user selected a dependent-question map inside breadcrumb-records. The current owner records decisions but has no explicit Frontier/Blocked/Fog/Completed map or dependent-question update rule.",
+      "evidence": "Pinned upstream procedure inspected; selected concepts re-expressed in the existing owner. Real JSON helper map/history/render probe passes without schema changes. The user-selected instruction is the acceptance target; comparative model benefit is unassessed.",
+      "why_instruction": "Add a short conditional map at the lifecycle owner and route optional JSON use through existing text/ref fields. Runtime and helper implementations already suffice.",
+      "alternative": "Leaving the source unchanged omits the explicitly selected map. A standalone Wayfinder skill or compulsory SPEC/MAP/ANSWERS bundle duplicates lifecycle ownership. Starter templates are unnecessary when current agents can already create appropriate project files on demand.",
+      "artifacts": {
+        "skills/breadcrumb-records/SKILL.md": {
+          "before_sha256": "1941b454ae29480c7a7c06cd68bb984149a074b825ea82d48de6cbe0f89b04b9",
+          "after_sha256": "8e6b99667ddce5704700a2a1e66f6d24687673180d35aabb9841c1b4d7742160"
+        },
+        "skills/breadcrumb-records/references/usage.md": {
+          "before_sha256": "6c830aa8ba4a4da84c542ffb68a13d1f2818ca6a049629231aa83403a157130c",
+          "after_sha256": "eae296832365e81e160141939c59fe3d04b8412ead950b96028969829a3affd0"
+        }
+      },
+      "requested_edit_acceptance": {
+        "classification": "requested-existing-instruction-edit",
+        "baseline_commit": "d6f2fc8ca579c516e8ad1aa4c0a98cc349c22df0",
+        "license": "UNLICENSED",
+        "before_package_sha256": "3bbef0204653be24300314cf949f6ad03fcfe9aa8a0be899e30bf323752539c8",
+        "after_package_sha256": "a3fb3c12b72ff6166da5c7e27cfd7311b262d3af28696be4da06e9598edd40ff",
+        "files": {
+          "SKILL.md": {
+            "before_sha256": "1941b454ae29480c7a7c06cd68bb984149a074b825ea82d48de6cbe0f89b04b9",
+            "after_sha256": "8e6b99667ddce5704700a2a1e66f6d24687673180d35aabb9841c1b4d7742160"
+          },
+          "references/handoff-continuity.md": {
+            "before_sha256": "2c49a4b41e54741603adcfdd7ccb46b7a3afc953fc2ab4ac1afea7cb4f45f6a6",
+            "after_sha256": "2c49a4b41e54741603adcfdd7ccb46b7a3afc953fc2ab4ac1afea7cb4f45f6a6"
+          },
+          "references/host-association.md": {
+            "before_sha256": "f58e556e9760ffbe1c0a59d0feb0343284202d77b768e9df8883826f32225df7",
+            "after_sha256": "f58e556e9760ffbe1c0a59d0feb0343284202d77b768e9df8883826f32225df7"
+          },
+          "references/provenance.md": {
+            "before_sha256": "b67f47df07a707c0b00fd50bbd9bc415f21af714cb1e407f635fbb1e31940c7e",
+            "after_sha256": "b67f47df07a707c0b00fd50bbd9bc415f21af714cb1e407f635fbb1e31940c7e"
+          },
+          "references/task-artifacts.md": {
+            "before_sha256": "e1b652a700d1f2be611c5d9991fb84e51848ddc3c0401b80f98449d3ea4486dc",
+            "after_sha256": "e1b652a700d1f2be611c5d9991fb84e51848ddc3c0401b80f98449d3ea4486dc"
+          },
+          "references/usage.md": {
+            "before_sha256": "6c830aa8ba4a4da84c542ffb68a13d1f2818ca6a049629231aa83403a157130c",
+            "after_sha256": "eae296832365e81e160141939c59fe3d04b8412ead950b96028969829a3affd0"
+          },
+          "scripts/breadcrumb.py": {
+            "before_sha256": "ff4a322c848203268692f673b889f1778c327ad189f8928b2a5eaf004e408411",
+            "after_sha256": "ff4a322c848203268692f673b889f1778c327ad189f8928b2a5eaf004e408411"
+          },
+          "scripts/task_artifacts.py": {
+            "before_sha256": "5c55c08fff7481c762499873a4ce8e0c46d85d2d557e74e5e2444e438f19d0ef",
+            "after_sha256": "5c55c08fff7481c762499873a4ce8e0c46d85d2d557e74e5e2444e438f19d0ef"
+          },
+          "scripts/test_breadcrumb.py": {
+            "before_sha256": "57f58a60a48946c99e63d4d6d79a4143bf7b5d47290170f95bb5db9129ff7907",
+            "after_sha256": "57f58a60a48946c99e63d4d6d79a4143bf7b5d47290170f95bb5db9129ff7907"
+          },
+          "scripts/test_task_artifacts.py": {
+            "before_sha256": "5e2f76dc32178e9e502046d09a8844a66526b8905bdb6e4684f72432dd889228",
+            "after_sha256": "5e2f76dc32178e9e502046d09a8844a66526b8905bdb6e4684f72432dd889228"
+          }
+        },
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      },
+      "loading_review": {
+        "entrypoint_reason": "The existing lifecycle entrypoint remains common. The short optional question map belongs next to record/continuation decisions; it adds no compulsory reference load or planning-file bundle.",
+        "obligations": [
+          {
+            "obligation": "Preserve existing project promotion, record facts, handoff intake, completion, release and recoverable cleanup procedures.",
+            "applies_when": "The original lifecycle or handoff condition applies.",
+            "required": true,
+            "before": [
+              "skills/breadcrumb-records/SKILL.md"
+            ],
+            "after": [
+              "skills/breadcrumb-records/SKILL.md"
+            ],
+            "disposition": "preserved",
+            "load_when": "At the existing lifecycle decision point.",
+            "reason": "All existing body text, order and governing section boundaries remain; new map guidance is a separate conditional section."
+          },
+          {
+            "obligation": "Map dependent questions, precise blockers, vague in-scope areas and completed decisions with stable links.",
+            "applies_when": "Several dependent or still vague decisions make a map useful.",
+            "required": false,
+            "before": [],
+            "after": [
+              "skills/breadcrumb-records/SKILL.md#Map unresolved questions when useful"
+            ],
+            "disposition": "added",
+            "load_when": "While maintaining the existing project record.",
+            "reason": "User selected these Wayfinder concepts; clear bounded work retains a lightweight record."
+          },
+          {
+            "obligation": "Use current JSON text/ref fields for an optional map without changing the helper schema.",
+            "applies_when": "The optional JSON record helper is chosen for a question map.",
+            "required": true,
+            "before": [
+              "skills/breadcrumb-records/references/usage.md#Write and interpret a record"
+            ],
+            "after": [
+              "skills/breadcrumb-records/references/usage.md#Write and interpret a record"
+            ],
+            "disposition": "added",
+            "load_when": "The existing mandatory usage read occurs before helper invocation.",
+            "reason": "The added note routes map content into existing fields and preserves local reference/history/validation boundaries."
+          },
+          {
+            "obligation": "Preserve skill identity, trigger, license and compatibility meaning while maintaining supported informational metadata.",
+            "applies_when": "The skill is discovered or read.",
+            "required": true,
+            "before": [
+              "skills/breadcrumb-records/SKILL.md"
+            ],
+            "after": [
+              "skills/breadcrumb-records/SKILL.md"
+            ],
+            "disposition": "changed",
+            "load_when": "Native catalogue/body load.",
+            "reason": "Move legacy informational version/compatibility into supported metadata; bump version to 1.1.4. Names, description, license and compatibility value stay unchanged."
+          }
+        ],
+        "checks": "Inspect original and candidate lifecycle/conditional routes; validate metadata; real helper init/update/check/render probe preserves prior question states; clear bounded work remains a near-miss. Native catalogue/body and repeat sync are completion checks. No model-quality or natural-trigger improvement is claimed."
+      },
+      "restructured": false
+    },
+    {
+      "owner": "skills/instruction-authoring",
+      "change_kind": "contract-correction",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "Existing publication distinguishes requested initial imports but excludes this explicit user-selected existing-owner edit unless comparative model-improvement evidence is fabricated or unrelated inference is run.",
+      "evidence": "Current checker routes existing-skill changes to measured adoption despite the explicit authored choice. Real ready/publication tests verify bounded requested-edit acceptance, refusal controls and repeat rollout. The normal measured-benefit path remains unchanged.",
+      "why_instruction": "Publication necessity record and R02 describe the bounded explicit-edit acceptance enforced at the existing tool owner, without adding an approval service or model-quality claim.",
+      "alternative": "A one-off breadcrumb hash exemption repeats closed special cases. A model-quality trial tests a different claim. Bypassing the reconciler loses source, collision, rollback and readback checks; reuse the current checked publication path.",
+      "artifacts": {
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "3e15bda48df3cedca6ac102209cb639f29672da7f2d7e964c9aeeea289f8bcc8",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        }
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/ownership.json": {
+          "before_sha256": "e122aa48737656d32f20a1604b56bfe407e090c215b369d9c8c37c4ac816ac89",
+          "after_sha256": "ce5755cecd713686c77bf6927e646c6a61f9cb9c10e566c5ef1384894adde9f7"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e",
+          "after_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "79740ee80cf7edae9a41db3951dce04aa0fa1d987cbc9611625a6db2ab455f6c",
+          "after_sha256": "89d7d2275e13eba8d05fb1ae58042c1edcf329f7f134b6d37ac372724e4cbd5c"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "d0d3d6817871fad5c6fa61f9cca42256d33b03b850a29e1a0b4e2d61518a15d7",
+          "after_sha256": "e93d09bc37280a07f91369d8c1d5c8377b75483328f3dad7e567c784b762b036"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "d3e64b24c02b505f670bd59a3e4cc65ff6e07fbeb04191ccf30970815cdfbdea",
+          "after_sha256": "d3e64b24c02b505f670bd59a3e4cc65ff6e07fbeb04191ccf30970815cdfbdea"
+        },
+        "skills/breadcrumb-records/SKILL.md": {
+          "before_sha256": "1941b454ae29480c7a7c06cd68bb984149a074b825ea82d48de6cbe0f89b04b9",
+          "after_sha256": "8e6b99667ddce5704700a2a1e66f6d24687673180d35aabb9841c1b4d7742160"
+        },
+        "skills/breadcrumb-records/references/usage.md": {
+          "before_sha256": "6c830aa8ba4a4da84c542ffb68a13d1f2818ca6a049629231aa83403a157130c",
+          "after_sha256": "eae296832365e81e160141939c59fe3d04b8412ead950b96028969829a3affd0"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "3e15bda48df3cedca6ac102209cb639f29672da7f2d7e964c9aeeea289f8bcc8",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "c2771185e0122f92acd3fc9c4e00de84ae9e13cc59aed885398bed94caf6a0bf",
+          "after_sha256": "c8643ab02a66deb5ca0419fafded6d37b04f62bbd341bbd34b8e146fd22e5021"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "c1bf745b7742c150f2032ceaf027f6e4f1c03629e19b3c9c544dd12bdbe42fbd",
+          "after_sha256": "4ff1c46043cc37031c6b48c82fc35becfaece88286a8451e91c303e520a3544b"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Implement the explicit existing-owner question-map choice and its bounded requested-edit publication path; preserve other concerns."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, lifecycle, evidence, permission and recovery guidance remains applicable; no change to this dependency is needed for the selected fold."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, lifecycle, evidence, permission and recovery guidance remains applicable; no change to this dependency is needed for the selected fold."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, lifecycle, evidence, permission and recovery guidance remains applicable; no change to this dependency is needed for the selected fold."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, lifecycle, evidence, permission and recovery guidance remains applicable; no change to this dependency is needed for the selected fold."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit existing-owner question-map choice and its bounded requested-edit publication path; preserve other concerns."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit existing-owner question-map choice and its bounded requested-edit publication path; preserve other concerns."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, lifecycle, evidence, permission and recovery guidance remains applicable; no change to this dependency is needed for the selected fold."
+        },
+        {
+          "path": "skills/breadcrumb-records/SKILL.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit existing-owner question-map choice and its bounded requested-edit publication path; preserve other concerns."
+        },
+        {
+          "path": "skills/breadcrumb-records/references/usage.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit existing-owner question-map choice and its bounded requested-edit publication path; preserve other concerns."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership, lifecycle, evidence, permission and recovery guidance remains applicable; no change to this dependency is needed for the selected fold."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit existing-owner question-map choice and its bounded requested-edit publication path; preserve other concerns."
+        },
+        {
+          "path": "tools/instruction_changes.py",
+          "disposition": "updated",
+          "reason": "Implement the explicit existing-owner question-map choice and its bounded requested-edit publication path; preserve other concerns."
+        },
+        {
+          "path": "tools/worktree_sync.py",
+          "disposition": "updated",
+          "reason": "Implement the explicit existing-owner question-map choice and its bounded requested-edit publication path; preserve other concerns."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "R02 now distinguishes an explicit authored existing-owner instruction choice from a claimed autonomous/model-benefit adoption. R22 project-continuity intent is retained; the selected optional map is implemented at its existing owner.",
+      "authority": "Explicit selected breadcrumb question-map fold and fleet synchronization; all scope exclusions retained.",
+      "checks": "Source/metadata/loading review, real JSON helper probe, bounded current-capability file-creation check, real requested-edit publication/refusal/repeat tests, canonical structural and native sync checks.",
+      "outcome_review": {
+        "expected": "Existing records can carry a conditional dependent-question map and one canonical answer per completed question, with original lifecycle obligations and runtime safeguards retained.",
+        "observed": "Prose fold, supported metadata and JSON usage note prepared; actual helper probe passes. Requested-edit mechanism tests and reviewed-ancestor concurrency controls pass; one pre-existing diagnostic-consistency failure remains excluded. Native fleet rollout is pending.",
+        "evidence": "Exact source bindings, owned test logs/probe artifacts and canonical ready/rollout receipt at completion.",
+        "limitations": "Source and fixture checks do not authenticate human approval, establish causal model benefit or replace native installed-content/readback checks."
+      },
+      "framework_review": {
+        "affected": [
+          "skills/instruction-authoring/references/change-review.md",
+          "skills/breadcrumb-records/SKILL.md",
+          "skills/breadcrumb-records/references/usage.md",
+          "docs/system-requirements.md",
+          "docs/requirement-status.md",
+          "contracts/ownership.json"
+        ],
+        "selection_reason": "The existing Publication necessity record and R02 own requested-edit eligibility; breadcrumb remains the sole project lifecycle owner and preserves its purpose/retirement record.",
+        "unaffected_reason": "Standing instructions, other skills, helper/schema implementations, registry/lifecycle, providers, runtimes and PR workflow remain unchanged. No template capability gap was found in the bounded baseline check.",
+        "checks": "Inspect actual conditional routes and before/after obligations; test valid alternate metadata representation and refusal controls at real publication boundaries; preserve exact source dependencies."
+      }
+    }
+  ]
+}
