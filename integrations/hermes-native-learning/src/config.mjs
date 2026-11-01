@@ -19,11 +19,11 @@ function configuredRoot(base, relative) {
   requireState(inside(fs.realpathSync(base),physical),'invalid_config','A configured root traverses an outside link.');
   return physical;
 }
-export function loadConfiguration(file) {
+export function loadConfiguration(file, { allowEmptyLessons = false } = {}) {
   const actual = fs.realpathSync(file);
   requireState(fs.statSync(actual).size <= 65536, 'invalid_config', 'Configuration exceeds 64 KiB.');
   const config = JSON.parse(fs.readFileSync(actual, 'utf8'));
-  requireState(config?.version === 1 && Array.isArray(config.lessons) && config.lessons.length > 0 &&
+  requireState(config?.version === 1 && Array.isArray(config.lessons) && (allowEmptyLessons || config.lessons.length > 0) &&
     Object.keys(config).every(k => ['version','lessons'].includes(k)), 'invalid_config', 'Use a version1 private lesson configuration.');
   const base = path.dirname(actual), ids = new Set();
   const lessons = config.lessons.map(item => {

@@ -1,5 +1,7 @@
 # License and source provenance
 
+Source successor177 additionally ports the original MessageResponse configuration from `components/ai-elements/message.tsx`, the strict diagram renderer from `components/mermaid-render.ts`, and scoped prose rules from `app/globals.css`. `src/vendor/runtime/math-delims.ts` retains the complete unchanged pinned `src/core/math-delims.ts` body after an attribution header. The T3-only resource build statically includes the existing pinned React/ReactDOM19.2.8, Streamdown2.5.0, CJK1.0.3, math/Mermaid plugins1.0.2, remark-breaks4.0.0, KaTeX0.18.2 and Mermaid11.17.0. These permissive dependencies are not injected into Hermes or installed at runtime. The build must include the actual bundled dependency license texts in `t3/THIRD-PARTY-NOTICES.txt` and bind sources/fonts/package metadata in BUILD.json. No generated successor is qualified until that build succeeds and independent review passes.
+
 AGPL-3.0-only. See LICENSE. This integration derives state contracts, question behavior, plan algorithms and interaction decisions from LearnHarness by Amos Blomqvist and contributors:
 
 - https://github.com/amosblomqvist/learnharness

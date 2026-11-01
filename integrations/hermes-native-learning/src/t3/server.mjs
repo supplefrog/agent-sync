@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { T3LearningBoundary } from './boundary.mjs';
+// Boundary loading is deferred until the opted-in entry observation is available.
 
 export const APP_URI='ui://learnharness/lesson.html';
 const schema=properties=>({type:'object',properties,additionalProperties:false,required:Object.keys(properties)});
@@ -55,7 +55,32 @@ export function handleLearningTool(boundary,request) {
   if(name==='learning_artifact_source')return textResult(boundary.asset(meta,args));
   throw Object.assign(new Error('Unknown learning tool.'),{code:'unknown_tool'});
 }
+// Opt-in startup observation: fixed sibling receipt, no error messages, paths or payloads.
+let startupPhase='not-entered';
+let startupReceiptFd;
+const startupErrorCodes=new Set(['ENOENT','EACCES','EPERM','ENOTDIR','EISDIR','EEXIST','ELOOP','EMFILE','ENFILE','ENOSPC','EIO','EBADF','ERR_MODULE_NOT_FOUND','MODULE_NOT_FOUND','ERR_PACKAGE_PATH_NOT_EXPORTED','ERR_INVALID_PACKAGE_CONFIG','ERR_INVALID_MODULE_SPECIFIER','ERR_UNKNOWN_FILE_EXTENSION','ERR_REQUIRE_ESM']);
+function startupObservation(configFile,stage,error) {
+  if(stage!=='failed')startupPhase=stage;
+  if(process.env.LEARNHARNESS_STARTUP_DIAGNOSTIC!=='1')return;
+  const safeCode=startupErrorCodes.has(error?.code)?error.code:null;
+  const safeType=error instanceof Error&&['Error','TypeError','RangeError','SyntaxError','ReferenceError','StateError'].includes(error.name)?error.name:null;
+  const record={stage,phase:startupPhase,code:safeCode,errorType:safeType};
+  try {
+    if(startupReceiptFd===undefined) {
+      // O_EXCL rejects every existing leaf, including links; never truncate or reopen it.
+      startupReceiptFd=null;
+      startupReceiptFd=fs.openSync(path.join(path.dirname(fs.realpathSync(configFile)),
+        'mcp-startup-diagnostic.ndjson'),'wx',0o600);
+    }
+    if(startupReceiptFd===null)return;
+    // Keep the exclusively owned handle for this one process; append bounded stage records.
+    fs.writeSync(startupReceiptFd,JSON.stringify(record)+'\n',null,'utf8');
+  } catch {console.error('LearnHarness startup diagnostic receipt unavailable.');}
+}
 export async function start(configFile,sdkRoot) {
+  startupObservation(configFile,'entry');
+  const { T3LearningBoundary }=await import('./boundary.mjs');
+  startupObservation(configFile,'boundary-module-loaded');
   if(!configFile||!sdkRoot)throw new Error('Pass --config <private enrollment> --sdk-root <existing SDK runtime>. No automatic installation.');
   const require=createRequire(path.join(fs.realpathSync(sdkRoot),'package.json'));
   const sdkDirectory=path.resolve(path.dirname(require.resolve('@modelcontextprotocol/sdk/server/index.js')),'../../..');
@@ -64,7 +89,9 @@ export async function start(configFile,sdkRoot) {
   const load=specifier=>import(pathToFileURL(path.join(sdkDirectory,'dist/esm',specifier)).href);
   const [{Server},{StdioServerTransport},types]=await Promise.all([
     load('server/index.js'),load('server/stdio.js'),load('types.js')]);
+  startupObservation(configFile,'sdk-loaded');
   const boundary=new T3LearningBoundary(configFile);
+  startupObservation(configFile,'boundary-loaded');
   const server=new Server({name:'learnharness-native',version:'0.1.0-dev'},{capabilities:{tools:{},resources:{}},
     instructions:'Existing agent remains teacher. Use learning_catalogue/view. On a genuine lh.t3 message, call learning_input with those exact fields, then context/continue/teach/question through learning_command; return learning_view. Never copy an owner into env/arguments. No automatic provider or worker is part of this server.'});
   server.setRequestHandler(types.ListToolsRequestSchema,async()=>({tools:TOOLS}));
@@ -81,11 +108,16 @@ export async function start(configFile,sdkRoot) {
     return {contents:[{uri:APP_URI,mimeType:'text/html;profile=mcp-app',text:fs.readFileSync(file,'utf8'),
       _meta:{ui:{prefersBorder:true,csp:{connectDomains:[],resourceDomains:[],frameDomains:[]}}}}]};
   });
+  startupObservation(configFile,'connecting');
   await server.connect(new StdioServerTransport());
+  startupObservation(configFile,'connected');
   return server;
 }
+const cliArgs=process.argv.slice(2);
+const hasStartupArguments=cliArgs.length===4&&cliArgs[0]==='--config'&&cliArgs[2]==='--sdk-root';
+if(hasStartupArguments)startupObservation(cliArgs[1],'module-loaded');
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
-  const args=process.argv.slice(2);
-  if(args.length!==4||args[0]!=='--config'||args[2]!=='--sdk-root')throw new Error('Use --config <private file> --sdk-root <existing runtime>.');
-  start(args[1],args[3]).catch(()=>{console.error('Learning MCP startup failed; no automatic retry, installation or fallback.');process.exitCode=1;});
-}
+  if(!hasStartupArguments)throw new Error('Use --config <private file> --sdk-root <existing runtime>.');
+  startupObservation(cliArgs[1],'entry-matched');
+  start(cliArgs[1],cliArgs[3]).catch(error=>{startupObservation(cliArgs[1],'failed',error);console.error('Learning MCP startup failed; no automatic retry, installation or fallback.');process.exitCode=1;});
+} else if(hasStartupArguments)startupObservation(cliArgs[1],'entry-mismatch');

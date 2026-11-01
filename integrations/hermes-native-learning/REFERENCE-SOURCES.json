@@ -102,6 +102,14 @@
       "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/components/artifacts/demo-card.tsx",
       "upstreamPath": "components/artifacts/demo-card.tsx",
       "file": "src/vendor/runtime/demo-pure.ts"
+    },
+    {
+      "file": "src/vendor/runtime/math-delims.ts",
+      "upstreamPath": "src/core/math-delims.ts",
+      "url": "https://github.com/amosblomqvist/learnharness/blob/6cba9c8c5afe8a63f47ea4ebae6e91d8a205cebb/src/core/math-delims.ts",
+      "sourceSha256": "1a65d21014fe4bfb80980dd009e19a90945100c33823c3677985a83214b4a7d7",
+      "sha256": "4cd7017d78fe8d8a7b0e806fe91d666212f0ea641cca46d832bc3515c53fd042",
+      "adaptation": "Complete unchanged body plus SPDX/provenance header; source-body ordinal comparison passed."
     }
   ]
 }

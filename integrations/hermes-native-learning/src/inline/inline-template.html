@@ -1,28 +1,49 @@
 <style>
-  #lh-inline-lesson { color: var(--foreground); font-family: inherit; max-width: 46rem; }
+  /* Original QuestionDock skin: 4px rhythm, 8/12/16px radii, 16px reading size.
+     Host fonts and palette remain inherited; MCP semantic aliases are in app.mjs. */
+  #lh-inline-lesson { color: var(--foreground, #e6e6e6); font-family: inherit; font-size: 1rem; line-height: 1.5; max-width: 46rem; min-width: 0; overflow-wrap: anywhere; }
   #lh-inline-lesson h3 { font-size: inherit; font-weight: 500; margin: .65rem 0; }
   #lh-inline-lesson p { white-space: pre-wrap; overflow-wrap: anywhere; }
   #lh-inline-lesson button, #lh-inline-lesson textarea, #lh-inline-lesson input { font: inherit; color: inherit; }
   #lh-inline-lesson button { cursor: var(--cursor-interaction, pointer); }
-  #lh-inline-lesson .lh-dock { border: 1px solid var(--border); border-radius: .8rem; padding: .85rem; background: var(--card); }
+  #lh-inline-lesson .lh-dock { border: 1px solid var(--border, #434343); border-radius: 1rem; padding: 1rem; background: var(--card, #1c1c1c); }
   #lh-inline-lesson .lh-heading, #lh-inline-lesson .lh-footer, #lh-inline-lesson .lh-confidence { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
   #lh-inline-lesson .lh-heading, #lh-inline-lesson .lh-footer { justify-content: space-between; }
   #lh-inline-lesson .lh-kind, #lh-inline-lesson .lh-field-label, #lh-inline-lesson .lh-secondary { color: var(--muted-foreground); }
   #lh-inline-lesson .lh-secondary { display: block; }
   #lh-inline-lesson .lh-field { display: grid; gap: .4rem; margin: .85rem 0; }
   #lh-inline-lesson .lh-field-label { font-weight: 500; }
+  #lh-inline-lesson .lh-kind, #lh-inline-lesson .lh-field-label { font-size: .75rem; letter-spacing: .025em; text-transform: uppercase; }
   #lh-inline-lesson textarea { box-sizing: border-box; width: 100%; resize: vertical; padding: .65rem; border: 1px solid var(--border); border-radius: .5rem; background: transparent; }
   #lh-inline-lesson .lh-option { display: block; box-sizing: border-box; width: 100%; text-align: left; padding: .75rem; margin: .35rem 0; border: 1px solid var(--border); border-radius: .5rem; background: transparent; overflow-wrap: anywhere; }
-  #lh-inline-lesson .lh-option[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: var(--accent); }
+  #lh-inline-lesson .lh-option[aria-pressed="true"] { background: var(--accent, #2a2a2a); border-color: var(--foreground, #e6e6e6); }
+  #lh-inline-lesson .lh-option[data-dont-know] { border-style: dashed; }
   #lh-inline-lesson .lh-confidence { margin: .9rem 0; }
-  #lh-inline-lesson .lh-confidence input { flex: 1; min-width: 8rem; accent-color: var(--accent); }
+  #lh-inline-lesson .lh-confidence-track { position: relative; flex: 1; min-width: 6rem; height: 2.75rem; display: flex; align-items: center; }
+  #lh-inline-lesson .lh-confidence-rail { position: absolute; left: 8px; right: 8px; height: 6px; border: 1px solid var(--border, #434343); border-radius: 999px; pointer-events: none; }
+  #lh-inline-lesson .lh-confidence input { appearance: none; -webkit-appearance: none; background: transparent; width: 100%; min-width: 0; height: 2.75rem; margin: 0; position: relative; cursor: pointer; }
+  #lh-inline-lesson .lh-confidence input::-webkit-slider-runnable-track { background: transparent; height: 6px; }
+  #lh-inline-lesson .lh-confidence input::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; margin-top: -5px; border-radius: 50%; background: var(--lh-confidence-color); border: 1px solid var(--border, #434343); }
+  #lh-inline-lesson .lh-confidence input::-moz-range-track { background: transparent; height: 6px; }
+  #lh-inline-lesson .lh-confidence input::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--lh-confidence-color); border: 1px solid var(--border, #434343); }
+  #lh-inline-lesson .lh-confidence-track:has(input:disabled) { opacity: .4; }
+  #lh-inline-lesson .lh-confidence output { min-width: 3rem; text-align: right; font-variant-numeric: tabular-nums; }
   #lh-inline-lesson .lh-submit { background: var(--foreground); color: var(--background, var(--card)); border: 1px solid var(--foreground); border-radius: .4rem; padding: .6rem .9rem; }
   #lh-inline-lesson .lh-submit:disabled { opacity: .45; cursor: default; }
   #lh-inline-lesson .lh-close, #lh-inline-lesson .lh-reveal, #lh-inline-lesson .lh-resume { background: transparent; border: 0; padding: .5rem 0; }
   #lh-inline-lesson .lh-reveal { width: 100%; text-align: left; font-weight: 500; }
   #lh-inline-lesson .lh-plan { margin: .9rem 0; }
+  #lh-inline-lesson [data-learning-answer-why] { margin: .75rem 0; padding: .5rem .75rem; border: 1px solid var(--border, #434343); border-radius: .5rem; }
+  #lh-inline-lesson .lh-answer-record { padding: 1rem; border: 1px solid var(--border, #434343); border-radius: .75rem; margin: .75rem 0; }
+  #lh-inline-lesson .lh-answer-option { border: 1px solid var(--border, #434343); border-radius: .5rem; padding: .5rem .75rem; }
+  #lh-inline-lesson .lh-answer-option[data-correct="true"] { border-color: #22c55e; }
+  #lh-inline-lesson .lh-answer-option[data-graded="true"][data-selected="true"][data-correct="false"] { border-color: #ef4444; }
+  #lh-inline-lesson .lh-answered-confidence { display: flex; align-items: center; gap: .75rem; }
+  #lh-inline-lesson .lh-static-confidence-rail { display: block; height: 6px; flex: 1; border: 1px solid var(--border, #434343); border-radius: 999px; }
   #lh-inline-lesson .lh-plan summary { cursor: var(--cursor-interaction, pointer); }
   #lh-inline-lesson .lh-plan ol { padding-left: 1.4rem; }
+  #lh-inline-lesson button:focus-visible, #lh-inline-lesson textarea:focus-visible, #lh-inline-lesson input:focus-visible { outline: 2px solid var(--ring, #8d8d8d); outline-offset: 2px; }
+  #lh-inline-lesson button { min-height: 2.75rem; }
   #lh-inline-lesson [role="alert"] { color: var(--destructive, var(--foreground)); }
   @media (max-width: 400px) { #lh-inline-lesson .lh-footer { align-items: stretch; } #lh-inline-lesson .lh-submit { width: 100%; } }
 </style>

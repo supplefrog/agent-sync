@@ -3,6 +3,10 @@
 // See inline/NOTICE.md. This module performs no grading or state-file writes.
 import { CONFIDENCE_STOPS, DEFAULT_CONFIDENCE_INDEX, emptyDockSelection, toggleOption, toggleOther } from '../vendor/runtime/question-pure.ts';
 import { mountPractice } from './practice-client.mjs';
+import { CONFIDENCE_COLORS, confidenceRailStyle, nearestConfidenceIndex } from './confidence-style.mjs';
+import { answeredRecord } from './answered-record.mjs';
+import { createRichScope } from './rich-scope.mjs';
+import { planDiagram } from './lesson-prose.mjs';
 
 export const INLINE_PREFIX = 'lh.inline ';
 
@@ -28,6 +32,8 @@ export function mountInline(root, initialView, options = {}) {
   const win = root.ownerDocument.defaultView;
   const doc = root.ownerDocument;
   const send = options.send ?? nativeTransport(win);
+  const rich=createRichScope(options.renderRich);
+  let destroyed=false;
   let view = initialView;
   let state = { selection: emptyDockSelection(), text: '', other: '', thinking: '', readingThinking: '',
     confidenceIndex: DEFAULT_CONFIDENCE_INDEX, open: view.question?.open ?? true, pending: false };
@@ -73,6 +79,7 @@ export function mountInline(root, initialView, options = {}) {
   function button(text, handler, attributes = {}) {
     const b = node('button', text, { type: 'button', ...attributes }); b.addEventListener('click', handler); return b;
   }
+  function prose(tag,text,attributes={}){const element=node(tag,null,attributes);rich.render(element,text);return element;}
   function field(label, name, placeholder) {
     const wrap = node('label', null, { class: 'lh-field' });
     wrap.append(node('span', label, { class: 'lh-field-label' }));
@@ -107,14 +114,25 @@ export function mountInline(root, initialView, options = {}) {
       knowledge.append(node('p',view.knowledge.scope));
       for(const proposition of view.knowledge.nodes) {
         const detail=node('details',null,{'data-proposition':proposition.id});
-        detail.append(node('summary',proposition.name),node('p',proposition.statement));
-        for(const passage of proposition.passages??[])detail.append(node('blockquote',passage));
+        detail.append(node('summary',proposition.name),prose('div',proposition.statement));
+        for(const passage of proposition.passages??[])detail.append(prose('blockquote',passage));
         knowledge.append(detail);
       }
       root.append(knowledge);
     }
   }
-  function updateSubmit() { const b = root.querySelector('[data-submit]'); if (b) b.disabled = !canSubmit(); }
+  function present() {
+    const q=view.question;
+    options.onPresentation?.({open:state.open,...(options.externalChoices?{
+      questionId:q?.toolCallId??null,selected:[...state.selection.selected],pending:state.pending}: {})});
+  }
+  function updateSubmit() { const b = root.querySelector('[data-submit]'); if (b) b.disabled = !canSubmit();if(options.externalChoices)present(); }
+  function selectOption(index,questionId) {
+    const q=view.question;
+    if(destroyed||!q||q.toolCallId!==questionId||q.mode==='text'||!state.open||state.pending||
+      !Number.isInteger(index)||index<0||index>=q.options.length)return false;
+    state.selection=toggleOption(q.mode,state.selection,index);save();render();return true;
+  }
   function answerRequest() {
     const q = view.question;
     const request = {};
@@ -153,6 +171,7 @@ export function mountInline(root, initialView, options = {}) {
     const list = node('ol', null);
     for (const item of view.plan.nodes) list.append(node('li', `${item.title} · ${item.status}`, { 'data-node-id': item.id }));
     details.append(list);
+    const diagram=planDiagram(view.plan);if(diagram&&options.renderRich&&!options.richProse)details.append(prose('div',diagram));
     if (!view.plan.approved) {
       details.open = true;
       details.append(button('Start this plan', () => { state.pending = true; save(); void deliver({ type: 'approve', chatId: view.chatId, planRevision: view.plan.planRevision, text: 'Start this plan.' }); }, { class: 'lh-submit', 'data-approve': '' }));
@@ -160,24 +179,18 @@ export function mountInline(root, initialView, options = {}) {
     root.append(details);
   }
   function render() {
+    rich.clear();
     root.replaceChildren();
     renderLessonPanels();
-    options.onPresentation?.({open:state.open});
     const q = view.question;
+    present();
+    if(q&&view.answers.length){const previous=node('details',null,{'data-previous-answer':''});previous.append(node('summary','Previous answer'),answeredRecord(doc,view.answers.at(-1),{externalRichExplanation:options.richProse,renderProse:rich.render}));root.append(previous);}
     if (!q) {
       const last = view.answers.at(-1);
-      if (last) {
-        if(!options.richProse)root.append(node('h3', last.questionText));
-        root.append(node('p', last.text ?? (last.dontKnow ? 'I don’t know' : last.answers.map(a => a.label).join(', '))));
-        if (last.thinking) root.append(node('p', `Your thinking: ${last.thinking}`));
-        if (last.readingThinking) root.append(node('p', `Thinking while reading: ${last.readingThinking}`));
-        if (last.correct !== undefined) root.append(node('p', last.correct ? 'Correct' : 'Review this step'));
-        if (last.committed&&!options.richProse) root.append(node('p', last.committed));
-        if (last.explanation&&!options.richProse) root.append(node('p', last.explanation));
-      }
+      if(last)root.append(answeredRecord(doc,last,{richProse:options.richProse,externalRichExplanation:options.richProse,renderProse:rich.render}));
       renderPlan();
     } else {
-      if (view.teachingText&&!options.richProse) root.append(node('p', view.teachingText, { class: 'lh-teaching' }));
+      if (view.teachingText&&!options.richProse) root.append(prose('div', view.teachingText, { class: 'lh-teaching' }));
       if (q.needsReveal) root.append(field('Thinking while reading', 'readingThinking', 'Whatever comes to mind as you read.'));
       const dock = node('section', null, { class: 'lh-dock' });
       root.append(dock);
@@ -188,31 +201,39 @@ export function mountInline(root, initialView, options = {}) {
         const label = q.questionType === 'predict' ? 'Prediction' : q.tool === 'probe' ? 'Probe' : q.tool === 'recall' ? 'Recall' : q.kind === 'ask' ? 'Question' : 'Check';
         heading.append(node('span', label, { class: 'lh-kind' }), button('Close', () => { state.open = false; save(); render(); }, { class: 'lh-close', 'data-close': '' }));
         dock.append(heading);
-        if(!options.richProse)dock.append(node('h3', q.question));
-        if (q.context&&!options.richProse) dock.append(node('p', q.context));
+        if(!options.richProse)dock.append(prose('div', q.question, {class:'lh-question-text'}));
+        if (q.context&&!options.richProse) dock.append(prose('div', q.context));
         if (q.mode !== 'text') {
           const group = node('div', null, { role: 'group', 'aria-label': q.mode === 'multi-select' ? 'Choose all that apply' : 'Choose an answer' });
-          q.options.forEach((option, index) => {
-            const row = button(`${index + 1}. ${option.label}`, () => { state.selection = toggleOption(q.mode, state.selection, index); save(); render(); },
+          if(!options.externalChoices)q.options.forEach((option, index) => {
+            const row = button(null, () => { selectOption(index,q.toolCallId); },
               { class: 'lh-option', 'aria-pressed': state.selection.selected.has(index), 'data-option': option.value });
-            if (option.description) row.append(node('span', option.description, { class: 'lh-secondary' }));
+            row.append(prose('span',`${index+1}. ${option.label}`,{class:'lh-choice-text'}));
+            // Match the original dock: quiz descriptions can telegraph the answer.
+            if (q.kind !== 'quiz' && option.description) row.append(prose('span', option.description, { class: 'lh-secondary' }));
             group.append(row);
           });
           if (q.kind === 'ask') {
             group.append(button('Other…', () => { state.selection = toggleOther(q.mode, state.selection); save(); render(); }, { class: 'lh-option', 'aria-pressed': state.selection.otherSelected }));
             if (state.selection.otherSelected) group.append(field('Other', 'other', 'Your response.'));
           }
-          group.append(button('I don’t know', () => { state.selection = { selected: new Set(), otherSelected: false, dontKnow: !state.selection.dontKnow }; save(); render(); },
+          if (q.kind === 'quiz') group.append(button("I don't know", () => { state.selection = { selected: new Set(), otherSelected: false, dontKnow: !state.selection.dontKnow }; save(); render(); },
             { class: 'lh-option', 'aria-pressed': state.selection.dontKnow, 'data-dont-know': '' }));
           dock.append(group);
           if (q.kind === 'quiz') {
             const confidence = node('label', null, { class: 'lh-confidence' });
-            const slider = node('input', null, { type: 'range', min: 0, max: CONFIDENCE_STOPS.length - 1, step: 1,
+            const slider = node('input', null, { type: 'range', min: 0, max: 100, step: 1,
               'aria-label': 'Confidence — the probability your selected answer is correct', 'data-confidence': '' });
-            slider.value = state.confidenceIndex; slider.disabled = state.selection.dontKnow;
+            slider.value = CONFIDENCE_STOPS[state.confidenceIndex]; slider.disabled = state.selection.dontKnow;
+            slider.setAttribute('aria-valuetext', `${CONFIDENCE_STOPS[state.confidenceIndex]} percent`);
+            const track=node('span',null,{class:'lh-confidence-track'}),rail=node('span',null,{class:'lh-confidence-rail','aria-hidden':'true'});
+            const paint=()=>{Object.assign(rail.style,confidenceRailStyle(CONFIDENCE_STOPS[state.confidenceIndex]));slider.style.setProperty('--lh-confidence-color',CONFIDENCE_COLORS[state.confidenceIndex]);};
+            paint();track.append(rail,slider);
             const value = node('output', state.selection.dontKnow ? '—' : `${CONFIDENCE_STOPS[state.confidenceIndex]}%`);
-            slider.addEventListener('input', () => { state.confidenceIndex = Number(slider.value); value.textContent = `${CONFIDENCE_STOPS[state.confidenceIndex]}%`; save(); });
-            confidence.append(node('span', 'Confidence'), slider, value); dock.append(confidence);
+            const change=index=>{state.confidenceIndex=index;slider.value=CONFIDENCE_STOPS[index];value.textContent=`${CONFIDENCE_STOPS[index]}%`;slider.setAttribute('aria-valuetext',`${CONFIDENCE_STOPS[index]} percent`);paint();save();};
+            slider.addEventListener('input', () => {const raw=Number(slider.value);if(!Number.isFinite(raw)||raw<0||raw>100||slider.disabled)return;change(nearestConfidenceIndex(raw));});
+            slider.addEventListener('keydown',event=>{if(slider.disabled||event.altKey||event.ctrlKey||event.metaKey||!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();change(Math.max(0,Math.min(CONFIDENCE_STOPS.length-1,state.confidenceIndex+(event.key==='ArrowRight'?1:-1))));});
+            confidence.append(node('span', 'Confidence'), track, value); dock.append(confidence);
           }
         }
         dock.append(q.mode === 'text' ? field('Your answer', 'text', 'Type your answer.') : field('Your thinking', 'thinking', 'Why this answer? Whatever comes to mind.'));
@@ -243,6 +264,6 @@ export function mountInline(root, initialView, options = {}) {
   win.addEventListener('openai:set_globals', onGlobals);
   render();
   if (draftLoadError) setStatus('The saved draft could not be restored. The saved lesson is unchanged.', true);
-  return { applyView, submit, readDraft: () => ({ ...state, selection: { ...state.selection, selected: new Set(state.selection.selected) } }),
-    destroy: () => win.removeEventListener('openai:set_globals', onGlobals) };
+  return { applyView, submit, selectOption, readDraft: () => ({ ...state, selection: { ...state.selection, selected: new Set(state.selection.selected) } }),
+    destroy: () => {destroyed=true;rich.clear();win.removeEventListener('openai:set_globals', onGlobals);} };
 }

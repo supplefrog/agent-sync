@@ -3,6 +3,7 @@ import { host, MessageTextContent } from '@hermes/plugin-sdk';
 import * as React from 'react';
 import { registerHermesLearning, verifyProjectionBytes } from './inline/hermes-contribution.mjs';
 import { connectLessonExport } from './connect-export.mjs';
+import { HERMES_LESSON_THEME } from './inline/hermes-theme.mjs';
 const canonical = value => typeof value === 'string' && value && value === value.trim() && value !== 'new';
 export default {
   id: 'learnharness-native', name: 'LearnHarness Native', defaultEnabled: false,
@@ -11,7 +12,7 @@ export default {
     let remove = () => {},active=true;
     ctx.onDispose(()=>{active=false;remove();});
     const style = document.createElement('style');
-    style.textContent = __LH_STYLE__; // Build-time static CSS only, never model HTML.
+    style.textContent = HERMES_LESSON_THEME + __LH_STYLE__; // Static scoped CSS only, never model HTML.
     document.head.append(style); ctx.onDispose(() => style.remove());
     function install(rows) {
       if(!active)return false;

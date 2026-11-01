@@ -524,7 +524,21 @@ def _reconcile_scoped_index(repo, paths, expected):
             lock_path.unlink(missing_ok=True)
 
 
+def assert_publication_paths(repo, approved, outgoing):
+    """A generated artifact is still a public disclosure, never implicit scope."""
+    if not isinstance(approved, (list, tuple)) or any(not isinstance(n, str) for n in approved):
+        raise SyncBlocked('scoped publication requires its reviewed path manifest')
+    checked = [safe_path(repo, name) for name in approved]
+    actual = {safe_path(repo, name) for name in outgoing}
+    if len(checked) != len(set(checked)) or actual != set(checked):
+        extra = sorted(actual - set(checked))
+        missing = sorted(set(checked) - actual)
+        raise SyncBlocked('publication paths differ from reviewed manifest; unexpected=' +
+                          ', '.join(extra[:20]) + '; missing=' + ', '.join(missing[:20]))
+
+
 def _scoped_selection_gate(repo, pending):
+    assert_publication_paths(repo, pending.get('approved_paths'), pending['files'])
     if identities(repo, pending['files']) != pending['files']:
         raise SyncBlocked('reviewed files changed after checks; review before retrying')
     reference = 'HEAD' if pending.get('index_reconciled') else pending['base']

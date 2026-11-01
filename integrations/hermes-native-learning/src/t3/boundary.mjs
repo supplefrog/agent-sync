@@ -58,7 +58,15 @@ function readAsset(binding,file) {
 }
 
 export class T3LearningBoundary {
-  constructor(configFile) { this.config=loadConfiguration(configFile); }
+  // An unbound MCP server must expose host-written identity before an operator
+  // can enroll it. All lesson operations still require an exact owner binding.
+  constructor(configFile) {
+    this.configFile=fs.realpathSync(configFile);
+    this.configuration();
+  }
+  // Reload the same operator-owned config per operation: enrollment/revocation
+  // takes effect without a second provider startup. Invalid reads fail closed.
+  configuration() { return loadConfiguration(this.configFile,{allowEmptyLessons:true}); }
   owner(meta) {
     // Codex writes this OUTSIDE model-visible arguments, including on T3 app calls.
     // Never accept an argument, environment alias, initialize.clientInfo or a UI ID as fallback.
@@ -66,13 +74,13 @@ export class T3LearningBoundary {
     return meta.threadId;
   }
   binding(meta,chatId) {
-    const owner=this.owner(meta),matches=this.config.lessons.filter(b=>b.ownerSessionId===owner&&b.chatId===chatId);
+    const owner=this.owner(meta),matches=this.configuration().lessons.filter(b=>b.ownerSessionId===owner&&b.chatId===chatId);
     requireState(matches.length===1,'wrong_native_owner','This native Codex thread has no unique enrolled lesson.');
     return Object.freeze({...matches[0],runtimeHost:'t3-codex'});
   }
   catalogue(meta,args) {
     fields(args,[]);const owner=this.owner(meta);
-    return this.config.lessons.filter(b=>b.ownerSessionId===owner).map(b=>({chatId:b.chatId,kind:b.kind}));
+    return this.configuration().lessons.filter(b=>b.ownerSessionId===owner).map(b=>({chatId:b.chatId,kind:b.kind}));
   }
   view(meta,args) {
     fields(args,['chatId']);const b=this.binding(meta,args.chatId),view=cleanView(b),key=keyOf(view);

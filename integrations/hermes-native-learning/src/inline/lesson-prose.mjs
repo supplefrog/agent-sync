@@ -26,19 +26,51 @@ export function lessonProse(view,{open=true}={}) {
   if(view.teachingText)add('teaching',view.teachingText);
   if(view.question&&open){add('question',view.question.question);add('context',view.question.context);
     for(const [index,option] of (view.question.options??[]).entries())add('option-'+index,`**Choice ${index+1}**\n\n${typeof option==='string'?option:option.text??option.label??''}`);}
-  if(!view.question){const answer=view.answers?.at(-1);if(answer){add('answered-question',answer.questionText);add('revealed-answer',answer.committed);add('revealed-explanation',answer.explanation);}}
+  if(!view.question){const answer=view.answers?.at(-1);if(answer){add('answered-question',answer.questionText);add('revealed-answer',answer.committed);}}
   const diagram=planDiagram(view.plan);if(diagram)add('plan',diagram);
   const knowledge=view.knowledge?.nodes?.length?planDiagram(view.knowledge.diagram):null;
   if(knowledge)add('knowledge-map','### Propositions from this lesson\n\n'+knowledge);
   return result;
 }
-export function renderLessonProse(React,MessageTextContent,view,state) {
+export function renderSettledExplanation(React,MessageTextContent,answer) {
+  if(answer?.kind!=='quiz'||typeof answer.explanation!=='string'||!answer.explanation)return null;
+  const text=answer.explanation;
+  return React.createElement('details',{key:'why-'+answer.toolCallId,'data-learning-answer-why':''},
+    React.createElement('summary',null,'Why'),
+    richTextAllowed(text)&&typeof MessageTextContent==='function'
+      ?React.createElement(MessageTextContent,{text,media:false,decorateText:children=>React.createElement('span',null,children)})
+      :React.createElement('pre',{style:{whiteSpace:'pre-wrap'}},text));
+}
+export function renderLessonProse(React,MessageTextContent,view,state,choices) {
+  const textContent=text=>richTextAllowed(text)
+    ?React.createElement(MessageTextContent,{text,media:false,decorateText:children=>React.createElement('span',null,children)})
+    :React.createElement('pre',{style:{whiteSpace:'pre-wrap'}},text);
+  const q=view.question,external=typeof choices?.select==='function'&&q&&q.mode!=='text';
   return React.createElement('div',{'data-learning-prose':'',className:'lh-native-prose'},
-    ...lessonProse(view,state).map(entry=>React.createElement('section',{key:entry.id,'data-learning-prose-part':entry.id},
+    ...lessonProse(view,state).map(entry=>{
+      if(external&&/^option-\d+$/.test(entry.id)) {
+        const index=Number(entry.id.slice(7)),option=q.options[index];
+        const current=choices.questionId===q.toolCallId,disabled=!current||choices.pending===true;
+        // The host renderer can contain its own code-copy/diagram controls.
+        // A role-button keeps that valid DOM; child controls never select an answer.
+        const select=()=>{if(!disabled)choices.select(index,q.toolCallId);};
+        return React.createElement('div',{key:entry.id,role:'button',className:'lh-option',tabIndex:disabled?-1:0,
+          'data-option':option.value,'data-learning-rich-choice':'','aria-pressed':current&&choices.selected?.includes(index)===true,
+          'aria-disabled':disabled,onClick:event=>{
+            const nested=event.target?.closest?.('button,a,input,textarea,select,summary,[role="button"]');
+            if(nested&&nested!==event.currentTarget)return;select();
+          },onKeyDown:event=>{
+            if(event.target!==event.currentTarget||event.altKey||event.ctrlKey||event.metaKey||!['Enter',' '].includes(event.key))return;
+            event.preventDefault();event.stopPropagation();select();
+          }},
+          textContent(entry.text),q.kind!=='quiz'&&typeof option.description==='string'&&option.description?React.createElement('span',{className:'lh-secondary'},textContent(option.description)):null);
+      }
+      return React.createElement('section',{key:entry.id,'data-learning-prose-part':entry.id},
       richTextAllowed(entry.text)
         ? React.createElement(MessageTextContent,{text:entry.text,media:false,
           // Core paragraphPlainText accepts only string children. Wrapping
           // every paragraph prevents nested transcript directives in prose.
           decorateText:children=>React.createElement('span',null,children)})
-        : React.createElement('pre',{style:{whiteSpace:'pre-wrap'}},entry.text))));
+        : React.createElement('pre',{style:{whiteSpace:'pre-wrap'}},entry.text));}),
+    view.kind==='practice'?null:renderSettledExplanation(React,MessageTextContent,view.answers?.at(-1)));
 }

@@ -8,6 +8,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
+V3_BASELINE = '6c40eca7f39f89c9f44dc1f7eb728f139ba31856'
 sys.path.insert(0, str(ROOT / 'tools'))
 import instruction_changes as gate
 
@@ -25,11 +26,11 @@ class MemoryPath:
 
 class NativeLearningSourceAcceptance(unittest.TestCase):
     def setUp(self):
-        self.receipt = json.loads((ROOT / 'evals/results/native-learning-source-binding.json').read_bytes())
+        self.receipt = json.loads(subprocess.check_output(['git', '-C', str(ROOT), 'show', V3_BASELINE + ':evals/results/native-learning-source-binding.json']))
         self.row = copy.deepcopy(self.receipt['instruction_changes'][0])
         self.records = copy.deepcopy(self.receipt['change_reconciliation'])
         self.paths = self.receipt['selected_paths']
-        self.data = {name: (ROOT / name).read_bytes() for name in self.paths}
+        self.data = {name: subprocess.check_output(['git', '-C', str(ROOT), 'show', V3_BASELINE + ':' + name]) for name in self.paths}
         self.index_before = subprocess.check_output(['git', '-C', str(ROOT), 'show', self.receipt['base'] + ':' + gate.INDEX])
         self.before = {gate.INDEX: self.index_before}
         for name in gate.CONTRACTS:
@@ -88,6 +89,50 @@ class NativeLearningSourceAcceptance(unittest.TestCase):
     def test_other_owner_not_admitted(self):
         self.row['owner'] = 'skills/unrelated'
         self.assertIsNone(self.call())
+
+
+class NativeLearningMaintainedReference(unittest.TestCase):
+    """Closed source recognition, not new instruction or activation authority."""
+    def setUp(self):
+        prefix = gate.NATIVE_LEARNING_OWNER
+        manifest = json.loads((ROOT / prefix / 'PUBLIC-FILES.json').read_bytes())
+        self.data = {prefix + '/' + item['path']: (ROOT / prefix / item['path']).read_bytes()
+                     for item in manifest['files']}
+        self.data[prefix + '/PUBLIC-FILES.json'] = (ROOT / prefix / 'PUBLIC-FILES.json').read_bytes()
+        for name in (gate.INDEX, 'registry.json'):
+            self.data[name] = (ROOT / name).read_bytes()
+        self.name = gate.NATIVE_LEARNING_REFERENCE
+
+    def call(self, name=None):
+        # Filesystem path safety has its own controls; these exercise source binding.
+        with patch.object(gate.sync_git, 'safe_path', side_effect=lambda repo, name: name):
+            return gate.native_learning_source_reference(MemoryPath(self.data), name or self.name)
+
+    def test_exact_maintained_package(self):
+        self.assertTrue(self.call())
+
+    def test_changed_reference_rejected(self):
+        self.data[self.name] += b' changed'
+        self.assertFalse(self.call())
+
+    def test_missing_reference_rejected(self):
+        del self.data[self.name]
+        self.assertFalse(self.call())
+
+    def test_unknown_manifest_rejected(self):
+        self.data[gate.NATIVE_LEARNING_OWNER + '/PUBLIC-FILES.json'] += b' '
+        self.assertFalse(self.call())
+
+    def test_changed_index_rejected(self):
+        self.data[gate.INDEX] += b' '
+        self.assertFalse(self.call())
+
+    def test_global_copy_rejected(self):
+        self.data['skills/hermes-native-learning/SKILL.md'] = self.data[self.name]
+        self.assertFalse(self.call())
+
+    def test_other_entrypoint_rejected(self):
+        self.assertFalse(self.call(gate.NATIVE_LEARNING_OWNER + '/docs/T3-INTEGRATION.md'))
 
 
 if __name__ == '__main__':

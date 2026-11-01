@@ -5,3 +5,7 @@ data/
 exports/
 test-output/
 node_modules/
+
+# Operator-local identity and temporary startup diagnostics
+t3/local-enrollment.json
+src/t3/preentry.mjs

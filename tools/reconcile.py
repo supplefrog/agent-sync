@@ -1563,6 +1563,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             if not selected and not names:
                 return {"result": "review-required", "reason": "no explicit owner or publication file selected"}
             sync_git.preflight(repo, target, files=selected, scoped=True)
+            approved_paths = sorted(selected)
             before_files = sync_git.identities(repo, selected)
             sync_git.assert_ready_source(repo, before_files, integration_attempt)
             before_agents = _agent_scope_identities(destinations, names)
@@ -1596,10 +1597,15 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                     if result["result"] not in {"applied", "unchanged"}:
                         return result
                     if result.get("request_id"):
-                        selected.add(f"reconciliation/requests/{result['request_id']}.json")
+                        outgoing = selected | {f"reconciliation/requests/{result['request_id']}.json"}
+                        # Retain the local receipt/history, but stop before creating
+                        # any publisher state if it was not explicitly selected.
+                        sync_git.assert_publication_paths(repo, approved_paths, outgoing)
+                        selected = outgoing
             checked_agents = _agent_scope_identities(destinations, names)
             readback()
             final_files = sync_git.identities(repo, selected)
+            sync_git.assert_publication_paths(repo, approved_paths, final_files)
             publication_overrides = {}
             if project_bindings and bind_owners:
                 publication_overrides["host-deltas.json"] = _project_binding_manifest(repo, bind_owners, base=base_commit).decode("utf-8")
@@ -1620,7 +1626,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                        "publication_overrides": publication_overrides,
                        "agents_verified": False, "installed_verified": bool(names), "dependencies": dependencies,
                        "target": target, "base": base_commit, "message": message,
-                       "files": final_files, "tree": tree,
+                       "files": final_files, "tree": tree, "approved_paths": approved_paths,
                        "checks": "selected candidate artifact checks" + (", selected installed owner readback" if names else "") +
                                  (", selected native capture readback" if capture else "") + (", selected binding identities" if bind_owners else ""),
                        "limits": "No whole-fleet, current-runtime, or model-behavior parity claim."}

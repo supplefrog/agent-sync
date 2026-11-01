@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Practice adaptation: same inline components/styles and native input contracts.
+import {createRichScope} from './rich-scope.mjs';
 export function mountPractice(root, initialView, options = {}) {
   const doc=root.ownerDocument, win=doc.defaultView;
   let view=initialView, text='', open=true, pending=false;
+  const rich=createRichScope(options.renderRich);
   const key=()=>`${view.chatId}:practice:${view.activeProblem?.toolCallId??'between'}`;
   const node=(tag,value,attrs={})=>{const e=doc.createElement(tag);if(value!==null)e.textContent=value;for(const[k,v]of Object.entries(attrs))e.setAttribute(k,String(v));return e;};
   const button=(label,fn,attrs={})=>{const e=node('button',label,{type:'button',...attrs});e.addEventListener('click',fn);return e;};
+  const prose=(tag,value,attrs={})=>{const element=node(tag,null,attrs);rich.render(element,value);return element;};
   const status=(message,error=false)=>{const e=root.querySelector('[data-status]');if(e){e.textContent=message;e.setAttribute('role',error?'alert':'status');}};
   function save(){try{options.drafts?.write(key(),{key:key(),text,open});}catch{status('The draft could not be saved. Keep this view open.',true);}}
   function restore(){try{const cached=options.drafts?.read(key());if(cached?.key===key()&&typeof cached.text==='string'&&cached.text.length<=16000){text=cached.text;open=cached.open!==false;}}catch{/* Corrupt storage cannot replace practice state. */}}
@@ -20,15 +23,15 @@ export function mountPractice(root, initialView, options = {}) {
     if(input?.type==='thinking'||!same){try{options.drafts?.remove(oldKey);}catch{}text='';open=true;}
     if(!same)restore();render();status(result.loaded?'Saved practice reopened.':input?.type==='next'?'Next problem requested.':'Thinking saved.');
   }catch(error){pending=false;render();status(error.message,true);}}
-  function render(){root.replaceChildren();options.onPresentation?.({open});const active=view.activeProblem;
-    if(view.conclusion&&!options.richProse){root.append(node('h3','Problem review'),node('p',view.conclusion.statement));for(const thought of view.conclusion.thinking??[])root.append(node('p',`Your thinking: ${thought}`));root.append(node('p',view.conclusion.verdict),node('h3','Committed solution'),node('p',view.conclusion.modelSolution));}
+  function render(){rich.clear();root.replaceChildren();options.onPresentation?.({open});const active=view.activeProblem;
+    if(view.conclusion&&!options.richProse){root.append(node('h3','Problem review'),prose('div',view.conclusion.statement));for(const thought of view.conclusion.thinking??[])root.append(node('p',`Your thinking: ${thought}`));root.append(prose('div',view.conclusion.verdict),node('h3','Committed solution'),prose('div',view.conclusion.modelSolution));}
     if(view.conclusion&&options.richProse)for(const thought of view.conclusion.thinking??[])root.append(node('p',`Your thinking: ${thought}`));
-    if(!options.richProse)for(const entry of view.discussion??[])root.append(node('p',entry.role==='user'?`Your question: ${entry.text}`:entry.text));
+    if(!options.richProse)for(const entry of view.discussion??[])root.append(entry.role==='user'?node('p',`Your question: ${entry.text}`):prose('div',entry.text));
     if(active){const dock=node('section',null,{class:'lh-dock'});root.append(dock);
       if(!open)dock.append(button('Practice problem · Reopen',()=>{open=true;save();render();},{class:'lh-reveal'}));
-      else {const heading=node('div',null,{class:'lh-heading'});heading.append(node('span','Practice problem'),button('Close',()=>{open=false;save();render();},{class:'lh-close'}));dock.append(heading);if(!options.richProse)dock.append(node('h3',active.statement));
+      else {const heading=node('div',null,{class:'lh-heading'});heading.append(node('span','Practice problem'),button('Close',()=>{open=false;save();render();},{class:'lh-close'}));dock.append(heading);if(!options.richProse)dock.append(prose('div',active.statement));
         for(const thought of view.thinking)dock.append(node('p',`Your thinking: ${thought}`));
-        if(!options.richProse)for(const entry of view.feedback??[])dock.append(node('p',entry.text,{'data-practice-feedback':entry.id}));
+        if(!options.richProse)for(const entry of view.feedback??[])dock.append(prose('div',entry.text,{'data-practice-feedback':entry.id}));
         const label=node('label',null,{class:'lh-field'});label.append(node('span','Your thinking',{class:'lh-field-label'}));
         const field=node('textarea',null,{rows:4,'data-practice-thinking':'',maxlength:16000,placeholder:'Work here, think out loud.'});field.value=text;
         field.addEventListener('input',()=>{text=field.value;save();const submit=root.querySelector('[data-practice-send]');if(submit)submit.disabled=pending||!text.trim();});
@@ -41,5 +44,5 @@ export function mountPractice(root, initialView, options = {}) {
     }else root.append(node('p','No practice problem has been posed.'));
     root.append(node('p',pending?'Saving…':'',{'data-status':'','aria-live':'polite',role:'status'}),button('Resume saved lesson',()=>options.onResume?void options.onResume():void send('resume'),{class:'lh-resume'}));
   }
-  render();return{destroy(){},readDraft:()=>({text,open,pending})};
+  render();return{destroy(){rich.clear();},readDraft:()=>({text,open,pending})};
 }

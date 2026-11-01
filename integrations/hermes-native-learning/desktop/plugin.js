@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only; LearnHarness native integration. See NOTICE.md.
 
-// src/desktop-entry.mjs
+// aiai-learning/hermes-readability-185/package/src/desktop-entry.mjs
 import { host, MessageTextContent } from "@hermes/plugin-sdk";
 import * as React from "react";
 
-// src/vendor/runtime/question-pure.ts
+// aiai-learning/hermes-readability-185/package/src/vendor/runtime/question-pure.ts
 var CONFIDENCE_STOPS = [0, 30, 50, 70, 90, 100];
 var DEFAULT_CONFIDENCE_INDEX = 2;
 var emptyDockSelection = () => ({ selected: /* @__PURE__ */ new Set(), otherSelected: false, dontKnow: false });
@@ -22,10 +22,38 @@ function toggleOther(mode, sel) {
   return { selected: /* @__PURE__ */ new Set(), otherSelected: true, dontKnow: false };
 }
 
-// src/inline/practice-client.mjs
+// aiai-learning/hermes-readability-185/package/src/inline/rich-scope.mjs
+function createRichScope(renderRich) {
+  let cleanups = [];
+  return {
+    render(element, text) {
+      element.textContent = typeof text === "string" ? text : "";
+      if (typeof renderRich !== "function" || typeof text !== "string") return;
+      try {
+        const dispose = renderRich(element, text);
+        if (typeof dispose === "function") cleanups.push(dispose);
+      } catch {
+        element.textContent = text;
+      }
+    },
+    clear() {
+      const previous = cleanups;
+      cleanups = [];
+      for (const dispose of previous) {
+        try {
+          dispose();
+        } catch {
+        }
+      }
+    }
+  };
+}
+
+// aiai-learning/hermes-readability-185/package/src/inline/practice-client.mjs
 function mountPractice(root, initialView, options = {}) {
   const doc = root.ownerDocument, win = doc.defaultView;
   let view = initialView, text = "", open = true, pending = false;
+  const rich = createRichScope(options.renderRich);
   const key = () => `${view.chatId}:practice:${view.activeProblem?.toolCallId ?? "between"}`;
   const node = (tag, value, attrs = {}) => {
     const e = doc.createElement(tag);
@@ -37,6 +65,11 @@ function mountPractice(root, initialView, options = {}) {
     const e = node("button", label, { type: "button", ...attrs });
     e.addEventListener("click", fn);
     return e;
+  };
+  const prose = (tag, value, attrs = {}) => {
+    const element = node(tag, null, attrs);
+    rich.render(element, value);
+    return element;
   };
   const status = (message, error = false) => {
     const e = root.querySelector("[data-status]");
@@ -96,16 +129,17 @@ function mountPractice(root, initialView, options = {}) {
     }
   }
   function render() {
+    rich.clear();
     root.replaceChildren();
     options.onPresentation?.({ open });
     const active = view.activeProblem;
     if (view.conclusion && !options.richProse) {
-      root.append(node("h3", "Problem review"), node("p", view.conclusion.statement));
+      root.append(node("h3", "Problem review"), prose("div", view.conclusion.statement));
       for (const thought of view.conclusion.thinking ?? []) root.append(node("p", `Your thinking: ${thought}`));
-      root.append(node("p", view.conclusion.verdict), node("h3", "Committed solution"), node("p", view.conclusion.modelSolution));
+      root.append(prose("div", view.conclusion.verdict), node("h3", "Committed solution"), prose("div", view.conclusion.modelSolution));
     }
     if (view.conclusion && options.richProse) for (const thought of view.conclusion.thinking ?? []) root.append(node("p", `Your thinking: ${thought}`));
-    if (!options.richProse) for (const entry of view.discussion ?? []) root.append(node("p", entry.role === "user" ? `Your question: ${entry.text}` : entry.text));
+    if (!options.richProse) for (const entry of view.discussion ?? []) root.append(entry.role === "user" ? node("p", `Your question: ${entry.text}`) : prose("div", entry.text));
     if (active) {
       const dock = node("section", null, { class: "lh-dock" });
       root.append(dock);
@@ -122,9 +156,9 @@ function mountPractice(root, initialView, options = {}) {
           render();
         }, { class: "lh-close" }));
         dock.append(heading);
-        if (!options.richProse) dock.append(node("h3", active.statement));
+        if (!options.richProse) dock.append(prose("div", active.statement));
         for (const thought of view.thinking) dock.append(node("p", `Your thinking: ${thought}`));
-        if (!options.richProse) for (const entry of view.feedback ?? []) dock.append(node("p", entry.text, { "data-practice-feedback": entry.id }));
+        if (!options.richProse) for (const entry of view.feedback ?? []) dock.append(prose("div", entry.text, { "data-practice-feedback": entry.id }));
         const label = node("label", null, { class: "lh-field" });
         label.append(node("span", "Your thinking", { class: "lh-field-label" }));
         const field = node("textarea", null, { rows: 4, "data-practice-thinking": "", maxlength: 16e3, placeholder: "Work here, think out loud." });
@@ -153,14 +187,202 @@ function mountPractice(root, initialView, options = {}) {
       root.append(next);
       if (view.nextAllowed) root.append(node("p", "Next problem requested."));
     } else root.append(node("p", "No practice problem has been posed."));
-    root.append(node("p", pending ? "Saving\u2026" : "", { "data-status": "", "aria-live": "polite", role: "status" }), button("Resume saved lesson", () => void send("resume"), { class: "lh-resume" }));
+    root.append(node("p", pending ? "Saving\u2026" : "", { "data-status": "", "aria-live": "polite", role: "status" }), button("Resume saved lesson", () => options.onResume ? void options.onResume() : void send("resume"), { class: "lh-resume" }));
   }
   render();
   return { destroy() {
+    rich.clear();
   }, readDraft: () => ({ text, open, pending }) };
 }
 
-// src/inline/inline-client.mjs
+// aiai-learning/hermes-readability-185/package/src/inline/confidence-style.mjs
+var CONFIDENCE_COLORS = ["#ef4444", "#f97316", "#eab308", "#84cc16", "#22c55e", "#10b981"];
+function nearestConfidenceIndex(value) {
+  let best = 0;
+  for (let i = 1; i < CONFIDENCE_STOPS.length; i++)
+    if (Math.abs(CONFIDENCE_STOPS[i] - value) < Math.abs(CONFIDENCE_STOPS[best] - value)) best = i;
+  return best;
+}
+function confidenceRailStyle(value) {
+  const color = CONFIDENCE_COLORS[CONFIDENCE_STOPS.indexOf(value)] ?? CONFIDENCE_COLORS[2];
+  return {
+    backgroundColor: "#141414",
+    backgroundImage: [
+      `linear-gradient(90deg, ${color} 0%, ${color} ${value}%, transparent ${value}%, transparent 100%)`,
+      ...[30, 50, 70, 90].map(() => "linear-gradient(90deg, rgba(230,230,230,0.35), rgba(230,230,230,0.35))")
+    ].join(", "),
+    backgroundSize: ["100% 100%", "1px 100%", "1px 100%", "1px 100%", "1px 100%"].join(", "),
+    backgroundPosition: ["0 0", ...[30, 50, 70, 90].map((p) => `${p}% 0`)].join(", "),
+    backgroundRepeat: "no-repeat"
+  };
+}
+
+// aiai-learning/hermes-readability-185/package/src/inline/answered-record.mjs
+function answeredRecord(doc, answer, { richProse = false, externalRichExplanation = false, renderProse } = {}) {
+  const node = (tag, text, attrs = {}) => {
+    const e = doc.createElement(tag);
+    if (text !== null) e.textContent = text;
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v));
+    return e;
+  };
+  const box = node("article", null, { class: "lh-answer-record", "data-answer-record": answer.toolCallId });
+  const prose = (tag, text) => {
+    const element = node(tag, text);
+    if (renderProse) renderProse(element, text);
+    return element;
+  };
+  const quiz = answer.kind === "quiz", selected = new Set((answer.answers ?? []).map((a) => a.index)), correct = new Set(answer.correctIndices ?? []);
+  if (!richProse) box.append(prose("div", answer.questionText));
+  if (quiz) box.append(node("p", answer.dismissed ? "Skipped" : answer.dontKnow ? "Answered: I don't know" : answer.correct ? "Correct" : "Incorrect", { "data-answer-verdict": "" }));
+  for (const option of answer.options ?? []) {
+    const chosen = selected.has(option.index), right = quiz && correct.has(option.index);
+    const row = node("div", null, { class: "lh-answer-option", "data-selected": chosen, "data-correct": right, "data-graded": quiz });
+    row.append(node("span", `${chosen ? "Selected: " : ""}${right ? "Correct answer: " : ""}`), prose("span", option.label));
+    box.append(row);
+  }
+  if (answer.text) box.append(node("p", answer.text));
+  if (answer.other) box.append(node("p", `Other: ${answer.other}`));
+  if (quiz && !answer.dontKnow && Number.isFinite(answer.confidence)) {
+    const confidence = node("div", null, { class: "lh-answered-confidence", "data-answered-confidence": "" });
+    const rail = node("span", null, { class: "lh-static-confidence-rail", "aria-hidden": "true" });
+    Object.assign(rail.style, confidenceRailStyle(answer.confidence));
+    confidence.append(rail, node("span", `Confidence: ${answer.confidence}%`));
+    box.append(confidence);
+  }
+  for (const [label, text] of [["Your thinking", answer.thinking ?? answer.note], ["Thinking while reading", answer.readingThinking]]) if (text) {
+    const details = node("details", null);
+    details.append(node("summary", label), node("p", text));
+    box.append(details);
+  }
+  if (quiz && answer.explanation && !externalRichExplanation) {
+    const why = node("details", null, { "data-answer-why": "" });
+    why.append(node("summary", "Why"), prose("div", answer.explanation));
+    box.append(why);
+  }
+  if (answer.kind === "explain" && answer.committed && !richProse) box.append(prose("div", `The answer: ${answer.committed}`));
+  return box;
+}
+
+// aiai-learning/hermes-readability-185/package/src/inline/lesson-prose.mjs
+function richTextAllowed(text) {
+  if (typeof text !== "string" || text.length > 65536) return false;
+  const ordinary = /* @__PURE__ */ new Set(["", "mermaid", "text", "txt", "plaintext", "python", "py", "javascript", "js", "typescript", "ts", "json", "css", "bash", "sh", "shell", "powershell", "ps1", "sql", "java", "c", "cpp", "c++", "csharp", "c#", "go", "rust", "ruby", "rb", "r", "matlab", "latex", "tex"]);
+  for (const match of text.matchAll(/(?:`{3,}|~{3,})[ \t]*([^\s`~]*)/g))
+    if (!ordinary.has(match[1].toLowerCase())) return false;
+  return !/(?:https?:|file:|data:|MEDIA:|!\s*\[|\]\s*\(|^\s{0,3}\[[^\]]+\]:|<\/?[a-z][^>]*>)/im.test(text);
+}
+function planDiagram(plan) {
+  if (!plan || !Array.isArray(plan.nodes) || !Array.isArray(plan.edges)) return null;
+  const ids = new Set(plan.nodes.map((n) => n.id));
+  if (plan.nodes.some((n) => !/^[a-z0-9]+([_-][a-z0-9]+)*$/.test(n.id)) || plan.edges.some((e) => !ids.has(e.from) || !ids.has(e.to))) return null;
+  const label = (s) => String(s).replace(/["\\\r\n<>&]/g, " ");
+  return "```mermaid\nflowchart TD\n" + plan.nodes.map((n) => ` ${n.id}["${label(n.title)}"]`).join("\n") + "\n" + plan.edges.map((e) => ` ${e.from} --> ${e.to}`).join("\n") + "\n```";
+}
+function lessonProse(view, { open = true } = {}) {
+  const result = [], add = (id, text) => {
+    if (typeof text === "string" && text) result.push({ id, text });
+  };
+  if (view.kind === "practice") {
+    if (view.conclusion) {
+      add("review-statement", view.conclusion.statement);
+      add("review-verdict", view.conclusion.verdict);
+      add("review-solution", "### Committed solution\n\n" + view.conclusion.modelSolution);
+    }
+    for (const entry of view.discussion ?? []) add("discussion-" + entry.id, entry.role === "user" ? "Your question: " + entry.text : entry.text);
+    if (view.activeProblem && open) {
+      add("problem", view.activeProblem.statement);
+      for (const f of view.feedback ?? []) add("feedback-" + f.id, f.text);
+    }
+    return result;
+  }
+  if (view.teachingText) add("teaching", view.teachingText);
+  if (view.question && open) {
+    add("question", view.question.question);
+    add("context", view.question.context);
+    for (const [index, option] of (view.question.options ?? []).entries()) add("option-" + index, `**Choice ${index + 1}**
+
+${typeof option === "string" ? option : option.text ?? option.label ?? ""}`);
+  }
+  if (!view.question) {
+    const answer = view.answers?.at(-1);
+    if (answer) {
+      add("answered-question", answer.questionText);
+      add("revealed-answer", answer.committed);
+    }
+  }
+  const diagram = planDiagram(view.plan);
+  if (diagram) add("plan", diagram);
+  const knowledge = view.knowledge?.nodes?.length ? planDiagram(view.knowledge.diagram) : null;
+  if (knowledge) add("knowledge-map", "### Propositions from this lesson\n\n" + knowledge);
+  return result;
+}
+function renderSettledExplanation(React2, MessageTextContent2, answer) {
+  if (answer?.kind !== "quiz" || typeof answer.explanation !== "string" || !answer.explanation) return null;
+  const text = answer.explanation;
+  return React2.createElement(
+    "details",
+    { key: "why-" + answer.toolCallId, "data-learning-answer-why": "" },
+    React2.createElement("summary", null, "Why"),
+    richTextAllowed(text) && typeof MessageTextContent2 === "function" ? React2.createElement(MessageTextContent2, { text, media: false, decorateText: (children) => React2.createElement("span", null, children) }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, text)
+  );
+}
+function renderLessonProse(React2, MessageTextContent2, view, state, choices) {
+  const textContent = (text) => richTextAllowed(text) ? React2.createElement(MessageTextContent2, { text, media: false, decorateText: (children) => React2.createElement("span", null, children) }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, text);
+  const q = view.question, external = typeof choices?.select === "function" && q && q.mode !== "text";
+  return React2.createElement(
+    "div",
+    { "data-learning-prose": "", className: "lh-native-prose" },
+    ...lessonProse(view, state).map((entry) => {
+      if (external && /^option-\d+$/.test(entry.id)) {
+        const index = Number(entry.id.slice(7)), option = q.options[index];
+        const current = choices.questionId === q.toolCallId, disabled = !current || choices.pending === true;
+        const select = () => {
+          if (!disabled) choices.select(index, q.toolCallId);
+        };
+        return React2.createElement(
+          "div",
+          {
+            key: entry.id,
+            role: "button",
+            className: "lh-option",
+            tabIndex: disabled ? -1 : 0,
+            "data-option": option.value,
+            "data-learning-rich-choice": "",
+            "aria-pressed": current && choices.selected?.includes(index) === true,
+            "aria-disabled": disabled,
+            onClick: (event) => {
+              const nested = event.target?.closest?.('button,a,input,textarea,select,summary,[role="button"]');
+              if (nested && nested !== event.currentTarget) return;
+              select();
+            },
+            onKeyDown: (event) => {
+              if (event.target !== event.currentTarget || event.altKey || event.ctrlKey || event.metaKey || !["Enter", " "].includes(event.key)) return;
+              event.preventDefault();
+              event.stopPropagation();
+              select();
+            }
+          },
+          textContent(entry.text),
+          q.kind !== "quiz" && typeof option.description === "string" && option.description ? React2.createElement("span", { className: "lh-secondary" }, textContent(option.description)) : null
+        );
+      }
+      return React2.createElement(
+        "section",
+        { key: entry.id, "data-learning-prose-part": entry.id },
+        richTextAllowed(entry.text) ? React2.createElement(MessageTextContent2, {
+          text: entry.text,
+          media: false,
+          // Core paragraphPlainText accepts only string children. Wrapping
+          // every paragraph prevents nested transcript directives in prose.
+          decorateText: (children) => React2.createElement("span", null, children)
+        }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, entry.text)
+      );
+    }),
+    view.kind === "practice" ? null : renderSettledExplanation(React2, MessageTextContent2, view.answers?.at(-1))
+  );
+}
+
+// aiai-learning/hermes-readability-185/package/src/inline/inline-client.mjs
 var INLINE_PREFIX = "lh.inline ";
 function nativeTransport(win) {
   return async (action) => {
@@ -183,6 +405,8 @@ function mountInline(root, initialView, options = {}) {
   const win = root.ownerDocument.defaultView;
   const doc = root.ownerDocument;
   const send = options.send ?? nativeTransport(win);
+  const rich = createRichScope(options.renderRich);
+  let destroyed = false;
   let view = initialView;
   let state = {
     selection: emptyDockSelection(),
@@ -262,6 +486,11 @@ function mountInline(root, initialView, options = {}) {
     b.addEventListener("click", handler);
     return b;
   }
+  function prose(tag, text, attributes = {}) {
+    const element = node(tag, null, attributes);
+    rich.render(element, text);
+    return element;
+  }
   function field(label, name, placeholder) {
     const wrap = node("label", null, { class: "lh-field" });
     wrap.append(node("span", label, { class: "lh-field-label" }));
@@ -303,16 +532,33 @@ function mountInline(root, initialView, options = {}) {
       knowledge.append(node("p", view.knowledge.scope));
       for (const proposition of view.knowledge.nodes) {
         const detail = node("details", null, { "data-proposition": proposition.id });
-        detail.append(node("summary", proposition.name), node("p", proposition.statement));
-        for (const passage of proposition.passages ?? []) detail.append(node("blockquote", passage));
+        detail.append(node("summary", proposition.name), prose("div", proposition.statement));
+        for (const passage of proposition.passages ?? []) detail.append(prose("blockquote", passage));
         knowledge.append(detail);
       }
       root.append(knowledge);
     }
   }
+  function present() {
+    const q = view.question;
+    options.onPresentation?.({ open: state.open, ...options.externalChoices ? {
+      questionId: q?.toolCallId ?? null,
+      selected: [...state.selection.selected],
+      pending: state.pending
+    } : {} });
+  }
   function updateSubmit() {
     const b = root.querySelector("[data-submit]");
     if (b) b.disabled = !canSubmit();
+    if (options.externalChoices) present();
+  }
+  function selectOption(index, questionId) {
+    const q = view.question;
+    if (destroyed || !q || q.toolCallId !== questionId || q.mode === "text" || !state.open || state.pending || !Number.isInteger(index) || index < 0 || index >= q.options.length) return false;
+    state.selection = toggleOption(q.mode, state.selection, index);
+    save();
+    render();
+    return true;
   }
   function answerRequest() {
     const q = view.question;
@@ -360,6 +606,8 @@ function mountInline(root, initialView, options = {}) {
     const list = node("ol", null);
     for (const item of view.plan.nodes) list.append(node("li", `${item.title} \xB7 ${item.status}`, { "data-node-id": item.id }));
     details.append(list);
+    const diagram = planDiagram(view.plan);
+    if (diagram && options.renderRich && !options.richProse) details.append(prose("div", diagram));
     if (!view.plan.approved) {
       details.open = true;
       details.append(button("Start this plan", () => {
@@ -371,24 +619,22 @@ function mountInline(root, initialView, options = {}) {
     root.append(details);
   }
   function render() {
+    rich.clear();
     root.replaceChildren();
     renderLessonPanels();
-    options.onPresentation?.({ open: state.open });
     const q = view.question;
+    present();
+    if (q && view.answers.length) {
+      const previous = node("details", null, { "data-previous-answer": "" });
+      previous.append(node("summary", "Previous answer"), answeredRecord(doc, view.answers.at(-1), { externalRichExplanation: options.richProse, renderProse: rich.render }));
+      root.append(previous);
+    }
     if (!q) {
       const last = view.answers.at(-1);
-      if (last) {
-        if (!options.richProse) root.append(node("h3", last.questionText));
-        root.append(node("p", last.text ?? (last.dontKnow ? "I don\u2019t know" : last.answers.map((a) => a.label).join(", "))));
-        if (last.thinking) root.append(node("p", `Your thinking: ${last.thinking}`));
-        if (last.readingThinking) root.append(node("p", `Thinking while reading: ${last.readingThinking}`));
-        if (last.correct !== void 0) root.append(node("p", last.correct ? "Correct" : "Review this step"));
-        if (last.committed && !options.richProse) root.append(node("p", last.committed));
-        if (last.explanation && !options.richProse) root.append(node("p", last.explanation));
-      }
+      if (last) root.append(answeredRecord(doc, last, { richProse: options.richProse, externalRichExplanation: options.richProse, renderProse: rich.render }));
       renderPlan();
     } else {
-      if (view.teachingText && !options.richProse) root.append(node("p", view.teachingText, { class: "lh-teaching" }));
+      if (view.teachingText && !options.richProse) root.append(prose("div", view.teachingText, { class: "lh-teaching" }));
       if (q.needsReveal) root.append(field("Thinking while reading", "readingThinking", "Whatever comes to mind as you read."));
       const dock = node("section", null, { class: "lh-dock" });
       root.append(dock);
@@ -407,21 +653,20 @@ function mountInline(root, initialView, options = {}) {
           render();
         }, { class: "lh-close", "data-close": "" }));
         dock.append(heading);
-        if (!options.richProse) dock.append(node("h3", q.question));
-        if (q.context && !options.richProse) dock.append(node("p", q.context));
+        if (!options.richProse) dock.append(prose("div", q.question, { class: "lh-question-text" }));
+        if (q.context && !options.richProse) dock.append(prose("div", q.context));
         if (q.mode !== "text") {
           const group = node("div", null, { role: "group", "aria-label": q.mode === "multi-select" ? "Choose all that apply" : "Choose an answer" });
-          q.options.forEach((option, index) => {
+          if (!options.externalChoices) q.options.forEach((option, index) => {
             const row = button(
-              `${index + 1}. ${option.label}`,
+              null,
               () => {
-                state.selection = toggleOption(q.mode, state.selection, index);
-                save();
-                render();
+                selectOption(index, q.toolCallId);
               },
               { class: "lh-option", "aria-pressed": state.selection.selected.has(index), "data-option": option.value }
             );
-            if (option.description) row.append(node("span", option.description, { class: "lh-secondary" }));
+            row.append(prose("span", `${index + 1}. ${option.label}`, { class: "lh-choice-text" }));
+            if (q.kind !== "quiz" && option.description) row.append(prose("span", option.description, { class: "lh-secondary" }));
             group.append(row);
           });
           if (q.kind === "ask") {
@@ -432,8 +677,8 @@ function mountInline(root, initialView, options = {}) {
             }, { class: "lh-option", "aria-pressed": state.selection.otherSelected }));
             if (state.selection.otherSelected) group.append(field("Other", "other", "Your response."));
           }
-          group.append(button(
-            "I don\u2019t know",
+          if (q.kind === "quiz") group.append(button(
+            "I don't know",
             () => {
               state.selection = { selected: /* @__PURE__ */ new Set(), otherSelected: false, dontKnow: !state.selection.dontKnow };
               save();
@@ -447,20 +692,41 @@ function mountInline(root, initialView, options = {}) {
             const slider = node("input", null, {
               type: "range",
               min: 0,
-              max: CONFIDENCE_STOPS.length - 1,
+              max: 100,
               step: 1,
               "aria-label": "Confidence \u2014 the probability your selected answer is correct",
               "data-confidence": ""
             });
-            slider.value = state.confidenceIndex;
+            slider.value = CONFIDENCE_STOPS[state.confidenceIndex];
             slider.disabled = state.selection.dontKnow;
+            slider.setAttribute("aria-valuetext", `${CONFIDENCE_STOPS[state.confidenceIndex]} percent`);
+            const track = node("span", null, { class: "lh-confidence-track" }), rail = node("span", null, { class: "lh-confidence-rail", "aria-hidden": "true" });
+            const paint = () => {
+              Object.assign(rail.style, confidenceRailStyle(CONFIDENCE_STOPS[state.confidenceIndex]));
+              slider.style.setProperty("--lh-confidence-color", CONFIDENCE_COLORS[state.confidenceIndex]);
+            };
+            paint();
+            track.append(rail, slider);
             const value = node("output", state.selection.dontKnow ? "\u2014" : `${CONFIDENCE_STOPS[state.confidenceIndex]}%`);
-            slider.addEventListener("input", () => {
-              state.confidenceIndex = Number(slider.value);
-              value.textContent = `${CONFIDENCE_STOPS[state.confidenceIndex]}%`;
+            const change = (index) => {
+              state.confidenceIndex = index;
+              slider.value = CONFIDENCE_STOPS[index];
+              value.textContent = `${CONFIDENCE_STOPS[index]}%`;
+              slider.setAttribute("aria-valuetext", `${CONFIDENCE_STOPS[index]} percent`);
+              paint();
               save();
+            };
+            slider.addEventListener("input", () => {
+              const raw = Number(slider.value);
+              if (!Number.isFinite(raw) || raw < 0 || raw > 100 || slider.disabled) return;
+              change(nearestConfidenceIndex(raw));
             });
-            confidence.append(node("span", "Confidence"), slider, value);
+            slider.addEventListener("keydown", (event) => {
+              if (slider.disabled || event.altKey || event.ctrlKey || event.metaKey || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+              event.preventDefault();
+              change(Math.max(0, Math.min(CONFIDENCE_STOPS.length - 1, state.confidenceIndex + (event.key === "ArrowRight" ? 1 : -1))));
+            });
+            confidence.append(node("span", "Confidence"), track, value);
             dock.append(confidence);
           }
         }
@@ -473,6 +739,10 @@ function mountInline(root, initialView, options = {}) {
     }
     root.append(node("p", state.pending ? "Waiting for the saved lesson response." : "", { "data-status": "", "aria-live": "polite", role: "status" }));
     root.append(button("Resume saved lesson", () => {
+      if (options.onResume) {
+        void options.onResume();
+        return;
+      }
       state.pending = true;
       save();
       void deliver({ type: "resume", chatId: view.chatId });
@@ -508,12 +778,17 @@ function mountInline(root, initialView, options = {}) {
   return {
     applyView,
     submit,
+    selectOption,
     readDraft: () => ({ ...state, selection: { ...state.selection, selected: new Set(state.selection.selected) } }),
-    destroy: () => win.removeEventListener("openai:set_globals", onGlobals)
+    destroy: () => {
+      destroyed = true;
+      rich.clear();
+      win.removeEventListener("openai:set_globals", onGlobals);
+    }
   };
 }
 
-// src/inline/hermes-native-port.mjs
+// aiai-learning/hermes-readability-185/package/src/inline/hermes-native-port.mjs
 var bytes = (value) => new TextEncoder().encode(JSON.stringify(value)).length;
 function requirePort(ok, message) {
   if (!ok) throw new Error(message);
@@ -597,79 +872,7 @@ function createHermesLessonPort(ownerSessionId, view, { composer, storage }) {
   } };
 }
 
-// src/inline/lesson-prose.mjs
-function richTextAllowed(text) {
-  if (typeof text !== "string" || text.length > 65536) return false;
-  const ordinary = /* @__PURE__ */ new Set(["", "mermaid", "text", "txt", "plaintext", "python", "py", "javascript", "js", "typescript", "ts", "json", "css", "bash", "sh", "shell", "powershell", "ps1", "sql", "java", "c", "cpp", "c++", "csharp", "c#", "go", "rust", "ruby", "rb", "r", "matlab", "latex", "tex"]);
-  for (const match of text.matchAll(/(?:`{3,}|~{3,})[ \t]*([^\s`~]*)/g))
-    if (!ordinary.has(match[1].toLowerCase())) return false;
-  return !/(?:https?:|file:|data:|MEDIA:|!\s*\[|\]\s*\(|^\s{0,3}\[[^\]]+\]:|<\/?[a-z][^>]*>)/im.test(text);
-}
-function planDiagram(plan) {
-  if (!plan || !Array.isArray(plan.nodes) || !Array.isArray(plan.edges)) return null;
-  const ids = new Set(plan.nodes.map((n) => n.id));
-  if (plan.nodes.some((n) => !/^[a-z0-9]+([_-][a-z0-9]+)*$/.test(n.id)) || plan.edges.some((e) => !ids.has(e.from) || !ids.has(e.to))) return null;
-  const label = (s) => String(s).replace(/["\\\r\n<>&]/g, " ");
-  return "```mermaid\nflowchart TD\n" + plan.nodes.map((n) => ` ${n.id}["${label(n.title)}"]`).join("\n") + "\n" + plan.edges.map((e) => ` ${e.from} --> ${e.to}`).join("\n") + "\n```";
-}
-function lessonProse(view, { open = true } = {}) {
-  const result = [], add = (id, text) => {
-    if (typeof text === "string" && text) result.push({ id, text });
-  };
-  if (view.kind === "practice") {
-    if (view.conclusion) {
-      add("review-statement", view.conclusion.statement);
-      add("review-verdict", view.conclusion.verdict);
-      add("review-solution", "### Committed solution\n\n" + view.conclusion.modelSolution);
-    }
-    for (const entry of view.discussion ?? []) add("discussion-" + entry.id, entry.role === "user" ? "Your question: " + entry.text : entry.text);
-    if (view.activeProblem && open) {
-      add("problem", view.activeProblem.statement);
-      for (const f of view.feedback ?? []) add("feedback-" + f.id, f.text);
-    }
-    return result;
-  }
-  if (view.teachingText) add("teaching", view.teachingText);
-  if (view.question && open) {
-    add("question", view.question.question);
-    add("context", view.question.context);
-    for (const [index, option] of (view.question.options ?? []).entries()) add("option-" + index, `**Choice ${index + 1}**
-
-${typeof option === "string" ? option : option.text ?? option.label ?? ""}`);
-  }
-  if (!view.question) {
-    const answer = view.answers?.at(-1);
-    if (answer) {
-      add("answered-question", answer.questionText);
-      add("revealed-answer", answer.committed);
-      add("revealed-explanation", answer.explanation);
-    }
-  }
-  const diagram = planDiagram(view.plan);
-  if (diagram) add("plan", diagram);
-  const knowledge = view.knowledge?.nodes?.length ? planDiagram(view.knowledge.diagram) : null;
-  if (knowledge) add("knowledge-map", "### Propositions from this lesson\n\n" + knowledge);
-  return result;
-}
-function renderLessonProse(React2, MessageTextContent2, view, state) {
-  return React2.createElement(
-    "div",
-    { "data-learning-prose": "", className: "lh-native-prose" },
-    ...lessonProse(view, state).map((entry) => React2.createElement(
-      "section",
-      { key: entry.id, "data-learning-prose-part": entry.id },
-      richTextAllowed(entry.text) ? React2.createElement(MessageTextContent2, {
-        text: entry.text,
-        media: false,
-        // Core paragraphPlainText accepts only string children. Wrapping
-        // every paragraph prevents nested transcript directives in prose.
-        decorateText: (children) => React2.createElement("span", null, children)
-      }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, entry.text)
-    ))
-  );
-}
-
-// src/vendor/runtime/demo-pure.ts
+// aiai-learning/hermes-readability-185/package/src/vendor/runtime/demo-pure.ts
 var DEMO_BRIDGE_SCRIPT = `<script>(function(){
 var send=function(m){try{parent.postMessage(m,"*")}catch(e){}};
 var post=function(){
@@ -709,7 +912,7 @@ function reduceDemoBridgeState(state, data) {
   return state;
 }
 
-// src/inline/artifacts.mjs
+// aiai-learning/hermes-readability-185/package/src/inline/artifacts.mjs
 function demoDocument(html) {
   const policy = '<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; script-src &#39;unsafe-inline&#39;; style-src &#39;unsafe-inline&#39;; img-src data: blob:; font-src data:; connect-src &#39;none&#39;; frame-src &#39;none&#39;; form-action &#39;none&#39;; base-uri &#39;none&#39;">';
   return "<!doctype html><html><head>" + policy + "</head><body>" + buildDemoSrcDoc(html) + "</body></html>";
@@ -796,7 +999,7 @@ function createJobArtifacts(React2) {
   };
 }
 
-// src/inline/hermes-contribution.mjs
+// aiai-learning/hermes-readability-185/package/src/inline/hermes-contribution.mjs
 async function verifyProjectionBytes(snapshot, text) {
   const match = /^(teach|practice)-r([0-9]+)-([a-f0-9]{64})\.json$/.exec(snapshot);
   if (!match || !globalThis.crypto?.subtle) throw new Error("Snapshot content verification is unavailable.");
@@ -811,6 +1014,7 @@ function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextCo
   if (owned.some((b) => typeof b.ownerSessionId !== "string" || !b.ownerSessionId || b.ownerSessionId !== b.ownerSessionId.trim() || b.ownerSessionId === "new" || !["teach", "practice"].includes(b.kind) || !b.chatId || !b.folder)) throw new Error("Explicit owner/lesson/export-folder bindings required.");
   function LessonLeaf({ binding, snapshot, revision }) {
     const ref = React2.useRef(null);
+    const control = React2.useRef(null);
     const [view, setView] = React2.useState(null);
     const [presentation, setPresentation] = React2.useState({ open: true });
     const rich = typeof MessageTextContent2 === "function";
@@ -839,22 +1043,28 @@ function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextCo
         controller = mountInline(root, view2, {
           ...ports,
           richProse: rich,
+          externalChoices: rich,
           onPresentation: (next) => {
-            if (!disposed) setPresentation((old) => old.open === next.open ? old : next);
+            if (!disposed) setPresentation((old) => old.open === next.open && old.questionId === next.questionId && old.pending === next.pending && JSON.stringify(old.selected) === JSON.stringify(next.selected) ? old : next);
           }
         });
+        control.current = controller;
       })().catch((error) => {
         if (!disposed) root.textContent = error.message;
       });
       return () => {
         disposed = true;
+        if (control.current === controller) control.current = null;
         controller?.destroy();
       };
     }, [binding, snapshot, revision, rich]);
     return React2.createElement(
       "section",
       { className: "lh-native-lesson" },
-      rich && view ? renderLessonProse(React2, MessageTextContent2, view, presentation) : null,
+      rich && view ? renderLessonProse(React2, MessageTextContent2, view, presentation, {
+        ...presentation,
+        select: (index, questionId) => control.current?.selectOption(index, questionId)
+      }) : null,
       React2.createElement("div", { ref }),
       view ? React2.createElement(JobArtifacts, { ctx, binding, view, port: createHermesLessonPort(binding.ownerSessionId, view, { composer: host2.composer, storage: ctx.storage }) }) : null
     );
@@ -874,7 +1084,7 @@ function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextCo
   } });
 }
 
-// src/connect-export.mjs
+// aiai-learning/hermes-readability-185/package/src/connect-export.mjs
 async function connectLessonExport(ctx, { owner, chatId, snapshot }, { isCurrent, verifyBytes, install }) {
   const cancelled = () => ({ connected: false, cancelled: true });
   if (!isCurrent()) return cancelled();
@@ -905,7 +1115,25 @@ async function connectLessonExport(ctx, { owner, chatId, snapshot }, { isCurrent
   return { connected: install(rows) === true, cancelled: false };
 }
 
-// src/desktop-entry.mjs
+// aiai-learning/hermes-readability-185/package/src/inline/hermes-theme.mjs
+var HERMES_LESSON_THEME = `
+.lh-native-lesson {
+  --background: var(--dt-background, Canvas);
+  --foreground: var(--dt-card-foreground, var(--dt-foreground, CanvasText));
+  --card: var(--dt-card, Canvas);
+  --muted-foreground: var(--dt-secondary-foreground, var(--dt-muted-foreground, var(--foreground)));
+  --border: var(--dt-border, var(--foreground));
+  --accent: var(--dt-accent, var(--card));
+  --ring: var(--dt-ring, var(--foreground));
+  --destructive: var(--dt-destructive, var(--foreground));
+}
+.lh-native-lesson textarea::placeholder, .lh-native-lesson input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 1;
+}
+`;
+
+// aiai-learning/hermes-readability-185/package/src/desktop-entry.mjs
 var canonical = (value) => typeof value === "string" && value && value === value.trim() && value !== "new";
 var desktop_entry_default = {
   id: "learnharness-native",
@@ -920,7 +1148,7 @@ var desktop_entry_default = {
       remove();
     });
     const style = document.createElement("style");
-    style.textContent = '\n  .lh-native-lesson { color: var(--foreground); font-family: inherit; max-width: 46rem; }\n  .lh-native-lesson h3 { font-size: inherit; font-weight: 500; margin: .65rem 0; }\n  .lh-native-lesson p { white-space: pre-wrap; overflow-wrap: anywhere; }\n  .lh-native-lesson button, .lh-native-lesson textarea, .lh-native-lesson input { font: inherit; color: inherit; }\n  .lh-native-lesson button { cursor: var(--cursor-interaction, pointer); }\n  .lh-native-lesson .lh-dock { border: 1px solid var(--border); border-radius: .8rem; padding: .85rem; background: var(--card); }\n  .lh-native-lesson .lh-heading, .lh-native-lesson .lh-footer, .lh-native-lesson .lh-confidence { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }\n  .lh-native-lesson .lh-heading, .lh-native-lesson .lh-footer { justify-content: space-between; }\n  .lh-native-lesson .lh-kind, .lh-native-lesson .lh-field-label, .lh-native-lesson .lh-secondary { color: var(--muted-foreground); }\n  .lh-native-lesson .lh-secondary { display: block; }\n  .lh-native-lesson .lh-field { display: grid; gap: .4rem; margin: .85rem 0; }\n  .lh-native-lesson .lh-field-label { font-weight: 500; }\n  .lh-native-lesson textarea { box-sizing: border-box; width: 100%; resize: vertical; padding: .65rem; border: 1px solid var(--border); border-radius: .5rem; background: transparent; }\n  .lh-native-lesson .lh-option { display: block; box-sizing: border-box; width: 100%; text-align: left; padding: .75rem; margin: .35rem 0; border: 1px solid var(--border); border-radius: .5rem; background: transparent; overflow-wrap: anywhere; }\n  .lh-native-lesson .lh-option[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: var(--accent); }\n  .lh-native-lesson .lh-confidence { margin: .9rem 0; }\n  .lh-native-lesson .lh-confidence input { flex: 1; min-width: 8rem; accent-color: var(--accent); }\n  .lh-native-lesson .lh-submit { background: var(--foreground); color: var(--background, var(--card)); border: 1px solid var(--foreground); border-radius: .4rem; padding: .6rem .9rem; }\n  .lh-native-lesson .lh-submit:disabled { opacity: .45; cursor: default; }\n  .lh-native-lesson .lh-close, .lh-native-lesson .lh-reveal, .lh-native-lesson .lh-resume { background: transparent; border: 0; padding: .5rem 0; }\n  .lh-native-lesson .lh-reveal { width: 100%; text-align: left; font-weight: 500; }\n  .lh-native-lesson .lh-plan { margin: .9rem 0; }\n  .lh-native-lesson .lh-plan summary { cursor: var(--cursor-interaction, pointer); }\n  .lh-native-lesson .lh-plan ol { padding-left: 1.4rem; }\n  .lh-native-lesson [role="alert"] { color: var(--destructive, var(--foreground)); }\n  @media (max-width: 400px) { .lh-native-lesson .lh-footer { align-items: stretch; } .lh-native-lesson .lh-submit { width: 100%; } }\n';
+    style.textContent = HERMES_LESSON_THEME + '\n  /* Original QuestionDock skin: 4px rhythm, 8/12/16px radii, 16px reading size.\n     Host fonts and palette remain inherited; MCP semantic aliases are in app.mjs. */\n  .lh-native-lesson { color: var(--foreground, #e6e6e6); font-family: inherit; font-size: 1rem; line-height: 1.5; max-width: 46rem; min-width: 0; overflow-wrap: anywhere; }\n  .lh-native-lesson h3 { font-size: inherit; font-weight: 500; margin: .65rem 0; }\n  .lh-native-lesson p { white-space: pre-wrap; overflow-wrap: anywhere; }\n  .lh-native-lesson button, .lh-native-lesson textarea, .lh-native-lesson input { font: inherit; color: inherit; }\n  .lh-native-lesson button { cursor: var(--cursor-interaction, pointer); }\n  .lh-native-lesson .lh-dock { border: 1px solid var(--border, #434343); border-radius: 1rem; padding: 1rem; background: var(--card, #1c1c1c); }\n  .lh-native-lesson .lh-heading, .lh-native-lesson .lh-footer, .lh-native-lesson .lh-confidence { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }\n  .lh-native-lesson .lh-heading, .lh-native-lesson .lh-footer { justify-content: space-between; }\n  .lh-native-lesson .lh-kind, .lh-native-lesson .lh-field-label, .lh-native-lesson .lh-secondary { color: var(--muted-foreground); }\n  .lh-native-lesson .lh-secondary { display: block; }\n  .lh-native-lesson .lh-field { display: grid; gap: .4rem; margin: .85rem 0; }\n  .lh-native-lesson .lh-field-label { font-weight: 500; }\n  .lh-native-lesson .lh-kind, .lh-native-lesson .lh-field-label { font-size: .75rem; letter-spacing: .025em; text-transform: uppercase; }\n  .lh-native-lesson textarea { box-sizing: border-box; width: 100%; resize: vertical; padding: .65rem; border: 1px solid var(--border); border-radius: .5rem; background: transparent; }\n  .lh-native-lesson .lh-option { display: block; box-sizing: border-box; width: 100%; text-align: left; padding: .75rem; margin: .35rem 0; border: 1px solid var(--border); border-radius: .5rem; background: transparent; overflow-wrap: anywhere; }\n  .lh-native-lesson .lh-option[aria-pressed="true"] { background: var(--accent, #2a2a2a); border-color: var(--foreground, #e6e6e6); }\n  .lh-native-lesson .lh-option[data-dont-know] { border-style: dashed; }\n  .lh-native-lesson .lh-confidence { margin: .9rem 0; }\n  .lh-native-lesson .lh-confidence-track { position: relative; flex: 1; min-width: 6rem; height: 2.75rem; display: flex; align-items: center; }\n  .lh-native-lesson .lh-confidence-rail { position: absolute; left: 8px; right: 8px; height: 6px; border: 1px solid var(--border, #434343); border-radius: 999px; pointer-events: none; }\n  .lh-native-lesson .lh-confidence input { appearance: none; -webkit-appearance: none; background: transparent; width: 100%; min-width: 0; height: 2.75rem; margin: 0; position: relative; cursor: pointer; }\n  .lh-native-lesson .lh-confidence input::-webkit-slider-runnable-track { background: transparent; height: 6px; }\n  .lh-native-lesson .lh-confidence input::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; margin-top: -5px; border-radius: 50%; background: var(--lh-confidence-color); border: 1px solid var(--border, #434343); }\n  .lh-native-lesson .lh-confidence input::-moz-range-track { background: transparent; height: 6px; }\n  .lh-native-lesson .lh-confidence input::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--lh-confidence-color); border: 1px solid var(--border, #434343); }\n  .lh-native-lesson .lh-confidence-track:has(input:disabled) { opacity: .4; }\n  .lh-native-lesson .lh-confidence output { min-width: 3rem; text-align: right; font-variant-numeric: tabular-nums; }\n  .lh-native-lesson .lh-submit { background: var(--foreground); color: var(--background, var(--card)); border: 1px solid var(--foreground); border-radius: .4rem; padding: .6rem .9rem; }\n  .lh-native-lesson .lh-submit:disabled { opacity: .45; cursor: default; }\n  .lh-native-lesson .lh-close, .lh-native-lesson .lh-reveal, .lh-native-lesson .lh-resume { background: transparent; border: 0; padding: .5rem 0; }\n  .lh-native-lesson .lh-reveal { width: 100%; text-align: left; font-weight: 500; }\n  .lh-native-lesson .lh-plan { margin: .9rem 0; }\n  .lh-native-lesson [data-learning-answer-why] { margin: .75rem 0; padding: .5rem .75rem; border: 1px solid var(--border, #434343); border-radius: .5rem; }\n  .lh-native-lesson .lh-answer-record { padding: 1rem; border: 1px solid var(--border, #434343); border-radius: .75rem; margin: .75rem 0; }\n  .lh-native-lesson .lh-answer-option { border: 1px solid var(--border, #434343); border-radius: .5rem; padding: .5rem .75rem; }\n  .lh-native-lesson .lh-answer-option[data-correct="true"] { border-color: #22c55e; }\n  .lh-native-lesson .lh-answer-option[data-graded="true"][data-selected="true"][data-correct="false"] { border-color: #ef4444; }\n  .lh-native-lesson .lh-answered-confidence { display: flex; align-items: center; gap: .75rem; }\n  .lh-native-lesson .lh-static-confidence-rail { display: block; height: 6px; flex: 1; border: 1px solid var(--border, #434343); border-radius: 999px; }\n  .lh-native-lesson .lh-plan summary { cursor: var(--cursor-interaction, pointer); }\n  .lh-native-lesson .lh-plan ol { padding-left: 1.4rem; }\n  .lh-native-lesson button:focus-visible, .lh-native-lesson textarea:focus-visible, .lh-native-lesson input:focus-visible { outline: 2px solid var(--ring, #8d8d8d); outline-offset: 2px; }\n  .lh-native-lesson button { min-height: 2.75rem; }\n  .lh-native-lesson [role="alert"] { color: var(--destructive, var(--foreground)); }\n  @media (max-width: 400px) { .lh-native-lesson .lh-footer { align-items: stretch; } .lh-native-lesson .lh-submit { width: 100%; } }\n';
     document.head.append(style);
     ctx.onDispose(() => style.remove());
     function install(rows) {

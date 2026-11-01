@@ -58,8 +58,15 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken } = 
   const end = source.indexOf('// ─── options', start);
   if (start < 0 || end < 0) throw new Error('Pinned selection helper boundaries not found.');
   const selection = stripTypeScriptTypes(source.slice(start, end));
-  const client = fs.readFileSync(path.join(INLINE_HOME, 'inline-client.mjs'), 'utf8').replace(/^import .*?;\r?\n/gm, '');
-  const practiceClient = fs.readFileSync(path.join(INLINE_HOME, 'practice-client.mjs'), 'utf8');
+  const compose=file=>{
+    const body=fs.readFileSync(path.join(INLINE_HOME,file),'utf8').replace(/^import .*?;\r?\n/gm,'');
+    if(/^\s*import\s/m.test(body))throw new Error('Standalone runtime contains an unresolved import.');
+    return body;
+  };
+  // Same no-network exporter, in dependency order. Module-import tests alone
+  // do not establish that this self-contained consumer contains the helpers.
+  const helpers=['rich-scope.mjs','confidence-style.mjs','answered-record.mjs','lesson-prose.mjs'].map(compose).join('\n');
+  const client=compose('inline-client.mjs'),practiceClient=compose('practice-client.mjs');
   const safe = JSON.stringify(view).replace(/</g, '\\u003c').replace(/&/g, '\\u0026').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
   const data = `<script id="lh-inline-data" type="application/json">${safe}</script>`;
   const browserSend = localBrowser ? `, { send: async action => {
@@ -74,7 +81,7 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken } = 
     remove: key => localStorage.removeItem('lh-inline-draft:v1:' + key)
   } }` : '';
   const scriptNonce = localBrowser ? ` nonce="${nonce}"` : '';
-  const runtime = `<script type="module"${scriptNonce}>\n${selection}\n${client}\n${practiceClient}\nmountInline(document.getElementById('lh-inline-lesson'), JSON.parse(document.getElementById('lh-inline-data').textContent)${browserSend});\n</script>`;
+  const runtime = `<script type="module"${scriptNonce}>\n${selection}\n${helpers}\n${practiceClient}\n${client}\nmountInline(document.getElementById('lh-inline-lesson'), JSON.parse(document.getElementById('lh-inline-data').textContent)${browserSend});\n</script>`;
   return template.replace('<!-- INLINE_PAYLOAD -->', data).replace('<!-- INLINE_RUNTIME -->', runtime);
 }
 

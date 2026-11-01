@@ -1,131 +1,239 @@
 {
   "schema_version": 1,
-  "base": "ab48410f2189ad14b0a82de97c45de45a9036cf2",
+  "base": "d6f2fc8ca579c516e8ad1aa4c0a98cc349c22df0",
+  "scope": "Bounded scoped publication-path ceiling maintenance; no runtime/security or instruction policy expansion.",
   "selected_paths": [
-    "contracts/instruction-surfaces.json",
-    "docs/recovery.md",
-    "docs/requirement-status.md",
-    "docs/system-requirements.md",
     "docs/worktree-publication.md",
-    "evals/results/item-review-maintenance.json",
     "evals/results/native-learning-source-binding.json",
     "evals/results/published-partial-successor.json",
-    "host-deltas.json",
     "integrations/hermes-native-learning/.gitignore",
-    "integrations/hermes-native-learning/LICENSE",
     "integrations/hermes-native-learning/NOTICE.md",
     "integrations/hermes-native-learning/PUBLIC-FILES.json",
-    "integrations/hermes-native-learning/README.md",
     "integrations/hermes-native-learning/REFERENCE-SOURCES.json",
-    "integrations/hermes-native-learning/bindings.example.json",
     "integrations/hermes-native-learning/build-t3.mjs",
-    "integrations/hermes-native-learning/build.mjs",
     "integrations/hermes-native-learning/desktop/plugin.js",
-    "integrations/hermes-native-learning/docs/FEATURE-MAP.md",
-    "integrations/hermes-native-learning/docs/INSTALL.md",
-    "integrations/hermes-native-learning/docs/KNOWLEDGE.md",
-    "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md",
-    "integrations/hermes-native-learning/docs/PROTOCOL.md",
-    "integrations/hermes-native-learning/docs/QUALIFICATION.md",
     "integrations/hermes-native-learning/docs/T3-INTEGRATION.md",
+    "integrations/hermes-native-learning/licenses/NOTICE-SOURCES.json",
+    "integrations/hermes-native-learning/licenses/remark-math.MIT.txt",
     "integrations/hermes-native-learning/package.json",
-    "integrations/hermes-native-learning/reference/planning.md",
-    "integrations/hermes-native-learning/reference/practice-base.md",
-    "integrations/hermes-native-learning/reference/practice-doctrine.md",
-    "integrations/hermes-native-learning/reference/probe-doctrine.md",
-    "integrations/hermes-native-learning/reference/teacher-cycle.md",
-    "integrations/hermes-native-learning/reference/teacher-step.md",
-    "integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md",
-    "integrations/hermes-native-learning/src/adapter.mjs",
-    "integrations/hermes-native-learning/src/bridge.mjs",
-    "integrations/hermes-native-learning/src/catalogue.mjs",
-    "integrations/hermes-native-learning/src/cli.mjs",
-    "integrations/hermes-native-learning/src/commands.mjs",
     "integrations/hermes-native-learning/src/config.mjs",
-    "integrations/hermes-native-learning/src/connect-export.mjs",
-    "integrations/hermes-native-learning/src/context-page.mjs",
     "integrations/hermes-native-learning/src/desktop-entry.mjs",
-    "integrations/hermes-native-learning/src/imports.mjs",
-    "integrations/hermes-native-learning/src/inline/artifacts.mjs",
+    "integrations/hermes-native-learning/src/inline/answered-record.mjs",
     "integrations/hermes-native-learning/src/inline/build-inline.mjs",
+    "integrations/hermes-native-learning/src/inline/confidence-style.mjs",
     "integrations/hermes-native-learning/src/inline/hermes-contribution.mjs",
-    "integrations/hermes-native-learning/src/inline/hermes-native-port.mjs",
-    "integrations/hermes-native-learning/src/inline/host-actions.mjs",
-    "integrations/hermes-native-learning/src/inline/host/host-session.mjs",
-    "integrations/hermes-native-learning/src/inline/host/native-session.mjs",
+    "integrations/hermes-native-learning/src/inline/hermes-theme.mjs",
     "integrations/hermes-native-learning/src/inline/inline-client.mjs",
     "integrations/hermes-native-learning/src/inline/inline-template.html",
     "integrations/hermes-native-learning/src/inline/lesson-prose.mjs",
     "integrations/hermes-native-learning/src/inline/practice-client.mjs",
-    "integrations/hermes-native-learning/src/jobs.mjs",
-    "integrations/hermes-native-learning/src/knowledge.mjs",
-    "integrations/hermes-native-learning/src/materials.mjs",
-    "integrations/hermes-native-learning/src/practice-state.mjs",
-    "integrations/hermes-native-learning/src/propositions.mjs",
-    "integrations/hermes-native-learning/src/store.mjs",
+    "integrations/hermes-native-learning/src/inline/rich-scope.mjs",
     "integrations/hermes-native-learning/src/t3/app.mjs",
     "integrations/hermes-native-learning/src/t3/boundary.mjs",
-    "integrations/hermes-native-learning/src/t3/job-port.mjs",
+    "integrations/hermes-native-learning/src/t3/fixed-local.mjs",
+    "integrations/hermes-native-learning/src/t3/local-cli.mjs",
+    "integrations/hermes-native-learning/src/t3/local-presentation.mjs",
+    "integrations/hermes-native-learning/src/t3/rich-core.mjs",
+    "integrations/hermes-native-learning/src/t3/rich-fragment.mjs",
+    "integrations/hermes-native-learning/src/t3/rich-style.css",
     "integrations/hermes-native-learning/src/t3/server.mjs",
-    "integrations/hermes-native-learning/src/vendor/runtime/chains.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/clusters.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/coverage.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/demo-pure.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/graph.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/input-parser.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/job-pure.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/mermaid-plan.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/native-scans.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/notes-pure.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/pending.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/plan-contract.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/plan-tree.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/practice-pure.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/probe-ack.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/question-pure.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/session-clusters.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/target-pure.ts",
-    "integrations/hermes-native-learning/src/vendor/runtime/value-debris.ts",
-    "integrations/hermes-native-learning/src/workflow.mjs",
-    "integrations/hermes-native-learning/t3/AGENT-PROTOCOL.md",
+    "integrations/hermes-native-learning/src/vendor/runtime/math-delims.ts",
+    "integrations/hermes-native-learning/t3-rich-assets.mjs",
     "integrations/hermes-native-learning/t3/BUILD.json",
-    "integrations/hermes-native-learning/t3/SOURCES.json",
+    "integrations/hermes-native-learning/t3/THIRD-PARTY-NOTICES.txt",
     "integrations/hermes-native-learning/t3/app.html",
-    "integrations/hermes-native-learning/t3/bindings.example.json",
-    "integrations/hermes-native-learning/t3/codex-mcp.example.toml",
-    "integrations/hermes-native-learning/test/artifacts.dom.test.mjs",
-    "integrations/hermes-native-learning/test/backend.test.mjs",
-    "integrations/hermes-native-learning/test/knowledge.test.mjs",
-    "integrations/hermes-native-learning/test/material-jobs.test.mjs",
-    "integrations/hermes-native-learning/test/package-repair.test.mjs",
-    "integrations/hermes-native-learning/test/panels.dom.test.mjs",
-    "integrations/hermes-native-learning/test/presentation.test.mjs",
-    "integrations/hermes-native-learning/test/propositions.test.mjs",
-    "skills/instruction-authoring/SKILL.md",
-    "skills/instruction-authoring/references/item-review-loop.md",
-    "tests/test_authoring_maintenance_scope.py",
-    "tests/test_integration_reference_binding.py",
     "tests/test_native_learning_acceptance.py",
-    "tests/test_published_successor.py",
-    "tests/test_raw_git_composition.py",
-    "tools/audit.py",
+    "tests/test_publication_manifest_boundary.py",
     "tools/instruction_changes.py",
     "tools/reconcile.py",
-    "tools/sync_git.py",
-    "tools/worktree_sync.py"
+    "tools/sync_git.py"
   ],
-  "scope": "Engineering repair for a settled published partial rollout to continue with a separately qualified exact successor. No live recovery, installation, publication, native readback or behavioral-benefit claim.",
-  "checks": {
-    "focused_file_free_controls": 31,
-    "result": "passed",
-    "filesystem_recovery_or_crash_test": "not performed",
-    "live_transaction_mutation": false,
-    "model_calls": 0
+  "prior_public_record": {
+    "commit": "6c40eca7f39f89c9f44dc1f7eb728f139ba31856",
+    "path": "evals/results/published-partial-successor.json",
+    "sha256": "62c8c9af2b6776289eac5e7215ac028fd484fd7a937dad77957cdf3bd675ded8",
+    "preservation": "Prior published successor/evidence record remains retrievable at this immutable public commit; active maintenance row advances only this bounded repair."
   },
-  "change_reconciliation": [],
-  "reconciliation_receipt": "evals/results/native-learning-source-binding.json",
-  "final_composition_scope": "Exact authoring maintenance, requested learning V3 source and bounded published-partial continuation repair; T3 settings excluded. No authority expansion.",
-  "derived_metadata_scope": "host-deltas.json refreshes 7 existing selected fleet/repository version hashes only; no policy/settings or headroom changes.",
-  "successor_binding_scope": "Same reviewed authoring/learning products and coordinator, plus exact conditional-reference audit repair and sanitized ready-failure detail. Normal successor qualification is not run; T3 settings and evaluator release are excluded.",
-  "final_source_preparation": "Exact reviewed authoring/learning, conditional-reference audit and raw Git mechanism composition. Normal qualification and guarded recovery/publication remain unexecuted; blocked control and unfinished target obligations remain."
+  "change_reconciliation": [
+    {
+      "requirement_change": false,
+      "requirement_reason": "Existing requested capability and publication-boundary semantics retained; conditional model-facing protocols are byte-identical to the baseline. No general instruction or admission policy change.",
+      "authority": "Existing opt-in capability boundaries and fail-closed source/publication contracts; no activation, enrollment, access or model-call grant.",
+      "checks": "Source/member hash reconciliation; offline T3 artifact generation and input binding; maintained-reference positive/negative controls; retained manifest-boundary mechanism controls.",
+      "outcome_review": {
+        "expected": "Transport the maintained portable code without private enrollment or unexpected publication paths, preserving existing conditional protocols and access boundaries.",
+        "observed": "Prepared package and source-bound build; 11 conditional protocol bodies unchanged. Exact maintained-reference recognition and original V3 recognition pass; mutation/global-copy controls reject. Manifest-boundary product repair retains source review.",
+        "evidence": "Relative source/artifact hashes in this record and the package PUBLIC-FILES.json/BUILD.json; mechanism checks are not native acceptance or behavioral comparison.",
+        "limitations": "Normal release/installation and fresh loading not performed for this composition. Rebuilt T3 artifact has not been mounted. Existing accepted Hermes185 bundle is unchanged; broader learner/control variants remain unqualified."
+      },
+      "artifacts": {
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032",
+          "after_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e",
+          "after_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/hermes-skill-proposals.md": {
+          "before_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167",
+          "after_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "5d01136066bb128cb70223b876a2d6fd5a89cc07fd1ea1fa2414716b9625316e",
+          "after_sha256": "5d01136066bb128cb70223b876a2d6fd5a89cc07fd1ea1fa2414716b9625316e"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "79740ee80cf7edae9a41db3951dce04aa0fa1d987cbc9611625a6db2ab455f6c",
+          "after_sha256": "79740ee80cf7edae9a41db3951dce04aa0fa1d987cbc9611625a6db2ab455f6c"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "d0d3d6817871fad5c6fa61f9cca42256d33b03b850a29e1a0b4e2d61518a15d7",
+          "after_sha256": "d0d3d6817871fad5c6fa61f9cca42256d33b03b850a29e1a0b4e2d61518a15d7"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121",
+          "after_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "3e15bda48df3cedca6ac102209cb639f29672da7f2d7e964c9aeeea289f8bcc8",
+          "after_sha256": "3e15bda48df3cedca6ac102209cb639f29672da7f2d7e964c9aeeea289f8bcc8"
+        },
+        "skills/instruction-authoring/references/useful-behaviors.md": {
+          "before_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4",
+          "after_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4"
+        },
+        "tools/reconcile.py": {
+          "before_sha256": "5014415213870efc97b83ef9843bc6d189bc9210c3936f0bac8a5ead313ab5bc",
+          "after_sha256": "7a06b38e50b56f279dbe45913d6131c19e87dbcf169dd0f7e815c497d6bfdb0e"
+        },
+        "tools/sync_git.py": {
+          "before_sha256": "1ec4c31bc9311dc30c46dfb43bd00a747580eb4048781c4880ff245a7b2342e6",
+          "after_sha256": "53c363d3c8ad5fbea717b8e19e9cfa3d40b41b9cd565ba6da1f811ae8029c3ac"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/hermes-skill-proposals.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        },
+        {
+          "path": "skills/instruction-authoring/references/useful-behaviors.md",
+          "disposition": "unchanged",
+          "reason": "Preserve current-main requested-import/PhotoCraft ownership, intent and runtime boundaries; compose only the retained learning and publication-integrity maintenance."
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "source_freeze_sha256": "7102c38f08777af40af465aa2e15484d8707cff25760336b7517a56bd2fc6647",
+    "independent_source_review_sha256": "758fa63ec8997b74c74cc9ad14eb7a3bbfacfe16754f781b07db22be83a3cb0f",
+    "focused_controls_passed": 7,
+    "normal_qualification": "not run",
+    "new_model_calls": 0,
+    "local_and_remote_activation": "not performed"
+  },
+  "limits": [
+    "Source/mechanism evidence only; no normal qualification, publication or activation result is claimed.",
+    "No private histories, results, credentials, local paths or approval IDs included."
+  ]
 }

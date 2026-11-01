@@ -22,6 +22,7 @@ export function registerHermesLearning(ctx, { host, React, MessageTextContent, b
       !['teach','practice'].includes(b.kind) || !b.chatId || !b.folder)) throw new Error('Explicit owner/lesson/export-folder bindings required.');
   function LessonLeaf({ binding, snapshot, revision }) {
     const ref = React.useRef(null);
+    const control = React.useRef(null);
     const [view,setView]=React.useState(null);
     const [presentation,setPresentation]=React.useState({open:true});
     const rich=typeof MessageTextContent==='function';
@@ -47,13 +48,16 @@ export function registerHermesLearning(ctx, { host, React, MessageTextContent, b
         setPresentation({open:view.question?.open??true});
         setView(view);
         const ports=createHermesLessonPort(binding.ownerSessionId,view,{composer:host.composer,storage:ctx.storage});
-        controller=mountInline(root,view,{...ports,richProse:rich,
-          onPresentation:next=>{if(!disposed)setPresentation(old=>old.open===next.open?old:next);}});
+        controller=mountInline(root,view,{...ports,richProse:rich,externalChoices:rich,
+          onPresentation:next=>{if(!disposed)setPresentation(old=>old.open===next.open&&old.questionId===next.questionId&&
+            old.pending===next.pending&&JSON.stringify(old.selected)===JSON.stringify(next.selected)?old:next);}});
+        control.current=controller;
       })().catch(error => { if (!disposed) root.textContent = error.message; });
-      return () => { disposed = true; controller?.destroy(); };
+      return () => { disposed = true;if(control.current===controller)control.current=null;controller?.destroy(); };
     }, [binding, snapshot, revision, rich]);
     return React.createElement('section',{className:'lh-native-lesson'},
-      rich&&view?renderLessonProse(React,MessageTextContent,view,presentation):null,
+      rich&&view?renderLessonProse(React,MessageTextContent,view,presentation,{...presentation,
+        select:(index,questionId)=>control.current?.selectOption(index,questionId)}):null,
       React.createElement('div', { ref }),
       view?React.createElement(JobArtifacts,{ctx,binding,view,port:createHermesLessonPort(binding.ownerSessionId,view,{composer:host.composer,storage:ctx.storage})}):null);
   }

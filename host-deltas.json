@@ -295,7 +295,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:5014415213870efc97b83ef9843bc6d189bc9210c3936f0bac8a5ead313ab5bc"
+      "version_or_hash": "sha256:7a06b38e50b56f279dbe45913d6131c19e87dbcf169dd0f7e815c497d6bfdb0e"
     },
     {
       "category": "hook",
@@ -318,7 +318,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:5014415213870efc97b83ef9843bc6d189bc9210c3936f0bac8a5ead313ab5bc"
+      "version_or_hash": "sha256:7a06b38e50b56f279dbe45913d6131c19e87dbcf169dd0f7e815c497d6bfdb0e"
     },
     {
       "category": "plugin",
@@ -576,7 +576,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:5014415213870efc97b83ef9843bc6d189bc9210c3936f0bac8a5ead313ab5bc"
+      "version_or_hash": "sha256:7a06b38e50b56f279dbe45913d6131c19e87dbcf169dd0f7e815c497d6bfdb0e"
     },
     {
       "category": "curator",
@@ -599,7 +599,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:5014415213870efc97b83ef9843bc6d189bc9210c3936f0bac8a5ead313ab5bc"
+      "version_or_hash": "sha256:7a06b38e50b56f279dbe45913d6131c19e87dbcf169dd0f7e815c497d6bfdb0e"
     },
     {
       "category": "plugin",
