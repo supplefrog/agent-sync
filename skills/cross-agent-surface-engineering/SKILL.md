@@ -60,7 +60,7 @@ The canonical result may merge compatible winning behaviors from several variant
 
 ### 4. Assign one owner per concern
 
-Use the narrowest source owner: portable procedures in an Agent Skill, standing preferences in the applicable instruction surface, and runtime mechanics in a supported config or native adapter/source. Registry state records deployment eligibility; it does not grant authorization or prove model quality. Staged comparison guides are optional evidence, not required approval hops or promotion authorities.
+Use the narrowest source owner: portable procedures in an Agent Skill, standing preferences in the applicable instruction surface, and runtime mechanics in a supported config or native adapter/source. Registry state records deployment eligibility; it does not grant authorization or prove model quality. Staged comparison guides are optional evidence, not required approval hops or promotion authorities. Engineering receives fleet-retirement findings and classifies the affected unit; obtain curator evidence for model-sensitive generic-steering retirement. Task procedures retain owner-specific review; safety/governance guarantees require an equivalent enforced owner and explicit approval. Routing is not retirement approval.
 
 ### 5. Stage and evaluate
 
@@ -88,7 +88,7 @@ Host checks:
 - **Codex:** use `codex debug prompt-input` to confirm the effective skill. For local-marketplace plugins, edit source, refresh through the native remove/re-add lifecycle, and verify `codex plugin list --json`; never patch the installed cache.
 - **OMP:** current OMP loads Agent Skills from project walk-up and user-home `.agent/skills` and `.agents/skills`. Verify a fresh `omp --mode rpc --no-session` process with the read-only `get_available_commands` request, then close stdin for clean shutdown. `get_commands` is unsupported and its error may omit the request ID; `omp read skill://...` alone has no initialized skill catalog. Keep a native OMP skill only when it adds real OMP execution or precedence glue rather than copied policy.
 
-After promotion, verify the affected installed content and deployment claims; check a real target behavior before making a behavioral claim. Reuse still-bound checks and rerun recovery/profile/fleet verification where the change affects them. Report drafted, checked, locally deployed, and remotely synchronized states separately; include-only publication does not establish host verification. Record the canonical owner, migrated and discarded behaviors, retained native deltas, exact checks, rollback, and restart/reset requirement.
+After promotion, verify the affected installed content and deployment claims; check a real target behavior before making a behavioral claim. Reuse still-bound checks and rerun recovery/profile/fleet verification where the change affects them. Report drafted, checked, locally deployed, and remotely synchronized states separately; include-only publication does not establish host verification. Record the canonical owner, migrated and discarded behaviors, consequential rejected alternatives or contradictions, retained native deltas, exact checks, rollback, and restart/reset requirement in the existing change/evidence record. Label an unmatched host outcome `partial`, `unsupported`, or `intentional-delta` as appropriate; do not invent parity or a second findings record.
 
 ## Safety boundaries
 

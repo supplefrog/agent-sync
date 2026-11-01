@@ -800,17 +800,52 @@ def _native_destination_completion(lane, journal, *, recovery_module=None):
     return result
 
 
+def _completed_publisher_state(lane, journal):
+    """Read exact live or durably retained completion, never infer lost proof."""
+    current = sync_git.read_pending(lane)
+    retained = journal.get('publisher_completion_state')
+    if retained is not None and not isinstance(retained, dict):
+        raise sync_git.SyncBlocked('retained publisher completion is malformed')
+    if current is not None and retained is not None and current != retained:
+        raise sync_git.SyncBlocked('completed publisher state changed after retention')
+    pending = current if current is not None else retained
+    if pending is not None:
+        _validate_pending(lane, journal, pending)
+        reference = reconcile._operational_receipt_state(lane, pending)
+        last = journal['last_result']
+        if any(key in last for key in ('operational_receipt', 'request_id')):
+            if (reference is None or last.get('operational_receipt') != reference
+                    or last.get('request_id') != reference['request_id']):
+                raise sync_git.SyncBlocked('published operational reference differs from retained completion')
+        elif retained is not None and reference is not None:
+            raise sync_git.SyncBlocked('retained required operational reference is missing from publication result')
+    elif any(key in journal['last_result'] for key in ('operational_receipt', 'request_id')):
+        raise sync_git.SyncBlocked('required operational publisher state is missing')
+    return pending
+
+
 def _finish_published(primary, common, target, lane, published, published_marker_path, published_marker, journal, *, source_only=False):
     _validate_predecessors(common, journal)
     sync_git.assert_integration_owner(lane, journal['attempt'])
     result = dict(journal['last_result'])
     commit = result['commit']
-    pending = sync_git.read_pending(lane)
+    pending = _completed_publisher_state(lane, journal)
     if pending:
         _validate_pending(lane, journal, pending)
         if not pending.get('completion') or pending['completion'].get('commit') != commit:
             raise sync_git.SyncBlocked('publisher completion does not match the published integration receipt')
-        _verify_completion(lane, journal, pending)
+        verified = _verify_completion(lane, journal, pending)
+        for key in ('operational_receipt', 'request_id'):
+            if key in verified:
+                result[key] = verified[key]
+        if 'publisher_completion_state' not in journal:
+            # Preserve exact source/selection/requirement proof before our own
+            # unlink. A crash can then resume without reconstructing success.
+            journal['publisher_completion_state'] = json.loads(json.dumps(pending))
+            for key in ('operational_receipt', 'request_id'):
+                if key in verified:
+                    journal['last_result'][key] = verified[key]
+            _atomic(common / 'agent-signal-integration.json', journal)
     if sync_git.git(lane, 'rev-parse', 'HEAD') != commit:
         raise sync_git.SyncBlocked('completed integration HEAD changed before published source refresh')
     # A verified push may be followed by another independent fast-forward
@@ -827,13 +862,18 @@ def _finish_published(primary, common, target, lane, published, published_marker
             raise sync_git.SyncBlocked('inherited rollout obligations require normal continuation, not source-only')
         if journal.get('deployment_started'):
             raise sync_git.SyncBlocked('rollout already started; resume the exact installed-target attempt')
+        current_pending = _completed_publisher_state(lane, journal)
+        if current_pending:
+            _validate_pending(lane, journal, current_pending)
+            if current_pending.get('completion', {}).get('commit') != commit:
+                raise sync_git.SyncBlocked('publisher completion changed during final readback')
         result.update(result='published', rollout_verified=False, installed_verified=False,
                       reason='explicit source-only publication; configured rollout remains incomplete',
                       sync_complete=False, activation_verified=None,
                       resumption_event='Resume the exact published release through normal rollout; retain native saved/loading dependencies.')
         journal['last_result'] = result
         _atomic(common / ('agent-signal-integration-published-' + journal['attempt'] + '.json'), journal)
-        if pending:
+        if sync_git.read_pending(lane) is not None:
             (sync_git.git_dir(lane) / 'agent-signal-sync.json').unlink()
         (common / 'agent-signal-integration.json').unlink()
         return result
@@ -901,12 +941,13 @@ def _finish_published(primary, common, target, lane, published, published_marker
                   published_repo=str(published), integration_repo=str(lane), source_origin_migrations=migrations,
                   agents_verified=True, installed_verified=True, rollout_verified=True, targets=journal['rollout']['targets'],
                   verification_scope='configured installed hashes and fresh native catalogue/body readback; no model behavior or cached-session refresh claim')
-    pending = sync_git.read_pending(lane)
+    pending = _completed_publisher_state(lane, journal)
     if pending:
         _validate_pending(lane, journal, pending)
         if not pending.get('completion') or pending['completion'].get('commit') != commit:
             raise sync_git.SyncBlocked('publisher completion does not match the published integration receipt')
-        (sync_git.git_dir(lane) / 'agent-signal-sync.json').unlink()
+        if sync_git.read_pending(lane) is not None:
+            (sync_git.git_dir(lane) / 'agent-signal-sync.json').unlink()
     (common / 'agent-signal-integration.json').unlink()
     return result
 
@@ -1124,6 +1165,7 @@ def _validate_pending(lane, journal, pending):
             or pending.get('capture_recovery')
             or not set(options['include']) <= set(pending.get('files', {}))):
         raise sync_git.SyncBlocked('inner publisher pending state belongs to another integration attempt or scope')
+    reconcile._operational_receipt_state(lane, pending)
 
 
 def augment_deployed_receipt(repo, request):
@@ -1316,6 +1358,7 @@ def _verify_composition(lane, journal):
 
 
 def _verify_completion(lane, journal, pending):
+    reconcile._operational_receipt_state(lane, pending)
     completion = pending['completion']
     commit = completion.get('commit')
     if (completion.get('result') not in {'published', 'synced'} or commit != pending.get('commit')
@@ -1348,9 +1391,13 @@ def _verify_completion(lane, journal, pending):
         for _, destination in destinations:
             if options['adopt'] and reconcile.fleet.verify_snapshot(snapshot, destination, names=options['adopt']):
                 raise sync_git.SyncBlocked('selected installed owner readback differs from the completed commit')
-    return dict(completion, completion_recovered=True, verified_owners=options['adopt'],
-                installed_verified=bool(pending.get('installed_verified')),
-                verification_scope=pending.get('limits'))
+    reference = reconcile._operational_receipt_state(lane, pending)
+    result = dict(completion, completion_recovered=True, verified_owners=options['adopt'],
+                  installed_verified=bool(pending.get('installed_verified')),
+                  verification_scope=pending.get('limits'))
+    if reference is not None:
+        result.update(operational_receipt=reference, request_id=reference['request_id'])
+    return result
 
 
 def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',

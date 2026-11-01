@@ -1,6 +1,6 @@
 # Instruction retirement after model changes
 
-Use this retirement gate when a new model or materially changed model becomes callable, or when a live surface is suspected of negative steering. It is the inverse of admission: current instructions must continue to earn their prompt weight.
+Use this retirement gate when the canonical effective active-route fingerprint changes, or when a live surface is suspected of negative steering. The first observed fingerprint establishes a baseline without queuing work; mere model availability does not reopen evidence. It is the inverse of admission: current instructions must continue to earn their prompt weight.
 
 ## Unit classes
 
@@ -27,7 +27,7 @@ Do not run a whole-library curator pass.
 
 ## Decision rule
 
-Tie favors deletion for generic steering and the baseline for new admission.
+Ties favor the baseline for new admission and deletion for generic steering only after retirement evidence clears its declared non-inferiority margin. Noisy or inconclusive evidence is not deletion authority.
 
 Retire a generic unit only when:
 

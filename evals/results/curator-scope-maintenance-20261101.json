@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "base": "88f7c44dab8bf1f0f7ba942d83da501de6b01d67",
+  "scope": "Exact composed curator maintenance and operational receipt mechanism repair; preserve published question-map/recovery, without measured model-benefit claims.",
+  "selected_paths": [
+    "docs/requirement-status.md",
+    "docs/system-requirements.md",
+    "docs/worktree-publication.md",
+    "evals/results/curator-scope-maintenance-20261101.json",
+    "host-deltas.json",
+    "skills/capability-curator/SKILL.md",
+    "skills/capability-curator/references/instruction-retirement.md",
+    "skills/cross-agent-surface-engineering/SKILL.md",
+    "tests/test_curator_scope_maintenance.py",
+    "tests/test_publication_manifest_boundary.py",
+    "tests/test_receipt_continuation.py",
+    "tools/instruction_changes.py",
+    "tools/reconcile.py",
+    "tools/worktree_sync.py"
+  ],
+  "instruction_changes": [
+    {
+      "owner": "skills/capability-curator",
+      "change_kind": "contract-correction",
+      "basis": "user-correction",
+      "acceptance_classification": "curator-scope-maintenance",
+      "baseline_sufficient": false,
+      "artifacts": {
+        "skills/capability-curator/SKILL.md": {
+          "before_sha256": "d6caa0472e4c29e3295d12a28e4b165c5b55af43b7df5ee4009d7aaa71176ae0",
+          "after_sha256": "59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5"
+        },
+        "skills/capability-curator/references/instruction-retirement.md": {
+          "before_sha256": "ad16e0493f8ac6a8581d24ff404d8ad818f07b6b06c8792ac6356dad8d3eecaa",
+          "after_sha256": "a3bbe9ee22fbfbb7a1496fc01b9b895dda486f995b7300e7c8350215130bcda4"
+        }
+      },
+      "deviation": "The opening and evaluation clause applied admission/comparison ceremony to routine owned maintenance; retirement triggers and tie wording conflicted.",
+      "evidence": "Exact baseline/candidate source pairs and retained scoped source review; no comparative-benefit evidence.",
+      "why_instruction": "The defect is in the owning instruction scope/decision boundary; executable deployment remains with existing owners.",
+      "alternative": "Reuse the existing engineering/admission owners and evidence record instead of a second convergence owner or blanket evaluation stage.",
+      "restructured": false,
+      "loading_review": {
+        "entrypoint_reason": "Keep the same entrypoint and linked reference; staged curator stays staged.",
+        "checks": "Source link/obligation coverage and fixed owner/registry hashes; no claim of native loading or model benefit.",
+        "obligations": [
+          {
+            "obligation": "Preserve the existing owner and conditional loading while correcting scope",
+            "applies_when": "New/material capability admission or evidence-sensitive retirement",
+            "load_when": "Existing entrypoint and explicitly linked retirement reference; no global promotion",
+            "required": true,
+            "disposition": "changed",
+            "before": [
+              "skills/capability-curator/SKILL.md"
+            ],
+            "after": [
+              "skills/capability-curator/SKILL.md"
+            ],
+            "reason": "Same file and reference route, with only the independently reviewed scope corrections."
+          },
+          {
+            "obligation": "Preserve the existing owner and conditional loading while correcting scope",
+            "applies_when": "New/material capability admission or evidence-sensitive retirement",
+            "load_when": "Existing entrypoint and explicitly linked retirement reference; no global promotion",
+            "required": true,
+            "disposition": "changed",
+            "before": [
+              "skills/capability-curator/references/instruction-retirement.md"
+            ],
+            "after": [
+              "skills/capability-curator/references/instruction-retirement.md"
+            ],
+            "reason": "Same file and reference route, with only the independently reviewed scope corrections."
+          }
+        ]
+      }
+    },
+    {
+      "owner": "skills/cross-agent-surface-engineering",
+      "change_kind": "contract-correction",
+      "basis": "user-correction",
+      "acceptance_classification": "curator-scope-maintenance",
+      "baseline_sufficient": false,
+      "artifacts": {
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121",
+          "after_sha256": "9031131e8be66964c739fbdcc6701485b64d8c00f8d1bc6d36b2c16f605265da"
+        }
+      },
+      "deviation": "Fleet retirement routing did not explicitly obtain the appropriate evidence owner; existing reporting vocabulary omitted intentional/partial unsupported outcomes.",
+      "evidence": "Exact baseline/candidate source pairs and retained scoped source review; no comparative-benefit evidence.",
+      "why_instruction": "The defect is in the owning instruction scope/decision boundary; executable deployment remains with existing owners.",
+      "alternative": "Reuse the existing engineering/admission owners and evidence record instead of a second convergence owner or blanket evaluation stage.",
+      "restructured": false,
+      "loading_review": {
+        "entrypoint_reason": "Keep the same entrypoint and linked reference; staged curator stays staged.",
+        "checks": "Source link/obligation coverage and fixed owner/registry hashes; no claim of native loading or model benefit.",
+        "obligations": [
+          {
+            "obligation": "Preserve the existing owner and conditional loading while correcting scope",
+            "applies_when": "Cross-host reconciliation and fleet-retirement intake",
+            "load_when": "Existing entrypoint and explicitly linked retirement reference; no global promotion",
+            "required": true,
+            "disposition": "changed",
+            "before": [
+              "skills/cross-agent-surface-engineering/SKILL.md"
+            ],
+            "after": [
+              "skills/cross-agent-surface-engineering/SKILL.md"
+            ],
+            "reason": "Same file and reference route, with only the independently reviewed scope corrections."
+          }
+        ]
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "requirement_change": true,
+      "requirement_reason": "Exact curator scope maintenance preserves existing requested-edit policy; operational receipt lifecycle changes repair private evidence retention without changing disclosure/adoption authority.",
+      "authority": "Explicit source-scope adoption; record validation does not authenticate permission or authorize deployment/public disclosure.",
+      "checks": "Eight closed-dispatch controls and twenty operational-receipt mechanism controls pass on the composed full source; newer question-map/recovery source is preserved.",
+      "outcome_review": {
+        "expected": "Narrow curator role and proportional evidence, with exact publication scope, durable private operational receipts and truthful unchanged reconciliation.",
+        "observed": "The three instruction product bodies match the cleared maintenance candidate; changed intent and consumer pins preserve published question-map additions. Actual producer and callback controls cover private/public no-ops and required receipt loss. Existing deployed-receipt augmentation decisions are preserved. Ready completion validates required evidence on recovered entry, readback and final closure, retaining the exact completed publisher envelope before unlink. Evidence loss remains incomplete; exact-proof restoration resumes the same commit without push replay.",
+        "evidence": "Exact source/dependency pairs, focused deterministic controls and preserved prior source clearances.",
+        "limitations": "No measured model benefit, complete live private-receipt durability/restart qualification or active-session instruction refresh is established."
+      },
+      "artifacts": {
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032",
+          "after_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e",
+          "after_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/hermes-skill-proposals.md": {
+          "before_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167",
+          "after_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "5d01136066bb128cb70223b876a2d6fd5a89cc07fd1ea1fa2414716b9625316e",
+          "after_sha256": "5d01136066bb128cb70223b876a2d6fd5a89cc07fd1ea1fa2414716b9625316e"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "89d7d2275e13eba8d05fb1ae58042c1edcf329f7f134b6d37ac372724e4cbd5c",
+          "after_sha256": "6ca8918106373db901efa02926227d974ecaff358a3526326aa1a3fe1f4c3967"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "e93d09bc37280a07f91369d8c1d5c8377b75483328f3dad7e567c784b762b036",
+          "after_sha256": "c0f6c9b8f0491328358fbf9c4bc0127180b1ff5f4c6d8e89b73f5b5423f79424"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "c225bf7c8b9943350ad4b3955891e0cd6cca65275f3c976007fdb17208bc3135",
+          "after_sha256": "72e982a8fced000a8617e0d83481220b7cdee8436b31ad92f71d733f208aad5d"
+        },
+        "host-deltas.json": {
+          "before_sha256": "40997b4557ea8d98da349b609f8b918a3b9249bf307919956f6aafc995fd37da",
+          "after_sha256": "add6599ffa21db091b6cd24464169c4271dba7133d0c6a7303dd5d179a863cd7"
+        },
+        "skills/capability-curator/SKILL.md": {
+          "before_sha256": "d6caa0472e4c29e3295d12a28e4b165c5b55af43b7df5ee4009d7aaa71176ae0",
+          "after_sha256": "59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5"
+        },
+        "skills/capability-curator/references/instruction-retirement.md": {
+          "before_sha256": "ad16e0493f8ac6a8581d24ff404d8ad818f07b6b06c8792ac6356dad8d3eecaa",
+          "after_sha256": "a3bbe9ee22fbfbb7a1496fc01b9b895dda486f995b7300e7c8350215130bcda4"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121",
+          "after_sha256": "9031131e8be66964c739fbdcc6701485b64d8c00f8d1bc6d36b2c16f605265da"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "skills/instruction-authoring/references/useful-behaviors.md": {
+          "before_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4",
+          "after_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4"
+        },
+        "tests/test_curator_scope_maintenance.py": {
+          "before_sha256": "absent",
+          "after_sha256": "8d69157cc6235cbd43ea7ae11460f71e9d8d458b464112e5a5a17e3876ed8898"
+        },
+        "tests/test_publication_manifest_boundary.py": {
+          "before_sha256": "39c776d604ffc76cbcb06ba6f8b67587cdb8a166dcf3b072e76f23406a984f52",
+          "after_sha256": "f952912f3eb3ad5c221f998f111988b6805c41b89419daaa69700d2a5a8d668c"
+        },
+        "tests/test_receipt_continuation.py": {
+          "before_sha256": "fc8a00b2897c5bba118ea55151dd42af81d96cee31a336e83e9b587cef2bc60a",
+          "after_sha256": "0289cef001c7532cb6448204ae1f72456aacf043c71e53ddb98b133da29ca7eb"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "c8643ab02a66deb5ca0419fafded6d37b04f62bbd341bbd34b8e146fd22e5021",
+          "after_sha256": "58d6006c982519dfae0d61411b148efe6eaa1ec967110d865b1a59fdf5b4783d"
+        },
+        "tools/reconcile.py": {
+          "before_sha256": "7a06b38e50b56f279dbe45913d6131c19e87dbcf169dd0f7e815c497d6bfdb0e",
+          "after_sha256": "a30fc045f08a9e5e4901de600d1e394ce63925491314d7334f62f726ec9fed4f"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "c2aa90ff0d212d719514012ab448675098b1def3212c0492bed2a4f7ce6633a4",
+          "after_sha256": "3a7c91db0fc329b9e2affda4436876ba8e354c6ccb6d22a9b946337da3b60a08"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/hermes-skill-proposals.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Selected exact maintenance/mechanism correction; existing ownership, disclosure, release and recovery safeguards are retained."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Selected exact maintenance/mechanism correction; existing ownership, disclosure, release and recovery safeguards are retained."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Selected exact maintenance/mechanism correction; existing ownership, disclosure, release and recovery safeguards are retained."
+        },
+        {
+          "path": "skills/capability-curator/SKILL.md",
+          "disposition": "updated",
+          "reason": "Selected exact maintenance/mechanism correction; existing ownership, disclosure, release and recovery safeguards are retained."
+        },
+        {
+          "path": "skills/capability-curator/references/instruction-retirement.md",
+          "disposition": "updated",
+          "reason": "Selected exact maintenance/mechanism correction; existing ownership, disclosure, release and recovery safeguards are retained."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Selected exact maintenance/mechanism correction; existing ownership, disclosure, release and recovery safeguards are retained."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        },
+        {
+          "path": "skills/instruction-authoring/references/useful-behaviors.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance remains applicable; no duplicate owner, lifecycle promotion or new behavior claim."
+        }
+      ]
+    }
+  ],
+  "source_checks": {
+    "dispatcher_controls_passed": 8,
+    "operational_receipt_controls_passed": 20,
+    "existing_closed_helpers_unchanged": true,
+    "full_scoped_consumer": "passed",
+    "bound_dependency_paths": 22,
+    "deployed_receipt_augmentation_preserved": true,
+    "ready_completion_lifecycle_controls": {
+      "exact_source_methods_passed": 3,
+      "scope": "Own inner-unlink crash, exact-proof restoration and same-commit no-push completion; genuine no-operation and valid required private completion."
+    },
+    "full_checkout_fixture_isolation": "No-binding producer control explicitly supplies an empty binding manifest; unexpected binding copying is forbidden. This removes a partial-tree fixture assumption without changing the producer."
+  },
+  "limits": [
+    "Source/engineering evidence only; no comparative model-quality or total-cost claim.",
+    "Curator and convergence remain staged; no retirement or promotion.",
+    "Private receipt durability and full process restart remain unqualified until actual admitted use.",
+    "No provider/model trial, settings/MCP/learning activation or current-session reload is included."
+  ]
+}

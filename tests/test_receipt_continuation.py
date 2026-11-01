@@ -1,7 +1,9 @@
 """Explicit receipt review resumes a real retained deployed Git transaction."""
 from pathlib import Path
 import hashlib
+import importlib.util
 import json
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -38,9 +40,26 @@ class ReceiptContinuationTests(unittest.TestCase):
         ready = self.git(worker, 'rev-parse', 'HEAD')
         tool = fixtures.load_tool('worktree_sync')
         predicted = 'reconciliation/requests/' + 'a' * 64 + '.json'
-        result = self.run_ready(tool, worker, ready, live, adopt=['kept'], include=[predicted])
+        # Exercise a real retained transaction from before private operational
+        # storage. The repaired producer no longer creates this legacy refusal.
+        baseline = '88f7c44dab8bf1f0f7ba942d83da501de6b01d67'
+        legacy_raw = subprocess.run(['git', '-C', str(Path(__file__).resolve().parents[1]),
+            'show', baseline + ':tools/reconcile.py'], capture_output=True, check=True).stdout
+        legacy_source = root / 'legacy-source'
+        legacy_path = legacy_source / 'tools/reconcile.py'
+        legacy_path.parent.mkdir(parents=True)
+        legacy_path.write_bytes(legacy_raw)
+        schema = legacy_source / 'contracts/change-request.schema.json'
+        schema.parent.mkdir()
+        schema.write_bytes(subprocess.run(['git', '-C', str(Path(__file__).resolve().parents[1]),
+            'show', baseline + ':contracts/change-request.schema.json'], capture_output=True, check=True).stdout)
+        spec = importlib.util.spec_from_file_location('legacy_receipt_producer', legacy_path)
+        legacy = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(legacy)
+        with patch.object(tool, 'reconcile', legacy):
+            result = self.run_ready(tool, worker, ready, live, adopt=['kept'], include=[predicted])
         self.assertEqual('incomplete', result['result'], result)
-        self.assertIn('publication paths differ', result['reason'])
+        self.assertIn('publication paths differ', result['reason'], result)
         common = sync_git.common_dir(repo)
         raw = (common / 'agent-signal-integration.json').read_bytes()
         journal = json.loads(raw)
@@ -64,6 +83,139 @@ class ReceiptContinuationTests(unittest.TestCase):
         # installed bytes, journal and publication gates remain real.
         with patch.object(tool.reconcile, '_run_checks', side_effect=self.fixture_checks):
             return tool.augment_deployed_receipt(worker, request)
+
+    def private_ready_fixture(self, root):
+        repo, live, remote = self.setup_git(root)
+        worker = self.worker(repo, 'private-receipt-worker')
+        (worker / 'skills/kept/fixture.txt').write_bytes(b'Private receipt selected change.\n')
+        self.git(worker, 'add', '.')
+        self.git(worker, 'commit', '-m', 'selected owner change')
+        return repo, live, remote, worker, fixtures.load_tool('worktree_sync'), self.git(worker, 'rev-parse', 'HEAD')
+
+    def test_required_private_ready_completion_retains_reference(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote, worker, tool, ready = self.private_ready_fixture(Path(temp))
+            result = self.run_ready(tool, worker, ready, live, adopt=['kept'])
+            self.assertEqual('synced', result['result'], result)
+            reference = result['operational_receipt']
+            self.assertEqual('private', reference['storage'])
+            self.assertEqual(result['request_id'], reference['request_id'])
+            self.assertEqual(reference['sha256'], hashlib.sha256(Path(reference['path']).read_bytes()).hexdigest())
+            self.assertEqual('', self.git(remote, 'ls-tree', 'main', '--',
+                'reconciliation/requests/' + reference['request_id'] + '.json'))
+            self.assertFalse((sync_git.common_dir(repo) / 'agent-signal-integration.json').exists())
+
+    def test_ready_private_evidence_loss_retains_published_recovery_without_push_replay(self):
+        cases = ('missing-body', 'corrupt-body', 'missing-reference', 'missing-requirement',
+                 'missing-publisher-state', 'final-readback', 'published-retry')
+        for failure in cases:
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp).resolve()
+                repo, live, remote, worker, tool, ready = self.private_ready_fixture(root)
+                original_finish = tool._finish_published
+                original_rollout = tool._rollout_targets
+                retained = {}
+                def capture(lane):
+                    pending = sync_git.read_pending(lane)
+                    self.assertEqual(2, pending['schema_version'])
+                    self.assertIs(True, pending['operational_receipt_required'])
+                    reference = tool.reconcile._operational_receipt_state(lane, pending)
+                    body = Path(reference['path']).resolve()
+                    self.assertTrue(body.is_relative_to(root))
+                    pending_path = sync_git.git_dir(lane) / 'agent-signal-sync.json'
+                    retained.update(lane=lane, body=body, body_raw=body.read_bytes(),
+                        pending_path=pending_path, pending_raw=pending_path.read_bytes(), commit=pending['commit'])
+                    return pending
+                def finish(*args, **kwargs):
+                    pending = capture(args[3])
+                    if failure in {'missing-body', 'published-retry'}:
+                        retained['body'].unlink()
+                    elif failure == 'corrupt-body':
+                        retained['body'].write_bytes(retained['body_raw'] + b'changed')
+                    elif failure in {'missing-reference', 'missing-requirement'}:
+                        pending.pop('operational_receipt' if failure == 'missing-reference' else 'operational_receipt_required')
+                        retained['pending_path'].write_text(json.dumps(pending))
+                    elif failure == 'missing-publisher-state':
+                        retained['pending_path'].unlink()
+                    return original_finish(*args, **kwargs)
+                def rollout(*args, **kwargs):
+                    result = original_rollout(*args, **kwargs)
+                    if failure == 'final-readback':retained['body'].unlink()
+                    return result
+                with patch.object(tool, '_finish_published', side_effect=finish), patch.object(tool, '_rollout_targets', side_effect=rollout):
+                    result = self.run_ready(tool, worker, ready, live, adopt=['kept'])
+                self.assertEqual('incomplete', result['result'], result)
+                journal_path = sync_git.common_dir(repo) / 'agent-signal-integration.json'
+                journal = json.loads(journal_path.read_bytes())
+                self.assertEqual('published', journal['phase'])
+                self.assertEqual(retained['commit'], self.git(remote, 'rev-parse', 'main'))
+                self.assertEqual('Private receipt selected change.', self.git(remote, 'show', 'main:skills/kept/fixture.txt'))
+                if failure != 'missing-publisher-state':self.assertIsNotNone(sync_git.read_pending(retained['lane']))
+                if failure == 'published-retry':
+                    with patch.object(sync_git, 'git', wraps=sync_git.git) as calls:
+                        retry = self.run_ready(tool, worker, ready, live, adopt=['kept'])
+                    self.assertEqual('incomplete', retry['result'], retry)
+                    self.assertFalse(any('push' in call.args[1:] for call in calls.call_args_list))
+                    self.assertTrue(journal_path.is_file())
+                    # Restore exact retained fixture evidence, then qualify a
+                    # normal published retry. Never recreate a successful push.
+                    retained['body'].write_bytes(retained['body_raw'])
+                    with patch.object(sync_git, 'git', wraps=sync_git.git) as calls:
+                        completed = self.run_ready(tool, worker, ready, live, adopt=['kept'])
+                    self.assertEqual('synced', completed['result'], completed)
+                    self.assertFalse(any('push' in call.args[1:] for call in calls.call_args_list))
+                    self.assertEqual(retained['commit'], self.git(remote, 'rev-parse', 'main'))
+                    self.assertFalse(journal_path.exists())
+
+    def test_own_pending_unlink_crash_reuses_durable_exact_completion(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote, worker, tool, ready = self.private_ready_fixture(Path(temp))
+            journal_path = sync_git.common_dir(repo) / 'agent-signal-integration.json'
+            original_unlink = Path.unlink
+            observed = {}
+            def interrupt(path, *args, **kwargs):
+                if path == journal_path:
+                    journal = json.loads(path.read_bytes())
+                    retained = journal['publisher_completion_state']
+                    self.assertIsNone(sync_git.read_pending(Path(journal['integration_repo'])))
+                    reference = tool.reconcile._operational_receipt_state(Path(journal['integration_repo']), retained)
+                    body = Path(reference['path'])
+                    observed.update(body=body, raw=body.read_bytes(), commit=retained['commit'])
+                    raise OSError('fixture crash after own inner pending unlink')
+                return original_unlink(path, *args, **kwargs)
+            with patch.object(Path, 'unlink', interrupt):
+                first = self.run_ready(tool, worker, ready, live, adopt=['kept'])
+            self.assertEqual('incomplete', first['result'], first)
+            self.assertTrue(journal_path.exists())
+            self.assertEqual(observed['commit'], self.git(remote, 'rev-parse', 'main'))
+            observed['body'].unlink()
+            with patch.object(sync_git, 'git', wraps=sync_git.git) as calls:
+                lost = self.run_ready(tool, worker, ready, live, adopt=['kept'])
+            self.assertEqual('incomplete', lost['result'], lost)
+            self.assertTrue(journal_path.exists())
+            self.assertFalse(any('push' in call.args[1:] for call in calls.call_args_list))
+            observed['body'].write_bytes(observed['raw'])
+            with patch.object(sync_git, 'git', wraps=sync_git.git) as calls:
+                final = self.run_ready(tool, worker, ready, live, adopt=['kept'])
+            self.assertEqual('synced', final['result'], final)
+            self.assertEqual(observed['commit'], final['commit'])
+            self.assertFalse(any('push' in call.args[1:] for call in calls.call_args_list))
+            self.assertFalse(journal_path.exists())
+            self.assertEqual('Private receipt selected change.', self.git(remote, 'show', 'main:skills/kept/fixture.txt'))
+
+    def test_ready_source_only_work_without_operational_selection_needs_no_receipt(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote = self.setup_git(Path(temp))
+            worker = self.worker(repo, 'no-operation-worker')
+            (worker / 'fixture-note.txt').write_bytes(b'Ordinary source change.\n')
+            self.git(worker, 'add', '.')
+            self.git(worker, 'commit', '-m', 'source change without owner operation')
+            ready = self.git(worker, 'rev-parse', 'HEAD')
+            tool = fixtures.load_tool('worktree_sync')
+            result = self.run_ready(tool, worker, ready, live, include=['fixture-note.txt'])
+            self.assertEqual('synced', result['result'], result)
+            self.assertNotIn('operational_receipt', result)
+            self.assertNotIn('request_id', result)
 
     def test_review_retains_evidence_is_idempotent_and_normal_retry_publishes(self):
         with tempfile.TemporaryDirectory() as temp:

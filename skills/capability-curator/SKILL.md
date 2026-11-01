@@ -10,7 +10,7 @@ metadata:
 
 # Capability Curator
 
-Use for any proposed skill install, new reusable workflow, tool/plugin addition, instruction change, response-style change, or other persistent agent behavior. This owns admission and model-triggered instruction retirement; routine usage/staleness cleanup belongs to the host curator.
+Own admission of new capabilities and material changes to capability claims, plus model-sensitive instruction-retirement evidence. Known-owner maintenance stays with its existing owner unless it introduces a new capability, material behavioral requirement, or unresolved fitness question. Hand admitted cross-host changes to cross-agent-surface-engineering for authorized implementation and verification; routine usage/staleness cleanup belongs to the host curator.
 
 ## Contract
 
@@ -73,7 +73,7 @@ Adapt only what evidence requires: tool names, paths, platform assumptions, mode
 
 ### 5. Evaluate on the current runtime
 
-Use `tools/eval.py` before any broad persistent mutation. Normalize and record the exact model, provider, reasoning, prompt assembly, tool/context policy, candidate/baseline/suite/harness hashes, seeds, trial bounds, decision margin, provenance, and rollback. A harness, delivery, timeout, interruption, or judge failure is inconclusive—not candidate evidence.
+For behavioral-improvement or model-sensitive retirement claims, use the applicable comparative evidence route (`tools/eval.py` where supported). Deterministic mechanism corrections and structural deduplication stay with their existing owner and require appropriate direct checks, identity checks, and fresh discovery rather than automatic paired model trials. This distinction does not waive admission, safety, or release requirements. For comparative evaluation, normalize and record the exact model, provider, reasoning, prompt assembly, tool/context policy, candidate/baseline/suite/harness hashes, seeds, trial bounds, decision margin, provenance, and rollback. A harness, delivery, timeout, interruption, or judge failure is inconclusive—not candidate evidence.
 
 - Use v2 suites with representative, near-miss/non-trigger, adversarial, and held-out cases.
 - Keep one or more cases held out from adaptation.
@@ -85,11 +85,11 @@ Use `tools/eval.py` before any broad persistent mutation. Normalize and record t
 
 A candidate passes only when it has no material hard failure, loses no critical case, and clears the predeclared improvement rule. Retirement requires non-inferiority under the same gate. Ties favor the baseline for admission and deletion only when retirement evidence clears its declared margin. Re-run fresh held-out cases after the final adaptation.
 
-For multiple hosts, aggregate host reports with `tools/eval_gate.py`; every required host must pass and share a declared effective-stack equivalence group or record an explicit irreducible difference. Missing hosts, mismatched artifacts/stacks, and host regressions fail closed.
+For comparative claims across multiple hosts, aggregate host reports with `tools/eval_gate.py`; every required host must pass and share a declared effective-stack equivalence group or record an explicit irreducible difference. Missing hosts, mismatched artifacts/stacks, and host regressions fail closed.
 
 ### 6. Promote one coherent winner
 
-Install or modify only the winning capability and the smallest required adapter. Prefer the portable Agent Skills layout for workflows and one shared source file plus thin host adapters for persistent instructions.
+Hand the winning capability and evidence to the affected source/native owner for authorized implementation of only that capability and the smallest required adapter. Prefer the portable Agent Skills layout for workflows and one shared source file plus thin host adapters for persistent instructions.
 
 Record:
 

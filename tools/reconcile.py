@@ -571,12 +571,115 @@ def _request_artifacts(states: Sequence[Mapping[str, Any]]) -> list[dict[str, st
     return artifacts
 
 
-def _write_request(repo: Path, request: Mapping[str, Any]) -> Path:
+def _request_relative(request_id):
+    if not isinstance(request_id, str) or re.fullmatch('[0-9a-f]{64}', request_id) is None:
+        raise RuntimeError('invalid operational request identity')
+    return f'reconciliation/requests/{request_id}.json'
+
+
+def _request_repository_path(repo, request_id, public_receipts=None):
+    relative = _request_relative(request_id)
+    return repo / relative if public_receipts is None or relative in public_receipts else None
+
+
+def _private_request_path(repo, request_id, identity):
+    _request_relative(request_id)
+    if not isinstance(identity, str) or re.fullmatch('[0-9a-f]{64}', identity) is None:
+        raise RuntimeError('invalid operational receipt digest')
+    import sync_git
+    common = sync_git.common_dir(repo)
+    path = common / 'agent-signal-reconciliation' / request_id / (identity + '.json')
+    for part in (common, path.parent.parent, path.parent, path):
+        if part.is_symlink() or part.resolve() != part.absolute():
+            raise sync_git.SyncBlocked('private operational receipt path is redirected')
+    return path
+
+
+def _store_private_request(path, raw):
+    """Append exact content-addressed evidence; never replace prior history."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open('xb') as stream:
+            stream.write(raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+    except FileExistsError:
+        if path.read_bytes() != raw:
+            raise RuntimeError('private operational receipt identity collision or drift')
+
+
+def _request_reference(repo, path, request_id):
+    raw = path.read_bytes()
+    return {'request_id': request_id, 'path': str(path),
+            'storage': 'repository' if path == repo / _request_relative(request_id) else 'private',
+            'sha256': hashlib.sha256(raw).hexdigest()}
+
+
+def _publication_receipt_paths(repo, result, approved_paths):
+    """Check durable evidence without granting it publication scope."""
+    request_id = result.get('request_id')
+    if request_id is None:
+        return set()
+    relative = _request_relative(request_id)
+    reference = result.get('operational_receipt')
+    if not isinstance(reference, dict) or reference.get('request_id') != request_id:
+        raise RuntimeError('operational receipt reference missing or mismatched')
+    public = relative in approved_paths
+    expected = repo / relative if public else _private_request_path(repo, request_id, reference.get('sha256'))
+    if (reference.get('storage') != ('repository' if public else 'private')
+            or reference.get('path') != str(expected)):
+        raise RuntimeError('operational receipt storage does not match explicit publication selection')
+    raw = expected.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != reference.get('sha256'):
+        raise RuntimeError('operational receipt bytes changed before publication')
+    value = json.loads(raw)
+    jsonschema.Draft202012Validator(_request_schema(repo)).validate(value)
+    recovery._assert_public_safe(raw, label='change-request')
+    if value.get('request_id') != request_id:
+        raise RuntimeError('operational receipt body belongs to another request')
+    return {relative} if public else set()
+
+
+def _operational_receipt_state(repo, state):
+    """Validate required evidence on entry, verify, final readback and resume."""
+    version = state.get('schema_version')
+    expected = bool(state.get('owners') or state.get('capture_recovery') or
+                    (state.get('scoped') and state.get('binding_identities')))
+    reference = state.get('operational_receipt')
+    if type(version) is int and version == 1 and 'operational_receipt_required' not in state:
+        # Explicit legacy compatibility; a present transitional reference is still checked.
+        if reference is None:
+            if 'operational_receipt' in state and expected:
+                raise RuntimeError('required operational receipt missing from transitional pending state')
+            return None
+    elif (type(version) is not int or version != 2
+            or type(state.get('operational_receipt_required')) is not bool
+            or state['operational_receipt_required'] != expected):
+        raise RuntimeError('pending operational receipt requirement is missing or inconsistent')
+    elif not expected:
+        if reference is not None:
+            raise RuntimeError('no-operation pending state has an unexpected operational receipt')
+        return None
+    if not isinstance(reference, dict):
+        raise RuntimeError('required operational receipt missing from pending state')
+    _request_relative(reference.get('request_id'))
+    scope = state['approved_paths'] if state.get('scoped') else state['files']
+    _publication_receipt_paths(repo, {'request_id': reference.get('request_id'),
+                                     'operational_receipt': reference}, scope)
+    return reference
+
+
+def _write_request(repo: Path, request: Mapping[str, Any], *, public_receipts=None) -> Path:
     value = dict(request)
     jsonschema.Draft202012Validator(_request_schema(repo)).validate(value)
-    recovery._assert_public_safe(_json_bytes(value), label="change-request")
-    path = repo / "reconciliation" / "requests" / f"{value['request_id']}.json"
-    fleet.atomic_json(path, value)
+    raw = _json_bytes(value)
+    recovery._assert_public_safe(raw, label='change-request')
+    path = _request_repository_path(repo, value['request_id'], public_receipts)
+    if path is None:
+        path = _private_request_path(repo, value['request_id'], hashlib.sha256(raw).hexdigest())
+        _store_private_request(path, raw)
+    else:
+        fleet.atomic_json(path, value)
     return path
 
 
@@ -589,6 +692,7 @@ def _decision_receipt(
     result: str,
     risk: str,
     failed_phase: str = "preflight",
+    public_receipts=None,
 ) -> dict[str, Any]:
     owners = sorted(set(names)) or ["unresolved-change"]
     desired = [
@@ -639,13 +743,14 @@ def _decision_receipt(
         "checks": ["deterministic classification"],
         "result": result,
     }
-    _write_request(repo, request)
+    request_path = _write_request(repo, request, public_receipts=public_receipts)
     return {
         "schema_version": 1,
         "result": result,
         "mutation_performed": False,
         "request_id": request_id,
         "owners": owners,
+        "operational_receipt": _request_reference(repo, request_path, request_id),
     }
 
 
@@ -727,6 +832,7 @@ def sync(
     binding_repo: Path | None = None,
     binding_identities: Sequence[str] = (),
     ready_input: Mapping[str, Any] | None = None,
+    public_receipts: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     """Reconcile selected owners and optionally capture allowlisted host state."""
 
@@ -743,6 +849,7 @@ def sync(
             states=[],
             result="review-required",
             risk="review",
+            public_receipts=public_receipts,
         )
         report["reason"] = "no existing admitted owner or recovery capture was selected"
         return report
@@ -762,6 +869,7 @@ def sync(
                 states=[],
                 result="review-required",
                 risk="review",
+                public_receipts=public_receipts,
             )
             report["reason"] = "typed host-delta manifest must be valid before recovery capture"
             return report
@@ -773,7 +881,6 @@ def sync(
         if (sync_git.identities(repo, ready_input["files"]) != ready_input["files"]
                 or _agent_scope_identities(destinations, names) != ready_input["agent_identities"]):
             raise sync_git.SyncBlocked("ready source or selected installed owners changed before mutation")
-        sync_git.mark_integration_deployment_started(repo, ready_input["attempt"])
     states = [_skill_state(repo, fleet_snapshot, destinations, name) for name in names]
     if any(state["mode"] == "review-required" for state in states):
         report = _decision_receipt(
@@ -783,6 +890,7 @@ def sync(
             states=states,
             result="review-required",
             risk="review",
+            public_receipts=public_receipts,
         )
         report["reasons"] = [
             {"owner": state["name"], "reason": state["reason"]}
@@ -804,6 +912,7 @@ def sync(
             states=states,
             result="rejected",
             risk="high",
+            public_receipts=public_receipts,
         )
         report["reason"] = "selected content failed public-safety validation"
         return report
@@ -885,12 +994,40 @@ def sync(
         if binding_result is not None:
             desired.append(hashlib.sha256(_json_bytes(binding_result["manifest"])).hexdigest())
         request_id = _request_id(machine, owners, desired)
-        request_path = repo / "reconciliation" / "requests" / f"{request_id}.json"
+        request_path = _request_repository_path(repo, request_id, public_receipts)
         no_skill_change = all(state["mode"] == "unchanged" for state in states)
         no_recovery_change = not capture_recovery or recovery_before == recovery_after
         no_binding_change = binding_result is None or binding_result["manifest"] == host_deltas._load_manifest_unbound(host_delta_path, repo)
-        if request_path.is_file() and no_skill_change and no_recovery_change and no_binding_change:
-            return {"schema_version": 1, "result": "unchanged", "mutation_performed": False, "request_id": request_id, "owners": owners}
+        if no_skill_change and no_recovery_change and no_binding_change:
+            if request_path is None or not request_path.is_file():
+                unchanged_artifacts = _request_artifacts(states)
+                if capture_recovery:
+                    unchanged_artifacts.append({'owner': 'recovery-state', 'source': 'live',
+                        'before_sha256': str(recovery_before), 'after_sha256': str(recovery_after)})
+                if capture_recovery or binding_result is not None:
+                    identity = fleet.sha256_file(host_delta_path)
+                    unchanged_artifacts.append({'owner': 'host-deltas', 'source': 'canonical',
+                        'before_sha256': identity, 'after_sha256': identity})
+                operation = ('mixed-safe-reconciliation' if capture_recovery and states else
+                             'capture-recovery' if capture_recovery else
+                             'refresh-artifact-bindings' if binding_result is not None and not states else
+                             'deploy-canonical-owner')
+                request = {'$schema': '../../contracts/change-request.schema.json', 'schema_version': 1,
+                    'request_id': request_id, 'machine': machine, 'phase': 'completed',
+                    'operation': operation, 'source': {'host': 'canonical', 'surface': 'fleet' if states else 'host-deltas'},
+                    'risk': 'low', 'disposition': 'unchanged', 'owners': owners, 'artifacts': unchanged_artifacts,
+                    'phases': [{'name': name, 'status': 'completed' if name in {'classify','preflight','verify','receipt'} else 'skipped'}
+                               for name in ['classify','preflight','canonicalize','render','validate','deploy','verify','receipt']],
+                    'checks': ['current source/destination/recovery/binding identities unchanged'], 'result': 'unchanged'}
+                request_path = _write_request(repo, request, public_receipts=public_receipts)
+            reference = _request_reference(repo, request_path, request_id)
+            _publication_receipt_paths(repo, {'request_id': request_id, 'operational_receipt': reference},
+                                       [_request_relative(request_id)] if public_receipts is None else public_receipts)
+            return {"schema_version": 1, "result": "unchanged", "mutation_performed": False, "request_id": request_id,
+                    "owners": owners, "operational_receipt": reference}
+
+        if ready_input is not None and (names or capture_recovery):
+            sync_git.mark_integration_deployment_started(repo, ready_input['attempt'])
 
         if capture_recovery and names:
             operation = "mixed-safe-reconciliation"
@@ -934,7 +1071,7 @@ def sync(
 
         canonical_existed: dict[str, bool] = {}
         live_existed: dict[tuple[str, str], bool] = {}
-        targets = [request_path, *(repo / "skills" / state["name"] for state in states)]
+        targets = ([request_path] if request_path is not None else []) + [repo / "skills" / state["name"] for state in states]
         if states:
             targets.append(fleet_snapshot)
         if capture_recovery:
@@ -947,7 +1084,7 @@ def sync(
         host_delta_existed = _copy_optional(host_delta_path, backup / "host-deltas.json") if capture_recovery or binding_result is not None else False
         host_delta_before = fleet.sha256_file(host_delta_path) if host_delta_existed else None
         host_delta_after = host_delta_before
-        request_existed = _copy_optional(request_path, backup / "request.json")
+        request_existed = _copy_optional(request_path, backup / "request.json") if request_path is not None else False
         for state in states:
             target = repo / "skills" / state["name"]
             canonical_existed[state["name"]] = _copy_optional(target, backup / "canonical" / state["name"])
@@ -1113,9 +1250,11 @@ def sync(
                 "checks": checks,
                 "result": "applied",
             }
-            before_write(request_path)
-            _write_request(repo, request)
-            wrote(request_path, backup / "request.json", request_existed)
+            if request_path is not None:
+                before_write(request_path)
+            saved_request_path = _write_request(repo, request, public_receipts=public_receipts)
+            if request_path is not None:
+                wrote(request_path, backup / "request.json", request_existed)
             committed = True
         except Exception as exc:
             failure = exc
@@ -1167,6 +1306,7 @@ def sync(
                 result="rejected",
                 risk="high",
                 failed_phase=failed_phase,
+                public_receipts=public_receipts,
             )
             report["reason"] = "transactional reconciliation failed and own writes were rolled back"
             report["failure"] = _failure_detail(failure, failed_phase, repo)
@@ -1180,7 +1320,7 @@ def sync(
                 # distinct; preserve their status with the retained backup.
                 fleet.atomic_json(durable / "outcome.json", report)
             return report
-    report = {"schema_version": 1, "result": "applied", "mutation_performed": True, "request_id": request_id, "owners": owners}
+    report = {"schema_version": 1, "result": "applied", "mutation_performed": True, "request_id": request_id, "owners": owners, "operational_receipt": _request_reference(repo, saved_request_path, request_id)}
     if binding_result is not None:
         report["binding_refresh"] = {"committed": True, "selected": binding_result["selected"],
                                      "deferred": binding_result["deferred"]}
@@ -1479,6 +1619,12 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             expected_owners = pending.get("owner_identities", {}) if pending else {}
             def readback():
                 check_dependencies()
+                state = receipt_state if receipt_state is not None else {
+                    'schema_version': 2, 'scoped': True, 'owners': sorted(names),
+                    'capture_recovery': capture, 'binding_identities': sorted(bind_owners),
+                    'operational_receipt_required': bool(names or capture or bind_owners),
+                    'operational_receipt': operational_receipt, 'approved_paths': approved_paths}
+                _operational_receipt_state(repo, state)
                 if capture:
                     probe = recovery.restore(repo / "recovery.json", repo / "recovery/current", roots, apply=False, repo_root=repo, artifacts=artifacts)
                     if probe["changes"] or probe["conflicts"]:
@@ -1494,6 +1640,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                         if fleet.verify_snapshot(snapshot, destination, names=names):
                             raise sync_git.SyncBlocked("selected agent owners do not match the checked snapshot")
 
+            receipt_state = pending
+            operational_receipt = pending.get("operational_receipt") if pending else None
             verification_failures = []
             def verify():
                 readback()
@@ -1513,6 +1661,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 readback()
 
             def finish(report, state):
+                reference = _operational_receipt_state(repo, state)
                 if verification_failures:
                     failure = verification_failures[-1]
                     report["failure"] = _failure_detail(failure, "verify", repo)
@@ -1524,9 +1673,12 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 dirty = sync_git.changed(repo)
                 report["pending_files"] = sorted((dirty - set(state["files"])) | (dirty & set(state.get("publication_overrides", {}))))
                 report["verification_scope"] = state["limits"]
+                if reference is not None:
+                    report.update(operational_receipt=reference, request_id=reference['request_id'])
                 return report
 
             if pending:
+                _operational_receipt_state(repo, pending)
                 return finish(sync_git.publish(repo, pending, verify=verify, readback=readback, integration_attempt=integration_attempt), pending)
             target = sync_git.destination(repo)
             if capture:
@@ -1592,16 +1744,15 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                     result = sync(repo, machine=machine, adopt=sorted(names), recovery_roots=recovery_roots,
                                   skill_roots=skill_roots, capture_recovery=capture, recovery_artifacts=artifacts,
                                   check_commands=[], scoped=True, binding_repo=candidate, binding_identities=sorted(bind_owners),
+                                  public_receipts=approved_paths,
                                   ready_input={"attempt": integration_attempt, "files": before_files,
                                                "agent_identities": before_agents} if integration_attempt is not None else None)
                     if result["result"] not in {"applied", "unchanged"}:
                         return result
-                    if result.get("request_id"):
-                        outgoing = selected | {f"reconciliation/requests/{result['request_id']}.json"}
-                        # Retain the local receipt/history, but stop before creating
-                        # any publisher state if it was not explicitly selected.
-                        sync_git.assert_publication_paths(repo, approved_paths, outgoing)
-                        selected = outgoing
+                    outgoing = selected | _publication_receipt_paths(repo, result, approved_paths)
+                    sync_git.assert_publication_paths(repo, approved_paths, outgoing)
+                    selected = outgoing
+                    operational_receipt = result.get("operational_receipt")
             checked_agents = _agent_scope_identities(destinations, names)
             readback()
             final_files = sync_git.identities(repo, selected)
@@ -1618,12 +1769,14 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 _run_candidate_checks(candidate, _candidate_commands(candidate, names, final_files, capture), tree)
             if sync_git.identities(repo, selected) != final_files:
                 raise sync_git.SyncBlocked("selected files changed after deployment checks")
-            pending = {"schema_version": 1, "scoped": True, "machine": machine,
+            pending = {"schema_version": 2, "scoped": True, "machine": machine,
                        "owners": sorted(names), "destinations": [str(p) for _, p in destinations],
                        "capture_recovery": capture, "recovery_roots": roots, "recovery_artifacts": artifacts,
                        "agent_identities": checked_agents, "owner_identities": expected_owners,
                        "binding_identities": sorted(bind_owners), "project_bindings": project_bindings,
                        "publication_overrides": publication_overrides,
+                       "operational_receipt": operational_receipt,
+                       "operational_receipt_required": bool(names or capture or bind_owners),
                        "agents_verified": False, "installed_verified": bool(names), "dependencies": dependencies,
                        "target": target, "base": base_commit, "message": message,
                        "files": final_files, "tree": tree, "approved_paths": approved_paths,
@@ -1632,6 +1785,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                        "limits": "No whole-fleet, current-runtime, or model-behavior parity claim."}
             if integration_attempt is not None:
                 pending["integration_attempt"] = integration_attempt
+            receipt_state = pending
+            _operational_receipt_state(repo, pending)
             sync_git.save_pending(repo, pending)
             result = sync_git.publish(repo, pending, verify=verify, readback=readback, integration_attempt=integration_attempt)
             return finish(result, pending)
@@ -1691,6 +1846,7 @@ def _complete_source_sync(
             resolved_roots = {host: str(Path(path).resolve()) for host, path in
                               (recovery_roots if recovery_roots is not None else recovery._default_roots()).items()}
             checked_agents = pending.get("agent_identities") if pending else None
+            receipt_state = pending
             commands = [
                 [sys.executable, str(repo / "tools/validate.py")],
                 [sys.executable, str(repo / "tools/public_check.py")],
@@ -1703,6 +1859,8 @@ def _complete_source_sync(
                     raise RuntimeError("unmanaged or external-owner content requires review")
 
             def readback():
+                if receipt_state is not None:
+                    _operational_receipt_state(repo, receipt_state)
                 check_external_owners()
                 if checked_agents is not None and _agent_identities(destinations) != checked_agents:
                     raise RuntimeError("agent content changed during sync; re-review required")
@@ -1735,9 +1893,15 @@ def _complete_source_sync(
             evidence_paths = [f"evals/results/{name}-local-windows.json" for name in
                               ("fleet-discovery", "unified-reconciliation")]
             def publish_broad(state):
+                nonlocal receipt_state
+                receipt_state = state
+                reference = _operational_receipt_state(repo, state)
                 import instruction_changes
                 instruction_changes.check(repo, repo, state["base"], state["files"])
                 report = sync_git.publish(repo, state, verify=verify, readback=readback)
+                _operational_receipt_state(repo, state)
+                if reference is not None:
+                    report.update(operational_receipt=reference, request_id=reference["request_id"])
                 if not capture:
                     report["deferred_evidence"] = [name for name in evidence_paths if (repo / name).is_file()]
                 return report
@@ -1816,13 +1980,14 @@ def _complete_source_sync(
                     or sync_git.identities(repo, selected) != approved or sync_git.changed(repo) != before):
                 raise sync_git.SyncBlocked("files changed during prerequisite checks")
             check_external_owners()  # Revalidate pins before writes, including plan-to-baseline races.
+            operational_receipt = None
             if names or capture:
                 result = sync(repo, machine=machine, adopt=sorted(names), recovery_roots=recovery_roots,
-                              skill_roots=skill_roots, capture_recovery=capture)
+                              skill_roots=skill_roots, capture_recovery=capture, public_receipts=selected)
                 if result["result"] not in {"applied", "unchanged"}:
                     return result
-                if result.get("request_id"):
-                    selected.add(f"reconciliation/requests/{result['request_id']}.json")
+                selected.update(_publication_receipt_paths(repo, result, selected))
+                operational_receipt = result.get("operational_receipt")
                 if result.get("binding_refresh"):
                     selected.add("host-deltas.json")
             checked_agents = _agent_identities(destinations)
@@ -1840,9 +2005,11 @@ def _complete_source_sync(
             if sync_git.changed(repo) - selected:
                 raise sync_git.SyncBlocked("unreviewed changes appeared during reconciliation")
             instruction_changes.check(repo, repo, "HEAD", selected)
-            pending = {"schema_version": 1, "machine": machine,
+            pending = {"schema_version": 2, "machine": machine, "owners": sorted(names),
                        "destinations": [str(p) for _, p in destinations], "capture_recovery": capture,
                        "recovery_roots": resolved_roots, "agent_identities": checked_agents,
+                       "operational_receipt": operational_receipt,
+                       "operational_receipt_required": bool(names or capture),
                        "target": target, "base": sync_git.git(repo, "rev-parse", "HEAD"),
                        "message": message, "files": sync_git.identities(repo, selected)}
             sync_git.save_pending(repo, pending)
