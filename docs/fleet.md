@@ -68,3 +68,11 @@ The first machine is the Windows command center and uses the standard shared
 Hermes through `skills.external_dirs`. Remote transport is intentionally not
 invented before another machine is declared; a later adapter can carry the same
 snapshot and manifest over SSH/Tailscale without changing reconciliation.
+
+LeanREA is reserved for verified open-weight models. Its `blocked` registry
+state keeps it out of this shared discovery root; its complete source remains
+in `skills/leanrea`. Use it only in an explicitly selected open-weight execution
+context, with model identity checked before supplying the skill. An agent name,
+interface or API endpoint alone does not establish that a model has open weights.
+Do not restore it to a root also discovered by closed-weight or unidentified
+models. No dedicated open-weight deployment is currently configured.

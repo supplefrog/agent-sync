@@ -64,6 +64,15 @@ The [behavior audit](behavior-auditing.md) reconstructs legacy outcomes from exi
 
 R01/R06/R08/R13: the user-selected owner is [leanrea](../skills/leanrea/SKILL.md); former REA mechanisms and deliberate losses are recorded in the [replacement receipt](../evals/results/leanrea-replacement-20261018.json). R10/R16: direct static smoke and source/discovery/deployment checks cover only their recorded scope. Native cloud decompilation remains task-dependent and unexecuted in this migration. No new cloud environment or native engine is provisioned and no cross-host quality, speed or cost parity is claimed. Publication/deployment state is recorded by the reconciler, separately from these source checks.
 
+2026-11-01 superseding scope: LeanREA is reserved for verified open-weight
+models. Shared deployment is blocked in the registry and ownership contract;
+the skill package remains intact in source. The shared root has no per-model
+filter, and no dedicated open-weight deployment is configured. The
+[restriction receipt](../evals/results/leanrea-open-weight-20261101.json) records
+the source and exclusion checks; completed deployment requires reconciler and
+fresh native discovery evidence. This restriction does not change other skills
+or select a model/provider migration.
+
 ## Audit-method and exposure acceptance, 2026-10-18
 
 R20 has been withdrawn as a standalone recovered obligation under user correction Sentinel_df0547752c7481918a5c49138f445447. Existing R14/R17 already cover efficient method choice and evidence reuse. The current explicit boundary against a mandatory Anthropic-branded comparison remains; it does not create another research project. Historical requests 222495/222538 are evidence for scrutiny, not authority to adopt or execute their old implementation. No method-comparison result is inferred from source reviews or program ablations.

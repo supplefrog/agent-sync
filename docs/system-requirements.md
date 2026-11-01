@@ -134,6 +134,15 @@ The user selected [LeanREA](https://github.com/aicodeking/leanrea) to replace RE
 
 Retire the former skill and REA MCP registrations for Codex, Hermes and OMP, including OMP recovery. Preserve existing unrelated settings, historical evidence and native safety boundaries. REA graph, provider/session and retained Evidence APIs are intentionally replaced by direct tool outputs, not emulated. This supersedes the earlier statement that OMP retains REA. Compare no-skill native tools as the retirement alternative; upstream benchmark figures are not evidence of local performance or quality.
 
+The user's 2026-11-01 restriction supersedes shared LeanREA admission: reserve
+this skill for verified open-weight models. Preserve its source and historical
+evidence, withhold it from shared discovery used by closed-weight or unidentified
+models, and require an explicitly selected open-weight execution context before
+supplying it. Do not infer model eligibility from the agent or interface. This
+is a user-selected scope restriction, not a claim of a general provider ban on
+software reverse engineering. Other skills and runtime defaults retain their
+existing scope.
+
 ## Recovered evaluation requirements, 2026-10-18
 
 R21 and R22 are retained because the current user explicitly requested actual model-instruction provenance and investigation of project-context/resumption value. They are bounded expected outcomes, not permission for new trials, tool/security changes, behavioral instruction layers, adoption or publication. The authoring pause remains in force. Earlier backlog proposals do not acquire requirement status through recovery; their sources and dispositions remain in the existing status/history record.

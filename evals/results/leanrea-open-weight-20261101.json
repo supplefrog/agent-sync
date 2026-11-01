@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "capability": "leanrea",
+  "date": "2026-11-01",
+  "kind": "user-selected-model-scope-restriction",
+  "baseline": "07173ebcd8251f89f7a0251519dcbef8daaba508",
+  "source_package_sha256": {
+    "skills/leanrea/LICENSE": "f126681f66a89b4f610999a64f1a1fc6da98d221a39f65799a6d6bb6e051d922",
+    "skills/leanrea/SKILL.md": "ab6a00883bb3c7853a797e0a308a851af1fd9f8ca33339575ceafb5d95ac9675",
+    "skills/leanrea/provenance.json": "cb1afec0ee9539cebb0af8b933428fb1fa04a63d6d39e460edaea75f2e851301",
+    "skills/leanrea/references/windows.md": "f9e2e7bce18ab20cb51caff9db765fe8ca2013e54b9a96f4524c35a83865dac0"
+  },
+  "source_checks": {
+    "leanrea_excluded": true,
+    "other_admitted_owners_preserved": true,
+    "complete_source_package_unchanged": true
+  },
+  "deployment": "pending-reconciler-acceptance",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/ownership.json": {
+          "before_sha256": "ce5755cecd713686c77bf6927e646c6a61f9cb9c10e566c5ef1384894adde9f7",
+          "after_sha256": "104f731eccb48b0b0eed8d22ce8ecc5674ca14e3fb2e0d775ac6101f7c69464b"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e",
+          "after_sha256": "4d3ec6f29ecd8d08db1fa91de3b3e5b5757b950f4f7a2850948d0d8640981518"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "6ca8918106373db901efa02926227d974ecaff358a3526326aa1a3fe1f4c3967",
+          "after_sha256": "adf7fe39f21f74bd23d60f35c2dc6f5761c481cc0d1863f95cec41d64a3a6828"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "c0f6c9b8f0491328358fbf9c4bc0127180b1ff5f4c6d8e89b73f5b5423f79424",
+          "after_sha256": "dd011b4cd07773f5e03606fdd210b93b7001ed55c33453c6fb5c5a39ed5d4139"
+        },
+        "host-deltas.json": {
+          "before_sha256": "add6599ffa21db091b6cd24464169c4271dba7133d0c6a7303dd5d179a863cd7",
+          "after_sha256": "a3246616cdf6a5b78648e547e4178ec9fb081dd592de5ea376eacc5b821bd76d"
+        },
+        "registry.json": {
+          "before_sha256": "2a56f0366330b79db8cadcb439141f4ff4a4c1b0d700d533a46e22737027711e",
+          "after_sha256": "d4f6235d60fe8c92fbfe394dbb298bc1baf3ccb9e9722b05004d69c4eccf03b1"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Keep LeanREA source ownership and purpose; record the open-weight-only restriction and unresolved shared admission."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Historical host capabilities and behavior records remain unchanged; current LeanREA deployment eligibility is owned by registry and ownership."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "The restriction makes no model-benefit or comparative-efficiency claim; measurement eligibility stays unchanged."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "updated",
+          "reason": "Document why shared discovery excludes LeanREA and the explicit verified open-weight execution boundary."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Historical instruction-maintenance decisions remain valid; this restriction introduces no learning or taste procedure."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Record source exclusion separately from pending native rollout."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Record the user-selected restriction that supersedes shared LeanREA admission."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Refresh only fleet manifest hashes for the three existing hosts; preserve all policy, enablement and readback definitions."
+        },
+        {
+          "path": "registry.json",
+          "disposition": "updated",
+          "reason": "Block only LeanREA from the shared renderer; preserve every other registry row."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing placement, purpose, authorization and source-versus-deployment rules already cover this metadata restriction."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependency and changed-intent reconciliation rules are used without any admission exemption."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "The user reserves LeanREA for open-weight models; shared admission is superseded without deleting the skill.",
+      "authority": "Explicit user selection on 2026-11-01, clarified to the existing leanrea skill.",
+      "checks": "Real fleet renderer excludes LeanREA and retains exactly the other admitted owners; registry and ownership neighbor comparisons pass; every LeanREA source file equals the reviewed Git baseline.",
+      "outcome_review": {
+        "expected": "Preserve LeanREA for explicitly verified open-weight use and exclude it from discovery shared with closed-weight or unidentified models.",
+        "observed": "Source metadata and the real rendered manifest satisfy the exclusion; the full skill package and all other registry rows are unchanged.",
+        "evidence": "Deterministic registry, ownership, complete-package and real-renderer assertions in the task verification; publication/native rollout still require reconciler acceptance.",
+        "limitations": "No dedicated open-weight environment is configured. Source checks do not unload cached conversation catalogs or establish live deployment."
+      }
+    }
+  ]
+}
