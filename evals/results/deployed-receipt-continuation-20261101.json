@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "capability": "fleet-sync",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e",
+          "after_sha256": "0d0250ea7f617fae644ac2eb45890511c3c770bd0513786e627dd204a6bc4e0e"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "89d7d2275e13eba8d05fb1ae58042c1edcf329f7f134b6d37ac372724e4cbd5c",
+          "after_sha256": "89d7d2275e13eba8d05fb1ae58042c1edcf329f7f134b6d37ac372724e4cbd5c"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "e93d09bc37280a07f91369d8c1d5c8377b75483328f3dad7e567c784b762b036",
+          "after_sha256": "e93d09bc37280a07f91369d8c1d5c8377b75483328f3dad7e567c784b762b036"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "d3e64b24c02b505f670bd59a3e4cc65ff6e07fbeb04191ccf30970815cdfbdea",
+          "after_sha256": "c225bf7c8b9943350ad4b3955891e0cd6cca65275f3c976007fdb17208bc3135"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "4ff1c46043cc37031c6b48c82fc35becfaece88286a8451e91c303e520a3544b",
+          "after_sha256": "c2aa90ff0d212d719514012ab448675098b1def3212c0492bed2a4f7ce6633a4"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing scope, admission, exact publication manifest, state and native obligations remain; the existing publication guide now documents the reviewed receipt continuation."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Existing scope, admission, exact publication manifest, state and native obligations remain; the existing publication guide now documents the reviewed receipt continuation."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing scope, admission, exact publication manifest, state and native obligations remain; the existing publication guide now documents the reviewed receipt continuation."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing scope, admission, exact publication manifest, state and native obligations remain; the existing publication guide now documents the reviewed receipt continuation."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing scope, admission, exact publication manifest, state and native obligations remain; the existing publication guide now documents the reviewed receipt continuation."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Existing scope, admission, exact publication manifest, state and native obligations remain; the existing publication guide now documents the reviewed receipt continuation."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing scope, admission, exact publication manifest, state and native obligations remain; the existing publication guide now documents the reviewed receipt continuation."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing scope, admission, exact publication manifest, state and native obligations remain; the existing publication guide now documents the reviewed receipt continuation."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Repair the existing requirement to recover checked interrupted syncs without losing evidence or publishing unselected data; no change to intended authorization or admission.",
+      "authority": "Existing interrupted-sync recovery contract; no capability or disclosure-policy expansion.",
+      "checks": "Focused real-Git continuation, refusal and interruption controls; fresh bounded source review; canonical source qualification and later live continuation/readback.",
+      "outcome_review": {
+        "expected": "A reviewed generated receipt may extend one retained postdeployment prepublication attempt, preserving source, installed identity, original journal and all normal publication gates.",
+        "observed": "The original generated-path refusal was reproduced. Frozen-tree derivation identifies the retained actual receipt. The added protocol validates exact source, canonical derived hashes, installed identity, remote baseline and public receipt before an evidence-preserving transition.",
+        "evidence": "tests/test_receipt_continuation.py and docs/worktree-publication.md; source-bound fresh review and live completion are recorded by the invoking work owner.",
+        "limitations": "The record binds artifacts and a review decision; hashes do not establish semantic benefit or authenticate an external reviewer. Broader interrupted-deployment cases remain refused."
+      }
+    }
+  ]
+}

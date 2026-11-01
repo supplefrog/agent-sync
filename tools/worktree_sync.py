@@ -1,6 +1,7 @@
 """Frozen ready commits, isolated Git integration, existing scoped reconciliation."""
 from __future__ import annotations
 
+from contextlib import ExitStack
 import hashlib
 import json
 import os
@@ -1123,6 +1124,182 @@ def _validate_pending(lane, journal, pending):
             or pending.get('capture_recovery')
             or not set(options['include']) <= set(pending.get('files', {}))):
         raise sync_git.SyncBlocked('inner publisher pending state belongs to another integration attempt or scope')
+
+
+def augment_deployed_receipt(repo, request):
+    """Review one retained generated receipt without publishing or redeploying.
+
+    The caller owns the review decision. Bindings establish exact scope and
+    current state, not authenticity of that decision or execution history.
+    """
+    repo = Path(repo).resolve()
+    keys = {'schema_version', 'kind', 'attempt', 'journal_sha256', 'ready', 'base',
+            'request_path', 'files', 'include', 'live', 'review'}
+    if (not isinstance(request, dict) or set(request) != keys
+            or type(request.get('schema_version')) is not int or request['schema_version'] != 1
+            or request.get('kind') != 'reviewed-generated-receipt'
+            or not isinstance(request.get('attempt'), str)
+            or not re.fullmatch('[0-9a-f]{32}', request['attempt'])
+            or not isinstance(request.get('journal_sha256'), str)
+            or not re.fullmatch('[0-9a-f]{64}', request['journal_sha256'])
+            or not isinstance(request.get('request_path'), str)
+            or not re.fullmatch(r'reconciliation/requests/[0-9a-f]{64}\.json', request['request_path'])
+            or not isinstance(request.get('files'), dict) or not isinstance(request.get('live'), dict)
+            or not isinstance(request.get('include'), list)
+            or any(not isinstance(name, str) for name in request['include'])
+            or any(not isinstance(name, str) or not isinstance(identity, str)
+                   or (identity != 'deleted' and not re.fullmatch('[0-9a-f]{64}', identity))
+                   for name, identity in request['files'].items())
+            or not isinstance(request.get('review'), dict)
+            or set(request['review']) != {'decision', 'reason', 'reviewer_ref'}
+            or request['review'].get('decision') != 'accept-generated-receipt'
+            or any(not isinstance(request['review'].get(k), str) or not request['review'][k].strip()
+                   for k in ('reason', 'reviewer_ref'))):
+        raise sync_git.SyncBlocked('receipt continuation requires explicit bound review')
+    primary, common = _primary(repo)
+    with sync_git.lock(repo, timeout=120), ExitStack() as held:
+        path = common / 'agent-signal-integration.json'
+        raw = path.read_bytes()
+        journal = json.loads(raw)
+        archive = common / ('agent-signal-receipt-review-' + request['attempt'])
+        if archive.is_symlink() or archive.resolve() != archive.absolute():
+            raise sync_git.SyncBlocked('receipt continuation archive cannot be redirected')
+        request_bytes = reconcile._json_bytes(request)
+        repeated = journal.get('receipt_review', {}).get('request_sha256') == hashlib.sha256(request_bytes).hexdigest()
+        if repeated:
+            original_raw = (archive / 'original-journal.json').read_bytes()
+            if (archive / 'review.json').read_bytes() != request_bytes:
+                raise sync_git.SyncBlocked('retained receipt review changed')
+            original = json.loads(original_raw)
+        else:
+            original_raw, original = raw, journal
+        receipt = original.get('receipt', {})
+        options = receipt.get('options', {})
+        result = original.get('last_result', {})
+        if (hashlib.sha256(original_raw).hexdigest() != request['journal_sha256']
+                or original.get('attempt') != request['attempt']
+                or original.get('phase') != 'reconciling' or original.get('deployment_started') is not True
+                or receipt.get('ready') != request['ready'] or original.get('base') != request['base']
+                or original.get('predecessors') or original.get('source_failures')
+                or result.get('result') != 'incomplete'
+                or result.get('failed_step') != 'scoped-preflight-or-reconcile'
+                or not str(result.get('reason', '')).startswith('publication paths differ from reviewed manifest; unexpected=')
+                or not options.get('adopt') or 'host-deltas.json' in original.get('composition_files', {})):
+            raise sync_git.SyncBlocked('receipt continuation is outside the retained deployed manifest failure')
+        added = request['request_path']
+        if (added in options['include'] or len(request['include']) != len(set(request['include']))
+                or set(request['include']) != set(options['include']) | {added}):
+            raise sync_git.SyncBlocked('receipt continuation can select only its exact generated receipt')
+        target = sync_git.destination(primary)
+        if target != receipt.get('target'):
+            raise sync_git.SyncBlocked('receipt continuation destination changed')
+        for name in ('agent-signal-integration-worktree', 'agent-signal-published'):
+            if not (common / name).is_dir() or not (common / (name + '.json')).is_file():
+                raise sync_git.SyncBlocked('receipt continuation requires existing owned worktrees')
+        lane, _, lane_marker = _owned_worktree(primary, common, target, 'agent-signal-integration-worktree', INTEGRATION_BRANCH)
+        published, _, public_marker = _owned_worktree(primary, common, target, 'agent-signal-published', BRANCH)
+        if original.get('integration_repo') != str(lane) or original.get('published_repo') != str(published):
+            raise sync_git.SyncBlocked('receipt continuation worktree identity changed')
+        sync_git.assert_integration_owner(lane, request['attempt'])
+        _require_absent_inner_receipt(lane)
+        if (lane_marker.get('head') != original['base'] or public_marker.get('head') != original['base']
+                or sync_git.git(published, 'rev-parse', 'HEAD') != original['base']
+                or sync_git.changed(published)
+                or sync_git.git(published, 'write-tree') != sync_git.git(published, 'rev-parse', original['base'] + '^{tree}')):
+            raise sync_git.SyncBlocked('receipt continuation published baseline changed')
+        def remote_baseline():
+            if sync_git.git(lane, 'ls-remote', '--exit-code', target['remote'], target['ref']).split() != [original['base'], target['ref']]:
+                raise sync_git.SyncBlocked('receipt continuation remote baseline changed')
+        remote_baseline()
+        for operation in ('MERGE_HEAD', 'CHERRY_PICK_HEAD', 'REVERT_HEAD', 'rebase-merge', 'rebase-apply', 'sequencer'):
+            if (sync_git.git_dir(lane) / operation).exists():
+                raise sync_git.SyncBlocked('receipt continuation cannot replace an unfinished Git operation')
+        if (sync_git.git(lane, 'rev-parse', 'HEAD') != original['base']
+                or sync_git.git(lane, 'write-tree') != sync_git.git(lane, 'rev-parse', original['base'] + '^{tree}')):
+            raise sync_git.SyncBlocked('receipt continuation HEAD or index changed')
+        files = request['files']
+        originals = original['composition_files']
+        if (set(files) != set(originals) | {'host-deltas.json', added}
+                or sync_git.changed(lane) != set(files)
+                or sync_git.identities(lane, files) != files
+                or any(files[name] != identity for name, identity in originals.items())):
+            raise sync_git.SyncBlocked('receipt continuation source or generated bytes changed')
+        names = sorted(options['adopt'])
+        destinations = reconcile._destinations(lane, options['machine'], options['skill_roots'])
+        held.enter_context(reconcile.fleet._path_locks([root for _, root in destinations]))
+        if set(_origin_destinations(lane, options, common)) != set(original.get('origin_destinations', [])):
+            raise sync_git.SyncBlocked('receipt continuation managed origin changed')
+        live = {str(root): {'managed_state_sha256': reconcile.fleet.sha256_file(root / reconcile.fleet.STATE_FILE),
+                           'owners': {name: reconcile.fleet.installed_hash(root / name) for name in names}}
+                for _, root in destinations}
+        if live != request['live'] or set(live) != set(original.get('origin_destinations', [])):
+            raise sync_git.SyncBlocked('receipt continuation installed identity changed')
+        with sync_git.prepare_candidate(lane, originals, base=original['base']) as (candidate, tree):
+            if tree != original['composed_tree']:
+                raise sync_git.SyncBlocked('receipt continuation original checked tree changed')
+            binding_before = reconcile.fleet.sha256_file(candidate / 'host-deltas.json')
+            reconcile._prepare_candidate_bindings(candidate, names, None, originals)
+            if (candidate / 'host-deltas.json').read_bytes() != (lane / 'host-deltas.json').read_bytes():
+                raise sync_git.SyncBlocked('receipt continuation metadata is not the canonical selected derivation')
+            expected_owners = names + ['host-deltas']
+            desired = [reconcile.fleet.installed_hash(candidate / 'skills' / name) for name in names]
+            desired.append(hashlib.sha256(reconcile._json_bytes(json.loads((candidate / 'host-deltas.json').read_bytes()))).hexdigest())
+            expected_id = reconcile._request_id(options['machine'], expected_owners, desired)
+            body = json.loads((lane / added).read_bytes())
+            expected_artifacts = [{'owner': name, 'source': 'canonical', 'before_sha256': digest,
+                                   'after_sha256': digest} for name, digest in zip(names, desired)]
+            expected_artifacts.append({'owner': 'host-deltas', 'source': 'canonical',
+                                       'before_sha256': binding_before, 'after_sha256': desired[-1]})
+            reconcile.jsonschema.Draft202012Validator(reconcile._request_schema(candidate)).validate(body)
+            reconcile.recovery._assert_public_safe((lane / added).read_bytes(), label='reviewed-generated-receipt')
+            if (added != 'reconciliation/requests/' + expected_id + '.json'
+                    or body.get('$schema') != '../../contracts/change-request.schema.json'
+                    or body.get('request_id') != expected_id or body.get('machine') != options['machine']
+                    or body.get('owners') != expected_owners or body.get('operation') != 'deploy-canonical-owner'
+                    or body.get('phase') != 'completed' or body.get('result') != 'applied'
+                    or body.get('risk') != 'low' or body.get('disposition') != 'applied' or body.get('checks') != []
+                    or body.get('source') != {'host': 'canonical', 'surface': 'fleet'}
+                    or body['phases'] != [{'name': name, 'status': 'completed'} for name in
+                        ('classify', 'preflight', 'canonicalize', 'render', 'validate', 'deploy', 'verify', 'receipt')]
+                    or body['artifacts'] != expected_artifacts):
+                raise sync_git.SyncBlocked('receipt continuation does not match the canonical completed selected operation')
+            reconcile.fleet.render_snapshot(candidate, reconcile._snapshot(candidate))
+            for _, root in destinations:
+                if reconcile.fleet.verify_snapshot(reconcile._snapshot(candidate), root, names=names):
+                    raise sync_git.SyncBlocked('receipt continuation installed owners differ from checked source')
+            sync_git.assert_publishable(candidate, originals)
+        with sync_git.prepare_candidate(lane, files, base=original['base']) as (candidate, tree):
+            sync_git.assert_publishable(candidate, files)
+            reconcile._run_candidate_checks(candidate, reconcile._candidate_commands(candidate, names, files, False), tree)
+        updated = json.loads(json.dumps(original))
+        updated['receipt']['options']['include'] = sorted(request['include'])
+        updated['composition_files'] = dict(files)
+        updated['composition_before'].update(sync_git.identities(published, set(files) - set(originals)))
+        updated['composed_tree'] = tree
+        updated['receipt_review'] = {'request_sha256': hashlib.sha256(request_bytes).hexdigest(),
+                                    'original_journal_sha256': request['journal_sha256'], 'archive': str(archive)}
+        if repeated:
+            if journal != updated:
+                raise sync_git.SyncBlocked('receipt continuation retained transition changed')
+            return {'result': 'unchanged', 'attempt': request['attempt'], 'ready': request['ready']}
+        # Retain byte-exact evidence before the only state transition. Prefix
+        # writes make an interruption before replacement safely retryable.
+        archive.mkdir(exist_ok=True)
+        _retain_release_bytes(archive / 'original-journal.json', original_raw)
+        _retain_release_bytes(archive / 'review.json', request_bytes)
+        if (path.read_bytes() != raw or sync_git.identities(lane, files) != files
+                or sync_git.changed(lane) != set(files)
+                or sync_git.git(lane, 'rev-parse', 'HEAD') != original['base']
+                or sync_git.git(lane, 'write-tree') != sync_git.git(lane, 'rev-parse', original['base'] + '^{tree}')):
+            raise sync_git.SyncBlocked('receipt continuation changed before transition')
+        current_live = {str(root): {'managed_state_sha256': reconcile.fleet.sha256_file(root / reconcile.fleet.STATE_FILE),
+                                   'owners': {name: reconcile.fleet.installed_hash(root / name) for name in names}}
+                        for _, root in destinations}
+        if current_live != live:
+            raise sync_git.SyncBlocked('receipt continuation live state changed before transition')
+        remote_baseline()
+        _atomic(path, updated)
+        return {'result': 'reviewed', 'attempt': request['attempt'], 'ready': request['ready'], 'include': updated['receipt']['options']['include']}
 
 
 def _verify_composition(lane, journal):
