@@ -92,7 +92,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 17778,
+      "bytes": 17832,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -297,7 +297,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "b348e01d45870a1b797f3ddc9ae9f0c7dc99d224f14070ec1a1d514977b320aa",
+      "sha256": "bd7dd27b18f0e6e10d1c8019649b55c5f9c25fbb71abbbda20ad7ae42e971413",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
@@ -13558,10 +13558,75 @@
       "snapshot": "hosts/omp/extensions/reduced-tool-guidance.ts",
       "source": "extensions/reduced-tool-guidance.ts",
       "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 4759,
+      "format": "text",
+      "host": "hermes",
+      "id": "model-scoped-skills-plugin",
+      "include": [],
+      "kind": "text",
+      "portable_paths": false,
+      "sha256": "8233887288a0e9d66f18590d6f549e1a78d33041d84b24674ab0b235de146c19",
+      "snapshot": "hosts/hermes/plugins/agent-sync-model-skills/__init__.py",
+      "source": "plugins/agent-sync-model-skills/__init__.py",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 9465,
+      "format": "text",
+      "host": "hermes",
+      "id": "model-scoped-skills-engine",
+      "include": [],
+      "kind": "text",
+      "portable_paths": false,
+      "sha256": "d087fe1746d395c87aac88427af8f922bc2d2170a59d6f5a51619f9d9967b605",
+      "snapshot": "hosts/hermes/plugins/agent-sync-model-skills/engine.py",
+      "source": "plugins/agent-sync-model-skills/engine.py",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 163,
+      "format": "text",
+      "host": "hermes",
+      "id": "model-scoped-skills-manifest",
+      "include": [],
+      "kind": "text",
+      "portable_paths": false,
+      "sha256": "44d1a5d22ebf3f6bee8a569f25192f71b1604c0308cbaae66d3f151035f507e1",
+      "snapshot": "hosts/hermes/plugins/agent-sync-model-skills/plugin.yaml",
+      "source": "plugins/agent-sync-model-skills/plugin.yaml",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 1047,
+      "format": "text",
+      "host": "omp",
+      "id": "model-scoped-skills-extension",
+      "include": [],
+      "kind": "text",
+      "portable_paths": false,
+      "sha256": "bdf7b877ed80aaebdf6c90dce8c46e9bd394d55a435a4340616b4d99297a01b1",
+      "snapshot": "hosts/omp/extensions/agent-sync-model-skills.js",
+      "source": "extensions/agent-sync-model-skills.js",
+      "strategy": "replace-if-absent"
+    },
+    {
+      "bytes": 9352,
+      "format": "text",
+      "host": "omp",
+      "id": "model-scoped-skills-runtime",
+      "include": [],
+      "kind": "text",
+      "portable_paths": false,
+      "sha256": "8c6134cc8a5debc495f621e2617ed0bf1fdbaea1a850141442b726fc725f795a",
+      "snapshot": "hosts/omp/extensions/agent-sync-model-skill-runtime.mjs",
+      "source": "extensions/agent-sync-model-skill-runtime.mjs",
+      "strategy": "replace-if-absent"
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "9e3b385ce1736b9d408c380788a27ccd10f4a2ae59bfe73590850effcef7bed5",
+  "policy_sha256": "4bdb779cea927d4f28b8f705b0d93144a922c120f7bd87160dca4b182e1214ee",
   "public_safe": true,
   "schema_version": 1
 }

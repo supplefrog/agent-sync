@@ -153,7 +153,7 @@
     {
       "name": "leanrea",
       "status": "blocked",
-      "reason": "Reserved for verified open-weight models by user choice. Withheld from shared discovery because the shared root has no per-model filter; retain source for explicitly scoped open-weight use.",
+      "reason": "Reserved for known open-weight models. Universal shared discovery remains blocked; request-local access is governed by contracts/skill-model-policy.json through supported native adapters.",
       "license": "MIT",
       "source": "https://github.com/aicodeking/leanrea/tree/09ba4aa0217f82cd880f855a60b877f59f39b22b/leanrea",
       "eval": "evals/results/leanrea-replacement-20261018.json"

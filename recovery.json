@@ -9662,6 +9662,30 @@
           "snapshot": "hosts/hermes/skills/devops/sdlc-review/SKILL.md",
           "source": "skills/devops/sdlc-review/SKILL.md",
           "strategy": "replace-if-absent"
+        },
+        {
+          "id": "model-scoped-skills-plugin",
+          "kind": "text",
+          "source": "plugins/agent-sync-model-skills/__init__.py",
+          "snapshot": "hosts/hermes/plugins/agent-sync-model-skills/__init__.py",
+          "format": "text",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "id": "model-scoped-skills-engine",
+          "kind": "text",
+          "source": "plugins/agent-sync-model-skills/engine.py",
+          "snapshot": "hosts/hermes/plugins/agent-sync-model-skills/engine.py",
+          "format": "text",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "id": "model-scoped-skills-manifest",
+          "kind": "text",
+          "source": "plugins/agent-sync-model-skills/plugin.yaml",
+          "snapshot": "hosts/hermes/plugins/agent-sync-model-skills/plugin.yaml",
+          "format": "text",
+          "strategy": "replace-if-absent"
         }
       ]
     },
@@ -9737,6 +9761,22 @@
           "kind": "text",
           "snapshot": "hosts/omp/extensions/reduced-tool-guidance.ts",
           "source": "extensions/reduced-tool-guidance.ts",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "id": "model-scoped-skills-extension",
+          "kind": "text",
+          "source": "extensions/agent-sync-model-skills.js",
+          "snapshot": "hosts/omp/extensions/agent-sync-model-skills.js",
+          "format": "text",
+          "strategy": "replace-if-absent"
+        },
+        {
+          "id": "model-scoped-skills-runtime",
+          "kind": "text",
+          "source": "extensions/agent-sync-model-skill-runtime.mjs",
+          "snapshot": "hosts/omp/extensions/agent-sync-model-skill-runtime.mjs",
+          "format": "text",
           "strategy": "replace-if-absent"
         }
       ]

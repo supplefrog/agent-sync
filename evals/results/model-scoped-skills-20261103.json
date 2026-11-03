@@ -1,0 +1,539 @@
+{
+  "schema_version": 1,
+  "suite": "model-scoped-native-skill-discovery",
+  "observed_at": "2026-11-03T03:27:51.005828+00:00",
+  "status": "functionally-checked-native-files-saved-publication-pending",
+  "authority": "User request on 2026-11-03: make skill discovery model aware so LeanREA loads for open-weight models and stays hidden for others, including within the same agent.",
+  "baseline": "LeanREA source exists but is blocked from all shared discovery. Shared skills have no per-request model predicate.",
+  "decision": "Extend native runtime hooks with a shared explicit model policy; retain universal shared exclusion.",
+  "alternatives": [
+    {
+      "approach": "Move a shared directory whenever a model changes",
+      "disposition": "rejected",
+      "reason": "Concurrent sessions share the directory and would race; loaded history would remain exposed."
+    },
+    {
+      "approach": "Add prose telling closed models to ignore LeanREA",
+      "disposition": "rejected",
+      "reason": "Does not hide discovery or prevent the native skill reader from loading it."
+    },
+    {
+      "approach": "MCP-only skill gateway",
+      "disposition": "rejected",
+      "reason": "A generic tool call does not supply a trustworthy active model identity or remove stale outbound history."
+    },
+    {
+      "approach": "Native request hooks and guarded source reader",
+      "disposition": "selected",
+      "reason": "The host supplies effective request model identity and owns model changes, settings and outbound context."
+    }
+  ],
+  "classification": {
+    "policy": "contracts/skill-model-policy.json",
+    "model_index": "contracts/model-weights.json",
+    "source": "https://models.dev/api.json",
+    "exact_provider_model_pairs": true,
+    "unknown": "withheld",
+    "remote_implementation_attested": false
+  },
+  "native_evidence": {
+    "hermes": {
+      "native": "Hermes PluginManager + request/tool middleware",
+      "python": "3.11.15",
+      "model_inference": false,
+      "transitions": [
+        {
+          "model": "anthropic/claude-sonnet-4",
+          "catalog": false,
+          "load": false
+        },
+        {
+          "model": "openai/gpt-oss-120b",
+          "catalog": true,
+          "load": true
+        },
+        {
+          "model": "anthropic/claude-sonnet-4",
+          "catalog": false,
+          "load": false
+        }
+      ],
+      "saved_history_preserved": true,
+      "disable_after_request_respected": true
+    },
+    "omp": {
+      "native": "OMP automatic extension discovery + native RPC model switching + loopback transport",
+      "automatic_discovery": true,
+      "transitions": [
+        {
+          "provider": "openrouter",
+          "model": "anthropic/claude-sonnet-4",
+          "load": false,
+          "model_inference": false
+        },
+        {
+          "provider": "openrouter",
+          "model": "openai/gpt-oss-120b",
+          "load": true,
+          "model_inference": false
+        },
+        {
+          "provider": "openrouter",
+          "model": "anthropic/claude-sonnet-4",
+          "load": false,
+          "model_inference": false
+        }
+      ],
+      "native_settings_controls": [
+        {
+          "override": {
+            "skills.enabled": false
+          },
+          "allowed": false,
+          "native_request_and_tool": true
+        },
+        {
+          "override": {
+            "skills.ignoredSkills": [
+              "lea*"
+            ]
+          },
+          "allowed": false,
+          "native_request_and_tool": true
+        },
+        {
+          "override": {
+            "skills.includeSkills": [
+              "ordinary"
+            ]
+          },
+          "allowed": false,
+          "native_request_and_tool": true
+        },
+        {
+          "override": {
+            "disabledExtensions": [
+              "skill:leanrea"
+            ]
+          },
+          "allowed": false,
+          "native_request_and_tool": true
+        },
+        {
+          "override": {
+            "skills.includeSkills": [
+              "lea*"
+            ]
+          },
+          "allowed": true,
+          "native_request_and_tool": true
+        }
+      ],
+      "all_loopback_requests": 16,
+      "other_native_loopback_requests": 0,
+      "closed_requests_catalog_or_body": false,
+      "open_requests_catalog_and_tool_body": true,
+      "real_model_inference": false
+    }
+  },
+  "checks": [
+    {
+      "name": "Python discovery and policy regressions",
+      "result": "11 passed"
+    },
+    {
+      "name": "Native committed text readback with real Git fixtures",
+      "result": "6 passed"
+    },
+    {
+      "name": "Existing native configuration completion regressions",
+      "result": "20 passed; stale mock source bindings were repaired after reproducing the same baseline fixture failures"
+    },
+    {
+      "name": "Node policy, native control and provider-format regressions",
+      "result": "7 passed"
+    },
+    {
+      "name": "Native retirement readback regressions",
+      "result": "8 passed"
+    },
+    {
+      "name": "Shared fleet and LeanREA source preservation",
+      "result": "LeanREA package and the other 16 shared skill packages remain byte-identical to the baseline"
+    },
+    {
+      "name": "Native settings",
+      "result": "Only the new Hermes plugin was enabled; existing enabled entries including a preexisting local entry were preserved. Runtime model/provider/reasoning defaults have unchanged native readback."
+    }
+  ],
+  "native_packages": [
+    {
+      "host": "hermes",
+      "artifact": "model-scoped-skills-plugin",
+      "source": "integrations/model-skills/hermes/__init__.py",
+      "native_relative_path": "plugins/agent-sync-model-skills/__init__.py",
+      "sha256": "8233887288a0e9d66f18590d6f549e1a78d33041d84b24674ab0b235de146c19"
+    },
+    {
+      "host": "hermes",
+      "artifact": "model-scoped-skills-engine",
+      "source": "tools/model_skills.py",
+      "native_relative_path": "plugins/agent-sync-model-skills/engine.py",
+      "sha256": "d087fe1746d395c87aac88427af8f922bc2d2170a59d6f5a51619f9d9967b605"
+    },
+    {
+      "host": "hermes",
+      "artifact": "model-scoped-skills-manifest",
+      "source": "integrations/model-skills/hermes/plugin.yaml",
+      "native_relative_path": "plugins/agent-sync-model-skills/plugin.yaml",
+      "sha256": "44d1a5d22ebf3f6bee8a569f25192f71b1604c0308cbaae66d3f151035f507e1"
+    },
+    {
+      "host": "omp",
+      "artifact": "model-scoped-skills-extension",
+      "source": "integrations/model-skills/omp.js",
+      "native_relative_path": "extensions/agent-sync-model-skills.js",
+      "sha256": "bdf7b877ed80aaebdf6c90dce8c46e9bd394d55a435a4340616b4d99297a01b1"
+    },
+    {
+      "host": "omp",
+      "artifact": "model-scoped-skills-runtime",
+      "source": "integrations/model-skills/agent-sync-model-skill-runtime.mjs",
+      "native_relative_path": "extensions/agent-sync-model-skill-runtime.mjs",
+      "sha256": "8c6134cc8a5debc495f621e2617ed0bf1fdbaea1a850141442b726fc725f795a"
+    }
+  ],
+  "limits": [
+    "Codex has no documented supported live model-aware skill discovery hook, so LeanREA remains hidden there.",
+    "Known public metadata classifies exact routes; unknown aliases stay hidden until reviewed metadata is refreshed.",
+    "Managed catalog/list/view material is removed from an ineligible outbound copy. Stored history and unrelated user content are preserved. Derived reasoning and arbitrary filesystem access are outside this mechanism.",
+    "Existing processes need one reload/restart to discover the adapter. Later model switches are handled per request.",
+    "Google and Bedrock request layouts use native-source-bound shape tests; actual native loopback transport execution covers OpenAI-compatible requests.",
+    "Native Python middleware was exercised with the installed dependency-ready Python 3.11 environment. No real model inference or comparative model-quality trial was performed.",
+    "Publication and final installed loading require the separate canonical deployment receipt."
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/model-weights.json": {
+          "before_sha256": "absent",
+          "after_sha256": "a8eafb155608ea3bb9c3700d4f38aa072474e4e39ba0e213d983d87019f14384"
+        },
+        "contracts/ownership.json": {
+          "before_sha256": "3caf885799bdb2287f5843b6a4eae289690ddfaa96081821bab977ad145e732e",
+          "after_sha256": "4c9a52efacfb4a52f55182af2a69ed8f3165d8b077dd8dfd4803aa414580e582"
+        },
+        "contracts/skill-model-policy.json": {
+          "before_sha256": "absent",
+          "after_sha256": "c26975f5a4457e8813f272922a1e479695a2b24f6531047ebe3e8e61c0b219a9"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823",
+          "after_sha256": "80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "4d3ec6f29ecd8d08db1fa91de3b3e5b5757b950f4f7a2850948d0d8640981518",
+          "after_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/model-scoped-skills.md": {
+          "before_sha256": "absent",
+          "after_sha256": "80015693359ec5c17607201d7b0999dcc2098cf644c545e4d7b3af06db2a41e6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "a0e8233a64f8ff20820787f50d8b4601e07a9ebee7fb936a35e40c534e1d2b90",
+          "after_sha256": "727ea575d436ac82873a01b82dbf903fd1bf1f7b26579b61225c585913a82ef7"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "dd011b4cd07773f5e03606fdd210b93b7001ed55c33453c6fb5c5a39ed5d4139",
+          "after_sha256": "310882591f34894ef9cd799008f5b2745ecb393aa1ec259488bb2a28aa6142c2"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "72e982a8fced000a8617e0d83481220b7cdee8436b31ad92f71d733f208aad5d",
+          "after_sha256": "dbf51dce17a7d4062a10d1f4f551d9dfc4eef7cb754cf74fac31b7eabc03fb44"
+        },
+        "host-deltas.json": {
+          "before_sha256": "73f1b8b2b0eea4ab0fb0858b43e11516e59043a9ed43e24990d09e6b2afdb1a5",
+          "after_sha256": "2954ee96c52ecec1324277be31ce7a08cd2a4809642df2e37195976b507e34d0"
+        },
+        "integrations/model-skills/agent-sync-model-skill-runtime.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "8c6134cc8a5debc495f621e2617ed0bf1fdbaea1a850141442b726fc725f795a"
+        },
+        "integrations/model-skills/hermes/__init__.py": {
+          "before_sha256": "absent",
+          "after_sha256": "8233887288a0e9d66f18590d6f549e1a78d33041d84b24674ab0b235de146c19"
+        },
+        "integrations/model-skills/hermes/plugin.yaml": {
+          "before_sha256": "absent",
+          "after_sha256": "44d1a5d22ebf3f6bee8a569f25192f71b1604c0308cbaae66d3f151035f507e1"
+        },
+        "integrations/model-skills/omp.js": {
+          "before_sha256": "absent",
+          "after_sha256": "bdf7b877ed80aaebdf6c90dce8c46e9bd394d55a435a4340616b4d99297a01b1"
+        },
+        "profiles/current-observed-defaults.json": {
+          "before_sha256": "07ea1ba506b0ff2c77c510f1d1e646bd7bd180e1fa4a2a6afc2cedd91833a435",
+          "after_sha256": "63d6c581aac4d3b661fcf3d1d113cb14b48a25d8a440e02304db938b258b25c2"
+        },
+        "recovery.json": {
+          "before_sha256": "3c4ab5a5c82600e9bd6d81a7582d2b396ee43d85598a477344e1a0da63b1a4af",
+          "after_sha256": "1169847e93caf3f898d5db8979eaf85b78ee7c9b021a9c5fbbd43e410fb69df3"
+        },
+        "recovery/current/hosts/hermes/config.json": {
+          "before_sha256": "b348e01d45870a1b797f3ddc9ae9f0c7dc99d224f14070ec1a1d514977b320aa",
+          "after_sha256": "bd7dd27b18f0e6e10d1c8019649b55c5f9c25fbb71abbbda20ad7ae42e971413"
+        },
+        "recovery/current/hosts/hermes/plugins/agent-sync-model-skills/__init__.py": {
+          "before_sha256": "absent",
+          "after_sha256": "8233887288a0e9d66f18590d6f549e1a78d33041d84b24674ab0b235de146c19"
+        },
+        "recovery/current/hosts/hermes/plugins/agent-sync-model-skills/engine.py": {
+          "before_sha256": "absent",
+          "after_sha256": "d087fe1746d395c87aac88427af8f922bc2d2170a59d6f5a51619f9d9967b605"
+        },
+        "recovery/current/hosts/hermes/plugins/agent-sync-model-skills/plugin.yaml": {
+          "before_sha256": "absent",
+          "after_sha256": "44d1a5d22ebf3f6bee8a569f25192f71b1604c0308cbaae66d3f151035f507e1"
+        },
+        "recovery/current/hosts/omp/extensions/agent-sync-model-skill-runtime.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "8c6134cc8a5debc495f621e2617ed0bf1fdbaea1a850141442b726fc725f795a"
+        },
+        "recovery/current/hosts/omp/extensions/agent-sync-model-skills.js": {
+          "before_sha256": "absent",
+          "after_sha256": "bdf7b877ed80aaebdf6c90dce8c46e9bd394d55a435a4340616b4d99297a01b1"
+        },
+        "recovery/current/manifest.json": {
+          "before_sha256": "385a6614f49d8f444a5c9a3647f3364c62d5a247ea3c8d1b7cf4158960f96624",
+          "after_sha256": "6437ec51be4fb827baf06bbf4be77bed1beec46b839f4fa94de451925a7f58c5"
+        },
+        "registry.json": {
+          "before_sha256": "d4f6235d60fe8c92fbfe394dbb298bc1baf3ccb9e9722b05004d69c4eccf03b1",
+          "after_sha256": "e104edc865d887bf0b234a4cc5959ec3ee9b02a42af75eecf2b1e90b768ad787"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "tests/test_model_skills.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "367198208ff5647af4141c4f9068835fcc2af09e54e00af09f7320a7795043a0"
+        },
+        "tests/test_model_skills.py": {
+          "before_sha256": "absent",
+          "after_sha256": "275c7818df46eb9695338f21f56a6c32e661d6805b600c0ef21fefbeebf30b66"
+        },
+        "tests/test_native_sync_completion.py": {
+          "before_sha256": "a0dd166305a0ad35c90e06114e1e42954d5f7a1869b40ce423828e757db4f512",
+          "after_sha256": "69ff89bbf12597f00319383dc35b7447d961cd743024ba2877370b728ac0257b"
+        },
+        "tests/test_native_text_readback.py": {
+          "before_sha256": "absent",
+          "after_sha256": "546838f0f7968db4beab46bf5da969f7ca0cbcc324af0176ed56579c4b7c09ee"
+        },
+        "tools/model_skills.py": {
+          "before_sha256": "absent",
+          "after_sha256": "d087fe1746d395c87aac88427af8f922bc2d2170a59d6f5a51619f9d9967b605"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "875c926437365e7cb153220e71fd595a9424e2fb0a0934e4003aebcdc7cb9215",
+          "after_sha256": "125751726d50de26eea160413157403f81cb73fc4a229fb8c4fdf7d881a11588"
+        }
+      },
+      "requirement_change": true,
+      "requirement_reason": "The user extended universal exclusion into per-model discovery and automatic on-demand loading within a native agent.",
+      "authority": "Explicit user request quoted in this record; narrow LeanREA scope and existing native permissions remain binding.",
+      "checks": "11 Python discovery tests, 7 Node tests, 6 real-Git native text tests, 20 configuration completion tests, 8 retirement tests; native Hermes middleware and OMP automatic extension discovery/model-switch/loopback settings probes.",
+      "outcome_review": {
+        "expected": "Known open-weight requests discover and can load LeanREA; closed/unknown requests do not, including after switching within the same agent.",
+        "observed": "Native closed/open/closed transitions pass, native settings remain effective, generated restricted history is removed from disallowed outbound copies, and unrelated skill packages/defaults are preserved.",
+        "evidence": "The source bindings, native transition results, settings cases and targeted check counts in this record.",
+        "limitations": "No Codex dynamic hook, remote model attestation, filesystem sandboxing, removal of previously derived reasoning, real inference or model-quality claim. Publication and loaded-state readback are separate."
+      },
+      "obligations": [
+        {
+          "path": "contracts/model-weights.json",
+          "disposition": "updated",
+          "reason": "Implement explicit exact-route model classification and request-local discovery/loading without changing runtime defaults."
+        },
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Keep LeanREA blocked from universal shared discovery while naming the separate native model policy."
+        },
+        {
+          "path": "contracts/skill-model-policy.json",
+          "disposition": "updated",
+          "reason": "Implement explicit exact-route model classification and request-local discovery/loading without changing runtime defaults."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing ownership and publication guidance still covers the added runtime feature; no standing instruction change is needed."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership and publication guidance still covers the added runtime feature; no standing instruction change is needed."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "updated",
+          "reason": "Record the requested model-dependent behavior, native host coverage, verification and context-isolation limits."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership and publication guidance still covers the added runtime feature; no standing instruction change is needed."
+        },
+        {
+          "path": "docs/model-scoped-skills.md",
+          "disposition": "updated",
+          "reason": "Record the requested model-dependent behavior, native host coverage, verification and context-isolation limits."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Record the requested model-dependent behavior, native host coverage, verification and context-isolation limits."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Record the requested model-dependent behavior, native host coverage, verification and context-isolation limits."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Record the requested model-dependent behavior, native host coverage, verification and context-isolation limits."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "integrations/model-skills/agent-sync-model-skill-runtime.mjs",
+          "disposition": "updated",
+          "reason": "Implement explicit exact-route model classification and request-local discovery/loading without changing runtime defaults."
+        },
+        {
+          "path": "integrations/model-skills/hermes/__init__.py",
+          "disposition": "updated",
+          "reason": "Implement explicit exact-route model classification and request-local discovery/loading without changing runtime defaults."
+        },
+        {
+          "path": "integrations/model-skills/hermes/plugin.yaml",
+          "disposition": "updated",
+          "reason": "Implement explicit exact-route model classification and request-local discovery/loading without changing runtime defaults."
+        },
+        {
+          "path": "integrations/model-skills/omp.js",
+          "disposition": "updated",
+          "reason": "Implement explicit exact-route model classification and request-local discovery/loading without changing runtime defaults."
+        },
+        {
+          "path": "profiles/current-observed-defaults.json",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "recovery.json",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/config.json",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/plugins/agent-sync-model-skills/__init__.py",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/plugins/agent-sync-model-skills/engine.py",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/plugins/agent-sync-model-skills/plugin.yaml",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "recovery/current/hosts/omp/extensions/agent-sync-model-skill-runtime.mjs",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "recovery/current/hosts/omp/extensions/agent-sync-model-skills.js",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "recovery/current/manifest.json",
+          "disposition": "updated",
+          "reason": "Bind and recover the exact native adapter package and its enablement; preserve unrelated settings and record unchanged model-default readback."
+        },
+        {
+          "path": "registry.json",
+          "disposition": "updated",
+          "reason": "Keep LeanREA blocked from universal shared discovery while naming the separate native model policy."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership and publication guidance still covers the added runtime feature; no standing instruction change is needed."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing ownership and publication guidance still covers the added runtime feature; no standing instruction change is needed."
+        },
+        {
+          "path": "tests/test_model_skills.mjs",
+          "disposition": "updated",
+          "reason": "Exercise model switches, provider formats, native control precedence, history filtering and committed native text readback."
+        },
+        {
+          "path": "tests/test_model_skills.py",
+          "disposition": "updated",
+          "reason": "Exercise model switches, provider formats, native control precedence, history filtering and committed native text readback."
+        },
+        {
+          "path": "tests/test_native_sync_completion.py",
+          "disposition": "updated",
+          "reason": "Exercise model switches, provider formats, native control precedence, history filtering and committed native text readback."
+        },
+        {
+          "path": "tests/test_native_text_readback.py",
+          "disposition": "updated",
+          "reason": "Exercise model switches, provider formats, native control precedence, history filtering and committed native text readback."
+        },
+        {
+          "path": "tools/model_skills.py",
+          "disposition": "updated",
+          "reason": "Implement explicit exact-route model classification and request-local discovery/loading without changing runtime defaults."
+        },
+        {
+          "path": "tools/worktree_sync.py",
+          "disposition": "updated",
+          "reason": "Implement explicit exact-route model classification and request-local discovery/loading without changing runtime defaults."
+        }
+      ]
+    }
+  ]
+}

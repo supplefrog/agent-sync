@@ -442,10 +442,12 @@
       "hermes-auto-titler",
       "hermes-memory-ui",
       "image_gen/openai-codex",
+      "jekyll-hyde",
       "prompt-optimizer",
       "quota",
       "routed-delegation",
-      "security-guidance"
+      "security-guidance",
+      "agent-sync-model-skills"
     ],
     "entries": {
       "foreground-context-router": {

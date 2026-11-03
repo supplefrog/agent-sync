@@ -103,7 +103,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:b348e01d45870a1b797f3ddc9ae9f0c7dc99d224f14070ec1a1d514977b320aa"
+      "version_or_hash": "sha256:bd7dd27b18f0e6e10d1c8019649b55c5f9c25fbb71abbbda20ad7ae42e971413"
     },
     {
       "category": "settings",
@@ -341,7 +341,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:b348e01d45870a1b797f3ddc9ae9f0c7dc99d224f14070ec1a1d514977b320aa"
+      "version_or_hash": "sha256:bd7dd27b18f0e6e10d1c8019649b55c5f9c25fbb71abbbda20ad7ae42e971413"
     },
     {
       "category": "plugin",
@@ -415,7 +415,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:b348e01d45870a1b797f3ddc9ae9f0c7dc99d224f14070ec1a1d514977b320aa"
+      "version_or_hash": "sha256:bd7dd27b18f0e6e10d1c8019649b55c5f9c25fbb71abbbda20ad7ae42e971413"
     },
     {
       "category": "mcp-tool",
@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:19189714762cb075f6b01ede5b9dc1cfefff9b6c865ef87aa9a2f7a0629c71ad"
+      "version_or_hash": "sha256:c20a935aaf3cb33149ae23bc7ce19eea10732dc53d24559ba746971e7ea64255"
     },
     {
       "category": "native-skill",
@@ -507,7 +507,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:19189714762cb075f6b01ede5b9dc1cfefff9b6c865ef87aa9a2f7a0629c71ad"
+      "version_or_hash": "sha256:c20a935aaf3cb33149ae23bc7ce19eea10732dc53d24559ba746971e7ea64255"
     },
     {
       "category": "native-skill",
@@ -530,7 +530,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:19189714762cb075f6b01ede5b9dc1cfefff9b6c865ef87aa9a2f7a0629c71ad"
+      "version_or_hash": "sha256:c20a935aaf3cb33149ae23bc7ce19eea10732dc53d24559ba746971e7ea64255"
     },
     {
       "category": "curator",
@@ -553,7 +553,7 @@
         "reference": "hermes:settings"
       },
       "source_identity": "recovery-artifact:hermes:settings",
-      "version_or_hash": "sha256:b348e01d45870a1b797f3ddc9ae9f0c7dc99d224f14070ec1a1d514977b320aa"
+      "version_or_hash": "sha256:bd7dd27b18f0e6e10d1c8019649b55c5f9c25fbb71abbbda20ad7ae42e971413"
     },
     {
       "category": "curator",
@@ -987,6 +987,126 @@
       },
       "source_identity": "recovery-artifact:omp:reduced-tool-descriptions",
       "version_or_hash": "sha256:0511367d29018d797d808f4c953358cbfba6b480a45ac762e6f01ae6983aedc7"
+    },
+    {
+      "category": "plugin",
+      "desired_state": "model-scoped discovery adapter file matches its reviewed native source",
+      "enablement": "managed",
+      "host": "hermes",
+      "id": "hermes-model-scoped-skills-plugin",
+      "owner": "integrations/model-skills",
+      "prerequisites": [
+        "Agent Sync managed source is present",
+        "Host supports the declared native adapter API"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:model-scoped-skills-plugin"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:model-scoped-skills-plugin"
+      },
+      "source_identity": "recovery-artifact:hermes:model-scoped-skills-plugin",
+      "version_or_hash": "sha256:8233887288a0e9d66f18590d6f549e1a78d33041d84b24674ab0b235de146c19"
+    },
+    {
+      "category": "plugin",
+      "desired_state": "model-scoped discovery adapter file matches its reviewed native source",
+      "enablement": "managed",
+      "host": "hermes",
+      "id": "hermes-model-scoped-skills-engine",
+      "owner": "integrations/model-skills",
+      "prerequisites": [
+        "Agent Sync managed source is present",
+        "Host supports the declared native adapter API"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:model-scoped-skills-engine"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:model-scoped-skills-engine"
+      },
+      "source_identity": "recovery-artifact:hermes:model-scoped-skills-engine",
+      "version_or_hash": "sha256:d087fe1746d395c87aac88427af8f922bc2d2170a59d6f5a51619f9d9967b605"
+    },
+    {
+      "category": "plugin",
+      "desired_state": "model-scoped discovery adapter file matches its reviewed native source",
+      "enablement": "managed",
+      "host": "hermes",
+      "id": "hermes-model-scoped-skills-manifest",
+      "owner": "integrations/model-skills",
+      "prerequisites": [
+        "Agent Sync managed source is present",
+        "Host supports the declared native adapter API"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:model-scoped-skills-manifest"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "hermes:model-scoped-skills-manifest"
+      },
+      "source_identity": "recovery-artifact:hermes:model-scoped-skills-manifest",
+      "version_or_hash": "sha256:44d1a5d22ebf3f6bee8a569f25192f71b1604c0308cbaae66d3f151035f507e1"
+    },
+    {
+      "category": "hook",
+      "desired_state": "model-scoped discovery adapter file matches its reviewed native source",
+      "enablement": "managed",
+      "host": "omp",
+      "id": "omp-model-scoped-skills-extension",
+      "owner": "integrations/model-skills",
+      "prerequisites": [
+        "Agent Sync managed source is present",
+        "Host supports the declared native adapter API"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "omp:model-scoped-skills-extension"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "omp:model-scoped-skills-extension"
+      },
+      "source_identity": "recovery-artifact:omp:model-scoped-skills-extension",
+      "version_or_hash": "sha256:bdf7b877ed80aaebdf6c90dce8c46e9bd394d55a435a4340616b4d99297a01b1"
+    },
+    {
+      "category": "hook",
+      "desired_state": "model-scoped discovery adapter file matches its reviewed native source",
+      "enablement": "managed",
+      "host": "omp",
+      "id": "omp-model-scoped-skills-runtime",
+      "owner": "integrations/model-skills",
+      "prerequisites": [
+        "Agent Sync managed source is present",
+        "Host supports the declared native adapter API"
+      ],
+      "readback": {
+        "kind": "recovery-artifact",
+        "reference": "omp:model-scoped-skills-runtime"
+      },
+      "redaction": "public-artifact",
+      "required": true,
+      "restore": {
+        "kind": "recovery-artifact",
+        "reference": "omp:model-scoped-skills-runtime"
+      },
+      "source_identity": "recovery-artifact:omp:model-scoped-skills-runtime",
+      "version_or_hash": "sha256:8c6134cc8a5debc495f621e2617ed0bf1fdbaea1a850141442b726fc725f795a"
     }
   ],
   "exclusions": [

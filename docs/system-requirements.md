@@ -143,6 +143,18 @@ is a user-selected scope restriction, not a claim of a general provider ban on
 software reverse engineering. Other skills and runtime defaults retain their
 existing scope.
 
+The user's 2026-11-03 extension requires model-aware discovery within the same
+agent: offer and load LeanREA automatically for a known open-weight request
+model, and withhold it for closed or unknown models. Model changes and
+concurrent sessions must not change a shared global folder or inherit another
+request's eligibility. Preserve native tool permissions, skill disable/include/
+ignore controls, source integrity and unrelated skills. Remove adapter-generated
+restricted metadata and bodies from an ineligible outbound request while
+preserving stored history. Unsupported native hooks retain exclusion rather
+than granting access by inference. Runtime defaults and provider choices remain
+unchanged. [The runtime contract](model-scoped-skills.md) records host mappings
+and the distinction between discovery filtering and complete context isolation.
+
 ## Recovered evaluation requirements, 2026-10-18
 
 R21 and R22 are retained because the current user explicitly requested actual model-instruction provenance and investigation of project-context/resumption value. They are bounded expected outcomes, not permission for new trials, tool/security changes, behavioral instruction layers, adoption or publication. The authoring pause remains in force. Earlier backlog proposals do not acquire requirement status through recovery; their sources and dispositions remain in the existing status/history record.

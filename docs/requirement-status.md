@@ -85,6 +85,16 @@ the source and exclusion checks; completed deployment requires reconciler and
 fresh native discovery evidence. This restriction does not change other skills
 or select a model/provider migration.
 
+2026-11-03 extension: [model-scoped discovery](model-scoped-skills.md) adds
+request-local eligibility without restoring LeanREA to universal discovery.
+Hermes and OMP have native adapters; Codex retains exclusion. Exact model
+metadata, native controls, closed/open/closed transitions, concurrent request
+isolation and outbound managed-material filtering are covered by the
+[qualification record](../evals/results/model-scoped-skills-20261103.json).
+Recovery-owner readback verifies saved native adapter text separately from
+native loading. Genuine model quality and remote provider identity are outside
+these functional checks; final installation and reload state remain separate.
+
 ## Audit-method and exposure acceptance, 2026-10-18
 
 R20 has been withdrawn as a standalone recovered obligation under user correction Sentinel_df0547752c7481918a5c49138f445447. Existing R14/R17 already cover efficient method choice and evidence reuse. The current explicit boundary against a mandatory Anthropic-branded comparison remains; it does not create another research project. Historical requests 222495/222538 are evidence for scrutiny, not authority to adopt or execute their old implementation. No method-comparison result is inferred from source reviews or program ablations.

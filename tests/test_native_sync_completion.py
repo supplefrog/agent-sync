@@ -2,6 +2,7 @@
 import importlib.util
 import json
 import copy
+import hashlib
 from pathlib import Path
 import sys
 import unittest
@@ -40,19 +41,31 @@ class NativeReadbackTests(unittest.TestCase):
     def fixture(self):
         name='recovery/current/hosts/hermes/config.json'
         journal={'published_repo':'managed-published-source','last_result':{'commit':'revision'},'receipt':{'options':{'recovery_roots':{'hermes':'configured-root'}}}}
-        artifact={'snapshot':'hosts/hermes/config.json','source':'config.yaml','kind':'config','format':'yaml'}
+        artifact={'id':'settings','snapshot':'hosts/hermes/config.json','source':'config.yaml','kind':'config','format':'yaml'}
         recovery=SimpleNamespace(_load_policy=Mock(return_value={}),verify_snapshot=Mock(return_value={}),
             _policy_artifacts=Mock(return_value=[('hermes',artifact)]),
             _selected_roots=Mock(return_value=(('hermes',),{'hermes':Path('configured-root')})),
             _safe_join=Mock(return_value=Path('configured-root/config.yaml')),
             _file_identity=Mock(return_value='same'),_target_home=Mock(return_value=Path('configured-home')),_expand=lambda v,*a,**k:v,
-            _read_config=Mock(return_value={'mode':'new','personal':True}))
+            _read_config=Mock(return_value={'mode':'new','personal':True}),
+            _default_roots=Mock(return_value={'hermes':Path('configured-root')}))
         def git(*args):
             return json.dumps({'mode':'old' if '^:' in args[-1] else 'new'})
         return name,journal,recovery,git
 
     def read(self,journal,recovery,git,names):
-        with patch.object(m,'_names',return_value=names),patch.object(m.sync_git,'git',side_effect=git):
+        # These pure comparison fixtures supply valid frozen source obligations;
+        # real Git/snapshot provenance is covered by the native recovery suites.
+        artifact=recovery._policy_artifacts.return_value[0][1]
+        commit=journal['last_result']['commit']
+        raw=lambda revision,name: git('show',revision+':'+name).encode()
+        rows=[{'artifact':name,'publication_commit':commit,
+               'before_sha256':hashlib.sha256(raw(commit+'^',name)).hexdigest(),
+               'after_sha256':hashlib.sha256(raw(commit,name)).hexdigest(),
+               'target_spec':m._native_target_spec('hermes',artifact)} for name in names]
+        with patch.object(m,'_names',return_value=names),patch.object(m.sync_git,'git',side_effect=git), \
+             patch.object(m,'_native_source_obligations',return_value=rows), \
+             patch.object(m,'_committed_bytes',side_effect=lambda lane,revision,name:raw(revision,name)):
             return m._native_destination_completion(Path('source'),journal,recovery_module=recovery)
 
     def test_saved_verified_does_not_claim_loaded(self):

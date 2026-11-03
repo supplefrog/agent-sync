@@ -1,0 +1,5 @@
+name: agent-sync-model-skills
+version: "0.1.0"
+description: "Discover and read model-scoped skills using the active request model."
+author: local
+kind: standalone

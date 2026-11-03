@@ -2,6 +2,12 @@
 
 Independent changes develop in separate Git worktrees based on the published commit. Only committed ready changes enter publication; development branches, indexes, and unfinished files remain untouched. Worktrees use the existing repository, remote, permissions, and reconciler rather than a separate scheduling service.
 
+Selected native text artifacts use the existing recovery owner's read-only,
+exact-artifact comparison for saved-file verification. Missing files, content
+drift, changed targets or invalid source bindings keep completion pending; this
+check performs no restore. Native loading remains a separate check and may
+require the user's reload or restart.
+
 Create a development worktree from the discovered published source with Git's normal `worktree add -b` command, outside live skill discovery. Commit only the authorized, checked change. In that development worktree:
 
 ```text

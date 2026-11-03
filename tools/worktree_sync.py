@@ -799,8 +799,46 @@ def _native_destination_completion(lane, journal, *, recovery_module=None):
             host, artifact = artifacts[name]
             if any(row['target_spec'] != _native_target_spec(host, artifact) for row in rows):
                 raise sync_git.SyncBlocked('native target changed; inherited target requires explicit owner reconciliation')
+            if artifact['kind'] == 'text':
+                desired_raw = _committed_bytes(lane, commit, name)
+                desired_hash = hashlib.sha256(desired_raw).hexdigest()
+                frozen_policy = json.loads(_committed_bytes(lane, commit, 'recovery.json'))
+                frozen_artifact = next((a for h, a in recovery._policy_artifacts(frozen_policy)
+                                        if h == host and a['id'] == artifact['id']), None)
+                source_path = lane / name
+                source_guard = recovery._file_identity(source_path)
+
+                def check_text_source():
+                    current_policy = recovery._load_policy(lane / 'recovery.json')
+                    current_artifact = next((a for h, a in recovery._policy_artifacts(current_policy)
+                                            if h == host and a['id'] == artifact['id']), None)
+                    if (current_artifact != frozen_artifact or source_path.read_bytes() != desired_raw
+                            or recovery._file_identity(source_path) != source_guard):
+                        raise sync_git.SyncBlocked('native text readback source differs from its committed source')
+
+                check_text_source()
+                for row in rows:
+                    old_raw = _committed_bytes(lane, row['publication_commit'] + '^', name) if row['before_sha256'] != 'absent' else None
+                    prior_raw = _committed_bytes(lane, row['publication_commit'], name)
+                    if ((hashlib.sha256(old_raw).hexdigest() if old_raw is not None else 'absent') != row['before_sha256']
+                            or hashlib.sha256(prior_raw).hexdigest() != row['after_sha256']):
+                        raise sync_git.SyncBlocked('native obligation raw source binding changed')
+                    if desired_hash != row['after_sha256'] and not (name in changed and name in selected_paths):
+                        raise sync_git.SyncBlocked('native desired-value supersession is not selected in the qualified successor')
+                # The existing recovery owner checks exact selected text, path
+                # safety and snapshot integrity. Never restore during readback.
+                check = recovery.restore(lane / 'recovery.json', lane / 'recovery/current', roots,
+                    apply=False, repo_root=Path(journal['published_repo']), hosts=[host],
+                    artifacts=[host + ':' + artifact['id']])
+                check_text_source()
+                state['verified'] = not check['changes'] and not check['conflicts']
+                if state['verified']:
+                    state['resumption_event'] = 'Saved text verified by the recovery owner; native loading remains a separate check.'
+                else:
+                    state['reason'] = 'Selected native text is missing or changed; no restore was attempted.'
+                continue
             if artifact['kind'] != 'config':
-                raise sync_git.SyncBlocked('Selected native text requires its existing recovery owner readback; skill catalogue is insufficient.')
+                raise sync_git.SyncBlocked('Unsupported native artifact kind.')
             _, resolved = recovery._selected_roots(roots, [host])
             target = recovery._safe_join(resolved[host], artifact['source'], must_exist=True)
             identity = recovery._file_identity(target)

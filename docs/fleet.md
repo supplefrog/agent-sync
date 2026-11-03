@@ -75,4 +75,7 @@ in `skills/leanrea`. Use it only in an explicitly selected open-weight execution
 context, with model identity checked before supplying the skill. An agent name,
 interface or API endpoint alone does not establish that a model has open weights.
 Do not restore it to a root also discovered by closed-weight or unidentified
-models. No dedicated open-weight deployment is currently configured.
+models. [Model-scoped adapters](model-scoped-skills.md) provide automatic,
+request-local eligibility in supported Hermes and OMP sessions. This preserves
+the shared-directory exclusion while allowing different models within one
+agent. Codex remains excluded until a supported live filtering hook is available.

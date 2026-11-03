@@ -278,7 +278,7 @@
       "status": "blocked",
       "selection_state": "unresolved",
       "selection_evidence": [],
-      "selection_reason": "User reserved LeanREA for verified open-weight models on 2026-11-01. Shared discovery has no per-model filter, so block shared deployment while preserving the complete source and its historical replacement evidence. Use requires an explicitly selected, verified open-weight execution context isolated from closed-weight discovery; no automatic model switch or new deployment is selected.",
+      "selection_reason": "User reserved LeanREA for open-weight models on 2026-11-01 and requested automatic model-scoped discovery on 2026-11-03. Universal shared deployment remains blocked while the complete source and historical replacement evidence are preserved. Supported native request adapters apply contracts/skill-model-policy.json using exact provider/model metadata; unknown or unsupported contexts remain excluded. No model/provider migration or change to the skill body is selected.",
       "purpose": {
         "objective": "Explain shipped application behavior using source-bound artifact and optional runtime evidence.",
         "added_value": "Pinned upstream CLI routing and format traps, plus the user-specific deferred cloud-engine policy and Windows commands. Added model-quality value remains unmeasured.",
