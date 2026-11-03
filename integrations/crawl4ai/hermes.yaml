@@ -1,0 +1,10 @@
+mcp_servers:
+  crawl4ai:
+    url: https://api.crawl4ai.com/mcp
+    headers:
+      Authorization: Bearer ${CRAWL4AI_KEY}
+    enabled: true
+    timeout: 120
+    connect_timeout: 30
+    tools:
+      include: [scrape, search, serp, answer, extract, batch, balance, estimate, jobs_submit, jobs_status, jobs_results]

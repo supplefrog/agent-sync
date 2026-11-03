@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-04",
+  "scope": "Crawl4AI Cloud connection fragments for Codex, Hermes and OMP",
+  "change_reconciliation": [{
+    "requirement_change": false,
+    "requirement_reason": "The requested provider connection implements the existing native MCP interface; it changes no shared behavioral requirement, skill, model preference or approval policy.",
+    "authority": "User requested Crawl4AI setup and synchronization across the fleet; the credential was provisioned locally.",
+    "checks": "All fragments parse and exactly match the selected live server entries. Authenticated MCP initialization and one cached scrape passed. Hermes native connection and tool discovery passed. Fresh client discovery is separately reported in the deployment record.",
+    "outcome_review": {
+      "expected": "Each local host can connect to the hosted scraper using a locally provisioned key without embedding it in shared configuration.",
+      "observed": "All three native entries match their source fragments. The authenticated server accepted the key and a scrape returned content for 0.25 credits. Hermes discovered the provider catalog.",
+      "evidence": "Parser and selected-entry equality checks; authenticated MCP initialize, tools/list and scrape; Hermes mcp test crawl4ai.",
+      "limitations": "Existing sessions require reload to inherit the new environment. OMP lacks the per-server allowlist used by Codex and Hermes. Publication and fresh discovery remain separate from static configuration checks; no quality comparison is claimed."
+    },
+    "artifacts": {
+      "integrations/crawl4ai/codex.toml": {"before_sha256": "absent", "after_sha256": "db3d43435598bf4333b1ea881fef5290f9a6e57bf46007faed9fae8f37bf463c"},
+      "integrations/crawl4ai/hermes.yaml": {"before_sha256": "absent", "after_sha256": "0db571eeeb1608d273ada70a0a188411ad8980d5672e70cbb68a62e4c86b78b4"},
+      "integrations/crawl4ai/omp.json": {"before_sha256": "absent", "after_sha256": "c70fcd2ed0ad0bfcf209d4f418343c9770b5405d167c8be5ab9bb507aae088d3"},
+      "docs/system-requirements.md": {"before_sha256": "4a33458c846220f38140b6295b01fdb84aa5e78d656a62150f025bd9e9b3a5e4", "after_sha256": "4a33458c846220f38140b6295b01fdb84aa5e78d656a62150f025bd9e9b3a5e4"},
+      "docs/requirement-status.md": {"before_sha256": "748a86035e9554dea4be56d8a63dd2e1b54377dc08b019216dc714a2f643c002", "after_sha256": "748a86035e9554dea4be56d8a63dd2e1b54377dc08b019216dc714a2f643c002"}
+    },
+    "obligations": [
+      {"path": "docs/system-requirements.md", "disposition": "unchanged", "reason": "Provider-specific native MCP configuration stays within the existing tool ownership and credential boundaries."},
+      {"path": "docs/requirement-status.md", "disposition": "unchanged", "reason": "This scoped connection does not establish whole-fleet behavior parity or change the aggregate requirement status."}
+    ]
+  }]
+}

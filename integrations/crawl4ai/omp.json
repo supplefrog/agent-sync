@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "crawl4ai": {
+      "type": "http",
+      "url": "https://api.crawl4ai.com/mcp",
+      "headers": {"Authorization": "Bearer ${CRAWL4AI_KEY}"},
+      "timeout": 120000
+    }
+  }
+}
