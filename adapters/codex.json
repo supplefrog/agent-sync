@@ -21,7 +21,7 @@
         {
           "label": "OUTPUT",
           "shared": "communication",
-          "suffix": "Changed artifacts: `Changed:` links; for many, one diff/index."
+          "suffix": "Prefer rich visual outputs in chat whenever they help, including while teaching or studying. Proactively use Visualize for suitable interactive explanations, simulations, small games and tools without requiring the user to invoke it. Keep these experiences in the conversation unless the user requests a standalone or hosted deliverable. Changed artifacts: `Changed:` links; for many, one diff/index."
         },
         {
           "label": "INSTRUCTION-AUTHORING",

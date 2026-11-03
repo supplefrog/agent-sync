@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082"
+      "version_or_hash": "sha256:6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d"
     },
     {
       "category": "instructions",
@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:d33a4984b55b07bb94920ca892e1b1d8442931446cbc486d874dd25387c526e7"
+      "version_or_hash": "sha256:0480f814c92caf8bcde26e8bd6938bbca2e45d3a3e7d993927c6f9937692d1e7"
     },
     {
       "category": "native-skill",
@@ -507,7 +507,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:d33a4984b55b07bb94920ca892e1b1d8442931446cbc486d874dd25387c526e7"
+      "version_or_hash": "sha256:0480f814c92caf8bcde26e8bd6938bbca2e45d3a3e7d993927c6f9937692d1e7"
     },
     {
       "category": "native-skill",
@@ -530,7 +530,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:d33a4984b55b07bb94920ca892e1b1d8442931446cbc486d874dd25387c526e7"
+      "version_or_hash": "sha256:0480f814c92caf8bcde26e8bd6938bbca2e45d3a3e7d993927c6f9937692d1e7"
     },
     {
       "category": "curator",

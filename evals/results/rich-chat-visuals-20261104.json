@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-04",
+  "baseline_commit": "533d0e267f0c0e4b8e9a8add51bdfcb4ebe99971",
+  "status": "source-checked-publication-pending",
+  "scope": "Direct explicit preference acceptance plus Codex rich visual output preference; no comparative behavioral benefit claimed.",
+  "instruction_changes": [
+    {
+      "owner": "adapters/codex.json",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "User requests rich visuals proactively in Codex chat; existing standing output preference does not carry this choice. Reported teaching output was text and a small playable-game request became a hosted Site.",
+      "evidence": "Explicit user preference in the current conversation; inspected Visualize and Sites routing instructions. The earlier responses themselves were not inspected.",
+      "why_instruction": "Store the user preference at the existing Codex host adapter and render its managed global overlay. This is a preference implementation, with no claim of native Intelligent UI equivalence or measured quality improvement.",
+      "alternative": "The current message applies in this conversation only. Editing plugin caches is transient. Shared core changes would affect other hosts unnecessarily.",
+      "artifacts": {
+        "adapters/codex.json": {
+          "before_sha256": "f785534b1e51e3048816580c99088ea1ed2dbe5d83c840bef6863cd2eb33df09",
+          "after_sha256": "2828124a085ef2efab94460d229571b22388348c87710da06d945582fa4a4af8"
+        }
+      },
+      "change_kind": "user-preference",
+      "user_preference": {
+        "request": "Use rich visual chat outputs whenever helpful and invoke Visualize as needed.",
+        "scope": "Codex conversational output, including teaching and studying.",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    },
+    {
+      "owner": "skills/instruction-authoring",
+      "basis": "user-correction",
+      "change_kind": "contract-correction",
+      "baseline_sufficient": false,
+      "deviation": "Explicit user preferences were sent to the comparative behavioral-adoption gate.",
+      "evidence": "Canonical ready preflight rejected the explicitly selected Codex output preference for missing behavioral measurements. User explicitly requested correction of this policy.",
+      "why_instruction": "Correct the existing evaluation and publication policy, with the corresponding runtime classifier, to accept direct preferences after normal source and deployment checks.",
+      "alternative": "Editing live generated instructions would bypass ownership. Running comparative inference to accept a user choice adds no authority or preference evidence. Autonomous improvement claims retain their existing gate.",
+      "artifacts": {
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "7d2055a5b3f252690438447b54337f73529f0ea3dd65f1771b2763f343ab75e8",
+          "after_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807"
+        }
+      }
+    }
+  ],
+  "checks": {
+    "renderer": "render and check passed",
+    "scope": "Only the Codex adapter and generated Codex overlay are intentionally changed.",
+    "behavior": "No behavioral comparison performed; no native Intelligent UI or speed/polish parity claim."
+  },
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "adapters/codex.json": {
+          "before_sha256": "f785534b1e51e3048816580c99088ea1ed2dbe5d83c840bef6863cd2eb33df09",
+          "after_sha256": "2828124a085ef2efab94460d229571b22388348c87710da06d945582fa4a4af8"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454",
+          "after_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "748a86035e9554dea4be56d8a63dd2e1b54377dc08b019216dc714a2f643c002",
+          "after_sha256": "d8fff2519e2a19f22b7c6568092a879a192037126885d7efbff703ba34164916"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "4a33458c846220f38140b6295b01fdb84aa5e78d656a62150f025bd9e9b3a5e4",
+          "after_sha256": "11ee34ef0d97aeb782965fb79cb6b78b2ba66f0d3c99905dc3c383b7710bd75d"
+        },
+        "host-deltas.json": {
+          "before_sha256": "e3abf5aa230fb692eafdd0df09c5877d6011d6385ca69d37b80bada256b0d809",
+          "after_sha256": "91280c1850b88dbcb9339af596d0f336489bc7977e3ef88df792fffd5bb55b2f"
+        },
+        "profiles/current-observed-defaults.json": {
+          "before_sha256": "8aa033998f03021a8ae99eb86c3dcaa827d66cf660973b1c124393d83138be44",
+          "after_sha256": "6927f5f773951b75fcf1b144589ae4867cfcfbcfc5fda9fd37102f82e56ca67f"
+        },
+        "recovery.json": {
+          "before_sha256": "1169847e93caf3f898d5db8979eaf85b78ee7c9b021a9c5fbbd43e410fb69df3",
+          "after_sha256": "b4adf217c11469817a9de23e1da68b65e0ff124f51c7c17d37ee6456c79c8d1b"
+        },
+        "recovery/current/hosts/codex/AGENTS.md": {
+          "before_sha256": "3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082",
+          "after_sha256": "6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d"
+        },
+        "recovery/current/manifest.json": {
+          "before_sha256": "e3fa07e76315e1a0912972fc814d33e1af3b60537e73ca85c92e9a8ba4ba2f2a",
+          "after_sha256": "f41955bc803fe82e2d34ca623ef0ca1a81ffa0ebf17ba7e5776b09b468e1a693"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "7d2055a5b3f252690438447b54337f73529f0ea3dd65f1771b2763f343ab75e8",
+          "after_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807"
+        },
+        "tests/test_user_preferences.py": {
+          "before_sha256": "absent",
+          "after_sha256": "e9592e3ebf4536673ad71a2985450eac01914e33a74b8e659db0a8f87058942d"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "32400402672800d3324905302ac7f6a41cb43d82c8f7dcd8626fc34cd281dca0",
+          "after_sha256": "fcaec86fcb0f4b7db7f5ce1511525345ed9f72702b5caf56d5142c5af0dd7932"
+        }
+      },
+      "obligations": [
+        {
+          "path": "adapters/codex.json",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "profiles/current-observed-defaults.json",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "recovery.json",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "recovery/current/hosts/codex/AGENTS.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "recovery/current/manifest.json",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "tests/test_user_preferences.py",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        },
+        {
+          "path": "tools/instruction_changes.py",
+          "disposition": "updated",
+          "reason": "Implement the explicit preference/policy correction at existing owners; preserve unrelated capability, runtime, safety and measured-improvement contracts."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "User explicitly selects direct preference acceptance under R02/R08; requirements and status record that distinction.",
+      "authority": "Current user request explicitly authorizes correcting preference policy and deploying rich visuals for future chats.",
+      "checks": "New preference-route checks pass; original canonical rejection reproduced. Renderer and full qualification/deployment checked separately.",
+      "framework_review": {
+        "affected": [
+          "contracts/surface-matrix.json",
+          "docs/evaluations/outcome-efficiency.md",
+          "docs/learning-and-taste-update.md",
+          "docs/requirement-status.md",
+          "docs/system-requirements.md",
+          "skills/instruction-authoring/SKILL.md",
+          "skills/instruction-authoring/references/change-review.md"
+        ],
+        "selection_reason": "Existing instruction authoring, standing-owner classifier, generated Codex overlay, and source/publication dependency contract.",
+        "unaffected_reason": "Existing skill-specific requested-edit, lifecycle admission, native permissions and measured-benefit routes retain their owners and gates.",
+        "checks": "Positive explicit preference and negative inferred authority, stale/wrong owner, adapter runtime/target/type/duplicate JSON, core-outside-standing and borrowed behavior-claim controls."
+      },
+      "outcome_review": {
+        "expected": "Explicit preferences are accepted without comparative model evaluation and the visual preference reaches future Codex chats.",
+        "observed": "Source classifier tests pass. Candidate overlay contains the selected preference; native installation remains pending until canonical sync succeeds.",
+        "evidence": "evals/results/rich-chat-visuals-20261104.json",
+        "limitations": "Source checks do not authenticate human authority, preference semantics, natural tool selection, visual quality or parity with ChatGPT Intelligent UI."
+      }
+    }
+  ]
+}

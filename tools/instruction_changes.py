@@ -898,6 +898,54 @@ def completed_retirement_publication(candidate, source, base, paths, proof, *, r
             'completion_sha256': _COMPLETED_RETIREMENT_SHA256, 'publication_authorized': False}
 
 
+def _approved_user_preference(candidate, source, name, owner, row, base):
+    """Check declared preference scope; human authority and meaning need owner review."""
+    preference = row.get('user_preference')
+    if (row.get('basis') != 'user-correction' or owner != name
+            or name not in {'surfaces/core.md', *ADAPTERS}
+            or not isinstance(preference, dict)
+            or set(preference) != {'request', 'scope', 'authority', 'protected_guarantees_unchanged'}
+            or preference.get('authority') != 'explicit-user-request'
+            or preference.get('protected_guarantees_unchanged') is not True
+            or any(not isinstance(preference.get(key), str) or not preference[key].strip()
+                   for key in ('request', 'scope'))):
+        raise sync_git.SyncBlocked('user preference requires explicit scope and retained guarantees at its existing owner')
+    old = _before(source, base, name)
+    path = candidate / name
+    if old is None or not path.is_file() or path.is_symlink():
+        raise sync_git.SyncBlocked('user preference requires an existing regular instruction source')
+    new = path.read_bytes()
+    if name == 'surfaces/core.md':
+        def outside(data):
+            start, end = b'<!-- agent-sync-standing -->', b'<!-- /agent-sync-standing -->'
+            if data.count(start) != 1 or data.count(end) != 1 or data.index(start) >= data.index(end):
+                raise sync_git.SyncBlocked('user preference requires one standing section')
+            prefix, body = data.split(start)
+            _, suffix = body.split(end)
+            return prefix, suffix
+        if outside(old) != outside(new):
+            raise sync_git.SyncBlocked('user preference cannot change core outside standing instructions')
+    else:
+        try:
+            def unique(pairs):
+                result = {}
+                for key, value in pairs:
+                    if key in result:
+                        raise ValueError('duplicate preference adapter key')
+                    result[key] = value
+                return result
+            before, after = json.loads(old, object_pairs_hook=unique), json.loads(new, object_pairs_hook=unique)
+            for value in (before, after):
+                projection = value['instructions'].pop('projection')
+                if not isinstance(projection, dict):
+                    raise ValueError('invalid projection')
+            if json.dumps(before, sort_keys=True, allow_nan=False) != json.dumps(after, sort_keys=True, allow_nan=False):
+                raise ValueError('non-instruction adapter change')
+        except (ValueError, KeyError, TypeError, AttributeError) as exc:
+            raise sync_git.SyncBlocked('user preference may change only the adapter instruction projection') from exc
+    return 'explicit user preference with checked source scope'
+
+
 def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations, retirement=None, retirement_publication=None):
     """Narrow reviewed correction routes after necessity/dependency validation.
 
@@ -924,6 +972,8 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
     elif (kind == 'add-or-change' and name == owner == 'surfaces/core.md'
             and row.get('basis') == 'user-correction' and _preference_data_only(old, new, row)):
         reason = 'explicit user model-selector data; standing instructions unchanged'
+    elif kind == 'user-preference':
+        reason = _approved_user_preference(candidate, source, name, owner, row, base)
     elif kind == 'requested-native-learning':
         reason = _approved_native_learning_source(candidate, source, name, owner, row, base, paths, reconciliations)
     elif kind == 'requested-import':
@@ -1365,7 +1415,7 @@ def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, r
         if binding != {'before_sha256': old_hash, 'after_sha256': new_hash}:
             raise sync_git.SyncBlocked('instruction necessity record is not bound to changed bytes: ' + name)
         kind = row.get('change_kind', 'add-or-change')
-        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-import', 'requested-edit', 'requested-reader', 'requested-native-learning', 'public-audience-correction'}:
+        if kind not in {'add-or-change', 'remove', 'contract-correction', 'reference-transport', 'requested-import', 'requested-edit', 'requested-reader', 'requested-native-learning', 'public-audience-correction', 'user-preference'}:
             raise sync_git.SyncBlocked('invalid instruction change kind: ' + name)
         if kind == 'remove':
             old_data = _before(source, base, name)

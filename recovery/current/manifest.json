@@ -33,7 +33,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 4301,
+      "bytes": 4639,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
@@ -45,9 +45,10 @@
         "399ead0326f0d1f456652097843ab9a8813e824380b49704d3623974b679822e",
         "6c4bfd40daf8efc6bbc95e67fc182d4870f938b8e203f4e2fd2907a8003a95b9",
         "b6450b48baae1f54ec301965f8aa762ed4a539c4a792cf2370aab75f720a9b64",
-        "7133808408d1a214b6495c2bb0ecfca2dbaddb6ee40ab7d66d4e40375da1e8da"
+        "7133808408d1a214b6495c2bb0ecfca2dbaddb6ee40ab7d66d4e40375da1e8da",
+        "3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082"
       ],
-      "sha256": "3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082",
+      "sha256": "6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -13626,7 +13627,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "4bdb779cea927d4f28b8f705b0d93144a922c120f7bd87160dca4b182e1214ee",
+  "policy_sha256": "4ba2e812595b891e3dac2db548c1df071f816395af12fdd98c864f7eb5907896",
   "public_safe": true,
   "schema_version": 1
 }

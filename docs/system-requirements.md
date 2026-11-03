@@ -173,3 +173,7 @@ The same completed optional-owner retirement may propagate its canonical source 
 ## Measured-behavior trial validity
 
 Evaluation must verify that the intended measured behavior actually occurred under the frozen task and supported runner. Availability, loading or a successful process exit alone does not establish exercise. A technical or behavioral defect that invalidates the measurement stops the affected trial and dependent interpretation until repair and requalification under existing authority; preserve raw results and all costs. A valid exercised trial may still yield a negative product outcome. Missing evidence stays unassessed or invalid. Requalification grants no retry, spending, publication or deployment authority.
+
+## Direct user preference acceptance
+
+Explicit user preferences at existing standing owners may be saved directly through source-bound user-preference acceptance without comparative model measurements. Retain ownership, scope, protected guarantees, dependency, rendering, recovery and installed-readback checks. Agent-inferred preferences, new capabilities, runtime/permission changes and claimed behavioral improvements retain their existing gates.

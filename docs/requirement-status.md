@@ -192,3 +192,7 @@ The same completed optional-owner retirement may propagate its canonical source 
 ## Default measured-behavior validity
 
 The evaluator source binds trial intent, observed exercise, frozen-plan projection and completed-review interpretation through the existing consumer. Offline source and consumer checks are recorded separately from live runner qualification and comparative quality. The frozen plan is forwarded through both completed-review calls; missing, stale, mismatched or invalid measurement evidence must not become success. Valid negative product results remain valid. Historical outputs and accounting are retained. No new provider trial, whole-system benefit or current native runtime compatibility is established by this source update.
+
+## Direct user preference acceptance
+
+R02/R08: explicit user preferences have direct source acceptance at existing standing owners. The user-preference consumer checks source scope and bindings without model measurements; declared authority and retained guarantees still require owner review. Agent-proposed improvement claims remain measured. Deployment and source acceptance remain distinct.
