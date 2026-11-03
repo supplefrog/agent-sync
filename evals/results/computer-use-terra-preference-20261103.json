@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "baseline_commit": "b9fb6a538c6fb3b0b13f2e0a8e20c5cc1aa1a73e",
+  "status": "source-checked-publication-pending",
+  "scope": "User-selected computer-use model preference at the existing shared owner; no general runtime-default or standing-prose change.",
+  "preference": {
+    "role": "computer_use",
+    "model": "gpt-6.1-terra",
+    "reasoning": "medium",
+    "reasoning_basis": "Preserve the existing bounded-worker medium effort; the user selected the model only."
+  },
+  "preservation": {
+    "other_roles_identical": true,
+    "native_default_mapping_identical": true,
+    "standing_and_reference_prose_identical": true,
+    "existing_session_and_workflow_pins_unchanged": true
+  },
+  "checks": {
+    "targeted_tests": "44 runtime-default and preference-data tests passed.",
+    "red": "New role rejected by both production parsers/classification before the change; selector-instruction negative control retained.",
+    "baseline_fixture": "An existing profile test expected unknown OMP observation time although the unchanged baseline already contains a known timestamp. Confirmed failure on unchanged baseline; now assert the entire unselected OMP host row is preserved.",
+    "native_readiness": "Native catalog lists gpt-6.1-terra with text/image inputs and medium effort. A requested Terra/medium native worker reported successful sky.list_apps; no UI input or settings change.",
+    "native_actual_identity": "Requested model/effort accepted by native delegation. Independent actual-model telemetry was not exposed; no stronger identity or quality claim.",
+    "independent_review": "Fresh read-only review accepted stored-preference scope; targeted tests, exact dependency bindings and production instruction-change check passed. Automatic per-tool switching and actual runtime identity remain outside the claim."
+  },
+  "limits": [
+    "This stores an explicit role preference, not automatic per-tool model switching in an already-running chat.",
+    "No Hermes/OMP Terra execution or computer-use quality comparison is claimed.",
+    "The original separate memory-removal and tool-selection replay remains pending; this preference is not a replacement fix."
+  ],
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "preference_roles": [
+        "computer_use"
+      ],
+      "deviation": "The user explicitly selected GPT-6.1 Terra for computer use; the existing owner has no separate role for it.",
+      "evidence": "Direct user model selection in this task. Native catalog supports the exact model and retained medium effort.",
+      "why_instruction": "Record selector data once in the existing preference owner. No new standing prose, tool-choice rule or behavioral-benefit claim.",
+      "alternative": "Changing the general worker/default model would affect unrelated work. A separate memory or cached plugin instruction would duplicate the owner.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "994ce832c51ef670cf0a65b760719e2d2ca8214e82e44cf0f2fe976e35b75051",
+          "after_sha256": "2b306ff51a7a8845b7b7bb26db43f51ef0fa77d54b772ab54bcd8d4accd3d6eb"
+        }
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823",
+          "after_sha256": "80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "b41d9eb5159582c2747840b37a16e208437ce846e360d0769ca11c7834bd7ccb",
+          "after_sha256": "a0e8233a64f8ff20820787f50d8b4601e07a9ebee7fb936a35e40c534e1d2b90"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "dd011b4cd07773f5e03606fdd210b93b7001ed55c33453c6fb5c5a39ed5d4139",
+          "after_sha256": "dd011b4cd07773f5e03606fdd210b93b7001ed55c33453c6fb5c5a39ed5d4139"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "994ce832c51ef670cf0a65b760719e2d2ca8214e82e44cf0f2fe976e35b75051",
+          "after_sha256": "2b306ff51a7a8845b7b7bb26db43f51ef0fa77d54b772ab54bcd8d4accd3d6eb"
+        },
+        "tests/test_computer_use_preference.py": {
+          "before_sha256": "absent",
+          "after_sha256": "0186a1b10637a141faae21c1c7770d6eab6d418c2df46b7f68f99a05decdc4ca"
+        },
+        "tests/test_runtime_defaults.py": {
+          "before_sha256": "700dad9370193699081e7fa435c19067a904c84ea369d7ec2fd8bd172bcaed64",
+          "after_sha256": "baeb43357e83af503b577d4c58bf6a4039c555768d2bd9f1081240108d84e4d7"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "58d6006c982519dfae0d61411b148efe6eaa1ec967110d865b1a59fdf5b4783d",
+          "after_sha256": "4349598d93904b92a70f0487758236e283eb6fda759f39899b7ee9f5e3ee440e"
+        },
+        "tools/runtime_defaults.py": {
+          "before_sha256": "9ba11c5b2724f7a3032e6e9fb911c59cc81136b62d45673f46dd479a51ae73b9",
+          "after_sha256": "7de2a2ab062a43539c4b3928ebd736afbd2278a885ebce23b401c443f41b4656"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing owner/loading, defaults, authorization and source/readback contracts remain valid. This adds only the explicitly selected computer-use role, preserving the generic native mappings, prose and pins."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner/loading, defaults, authorization and source/readback contracts remain valid. This adds only the explicitly selected computer-use role, preserving the generic native mappings, prose and pins."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner/loading, defaults, authorization and source/readback contracts remain valid. This adds only the explicitly selected computer-use role, preserving the generic native mappings, prose and pins."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Record the selected role or support its existing preference-data parsing/classification; verify exact declared changes and preservation of unrelated defaults."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner/loading, defaults, authorization and source/readback contracts remain valid. This adds only the explicitly selected computer-use role, preserving the generic native mappings, prose and pins."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner/loading, defaults, authorization and source/readback contracts remain valid. This adds only the explicitly selected computer-use role, preserving the generic native mappings, prose and pins."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner/loading, defaults, authorization and source/readback contracts remain valid. This adds only the explicitly selected computer-use role, preserving the generic native mappings, prose and pins."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Record the selected role or support its existing preference-data parsing/classification; verify exact declared changes and preservation of unrelated defaults."
+        },
+        {
+          "path": "tests/test_computer_use_preference.py",
+          "disposition": "updated",
+          "reason": "Record the selected role or support its existing preference-data parsing/classification; verify exact declared changes and preservation of unrelated defaults."
+        },
+        {
+          "path": "tests/test_runtime_defaults.py",
+          "disposition": "updated",
+          "reason": "Record the selected role or support its existing preference-data parsing/classification; verify exact declared changes and preservation of unrelated defaults."
+        },
+        {
+          "path": "tools/instruction_changes.py",
+          "disposition": "updated",
+          "reason": "Record the selected role or support its existing preference-data parsing/classification; verify exact declared changes and preservation of unrelated defaults."
+        },
+        {
+          "path": "tools/runtime_defaults.py",
+          "disposition": "updated",
+          "reason": "Record the selected role or support its existing preference-data parsing/classification; verify exact declared changes and preservation of unrelated defaults."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Applies existing R08 explicit preference propagation and R02 selector-data classification. Required roles, generic default mappings, standing prose, unknown-role rejection and behavioral-adoption gates remain intact.",
+      "authority": "User explicitly requested GPT-6.1 Terra for computer use in this task.",
+      "checks": "44 targeted tests; known-bad unsupported-role reproduction; unknown/undeclared/instruction-shaped selector controls; native catalog and one read-only requested-Terra worker probe; canonical source qualification and readback remain separate.",
+      "framework_review": {
+        "affected": [
+          "contracts/surface-matrix.json",
+          "docs/evaluations/outcome-efficiency.md",
+          "docs/learning-and-taste-update.md",
+          "docs/requirement-status.md",
+          "docs/system-requirements.md",
+          "skills/instruction-authoring/SKILL.md",
+          "skills/instruction-authoring/references/change-review.md",
+          "surfaces/core.md",
+          "tests/test_computer_use_preference.py",
+          "tests/test_runtime_defaults.py",
+          "tools/instruction_changes.py",
+          "tools/runtime_defaults.py"
+        ],
+        "selection_reason": "The closed supported-role set needs computer_use in its existing parser and selector-data classifier.",
+        "unaffected_reason": "No new generic routing mechanism, runtime-default mapping, skill trigger, permission or model-quality claim.",
+        "checks": "Only the declared supported addition qualifies. Existing unknown-role, prose-change, extra-field, stale-binding and unrelated-role controls remain enforced."
+      },
+      "outcome_review": {
+        "expected": "The single shared preference owner records Terra for computer use while other roles/defaults remain unchanged.",
+        "observed": "Selector and native-default preservation tests pass. Terra is offered by the native catalog and a requested Terra worker reached app discovery.",
+        "evidence": "evals/results/computer-use-terra-preference-20261103.json",
+        "limitations": "Stored preference and route readiness only; automatic per-tool switching and comparative behavior are unproven."
+      }
+    }
+  ]
+}

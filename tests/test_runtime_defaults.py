@@ -77,6 +77,18 @@ class RuntimeDefaultsTests(unittest.TestCase):
         report = self.prepare(hosts=["codex"]).report
         self.assertEqual({"gpt-6-luna", "high"}, {change["after"] for change in report["changes"]})
 
+    def test_computer_use_preference_preserves_existing_roles_and_native_defaults(self):
+        self.edit_preferences(lambda value: value["roles"].pop("computer_use", None))
+        before = defaults.load_preferences(self.repo)
+        selected = {"model": "gpt-6.1-terra", "reasoning": before["roles"]["worker"]["reasoning"]}
+        self.edit_preferences(lambda value: value["roles"].update(computer_use=selected))
+        after = defaults.load_preferences(self.repo)
+        self.assertEqual(selected, after["roles"]["computer_use"])
+        self.assertEqual(before["roles"], {key: value for key, value in after["roles"].items() if key != "computer_use"})
+        self.assertEqual(before["runtime_defaults"], after["runtime_defaults"])
+        report = self.prepare().report
+        self.assertNotIn("gpt-6.1-terra", {change["after"] for change in report["changes"]})
+
     def test_apply_preserves_all_unselected_parsed_settings_and_is_idempotent(self):
         prepared = self.prepare()
         report = defaults.apply_defaults(prepared)
@@ -214,7 +226,7 @@ class RuntimeDefaultsTests(unittest.TestCase):
         host = candidate["value"]["hosts"]["codex"]
         self.assertEqual(receipt["observations"]["codex"]["model"], host["model"])
         self.assertEqual("known", host["observation"]["time_status"])
-        self.assertIsNone(candidate["value"]["hosts"]["omp"]["observation"]["observed_at"])
+        self.assertEqual(json.loads(before)["hosts"]["omp"], candidate["value"]["hosts"]["omp"])
         stale = snapshot / "hosts/codex/config.json"
         captured = json.loads(stale.read_text())
         captured["model"] = "stale-model"

@@ -40,7 +40,8 @@ This block owns approved desired values. Native adapters read it; observations a
     "coordinator": {"model": "gpt-6.1-sol", "reasoning": "xhigh"},
     "worker": {"model": "gpt-6.1-sol", "reasoning": "medium"},
     "linear": {"model": "gpt-6.1-sol", "reasoning": "high"},
-    "hermes": {"model": "gpt-6.1-sol", "reasoning": "medium"}
+    "hermes": {"model": "gpt-6.1-sol", "reasoning": "medium"},
+    "computer_use": {"model": "gpt-6.1-terra", "reasoning": "medium"}
   },
   "runtime_defaults": {"codex": "worker", "hermes": "hermes"},
   "maintained_hosts": ["codex", "hermes"],

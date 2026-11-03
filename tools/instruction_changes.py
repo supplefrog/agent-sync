@@ -93,11 +93,12 @@ def _preference_data_only(old, new, row):
         new_other = json.dumps({k:v for k,v in right.items() if k != 'roles'}, sort_keys=True, allow_nan=False)
         if old_other != new_other:
             return False
-        # Preserve all existing roles; coordinator is the sole supported addition.
-        if not set(old_roles) <= set(new_roles) or set(new_roles) - set(old_roles) - {'coordinator'}:
+        # Preserve existing roles; only declared supported role additions qualify.
+        additions = {'coordinator', 'computer_use'}
+        if not set(old_roles) <= set(new_roles) or set(new_roles) - set(old_roles) - additions:
             return False
         changed = {k for k in new_roles if k not in old_roles or old_roles[k] != new_roles[k]}
-        if changed != set(roles) or not changed <= (set(old_roles) | {'coordinator'}):
+        if changed != set(roles) or not changed <= (set(old_roles) | additions):
             return False
         for role in changed:
             value = new_roles[role]
