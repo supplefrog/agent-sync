@@ -1,0 +1,514 @@
+{
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032",
+          "after_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032"
+        },
+        "contracts/ownership.json": {
+          "before_sha256": "4c9a52efacfb4a52f55182af2a69ed8f3165d8b077dd8dfd4803aa414580e582",
+          "after_sha256": "22980c77e9a6784559c201bf81c2bd5d69d280bcefb58327c36f36ac04f02b3d"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823",
+          "after_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518",
+          "after_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/hermes-skill-proposals.md": {
+          "before_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167",
+          "after_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "5d12567a8fa2e9611d46f5cec21558b167557bcccd4d61e348eeeb5d8fd070ee",
+          "after_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "727ea575d436ac82873a01b82dbf903fd1bf1f7b26579b61225c585913a82ef7",
+          "after_sha256": "c30b96b954427c649f0f6800ecce2af5a46e3951ebb33f922850695d61a9c5ba"
+        },
+        "docs/routing-decision-interface.md": {
+          "before_sha256": "2ecd7f7ce357ca4b8fc0e5c4b2e5b815639d6973cf6bd444b2b9fa218a9fa811",
+          "after_sha256": "2ecd7f7ce357ca4b8fc0e5c4b2e5b815639d6973cf6bd444b2b9fa218a9fa811"
+        },
+        "docs/shared-memory-decision.md": {
+          "before_sha256": "eae6406fb5b465afe5eacdde6d211b96727fc4942c59a77e0db0bc5ada2650e4",
+          "after_sha256": "eae6406fb5b465afe5eacdde6d211b96727fc4942c59a77e0db0bc5ada2650e4"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "310882591f34894ef9cd799008f5b2745ecb393aa1ec259488bb2a28aa6142c2",
+          "after_sha256": "2982964467efd9f86f64edc49fdcb2ebd5309839b58ac6ea8853bb7cff7722fc"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "dbf51dce17a7d4062a10d1f4f551d9dfc4eef7cb754cf74fac31b7eabc03fb44",
+          "after_sha256": "afaae716b7d71d45c9fbfce13630a368023741546a75d84c5d0e343090d2eff6"
+        },
+        "skills/answer-key-gauntlet/SKILL.md": {
+          "before_sha256": "3c8f7dd7491680622f8f03f606238715c8402fdf5101a0d2fb0baed65c4e029b",
+          "after_sha256": "8349dd394d243b7d0b6861288af763bd13959e2aa02d939056a7b95c911f2d7f"
+        },
+        "skills/answer-key-gauntlet/references/artifact-contract.md": {
+          "before_sha256": "d005e3116e3194443d7b8a1d02d973bbd8412ffa503fa71bb73c1179068e2a1e",
+          "after_sha256": "d005e3116e3194443d7b8a1d02d973bbd8412ffa503fa71bb73c1179068e2a1e"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "9031131e8be66964c739fbdcc6701485b64d8c00f8d1bc6d36b2c16f605265da",
+          "after_sha256": "923adca7174c8205ecb6801472d7193cc4055e5c821dc759d68c8ca6515c995c"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "95521cea4e0db3f411951e06090fa0f75d83c8684fa26fb9a1042c9ffb7ac872"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "skills/instruction-authoring/references/useful-behaviors.md": {
+          "before_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4",
+          "after_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4"
+        },
+        "skills/openai-delegation-route-research/SKILL.md": {
+          "before_sha256": "34e1e85b361c4e50a567910deec9de4419773252acbd798a57ade894f9b115e4",
+          "after_sha256": "15a59edb6acc2067c4a3b68779e2eb8ffde0fc28b1c5adf40578b241f207424d"
+        },
+        "skills/project-prior-art/SKILL.md": {
+          "before_sha256": "53899faafd3164b0f6c0a61ee7ed94e18e4c8d6e9b54dacbed08040951337168",
+          "after_sha256": "0c34de00be0402b4ef985ec79d3f9135f6f6a9a78f8c1faaec79754d1882e96b"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "2b306ff51a7a8845b7b7bb26db43f51ef0fa77d54b772ab54bcd8d4accd3d6eb",
+          "after_sha256": "fefa76dee2bf0838fbe4126ad5249e4dd15d54be96ab68f9c2efcccefc2c4a90"
+        },
+        "tests/test_completed_retirement_publication.py": {
+          "before_sha256": null,
+          "after_sha256": "fe0993c9b8ea19dd70fa13ba407f18e176d813d1bc50f902200005c6f63259de"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "4349598d93904b92a70f0487758236e283eb6fda759f39899b7ee9f5e3ee440e",
+          "after_sha256": "32400402672800d3324905302ac7f6a41cb43d82c8f7dcd8626fc34cd281dca0"
+        },
+        "tools/reconcile.py": {
+          "before_sha256": "a30fc045f08a9e5e4901de600d1e394ce63925491314d7334f62f726ec9fed4f",
+          "after_sha256": "f1332e5863f56379cf5c9166d3031197a9d5ae56155ae287a0de750879a8574e"
+        },
+        "tools/recovery.py": {
+          "before_sha256": "c327951f8f19c955e5f55472a02e737c9c8549fa54f75224745a7d62ac9a4157",
+          "after_sha256": "221b4cd7c3bbefda0718673a90584a638a26a79de632bfca25fea7c3c61a1c58"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "125751726d50de26eea160413157403f81cb73fc4a229fb8c4fdf7d881a11588",
+          "after_sha256": "f1e9d762479eb0ac8bf4d3b1f748961aecf0aae80400df3349cb573c8c2bbe28"
+        }
+      },
+      "authority": "This technical record grants no publication, provider trial or installation authority.",
+      "checks": "Retained completion-aware admission controls plus three CLI dispatch controls: omitted roots stay empty for source-only propagation; explicit roots retain existing rejection. Original completed local retirement is not repeated.",
+      "framework_review": {
+        "affected": [
+          "skills/answer-key-gauntlet/SKILL.md",
+          "skills/cross-agent-surface-engineering/SKILL.md",
+          "skills/instruction-authoring/SKILL.md",
+          "skills/openai-delegation-route-research/SKILL.md",
+          "skills/project-prior-art/SKILL.md"
+        ],
+        "checks": "Current published baseline plus exact two-line authoring retirement delta; unactivated primary quality-first changes remain separate.",
+        "selection_reason": "Affected surviving owners are those whose retirement references or preserved audit clause change.",
+        "unaffected_reason": "Other authoring/evaluation/permission procedures retain their existing bytes and owners."
+      },
+      "obligations": [
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/hermes-skill-proposals.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/routing-decision-interface.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/shared-memory-decision.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/answer-key-gauntlet/SKILL.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/answer-key-gauntlet/references/artifact-contract.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/instruction-authoring/references/useful-behaviors.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/openai-delegation-route-research/SKILL.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/project-prior-art/SKILL.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "tests/test_completed_retirement_publication.py",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        }
+      ],
+      "outcome_review": {
+        "expected": "Canonical selection excludes the retired owner and its obsolete routes while preserving covered capabilities and newer model-aware discovery.",
+        "observed": "Normal plan exposed automatically supplied native roots; the CLI now passes no default targets for completed-proof publication, while explicit root/adoption prohibitions and evidence checks remain intact.",
+        "evidence": "Source identities and source/check bindings; private operation evidence remains outside public payload.",
+        "limitations": "Source and deterministic offline checks only; normal release qualification, public authority, live SDK/model behavior and native activation remain separate."
+      },
+      "requirement_change": true,
+      "requirement_reason": "Records the exact user-directed outcome-design retirement maintenance exception in requirements/status; general adoption and authorization rules remain unchanged."
+    }
+  ],
+  "instruction_changes": [
+    {
+      "acceptance_classification": "outcome-design-retirement-maintenance",
+      "alternative": "Keep native reasoning and existing domain owners; do not retain the retired generic guide or add a new model trial.",
+      "artifacts": {
+        "skills/answer-key-gauntlet/SKILL.md": {
+          "after_sha256": "8349dd394d243b7d0b6861288af763bd13959e2aa02d939056a7b95c911f2d7f",
+          "before_sha256": "3c8f7dd7491680622f8f03f606238715c8402fdf5101a0d2fb0baed65c4e029b"
+        }
+      },
+      "baseline_sufficient": false,
+      "basis": "user-correction",
+      "change_kind": "add-or-change",
+      "deviation": "The settled optional-owner retirement otherwise leaves obsolete routes or loses an existing accumulated-system audit obligation.",
+      "evidence": "Independent coverage/source review and exact old/new source inspection; the bounded R22 result is preserved without a broader benefit claim.",
+      "loading_review": {
+        "checks": "Source-bound obligation map; no claim of model compliance.",
+        "entrypoint_reason": "Existing surviving owner and loading remain; only obsolete retirement references or the reviewed audit preservation change.",
+        "obligations": [
+          {
+            "after": [
+              "skills/answer-key-gauntlet/SKILL.md"
+            ],
+            "applies_when": "The existing owner applies to its documented task",
+            "before": [
+              "skills/answer-key-gauntlet/SKILL.md"
+            ],
+            "disposition": "changed",
+            "load_when": "At the existing owner entrypoint",
+            "obligation": "Preserve unrelated owner procedure and reconcile only settled retirement dependencies",
+            "reason": "Exact bounded retirement composition; useful capabilities remain at existing owners.",
+            "required": true
+          }
+        ]
+      },
+      "owner": "skills/answer-key-gauntlet",
+      "restructured": false,
+      "why_instruction": "Remove stale instruction references and keep the one required audit behavior at the existing engineering owner; no replacement planning framework."
+    },
+    {
+      "acceptance_classification": "outcome-design-retirement-maintenance",
+      "alternative": "Keep native reasoning and existing domain owners; do not retain the retired generic guide or add a new model trial.",
+      "artifacts": {
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "after_sha256": "923adca7174c8205ecb6801472d7193cc4055e5c821dc759d68c8ca6515c995c",
+          "before_sha256": "9031131e8be66964c739fbdcc6701485b64d8c00f8d1bc6d36b2c16f605265da"
+        }
+      },
+      "baseline_sufficient": false,
+      "basis": "user-correction",
+      "change_kind": "add-or-change",
+      "deviation": "The settled optional-owner retirement otherwise leaves obsolete routes or loses an existing accumulated-system audit obligation.",
+      "evidence": "Independent coverage/source review and exact old/new source inspection; the bounded R22 result is preserved without a broader benefit claim.",
+      "loading_review": {
+        "checks": "Source-bound obligation map; no claim of model compliance.",
+        "entrypoint_reason": "Existing surviving owner and loading remain; only obsolete retirement references or the reviewed audit preservation change.",
+        "obligations": [
+          {
+            "after": [
+              "skills/cross-agent-surface-engineering/SKILL.md"
+            ],
+            "applies_when": "The existing owner applies to its documented task",
+            "before": [
+              "skills/cross-agent-surface-engineering/SKILL.md"
+            ],
+            "disposition": "changed",
+            "load_when": "At the existing owner entrypoint",
+            "obligation": "Preserve unrelated owner procedure and reconcile only settled retirement dependencies",
+            "reason": "Exact bounded retirement composition; useful capabilities remain at existing owners.",
+            "required": true
+          }
+        ]
+      },
+      "owner": "skills/cross-agent-surface-engineering",
+      "restructured": false,
+      "why_instruction": "Remove stale instruction references and keep the one required audit behavior at the existing engineering owner; no replacement planning framework."
+    },
+    {
+      "acceptance_classification": "outcome-design-retirement-maintenance",
+      "alternative": "Keep native reasoning and existing domain owners; do not retain the retired generic guide or add a new model trial.",
+      "artifacts": {
+        "skills/instruction-authoring/SKILL.md": {
+          "after_sha256": "95521cea4e0db3f411951e06090fa0f75d83c8684fa26fb9a1042c9ffb7ac872",
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        }
+      },
+      "baseline_sufficient": false,
+      "basis": "user-correction",
+      "change_kind": "add-or-change",
+      "deviation": "The settled optional-owner retirement otherwise leaves obsolete routes or loses an existing accumulated-system audit obligation.",
+      "evidence": "Independent coverage/source review and exact old/new source inspection; the bounded R22 result is preserved without a broader benefit claim.",
+      "loading_review": {
+        "checks": "Source-bound obligation map; no claim of model compliance.",
+        "entrypoint_reason": "Existing surviving owner and loading remain; only obsolete retirement references or the reviewed audit preservation change.",
+        "obligations": [
+          {
+            "after": [
+              "skills/instruction-authoring/SKILL.md"
+            ],
+            "applies_when": "The existing owner applies to its documented task",
+            "before": [
+              "skills/instruction-authoring/SKILL.md"
+            ],
+            "disposition": "changed",
+            "load_when": "At the existing owner entrypoint",
+            "obligation": "Preserve unrelated owner procedure and reconcile only settled retirement dependencies",
+            "reason": "Exact bounded retirement composition; useful capabilities remain at existing owners.",
+            "required": true
+          }
+        ]
+      },
+      "owner": "skills/instruction-authoring",
+      "restructured": false,
+      "why_instruction": "Remove stale instruction references and keep the one required audit behavior at the existing engineering owner; no replacement planning framework."
+    },
+    {
+      "acceptance_classification": "outcome-design-retirement-maintenance",
+      "alternative": "Keep native reasoning and existing domain owners; do not retain the retired generic guide or add a new model trial.",
+      "artifacts": {
+        "skills/openai-delegation-route-research/SKILL.md": {
+          "after_sha256": "15a59edb6acc2067c4a3b68779e2eb8ffde0fc28b1c5adf40578b241f207424d",
+          "before_sha256": "34e1e85b361c4e50a567910deec9de4419773252acbd798a57ade894f9b115e4"
+        }
+      },
+      "baseline_sufficient": false,
+      "basis": "user-correction",
+      "change_kind": "add-or-change",
+      "deviation": "The settled optional-owner retirement otherwise leaves obsolete routes or loses an existing accumulated-system audit obligation.",
+      "evidence": "Independent coverage/source review and exact old/new source inspection; the bounded R22 result is preserved without a broader benefit claim.",
+      "loading_review": {
+        "checks": "Source-bound obligation map; no claim of model compliance.",
+        "entrypoint_reason": "Existing surviving owner and loading remain; only obsolete retirement references or the reviewed audit preservation change.",
+        "obligations": [
+          {
+            "after": [
+              "skills/openai-delegation-route-research/SKILL.md"
+            ],
+            "applies_when": "The existing owner applies to its documented task",
+            "before": [
+              "skills/openai-delegation-route-research/SKILL.md"
+            ],
+            "disposition": "changed",
+            "load_when": "At the existing owner entrypoint",
+            "obligation": "Preserve unrelated owner procedure and reconcile only settled retirement dependencies",
+            "reason": "Exact bounded retirement composition; useful capabilities remain at existing owners.",
+            "required": true
+          }
+        ]
+      },
+      "owner": "skills/openai-delegation-route-research",
+      "restructured": false,
+      "why_instruction": "Remove stale instruction references and keep the one required audit behavior at the existing engineering owner; no replacement planning framework."
+    },
+    {
+      "acceptance_classification": "outcome-design-retirement-maintenance",
+      "alternative": "Keep native reasoning and existing domain owners; do not retain the retired generic guide or add a new model trial.",
+      "artifacts": {
+        "skills/project-prior-art/SKILL.md": {
+          "after_sha256": "0c34de00be0402b4ef985ec79d3f9135f6f6a9a78f8c1faaec79754d1882e96b",
+          "before_sha256": "53899faafd3164b0f6c0a61ee7ed94e18e4c8d6e9b54dacbed08040951337168"
+        }
+      },
+      "baseline_sufficient": true,
+      "basis": "user-correction",
+      "change_kind": "remove",
+      "deviation": "The settled optional-owner retirement otherwise leaves obsolete routes or loses an existing accumulated-system audit obligation.",
+      "evidence": "Independent coverage/source review and exact old/new source inspection; the bounded R22 result is preserved without a broader benefit claim.",
+      "loading_review": {
+        "checks": "Source-bound obligation map; no claim of model compliance.",
+        "entrypoint_reason": "Existing surviving owner and loading remain; only obsolete retirement references or the reviewed audit preservation change.",
+        "obligations": [
+          {
+            "after": [
+              "skills/project-prior-art/SKILL.md"
+            ],
+            "applies_when": "The existing owner applies to its documented task",
+            "before": [
+              "skills/project-prior-art/SKILL.md"
+            ],
+            "disposition": "changed",
+            "load_when": "At the existing owner entrypoint",
+            "obligation": "Preserve unrelated owner procedure and reconcile only settled retirement dependencies",
+            "reason": "Exact bounded retirement composition; useful capabilities remain at existing owners.",
+            "required": true
+          }
+        ]
+      },
+      "owner": "skills/project-prior-art",
+      "restructured": false,
+      "why_instruction": "Remove stale instruction references and keep the one required audit behavior at the existing engineering owner; no replacement planning framework."
+    },
+    {
+      "acceptance_classification": "outcome-design-retirement-maintenance",
+      "alternative": "Keep native reasoning and existing domain owners; do not retain the retired generic guide or add a new model trial.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "after_sha256": "fefa76dee2bf0838fbe4126ad5249e4dd15d54be96ab68f9c2efcccefc2c4a90",
+          "before_sha256": "2b306ff51a7a8845b7b7bb26db43f51ef0fa77d54b772ab54bcd8d4accd3d6eb"
+        }
+      },
+      "baseline_sufficient": false,
+      "basis": "user-correction",
+      "change_kind": "add-or-change",
+      "deviation": "The settled optional-owner retirement otherwise leaves obsolete routes or loses an existing accumulated-system audit obligation.",
+      "evidence": "Independent coverage/source review and exact old/new source inspection; the bounded R22 result is preserved without a broader benefit claim.",
+      "loading_review": {
+        "checks": "Source-bound obligation map; no claim of model compliance.",
+        "entrypoint_reason": "Existing surviving owner and loading remain; only obsolete retirement references or the reviewed audit preservation change.",
+        "obligations": [
+          {
+            "after": [
+              "surfaces/core.md"
+            ],
+            "applies_when": "The existing owner applies to its documented task",
+            "before": [
+              "surfaces/core.md"
+            ],
+            "disposition": "changed",
+            "load_when": "At the existing owner entrypoint",
+            "obligation": "Preserve unrelated owner procedure and reconcile only settled retirement dependencies",
+            "reason": "Exact bounded retirement composition; useful capabilities remain at existing owners.",
+            "required": true
+          }
+        ]
+      },
+      "owner": "surfaces/core.md",
+      "restructured": false,
+      "why_instruction": "Remove stale instruction references and keep the one required audit behavior at the existing engineering owner; no replacement planning framework."
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Source propagation of the completed optional-owner retirement; no new model-quality, execution or publication authority."
+}

@@ -8,7 +8,7 @@ compatibility: Requires durable project files; subagents are optional.
 metadata:
   tags: [planning, specification, delegation, verification, gauntlet]
   canonical_owner: Agent Sync
-  related_skills: [outcome-first-workflow-design, dynamic-workflows, code-change-verification]
+  related_skills: [dynamic-workflows, code-change-verification]
 ---
 
 # Answer-Key Gauntlet

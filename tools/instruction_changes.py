@@ -660,7 +660,245 @@ def _approved_curator_scope_maintenance(candidate, source, name, owner, row, bas
     return 'exact reviewed curator scope maintenance; staging, ownership and retirement safeguards retained'
 
 
-def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations):
+def _approved_retirement_maintenance(candidate, source, name, owner, row, base, paths, retirement):
+    """One exact user-directed retirement; no generic measurement waiver.
+
+    Hashes and recorded authority establish consistency, never authenticate the
+    human. The separately scope-bound operation review and normal action-time
+    approval remain mandatory at the retirement entrypoint.
+    """
+    selected_owner = 'outcome-first-workflow-design'
+    reviewed_base = '51f43f68dd45e51f6222a68d3e90570c27f4e77c'
+    pins = {'contracts/ownership.json': {'after_sha256': '6b8b7fc2b2785868827d223688270723667b6240a5c871ecb022f0bc14fbbfec',
+                              'before_sha256': '3caf885799bdb2287f5843b6a4eae289690ddfaa96081821bab977ad145e732e'},
+ 'contracts/surface-matrix.json': {'after_sha256': 'b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454',
+                                   'before_sha256': '80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823'},
+ 'registry.json': {'after_sha256': '41d1e695d5e43e20150f32577d366fd8b28bd7663529743d7aa1f57da3c173da',
+                   'before_sha256': 'd4f6235d60fe8c92fbfe394dbb298bc1baf3ccb9e9722b05004d69c4eccf03b1'},
+ 'skills/answer-key-gauntlet/SKILL.md': {'after_sha256': '8349dd394d243b7d0b6861288af763bd13959e2aa02d939056a7b95c911f2d7f',
+                                         'before_sha256': '3c8f7dd7491680622f8f03f606238715c8402fdf5101a0d2fb0baed65c4e029b'},
+ 'skills/cross-agent-surface-engineering/SKILL.md': {'after_sha256': '923adca7174c8205ecb6801472d7193cc4055e5c821dc759d68c8ca6515c995c',
+                                                     'before_sha256': '9031131e8be66964c739fbdcc6701485b64d8c00f8d1bc6d36b2c16f605265da'},
+ 'skills/instruction-authoring/SKILL.md': {'after_sha256': '95521cea4e0db3f411951e06090fa0f75d83c8684fa26fb9a1042c9ffb7ac872',
+                                           'before_sha256': 'dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d'},
+ 'skills/openai-delegation-route-research/SKILL.md': {'after_sha256': '15a59edb6acc2067c4a3b68779e2eb8ffde0fc28b1c5adf40578b241f207424d',
+                                                      'before_sha256': '34e1e85b361c4e50a567910deec9de4419773252acbd798a57ade894f9b115e4'},
+ 'skills/project-prior-art/SKILL.md': {'after_sha256': '0c34de00be0402b4ef985ec79d3f9135f6f6a9a78f8c1faaec79754d1882e96b',
+                                       'before_sha256': '53899faafd3164b0f6c0a61ee7ed94e18e4c8d6e9b54dacbed08040951337168'},
+ 'surfaces/core.md': {'after_sha256': 'fefa76dee2bf0838fbe4126ad5249e4dd15d54be96ab68f9c2efcccefc2c4a90',
+                      'before_sha256': '2b306ff51a7a8845b7b7bb26db43f51ef0fa77d54b772ab54bcd8d4accd3d6eb'}}
+    if (not isinstance(retirement, dict) or retirement.get('owner') != selected_owner
+            or base != reviewed_base or row.get('basis') != 'user-correction'
+            or row.get('acceptance_classification') != 'outcome-design-retirement-maintenance'
+            or name not in pins or not set(pins) <= set(paths)
+            or retirement.get('git_recovery', {}).get('commit') != base
+            or retirement.get('source_commit') != sync_git.git(candidate, 'rev-parse', 'HEAD')):
+        raise sync_git.SyncBlocked('retirement maintenance requires its exact reviewed operation context')
+    for target, expected in pins.items():
+        current = candidate / target
+        if (not current.is_file() or
+                {'before_sha256': _hash(_before(source, base, target)),
+                 'after_sha256': _hash(current.read_bytes())} != expected):
+            raise sync_git.SyncBlocked('retirement maintenance source differs from reviewed scope: ' + target)
+    records = retirement.get('evidence', {})
+    def read_record(record):
+        if not isinstance(record, dict) or set(record) != {'path', 'sha256'}:
+            raise sync_git.SyncBlocked('retirement maintenance lacks a bound authority/reference body')
+        path = Path(record['path'])
+        if path.is_symlink() or path.stat().st_size > 1_000_000:
+            raise sync_git.SyncBlocked('retirement maintenance evidence must be bounded regular data')
+        raw = path.read_bytes()
+        if _hash(raw) != record['sha256']:
+            raise sync_git.SyncBlocked('retirement maintenance evidence bytes changed')
+        return json.loads(raw)
+    references = read_record(records.get('references'))
+    authority = read_record(references.get('retirement_authority'))
+    instruction_pins = {n: v for n, v in pins.items() if n.startswith(('skills/', 'surfaces/'))}
+    if (authority.get('kind') != 'user-directed-skill-retirement'
+            or authority.get('owner') != selected_owner or authority.get('decision') != 'retire'
+            or authority.get('baseline_commit') != base
+            or authority.get('source_commit') != retirement['source_commit']
+            or authority.get('artifacts') != instruction_pins
+            or not isinstance(authority.get('user_directive'), str)
+            or not authority['user_directive'].strip()
+            or references.get('complete') is not True
+            or references.get('owner') != selected_owner
+            or references.get('source_commit') != retirement['source_commit']):
+        raise sync_git.SyncBlocked('retirement maintenance authority does not cover this source')
+    native = references.get('native_instruction_removals', {})
+    if (native.get('owner') != selected_owner or native.get('base_commit') != base
+            or set(native.get('artifacts', {})) !=
+                {'codex:global-instructions', 'hermes:standing-instructions', 'omp:global-instructions'}):
+        raise sync_git.SyncBlocked('retirement maintenance requires the native route-removal plan')
+    review = read_record(records.get('operation_review'))
+    from reconcile import _retirement_review_scope
+    if review != {'schema_version': 1, 'kind': 'reviewed-retirement-operation',
+                  'verdict': 'PASS', 'scope_sha256': _retirement_review_scope(retirement),
+                  'decision': records.get('decision'), 'coverage': records.get('coverage')}:
+        raise sync_git.SyncBlocked('retirement maintenance needs the matching operation review')
+    return 'exact reviewed user-directed retirement maintenance; recovery and native checks remain required'
+
+
+# One completed local operation, not a general lifecycle or approval exception.
+_COMPLETED_RETIREMENT_SHA256 = 'eb69555ea02ce07fdc3cc7f38bfc19d05340ede0d1da9a60f9a7d9d558ec4485'
+_RETIREMENT_ORIGINAL_SOURCE = '52f674444bc075836ffe371dd1781d9a6016a019'
+_RETIREMENT_ORIGINAL_BASE = '51f43f68dd45e51f6222a68d3e90570c27f4e77c'
+_RETIREMENT_PROPAGATION_BASE = '29400d50cdb48ec967de94df07cbf4dcd232fac7'
+_RETIREMENT_PUBLICATION_ADDITIONS = {
+    'tools/worktree_sync.py', 'docs/worktree-publication.md',
+    'tests/test_completed_retirement_publication.py',
+}
+
+
+def _completed_retirement_record(reference):
+    if (not isinstance(reference, dict) or set(reference) != {'path', 'sha256'}
+            or not isinstance(reference['path'], str)
+            or not isinstance(reference['sha256'], str)):
+        raise sync_git.SyncBlocked('completed retirement requires a bound evidence reference')
+    path = Path(reference['path'])
+    try:
+        if (not path.is_absolute() or path.is_symlink() or path.resolve() != path.absolute()
+                or not path.is_file() or path.stat().st_size > 1_000_000):
+            raise ValueError('not bounded canonical regular data')
+        with path.open('rb') as stream:
+            raw = stream.read(1_000_001)
+        if len(raw) > 1_000_000:
+            raise ValueError('evidence exceeds the bounded record size')
+        if _hash(raw) != reference['sha256']:
+            raise ValueError('evidence digest differs')
+        value = json.loads(raw)
+        if not isinstance(value, dict):
+            raise ValueError('evidence is not an object')
+        return value
+    except (OSError, ValueError) as exc:
+        raise sync_git.SyncBlocked('completed retirement evidence missing, changed or invalid') from exc
+
+
+def completed_retirement_publication(candidate, source, base, paths, proof, *, ready=None):
+    """Verify retained completion and exact source propagation; never apply it.
+
+    Consistency is not human authentication or permission to publish. The
+    ordinary action review, dependency/source checks and manifest guard remain.
+    Private proof stays in the existing private publication options/journals.
+    """
+    owner = 'outcome-first-workflow-design'
+    if (not isinstance(proof, dict) or set(proof) !=
+            {'schema_version', 'kind', 'completion', 'base_commit', 'ready_commit', 'files'}
+            or type(proof['schema_version']) is not int or proof['schema_version'] != 1
+            or proof['kind'] != 'completed-retirement-publication'
+            or not isinstance(proof.get('completion'), dict)
+            or not isinstance(proof.get('ready_commit'), str)
+            or not re.fullmatch('[0-9a-f]{40}', proof['ready_commit'])
+            or base != _RETIREMENT_PROPAGATION_BASE or proof['base_commit'] != base
+            or (ready is not None and proof['ready_commit'] != ready)
+            or proof['completion'].get('sha256') != _COMPLETED_RETIREMENT_SHA256):
+        raise sync_git.SyncBlocked('completed retirement publication has a foreign completion, base or ready source')
+    completed = _completed_retirement_record(proof['completion'])
+    if (completed.get('status') != 'local retirement verified' or completed.get('owner') != owner
+            or completed.get('source_commit') != _RETIREMENT_ORIGINAL_SOURCE
+            or completed.get('remaining_local_retirement_gate') is not None
+            or completed.get('uncertain_operations') is not False
+            or any(completed.get(key) is not True for key in
+                   ('shared_package_directory_absent', 'managed_state_entry_absent', 'installed_snapshot_verified'))):
+        raise sync_git.SyncBlocked('completed retirement is incomplete or belongs to another owner')
+    request = _completed_retirement_record(completed['execution_request'])
+    request_sha = completed['execution_request']['sha256']
+    if (request.get('kind') != 'reviewed-skill-retirement-v1' or request.get('owner') != owner
+            or request.get('machine') != 'local-windows'
+            or request.get('source_commit') != _RETIREMENT_ORIGINAL_SOURCE
+            or request.get('git_recovery', {}).get('commit') != _RETIREMENT_ORIGINAL_BASE):
+        raise sync_git.SyncBlocked('completed retirement request does not match its original source/recovery')
+    from reconcile import _retirement_review_scope
+    scope = _retirement_review_scope(request)
+    review = _completed_retirement_record(completed['review'])
+    if (request['evidence']['operation_review'] != completed['review']
+            or scope != completed['scope_sha256']
+            or review != {'schema_version': 1, 'kind': 'reviewed-retirement-operation',
+                          'verdict': 'PASS', 'scope_sha256': scope,
+                          'decision': request['evidence']['decision'], 'coverage': request['evidence']['coverage']}):
+        raise sync_git.SyncBlocked('completed retirement lacks its exact matching operation review')
+    for key in ('decision', 'coverage', 'references'):
+        _completed_retirement_record(request['evidence'][key])
+    references = _completed_retirement_record(request['evidence']['references'])
+    authority = _completed_retirement_record(references['retirement_authority'])
+    if (references.get('complete') is not True or references.get('owner') != owner
+            or references.get('source_commit') != _RETIREMENT_ORIGINAL_SOURCE
+            or authority.get('kind') != 'user-directed-skill-retirement'
+            or authority.get('owner') != owner or authority.get('decision') != 'retire'
+            or authority.get('source_commit') != _RETIREMENT_ORIGINAL_SOURCE):
+        raise sync_git.SyncBlocked('completed retirement reference/authority scope differs')
+    applied = _completed_retirement_record(completed['apply_return'])
+    retained_ref = completed['retained_operation_receipt']
+    expected_store = sync_git.common_dir(source) / 'agent-signal-retirements' / (request_sha + '.json')
+    if Path(retained_ref['path']).resolve() != expected_store.resolve():
+        raise sync_git.SyncBlocked('completed retirement is not retained by this repository')
+    retained = _completed_retirement_record(retained_ref)
+    for result in (applied, retained):
+        if (result.get('result') != 'retired-local' or result.get('owner') != owner
+                or result.get('source_commit') != _RETIREMENT_ORIGINAL_SOURCE
+                or result.get('request_sha256') != request_sha
+                or result.get('actions') != request['expected_actions']):
+            raise sync_git.SyncBlocked('completed retirement apply/retained result differs from the reviewed request')
+    native = _completed_retirement_record(completed['native_finish'])
+    if (native.get('status') != 'verified' or native.get('scope_sha256') != scope
+            or native.get('source_commit') != _RETIREMENT_ORIGINAL_SOURCE
+            or any(native.get(k) is not True for k in
+                   ('native_catalogues_verified', 'retired_directory_absent', 'retired_state_entry_absent', 'installed_snapshot_clean'))
+            or set(completed['native_readbacks']) != {'codex', 'hermes', 'omp'}):
+        raise sync_git.SyncBlocked('completed retirement lacks closed native discovery/readback')
+    for host, row in completed['native_readbacks'].items():
+        body = _completed_retirement_record({'path': row['path'], 'sha256': row['sha256']})
+        if (body.get('host') != host or body.get('verified') is not True
+                or body.get('loading_verified') is not True or body.get('retired_offered') != []
+                or set(body.get('required_present', [])) != set(request['expected_actions']) - {owner}):
+            raise sync_git.SyncBlocked('completed retirement native body/reference differs')
+    allowed = set(request['source_files']) | _RETIREMENT_PUBLICATION_ADDITIONS
+    original_paths = set(sync_git.git(source, 'diff', '--name-only', _RETIREMENT_ORIGINAL_BASE, _RETIREMENT_ORIGINAL_SOURCE).splitlines())
+    if (set(request['source_files']) != original_paths or any(
+            value != _hash(_before(source, _RETIREMENT_ORIGINAL_SOURCE, name))
+            for name, value in request['source_files'].items())):
+        raise sync_git.SyncBlocked('completed retirement original request/source mapping differs')
+    if (not isinstance(proof['files'], dict) or set(proof['files']) != allowed or set(paths) != allowed):
+        raise sync_git.SyncBlocked('completed retirement publication has an unrelated or missing selected path')
+    exact = proof['ready_commit']
+    sync_git.git(source, 'merge-base', '--is-ancestor', base, exact)
+    changed = set(sync_git.git(source, 'diff', '--name-only', base, exact).splitlines())
+    if changed != allowed:
+        raise sync_git.SyncBlocked('completed retirement ready tree changes a different public scope')
+    for name, pair in proof['files'].items():
+        if sync_git.safe_path(source, name) != name:
+            raise sync_git.SyncBlocked('completed retirement source address is unsafe')
+        old, new = _before(source, base, name), _before(source, exact, name)
+        if pair != {'before_sha256': _hash(old), 'after_sha256': _hash(new)}:
+            raise sync_git.SyncBlocked('completed retirement source mapping differs: ' + name)
+        if candidate is not None:
+            path = candidate / name
+            if (not path.is_file() or path.is_symlink() or not path.resolve().is_relative_to(candidate.resolve())
+                    or path.read_bytes() != new):
+                raise sync_git.SyncBlocked('completed retirement candidate differs from ready bytes: ' + name)
+    # Reuse the actually reviewed original instruction transfer, not arbitrary
+    # new guidance hidden behind a completion label or a caller-supplied digest.
+    instructions = {row['path'] for row in applied['admission'] if row.get('owner')}
+    if instructions != {'surfaces/core.md', *('skills/' + n + '/SKILL.md' for n in set(request['expected_actions']) - {owner})}:
+        raise sync_git.SyncBlocked('completed retirement original instruction scope differs')
+    for name in instructions | {'contracts/surface-matrix.json'}:
+        if (_before(source, exact, name) != _before(source, _RETIREMENT_ORIGINAL_SOURCE, name)
+                or _before(source, base, name) != _before(source, _RETIREMENT_ORIGINAL_BASE, name)):
+            raise sync_git.SyncBlocked('completed retirement propagation alters the reviewed instructions: ' + name)
+    for name, key, identity in [('registry.json', 'skills', 'name'), ('contracts/ownership.json', 'capabilities', 'id')]:
+        original = json.loads(_before(source, _RETIREMENT_ORIGINAL_SOURCE, name))
+        expected = json.loads(_before(source, base, name))
+        matching = [r for r in original[key] if r[identity] == owner]
+        if len(matching) != 1:
+            raise sync_git.SyncBlocked('completed retirement original lifecycle owner differs')
+        expected[key] = [matching[0] if r[identity] == owner else r for r in expected[key]]
+        if json.loads(_before(source, exact, name)) != expected:
+            raise sync_git.SyncBlocked('completed retirement changes another lifecycle selection: ' + name)
+    return {'owner': owner, 'completed_scope_sha256': scope,
+            'completion_sha256': _COMPLETED_RETIREMENT_SHA256, 'publication_authorized': False}
+
+
+def correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliations, retirement=None, retirement_publication=None):
     """Narrow reviewed correction routes after necessity/dependency validation.
 
     Record validation does not authenticate authority or prove semantic scope.
@@ -671,7 +909,15 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
     new = path.read_bytes() if path.is_file() else None
     kind = row.get('change_kind', 'add-or-change')
     reason = None
-    if (kind == 'add-or-change' and row.get('basis') == 'mechanical-maintenance'
+    if row.get('acceptance_classification') == 'outcome-design-retirement-maintenance':
+        if kind not in {'remove', 'add-or-change'}:
+            raise sync_git.SyncBlocked('retirement maintenance must retain its actual edit/removal kind')
+        if retirement_publication is not None:
+            completed_retirement_publication(candidate, source, base, paths, retirement_publication)
+            reason = 'source propagation of the exact completed retirement; no new native operation'
+        else:
+            reason = _approved_retirement_maintenance(candidate, source, name, owner, row, base, paths, retirement)
+    elif (kind == 'add-or-change' and row.get('basis') == 'mechanical-maintenance'
             and old is not None and new is not None
             and old.replace(b'\r\n', b'\n') == new.replace(b'\r\n', b'\n')):
         reason = 'content-identical line-ending repair'
@@ -1019,7 +1265,7 @@ def _loading_review(candidate, source, base, owner, row, changed):
             raise sync_git.SyncBlocked('loading review omits changed destination source: ' + name)
 
 
-def check(candidate: Path, source: Path, base: str, paths):
+def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, retirement_publication=None):
     paths = set(paths)
     old_index = _before(source, base, INDEX)
     current = candidate / INDEX
@@ -1155,7 +1401,7 @@ def check(candidate: Path, source: Path, base: str, paths):
             assessment['loading_review'] = reviews[0]
         _loading_review(candidate, source, base, owner, assessment, changed)
     for name, owner, row in measurement_rows:
-        eligibility = correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliation_records)
+        eligibility = correction_eligibility(candidate, source, name, owner, row, base, paths, reconciliation_records, retirement, retirement_publication)
         if eligibility is None:
             eligibility = measurement_eligibility(candidate, source, name, owner, row, base)
         if not eligibility['eligible']:

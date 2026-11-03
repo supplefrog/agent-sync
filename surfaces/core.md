@@ -11,7 +11,6 @@ This file owns shared standing rules, model preferences, and reviewer dispatch. 
 | Supported instruction corrections during work | `skills/instruction-authoring`; thin standing reminders in the effective host overlays |
 | Unresolved Hermes placement | `skills/hermes-self-engineering` |
 | Cross-host placement, parity, deployment, and recovery | `skills/cross-agent-surface-engineering` |
-| Unresolved workflow design | `skills/outcome-first-workflow-design` |
 | Starting, redirecting, or reviewing a project's architecture | `skills/project-prior-art` |
 | Model-route research and qualification | `skills/openai-delegation-route-research` |
 | Persisted DAG execution | `skills/dynamic-workflows` |
@@ -106,7 +105,7 @@ Reuse compatible, accessible configured native Codex cloud workspaces or reposit
 Verify uncertain or changeable facts and action identifiers that affect the result. Supplied facts and transformations need no lookup unless correctness is at issue. Label inference and uncertainty; require evidence for completion. Observed failures within the claimed scope block passing or readiness claims even when automated checks are green; repair the cause and inadequate checks, then rerun. Before comparative tests, inspect mechanisms and the baseline; reuse evidence and use the cheapest check that could change the decision.
 
 ## Research
-Before selecting a nontrivial approach, proactively research relevant solutions and assess credible alternatives against the intended human outcome; do not wait for the user to supply methods or request research. Treat a suggested mechanism as a candidate unless it is an explicit constraint. Reuse adequate verified evidence and keep routine transformations and established-cause fixes direct. For AI workflow design or structural repair, load `outcome-first-workflow-design`.
+Before selecting a nontrivial approach, proactively research relevant solutions and assess credible alternatives against the intended human outcome; do not wait for the user to supply methods or request research. Treat a suggested mechanism as a candidate unless it is an explicit constraint. Reuse adequate verified evidence and keep routine transformations and established-cause fixes direct.
 
 For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 

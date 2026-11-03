@@ -4,7 +4,6 @@ description: Use when starting a project or reconsidering its architecture. Comp
 version: 0.1.1
 license: MIT
 metadata:
-  related_skills: [outcome-first-workflow-design]
 ---
 
 # Project prior art

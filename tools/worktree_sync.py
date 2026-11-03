@@ -46,11 +46,14 @@ def _checkout_git(repo, *args):
     return sync_git.git(repo, '-c', 'core.autocrlf=false', '-c', 'core.eol=lf', *args)
 
 
-def _options(adopt, include, machine, skill_roots, recovery_roots, message):
-    return {'adopt': sorted(set(adopt or ())), 'include': sorted(set(include or ())),
+def _options(adopt, include, machine, skill_roots, recovery_roots, message, retirement_publication=None):
+    value = {'adopt': sorted(set(adopt or ())), 'include': sorted(set(include or ())),
             'machine': machine, 'skill_roots': [str(Path(p).resolve()) for p in skill_roots] if skill_roots is not None else None,
             'recovery_roots': {key: str(Path(p).resolve()) for key, p in (recovery_roots or {}).items()},
             'message': message}
+    if retirement_publication is not None:
+        value['retirement_publication'] = retirement_publication
+    return value
 
 
 def _qualify(repo, ready, options):
@@ -70,14 +73,28 @@ def _qualify(repo, ready, options):
             raise sync_git.SyncBlocked('ready registry contains duplicate owners')
         return sorted(rows)
     public_admission = admission(base)
+    retirement_publication = options.get('retirement_publication')
+    lifecycle_changes = []
     for commit in commits:
         parents = sync_git.git(repo, 'rev-list', '--parents', '-n', '1', commit).split()
         if len(parents) != 2:
             raise sync_git.SyncBlocked('ready integration requires a linear non-merge commit range')
         current = dict(admission(commit))
         if any(current.get(name) != status for name, status in public_admission):
-            raise sync_git.SyncBlocked('ready integration cannot change registry admission or lifecycle; normal review is required')
+            if retirement_publication is None:
+                raise sync_git.SyncBlocked('ready integration cannot change registry admission or lifecycle; normal review is required')
+            lifecycle_changes.append(current)
         paths.update(_names(repo, 'diff-tree', '--no-commit-id', '--no-renames', '--name-only', '-r', commit))
+    if retirement_publication is not None:
+        if options['adopt'] or options['skill_roots'] is not None or options['recovery_roots'] or options['machine'] != 'local-windows':
+            raise sync_git.SyncBlocked('completed retirement publication cannot select native targets')
+        if set(options['include']) != paths:
+            raise sync_git.SyncBlocked('completed retirement requires its exact publication selection')
+        import instruction_changes
+        verified = instruction_changes.completed_retirement_publication(None, repo, base, paths, retirement_publication, ready=exact)
+        for current in lifecycle_changes:
+            if any(current.get(name) != status and not (name == verified['owner'] and status == 'admitted' and current.get(name) == 'retired') for name, status in public_admission):
+                raise sync_git.SyncBlocked('completed retirement cannot change another lifecycle selection')
     owners = set(options['adopt'])
     included = set(options['include'])
     if not owners and not included:
@@ -145,7 +162,7 @@ def _qualify(repo, ready, options):
                     raise sync_git.SyncBlocked('ready metadata policy requires explicit host-deltas.json review')
         selected_paths = sorted(paths - ({'host-deltas.json'} if omit_metadata else set()))
         import instruction_changes
-        instruction_changes.check(candidate, repo, base, selected_paths)
+        instruction_changes.check(candidate, repo, base, selected_paths, **({'retirement_publication': retirement_publication} if retirement_publication is not None else {}))
         sync_git.assert_publishable(candidate, paths)
         reconcile._prepare_candidate_bindings(candidate, owners, None, selected_paths)
         if (candidate / 'registry.json').is_file():
@@ -208,12 +225,14 @@ def _ready_check_failure(exc, repo):
 
 def ready_plan(repo, ready, *, adopt=(), include=(), machine='local-windows',
                skill_roots=None, recovery_roots=None, message='chore: integrate checked ready change',
-               capture_recovery=False, recovery_artifacts=None, continue_published=None, **unsupported):
+               capture_recovery=False, recovery_artifacts=None, continue_published=None, retirement_publication=None, **unsupported):
     """Read-only Git/source qualification; no fetch, checkout, config, or deploy."""
     try:
+        if retirement_publication is not None and continue_published is not None:
+            raise sync_git.SyncBlocked('completed retirement cannot continue another publication or rollout')
         if capture_recovery or recovery_artifacts or unsupported:
             raise sync_git.SyncBlocked('ready integration supports explicit source/portable scopes only')
-        options = _options(adopt, include, machine, skill_roots, recovery_roots, message)
+        options = _options(adopt, include, machine, skill_roots, recovery_roots, message, retirement_publication)
         result = _qualify(Path(repo).resolve(), ready, options)
         if continue_published is not None:
             _, _, binding, _, _ = _published_successor_preflight(Path(repo).resolve(), result, continue_published)
@@ -905,7 +924,32 @@ def _completed_publisher_state(lane, journal):
     return pending
 
 
+def _verify_retirement_publication(lane, journal):
+    proof = journal.get('receipt', {}).get('options', {}).get('retirement_publication')
+    required = journal.get('retirement_publication_required')
+    if proof is None and required is None:
+        receipt = journal.get('receipt', {})
+        if 'registry.json' in receipt.get('paths', ()):
+            base, ready = receipt.get('source_base'), receipt.get('ready')
+            if any(not isinstance(value, str) or not re.fullmatch('[0-9a-f]{40}', value) for value in (base, ready)):
+                raise sync_git.SyncBlocked('registry completion lacks its frozen source range')
+            def lifecycle(commit):
+                value = json.loads(sync_git.git(lane, 'show', commit + ':registry.json'))
+                return {row['name']: row.get('status') for row in value['skills']}
+            owner = 'outcome-first-workflow-design'
+            if lifecycle(base).get(owner) == 'admitted' and lifecycle(ready).get(owner) == 'retired':
+                raise sync_git.SyncBlocked('completed-retirement source still requires its missing private proof')
+        return
+    if required is not True or proof is None or journal.get('retirement_publication_sha256') != _canonical_hash(proof):
+        raise sync_git.SyncBlocked('retained completed-retirement publication evidence is missing or changed')
+    import instruction_changes
+    instruction_changes.completed_retirement_publication(lane, lane, proof['base_commit'], proof['files'], proof)
+
+
 def _finish_published(primary, common, target, lane, published, published_marker_path, published_marker, journal, *, source_only=False):
+    if journal.get('retirement_publication_required') and not source_only:
+        raise sync_git.SyncBlocked('completed-retirement publication must finish without native rollout')
+    _verify_retirement_publication(lane, journal)
     _validate_predecessors(common, journal)
     sync_git.assert_integration_owner(lane, journal['attempt'])
     result = dict(journal['last_result'])
@@ -955,7 +999,9 @@ def _finish_published(primary, common, target, lane, published, published_marker
         journal['last_result'] = result
         _atomic(common / ('agent-signal-integration-published-' + journal['attempt'] + '.json'), journal)
         if sync_git.read_pending(lane) is not None:
+            _verify_retirement_publication(lane, journal)
             (sync_git.git_dir(lane) / 'agent-signal-sync.json').unlink()
+        _verify_retirement_publication(lane, journal)
         (common / 'agent-signal-integration.json').unlink()
         return result
     if sync_git.changed(published):
@@ -1028,7 +1074,9 @@ def _finish_published(primary, common, target, lane, published, published_marker
         if not pending.get('completion') or pending['completion'].get('commit') != commit:
             raise sync_git.SyncBlocked('publisher completion does not match the published integration receipt')
         if sync_git.read_pending(lane) is not None:
+            _verify_retirement_publication(lane, journal)
             (sync_git.git_dir(lane) / 'agent-signal-sync.json').unlink()
+    _verify_retirement_publication(lane, journal)
     (common / 'agent-signal-integration.json').unlink()
     return result
 
@@ -1439,6 +1487,7 @@ def _verify_composition(lane, journal):
 
 
 def _verify_completion(lane, journal, pending):
+    _verify_retirement_publication(lane, journal)
     reconcile._operational_receipt_state(lane, pending)
     completion = pending['completion']
     commit = completion.get('commit')
@@ -1483,11 +1532,13 @@ def _verify_completion(lane, journal, pending):
 
 def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                skill_roots=None, recovery_roots=None, message='chore: integrate checked ready change',
-               capture_recovery=False, recovery_artifacts=None, source_only=False, continue_published=None, **unsupported):
+               capture_recovery=False, recovery_artifacts=None, source_only=False, continue_published=None, retirement_publication=None, **unsupported):
     repo = Path(repo).resolve()
     phase = 'ready-qualification'
     journal = None
     try:
+        if retirement_publication is not None and (not source_only or continue_published is not None):
+            raise sync_git.SyncBlocked('completed retirement requires source-only publication without continuation or rollout')
         if source_only and continue_published is not None:
             raise sync_git.SyncBlocked('published successor cannot discard rollout through source-only')
         if source_only and adopt:
@@ -1495,7 +1546,7 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
         if capture_recovery or recovery_artifacts or unsupported:
             raise sync_git.SyncBlocked('ready integration supports explicit source/portable scopes only')
         primary, common = _primary(repo)
-        options = _options(adopt, include, machine, skill_roots, recovery_roots, message)
+        options = _options(adopt, include, machine, skill_roots, recovery_roots, message, retirement_publication)
         exact = sync_git.git(repo, 'rev-parse', '--verify', str(ready) + '^{commit}')
         journal_path = common / 'agent-signal-integration.json'
         observed = _read(journal_path)
@@ -1546,7 +1597,8 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                              if journal and key in journal}
                 journal = {'schema_version': 1, 'attempt': uuid.uuid4().hex, 'receipt': receipt,
                            'base': base, 'phase': 'composing', 'deployment_started': False,
-                           'published_repo': str(published), 'integration_repo': str(lane), **inherited}
+                           'published_repo': str(published), 'integration_repo': str(lane), **inherited,
+                           **({'retirement_publication_required': True, 'retirement_publication_sha256': _canonical_hash(retirement_publication)} if retirement_publication is not None else {})}
                 _atomic(journal_path, journal)
                 if (lane / 'registry.json').is_file():
                     # The reconciler requires a rendered public baseline even
@@ -1602,7 +1654,8 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
             else:
                 result = reconcile.complete_sync(lane, machine=machine, adopt=list(adopt),
                     include=list(include), recovery_roots=recovery_roots or {}, skill_roots=skill_roots,
-                    capture_recovery=False, scoped=True, message=message, integration_attempt=journal['attempt'])
+                    capture_recovery=False, scoped=True, message=message, integration_attempt=journal['attempt'],
+                    **({'source_only': True, 'retirement_publication': retirement_publication} if retirement_publication is not None else {}))
             # The inner reconciler writes monotonic deployment evidence before
             # touching live roots. Never overwrite it with this caller's cache.
             current = _read(journal_path)

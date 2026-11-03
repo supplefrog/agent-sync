@@ -181,3 +181,10 @@ admission bridge. Synthetic positive validation and recorded consistency do not
 fill those gaps. R21/R22 and other pending acceptance rows remain partial; no
 publication, sync, live inference, installed guidance change or authoring resumption
 is authorized or performed by this integration record.
+
+## Outcome-design retirement maintenance, 2026-11-03
+
+The user-directed optional-owner retirement has a closed R02 maintenance route for its exact reviewed source/lifecycle pairs. Recorded authority and matching scope-bound independent review are required; these consistency checks do not authenticate the human or prove behavioral superiority. The supported operation retains Git/root locks, drift checks and recovery for every package and native before-file, subtracts only the obsolete native loading sentence and preserves unrelated OMP output text. Source/control qualification and actual installed retirement/native discovery are separate; source readiness alone does not mark this action complete. Other adoption, publication, permissions and provider gates are unchanged.
+
+
+The same completed optional-owner retirement may propagate its canonical source only through the closed completion-bound source-only publication path. Retain the original request, matching operation review, apply result and native readbacks privately; bind the exact current public base, ready source and full publication file set. This authorizes no replayed retirement, native restore, unrelated lifecycle change, behavioral-benefit claim or public action. Existing action-time publication authority and all ordinary source, dependency, staging and disclosure guards remain required.

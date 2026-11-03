@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [skills, instructions, evaluation, triggers]
-    related_skills: [hermes-self-engineering, outcome-first-workflow-design]
+    related_skills: [hermes-self-engineering]
 ---
 
 # Instruction Authoring
@@ -16,7 +16,6 @@ Use this to author or review durable instructions and model-facing tool descript
 
 ## Owner boundary
 
-- Unresolved workflow/capability design => `outcome-first-workflow-design`; skip for a bounded wording, duplication, or stale-reference repair with a known owner.
 - Cross-host placement or convergence => load `cross-agent-surface-engineering` first.
 - Hermes behavior-surface ambiguity => load `hermes-self-engineering` first.
 - Shared behavioral preference => the existing standing owner in `surfaces/core.md`; necessary host-only differences remain in its adapter.

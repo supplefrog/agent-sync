@@ -52,7 +52,7 @@ V3 permits at most two total model attempts. A transport retry keeps the exact r
 
 ## Refresh and auxiliary work
 
-Refresh affected evidence when requested or when a material availability, task, harness, tool, prompt, verifier, or resource change invalidates it. Reuse current verified findings; do not launch recurring benchmark swarms. For solution discovery, follow `outcome-first-workflow-design`: existing implementations before novel research.
+Refresh affected evidence when requested or when a material availability, task, harness, tool, prompt, verifier, or resource change invalidates it. Reuse current verified findings; do not launch recurring benchmark swarms. For solution discovery, use `project-prior-art` to assess existing implementations before novel research.
 
 Auxiliary transformations retain their purpose-specific incumbents until representative task evidence supports replacement. Native callability is transport-specific: a catalog entry or successful text request does not prove tool use, another host, or every reasoning effort. Preserve specialized non-Codex routes when their purpose remains justified. Never mutate shared configuration between children to imitate per-child routing.
 

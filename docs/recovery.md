@@ -158,6 +158,29 @@ predeployment release cannot discard either history, and retries validate the
 retained bytes and obligations. This route records consistency, not action
 permission; a consumed qualification allowance is not renewed by a request.
 
+## Reviewed outcome-design retirement maintenance
+
+The separately reviewed `reconcile retirement-plan/retire --retirement-request`
+entrypoint supports this exact user-directed retirement. It retains normal
+instruction admission, independent scope/verdict review, publication/root locks,
+installed drift checks and Git recovery for every changed package. Its closed
+maintenance classification admits only the reviewed outcome-design retirement
+and supporting byte pairs; it supplies no measured-benefit claim or authority
+for another skill, source revision or public release.
+
+For the three affected native instruction artifacts, the same bound operation
+uses recovery's exact route subtraction. It verifies each complete before-file
+against declared Git history, removes only the obsolete loading sentence and
+checks the after digest. Existing output text, host differences and unique edits
+are preserved; drift refuses the operation. It uses the existing restore locks,
+atomic writes and conflict-aware rollback, without `--force-text` or wholesale
+canonical replacement. Native writes precede package removal and are recorded
+in the retained applying receipt. Actual catalogue absence is verified separately.
+
 ## OMP shared-skill discovery audit, 2026-11-03
 
 The installed OMP18.12.6 native RPC catalog enumerates the admitted shared skills directly. The previous outcome-first discovery wrapper adds no execution rules; the workflow wrapper duplicates the canonical lifecycle. Its pre-use runtime-contract read is preserved for both V2 and V3 in `skills/dynamic-workflows/references/omp-adapter.md`. Remove only those two host-local directories through exact recoverable archival after source qualification; recovery restore writes selected artifacts and does not delete retired live files. Preserve route-agent definitions and run pins. Source removal and catalog discovery do not establish current routed-model execution readiness. The [audit receipt](../evals/results/capability-scope-audit-20261103.json) records checks and limitations.
+
+## Completed retirement source propagation
+
+After a separately reviewed local retirement is verified, source publication uses its retained completion rather than replaying the operation. An exact private publication proof joins the original request, matching operation review, apply result, repository-owned retained result and native readbacks to a current-base ready source map. The existing include-only ready lane accepts this one completed retirement only with source-only publication. It rechecks proof during qualification, publisher readback, resume and final completion. New or altered instructions, another owner's lifecycle change, native selectors, missing proof or source drift remain blocked. The proof is private and authenticates no human approval; public scope and action review remain required.

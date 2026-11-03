@@ -24,7 +24,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "610f3ad9a9ecd6ed55620c6f30f2709cca7bb109c1a7529473511be417166813"
+        "3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -58,7 +58,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "c0846302bff87dc53c17732ea636435c18e3baba1e28530f0f1ae4001099373a"
+        "b61def09b5f230af0d200c20e0148de2ef28fd39ae86d4de1e808f5e64657c83"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -95,7 +95,7 @@
     },
     "omp": {
       "artifact_sha256": [
-        "cc7fcd0556f903fc471783dd731df921cfd166c597b7687007bce56a28e230b5"
+        "02d478ddfff7453c80e3e15e9162179d57ba9f45fefe2a304b41d4fc967f93ef"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -118,11 +118,11 @@
       "model": "gpt-6-astra",
       "observation": {
         "kind": "configured-defaults",
+        "native_source_sha256": "291e55fc3085c40d4355e3e39c4d20a2ee21eda2e983ba57d86b63efd23b9f26",
         "observed_at": "2026-10-13T23:11:10.234876+00:00",
         "source": "recovery/current/hosts/omp/config.json",
         "source_sha256": "759b372fcbff2179d60dcf8eae19ecaf7106d6dd2497e7c0995b054b3a31bb7d",
-        "time_status": "known",
-        "native_source_sha256": "291e55fc3085c40d4355e3e39c4d20a2ee21eda2e983ba57d86b63efd23b9f26"
+        "time_status": "known"
       },
       "provider": "openai-codex",
       "reasoning": "xhigh",

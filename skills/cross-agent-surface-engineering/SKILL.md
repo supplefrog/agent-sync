@@ -25,6 +25,8 @@ Agent Sync owns the source of its managed artifacts. Locate its published checko
 
 State the observable outcome, trigger, affected hosts and versions, hard failures, acceptable native differences, rollback, and checks. Do not choose a file or mechanism before the behavior is clear.
 
+When auditing an accumulated agent system, reconstruct desired and undesired behavior from existing instructions, original user decisions and observed outcomes before asking the user to clarify concrete gaps. Keep inferred contracts staged for confirmation; do not substitute a parts inventory or ask the user to reconstruct the system from scratch.
+
 ### 2. Inventory the effective surfaces
 
 Inspect the changed owner and affected neighbors first. Use the checkout's `tools/run.py` launcher to resolve its dependency-ready runtime once; it performs no automatic installation. Use the applicable read-only checks:

@@ -1563,7 +1563,7 @@ def _owner_binding_preflight(repo, names, included, *, project_derived=True):
 
 
 def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
-                          capture_recovery, include, message, recovery_artifacts=None, integration_attempt=None):
+                          capture_recovery, include, message, recovery_artifacts=None, integration_attempt=None, retirement_publication=None):
     """Complete one explicit change set; leave independent work pending."""
     import sync_git
     repo = Path(repo).resolve()
@@ -1582,6 +1582,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             roots = {host: str(Path(path).resolve()) for host, path in
                      (recovery_roots if recovery_roots is not None else recovery._default_roots()).items()} if needs_recovery else {}
             if pending:
+                if pending.get("retirement_publication") != retirement_publication:
+                    raise sync_git.SyncBlocked("pending completed-retirement proof changed or is missing")
                 if not pending.get("scoped"):
                     raise sync_git.SyncBlocked("a broad sync is pending; resume its original scope")
                 if adopt and set(adopt) != set(pending["owners"]):
@@ -1618,6 +1620,9 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             checked_agents = pending.get("agent_identities") if pending else None
             expected_owners = pending.get("owner_identities", {}) if pending else {}
             def readback():
+                if retirement_publication is not None:
+                    import instruction_changes
+                    instruction_changes.completed_retirement_publication(repo, repo, retirement_publication['base_commit'], retirement_publication['files'], retirement_publication)
                 check_dependencies()
                 state = receipt_state if receipt_state is not None else {
                     'schema_version': 2, 'scoped': True, 'owners': sorted(names),
@@ -1729,7 +1734,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             with sync_git.prepare_candidate(repo, files, base=base_commit, overrides=overrides) as (candidate, candidate_tree):
                 check_dependencies(candidate)
                 import instruction_changes
-                instruction_changes.check(candidate, repo, base_commit, files)
+                instruction_changes.check(candidate, repo, base_commit, files, **({"retirement_publication": retirement_publication} if retirement_publication is not None else {}))
                 _prepare_candidate_bindings(candidate, names, artifacts, files)
                 sync_git.assert_publishable(candidate, files)
                 if (candidate / "registry.json").is_file():
@@ -1776,6 +1781,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                        "binding_identities": sorted(bind_owners), "project_bindings": project_bindings,
                        "publication_overrides": publication_overrides,
                        "operational_receipt": operational_receipt,
+                       **({"retirement_publication": retirement_publication} if retirement_publication is not None else {}),
                        "operational_receipt_required": bool(names or capture or bind_owners),
                        "agents_verified": False, "installed_verified": bool(names), "dependencies": dependencies,
                        "target": target, "base": base_commit, "message": message,
@@ -1809,6 +1815,7 @@ def _complete_source_sync(
     scoped: bool | None = None,
     recovery_artifacts: Sequence[str] | None = None,
     integration_attempt: str | None = None,
+    retirement_publication: dict | None = None,
 ) -> dict[str, Any]:
     """One operator operation: reconcile checked owners, commit, push, read back.
 
@@ -1835,7 +1842,7 @@ def _complete_source_sync(
     if selected_scope:
         return _scoped_complete_sync(repo, machine=machine, adopt=adopt,
                                      recovery_roots=recovery_roots, skill_roots=skill_roots,
-                                     capture_recovery=capture_recovery, include=include, message=message, recovery_artifacts=recovery_artifacts, integration_attempt=integration_attempt)
+                                     capture_recovery=capture_recovery, include=include, message=message, recovery_artifacts=recovery_artifacts, integration_attempt=integration_attempt, **({"retirement_publication": retirement_publication} if retirement_publication is not None else {}))
     repo = Path(repo).resolve()
     try:
         with sync_git.lock(repo):
@@ -2023,6 +2030,8 @@ def _complete_source_sync(
 @_measure_completion
 def complete_sync(repo, *, source_only=False, **options):
     """Default completion includes the published cache and configured targets."""
+    if options.get('retirement_publication') is not None and (not source_only or not options.get('integration_attempt')):
+        return {'result': 'review-required', 'reason': 'completed retirement is source-only through the existing integration lane'}
     if source_only:
         if options.get('adopt') or options.get('capture_recovery') or options.get('recovery_artifacts') or not options.get('include'):
             return {'result':'review-required','reason':'source-only requires exact included files without native selectors'}
@@ -2227,9 +2236,262 @@ def complete_defaults_sync(repo, *, hosts=None, **options):
                 "private_metadata_backups": backups, "defaults_rollback": rollback}
 
 
+def _retirement_review_scope(request: dict) -> str:
+    """Stable operation identity, excluding only its non-circular review reference."""
+    scope = {key: value for key, value in request.items() if key != 'evidence'}
+    scope['evidence'] = {key: value for key, value in request['evidence'].items()
+                         if key != 'operation_review'}
+    return hashlib.sha256(json.dumps(scope, sort_keys=True, separators=(',', ':'),
+                                    ensure_ascii=True).encode('utf-8')).hexdigest()
+
+
+def _reviewed_retirement_context(repo: Path, request_path: Path, *, require_operation_review: bool = True) -> dict:
+    """Bind a separately reviewed local operation, never authenticate its approval.
+
+    The explicit user action and independent operation review remain external
+    authorities. This checks their exact referenced bytes and all mutable inputs.
+    """
+    import base64
+    import sync_git
+    repo, request_path = repo.resolve(), request_path.resolve()
+    request_bytes = request_path.read_bytes()
+    request = json.loads(request_bytes)
+    keys = {'kind', 'owner', 'machine', 'source_commit', 'source_files', 'engine',
+            'snapshot_manifest_sha256', 'target', 'state_sha256', 'state_before_base64',
+            'package', 'expected_actions', 'git_recovery', 'evidence'}
+    if not isinstance(request, dict) or set(request) != keys or request['kind'] != 'reviewed-skill-retirement-v1':
+        raise RuntimeError('invalid reviewed retirement request')
+    owner = request['owner']
+    if not isinstance(owner, str) or not fleet.SKILL_NAME_RE.fullmatch(owner):
+        raise RuntimeError('invalid retirement owner')
+    if not isinstance(request['source_commit'], str) or not re.fullmatch('[0-9a-f]{40}', request['source_commit']):
+        raise RuntimeError('retirement requires exact source commit')
+    import instruction_changes
+    modules = {'reconcile': Path(__file__), 'fleet': Path(fleet.__file__),
+               'sync_git': Path(sync_git.__file__), 'instruction_changes': Path(instruction_changes.__file__),
+               'recovery': Path(recovery.__file__)}
+    if set(request['engine']) != set(modules) or any(fleet.sha256_file(p) != request['engine'][n] for n, p in modules.items()):
+        raise RuntimeError('retirement consumer identity changed')
+    if sync_git.git(repo, 'rev-parse', 'HEAD') != request['source_commit'] or sync_git.changed(repo):
+        raise RuntimeError('retirement source commit or raw working bytes changed')
+    required = {'tools/audit.py', 'tools/validate.py', 'tools/instruction_changes.py',
+                'docs/system-requirements.md', 'docs/requirement-status.md'}
+    if any(not (repo / name).is_file() for name in required):
+        raise RuntimeError('retirement source omits normal admission or validation inputs')
+    recovery_spec = request['git_recovery']
+    if not isinstance(recovery_spec, dict) or set(recovery_spec) != {'repo', 'commit', 'packages'}:
+        raise RuntimeError('retirement requires exact Git recovery')
+    if not isinstance(recovery_spec['packages'], dict):
+        raise RuntimeError('retirement requires exact Git package recovery records')
+    recovery_repo = Path(recovery_spec['repo']).resolve()
+    base = recovery_spec['commit']
+    if not isinstance(base, str) or not re.fullmatch('[0-9a-f]{40}', base):
+        raise RuntimeError('invalid retirement recovery commit')
+    try:
+        merge_base = sync_git.git(repo, 'merge-base', base, request['source_commit'])
+    except sync_git.GitFailure as exc:
+        if exc.detail.get('exit_code') == 1:
+            raise RuntimeError('retirement recovery must be an ancestor of the selected source') from exc
+        raise
+    if merge_base != base:
+        raise RuntimeError('retirement recovery must be an ancestor of the selected source')
+    old_entries = sync_git._tree_entries(repo, base)
+    new_entries = sync_git._tree_entries(repo, request['source_commit'])
+    changed_files = {n for n in old_entries.keys() | new_entries.keys() if old_entries.get(n) != new_entries.get(n)}
+    source_files = request['source_files']
+    if not isinstance(source_files, dict) or set(source_files) != changed_files:
+        raise RuntimeError('retirement source scope changed')
+    new_blobs = sync_git._blobs(repo, new_entries)
+    for name, expected in source_files.items():
+        sync_git.safe_path(repo, name)
+        actual = hashlib.sha256(new_blobs[new_entries[name][1]]).hexdigest() if name in new_entries else None
+        if expected != actual:
+            raise RuntimeError('retirement source binding changed: ' + name)
+    # The machine/root contract cannot migrate during a retirement operation.
+    old_blobs = sync_git._blobs(repo, old_entries)
+    if old_blobs[old_entries['fleet.json'][1]] != new_blobs[new_entries['fleet.json'][1]]:
+        raise RuntimeError('retirement cannot change configured fleet destinations')
+    registered = fleet.registry(repo).get(owner, {})
+    ownership = json.loads((repo / 'contracts/ownership.json').read_bytes())
+    rows = [row for row in ownership.get('capabilities', []) if row.get('id') == owner]
+    if registered.get('status') != 'retired' or len(rows) != 1 or rows[0].get('status') != 'retired' or rows[0].get('owner') != 'skills/' + owner:
+        raise RuntimeError('retirement is not selected in registry and ownership')
+    config = fleet.load_fleet(repo)
+    machine = config['machines'].get(request['machine'])
+    target = Path(request['target']).resolve()
+    roots = {fleet.resolve_template(value).resolve() for value in machine['skill_roots']} if machine else set()
+    if roots != {target}:
+        raise RuntimeError('retirement must bind the exact single configured managed root')
+    if request_path.is_relative_to(repo) or request_path.is_relative_to(target):
+        raise RuntimeError('private retirement request must stay outside source and target')
+    for git_repo in (repo, recovery_repo):
+        common = sync_git.common_dir(git_repo)
+        if (common / 'agent-signal-integration.json').exists() or (common / 'agent-signal-sync.json').exists():
+            raise RuntimeError('retirement cannot overlap an existing transaction')
+    snapshot = fleet.validated_snapshot_output(repo, repo / config['snapshot_root'])
+    manifest = fleet.load_manifest(snapshot)
+    admitted = {name for name, row in fleet.registry(repo).items() if row.get('status') == 'admitted'}
+    if manifest.get('registry_sha256') != fleet.sha256_file(repo / 'registry.json') or set(manifest['skills']) != admitted:
+        raise RuntimeError('retirement snapshot does not match the selected registry')
+    if any(fleet.directory_record(repo / 'skills' / name) != manifest['skills'][name] for name in admitted):
+        raise RuntimeError('retirement snapshot differs from canonical skill source')
+    if fleet.sha256_file(snapshot / fleet.MANIFEST_FILE) != request['snapshot_manifest_sha256'] or owner in manifest['skills']:
+        raise RuntimeError('retirement desired snapshot changed or still contains owner')
+    state_raw = (target / fleet.STATE_FILE).read_bytes()
+    if hashlib.sha256(state_raw).hexdigest() != request['state_sha256'] or base64.b64decode(request['state_before_base64'], validate=True) != state_raw:
+        raise RuntimeError('retirement managed state changed')
+    state = fleet.load_state(target)
+    if set(state) != {'schema_version', 'skills', 'source_snapshot', 'manifest_sha256'} or any(set(v) - {'sha256', 'source_snapshot', 'manifest_sha256'} for v in state['skills'].values()):
+        raise RuntimeError('retirement must preserve unrecognized managed-state fields')
+    package = request['package']
+    if not isinstance(package, dict) or set(package) != {'sha256', 'files'} or state['skills'].get(owner, {}).get('sha256') != package['sha256'] or fleet.directory_record(target / owner) != package:
+        raise RuntimeError('retirement installed owner or managed identity changed')
+    recover_entries = sync_git._tree_entries(recovery_repo, base)
+    recover_blobs = sync_git._blobs(recovery_repo, recover_entries)
+    prefix = 'skills/' + owner + '/'
+    if any(entry[0] not in {'100644', '100755'} for n, entry in recover_entries.items() if n.startswith(prefix)):
+        raise RuntimeError('retirement Git recovery contains a non-file entry')
+    recovered = {n[len(prefix):]: hashlib.sha256(recover_blobs[entry[1]]).hexdigest() for n, entry in recover_entries.items() if n.startswith(prefix)}
+    if recovered != package['files'] or recovery_spec['packages'].get(owner) != package:
+        raise RuntimeError('retirement lacks exact Git-recoverable package')
+    if not isinstance(request['evidence'], dict) or set(request['evidence']) != {'decision', 'coverage', 'operation_review', 'references'}:
+        raise RuntimeError('retirement requires decision, coverage, operation and reference evidence')
+    evidence = {}
+    for name, record in request['evidence'].items():
+        if name == 'operation_review' and record is None:
+            if require_operation_review:
+                raise RuntimeError('retirement operation review required before apply')
+            continue
+        if not isinstance(record, dict) or set(record) != {'path', 'sha256'}:
+            raise RuntimeError('invalid retirement evidence reference')
+        path = Path(record['path']).resolve()
+        if fleet.sha256_file(path) != record['sha256']:
+            raise RuntimeError('retirement evidence changed: ' + name)
+        evidence[name] = path
+    references = json.loads(evidence['references'].read_bytes())
+    if references.get('complete') is not True or references.get('owner') != owner or references.get('source_commit') != request['source_commit']:
+        raise RuntimeError('retirement reference reconciliation incomplete or stale')
+    native_spec = references.get('native_instruction_removals')
+    native_roots = recovery._default_roots() if native_spec is not None else {}
+    if native_spec is not None:
+        if native_spec.get('base_commit') != base:
+            raise RuntimeError('native retirement recovery baseline differs from operation')
+        recovery._retirement_native_desired(repo / 'recovery.json', repo / 'recovery/current',
+                                            repo, native_roots, native_spec)
+    if 'operation_review' in evidence:
+        review = json.loads(evidence['operation_review'].read_bytes())
+        expected_review = {'schema_version': 1, 'kind': 'reviewed-retirement-operation',
+                           'verdict': 'PASS', 'scope_sha256': _retirement_review_scope(request),
+                           'decision': request['evidence']['decision'],
+                           'coverage': request['evidence']['coverage']}
+        if review != expected_review:
+            raise RuntimeError('retirement operation review does not approve this exact scope')
+    actions = fleet.plan_snapshot(snapshot, target)
+    actual = {}
+    for row in actions:
+        if row['name'] == fleet.STATE_FILE or row['action'] == 'unchanged':
+            continue
+        name, action = row['name'], row['action']
+        if action not in {'remove', 'update', 'reconcile'} or (action == 'remove' and name != owner):
+            raise RuntimeError('unexpected retirement action: ' + name + ':' + action)
+        actual[name] = {'action': action, 'before_sha256': fleet.installed_hash(target / name),
+                        'after_sha256': manifest['skills'].get(name, {}).get('sha256')}
+    if actual != request['expected_actions'] or actual.get(owner, {}).get('action') != 'remove':
+        raise RuntimeError('retirement action scope changed')
+    # The normal fleet engine discards successful transient old directories.
+    # Every allowed before-package must therefore already be recoverable in Git.
+    # A managed hash alone cannot reproduce an uncommitted package body.
+    if not isinstance(recovery_spec['packages'], dict) or set(recovery_spec['packages']) != set(actual):
+        raise RuntimeError('retirement requires recovery for every allowed package action')
+    for name in actual:
+        before = fleet.directory_record(target / name)
+        prefix = 'skills/' + name + '/'
+        entries = {n: entry for n, entry in recover_entries.items() if n.startswith(prefix)}
+        if any(entry[0] not in {'100644', '100755'} for entry in entries.values()):
+            raise RuntimeError('retirement Git recovery contains a non-file entry: ' + name)
+        files = {n[len(prefix):]: hashlib.sha256(recover_blobs[entry[1]]).hexdigest()
+                 for n, entry in entries.items()}
+        if files != before['files'] or recovery_spec['packages'][name] != before:
+            raise RuntimeError('retirement before-package is not Git-recoverable: ' + name)
+    return {'repo': repo, 'request_path': request_path, 'request': request,
+            'request_sha256': hashlib.sha256(request_bytes).hexdigest(),
+            'snapshot': snapshot, 'target': target, 'actions': actual,
+            'source_files': source_files, 'base': base, 'recovery_repo': recovery_repo,
+            'native_removals': native_spec, 'native_roots': native_roots}
+
+
+def reviewed_retirement(repo: Path, request_path: Path, *, apply: bool = False) -> dict:
+    """Separate local retirement entry; regular sync's refusal is unchanged."""
+    import instruction_changes
+    import sync_git
+    from contextlib import ExitStack
+    # Read only enough to discover existing common-Git locks. All semantic
+    # validation follows under them, and rejects any discovery-time substitution.
+    discovery_raw = request_path.read_bytes()
+    discovery = json.loads(discovery_raw)
+    repos = [Path(repo).resolve(), Path(discovery['git_recovery']['repo']).resolve()]
+    lock_repos = {str(sync_git.common_dir(value)): value for value in repos}
+    with ExitStack() as publication_locks:
+        for common in sorted(lock_repos):
+            publication_locks.enter_context(sync_git.lock(lock_repos[common]))
+        if request_path.read_bytes() != discovery_raw:
+            raise RuntimeError('retirement request changed during lock discovery')
+        context = _reviewed_retirement_context(repo, request_path, require_operation_review=apply)
+        if context['request_sha256'] != hashlib.sha256(discovery_raw).hexdigest():
+            raise RuntimeError('retirement request changed during locked validation')
+        request = context['request']
+        admission = instruction_changes.check(context['repo'], context['recovery_repo'], context['base'], sorted(context['source_files']), context['request'])
+        names = sorted(set(context['actions']) - {request['owner']})
+        checks = _run_checks(context['repo'], _candidate_commands(context['repo'], names, sorted(context['source_files'])))
+        native_paths = ([context['repo'] / 'recovery/current', *context['native_roots'].values()]
+                        if context['native_removals'] is not None else [])
+        with fleet._path_locks([context['snapshot'], context['target'], *native_paths]):
+            # Source, request, evidence, managed state and the entire action set are
+            # rechecked after qualification and under the normal destination lock.
+            current = _reviewed_retirement_context(repo, request_path, require_operation_review=apply)
+            if current['request_sha256'] != context['request_sha256']:
+                raise RuntimeError('retirement request changed during checks')
+            report = {'result': 'retirement-ready' if request['evidence']['operation_review'] else 'retirement-needs-operation-review', 'owner': request['owner'],
+                      'request_sha256': context['request_sha256'], 'source_commit': request['source_commit'],
+                      'actions': current['actions'], 'admission': admission, 'checks': checks,
+                      'remote_publication': False, 'native_absence_verified': False}
+            if not apply:
+                return report
+            receipt = sync_git.common_dir(current['recovery_repo']) / 'agent-signal-retirements' / (context['request_sha256'] + '.json')
+            if receipt.exists():
+                raise RuntimeError('retirement already attempted; inspect its outcome before resumption')
+            # Incoming request already durably retains the unique prior state bytes.
+            # Git retains source; no duplicate package backup is created here.
+            fleet.atomic_json(receipt, {**report, 'result': 'applying'})
+            if current['native_removals'] is not None:
+                report['native_instruction_removals'] = recovery.restore(
+                    current['repo'] / 'recovery.json', current['repo'] / 'recovery/current',
+                    current['native_roots'], repo_root=current['repo'], apply=True,
+                    artifacts=sorted(current['native_removals']['artifacts']),
+                    retirement_removals=current['native_removals'])
+                fleet.atomic_json(receipt, {**report, 'result': 'applying'})
+            actions = fleet.apply_snapshot(current['snapshot'], current['target'],
+                                           expected_state=fleet.state_identity(current['target']))
+            if (current['target'] / request['owner']).exists() or fleet.verify_snapshot(current['snapshot'], current['target']):
+                raise RuntimeError('retirement applied but final local readback incomplete; do not retry')
+            if current['native_removals'] is not None:
+                recovery._retirement_native_desired(current['repo'] / 'recovery.json',
+                    current['repo'] / 'recovery/current', current['repo'], current['native_roots'],
+                    current['native_removals'], after=True)
+            report.update(result='retired-local', actions=current['actions'], receipt_path=str(receipt),
+                          state_after_sha256=fleet.sha256_file(current['target'] / fleet.STATE_FILE),
+                          native_absence_verified=False, native_verification='pending fresh catalog readback')
+            try:
+                fleet.atomic_json(receipt, report)
+            except OSError as exc:
+                # Preserve the observed successful return if private bookkeeping fails.
+                report['receipt_write_error'] = type(exc).__name__ + ': ' + str(exc)[:300]
+            return report
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("review", "plan", "sync"))
+    parser.add_argument("action", choices=("review", "plan", "sync", "retirement-plan", "retire"))
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--machine", default="local-windows")
     parser.add_argument("--adopt", action="append", default=[])
@@ -2259,7 +2521,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--evidence", action="append", default=[], type=Path)
     parser.add_argument("--suite", action="append", default=[], type=Path)
     parser.add_argument("--reference-skill", action="append", default=[], type=Path)
+    parser.add_argument("--retirement-request", type=Path, help="private reviewed retirement request, or completed-retirement proof for ready plan/source-only sync; no action authority")
     args = parser.parse_args(argv)
+    if args.action in {"retirement-plan", "retire"}:
+        if not args.retirement_request or any((args.adopt, args.include, args.ready, args.continue_published,
+                args.source_only, args.shared_checkout, args.full, args.root, args.skill_root,
+                args.reconcile_defaults, args.maintenance_host, args.capture_artifact,
+                args.capture_recovery is not None, args.target, args.candidate, args.baseline,
+                args.host, args.model, args.evidence, args.suite, args.reference_skill)):
+            parser.error("retirement uses only repo and the exact reviewed request; no other action selectors")
+        report = reviewed_retirement(args.repo, args.retirement_request, apply=args.action == "retire")
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+    if args.retirement_request and not (args.ready and args.action in {'plan', 'sync'} and (args.action == 'plan' or args.source_only)):
+        parser.error("retirement-request requires retirement-plan, retire, or completed-proof ready plan/source-only sync")
     if args.continue_published and (args.action not in {'plan', 'sync'} or not args.ready or args.source_only):
         parser.error('continue-published requires normal ready plan/sync; no source-only or capture/default route')
     if args.source_only and (args.action != 'sync' or args.adopt or args.full or args.capture_artifact or args.reconcile_defaults):
@@ -2301,10 +2576,14 @@ def main(argv: list[str] | None = None) -> int:
         import worktree_sync
         operation = worktree_sync.ready_plan if args.action == "plan" else worktree_sync.ready_sync
         report = operation(args.repo, args.ready, machine=args.machine, adopt=args.adopt,
-                           include=args.include, recovery_roots=roots, skill_roots=args.skill_root or None,
+                           include=args.include,
+                           recovery_roots=({} if args.retirement_request and not args.root else roots),
+                           skill_roots=args.skill_root or None,
                            message=args.message, **({'source_only':True} if args.source_only else {}),
                            **({'continue_published': json.loads(args.continue_published.read_bytes())}
-                              if args.continue_published else {}))
+                              if args.continue_published else {}),
+                           **({'retirement_publication': json.loads(args.retirement_request.read_bytes())}
+                              if args.retirement_request else {}))
     elif args.action == "review":
         import change_review
         report = change_review.review(args.repo, **options)

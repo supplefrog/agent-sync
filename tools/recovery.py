@@ -945,6 +945,55 @@ def _semantic_equal(left: Any, right: Any) -> bool:
     return left == right
 
 
+def _retirement_native_desired(policy_path, snapshot_dir, repo, roots, spec, *, after=False):
+    """One reviewed retirement's route subtraction, never whole-file convergence."""
+    import sync_git
+    owner = "outcome-first-workflow-design"
+    selected = {"codex:global-instructions", "hermes:standing-instructions", "omp:global-instructions"}
+    if (not isinstance(spec, dict) or set(spec) != {"owner", "base_commit", "artifacts"}
+            or spec["owner"] != owner or not isinstance(spec["base_commit"], str)
+            or not re.fullmatch(r"[0-9a-f]{40}", spec["base_commit"])
+            or not isinstance(spec["artifacts"], dict) or set(spec["artifacts"]) != selected):
+        raise RecoveryError("retirement requires the exact three native instruction removals")
+    policy = _load_policy(Path(policy_path))
+    available = {host + ":" + item["id"]: (host, item) for host, item in _policy_artifacts(policy)}
+    clause = b" For AI workflow design or structural repair, load `outcome-first-workflow-design`."
+    result = {}
+    for identity in sorted(selected):
+        host, artifact = available[identity]
+        filename = "SOUL.md" if host == "hermes" else "AGENTS.md"
+        if artifact["source"] != filename or artifact["snapshot"] != "hosts/" + host + "/" + filename:
+            raise RecoveryError("native retirement cannot redirect an instruction artifact")
+        row = spec["artifacts"][identity]
+        if (artifact["kind"] != "text" or artifact.get("portable_paths")
+                or not isinstance(row, dict) or set(row) != {"before_sha256", "after_sha256", "git_commit"}
+                or any(not isinstance(row[k], str) for k in row)
+                or any(not re.fullmatch(r"[0-9a-f]{64}", row[k]) for k in ("before_sha256", "after_sha256"))
+                or not re.fullmatch(r"[0-9a-f]{40}", row["git_commit"])):
+            raise RecoveryError("invalid retirement native proof: " + identity)
+        if sync_git.git(Path(repo), "merge-base", row["git_commit"], spec["base_commit"]) != row["git_commit"]:
+            raise RecoveryError("native retirement recovery is not an ancestor")
+        relative = "recovery/current/" + artifact["snapshot"]
+        entry = sync_git._tree_entries(Path(repo), row["git_commit"]).get(relative)
+        if entry is None or entry[0] not in {"100644", "100755"}:
+            raise RecoveryError("native retirement lacks a regular Git recovery file")
+        before = sync_git._raw_git(Path(repo), "show", row["git_commit"] + ":" + relative)
+        if _sha256(before) != row["before_sha256"] or before.count(clause) != 1:
+            raise RecoveryError("native retirement before proof or unique clause mismatch: " + identity)
+        desired = before.replace(clause, b"", 1)
+        if _sha256(desired) != row["after_sha256"] or owner.encode() in desired:
+            raise RecoveryError("native retirement changes more than the reviewed route: " + identity)
+        canonical = _safe_join(Path(snapshot_dir), artifact["snapshot"], must_exist=True).read_bytes()
+        if owner.encode() in canonical:
+            raise RecoveryError("canonical native source still routes to retired owner")
+        target = _safe_join(Path(roots[host]), artifact["source"], must_exist=True)
+        current = target.read_bytes()
+        if current != (desired if after else before):
+            raise RecoveryError("native retirement target drift: " + identity)
+        result[identity] = {"target": target, "before": before, "desired": desired}
+    return result
+
+
 @_mutation_lock
 def restore(
     policy_path: str | Path,
@@ -956,6 +1005,7 @@ def restore(
     repo_root: str | Path | None = None,
     hosts: Iterable[str] | None = None,
     artifacts: Iterable[str] | None = None,
+    retirement_removals: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Plan or apply a restore. Dry-run is the default."""
 
@@ -978,6 +1028,10 @@ def restore(
     conflicts: list[dict[str, Any]] = []
     selected_set = set(selected_hosts)
     target_home = _target_home(resolved_roots, selected_hosts)
+    removal_rows = (_retirement_native_desired(policy_path, snapshot_dir, repo, resolved_roots, retirement_removals)
+                    if retirement_removals is not None else {})
+    if removal_rows and (set(removal_rows) != selected_artifacts or force_text):
+        raise RecoveryError("native retirement cannot mix artifact selectors or force-text")
 
     # Complete preflight before the first mutation.
     for host, artifact in _policy_artifacts(policy):
@@ -1022,6 +1076,9 @@ def restore(
                 ).encode("utf-8")
             else:
                 desired = source_data
+            removal = removal_rows.get(host + ":" + artifact["id"])
+            if removal is not None:
+                desired = removal["desired"]
             existing = target.read_bytes() if target.is_file() else None
             text_matches = existing == desired
             if existing is not None and not text_matches:
@@ -1031,7 +1088,7 @@ def restore(
                     text_matches = False
             if text_matches and existing is not None:
                 desired = existing
-            elif (existing is not None and not force_text
+            elif (existing is not None and not force_text and removal is None
                   and _sha256(existing.replace(b"\r\n", b"\n").replace(b"\r", b"\n"))
                   not in artifact.get("replace_sha256", [])):
                 conflicts.append(

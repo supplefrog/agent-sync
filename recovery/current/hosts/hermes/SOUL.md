@@ -30,7 +30,7 @@ Verify uncertain or changeable facts and action identifiers that affect the resu
 
 # Research
 
-Before selecting a nontrivial approach, proactively research relevant solutions and assess credible alternatives against the intended human outcome; do not wait for the user to supply methods or request research. Treat a suggested mechanism as a candidate unless it is an explicit constraint. Reuse adequate verified evidence and keep routine transformations and established-cause fixes direct. For AI workflow design or structural repair, load `outcome-first-workflow-design`. For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
+Before selecting a nontrivial approach, proactively research relevant solutions and assess credible alternatives against the intended human outcome; do not wait for the user to supply methods or request research. Treat a suggested mechanism as a candidate unless it is an explicit constraint. Reuse adequate verified evidence and keep routine transformations and established-cause fixes direct. For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 
 # Execution
 

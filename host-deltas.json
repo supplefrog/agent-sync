@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:c0846302bff87dc53c17732ea636435c18e3baba1e28530f0f1ae4001099373a"
+      "version_or_hash": "sha256:b61def09b5f230af0d200c20e0148de2ef28fd39ae86d4de1e808f5e64657c83"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:610f3ad9a9ecd6ed55620c6f30f2709cca7bb109c1a7529473511be417166813"
+      "version_or_hash": "sha256:3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082"
     },
     {
       "category": "instructions",
@@ -218,7 +218,7 @@
         "reference": "omp:global-instructions"
       },
       "source_identity": "recovery-artifact:omp:global-instructions",
-      "version_or_hash": "sha256:cc7fcd0556f903fc471783dd731df921cfd166c597b7687007bce56a28e230b5"
+      "version_or_hash": "sha256:02d478ddfff7453c80e3e15e9162179d57ba9f45fefe2a304b41d4fc967f93ef"
     },
     {
       "category": "hook",
@@ -295,7 +295,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:a30fc045f08a9e5e4901de600d1e394ce63925491314d7334f62f726ec9fed4f"
+      "version_or_hash": "sha256:f1332e5863f56379cf5c9166d3031197a9d5ae56155ae287a0de750879a8574e"
     },
     {
       "category": "hook",
@@ -318,7 +318,7 @@
         "reference": "canonical Agent Sync reconciliation route"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:a30fc045f08a9e5e4901de600d1e394ce63925491314d7334f62f726ec9fed4f"
+      "version_or_hash": "sha256:f1332e5863f56379cf5c9166d3031197a9d5ae56155ae287a0de750879a8574e"
     },
     {
       "category": "plugin",
@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:c20a935aaf3cb33149ae23bc7ce19eea10732dc53d24559ba746971e7ea64255"
+      "version_or_hash": "sha256:cffd75081eda63867634fe0c6ac81443f9865e2c13faa88d760938fdd9446d35"
     },
     {
       "category": "native-skill",
@@ -507,7 +507,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:c20a935aaf3cb33149ae23bc7ce19eea10732dc53d24559ba746971e7ea64255"
+      "version_or_hash": "sha256:cffd75081eda63867634fe0c6ac81443f9865e2c13faa88d760938fdd9446d35"
     },
     {
       "category": "native-skill",
@@ -530,7 +530,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:c20a935aaf3cb33149ae23bc7ce19eea10732dc53d24559ba746971e7ea64255"
+      "version_or_hash": "sha256:cffd75081eda63867634fe0c6ac81443f9865e2c13faa88d760938fdd9446d35"
     },
     {
       "category": "curator",
@@ -576,7 +576,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:a30fc045f08a9e5e4901de600d1e394ce63925491314d7334f62f726ec9fed4f"
+      "version_or_hash": "sha256:f1332e5863f56379cf5c9166d3031197a9d5ae56155ae287a0de750879a8574e"
     },
     {
       "category": "curator",
@@ -599,7 +599,7 @@
         "reference": "Agent Sync contracts and reconciler"
       },
       "source_identity": "repository:tools/reconcile.py",
-      "version_or_hash": "sha256:a30fc045f08a9e5e4901de600d1e394ce63925491314d7334f62f726ec9fed4f"
+      "version_or_hash": "sha256:f1332e5863f56379cf5c9166d3031197a9d5ae56155ae287a0de750879a8574e"
     },
     {
       "category": "plugin",

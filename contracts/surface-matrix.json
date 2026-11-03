@@ -390,7 +390,6 @@
       },
       "owners": [
         "surfaces/core.md",
-        "skills/outcome-first-workflow-design",
         "skills/instruction-authoring",
         "skills/cross-agent-surface-engineering",
         "tools/audit.py",

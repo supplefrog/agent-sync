@@ -130,13 +130,10 @@
     {
       "id": "outcome-first-workflow-design",
       "owner": "skills/outcome-first-workflow-design",
-      "status": "admitted",
-      "selection_state": "selected",
-      "selection_evidence": [
-        "evals/results/organic-architecture-governance-2026-08-25.json",
-        "evals/results/behavior-contract-audit-20261010.json"
-      ],
-      "selection_reason": "Retains the recorded admission with stated evaluation limits: structural checks passed, cross-host discovery was partial, and one value-dependent Hermes probe completed. The normal-build probe began implementation but exceeded the harness ceiling; the isolated A/B was inconclusive, and OMP natural-trigger behavior was not sampled. The linked receipt does not establish completed held-out evaluation or cross-host behavioral validation. The user-selected 2026-10-10 audit procedure reconstructs behavior clusters from existing evidence before focused human clarification; its receipt proves metadata/report mechanics, not improved model quality or parity.",
+      "status": "retired",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "User-directed retirement of optional generic workflow-design guidance: completed bounded comparison found adequate native/standing baseline and no consequential added benefit. Preserve necessary audit/research/authority capabilities at existing owners. No universal harm or full-workflow equivalence claim.",
       "purpose": {
         "objective": "Choose AI workflow mechanisms that achieve the intended human outcome within the user's constraints. This purpose is inferred from the existing contract and the user's explicit outcome-first research requirement.",
         "added_value": "Connects structural failures to Agent Sync's research, implementation, acceptance and reversible promotion owners. General first-principles advice may be redundant with current models; comparative output-quality and cost benefits remain unproven.",
