@@ -188,3 +188,7 @@ The user-directed optional-owner retirement has a closed R02 maintenance route f
 
 
 The same completed optional-owner retirement may propagate its canonical source only through the closed completion-bound source-only publication path. Retain the original request, matching operation review, apply result and native readbacks privately; bind the exact current public base, ready source and full publication file set. This authorizes no replayed retirement, native restore, unrelated lifecycle change, behavioral-benefit claim or public action. Existing action-time publication authority and all ordinary source, dependency, staging and disclosure guards remain required.
+
+## Default measured-behavior validity
+
+The evaluator source binds trial intent, observed exercise, frozen-plan projection and completed-review interpretation through the existing consumer. Offline source and consumer checks are recorded separately from live runner qualification and comparative quality. The frozen plan is forwarded through both completed-review calls; missing, stale, mismatched or invalid measurement evidence must not become success. Valid negative product results remain valid. Historical outputs and accounting are retained. No new provider trial, whole-system benefit or current native runtime compatibility is established by this source update.

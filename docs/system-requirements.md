@@ -169,3 +169,7 @@ The explicit retirement of `outcome-first-workflow-design` and its reviewed capa
 
 
 The same completed optional-owner retirement may propagate its canonical source only through the closed completion-bound source-only publication path. Retain the original request, matching operation review, apply result and native readbacks privately; bind the exact current public base, ready source and full publication file set. This authorizes no replayed retirement, native restore, unrelated lifecycle change, behavioral-benefit claim or public action. Existing action-time publication authority and all ordinary source, dependency, staging and disclosure guards remain required.
+
+## Measured-behavior trial validity
+
+Evaluation must verify that the intended measured behavior actually occurred under the frozen task and supported runner. Availability, loading or a successful process exit alone does not establish exercise. A technical or behavioral defect that invalidates the measurement stops the affected trial and dependent interpretation until repair and requalification under existing authority; preserve raw results and all costs. A valid exercised trial may still yield a negative product outcome. Missing evidence stays unassessed or invalid. Requalification grants no retry, spending, publication or deployment authority.

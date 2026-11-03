@@ -42,11 +42,15 @@ def prepare_no_tool_config(runtime_home: str) -> None:
         json.dump({"agent": NO_TOOL_AGENT_CONFIG, "lsp": NO_INSTALL_LSP_CONFIG}, stream)
 
 
-def prepare_study_config(runtime_home: str, *, direct_backend: bool = False) -> None:
+def prepare_study_config(runtime_home: str, *, direct_backend: bool = False, evidence_only: bool = False) -> None:
     require_no_install_environment(os.environ)
     with (Path(runtime_home)/'config.yaml').open('x',encoding='utf-8') as stream:
         config = {'lsp':NO_INSTALL_LSP_CONFIG}
         if direct_backend: config['agent'] = {'environment_probe': False}
+        if evidence_only:
+            # Supported host config: no coding workspace/ancestor snapshot for
+            # a source-record task. Native safety/profile instructions remain.
+            config['agent']={'environment_probe':False,'coding_context':'off'}
         json.dump(config,stream)
 
 
@@ -148,6 +152,7 @@ def execute_agent(job: dict, access_token: str, factory: Callable, build_prompt:
     if agent.valid_tool_names or any(marker in assembled for marker in markers) or access_token in assembled:
         raise RuntimeError("native Hermes prompt/tool isolation failed")
     native_controls = observed_no_tool_controls(agent)
+    empty_schema_verified=(not agent.valid_tool_names and agent.tools==[])
     prompt = job["prompt"]
     if job.get("output_schema") is not None:
         prompt += "\n\nReturn only one JSON object matching this schema:\n" + json.dumps(job["output_schema"])
@@ -197,18 +202,43 @@ def execute_agent(job: dict, access_token: str, factory: Callable, build_prompt:
         "tool_observation": {"source": "native-AIAgent-tool-dispatch-guard", "tool_activity_count": attempts,
                              "execution_blocker_installed": True, "ok": attempts == 0,
                              "tool_schema_absence_verified": False},
+        'model_launched':True,
+        'catalog_evidence':{'exact_catalog_verified':empty_schema_verified,'declared_names':[],'native_catalog_names':[]},
         "native_result_metadata": {**{key: native.get(key) for key in
                                    ("completed", "failed", "interrupted", "partial", "model", "provider", "api_calls")},
                                    "final_response": output},
     }
 
 
-def study_guard(tool_name, args, fixture, catalog_root):
+READONLY_SCOPE='read-only-existing-unittest'
+READONLY_TOOLS={'read_file','search_files','skills_list','skill_view','terminal'}
+EVIDENCE_SCOPE='read-only-evidence'
+EVIDENCE_TOOLS={'read_file','search_files'}
+
+def apply_study_tool_scope(agent,scope):
+    if scope is None:return
+    if scope not in (READONLY_SCOPE,EVIDENCE_SCOPE):raise ValueError('Unsupported study tool scope')
+    allowed=EVIDENCE_TOOLS if scope==EVIDENCE_SCOPE else READONLY_TOOLS
+    agent.tools[:]=[schema for schema in agent.tools if schema.get('function',{}).get('name',schema.get('name')) in allowed]
+    for schema in agent.tools:
+        function=schema.get('function',schema)
+        if function.get('name')=='terminal':function['description']='Run existing project checks with exactly python -m unittest -v. No source/test edits, arbitrary commands or new probes.'
+
+def study_guard(tool_name, args, fixture, catalog_root, synthetic_dispatch=None, *,tool_scope=None):
     """Conservative native request gate, not an operating-system sandbox."""
     def contained(value, root):
         path = Path(value)
         path = path if path.is_absolute() else fixture / path
         return path.resolve().is_relative_to(root.resolve())
+    if tool_scope is not None:
+        if tool_scope not in (READONLY_SCOPE,EVIDENCE_SCOPE):return 'Unsupported study tool scope'
+        allowed=EVIDENCE_TOOLS if tool_scope==EVIDENCE_SCOPE else READONLY_TOOLS
+        if tool_name not in allowed:return 'Tool outside the declared read-only study scope'
+        if tool_scope==EVIDENCE_SCOPE and (not isinstance(args.get('path','.'),str) or not contained(args.get('path','.'),fixture)):
+            return 'Only supplied common evidence paths are permitted'
+        if tool_name=='terminal' and args.get('command')!='python -m unittest -v':return 'Only the existing python -m unittest -v route is permitted'
+    if synthetic_dispatch is not None and tool_name.startswith('understanding_'):
+        return synthetic_dispatch.guard(tool_name,args)
     if tool_name in ("skills_list", "skill_view"):
         return None
     if tool_name in ("read_file", "search_files", "write_file", "patch"):
@@ -253,10 +283,10 @@ def advertise_study_terminal(agent):
     agent.tools = tools
 
 
-def direct_python_terminal(args, fixture, timeout):
+def direct_python_terminal(args, fixture, timeout, *, executions=None, evidence_dir=None,tool_scope=None):
     """Study-only argv backend, after the unchanged tool-dispatch guard."""
     fixture = Path(fixture).resolve()
-    message = study_guard('terminal', args, fixture, fixture/'unused-catalog')
+    message = study_guard('terminal', args, fixture, fixture/'unused-catalog',tool_scope=tool_scope)
     if message:
         return json.dumps({'error': message, 'success': False})
     workdir = Path(args.get('workdir') or fixture)
@@ -287,13 +317,12 @@ def direct_python_terminal(args, fixture, timeout):
     env = {k:v for k,v in os.environ.items() if k.upper() in
            ('SYSTEMROOT','WINDIR','PATH','PATHEXT','SYSTEMDRIVE','TEMP','TMP')}
     env.update(PYTHONDONTWRITEBYTECODE='1', PYTEST_DISABLE_PLUGIN_AUTOLOAD='1')
-    try:
-        result = subprocess.run(argv, cwd=workdir, env=env, shell=False, text=True,
-                                capture_output=True, timeout=limit, encoding='utf-8', errors='replace')
-        return json.dumps({'output': result.stdout + result.stderr, 'exit_code': result.returncode,
-                           'success': result.returncode == 0, 'backend': 'direct-python-argv'})
-    except subprocess.TimeoutExpired:
-        return json.dumps({'error': 'Fixture test timeout', 'success': False, 'backend': 'direct-python-argv'})
+    from evaluation_artifact_pilot import run_bound_program
+    result, receipt = run_bound_program(argv,fixture,limit,env=env,evidence_dir=evidence_dir,cwd=workdir)
+    if executions is not None: executions.append(receipt)
+    return json.dumps({'output':result.stdout+result.stderr,'exit_code':result.returncode,
+        'success':result.returncode==0,'backend':'direct-python-argv',
+        **({'error':'Fixture test timeout'} if receipt['termination']=='timeout' else {})})
 
 
 def bounded_terminal_schema(native_schema, timeout):
@@ -313,9 +342,11 @@ def install_direct_terminal(job):
     """Use the supported registry API only in this disposable worker process."""
     from tools import terminal_tool as native_terminal
     from tools.registry import registry
+    executions = []
     def handler(args, **kwargs):
         started = time.monotonic()
-        message = study_guard('terminal', args, Path(job['fixture']), Path(job['fixture'])/'unused-catalog')
+        scope=job.get('intervention_clearance',{}).get('contract',{}).get('tool_scope')
+        message = study_guard('terminal', args, Path(job['fixture']), Path(job['fixture'])/'unused-catalog',tool_scope=scope)
         if message: return json.dumps({'error':message,'success':False})
         requested_timeout = args.get('timeout', job['timeout'])
         if type(requested_timeout) not in (int,float) or not 0 < requested_timeout <= job['timeout']:
@@ -342,7 +373,10 @@ def install_direct_terminal(job):
             return json.dumps({'error':'Native terminal guard unavailable or refused','error_type':type(exc).__name__,'success':False})
         remaining = job['timeout'] - (time.monotonic() - started)
         if remaining <= 0: return json.dumps({'error':'Native terminal deadline expired','success':False})
-        return direct_python_terminal({**args,'timeout':min(requested_timeout,remaining)}, job['fixture'], job['timeout'])
+        parent = job.get('request_recording', {}).get('directory')
+        destination = Path(parent)/('program-'+str(len(executions))) if parent else None
+        return direct_python_terminal({**args,'timeout':min(requested_timeout,remaining)}, job['fixture'], job['timeout'],tool_scope=scope,
+            executions=executions,evidence_dir=destination)
     schema = bounded_terminal_schema(native_terminal.TERMINAL_SCHEMA, job['timeout'])
     registry.register(name='terminal', toolset='terminal', schema=schema, handler=handler,
         check_fn=lambda: Path(sys.executable).is_file(), override=True, max_result_size_chars=100_000)
@@ -351,6 +385,7 @@ def install_direct_terminal(job):
             raise RuntimeError('Task-local terminal registration ineffective')
     verify()
     return ({'name': 'direct-python-argv', 'registration_verified': True,
+             'program_executions':executions,
              'registry_source_sha256': hashlib.sha256(Path(sys.modules['tools.registry'].__file__).read_bytes()).hexdigest()}, verify)
 
 
@@ -426,22 +461,107 @@ def run_with_deadline(agent, prompt, timeout):
                     'timer_settled': True, 'source': 'native-interrupt-and-socket-shutdown'}
 
 
-def execute_skill_study(job, access_token, factory, build_prompt):
+def native_skill_read_receipt(args, parsed, catalog):
+    """Bind delivered skill text using installed skill_view's actual result shape.
+
+    Local entrypoints supply skill_dir, references supply name/file/content.
+    Binary placeholders and cached/deduplicated notes do not prove text delivery.
+    """
+    from artifact_hash import freeze_candidate
+    if parsed.get('success') is not True or parsed.get('is_binary') or not isinstance(parsed.get('content'), str):
+        return None
+    for item in catalog:
+        path = Path(item['path'])
+        entry = path.read_text(encoding='utf-8')
+        match = re.search(r'(?m)^name:\s*(.+)$', entry)
+        name = match.group(1).strip().strip("\"'") if match else path.parent.name
+        if args.get('name') != name or parsed.get('name') != name:
+            continue
+        relative = args.get('file_path') or 'SKILL.md'
+        if args.get('file_path'):
+            if parsed.get('file') != relative:
+                continue
+        elif not parsed.get('skill_dir') or Path(parsed['skill_dir']).resolve() != path.parent.resolve():
+            continue
+        frozen = freeze_candidate(path, projection='native-catalog')
+        if frozen['package_sha256'] != item['package_sha256'] or relative not in frozen['files']:
+            continue
+        target = path.parent / relative
+        if parsed['content'] != target.read_text(encoding='utf-8'):
+            continue
+        return {**item, 'source':'successful-native-skill_view', 'native_source_path':str(path),
+            'file_path':relative, 'file_sha256':frozen['files'][relative],
+            'returned_content_sha256':hashlib.sha256(parsed['content'].encode('utf-8')).hexdigest(),
+            'entrypoint_read':relative == 'SKILL.md'}
+    return None
+
+
+def execute_skill_study(job, access_token, factory, build_prompt, usage_observer=None):
     from artifact_hash import freeze_candidate
     from hermes_cli.plugins import PluginContext, PluginManifest, get_plugin_manager
     from tools.skills_tool import skills_list
     fixture = Path(job["fixture"]).resolve()
     catalog_root = Path(job["runtime_home"]) / "skills"
     agent = None
-    leases, events, reads = [], [], []
+    original_batch = None
+    leases, events, reads, linked_reads = [], [], [], []
     blocked = []
     names = []
+    tool_scope=job.get('intervention_clearance',{}).get('contract',{}).get('tool_scope')
+    if tool_scope is not None and tool_scope not in (READONLY_SCOPE,EVIDENCE_SCOPE):raise ValueError('Unsupported study tool scope')
+    stage=job.get('intervention_clearance',{}).get('contract',{}).get('evaluation_stage')
+    if tool_scope==EVIDENCE_SCOPE:
+        if any(key in job for key in ('history','conversation_history','messages','session_id','previous_response_id')):
+            raise ValueError('Evidence study always starts a new isolated conversation')
+        if stage not in ('skill-actor','continuation-receiver'):
+            raise ValueError('Evidence study requires its actual actor/receiver role')
+    discovery_boundary=job.get('intervention_clearance',{}).get('contract',{}).get('skill_evaluation',{}).get('qualification_boundary')
+    if discovery_boundary and (discovery_boundary!='before-material-action' or usage_observer is None or usage_observer.discovery is None):
+        raise ValueError('Required discovery action boundary unavailable')
     for item in job["catalog"]:
         text = Path(item["path"]).read_text(encoding="utf-8")
+        actual_frame=freeze_candidate(Path(item['path']),projection='native-catalog')
+        if (actual_frame['package_sha256']!=item['package_sha256']
+                or actual_frame['entry_sha256']!=item['body_sha256']
+                or actual_frame['files']!=item['files'] or actual_frame['file_sizes']!=item['file_sizes']):
+            raise RuntimeError('Staged native package changed before actor assembly')
         match = re.search(r"(?m)^name:\s*(.+)$", text)
         names.append(match.group(1).strip().strip("\"'") if match else Path(item["path"]).parent.name)
+    def interrupt_discovery():
+        state=usage_observer.discovery
+        if state['stopped'] and agent is not None and not state['interrupt_requested']:
+            state['interrupt_requested']=True
+            try:agent.interrupt(hard_cancel=True,tool_reason='discovery-qualification-ended')
+            except Exception as exc:state['interrupt_errors'].append(type(exc).__name__)
+    from evaluation_evidence import trial_measurement_preflight,trial_measurement_sources,trial_tool_observation
+    measurement=job.get('intervention_clearance',{}).get('contract',{}).get('measurement')
+    if not isinstance(measurement,dict):raise ValueError('Measured behavior contract required')
+    sources=trial_measurement_sources(measurement,fixture)
+    target=measurement.get('observable',{})
+    project={target['path']:next(iter(sources))} if target.get('kind')=='tool-read' and sources else {}
+    checked=trial_measurement_preflight(measurement,project,sources)
+    if not checked['valid']:raise ValueError('Unsupported/unqualified measurement before native construction')
+    if usage_observer is None:raise RuntimeError('Measurement transport observation unavailable')
+    usage_observer.require_trial_measurement_guard()
+    measurement_runtime={'invalid':False,'events':[],'stop_errors':[]}
+    def invalidate_measurement(reason):
+        if measurement_runtime['invalid']:return
+        measurement_runtime['invalid']=True
+        usage_observer.stop_trial_measurement()
+        measurement_runtime['events'].append({'status':'invalid','reason':reason})
+        if agent is not None:
+            for method,kw in (('interrupt',{'hard_cancel':True,'tool_reason':'invalid-trial-measurement'}),
+                              ('_drain_transports_after_abandonment',{'reason':'invalid-trial-measurement'})):
+                try:getattr(agent,method)(**kw)
+                except Exception as exc:measurement_runtime['stop_errors'].append(type(exc).__name__)
     def gate(tool_name, args, **kwargs):
-        message = study_guard(tool_name, args, fixture, catalog_root)
+        if measurement_runtime['invalid']:return {'action':'block','message':'Trial invalid; repair and requalification required'}
+        message = study_guard(tool_name, args, fixture, catalog_root,tool_scope=tool_scope)
+        if message:invalidate_measurement('tool-scope-or-test-control-failure')
+        if discovery_boundary:
+            if message:usage_observer.stop_discovery('tool-scope-rejection')
+            else:message=usage_observer.discovery_tool_boundary(tool_name,args)
+            interrupt_discovery()
         if message:
             blocked.append({"tool": tool_name, "reason": message, 'shape': rejection_shape(tool_name, args)})
             return {"action": "block", "message": message + (' ' + TERMINAL_CONTRACT if tool_name == 'terminal' else '')}
@@ -454,28 +574,61 @@ def execute_skill_study(job, access_token, factory, build_prompt):
                 parsed = {}
         parsed = parsed if isinstance(parsed, dict) else {}
         events.append(study_tool_event(call_id, name, args, parsed, fixture, catalog_root))
-        if name == "skill_view" and parsed.get("success") and not args.get("file_path"):
-            path = Path(parsed.get("_source_path", ""))
-            for item in job["catalog"]:
-                if path.name == "SKILL.md" and path.parent.name == Path(item["path"]).parent.name and path.is_file():
-                    frozen = freeze_candidate(path)
-                    if frozen["package_sha256"] == item["package_sha256"]:
-                        reads.append({**item, "source": "successful-native-skill_view", "native_source_path": str(path)})
+        target=measurement.get('observable',{})
+        if target.get('kind')=='tool-read':
+            expected=(fixture/target['path']).resolve();actual=None
+            if expected.is_relative_to(fixture):
+                try:actual=hashlib.sha256(expected.read_bytes()).hexdigest()
+                except OSError:pass
+            observed=trial_tool_observation(measurement,name,args,parsed,fixture=fixture,actual_sha=actual)
+            measurement_runtime['events'].append(observed)
+            if observed['status']=='invalid':invalidate_measurement(observed['reason'])
+        if discovery_boundary:
+            usage_observer.discovery_tool_completed(name,parsed,args)
+            interrupt_discovery()
+        if name == 'skill_view':
+            receipt = native_skill_read_receipt(args, parsed, job['catalog'])
+            if receipt:
+                (reads if receipt['entrypoint_read'] else linked_reads).append(receipt)
     try:
         manager = get_plugin_manager()
         context = PluginContext(PluginManifest(name="study-runtime-guard"), manager)
         leases.append(context.register_hook("pre_tool_call", gate))
+        def measurement_api_error(**payload):
+            if agent is not None and payload.get('session_id')==getattr(agent,'session_id',None):
+                invalidate_measurement('observed-native-api-error')
+        leases.append(context.register_hook('api_request_error',measurement_api_error))
         agent = factory(model=job["model"], provider="openai-codex", api_mode="codex_responses",
             api_key=access_token or "assembly-probe-no-credential", base_url=ENDPOINT,
-            enabled_toolsets=["terminal", "file", "skills"], skip_context_files=True,
+            enabled_toolsets=["file"] if tool_scope==EVIDENCE_SCOPE else ["terminal", "file", "skills"], skip_context_files=True,
             load_soul_identity=False, skip_memory=True, skip_background_review=True,
             quiet_mode=True, save_trajectories=False, max_iterations=job["max_iterations"],
             run_budget_seconds=job["timeout"], reasoning_config={"enabled": True, "effort": job["reasoning"]},
             fallback_model=None, tool_complete_callback=completed)
-        advertise_study_terminal(agent)
+        if discovery_boundary:
+            # This qualification stops between operations, so it must not
+            # pre-dispatch a parallel group before an earlier result is known.
+            # Reuse the host's sequential executor and connection scope.
+            sequential=getattr(agent,'_execute_tool_calls_sequential',None)
+            if not callable(sequential):raise RuntimeError('Native sequential qualification dispatch unavailable')
+            from tools.connectors.turn import agent_connection_surface,scoped_connection_surface
+            original_batch=agent._execute_tool_calls
+            def qualified_batch(*args,**kwargs):
+                agent._executing_tools=True
+                try:
+                    with scoped_connection_surface(agent_connection_surface(agent)):
+                        return sequential(*args,**kwargs)
+                finally:agent._executing_tools=False
+            agent._execute_tool_calls=qualified_batch
+            usage_observer.discovery['dispatch_mode']='native-sequential-qualification'
+        if tool_scope!=EVIDENCE_SCOPE:advertise_study_terminal(agent)
+        apply_study_tool_scope(agent,tool_scope)
         assembled = build_prompt(agent)
+        if tool_scope==EVIDENCE_SCOPE:
+            if usage_observer is None:raise RuntimeError('Evidence request path guard unavailable')
+            usage_observer.audit_study_paths(assembled)
         actual = sorted(s["name"] for s in json.loads(skills_list()).get("skills", []))
-        if actual != sorted(names) or len(actual) != len(set(actual)) or any(name not in assembled for name in names):
+        if actual != sorted(names) or len(actual) != len(set(actual)) or (tool_scope!=EVIDENCE_SCOPE and any(name not in assembled for name in names)):
             raise RuntimeError("Native catalog differs from the declared exact catalog")
         if access_token and access_token in assembled or any(marker in assembled for marker in CONTEXT_MARKERS[1:]):
             raise RuntimeError("Native study prompt contamination")
@@ -485,28 +638,82 @@ def execute_skill_study(job, access_token, factory, build_prompt):
             raise RuntimeError("Native study route mismatch")
         before = time.monotonic()
         if job.get("assembly_only"):
+            probes=[]
+            if job.get('capability_probes'):
+                from types import SimpleNamespace
+                for probe in job['capability_probes']:
+                    ident='qualification-'+probe['id']
+                    call=SimpleNamespace(id=ident,type='function',function=SimpleNamespace(
+                        name=probe['tool'],arguments=json.dumps(probe['arguments'])))
+                    messages=[{'role':'user','content':'Offline capability qualification; no model call.'},
+                              {'role':'assistant','content':None,'tool_calls':[{'id':ident,'type':'function',
+                                'function':{'name':probe['tool'],'arguments':json.dumps(probe['arguments'])}}]}]
+                    # Same installed executor and pre-tool hooks as actor work.
+                    agent._execute_tool_calls(SimpleNamespace(tool_calls=[call]),messages,'study-capability-probe')
+                    outputs=[m.get('content') for m in messages if m.get('role')=='tool' and m.get('tool_call_id')==ident]
+                    from tools.registry import registry
+                    entry=registry.get_entry(probe['tool'])
+                    code=getattr(getattr(entry,'handler',None),'__code__',None)
+                    path=Path(code.co_filename).resolve() if code else None
+                    probes.append({'request':probe,'outputs':outputs,
+                        'handler_source_sha256':hashlib.sha256(path.read_bytes()).hexdigest() if path and path.is_file() else None})
             native, deadline = {"completed": True, "api_calls": 0}, {'assembly_only': True}
         else:
             native, deadline = run_with_deadline(agent, job["prompt"], job["timeout"])
+        if tool_scope==EVIDENCE_SCOPE and isinstance(native.get('final_response'),str):
+            usage_observer._retain('final-response',native['final_response'].encode())
         result = {"ok": bool(native.get("completed") and not any(native.get(k) for k in ("failed", "partial", "interrupted"))),
             "assembly_only": bool(job.get("assembly_only")), "model_launched": not job.get("assembly_only"),
             "requested_route": {"model": job["model"], "provider": "openai-codex", "reasoning": job["reasoning"]},
             "agent_observed_route": metadata, "provider_resolved_identity_verified": False,
             "catalog_evidence": {"declared_names": sorted(names), "native_catalog_names": actual,
-                                 "exact_catalog_verified": True, "prompt_sha256": hashlib.sha256(assembled.encode()).hexdigest()},
-            "skill_read_evidence": reads, "events": events, "blocked_requests": blocked,
+                                 "exact_catalog_verified": True, "prompt_sha256": hashlib.sha256(assembled.encode()).hexdigest(),
+                                 'package_frames':sorted([{'name':name,
+                                     'package_sha256':item['package_sha256'],'entry_sha256':item['body_sha256'],
+                                     'files':item['files'],'file_sizes':item['file_sizes'],'projection':'native-catalog'}
+                                     for name,item in zip(names,job['catalog'])],key=lambda f:f['name'])},
+            "skill_read_evidence": reads, "linked_content_read_evidence": linked_reads,
+            "events": events, "blocked_requests": blocked,
+            'measurement_runtime':measurement_runtime,
             "final_response": native.get('final_response'),
             "tokens": {"input": getattr(agent, "session_input_tokens", None), "output": getattr(agent, "session_output_tokens", None)},
             "api_calls": native.get("api_calls"), "native_usage": native_usage(native, agent),
             "turn_deadline": deadline,
+            'capability_probes':probes if job.get('assembly_only') else [],
+            'effective_tool_schemas':agent.tools if job.get('assembly_only') else None,
+            'prepared_task_sha256':hashlib.sha256(job['prompt'].encode()).hexdigest(),
             "dollars": None, "cost_status": "subscription-dollars-unavailable",
             "native_seconds": time.monotonic() - before,
             "limits": ["native request gate is not operating-system isolation", "fixture tests execute model-edited code"]}
+        measurement_runtime['invalid']=bool(measurement_runtime['invalid'] or usage_observer.measurement_stopped)
+        if tool_scope==EVIDENCE_SCOPE:
+            from evaluation_artifact_pilot import tree
+            from evaluation_measurement import digest
+            result['session_boundary']={'role':'fresh-receiver' if stage=='continuation-receiver' else 'coordinator',
+                'new_agent_instance':True,'history_argument_passed':False,'skip_memory':True,
+                'common_tree_sha256':digest(tree(fixture)),
+                'session_id':getattr(agent,'session_id',None)}
+            # Canary is controller-owned, not common task evidence.
+            generated=job.get('runtime_generated_fixture_files',{})
+            result['session_boundary']['common_tree_sha256']=digest({k:v for k,v in tree(fixture).items() if k not in generated})
+            final=native.get('final_response')
+            result['final_response_sha256']=hashlib.sha256(final.encode()).hexdigest() if isinstance(final,str) else None
+            result['limits']=['read/search-only request guard is not OS isolation','fresh receiver receives final text only; no inherited conversation','quality/use not established by exposure or assembly']
+        if discovery_boundary:
+            state=usage_observer.discovery
+            eligible=bool(not state['stopped'] and state['latest_visible_body'] and state['material_completions'])
+            result['discovery_qualification']={**copy.deepcopy(state),'boundary_eligible':eligible,
+                'status':'exposure-boundary-open; relevant work still needs review' if eligible else 'diagnostic-nonselection-or-unqualified-interaction',
+                'cognitive_or_incremental_benefit_proven':False}
+            if job.get('assembly_only'):
+                result['discovery_qualification']['status']='zero-model capability assembly; actor selection not evaluated'
+            elif not eligible:result['ok']=False
         if access_token and access_token in json.dumps(result):
             raise RuntimeError("Credential output rejected")
         return result
     finally:
         if agent is not None:
+            if original_batch is not None:agent._execute_tool_calls=original_batch
             agent.close()
         for lease in reversed(leases):
             lease.dispose()
@@ -561,14 +768,60 @@ def finalize_usage_receipt(receipt, observer, leases, canary_file):
             receipt['route_attestation']['errors'].append('worker cleanup failed')
 
 
+def require_worker_study_admission(job):
+    """Enforce the existing source-bound gate before native imports/credentials."""
+    if job.get('purpose')!='native-skill-study':
+        return {'required':False,'scope':'existing isolated no-tool inline worker'}
+    if type(job.get('assembly_only',False)) is not bool:
+        raise ValueError('Study assembly_only must be boolean')
+    if job.get('assembly_only'):
+        return {'required':False,'scope':'zero-model assembly qualification'}
+    import base64
+    from evaluation_runtime import require_paid_intervention,require_receiver_dispatch
+    clear=job.get('intervention_clearance')
+    if not isinstance(clear,dict) or not isinstance(clear.get('source_bytes'),dict):
+        raise ValueError('Paid native worker requires intervention clearance')
+    sources={key:base64.b64decode(value,validate=True) for key,value in clear['source_bytes'].items()}
+    if sum(map(len,sources.values()))>8*1024*1024:
+        raise ValueError('Worker intervention sources exceed8MiB')
+    clear={**clear,'source_bytes':sources}
+    require_receiver_dispatch(clear,job.get('request_recording'))
+    checked=require_paid_intervention(job['prompt'],Path(job['fixture']),job['timeout'],job['model'],
+        job['reasoning'],job['max_iterations'],job.get('terminal_backend'),clear,host='hermes',
+        expected_skills=[Path(item['path']) for item in job['catalog']])
+    return {'required':True,'ready':checked['ready'],'scope':'source-bound native study admission'}
+
+
 def main() -> int:
     diagnostics = io.StringIO()
     canary_file = None
+    probe_transport={'enabled':False,'network_attempts':0}
     from evaluation_usage import NativeUsageObserver, HOOKS
     usage_observer = NativeUsageObserver()
     usage_leases = []
     try:
         job = json.loads(sys.stdin.read())
+        admission=require_worker_study_admission(job)
+        skill=job.get('intervention_clearance',{}).get('contract',{}).get('skill_evaluation',{})
+        if skill.get('question')=='applied-skill-effect' or skill.get('qualification_boundary'):
+            import base64
+            key=skill['target_entry_sha256']
+            entry=base64.b64decode(job['intervention_clearance']['source_bytes'][key],validate=True)
+            if hashlib.sha256(entry).hexdigest()!=key or skill.get('arm') not in ('baseline','treatment'):
+                raise ValueError('Target skill context requirement changed')
+            if skill.get('qualification_boundary'):
+                if skill.get('question')!='natural-discovery' or skill.get('arm')!='treatment' or skill['qualification_boundary']!='before-material-action':
+                    raise ValueError('Discovery qualification boundary is treatment-only, not a comparative policy')
+                usage_observer.require_discovery_before_action(entry)
+            else:usage_observer.require_initial_skill_context(entry,skill['arm']=='treatment')
+        if job.get('capability_probes'):
+            if not job.get('assembly_only'):raise ValueError('Capability exercise is zero-model only')
+            probe_transport['enabled']=True
+            def reject_probe_network(event,args):
+                if event in ('socket.connect','socket.getaddrinfo'):
+                    probe_transport['network_attempts']+=1
+                    raise RuntimeError('No network/provider operation in capability qualification')
+            sys.addaudithook(reject_probe_network)
         require_no_install_environment(os.environ)
         with contextlib.redirect_stdout(diagnostics), contextlib.redirect_stderr(diagnostics):
             sys.path.insert(0, job["native_source"])
@@ -599,12 +852,21 @@ def main() -> int:
                 with candidate.open("x", encoding="utf-8") as stream:
                     stream.write(canary)
                 canary_file = candidate
+                job['runtime_generated_fixture_files']={'AGENTS.md':{'purpose':'generated-hermes-canary',
+                    'content':canary,'sha256':hashlib.sha256(canary.encode()).hexdigest()}}
             if job.get("purpose") != "native-skill-study":
                 prepare_no_tool_config(job["runtime_home"])
                 from hermes_cli.config import load_config_readonly
                 verify_no_tool_config(load_config_readonly())
             else:
-                prepare_study_config(job['runtime_home'], direct_backend=job.get('terminal_backend') == 'direct-python-argv')
+                evidence_only=job.get('intervention_clearance',{}).get('contract',{}).get('tool_scope')==EVIDENCE_SCOPE
+                prepare_study_config(job['runtime_home'], direct_backend=job.get('terminal_backend') == 'direct-python-argv',evidence_only=evidence_only)
+                if evidence_only:
+                    from hermes_cli.config import load_config_readonly
+                    config=load_config_readonly()
+                    if config.get('agent',{}).get('coding_context')!='off' or config.get('agent',{}).get('environment_probe') is not False:
+                        raise RuntimeError('Source-only supported prompt controls not applied')
+                    usage_observer.require_study_path_scope([job['fixture'],str(Path(job['runtime_home']).parent)])
             from hermes_cli.config import load_config_readonly
             verify_no_install_config(load_config_readonly())
             backend = None
@@ -643,10 +905,12 @@ def main() -> int:
                 assembled = build_system_prompt(agent)
                 usage_observer.record_prompts(assembled, job['prompt'])
                 return assembled
-            receipt = (execute_skill_study(job, access_token, observed_factory, recorded_prompt)
+            receipt = (execute_skill_study(job, access_token, observed_factory, recorded_prompt,usage_observer)
                        if job.get("purpose") == "native-skill-study"
                        else execute_agent(job, access_token, observed_factory, recorded_prompt))
+            receipt['intervention_admission']=admission
             receipt['runtime_controls']={'lsp':dict(NO_INSTALL_LSP_CONFIG),'native_config_readback_verified':True}
+            receipt['runtime_generated_fixture_files']=job.get('runtime_generated_fixture_files',{})
             if backend:
                 verify_backend()
                 receipt['terminal_backend'] = backend
@@ -663,6 +927,7 @@ def main() -> int:
                    "failure": {"kind": "isolation", "source": "runtime-control", "code": type(exc).__name__}}
     finally:
         finalize_usage_receipt(receipt, usage_observer, usage_leases, canary_file)
+        if probe_transport['enabled']:receipt['capability_transport_guard']=probe_transport
     print(json.dumps(receipt, ensure_ascii=False))
     return 0 if receipt["ok"] else 1
 

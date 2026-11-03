@@ -107,6 +107,8 @@ For OpenAI model-specific prompt changes, use the installed OpenAI Docs procedur
 
 ## Evaluation discipline
 
+Before any trial, state the desired outcome, the behavior actually being measured and how its exercise will be observed. Bind those requirements to the real task and supported runner before spending. Availability, loading and a successful exit do not prove the intended behavior ran. If a behavioral or technical issue invalidates measurement, stop the affected trial and dependent review, use existing cancellation/closure, retain results and all costs, and repair and requalify before resuming under applicable authority. Missing evidence is unassessed or invalid, never success. Keep trial validity separate from product quality: an exercised, valid test may reveal a poor product. For example, a navigation comparison that never reads its graph fails the graph-use measurement; do not score that as product inferiority or silently rename the claim. Requalification grants no retry or new budget. Independent work outside the affected dependency may continue.
+
 For an explicitly commissioned skill/tool backlog assessment and repair, use the optional [item review loop](references/item-review-loop.md). Keep ordinary bounded edits local; this reference adds no launch or publication authority.
 
 Do not force a fixed benchmark, subagent fan-out, viewer, exact wording assertion, or quantitative harness onto every skill edit.

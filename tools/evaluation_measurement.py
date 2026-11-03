@@ -453,7 +453,7 @@ def artifact_records(report, plan, *, source_bytes=None):
     completed={}
     if isinstance(report.get('completed_review'),dict) and source_bytes is not None:
         from evaluation_evidence import completed_artifact_decision
-        completed=completed_artifact_decision(report,report['completed_review'],source_bytes)
+        completed=completed_artifact_decision(report,report['completed_review'],source_bytes,plan=plan)
     cases = {case['id']: case for case in plan['spec']['cases']}
     for row in report.get('results', []):
         case = cases.get(row['case'], {})

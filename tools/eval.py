@@ -529,12 +529,19 @@ class AgentRunBudget:
 ATTEMPT_WRAPPER_KEYS = {"attempt", "transient", "attempts", "attempt_count", "transient_retry_count", "run_budget_exhausted"}
 RUN_RESULT_KEYS = {"ok", "execution_ok", "operational_ok", "returncode", "seconds", "output", "stderr",
                    "session_ids", "session_receipt_error", "route_attestation", "runtime_contract", "native_events",
-                   "native_result_metadata", "native_usage", "runtime_error", "failure", "evidence_incomplete", "workflow_accounting"}
+                   "native_result_metadata", "native_usage", "workflow_accounting", "catalog_evidence", "model_launched", "runtime_error", "failure", "evidence_incomplete"}
 
 
 def attempt_result(run: dict[str, Any]) -> dict[str, Any]:
     """Keep the complete declared result, excluding wrappers and undeclared data."""
     return copy.deepcopy({key: value for key, value in run.items() if key in RUN_RESULT_KEYS and key not in ATTEMPT_WRAPPER_KEYS})
+
+
+def invocation_accounting(suite, identity):
+    calls=(suite.get('whole_job_manifest') or {}).get('calls',[])
+    matches=[call for call in calls if call.get('identity')==identity]
+    if len(matches)!=1:return None
+    return {k:copy.deepcopy(v) for k,v in matches[0].items() if k!='identity'}
 
 
 def execution_succeeded(run: dict[str, Any]) -> bool:
@@ -590,12 +597,12 @@ def transient_provider_failure(result: dict[str, Any]) -> bool:
 def run_agent_with_retry(
     budget: AgentRunBudget,
     *args: Any,
-    transient_retries: int = 2,
+    transient_retries: int = 0,
     retry_delay: float = 2.0,
     attempt_observer: Any = None,
     **kwargs: Any,
 ) -> dict[str, Any]:
-    """Run once, retrying only explicit transient provider failures."""
+    """Run once; invalid technical attempts require causal repair/requalification."""
 
     if transient_retries < 0:
         raise ValueError("transient retries must be non-negative")
@@ -635,7 +642,10 @@ def run_agent_with_retry(
             record = {"attempt": len(attempts) + 1, "transient": False, **result}
             attempts.append(record)
             if attempt_observer is not None:
-                attempt_observer(copy.deepcopy(record))
+                accounting=attempt_observer(copy.deepcopy(record))
+                if isinstance(accounting,dict):
+                    attempts[-1]['workflow_accounting']=copy.deepcopy(accounting)
+                    result['workflow_accounting']=copy.deepcopy(accounting)
             if isinstance(exc, (KeyboardInterrupt, SystemExit)):
                 raise
             break
@@ -648,16 +658,12 @@ def run_agent_with_retry(
             }
         )
         if attempt_observer is not None:
-            attempt_observer(copy.deepcopy(attempts[-1]))
-        if not transient or retries_used >= transient_retries:
-            break
-        if budget.remaining <= 0:
-            budget_exhausted = True
-            break
-        delay = retry_delay * (2 ** retries_used)
-        if delay:
-            time.sleep(delay)
-        retries_used += 1
+            accounting=attempt_observer(copy.deepcopy(attempts[-1]))
+            if isinstance(accounting,dict):
+                attempts[-1]['workflow_accounting']=copy.deepcopy(accounting)
+                result['workflow_accounting']=copy.deepcopy(accounting)
+        if transient:result['retry_held_for_causal_repair']=True
+        break  # A numeric allowance is not a repaired/requalified trial.
     assert result is not None
     return {
         **result,
@@ -820,6 +826,16 @@ def oracle_preflight(suite: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(review, dict):
             errors.append(label + ": acceptance_review required before new inference")
             continue
+        qualification = review.get('task_qualification', {})
+        if (any(not isinstance(qualification.get(k), str) or not qualification[k].strip()
+                for k in ('workload_source','claim','representative_demands','scope_limits','reviewer'))
+                or qualification.get('outcome_driven') is not True
+                or qualification.get('solution_open') is not True):
+            errors.append(label + ': reviewed workload/claim qualification required; labels do not prove realism')
+        if qualification.get('output_kind') not in ('text','program','rendered-product'):
+            errors.append(label + ': task output kind required')
+        elif qualification['output_kind']!='text':
+            errors.append(label + ': inline text cannot qualify non-text claims; source-bound artifact/render/interaction lane required')
         checks = {f"{key}:{i}" for key in (("criteria",) if suite_report_version(suite) == 3 else ("criteria", "must_contain", "must_not_contain"))
                   for i, _ in enumerate(case.get(key, []))}
         checks.update("semantic_criteria:" + c["id"] for c in case.get("semantic_criteria", []))
@@ -862,6 +878,29 @@ def oracle_preflight(suite: dict[str, Any]) -> dict[str, Any]:
                 errors.append(label + ": actual checker contradicts control " + control["id"])
             if control["outcome"] == "broken" and passed and not (case.get("criteria") or case.get("semantic_criteria")):
                 errors.append(label + ": broken control passes all available checks")
+            semantic_ids = (["criteria:" + str(i) for i,_ in enumerate(case.get('criteria', []))]
+                            + ['semantic_criteria:' + c['id'] for c in case.get('semantic_criteria', [])])
+            if semantic_ids:
+                judgment = control.get('semantic_review', {})
+                scores = judgment.get('criteria', {})
+                bound = (judgment.get('output_sha256') == hashlib.sha256(control['output'].encode()).hexdigest()
+                         and judgment.get('criteria_sha256') == hashlib.sha256(json.dumps(
+                             [case.get('criteria', []), case.get('semantic_criteria', [])], sort_keys=True).encode()).hexdigest()
+                         and judgment.get('independent') is True and judgment.get('blind') is True
+                         and isinstance(judgment.get('reviewer'), str) and bool(judgment['reviewer'].strip())
+                         and isinstance(scores,dict) and set(scores) == set(semantic_ids)
+                         and all(isinstance(v, dict) and type(v.get('passed')) is bool
+                                 and isinstance(v.get('evidence'), str) and v['evidence'].strip() for v in scores.values()))
+                if not bound:
+                    errors.append(label + ': bound independent blind semantic control review missing')
+                else:
+                    # Same hard/semantic eligibility combiner as final judgments.
+                    passes = {side:{k:v['passed'] for k,v in scores.items()} for side in ('baseline','candidate')}
+                    _, effective = v3_effective_result({'winner':'tie','passes':passes},
+                        {'baseline':passed,'candidate':passed}, semantic_ids)
+                    results[-1]['combined_pass'] = effective['candidate']
+                    if effective['candidate'] != (control['outcome']=='adequate'):
+                        errors.append(label + ': semantic final decision contradicts control ' + control['id'])
         if outcomes != {"adequate", "broken"}:
             errors.append(label + ": adequate and plausible broken controls required")
         if not alternatives and not (isinstance(review.get("alternatives_not_applicable"), str)
@@ -869,6 +908,40 @@ def oracle_preflight(suite: dict[str, Any]) -> dict[str, Any]:
             errors.append(label + ": valid alternative control or explicit risk-based inapplicability required")
     return {"ready": not errors, "errors": errors, "controls": results,
             "scope": "mechanical preflight and recorded reviewer declarations; not semantic adequacy proof"}
+
+
+def text_intervention_review(suite, candidate, baseline):
+    """Explicit text-projection treatment only; native/program claims use actor probes."""
+    errors=[]
+    for case in suite.get('cases',[]):
+        review=case.get('acceptance_review',{}).get('intervention_review',{})
+        measurement=case.get('measurement',{})
+        if (not isinstance(measurement,dict) or measurement.get('observable',{}).get('kind')!='completion'
+                or any(not isinstance(measurement.get(k),str) or not measurement[k].strip() for k in ('outcome','measured_behavior'))):
+            errors.append(str(case.get('id'))+': tool-free text lane lacks a supported intended-behavior/observable contract')
+        expected={'measurement_sha256':hashlib.sha256(json.dumps(measurement,sort_keys=True).encode()).hexdigest(),
+            'task_sha256':hashlib.sha256(case['prompt'].encode()).hexdigest(),
+            'candidate_package_sha256':candidate.get('package_sha256'),
+            'baseline_package_sha256':baseline.get('package_sha256') if baseline else None}
+        if (review.get('binding')!=expected or review.get('decision')!='accept'
+                or review.get('phase')!='before-actors' or review.get('independent') is not True
+                or not review.get('reviewer') or any(not isinstance(review.get(k),str) or not review[k].strip()
+                    for k in ('intended_mechanism','retained_and_omitted','task_fit_evidence','source_excerpt'))
+                or review.get('source_excerpt','') not in candidate.get('prompt_text','')):
+            errors.append(str(case.get('id'))+': missing/rejected/stale source-bound text treatment and task-fit review')
+    return {'ready':not errors,'errors':errors,'scope':'Controlled frozen text exposure only; no native tool/workflow utility inference'}
+
+
+
+def require_valid_text_trial(report, case, run, role):
+    # Quality/deterministic failures are deliberately not trial invalidity.
+    valid=bool(execution_succeeded(run) and run.get('route_attestation',{}).get('ok')
+        and isinstance(run.get('output'),str) and run['output'].strip())
+    if not valid:
+        report.setdefault('invalid_trials',[]).append({'case':case['id'],'role':role,
+            'run':run,'valid':False,'reason':'runtime, route or required response evidence missing',
+            'product_quality_passed':None,'rerun_authority':False})
+        raise ValueError('Invalid text trial; stop dependent actors/judges until repaired')
 
 
 def judge_prompt(suite: dict[str, Any], case: dict[str, Any], a: str, b: str) -> str:
@@ -1237,6 +1310,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("suite", type=Path)
     parser.add_argument("--candidate", type=Path, required=True)
+    parser.add_argument('--accounting-evidence',type=Path,help='Explicit source-bound supporting native receipts; no paths inside receipts are executed')
     parser.add_argument("--baseline-candidate", type=Path, help="Optional current/full instruction artifact for retirement A/B tests")
     parser.add_argument("--agent", choices=("hermes", "codex"), default="hermes")
     parser.add_argument("--judge-agent", choices=("hermes", "codex"))
@@ -1336,6 +1410,8 @@ def main() -> int:
     baseline_snapshot = freeze_candidate(args.baseline_candidate) if args.baseline_candidate else None
     candidate = candidate_snapshot["prompt_text"]
     baseline_candidate = baseline_snapshot["prompt_text"] if baseline_snapshot else ""
+    design_review=text_intervention_review(suite,candidate_snapshot,baseline_snapshot)
+    if not design_review['ready']:parser.error('; '.join(design_review['errors']))
 
     out = args.out or Path(".evals") / f"{suite.get('name','suite')}-{args.agent}.json"
     out = out.resolve()
@@ -1352,6 +1428,8 @@ def main() -> int:
         "suite": suite.get("name"),
         "comparison_readiness": readiness,
         "oracle_preflight": oracle_review,
+        'intervention_review':design_review,
+        'whole_job_manifest':copy.deepcopy(suite.get('whole_job_manifest')),
         "claim": suite.get("claim"),
         "suite_cases": [{"id": case["id"], "kind": case.get("kind")} for case in all_cases],
         "selected_case_ids": [case["id"] for case in cases],
@@ -1406,6 +1484,15 @@ def main() -> int:
     }
     if is_v3:
         report["stability"] = suite["stability"]
+    if args.accounting_evidence:
+        raw=args.accounting_evidence.read_text(encoding='utf-8')
+        report['supporting_evidence_source']=raw
+        report['supporting_evidence_sha256']=hashlib.sha256(raw.encode()).hexdigest()
+        data=extract_json(raw)
+        if data.get('binding')!={key:report['artifacts'].get(key) for key in
+                ('suite_sha256','candidate_sha256','baseline_candidate_sha256','harness_sha256')}:
+            parser.error('Supporting receipts belong to different task/instruction/harness bytes')
+        report['supporting_receipts']=data.get('receipts',[])
 
     interrupted = False
     old_handlers: dict[int, Any] = {}
@@ -1428,7 +1515,14 @@ def main() -> int:
             trial_results: list[dict[str, Any]] = []
             for case_index, case in enumerate(cases):
                 def observe(role: str) -> Any:
-                    return lambda attempt: report["attempt_ledger"].append({"trial": trial_index, "case_id": case["id"], "role": role, **attempt})
+                    def capture(attempt):
+                        identity={'trial':trial_index,'case_id':case['id'],'role':role,'attempt':attempt['attempt']}
+                        accounting=invocation_accounting(suite,identity)
+                        entry={**identity,**attempt}
+                        if accounting is not None:entry['workflow_accounting']=accounting
+                        report['attempt_ledger'].append(entry)
+                        return accounting
+                    return capture
                 safe_id = "".join(char if char.isalnum() or char in "-_" else "-" for char in str(case.get("id", case_index)))
                 case_root = workdir / f"trial-{trial_index:03d}" / f"{case_index:03d}-{safe_id}"
                 baseline_workdir = case_root / "baseline"
@@ -1494,6 +1588,7 @@ def main() -> int:
                     retry_delay=args.retry_delay,
                     attempt_observer=observe("baseline"),
                 )
+                require_valid_text_trial(report,case,baseline,'baseline')
                 contender = run_agent_with_retry(
                     run_budget,
                     args.agent,
@@ -1512,6 +1607,7 @@ def main() -> int:
                     retry_delay=args.retry_delay,
                     attempt_observer=observe("candidate"),
                 )
+                require_valid_text_trial(report,case,contender,'candidate')
                 if is_v3:
                     baseline_det = structured_receipt_check(case, baseline["output"], suite["receipt_schema"])
                     candidate_det = structured_receipt_check(case, contender["output"], suite["receipt_schema"])
@@ -1552,6 +1648,7 @@ def main() -> int:
                         retry_delay=args.retry_delay,
                         attempt_observer=observe(f"judge-{judge_index}"),
                     )
+                    require_valid_text_trial(report,case,judged_run,'judge')
                     try:
                         if not execution_succeeded(judged_run) or not judged_run.get("route_attestation", {}).get("ok", False):
                             errors = judged_run.get("route_attestation", {}).get("errors", [])
@@ -1567,6 +1664,8 @@ def main() -> int:
                     except Exception as exc:
                         judgments.append({"order": judge_order, "run": judged_run, "judgment": {"raw": judged_run["output"]}})
                         judge_errors.append(str(exc))
+                        report.setdefault('invalid_trials',[]).append({'case':case['id'],'role':'judge','run':judged_run,'valid':False,'reason':'unusable judge protocol','product_quality_passed':None,'rerun_authority':False})
+                        raise ValueError('Invalid judge protocol; stop dependent review') from None
                 if is_v3:
                     raw_disagreement = v3_disagreement(mapped_winners, mapped_passes)
                     if (raw_disagreement["winner"] or raw_disagreement["criteria"]) and not judge_errors:
@@ -1594,6 +1693,7 @@ def main() -> int:
                             retry_delay=args.retry_delay,
                             attempt_observer=observe("judge-tiebreak"),
                         )
+                        require_valid_text_trial(report,case,judged_run,'judge')
                         try:
                             if not execution_succeeded(judged_run) or not judged_run.get("route_attestation", {}).get("ok", False):
                                 errors = judged_run.get("route_attestation", {}).get("errors", [])
@@ -1613,6 +1713,8 @@ def main() -> int:
                                 "role": "tiebreak",
                             })
                             judge_errors.append(str(exc))
+                            report.setdefault('invalid_trials',[]).append({'case':case['id'],'role':'judge','run':judged_run,'valid':False,'reason':'unusable judge protocol','product_quality_passed':None,'rerun_authority':False})
+                            raise ValueError('Invalid judge protocol; stop dependent review') from None
                     outcome = effective_judgment_result(
                         mapped_winners, mapped_passes,
                         {"baseline": bool(baseline_det["pass"]), "candidate": bool(candidate_det["pass"])},
@@ -1736,15 +1838,28 @@ def main() -> int:
         report["operational_ok"] = (report["status"] == "complete"
                                     and all(item.get("operational_ok", True) for item in report["attempt_ledger"])
                                     and all(probe.get("ok") is True for probe in report["version_probes"].values()))
-        # Derived observations reuse the complete attempt ledger, including
-        # failures and judges. They never change the evaluator's decision.
-        from evaluation_measurement import attach_measurements
-        attach_measurements(report)
+        from evaluation_evidence import adoption_qualification
+        report['adoption_qualification'] = adoption_qualification(report, suite)
+        from evaluation_evidence import quality_tradeoff_decision
+        policy_text=suite.get('quality_policy_source','');policy=suite.get('quality_decision_policy',{})
+        policy_sources={hashlib.sha256(policy_text.encode()).hexdigest():policy_text.encode()} if isinstance(policy_text,str) else {}
+        report['current_quality_decision']=quality_tradeoff_decision(
+            {'ready':report['decision']['decision']=='admit' and report['operational_ok'],
+             'quality_disposition':report['decision']},policy,policy_sources)
+        report['current_quality_decision']['scope']='Bounded quality recommendation; legacy efficiency and deployment authority remain separate'
         finalize_workspace(out, report, lifecycle, workdir)
-    print(json.dumps({"status": report["status"], **report["decision"], "operational_ok": report["operational_ok"]}, indent=2))
+    print(json.dumps({"status": report["status"], 'quality_decision': report['decision'],
+        'adoption_ready': report['adoption_qualification']['ready'],
+        'overall_tokens':report['adoption_qualification'].get('whole_job',{}).get('overall_tokens'),
+        "operational_ok": report["operational_ok"]}, indent=2))
     print("report:", out if report["report_export"]["written"] else report["report_export"]["recovery_path"] or report["workspace_lifecycle"]["path"])
-    passed = report["decision"]["decision"] in {"admit", "retire"} and report["operational_ok"]
-    return 130 if interrupted else 0 if passed else 1
+    # The statistical decision remains readable as quality evidence, but the
+    # command must not return an adoption pass with missing whole-job evidence.
+    passed = (report["decision"]["decision"] in {"admit", "retire"}
+              and report["operational_ok"] and report['adoption_qualification']['ready'])
+    bounded_quality=(suite.get('quality_decision_policy',{}).get('purpose')=='bounded-quality-review'
+        and report.get('current_quality_decision',{}).get('quality_recommendation_sufficient') is True)
+    return 130 if interrupted else 0 if passed or bounded_quality else 1
 
 
 if __name__ == "__main__":

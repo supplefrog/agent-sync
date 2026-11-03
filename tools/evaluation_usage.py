@@ -7,6 +7,7 @@ program reconciler requires matching wire/lifecycle counters, unchanged installe
 sources and independently observed zero central auxiliary dispatches.
 """
 import hashlib
+import copy
 import time
 import json
 import os
@@ -20,6 +21,69 @@ BASE_NATIVE_SOURCES = ('agent/client_lifecycle.py', 'agent/codex_runtime.py', 'a
     'agent/auxiliary_hooks.py', 'agent/relay_llm.py', 'agent/turn_api_request.py',
     'agent/turn_response_intake.py', 'agent/api_request_hooks.py')
 DEADLINE_NATIVE_SOURCES = ('agent/interrupt_control.py', 'agent/conversation_loop.py')
+
+
+def skill_body(entry):
+    text=entry.decode('utf-8-sig').replace('\r\n','\n')
+    body=text.split('---',2)[-1].strip() if text.startswith('---') else text.strip()
+    if not body:raise ValueError('Empty target skill body')
+    return body
+
+
+def request_contains_skill(raw, entry):
+    """Exact body in supported Responses model-visible text, not metadata.
+
+    Opaque reasoning, tool arguments, schemas and diagnostic fields are not
+    instruction exposure. Unsupported envelopes fail closed in both consumers.
+    """
+    if not isinstance(raw,bytes) or len(raw)>16*1024*1024:raise ValueError('Bounded request bytes required')
+    body=skill_body(entry)
+    def visible_string(value,depth=0):
+        if depth>16:raise ValueError('Nested request exceeds exposure bound')
+        if isinstance(value,str):
+            result=[value]
+            if value.lstrip().startswith(('{','[')):
+                try:decoded=json.loads(value)
+                except ValueError:decoded=None
+                if decoded is not None:result+=visible_string(decoded,depth+1)
+            return result
+        # Decoding is confined to an already model-visible text/tool output.
+        if isinstance(value,list):return [s for v in value for s in visible_string(v,depth+1)]
+        if isinstance(value,dict):return [s for v in value.values() for s in visible_string(v,depth+1)]
+        return []
+    def content(value):
+        if isinstance(value,str):return visible_string(value)
+        if not isinstance(value,list):raise ValueError('Unsupported Responses content')
+        result=[]
+        for part in value:
+            if not isinstance(part,dict):raise ValueError('Unsupported Responses text part')
+            kind=part.get('type')
+            if kind in ('input_text','output_text','text'):
+                if not isinstance(part.get('text'),str):raise ValueError('Missing visible text')
+                result+=visible_string(part['text'])
+            elif kind not in ('input_image','input_file','output_image','refusal'):
+                raise ValueError('Unsupported Responses content type')
+        return result
+    request=json.loads(raw)
+    if not isinstance(request,dict) or 'input' not in request:raise ValueError('Supported Responses input required')
+    texts=[]
+    if request.get('instructions') is not None:
+        if not isinstance(request['instructions'],str):raise ValueError('Unsupported instructions')
+        texts+=visible_string(request['instructions'])
+    items=request['input']
+    if isinstance(items,str):texts+=visible_string(items)
+    elif isinstance(items,list):
+        for item in items:
+            if not isinstance(item,dict):raise ValueError('Unsupported Responses item')
+            kind=item.get('type')
+            if kind=='message' or kind is None and 'role' in item:
+                if item.get('role') not in ('system','developer','user','assistant'):raise ValueError('Unsupported message role')
+                texts+=content(item.get('content'))
+            elif kind=='function_call_output':texts+=content(item.get('output'))
+            elif kind not in ('reasoning','function_call','item_reference','computer_call','computer_call_output'):
+                raise ValueError('Unsupported Responses input type')
+    else:raise ValueError('Unsupported Responses input')
+    return any(body in text.replace('\r\n','\n') for text in texts)
 
 
 class NativeUsageObserver:
@@ -43,6 +107,152 @@ class NativeUsageObserver:
         self._recording_root = None
         self._recording_secrets = ()
         self._checkpoint_lock = threading.RLock()
+        self.skill_context = None
+        self.skill_context_events = []
+        self._initial_skill_context_qualified = False
+        self.skill_client_factory_hook_available = False
+        self.discovery = None
+        self.study_path_roots = None
+        self.study_path_events = []
+        self.measurement_guard_required = False
+        self.measurement_stopped = False
+
+    def require_study_path_scope(self, roots):
+        """Case-local Windows locator boundary, not a general PII detector."""
+        import ntpath,re
+        values=[str(Path(p).resolve()).replace('\\','/') for p in roots]
+        if not values or any(not re.match(r'^[A-Za-z]:/',p) or re.search(r'[\s`\"<>|?*]',p) for p in values):
+            raise ValueError('Study locator scope requires bounded unquoted absolute Windows roots')
+        self.study_path_roots=tuple(ntpath.normcase(ntpath.normpath(p)) for p in values)
+
+    def audit_study_paths(self, text):
+        if self.study_path_roots is None:return
+        import re,ntpath
+        normalized=text.replace('\\','/').lower()
+        for match in re.finditer(r'(?<![a-z0-9])[a-z]:/',normalized):
+            rest=normalized[match.start():]
+            # Only the literal native documentation examples are exempt.
+            parts=rest.split('/',3)
+            if len(parts)==4 and parts[:3]==['c:','users','<user>'] and re.match('(?:\\.\\.\\.)?(?=[\\s`\\".,)]|$)',parts[3]):continue
+            token=re.match(r'[^\s`\"<>|?*]+',rest).group(0).rstrip(',);]')
+            # A terminal dot/parent component is path syntax, not prose punctuation.
+            if token.endswith('.') and token.rsplit('/',1)[-1] not in ('.','..'):
+                token=token[:-1].rstrip(',);]')
+            if token.split('/')==['c:','users','x']:continue
+            if ':' in token[2:] or '\x00' in token:
+                raise RuntimeError('Unsupported Windows locator; transport blocked')
+            candidate=ntpath.normcase(ntpath.normpath(token))
+            owned=False
+            for root in self.study_path_roots:
+                try:owned=owned or ntpath.commonpath((root,candidate))==root
+                except ValueError:pass
+            if not owned:raise RuntimeError('Non-contained Windows locator in study request; transport blocked')
+        # Keep the POSIX-only audit separate from parsed Windows user roots.
+        posix_parts=normalized.split('/')
+        position=0
+        while position+2<len(posix_parts):
+            if posix_parts[position].endswith('c:') and posix_parts[position+1]=='users':
+                posix_parts[position:position+3]=[posix_parts[position][:-2]+posix_parts[position+2]]
+            else:position+=1
+        if re.search(r'(?<![:\w/])/(?:home|users)/[^<\s]','/'.join(posix_parts)):
+            raise RuntimeError('Unqualified user-home locator in study request; transport blocked')
+
+    def require_discovery_before_action(self,entry):
+        self.require_initial_skill_context(entry,False)
+        self.skill_context['mode']='discovery-before-material-action'
+        self.discovery={'stopped':False,'reason':None,'latest_visible_body':False,
+                        'material_dispatches':0,'material_completions':0,'events':[],
+                        'interrupt_requested':False,'interrupt_errors':[]}
+
+    def stop_discovery(self,reason):
+        if self.discovery is None:return
+        if not self.discovery['stopped']:
+            self.discovery.update(stopped=True,reason=reason)
+        self.checkpoint()
+
+    @staticmethod
+    def discovery_material(name,args):
+        import re
+        return name in ('write_file','patch') or name=='terminal' and not re.fullmatch(
+            r'(?:pwd|ls|dir)(?: [A-Za-z0-9_. /=-]+)?',str(args.get('command','')))
+
+    def discovery_tool_completed(self,name,parsed,args=None):
+        """Fatal tool/setup uncertainty stops; observed failing tests remain data."""
+        if self.discovery is None:return
+        result=parsed if isinstance(parsed,dict) else {}
+        fatal=bool(not result or result.get('error') or result.get('permission_denied')
+                   or result.get('status') in ('denied','permission-denied','unknown-execution'))
+        material=self.discovery_material(name,args or {})
+        if name=='terminal':
+            observed=(type(result.get('exit_code')) is int and result['exit_code']>=0
+                      and isinstance(result.get('output'),str) and result.get('backend')=='direct-python-argv')
+        elif name in ('write_file','patch'):
+            observed=result.get('verified') is True or result.get('success') is True
+            fatal=bool(fatal or result.get('success') is False or result.get('verified') is False)
+        else:observed=result.get('success') is not False
+        if fatal or not observed:
+            self.stop_discovery('native-tool-failure-or-unknown-execution')
+        elif material and not self.discovery['stopped']:
+            self.discovery['material_completions']+=1
+        self.checkpoint()
+
+    def discovery_tool_boundary(self,name,args):
+        """Existing pre-tool hook consumes observed request state, not model claims."""
+        if self.discovery is None:return None
+        state=self.discovery
+        if state['stopped']:return 'Discovery qualification stopped; no further tool dispatch permitted'
+        material=self.discovery_material(name,args)
+        if not material:return None
+        allowed=state['latest_visible_body'] is True
+        state['events'].append({'tool':name,'request_ordinal':len(self.skill_context_events)-1,'allowed':allowed})
+        if not allowed:
+            self.stop_discovery('material-action-before-visible-target-body')
+            return 'Discovery qualification ended before material action: target body not delivered in a subsequent model-visible request'
+        state['material_dispatches']+=1
+        self.checkpoint()
+        return None
+
+    def require_initial_skill_context(self, entry, expected_present):
+        if not isinstance(entry,bytes) or type(expected_present) is not bool:raise ValueError('Explicit target bytes/presence required')
+        skill_body(entry)
+        self.skill_context={'entry':entry,'entry_sha256':hashlib.sha256(entry).hexdigest(),'expected_present':expected_present}
+
+    def require_trial_measurement_guard(self):
+        self.measurement_guard_required = True
+
+    def stop_trial_measurement(self):
+        self.measurement_stopped = True
+        self.checkpoint()
+
+    def guard_skill_request(self, request):
+        """HTTPX request event: raises BEFORE transport on wrong initial exposure."""
+        if self.measurement_stopped:raise RuntimeError('Trial measurement stopped before transport')
+        if self.study_path_roots is not None:
+            # Decode JSON escapes; audit all model-visible text fields including
+            # instructions, tools and subsequent results, never URL/credentials.
+            def texts(value):
+                if isinstance(value,str):yield value
+                elif isinstance(value,dict):
+                    for item in value.values():yield from texts(item)
+                elif isinstance(value,list):
+                    for item in value:yield from texts(item)
+            self.audit_study_paths('\n'.join(texts(json.loads(request.content))))
+            self.study_path_events.append({'accepted':True})
+        if self.skill_context is None:return
+        if len(self.skill_context_events)>=self.limit:raise RuntimeError('Target exposure event bound exceeded; provider transport blocked')
+        expected=self.skill_context['expected_present']
+        try:present=request_contains_skill(request.content,self.skill_context['entry']);error=None
+        except Exception:present=None;error='target context could not be verified'
+        first=not self._initial_skill_context_qualified
+        if self.discovery is not None:
+            accepted=not self.discovery['stopped'] and present is not None and (not first or present is False)
+            self.discovery['latest_visible_body']=bool(accepted and not first and present)
+        else:accepted=(present is expected) if first or not expected else present is not None
+        self.skill_context_events.append({'request_ordinal':len(self.skill_context_events),
+            'target_entry_sha256':self.skill_context['entry_sha256'],'body_present':present,'initial':first,'accepted':accepted,'error':error})
+        self.checkpoint()
+        if not accepted:raise RuntimeError('Unqualified initial target-skill exposure; provider transport blocked')
+        self._initial_skill_context_qualified = True
 
     def checkpoint(self):
         """Durable allowlisted partial counters; never a completion certificate."""
@@ -57,6 +267,9 @@ class NativeUsageObserver:
                     'dropped_events': self.dropped, 'http_dropped': self.http_dropped,
                     'observation_errors': self.observation_errors,
                     'exposure_events': list(self.exposure_events),
+                    'target_skill_context_events':list(self.skill_context_events),
+                    'trial_measurement_stopped':self.measurement_stopped,
+                    'discovery_qualification':self.discovery,
                     'blobs': list(self.recording['blobs']),
                     'errors': list(self.recording['errors']),
                     'native_sources_before': self.native_sources_before,
@@ -185,62 +398,12 @@ class NativeUsageObserver:
             self._restores.append(lambda name=name, original=original: setattr(module, name, original))
 
     def watch_request_clients(self, agent):
-        """Attach public HTTPX events at the installed task-local client seam.
+        """Use the existing source/version-bound plain/encoded request lease."""
+        from evaluation_guarded_clients import attach_guarded_requests
+        lease = attach_guarded_requests(self, agent)
+        self.request_send_lease = lease
+        self._restores.append(lease.dispose)
 
-        No client is replaced and no URL, headers or response content is read.
-        Exact request-body retention is confined to the explicit private archive.
-        Events count local dispatches, not provider-internal work.
-        """
-        original = getattr(agent, '_create_request_openai_client', None)
-        if not callable(original):
-            self.clients_unsupported += 1
-            return
-        seen, registrations, pending = set(), [], {}
-        def record(phase, value):
-            try:
-                if len(self.http_events) >= self.limit:
-                    self.http_dropped += 1
-                    return
-                request = value if phase == 'request' else value.request
-                if phase == 'request':
-                    ident = 1 + sum(e['phase'] == 'request' for e in self.http_events)
-                    pending[id(request)] = (ident, time.monotonic())
-                    self.http_events.append({'phase': phase, 'attempt': ident, 'status': None, 'seconds': None})
-                    if self.recording is not None:
-                        self._retain('final-request', request.content, physical_attempt=ident)
-                else:
-                    ident, started = pending.pop(id(request), (None, None))
-                    self.http_events.append({'phase': phase, 'attempt': ident,
-                        'status': counter(value.status_code),
-                        'seconds': time.monotonic() - started if started is not None else None})
-                self.checkpoint()
-            except Exception:
-                self.observation_errors += 1
-        def watched(*args, **kwargs):
-            client = original(*args, **kwargs)
-            underlying = getattr(client, '_client', None)
-            if id(underlying) in seen:
-                return client
-            seen.add(id(underlying))
-            from httpx import Client
-            hooks = getattr(underlying, 'event_hooks', None)
-            if not isinstance(underlying, Client) or not isinstance(hooks, dict):
-                self.clients_unsupported += 1
-                return client
-            self.sdk_retry_limits.append(counter(getattr(client, 'max_retries', None)))
-            for phase in ('request', 'response'):
-                callback = lambda value, phase=phase: record(phase, value)
-                hooks[phase].append(callback)
-                registrations.append((hooks[phase], callback))
-            self.clients_hooked += 1
-            return client
-        agent._create_request_openai_client = watched
-        def restore():
-            agent._create_request_openai_client = original
-            for hooks, callback in registrations:
-                if callback in hooks:
-                    hooks.remove(callback)
-        self._restores.append(restore)
 
     def close(self):
         errors = []
@@ -293,6 +456,13 @@ class NativeUsageObserver:
                 'whole_system_complete': False,
                 'auxiliary_dispatches': dict(self.auxiliary_dispatches) if self.auxiliary_dispatches is not None else None,
                 'exposure_events': list(self.exposure_events),
+                'target_skill_context_events':list(self.skill_context_events),
+                    'trial_measurement_stopped':self.measurement_stopped,
+                'discovery_qualification':copy.deepcopy(self.discovery),
+                'target_skill_context_guard':{'configured':self.skill_context is not None,'client_factory_hook_available':self.skill_client_factory_hook_available,
+                    'target_entry_sha256':self.skill_context['entry_sha256'] if self.skill_context else None,
+                    'expected_initial_presence':self.skill_context['expected_present'] if self.skill_context else None,
+                    'scope':'Pre-transport target-context prerequisite; not cognitive use or model-quality proof'},
                 'native_sources_before': self.native_sources_before,
                 'native_sources_after': self.source_hashes(),
                 'native_http': {'source': 'native-request-client-HTTPX-events',
@@ -320,9 +490,12 @@ def bind_recorded_output(directory, summary, binding, outcome):
     if manifest['binding'] != binding or summary.get('run_binding_sha256') != hashlib.sha256(
             json.dumps(binding, sort_keys=True).encode()).hexdigest():
         raise ValueError('Recording belongs to a different run or output check')
+    if sum(b.get('kind') == 'final-response' for b in manifest['blobs']) > 1:
+        raise ValueError('Duplicate retained final response')
+    paired_requests = set()
     for index, blob in enumerate(manifest['blobs']):
         kind = blob['kind']
-        if kind not in ('assembled-prompt', 'task-input', 'final-request') or blob['file'] != f'{index:06d}-{kind}.bin':
+        if kind not in ('assembled-prompt', 'task-input', 'final-request', 'encoded-request', 'final-response') or blob['file'] != f'{index:06d}-{kind}.bin':
             raise ValueError('Unsafe recording blob identity')
         path = root / blob['file']
         if path.is_symlink() or path.resolve().parent != root:
@@ -330,9 +503,35 @@ def bind_recorded_output(directory, summary, binding, outcome):
         data = path.read_bytes()
         if len(data) != blob['bytes'] or hashlib.sha256(data).hexdigest() != blob['sha256']:
             raise ValueError('Retained recording payload changed')
+        if kind == 'final-response':
+            if blob['sha256'] != outcome.get('final_response_sha256'):
+                raise ValueError('Retained final response differs from output check')
+        if kind == 'encoded-request':
+            previous = manifest['blobs'][index - 1] if index else {}
+            logical = blob.get('logical_request_sha256')
+            if (not isinstance(logical, str) or len(logical) != 64
+                    or any(c not in '0123456789abcdef' for c in logical)
+                    or previous.get('kind') != 'final-request'
+                    or previous.get('logical_request_sha256') != logical
+                    or logical in paired_requests):
+                raise ValueError('Encoded request has no unique matching plain request')
+            paired_requests.add(logical)
+    # The selected send lease marks each accepted plain request with its logical
+    # identity. Complete archives must retain its corresponding encoded bytes.
+    # Legacy plain-only archives have no such metadata. Incomplete diagnostics
+    # may end before encoding; they remain incomplete rather than losing evidence.
+    if manifest.get('complete') is True:
+        for index, blob in enumerate(manifest['blobs']):
+            if blob['kind'] == 'final-request' and 'logical_request_sha256' in blob:
+                following = manifest['blobs'][index + 1] if index + 1 < len(manifest['blobs']) else {}
+                if (following.get('kind') != 'encoded-request'
+                        or following.get('logical_request_sha256') != blob['logical_request_sha256']):
+                    raise ValueError('Complete recording lacks adjacent encoded request pair')
     if outcome.get('oracle_sha256') != binding['oracle_sha256']:
         raise ValueError('Output checks changed')
-    checks_complete = (type(outcome.get('oracle_exit_code')) is int and type(outcome.get('task_passed')) is bool
+    outcome_complete = (type(outcome.get('deterministic_invariants_passed')) is bool
+        and (outcome.get('task_passed') is None or outcome.get('task_passed') is False)) if outcome.get('outcome_schema_version') == 2 else type(outcome.get('task_passed')) is bool
+    checks_complete = (type(outcome.get('oracle_exit_code')) is int and outcome_complete
         and all(isinstance(outcome.get(k), str) and len(outcome[k]) == 64
                 and all(c in '0123456789abcdef' for c in outcome[k])
                 for k in ('oracle_result_sha256', 'final_tree_sha256', 'final_response_sha256')))

@@ -124,6 +124,27 @@ def native_hermes_runtime(exe: str) -> tuple[Path, Path]:
     for source in (executable.parent.parent / "hermes-agent", executable.parent.parent.parent):
         if not (source / "run_agent.py").is_file() or not (source / "hermes_cli" / "auth_codex.py").is_file():
             continue
+        selector = source / 'pm' / 'environments.py'
+        if selector.is_file():
+            # Upstream PM owns the committed dependency generation. Its pure
+            # project_python selector reads installation metadata and rejects a
+            # broken selection; an old in-tree .venv is not a fallback for it.
+            import importlib.util
+            import inspect
+            import sys
+            sys.path.insert(0, str(source))
+            try:
+                spec = importlib.util.spec_from_file_location('_evaluation_hermes_environments', selector)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                if Path(inspect.getsourcefile(module.get_default_hermes_root)).resolve() != (source / 'hermes_constants.py').resolve():
+                    raise ValueError('Hermes environment selector imported a different installation')
+                python = module.project_python(source)
+            finally:
+                sys.path.pop(0)
+            if not python.is_file():
+                raise ValueError('Selected native Hermes interpreter unavailable')
+            return python, source
         for python in (source / ".venv" / "Scripts" / "python.exe", source / ".venv" / "bin" / "python"):
             if python.is_file():
                 return python, source
@@ -545,6 +566,8 @@ def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: st
             # Preserve available usage even if the worker failed before route
             # metadata, without converting that failure into a valid receipt.
             result["native_usage"] = worker.get("native_usage", {})
+            result['model_launched']=worker.get('model_launched')
+            result['catalog_evidence']=worker.get('catalog_evidence',{})
             contract["worker_cleanup_errors"] = worker.get("worker_cleanup_errors", [])
             if "route_attestation" not in worker:
                 raise ValueError("native Hermes worker failed before producing route metadata")
@@ -701,8 +724,54 @@ def skill_study_preflight(exe: str, fixture: Path, env: dict[str, str], source: 
                     "sha256": hashlib.sha256(raw.encode()).hexdigest(), "disabled_skill_count": len(disabled)}
 
 
-def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only=False, *, model="gpt-6-sol", reasoning="medium", prepared_runtime=None, request_recording=None, terminal_backend=None):
+def catalog_exposure(expected_skills):
+    """Current exact source packages, before runtime/credential access."""
+    from artifact_hash import freeze_candidate
+    frames=[]
+    for source in expected_skills:
+        frame=freeze_candidate(Path(source),projection='native-catalog')
+        text=Path(source).read_text(encoding='utf-8')
+        name=re.search(r'(?m)^name:\s*(.+)$',text)
+        frames.append({'name':name.group(1).strip().strip("\"'") if name else Path(source).parent.name,
+            **{k:frame[k] for k in ('package_sha256','entry_sha256','files','file_sizes','projection')}})
+    if len({f['name'] for f in frames})!=len(frames):raise ValueError('Duplicate catalog exposure')
+    return sorted(frames,key=lambda f:f['name'])
+
+
+def require_receiver_dispatch(clearance, request_recording):
+    """Bind the actual launched recording/run to its reviewed receiver slot."""
+    if not isinstance(clearance,dict) or clearance.get('contract',{}).get('evaluation_stage')!='continuation-receiver':return
+    from evaluation_evidence import receiver_assignment
+    actual=receiver_assignment(clearance['contract']['receiver_assignment'],clearance['source_bytes'])
+    recording=request_recording.get('binding',{}) if isinstance(request_recording,dict) else {}
+    if recording.get('run_id')!=actual['receiver_run_id'] or recording.get('arm')!=actual['receiver_slot']:
+        raise ValueError('Actual receiver dispatch/recording differs from frozen pair assignment')
+
+
+def require_paid_intervention(prompt, fixture, timeout, model, reasoning, max_iterations, terminal_backend, clearance, *, host, expected_skills):
+    """Common native paid-dispatch gate; no credentials/runtime touched first."""
+    import evaluation_measurement as m
+    from evaluation_evidence import intervention_readiness
+    if not isinstance(clearance,dict):raise ValueError('Native comparison requires source-bound pretrial intervention qualification')
+    checked=intervention_readiness(clearance['binding'],clearance['contract'],clearance['qualification'],clearance['review'],clearance['source_bytes'])
+    from evaluation_artifact_pilot import tree,intervention_harness_digest
+    required={'timeout':timeout,'max_iterations':max_iterations,'model':model,'reasoning':reasoning,'terminal_backend':terminal_backend}
+    if (not checked['ready'] or clearance['binding'].get('harness_sha256')!=intervention_harness_digest()
+            or clearance['binding'].get('host')!=host
+            or clearance['binding'].get('catalog')!=catalog_exposure(expected_skills)
+            or clearance['binding'].get('conditions')!=required
+            or clearance['qualification'].get('task_input')!=prompt
+            or clearance['qualification'].get('project_before')!=tree(Path(fixture))):
+        raise ValueError('Unqualified/stale treatment, task, harness or dispatch conditions: '+'; '.join(checked['gaps']))
+    return checked
+
+
+def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only=False, *, model="gpt-6-sol", reasoning="medium", prepared_runtime=None, request_recording=None, terminal_backend=None, capability_probes=None, intervention_clearance=None):
     """Explicit native host adapter; never chooses a route or falls back."""
+    admitted_claim=None
+    if not assembly_only:
+        require_receiver_dispatch(intervention_clearance,request_recording)
+        admitted_claim=require_paid_intervention(prompt,fixture,timeout,model,reasoning,max_iterations,terminal_backend,intervention_clearance,host='hermes',expected_skills=expected_skills)['accounting_claim']
     from artifact_hash import freeze_candidate
     fixture = Path(fixture).resolve()
     runtime = (prepared_runtime_directory(prepared_runtime, fixture) if prepared_runtime is not None
@@ -723,26 +792,54 @@ def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterat
         catalog = []
         for skill in expected_skills:
             skill = Path(skill)
-            frozen = freeze_candidate(skill)
+            frozen = freeze_candidate(skill, projection='native-catalog')
             text = skill.read_text(encoding="utf-8")
+            if not assembly_only:
+                name=re.search(r'(?m)^name:\s*(.+)$',text)
+                actual={'name':name.group(1).strip().strip("\"'") if name else skill.parent.name,
+                        **{k:frozen[k] for k in ('package_sha256','entry_sha256','files','file_sizes','projection')}}
+                if actual not in intervention_clearance['binding']['catalog']:
+                    raise ValueError('Catalog changed after qualification and before staging')
             if re.search(r"(?m)^deps\s*:|!`|\{\{", text):
                 raise ValueError("Study catalog cannot install dependencies or preprocess dynamic content")
             destination = Path(env["HERMES_HOME"]) / "skills" / skill.parent.name
-            shutil.copytree(skill.parent, destination)
+            destination.mkdir(parents=True)
+            for relative, expected in frozen['files'].items():
+                with (skill.parent / relative).open('rb') as stream:
+                    data = stream.read(frozen['file_sizes'][relative] + 1)
+                if hashlib.sha256(data).hexdigest() != expected:
+                    raise ValueError('Native Hermes package changed before staging')
+                target = destination / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
             staged = destination / "SKILL.md"
-            if freeze_candidate(staged)["package_sha256"] != frozen["package_sha256"]:
+            if freeze_candidate(staged, projection='native-catalog')["package_sha256"] != frozen["package_sha256"]:
                 raise ValueError("Native Hermes staged package changed")
             catalog.append({"path": str(staged), "package_sha256": frozen["package_sha256"],
-                            "body_sha256": hashlib.sha256(frozen["prompt_text"].encode()).hexdigest()})
+                            "body_sha256": frozen["entry_sha256"], "loading": "native-on-demand",
+                            "file_sizes": frozen["file_sizes"], "files": frozen["files"]})
         env["HERMES_BUNDLED_PLUGINS"] = str(runtime / "no-plugins")
         job = {"purpose": "native-skill-study", "assembly_only": assembly_only,
                "native_source": str(native), "credential_owner_home": str(hermes_owner_home(source)),
                "runtime_home": env["HERMES_HOME"], "fixture": str(fixture), "catalog": catalog,
                "prompt": prompt, "model": model, "reasoning": reasoning,
                "max_iterations": max_iterations, "timeout": timeout}
+        if not assembly_only or intervention_clearance is not None:
+            import base64
+            job['intervention_clearance']={**intervention_clearance,
+                'source_bytes':{key:base64.b64encode(data).decode('ascii')
+                    for key,data in intervention_clearance['source_bytes'].items()}}
         if terminal_backend is not None:
             if terminal_backend != 'direct-python-argv': raise ValueError('Unsupported terminal backend')
             job['terminal_backend'] = terminal_backend
+        if capability_probes is not None:
+            if not assembly_only or not isinstance(capability_probes,list) or not 1<=len(capability_probes)<=8:
+                raise ValueError('Capability probes require bounded zero-model assembly')
+            if any(set(p)!={'id','tool','arguments'} or not isinstance(p['id'],str) or not isinstance(p['tool'],str)
+                   or not isinstance(p['arguments'],dict) for p in capability_probes):
+                raise ValueError('Malformed capability request')
+            if len(json.dumps(capability_probes).encode())>65536:raise ValueError('Oversized capability requests')
+            job['capability_probes']=capability_probes
         if request_recording is not None:
             archive = Path(request_recording['directory'])
             if (not archive.is_absolute() or archive.parent.resolve() != archive.parent or archive.exists()
@@ -785,12 +882,19 @@ def run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterat
         result["timings"]["cleanup"] = time.monotonic() - before
         result["timings"]["controller_total"] = time.monotonic() - started
         result["ok"] = result["ok"] and result["cleanup"]["state_removed"] and not result["cleanup"]["errors"]
+    if admitted_claim is not None:result['measurement_claim']=admitted_claim
     return result
 
 
-def run_native_skill_study(prompt: str, fixture: Path, timeout: int, expected_skills: list[str], *, agent: str = "codex", max_iterations: int = 24, assembly_only: bool = False, model: str = "gpt-6-sol", reasoning: str = "medium", prepared_runtime: Path | None = None, request_recording: dict | None = None, terminal_backend: str | None = None) -> dict[str, Any]:
+def run_native_skill_study(prompt: str, fixture: Path, timeout: int, expected_skills: list[str], *, agent: str = "codex", max_iterations: int = 24, assembly_only: bool = False, model: str = "gpt-6-sol", reasoning: str = "medium", prepared_runtime: Path | None = None, request_recording: dict | None = None, terminal_backend: str | None = None, capability_probes: list | None = None, intervention_clearance: dict | None = None) -> dict[str, Any]:
+    admitted_claim=None
+    if not assembly_only:
+        require_receiver_dispatch(intervention_clearance,request_recording)
+        admitted_claim=require_paid_intervention(prompt,fixture,timeout,model,reasoning,max_iterations,terminal_backend,intervention_clearance,host=agent,expected_skills=expected_skills)['accounting_claim']
     if agent == "hermes":
-        return run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only, model=model, reasoning=reasoning, prepared_runtime=prepared_runtime, request_recording=request_recording, terminal_backend=terminal_backend)
+        return run_hermes_skill_study(prompt, fixture, timeout, expected_skills, max_iterations, assembly_only, model=model, reasoning=reasoning, prepared_runtime=prepared_runtime, request_recording=request_recording, terminal_backend=terminal_backend, capability_probes=capability_probes, intervention_clearance=intervention_clearance)
+    if capability_probes is not None:
+        raise ValueError('Actor-path capability probes currently require Hermes assembly')
     if terminal_backend is not None:
         raise ValueError('Task-local terminal backend is supported only by the Hermes adapter')
     if request_recording is not None:
@@ -853,4 +957,5 @@ def run_native_skill_study(prompt: str, fixture: Path, timeout: int, expected_sk
         result["timings"]["cleanup"] = time.monotonic() - before
         result["timings"]["controller_total"] = time.monotonic() - started
         result["ok"] = result["ok"] and result["cleanup"]["credentials_removed"] and result["cleanup"]["state_removed"] and not result["cleanup"]["errors"]
+    if admitted_claim is not None:result['measurement_claim']=admitted_claim
     return result

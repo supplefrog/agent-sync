@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "scope": "Default measured-behavior validity and frozen-plan forwarding; no comparative benefit or rollout authority.",
+  "instruction_changes": [
+    {
+      "owner": "skills/instruction-authoring",
+      "change_kind": "contract-correction",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "restructured": false,
+      "deviation": "A completed or loaded trial could be interpreted without proof that its declared measured behavior occurred.",
+      "evidence": "Source-bound default-validity and frozen-plan consumer checks exercise invalid, missing, stale and valid-negative evidence cases.",
+      "why_instruction": "The existing evaluation discipline must preserve the same intended-behavior/stop-repair-requalify contract as its executable consumer.",
+      "alternative": "Keep native/model judgment and existing evaluation tools; no new evaluator, trial, orchestration layer or fixed task procedure.",
+      "artifacts": {
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "95521cea4e0db3f411951e06090fa0f75d83c8684fa26fb9a1042c9ffb7ac872",
+          "after_sha256": "7d2055a5b3f252690438447b54337f73529f0ea3dd65f1771b2763f343ab75e8"
+        }
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454",
+          "after_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/artifact-pilot.md": {
+          "before_sha256": "5e1a17ae4c5d0bd1847652cd23898f8c4d137ba8fc39925596b39923a8f31cb8",
+          "after_sha256": "5e1a17ae4c5d0bd1847652cd23898f8c4d137ba8fc39925596b39923a8f31cb8"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/grounded-verification.md": {
+          "before_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7",
+          "after_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7"
+        },
+        "docs/instruction-profiles.md": {
+          "before_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569",
+          "after_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-instruction-diagnostic.md": {
+          "before_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a",
+          "after_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "c30b96b954427c649f0f6800ecce2af5a46e3951ebb33f922850695d61a9c5ba",
+          "after_sha256": "748a86035e9554dea4be56d8a63dd2e1b54377dc08b019216dc714a2f643c002"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "2982964467efd9f86f64edc49fdcb2ebd5309839b58ac6ea8853bb7cff7722fc",
+          "after_sha256": "4a33458c846220f38140b6295b01fdb84aa5e78d656a62150f025bd9e9b3a5e4"
+        },
+        "skills/capability-curator/SKILL.md": {
+          "before_sha256": "59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5",
+          "after_sha256": "59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5"
+        },
+        "skills/capability-curator/references/instruction-retirement.md": {
+          "before_sha256": "a3bbe9ee22fbfbb7a1496fc01b9b895dda486f995b7300e7c8350215130bcda4",
+          "after_sha256": "a3bbe9ee22fbfbb7a1496fc01b9b895dda486f995b7300e7c8350215130bcda4"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "95521cea4e0db3f411951e06090fa0f75d83c8684fa26fb9a1042c9ffb7ac872",
+          "after_sha256": "7d2055a5b3f252690438447b54337f73529f0ea3dd65f1771b2763f343ab75e8"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "skills/surface-convergence/SKILL.md": {
+          "before_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70",
+          "after_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70"
+        },
+        "tests/test_evaluator_runtime_cohort.py": {
+          "before_sha256": "absent",
+          "after_sha256": "fbb65a8416b61236293247ce5bd40cd2bb239a7b527c9a19e4161be93808fd53"
+        },
+        "tests/test_recorded_final_response.py": {
+          "before_sha256": "absent",
+          "after_sha256": "fd268a101628fbd56e2709cc436840d8c485f039bd7518ec097aa6342f8500d3"
+        },
+        "tools/eval.py": {
+          "before_sha256": "006ac3caa4527bfdb4b67770afcb7f84d9424010cc37f71a6b3a977c2f664419",
+          "after_sha256": "e57f89bdfb14d87f9a218cce08e7fa7b6b53a84ad17c14848ed64acac133ba97"
+        },
+        "tools/evaluation_artifact_pilot.py": {
+          "before_sha256": "9b593e16ea558b2ceb4256aadb9eb8c7d7bd3df57e6b732d744620eb5e02054f",
+          "after_sha256": "bc9c26cb1ac70714a2541fae92e4b100ac7a3d9dfed64329edda0592906085ea"
+        },
+        "tools/evaluation_evidence.py": {
+          "before_sha256": "fc8ed3896a206388b8f968f5700de5f77d2c81a3fcf2a2a5d2e1747a0e9e9dc5",
+          "after_sha256": "cbd7335398a0d23c8d5fc957428c4ca868bb26abe76716a2eda32b44bae24001"
+        },
+        "tools/evaluation_guarded_clients.py": {
+          "before_sha256": "absent",
+          "after_sha256": "64a60c636261e91a4c93563cac330bc4f3849099f839a262847a294364010a4b"
+        },
+        "tools/evaluation_hermes_worker.py": {
+          "before_sha256": "4b587dd33c406385fa890e06d2a57c69c6cfd79721cc5bdcdad462e83cb15812",
+          "after_sha256": "b63361ef2dfa0e17d6ac5eb889207659670359820633580fcb3f8c7fdc335c29"
+        },
+        "tools/evaluation_measurement.py": {
+          "before_sha256": "b3a294aaa92d81c2599c33ecb0e05885d9166eadc19791981ff95f70eef01616",
+          "after_sha256": "fa2172761ec6e600d482000d58fc52229256f404d0ef34d62736a93fc110e2e1"
+        },
+        "tools/evaluation_runtime.py": {
+          "before_sha256": "3c851cf07420565ec7b83038521eb6bf72c98d59e73111758ae3ee7fc2694ed2",
+          "after_sha256": "d81569b8aa329e35659ab65be5b278dc0c4b763c53f09fdf82c7bbf71f1d64d8"
+        },
+        "tools/evaluation_send_lease.py": {
+          "before_sha256": "absent",
+          "after_sha256": "c23418145a0106b080c790159a6bd2049e66bc3274ee82564dbaecc1e0d0ae83"
+        },
+        "tools/evaluation_usage.py": {
+          "before_sha256": "2008b6f5deb593e9833db9f5d4c27b88fcac142981695568c1cddb9eaaf9721e",
+          "after_sha256": "54ce3883418dbb91a8b2ab9a65de4df45108b0744aa304fe8c13c01d37452dbf"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/artifact-pilot.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/grounded-verification.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/instruction-profiles.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/native-instruction-diagnostic.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/capability-curator/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/capability-curator/references/instruction-retirement.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "skills/surface-convergence/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "tests/test_evaluator_runtime_cohort.py",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        },
+        {
+          "path": "tests/test_recorded_final_response.py",
+          "disposition": "updated",
+          "reason": "Preserve the existing owner and unrelated guarantees; bind this source/publication or response-handoff correction without a new quality or permission claim."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "Makes intended measured behavior and invalid-trial handling explicit in the existing evaluation contract and status.",
+      "authority": "User-required functional correction; this technical source record authenticates no approval and grants no provider, publication or installation authority.",
+      "checks": "Current owner-bound runtime/worker/observer/guarded-client/send-lease cohort; focused caller/API, PM selection, coding-context-off, compressed recording/once-only transport controls; no native or provider launch.",
+      "framework_review": {
+        "affected": [
+          "docs/requirement-status.md",
+          "docs/system-requirements.md",
+          "skills/instruction-authoring/SKILL.md"
+        ],
+        "selection_reason": "The existing trial-validity owner and actual runtime/recording dependency cohort must ship coherently; no second evaluator or transport is introduced.",
+        "unaffected_reason": "Other task methods, quality-first candidates, routing, memory, model defaults, runtime permissions and skill lifecycle retain their current source.",
+        "checks": "Only the validity paragraph is inserted into the current authoring contract; other bytes and newer guidance are preserved."
+      },
+      "outcome_review": {
+        "expected": "Default interpretation rejects invalid or unexercised measurements and retains valid negative product outcomes; both projection calls receive the frozen plan.",
+        "observed": "The composed caller accepts its required intervention clearance APIs and selected PM interpreter; the guarded observer retains decoded/encoded request pairs and final response, and the consumer validates them. Existing source-bound and once-only send guards are preserved.",
+        "evidence": "Current owner-bound runtime/transport sources and prior independent component reviews; a previously reviewed path-component representation preserves the locator audit in 42 cases. Focused offline positive/negative controls are separate from retained historical trials, which are unchanged and excluded.",
+        "limitations": "Source and deterministic offline checks only; normal release qualification, public authority, live SDK/model behavior and native activation remain separate."
+      }
+    }
+  ]
+}
