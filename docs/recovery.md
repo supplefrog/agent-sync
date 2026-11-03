@@ -126,6 +126,11 @@ slot atomically with the qualified successor. Existing backups remain untouched.
 
 Every inherited target still needs fresh successor verification. Removed/offline
 targets remain incomplete; prior verification is not reused for changed source.
+An explicitly retired recovery snapshot retains its committed prior native target
+as an absence obligation. Readback requires the retirement record, removal from
+the current policy/tree, an available host root and absence of that exact target;
+it never deletes a remaining file. A replacement policy entry for the same native
+target remains unresolved. This applies to exact retries and inherited obligations.
 Inherited native saved-state obligations are derived from every predecessor's
 published artifact delta, even if its readback phase was never reached. They need
 fresh current readback. A different desired value requires the exact artifact in

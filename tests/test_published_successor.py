@@ -218,6 +218,7 @@ class NativeObligations(unittest.TestCase):
             self.reads += 1
             return self.saved
         self.recovery = SimpleNamespace(
+            _default_roots=lambda: {},
             _load_policy=lambda path: self.policy, verify_snapshot=lambda *args: None,
             _policy_artifacts=lambda policy: [('hermes', self.artifact)],
             _selected_roots=lambda roots, hosts: (None, {'hermes': Path('synthetic-home')}),

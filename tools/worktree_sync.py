@@ -686,6 +686,16 @@ def _native_target_spec(host, artifact):
     return {'host': host, **{key: artifact.get(key) for key in ('id', 'source', 'kind', 'format')}}
 
 
+def _verify_native_retirement_source(lane, commit, name, spec, artifacts):
+    retired = json.loads(_committed_bytes(lane, commit, 'contracts/ownership.json'))
+    if (name not in {row['path'] for row in retired.get('retired_artifacts', [])}
+            or name in artifacts
+            or sync_git.git(lane, 'ls-tree', '--name-only', commit, '--', name)
+            or any(host == spec['host'] and artifact['source'] == spec['source']
+                   for host, artifact in artifacts.values())):
+        raise sync_git.SyncBlocked('native retirement is not explicit or its target is still managed')
+
+
 def _publication_native_obligations(lane, commit):
     paths = _names(lane, 'diff', '--name-only', commit + '^', commit)
     selected = sorted(name for name in paths if name.startswith('recovery/current/')
@@ -697,13 +707,25 @@ def _publication_native_obligations(lane, commit):
                  for host, spec in policy['hosts'].items() for artifact in spec.get('artifacts', [])}
     obligations = []
     for name in selected:
-        host, artifact = artifacts[name]
         existed = bool(sync_git.git(lane, 'ls-tree', '--name-only', commit + '^', '--', name))
         old = _committed_bytes(lane, commit + '^', name) if existed else None
-        desired = _committed_bytes(lane, commit, name)
+        if name in artifacts:
+            host, artifact = artifacts[name]
+            desired = _committed_bytes(lane, commit, name)
+        else:
+            before_policy = json.loads(_committed_bytes(lane, commit + '^', 'recovery.json'))
+            before_artifacts = {'recovery/current/' + a['snapshot']: (h, a)
+                                for h, s in before_policy['hosts'].items()
+                                for a in s.get('artifacts', [])}
+            host, artifact = before_artifacts[name]
+            if old is None:
+                raise sync_git.SyncBlocked('retired native source has no committed predecessor')
+            _verify_native_retirement_source(lane, commit, name,
+                                             _native_target_spec(host, artifact), artifacts)
+            desired = None
         obligations.append({'artifact': name, 'publication_commit': commit,
                             'before_sha256': hashlib.sha256(old).hexdigest() if old is not None else 'absent',
-                            'after_sha256': hashlib.sha256(desired).hexdigest(),
+                            'after_sha256': hashlib.sha256(desired).hexdigest() if desired is not None else 'absent',
                             'target_spec': _native_target_spec(host, artifact)})
     return obligations
 
@@ -742,7 +764,8 @@ def _native_destination_completion(lane, journal, *, recovery_module=None):
     except (OSError, RuntimeError, ValueError, KeyError) as exc:
         return dict(result, saved_verified=False, targets={'snapshot': {'verified': False,
                     'reason': str(exc), 'resumption_event': 'Repair and qualify the exact snapshot/policy before retry.'}})
-    roots = journal['receipt']['options'].get('recovery_roots') or {}
+    roots = recovery._default_roots()
+    roots.update(journal['receipt']['options'].get('recovery_roots') or {})
     selected_paths = set(journal['receipt'].get('paths', []))
     changed = set(_names(lane, 'diff', '--name-only', commit + '^', commit))
     grouped = {}
@@ -754,6 +777,25 @@ def _native_destination_completion(lane, journal, *, recovery_module=None):
                  'resumption_event': 'Native owner reconciles the exact selected values, then resume; user restarts later.'}
         result['targets'][name] = state
         try:
+            if name not in artifacts:
+                spec = rows[-1]['target_spec']
+                _verify_native_retirement_source(lane, commit, name, spec, artifacts)
+                if (not any(row['after_sha256'] == 'absent' for row in rows)
+                        or any(row['target_spec'] != spec for row in rows)):
+                    raise sync_git.SyncBlocked('native retirement lacks a bound removal or changed its target')
+                host = spec['host']
+                _, resolved = recovery._selected_roots(roots, [host])
+                if not resolved[host].is_dir():
+                    raise sync_git.SyncBlocked('native retirement root is unavailable')
+                target = recovery._safe_join(resolved[host], spec['source'], must_exist=False)
+                try:
+                    target.lstat()
+                except FileNotFoundError:
+                    state['verified'] = True
+                    state['resumption_event'] = 'Retired native target absent; no deletion or loading claim.'
+                else:
+                    state['reason'] = 'Retired native target remains present; no deletion was attempted.'
+                continue
             host, artifact = artifacts[name]
             if any(row['target_spec'] != _native_target_spec(host, artifact) for row in rows):
                 raise sync_git.SyncBlocked('native target changed; inherited target requires explicit owner reconciliation')
@@ -796,7 +838,8 @@ def _native_destination_completion(lane, journal, *, recovery_module=None):
                 state['resumption_event'] = 'Saved values verified; loading remains separate and may await the user-managed restart.'
         except (OSError, RuntimeError, ValueError, KeyError, TypeError) as exc:
             state['reason'] = str(exc)
-        result['saved_verified'] = result['saved_verified'] and state['verified']
+        finally:
+            result['saved_verified'] = result['saved_verified'] and state['verified']
     return result
 
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "source-checked-native-migration-pending",
+  "status": "published-installed-native-discovery-verified",
   "date": "2026-11-03",
   "baseline_commit": "1b4b4d475c13db7ecfd1463f46d6cc4a93e9b0f3",
   "authority": "User commissioned Agent Sync core/scope audit, removal of demonstrated impediments, cross-agent tool verification, and routing only if remaining failures require it.",
@@ -149,7 +149,7 @@
     {
       "skill": "learnharness",
       "disposition": "retain",
-      "scope": "Read and understand a person's local LearnHarness learning data—teaching and practice sessions, answers, confidence, learner thinking, propositions, and reasoning chains. Use when a request benefits from their learning history or asks to explore, connect, or analyze that history.",
+      "scope": "Read and understand a person's local LearnHarness learning data\u2014teaching and practice sessions, answers, confidence, learner thinking, propositions, and reasoning chains. Use when a request benefits from their learning history or asks to explore, connect, or analyze that history.",
       "prerequisite": "Python 3.10+ and access to the user's local LearnHarness data folder. Standard library only; no network, running app, or repository checkout required.",
       "assessment": "Read-only local learning records; data-folder access is a prerequisite, not implied by a native learning MCP connection. No private learning records read in this audit."
     },
@@ -167,7 +167,8 @@
       "cli_version": "0.166.0-alpha.5.1",
       "verified": "Current Desktop exposes native file/exec, connectors including Adobe, generation and Visualize skill. CLI assembly differs and is not substituted for Desktop evidence.",
       "photocraft": "absent from current tools and native MCP config",
-      "limits": "Not every connected service was called; provider-owned image-editing directives remain outside Agent Sync."
+      "limits": "Not every connected service was called; provider-owned image-editing directives remain outside Agent Sync.",
+      "fresh_cli_catalogue": "All 16 admitted names present in fresh CLI prompt-input assembly; current Desktop remains a different connector/memory surface."
     },
     "hermes": {
       "surface": "Fresh installed CLI, active native home",
@@ -175,14 +176,48 @@
       "verified": "Native installed-skill inventory includes admitted shared owners. Native CLI schema assembly exposes 15 direct tools including file/terminal/delegation/web and deferred tool_search/describe/call.",
       "schema_sha256": "807a3334c77a2ae069d0f380dca0aec8a89a4b4e8c2b94d9bc11173446de0346",
       "photocraft": "not configured",
-      "limits": "Enabled toolsets/MCP declarations are not end-to-end external-service acceptance; existing Desktop-session exposure was not captured."
+      "limits": "Enabled toolsets/MCP declarations are not end-to-end external-service acceptance; existing Desktop-session exposure was not captured.",
+      "linked_file_readback": {
+        "operation": "native skill_view linked-file read",
+        "skill": "dynamic-workflows",
+        "file": "references/omp-adapter.md",
+        "preserved_preuse_read_present": true,
+        "response_sha256": "97e83d81f180ebe4e5f44c4ef5d5dd16d53e763361201b5a7860d3e0dd7869ea",
+        "inference_ran": false,
+        "limitations": "Tests native linked-file readability, not autonomous skill choice or existing Desktop-session exposure."
+      },
+      "runtime_warning": "Native Relay plugin initialization reported unexpected keyword argument additional_plugins_toml. The native skill_view linked-file call still succeeded. Full Relay/runtime readiness is not claimed or repaired in this source scope."
     },
     "omp": {
       "surface": "Fresh default RPC --no-session",
       "version": "18.12.6",
-      "verified": "Successful get_available_commands enumerates admitted shared owners plus two redundant native wrappers before migration. Native AGENTS exists; MCP configuration declares claude-context.",
+      "verified": "Fresh default RPC after exact recoverable archival: all 16 admitted shared skills occur exactly once, with unnamespaced native discovery names; both old wrappers absent. Named route-agent definitions and run pins unchanged.",
       "photocraft": "not configured",
-      "limits": "Catalog enumerates skills/commands, not all model-visible tool schemas or successful execution. Current V3 OMP model dispatch remains unsupported."
+      "limits": "Catalog enumerates skills/commands, not all model-visible tool schemas or successful execution. Current V3 OMP model dispatch remains unsupported.",
+      "catalogue_check": {
+        "rpc_success": true,
+        "admitted_skill_count": 16,
+        "counts": {
+          "breadcrumb-records": 1,
+          "learn-from-youtube": 1,
+          "project-prior-art": 1,
+          "answer-key-gauntlet": 1,
+          "frontend-ui-engineering": 1,
+          "cross-agent-surface-engineering": 1,
+          "outcome-first-workflow-design": 1,
+          "openai-delegation-route-research": 1,
+          "dynamic-workflows": 1,
+          "fleet-sync": 1,
+          "github-follow-up": 1,
+          "instruction-authoring": 1,
+          "humanizer": 1,
+          "hermes-self-engineering": 1,
+          "learnharness": 1,
+          "photocraft": 1
+        },
+        "shared_names_unnamespaced": true,
+        "native_wrappers_absent": true
+      }
     }
   },
   "preservation_map": [
@@ -332,17 +367,35 @@
   "checks": {
     "before_catalog": "successful OMP native RPC; both native and shared entries observed",
     "source_review": "fresh independent read-only review with artifact/obligation inspection",
-    "source_structural": "recovery snapshot verify, standing renderer and artifact profile pass; existing recovery/native-delta suite passes 35 tests with one skipped; native archival/readback remains pending",
-    "baseline_fixture_repairs": "Two pre-existing host-delta tests expected absent OMP instructions and simulated OMP18.2.6, while the baseline policy already requires managed OMP instructions and 18.8.9. Correct the fixtures to test that baseline contract; retain failure and prerequisite checks. First run: 35 tests, two fixture failures and one skipped; corrected rerun: OK, one skipped."
+    "source_structural": "Recovery snapshot verify, renderer and artifact profile pass; recovery/native-delta suite: 35 tests, one skipped. Native archival, fresh catalog/body readback and exact retained canonical sync completed.",
+    "baseline_fixture_repairs": "Two pre-existing host-delta tests expected absent OMP instructions and simulated OMP18.2.6, while the baseline policy already requires managed OMP instructions and 18.8.9. Correct the fixtures to test that baseline contract; retain failure and prerequisite checks. First run: 35 tests, two fixture failures and one skipped; corrected rerun: OK, one skipped.",
+    "post_migration": "OMP 16/16 once; fresh Codex CLI 16/16; Hermes native linked-file read passes; shared installed hashes and configured rollout verified by canonical reconciler.",
+    "repeat_sync": "Required final publication/repeat-sync preservation is recorded separately at closeout; no model-behavior claim."
   },
   "external_limits": [
-    "The separately approved memory deletion note remains awaiting native consolidation; no private memory content is copied into Agent Sync.",
-    "Provider/runtime image-editing guidance is not modified through cached plugin skills.",
-    "Unrelated native recovery/config drift is excluded.",
-    "Existing broader selection overlap is not a demonstrated common cause or a retirement verdict."
+    "Approved deletion of the blanket proactive-visual memory restriction is queued through its authorized memory update note; consolidation is external to Agent Sync.",
+    "Provider-native imagegen always-use editing directive remains outside Agent Sync. Cached plugin files were not modified to pretend this directive was removed.",
+    "PhotoCraft MCP is not configured on the three inspected hosts. Its prerequisite remains explicit; installed source is not executable capability. No speculative global blocking or installation selected.",
+    "Hermes Relay initialization warning is nonfatal for the verified skill_view operation; full runtime readiness is unproven.",
+    "Fresh catalog/body checks do not prove natural selection, comparative quality, existing cached-session refresh, or external-service acceptance.",
+    "No matched post-memory-consolidation Desktop replay was available. No new router is justified by these structural results.",
+    "Unrelated concurrent source and native recovery/config drift remain untouched."
   ],
   "rollback": "Restore only the two exact archived native wrapper directories and revert this scoped source change through canonical reconciliation; preserve shared skills, named route agents and existing runs.",
-  "change_reconciliation": [
+  "deployment": {
+    "published_commit": "d228c5935b26797a929ad72c1d929e0cf7f094c0",
+    "remote_verified": true,
+    "installed_verified": true,
+    "rollout_verified": true,
+    "sync_complete": true,
+    "activation_verified": null,
+    "verification_scope": "configured installed hashes and fresh native catalogue/body readback; no model behavior or cached-session refresh claim",
+    "native_retirement_saved_verified": true,
+    "completion_evidence_sha256": "e72f6d867b17cf72fa774549fb0930e41b2c77ab2ec1fc8ff66470b02718b8fa",
+    "initial_failure": "Published successfully; final saved-state verifier raised KeyError on explicitly retired snapshots. Retained exact attempt was resumed through the reviewed corrected canonical coordinator, without journal edits or a competing successor.",
+    "verifier_repair": "evals/results/native-retirement-readback-20261103.json"
+  },
+  "initial_publication_reconciliation": [
     {
       "artifacts": {
         "contracts/ownership.json": {
@@ -552,7 +605,7 @@
       "checks": "Inspect source and native catalogs, preserve the mandatory OMP read, verify recovery schema/digests and fresh native discovery. Use canonical ready qualification and retain required native body/readback and repeat-sync checks. No model inference or speculative routing test is substituted for those checks.",
       "outcome_review": {
         "expected": "Shared skills remain natively discoverable once, while current host protocols and access limits remain explicit.",
-        "observed": "Baseline duplicate OMP entries and native schema/config differences established; source candidate preserves unique obligations. Native post-migration acceptance remains pending.",
+        "observed": "Exact recoverable native archival completed. OMP shared owners enumerate once; Codex CLI catalog and Hermes native linked-file read pass. Canonical exact retry reports remote, installed and rollout verification complete. Provider constraints, queued memory deletion and Relay warning remain separate.",
         "evidence": "evals/results/capability-scope-audit-20261103.json",
         "limitations": "Discovery and protocol preservation are structural claims. No comparative model improvement or current routed-model readiness is asserted."
       }

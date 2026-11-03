@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "baseline_commit": "d228c5935b26797a929ad72c1d929e0cf7f094c0",
+  "status": "scoped-regressions-and-live-retry-verified-publication-pending",
+  "claim": "Explicit retired recovery snapshots preserve exact read-only native absence obligations on retry and inheritance.",
+  "reproduction": "Published scope cleanup reached native readback and failed KeyError on a removed recovery snapshot. Disposable real-Git regression reproduces the same exception before the fix.",
+  "design": "Derive the target from committed predecessor recovery policy. Require explicit retirement metadata and policy/tree removal; reject target redirection. Read absence under an available safe host root without deleting any file. Preserve source-derived inherited obligations and configured/default roots.",
+  "controls": [
+    "retired target absent passes without loading claim",
+    "present file blocks without deletion",
+    "missing host root blocks",
+    "default root is resolved when no override is selected",
+    "missing retirement record blocks",
+    "still-managed missing snapshot blocks",
+    "tool-only successor rechecks inherited absence",
+    "same native target under a new snapshot blocks"
+  ],
+  "checks": {
+    "red": "8 tests: expected KeyError reproduced; 1 failure and 5 errors in pre-fix production code.",
+    "regressions": "Combined run: 107 tests, 104 passed, one skipped and two failures. All 8 retirement controls and 55 published-successor tests passed; recovery has one platform symlink skip. Two worktree merge failures reproduced with the same reasons on unchanged published baseline d228c59; no whole-suite pass is claimed.",
+    "live": "Exact retained canonical retry completed: result synced; remote_verified, installed_verified, agents_verified, rollout_verified and sync_complete true. Both native absence obligations verified; activation_verified null.",
+    "baseline_controls": "Both merge-test failures reproduce on unchanged d228c59: conflict classification returns incomplete on merge-tree exit 1, and disjoint selected-file merge requires source review. They precede native readback and are outside this implementation repair.",
+    "review": "Independent source review found no correctness blocker; independent live read-only check and 55 successor tests passed. Native fixture setup was denied in reviewer sandbox; parent authorized run supplied the eight control results.",
+    "evidence_sha256": {
+      "native-retirement-red.txt": "4cff384b5f9d2f7eeb08d929d8bca9fa5f24b57c9adca59f3ecdf3a1ceaa0a2f",
+      "native-retirement-checks-final.txt": "f57c4782d8a12ff85eb6d6c7668985c888685f0fa6d4e0b7d709946ad86e2378",
+      "native-retirement-baseline-controls.txt": "77c1c6a747bce73c49c8748f9b29e7c43b1a7045a09f53d6f386ba52666e211b",
+      "retirement-native-readback.json": "3fa873079237fe8dfd53fdd924e73eb20f6b4b893037a9ab838226372192beaa",
+      "scope-audit-resume.json": "e72f6d867b17cf72fa774549fb0930e41b2c77ab2ec1fc8ff66470b02718b8fa"
+    }
+  },
+  "limits": [
+    "No native deletion, config restore, restart, model inference, or routing change.",
+    "Readback and catalogs do not prove comparative model behavior."
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823",
+          "after_sha256": "80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "4d3ec6f29ecd8d08db1fa91de3b3e5b5757b950f4f7a2850948d0d8640981518",
+          "after_sha256": "4d3ec6f29ecd8d08db1fa91de3b3e5b5757b950f4f7a2850948d0d8640981518"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "5148096585926855b1cd48a0b69bf4de5e5091baa94f6facd5c48c930fe8e393",
+          "after_sha256": "5d12567a8fa2e9611d46f5cec21558b167557bcccd4d61e348eeeb5d8fd070ee"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "b41d9eb5159582c2747840b37a16e208437ce846e360d0769ca11c7834bd7ccb",
+          "after_sha256": "b41d9eb5159582c2747840b37a16e208437ce846e360d0769ca11c7834bd7ccb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "dd011b4cd07773f5e03606fdd210b93b7001ed55c33453c6fb5c5a39ed5d4139",
+          "after_sha256": "dd011b4cd07773f5e03606fdd210b93b7001ed55c33453c6fb5c5a39ed5d4139"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "72e982a8fced000a8617e0d83481220b7cdee8436b31ad92f71d733f208aad5d",
+          "after_sha256": "72e982a8fced000a8617e0d83481220b7cdee8436b31ad92f71d733f208aad5d"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "tests/test_native_retirement.py": {
+          "before_sha256": "absent",
+          "after_sha256": "01a87fb3c435279e397f7d3b1f3ff83731767cb2c7433e75df34b0bf37b67dd5"
+        },
+        "tests/test_published_successor.py": {
+          "before_sha256": "d90f46b65e64a417a62d4a2c9044da2ce72a6f4ce48b321e31b9f3e95caf23b1",
+          "after_sha256": "7dfa1758ba258445982a47fbe88443d55411f447cc077d96530dc2f05594ece8"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "3a7c91db0fc329b9e2affda4436876ba8e354c6ccb6d22a9b946337da3b60a08",
+          "after_sha256": "875c926437365e7cb153220e71fd595a9424e2fb0a0934e4003aebcdc7cb9215"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing owner still selects canonical ready sync and keeps source, installation, native saved state and loading separate. This implementation repair preserves those requirements and adds no routing or deletion authority."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner still selects canonical ready sync and keeps source, installation, native saved state and loading separate. This implementation repair preserves those requirements and adds no routing or deletion authority."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner still selects canonical ready sync and keeps source, installation, native saved state and loading separate. This implementation repair preserves those requirements and adds no routing or deletion authority."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "updated",
+          "reason": "Repair and document source-bound retirement readback; verify the original failure and nearby retained-obligation rejection cases."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner still selects canonical ready sync and keeps source, installation, native saved state and loading separate. This implementation repair preserves those requirements and adds no routing or deletion authority."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner still selects canonical ready sync and keeps source, installation, native saved state and loading separate. This implementation repair preserves those requirements and adds no routing or deletion authority."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner still selects canonical ready sync and keeps source, installation, native saved state and loading separate. This implementation repair preserves those requirements and adds no routing or deletion authority."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner still selects canonical ready sync and keeps source, installation, native saved state and loading separate. This implementation repair preserves those requirements and adds no routing or deletion authority."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner still selects canonical ready sync and keeps source, installation, native saved state and loading separate. This implementation repair preserves those requirements and adds no routing or deletion authority."
+        },
+        {
+          "path": "tests/test_native_retirement.py",
+          "disposition": "updated",
+          "reason": "Repair and document source-bound retirement readback; verify the original failure and nearby retained-obligation rejection cases."
+        },
+        {
+          "path": "tests/test_published_successor.py",
+          "disposition": "updated",
+          "reason": "Repair and document source-bound retirement readback; verify the original failure and nearby retained-obligation rejection cases."
+        },
+        {
+          "path": "tools/worktree_sync.py",
+          "disposition": "updated",
+          "reason": "Repair and document source-bound retirement readback; verify the original failure and nearby retained-obligation rejection cases."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Repairs existing fail-closed recovery/rollout completion; retains R03/R04/R08/R10/R11/R12 and all publication criteria.",
+      "authority": "User authorized Agent Sync impediment removal and cross-agent support verification; a reproducible verifier defect blocked the selected retirement rollout.",
+      "checks": "Real Git retirement regression, nearby published-successor/worktree integration/recovery suites, independent review, and exact retained-journal live read-only readback.",
+      "outcome_review": {
+        "expected": "An approved archived native wrapper is verified absent, while missing evidence, unavailable targets and present native files remain incomplete.",
+        "observed": "Original KeyError reproduced before fix; corrected live readback binds both retired snapshots to their exact predecessor targets and confirms absence. Exact retained normal sync then completed with source/remote/installed/native verification; two unrelated broader merge failures were isolated against the unchanged published baseline.",
+        "evidence": "evals/results/native-retirement-readback-20261103.json",
+        "limitations": "Final verifier-fix publication remains separate. Two pre-existing merge tests fail, with baseline evidence preserved; no whole-system readiness, model tool-selection quality or restart claim."
+      }
+    }
+  ]
+}
