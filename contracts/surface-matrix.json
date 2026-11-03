@@ -64,8 +64,8 @@
           "parity": "candidate"
         },
         "omp": {
-          "owner": "OMP native discovery; no managed global overlay currently loads",
-          "mechanism": "Codex provider is not enabled and no native OMP AGENTS.md exists; do not infer inheritance",
+          "owner": "OMP native user-global AGENTS.md and runtime",
+          "mechanism": "The generated shared-core AGENTS.md is present in the native OMP home. Current fresh catalog checks establish skill discovery; earlier OMP18.8.9 prompt evidence remains historical.",
           "support": "native",
           "parity": "intentional-delta"
         }
@@ -73,8 +73,8 @@
       "intentional_deltas": [
         "Codex keeps hierarchical repository instruction scoping.",
         "Hermes keeps personality selection and frozen per-session prompt behavior.",
-        "OMP currently has no managed user-global standing overlay; no Codex inheritance is claimed.",
-        "Provider-hidden and runtime-native system instructions are version-qualified external dependencies, not copied artifacts."
+        "Provider-hidden and runtime-native system instructions are version-qualified external dependencies, not copied artifacts.",
+        "OMP has its own generated user-global AGENTS.md; it does not inherit Codex instructions."
       ],
       "evidence": {
         "suites": [
@@ -86,7 +86,8 @@
           "evals/results/current-model-instruction-profile-deterministic.json",
           "evals/results/surface-convergence-codex.json",
           "evals/results/surface-convergence-held-out-codex.json",
-          "evals/results/prompt-sentence-review.json"
+          "evals/results/prompt-sentence-review.json",
+          "evals/results/capability-scope-audit-20261103.json"
         ]
       }
     },
@@ -112,16 +113,16 @@
           "parity": "candidate"
         },
         "omp": {
-          "owner": "$HOME/.omp/agent/skills discovery",
-          "mechanism": "use thin discovery adapters that load the canonical portable owner when OMP does not enumerate Windows directory junctions",
-          "support": "adapter",
+          "owner": "$HOME/.agents/skills native discovery",
+          "mechanism": "OMP18.12.6 fresh native RPC enumerates admitted shared owners directly; the two obsolete host-local discovery wrappers are retired.",
+          "support": "native",
           "parity": "candidate"
         }
       },
       "intentional_deltas": [
         "Hermes retains hub install, explicit preload, and curator lifecycle features.",
         "Codex retains its native discovery scopes and plugin-bundled skills.",
-        "OMP uses a thin real-directory discovery adapter for the canonical outcome-first owner because its /skills enumeration omitted the Windows junction; direct invocation succeeded."
+        "OMP keeps native task agents and execution APIs; shared skill discovery no longer needs duplicate host-local wrappers. Catalog checks establish discovery, not current routed-model readiness."
       ],
       "evidence": {
         "suites": [
@@ -132,14 +133,15 @@
         "summaries": [
           "evals/results/surface-convergence-codex.json",
           "evals/results/surface-convergence-held-out-codex.json",
-          "evals/results/organic-architecture-governance-2026-08-25.json"
+          "evals/results/organic-architecture-governance-2026-08-25.json",
+          "evals/results/capability-scope-audit-20261103.json"
         ]
       }
     },
     {
       "id": "tools-mcp",
       "contract": "Tool intent and acceptance tests are portable; MCP is preferred for shared external tools, while high-value host-native tools remain native.",
-      "status": "unassessed",
+      "status": "partial",
       "portable_artifacts": [],
       "hosts": {
         "hermes": {
@@ -162,11 +164,14 @@
         }
       },
       "intentional_deltas": [
-        "Core tool schemas and approval UX are host-owned and need not be identical."
+        "Core tool schemas and approval UX are host-owned and need not be identical.",
+        "The 2026-11-03 audit distinguishes Codex Desktop connectors from CLI prompt assembly, Hermes native/deferred tool schemas, and OMP catalog discovery. Installed skills and configured servers do not prove an external service call or a matching renderer."
       ],
       "evidence": {
         "suites": [],
-        "summaries": []
+        "summaries": [
+          "evals/results/capability-scope-audit-20261103.json"
+        ]
       }
     },
     {

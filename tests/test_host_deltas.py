@@ -102,13 +102,10 @@ class HostDeltaTests(unittest.TestCase):
             )
             self.assertIsInstance(entry["prerequisites"], list)
         omp_instructions = next(entry for entry in loaded["entries"] if entry["id"] == "omp-instructions")
-        self.assertEqual("absent", omp_instructions["enablement"])
-        self.assertEqual("OMP's opt-out Codex discovery provider remains disabled", omp_instructions["desired_state"])
-        self.assertEqual(
-            ["omp", "config", "get", "enabledProviders", "--json"],
-            omp_instructions["readback"]["argv"],
-        )
-        self.assertEqual("codex", omp_instructions["readback"]["not_contains"])
+        self.assertEqual("managed", omp_instructions["enablement"])
+        self.assertEqual("Native OMP context loads the generated shared core once", omp_instructions["desired_state"])
+        self.assertEqual("recovery-artifact", omp_instructions["readback"]["kind"])
+        self.assertEqual("omp:global-instructions", omp_instructions["readback"]["reference"])
 
     def test_manifest_rejects_secret_values_and_absolute_user_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -358,7 +355,7 @@ class HostDeltaTests(unittest.TestCase):
                     "hermes curator status": "curator: DISABLED",
                     "codex --version": "codex-cli " + next(item["readback"]["contains"] for item in manifest["entries"] if item["id"] == "codex-runtime"),
                     "codex plugin list --json": "[]",
-                    "omp --version": "OMP 18.2.6",
+                    "omp --version": "omp/" + next(item["readback"]["contains"] for item in manifest["entries"] if item["id"] == "omp-runtime"),
                     "omp plugin list": "No plugins installed",
                     "omp config get enabledProviders --json": '{"enabledProviders":[]}',
                 }

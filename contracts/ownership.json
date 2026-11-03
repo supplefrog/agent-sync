@@ -366,6 +366,16 @@
       "path": "skills/reverse-engineer-anything/references",
       "replacement": "skills/leanrea",
       "reason": "Explicit user-selected direct CLI replacement; REA registration/provider and structured-evidence mechanisms are no longer dependencies."
+    },
+    {
+      "path": "recovery/current/hosts/omp/adapters/dynamic-workflows.md",
+      "replacement": "skills/dynamic-workflows",
+      "reason": "OMP18.12.6 natively discovers the admitted shared owner. Retire only the redundant host-local discovery wrapper; retain the shared skill and native execution protocols. The workflow pre-use runtime-contract read remains in its canonical OMP reference."
+    },
+    {
+      "path": "recovery/current/hosts/omp/adapters/outcome-first-workflow-design.md",
+      "replacement": "skills/outcome-first-workflow-design",
+      "reason": "OMP18.12.6 natively discovers the admitted shared owner. Retire only the redundant host-local discovery wrapper; retain the shared skill and native execution protocols. The workflow pre-use runtime-contract read remains in its canonical OMP reference."
     }
   ]
 }

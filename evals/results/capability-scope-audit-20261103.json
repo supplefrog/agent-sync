@@ -1,0 +1,561 @@
+{
+  "schema_version": 1,
+  "status": "source-checked-native-migration-pending",
+  "date": "2026-11-03",
+  "baseline_commit": "1b4b4d475c13db7ecfd1463f46d6cc4a93e9b0f3",
+  "authority": "User commissioned Agent Sync core/scope audit, removal of demonstrated impediments, cross-agent tool verification, and routing only if remaining failures require it.",
+  "claim": "Structural native-discovery deduplication and preservation of existing OMP protocols; no model-quality or universal tool-parity claim.",
+  "selected_changes": [
+    "Preserve the legacy OMP pre-use runtime-contract read at the required shared OMP reference.",
+    "Retire only the two obsolete OMP host-local discovery wrappers and their recovery entries.",
+    "Refresh source-backed discovery and support status; retain shared core, skill triggers, route pins and native tool owners."
+  ],
+  "core_review": [
+    {
+      "section": "Communication",
+      "disposition": "retain",
+      "reason": "No blanket proactive-visual restriction is present in the shared standing core."
+    },
+    {
+      "section": "Authoring",
+      "disposition": "retain",
+      "reason": "Scope/placement and explicit native-memory authorization remain required."
+    },
+    {
+      "section": "Scope",
+      "disposition": "retain",
+      "reason": "Outcome, compatibility and access qualifications already limit execution; no demonstrated core impediment warrants a new blanket rule."
+    },
+    {
+      "section": "Evidence",
+      "disposition": "retain",
+      "reason": "Observed failures remain binding; file identity and catalogs do not prove behavioral quality."
+    },
+    {
+      "section": "Research",
+      "disposition": "retain",
+      "reason": "Retain the existing user-selected provider preference. Configured/native search availability is host-specific; service acceptance is not asserted."
+    },
+    {
+      "section": "Execution",
+      "disposition": "retain",
+      "reason": "Native bounded delegation remains separate from selected routed workflows. Cloud inheritance/access requires separate handoff evidence."
+    },
+    {
+      "section": "Reconciliation",
+      "disposition": "retain",
+      "reason": "Canonical scope, reversible deployment and source/readback boundaries remain in force."
+    }
+  ],
+  "scope_review": [
+    {
+      "skill": "breadcrumb-records",
+      "disposition": "retain",
+      "scope": "Use when work grows into a project, or at project release, handoff, interruption and closeout. Organize owned files and preserve decision reasons, evidence and safe continuation.",
+      "prerequisite": "Python 3.11+; local evidence files; one writer per record.",
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "learn-from-youtube",
+      "disposition": "retain",
+      "scope": "Learn from any video or triage mixed learning sources. Build source-faithful lessons with audiovisual coverage, verified context, and retrieval practice.",
+      "prerequisite": "Source access determines achievable coverage; local media tools are optional and authorization-bound.",
+      "assessment": "Source-based learning only; required audiovisual evidence depends on selected scope. Local media is optional but claimed coverage is not. No teaching-only or general research scope expansion."
+    },
+    {
+      "skill": "project-prior-art",
+      "disposition": "retain",
+      "scope": "Use when starting a project or reconsidering its architecture. Compare existing implementations and relevant research before choosing, changing, or reviewing the approach.",
+      "prerequisite": null,
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "answer-key-gauntlet",
+      "disposition": "retain",
+      "scope": "Use when a build exceeds one context or lacks a quality bar.",
+      "prerequisite": "Requires durable project files; subagents are optional.",
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "frontend-ui-engineering",
+      "disposition": "retain",
+      "scope": "Use for frontend design, implementation, and rendered UI review, including image-led new visual identities, major redesigns and reviewable prototypes. Match engineering depth to the requested fidelity. For test-only edits, use this when a UI-specific behavior, accessibility, or visual question needs its guidance.",
+      "prerequisite": "Requires the project's frontend toolchain and browser rendering for production verification.",
+      "assessment": "Project/toolchain and rendering requirements remain task-dependent. Overlap with native in-chat UI is a candidate for matched selection testing, not evidence to remove the skill."
+    },
+    {
+      "skill": "cross-agent-surface-engineering",
+      "disposition": "retain",
+      "scope": "Use for agent-sync requests and cross-host surface changes across Hermes, Codex, and OMP. Compare variants behavior by behavior, synthesize the strongest portable owner, retain only justified host adapters, and verify fresh discovery before cleanup.",
+      "prerequisite": "Requires an Agent Sync checkout and access to the affected live hosts.",
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "outcome-first-workflow-design",
+      "disposition": "retain",
+      "scope": "Use for agent workflow design or structural workflow repair, including recurring failures despite checks, and for material changes to automation, reusable procedures or persistent capabilities. Recover the human outcome and baseline, research mechanism alternatives and compare retain/adapt/replace options before building.",
+      "prerequisite": "Requires access to the current artifact and, when external options matter, source or web research.",
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "openai-delegation-route-research",
+      "disposition": "retain",
+      "scope": "Use for route-catalog research, selected routed tasks, or pinned route receipts. Native worker selection and ordinary delegation do not require this selector.",
+      "prerequisite": "Requires current native route availability and the repository's existing jsonschema dependency.",
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "dynamic-workflows",
+      "disposition": "retain",
+      "scope": "Use for dependent or resumable work that benefits from a persisted routed DAG, or existing pinned runs. Native bounded delegation handles ordinary parallel work.",
+      "prerequisite": null,
+      "assessment": "State/lifecycle procedures retained. Native shared discovery replaces obsolete OMP wrappers; no current OMP/Codex V3 model cell or matching current-preference Hermes execution route is claimed."
+    },
+    {
+      "skill": "fleet-sync",
+      "disposition": "retain",
+      "scope": "Use when asked to render, diff, sync, propagate, reconcile, or verify admitted agent skills across Hermes, Codex, OMP, or declared machines. Do not use for editing skill content or host-specific instruction adapters.",
+      "prerequisite": "Requires an Agent Sync checkout with fleet.json and Python 3.11+.",
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "github-follow-up",
+      "disposition": "retain",
+      "scope": "Use for GitHub issue drafts, creation, edits and comments, including feature requests and corrections, and for recurring or multi-thread issue/own-PR follow-up. Focused issue work loads the existing issue procedure through references/focused-issues.md; portfolio sweeps reconstruct changed threads and remediate verified requests. A GitHub link in unrelated work does not trigger this workflow.",
+      "prerequisite": null,
+      "assessment": "Targeted issue/PR scope stays distinct from portfolio sweeps. Required native guide and recovery fallback are readable; credentials and external service acceptance remain separate."
+    },
+    {
+      "skill": "instruction-authoring",
+      "disposition": "retain",
+      "scope": "Use when saving behavioral preferences, authoring instructions, reviewing model-facing tool interfaces, or preserving reusable workflows. Owns placement, skill improvements, triggers and proportional verification.",
+      "prerequisite": null,
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "humanizer",
+      "disposition": "retain",
+      "scope": "Use for public or recipient-facing writing artifacts, or explicit humanize/voice-matching requests: GitHub issues/PRs, release notes, engineering updates, published explanations, email, Slack and posts. Ordinary chat answers and progress replies use standing communication preferences. Code, private reasoning, strict schemas and specialist creative work keep their domain owners.",
+      "prerequisite": null,
+      "assessment": "No demonstrated scope or mandatory-tool defect found in the inspected entrypoint. This is not a comparative skill-value verdict."
+    },
+    {
+      "skill": "hermes-self-engineering",
+      "disposition": "retain",
+      "scope": "Use when the owning Hermes behavior surface is unclear. Select the supported placement; instruction-authoring owns instruction content and cross-agent-surface-engineering owns cross-host parity.",
+      "prerequisite": null,
+      "assessment": "Native Hermes reference is readable on this shared local machine; availability on a remote host is not established."
+    },
+    {
+      "skill": "learnharness",
+      "disposition": "retain",
+      "scope": "Read and understand a person's local LearnHarness learning data—teaching and practice sessions, answers, confidence, learner thinking, propositions, and reasoning chains. Use when a request benefits from their learning history or asks to explore, connect, or analyze that history.",
+      "prerequisite": "Python 3.10+ and access to the user's local LearnHarness data folder. Standard library only; no network, running app, or repository checkout required.",
+      "assessment": "Read-only local learning records; data-folder access is a prerequisite, not implied by a native learning MCP connection. No private learning records read in this audit."
+    },
+    {
+      "skill": "photocraft",
+      "disposition": "retain",
+      "scope": "Create, inspect, edit, composite, and export images through the photocraft-cli MCP server. Use for image work, layered artwork, photo edits, logos, and thumbnail assembly; combine with task-specific design skills when applicable.",
+      "prerequisite": null,
+      "assessment": "Requires the dedicated connected MCP server. No configured server was found in Codex/Hermes/OMP; current Codex tools expose none. Retain source; no installation, global blocking or speculative trigger rewrite selected."
+    }
+  ],
+  "native_observations": {
+    "codex": {
+      "surface": "Desktop current tools plus separate fresh CLI assembly",
+      "cli_version": "0.166.0-alpha.5.1",
+      "verified": "Current Desktop exposes native file/exec, connectors including Adobe, generation and Visualize skill. CLI assembly differs and is not substituted for Desktop evidence.",
+      "photocraft": "absent from current tools and native MCP config",
+      "limits": "Not every connected service was called; provider-owned image-editing directives remain outside Agent Sync."
+    },
+    "hermes": {
+      "surface": "Fresh installed CLI, active native home",
+      "version": "0.22.6+48.g8e6feea",
+      "verified": "Native installed-skill inventory includes admitted shared owners. Native CLI schema assembly exposes 15 direct tools including file/terminal/delegation/web and deferred tool_search/describe/call.",
+      "schema_sha256": "807a3334c77a2ae069d0f380dca0aec8a89a4b4e8c2b94d9bc11173446de0346",
+      "photocraft": "not configured",
+      "limits": "Enabled toolsets/MCP declarations are not end-to-end external-service acceptance; existing Desktop-session exposure was not captured."
+    },
+    "omp": {
+      "surface": "Fresh default RPC --no-session",
+      "version": "18.12.6",
+      "verified": "Successful get_available_commands enumerates admitted shared owners plus two redundant native wrappers before migration. Native AGENTS exists; MCP configuration declares claude-context.",
+      "photocraft": "not configured",
+      "limits": "Catalog enumerates skills/commands, not all model-visible tool schemas or successful execution. Current V3 OMP model dispatch remains unsupported."
+    }
+  },
+  "preservation_map": [
+    {
+      "removed": "outcome-first discovery wrapper",
+      "remaining": "skills/outcome-first-workflow-design/SKILL.md through native shared discovery",
+      "reason": "Wrapper explicitly adds no decision rules; broader architecture intent already belongs to project-prior-art."
+    },
+    {
+      "removed": "workflow wrapper runtime read",
+      "remaining": "skills/dynamic-workflows/references/omp-adapter.md and unchanged references/runtime-contract.md",
+      "reason": "Mandatory before-use read explicitly preserved for V2 and V3."
+    },
+    {
+      "removed": "workflow wrapper lifecycle/route/claim/recovery instructions",
+      "remaining": "skills/dynamic-workflows/SKILL.md OMP, lifecycle and scheduling sections; references/runtime-contract.md",
+      "reason": "Canonical protocols preserve exact route, claims, handle closure, interruption reconciliation and bounded concurrency."
+    }
+  ],
+  "routing_decision": "No additional router. Current failures include conflicting external memory/native instructions and redundant discovery/duplicated execution guidance; no remaining matched semantic-selection failure has established a need for another router.",
+  "instruction_changes": [
+    {
+      "owner": "skills/dynamic-workflows",
+      "basis": "user-correction",
+      "change_kind": "requested-edit",
+      "deviation": "OMP now discovers the shared owner, but two legacy host-local wrappers shadow it and duplicate an older workflow sequence. Removing the workflow wrapper must preserve its mandatory pre-use runtime-contract read.",
+      "evidence": "Fresh OMP18.12.6 RPC exposes both shared and host-local entries. Native wrapper source forwards to the same shared owner. A fresh read-only review identified one pre-use read obligation to preserve.",
+      "baseline_sufficient": false,
+      "why_instruction": "Move the existing OMP pre-use read to the already-required canonical OMP reference before retiring obsolete native indirection. No new selection rule or router is introduced.",
+      "alternative": "Retain duplicate wrappers or add routing prose. Neither removes stale duplicated execution instructions. Entire shared-skill retirement is unsupported and not selected.",
+      "artifacts": {
+        "skills/dynamic-workflows/references/omp-adapter.md": {
+          "before_sha256": "64a4f8c288f77529d12e0965256b31390b0627e96bc6ab4ed04f887a914f8513",
+          "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+        }
+      },
+      "requested_edit_acceptance": {
+        "classification": "requested-existing-instruction-edit",
+        "baseline_commit": "1b4b4d475c13db7ecfd1463f46d6cc4a93e9b0f3",
+        "license": "UNLICENSED",
+        "before_package_sha256": "08c7482c8dab3424e0029e9e7a7f1be70c139cf5ca674e4397218d7325212759",
+        "after_package_sha256": "f6efa93353a7b4604adb69e50b5fad1ca1d426c18fb2414494061c14f7f362c6",
+        "files": {
+          "SKILL.md": {
+            "before_sha256": "38a977256e23fc09f889cc2e2b366af44b11da02f2b163d369084313cee1cb18",
+            "after_sha256": "38a977256e23fc09f889cc2e2b366af44b11da02f2b163d369084313cee1cb18"
+          },
+          "agents/openai.yaml": {
+            "before_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44",
+            "after_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44"
+          },
+          "assets/templates/code-audit.json": {
+            "before_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905",
+            "after_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905"
+          },
+          "assets/templates/deep-research.json": {
+            "before_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466",
+            "after_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466"
+          },
+          "assets/templates/migration.json": {
+            "before_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02",
+            "after_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02"
+          },
+          "assets/templates/workflow-v3-execution.json": {
+            "before_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0",
+            "after_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0"
+          },
+          "assets/templates/workflow-v3-readonly.json": {
+            "before_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c",
+            "after_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c"
+          },
+          "assets/templates/workflow-v3.json": {
+            "before_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e",
+            "after_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e"
+          },
+          "assets/templates/workflow.json": {
+            "before_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b",
+            "after_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b"
+          },
+          "references/codex-adapter.md": {
+            "before_sha256": "332a54851ff01a7d0f4f04e1af8bc9b453e1e7cf84c9872ab38300343cf051a9",
+            "after_sha256": "332a54851ff01a7d0f4f04e1af8bc9b453e1e7cf84c9872ab38300343cf051a9"
+          },
+          "references/omp-adapter.md": {
+            "before_sha256": "64a4f8c288f77529d12e0965256b31390b0627e96bc6ab4ed04f887a914f8513",
+            "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+          },
+          "references/runtime-contract.md": {
+            "before_sha256": "f7a77b8bf4342fc4d66f3f76b413aba568fbf002538575c8ad8e344d7829ac44",
+            "after_sha256": "f7a77b8bf4342fc4d66f3f76b413aba568fbf002538575c8ad8e344d7829ac44"
+          },
+          "scripts/install_omp_route_agents.py": {
+            "before_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527",
+            "after_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527"
+          },
+          "scripts/test_workflow_state.py": {
+            "before_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c",
+            "after_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c"
+          },
+          "scripts/workflow_state.py": {
+            "before_sha256": "e958248670977316c7bf5fbc0a7486f26b6ace9f922aab4ca7a1288382b85738",
+            "after_sha256": "e958248670977316c7bf5fbc0a7486f26b6ace9f922aab4ca7a1288382b85738"
+          }
+        },
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      },
+      "restructured": true,
+      "loading_review": {
+        "entrypoint_reason": "The canonical SKILL continues to own the unchanged lifecycle and require the OMP reference before host-specific execution; the preserved read is OMP-specific and belongs in that reference.",
+        "obligations": [
+          {
+            "obligation": "OMP lifecycle, exact-route checks, parent/defer actions and current unsupported V3 model dispatch",
+            "applies_when": "Using an OMP routed workflow",
+            "required": true,
+            "before": [
+              "skills/dynamic-workflows/references/omp-adapter.md#OMP V3 workflow adapter"
+            ],
+            "after": [
+              "skills/dynamic-workflows/references/omp-adapter.md#OMP workflow adapter"
+            ],
+            "disposition": "preserved",
+            "load_when": "Before the OMP adapter decision and execution",
+            "reason": "The heading becomes version-neutral; all pre-existing adapter content remains."
+          },
+          {
+            "obligation": "Read runtime-contract.md before OMP workflow use, both V2 and V3",
+            "applies_when": "Using an OMP workflow",
+            "required": true,
+            "before": [],
+            "after": [
+              "skills/dynamic-workflows/references/omp-adapter.md#OMP workflow adapter"
+            ],
+            "disposition": "added",
+            "load_when": "Before OMP workflow use",
+            "reason": "Added to this package location only: the effective obligation is migrated from the retired native workflow wrapper line 11. It is not a new workflow or permission."
+          }
+        ],
+        "checks": "Canonical SKILL requires this reference before its V2 procedure and V3 action. The link resolves to the unchanged runtime contract. Read-only independent review found no other unique execution protocol. Natural catalog checks cover wrapper disappearance and retained shared owners; no behavioral benefit is claimed."
+      }
+    }
+  ],
+  "checks": {
+    "before_catalog": "successful OMP native RPC; both native and shared entries observed",
+    "source_review": "fresh independent read-only review with artifact/obligation inspection",
+    "source_structural": "recovery snapshot verify, standing renderer and artifact profile pass; existing recovery/native-delta suite passes 35 tests with one skipped; native archival/readback remains pending",
+    "baseline_fixture_repairs": "Two pre-existing host-delta tests expected absent OMP instructions and simulated OMP18.2.6, while the baseline policy already requires managed OMP instructions and 18.8.9. Correct the fixtures to test that baseline contract; retain failure and prerequisite checks. First run: 35 tests, two fixture failures and one skipped; corrected rerun: OK, one skipped."
+  },
+  "external_limits": [
+    "The separately approved memory deletion note remains awaiting native consolidation; no private memory content is copied into Agent Sync.",
+    "Provider/runtime image-editing guidance is not modified through cached plugin skills.",
+    "Unrelated native recovery/config drift is excluded.",
+    "Existing broader selection overlap is not a demonstrated common cause or a retirement verdict."
+  ],
+  "rollback": "Restore only the two exact archived native wrapper directories and revert this scoped source change through canonical reconciliation; preserve shared skills, named route agents and existing runs.",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/ownership.json": {
+          "before_sha256": "104f731eccb48b0b0eed8d22ce8ecc5674ca14e3fb2e0d775ac6101f7c69464b",
+          "after_sha256": "3caf885799bdb2287f5843b6a4eae289690ddfaa96081821bab977ad145e732e"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "fa6794dcadc34f6967a2e0f4bac43ca65e352eb3f4386f7df653e93229a1addb",
+          "after_sha256": "80cfc8534de934b8fa8767fe6618f8eaeefc635591cd9e44666f87c5f53d9823"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "5d01136066bb128cb70223b876a2d6fd5a89cc07fd1ea1fa2414716b9625316e",
+          "after_sha256": "5148096585926855b1cd48a0b69bf4de5e5091baa94f6facd5c48c930fe8e393"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "adf7fe39f21f74bd23d60f35c2dc6f5761c481cc0d1863f95cec41d64a3a6828",
+          "after_sha256": "b41d9eb5159582c2747840b37a16e208437ce846e360d0769ca11c7834bd7ccb"
+        },
+        "docs/routing-decision-interface.md": {
+          "before_sha256": "2ecd7f7ce357ca4b8fc0e5c4b2e5b815639d6973cf6bd444b2b9fa218a9fa811",
+          "after_sha256": "2ecd7f7ce357ca4b8fc0e5c4b2e5b815639d6973cf6bd444b2b9fa218a9fa811"
+        },
+        "docs/shared-memory-decision.md": {
+          "before_sha256": "eae6406fb5b465afe5eacdde6d211b96727fc4942c59a77e0db0bc5ada2650e4",
+          "after_sha256": "eae6406fb5b465afe5eacdde6d211b96727fc4942c59a77e0db0bc5ada2650e4"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "dd011b4cd07773f5e03606fdd210b93b7001ed55c33453c6fb5c5a39ed5d4139",
+          "after_sha256": "dd011b4cd07773f5e03606fdd210b93b7001ed55c33453c6fb5c5a39ed5d4139"
+        },
+        "host-deltas.json": {
+          "before_sha256": "a3246616cdf6a5b78648e547e4178ec9fb081dd592de5ea376eacc5b821bd76d",
+          "after_sha256": "bbefcc7693f9693e21a6bf4975bcf340d554cca3f1723fa8411730d58b8bfc0e"
+        },
+        "recovery.json": {
+          "before_sha256": "88b5c9796bb6f95e37e8936f75a17bd625fbf50632fba63ed0174c8ea4d02265",
+          "after_sha256": "3c4ab5a5c82600e9bd6d81a7582d2b396ee43d85598a477344e1a0da63b1a4af"
+        },
+        "recovery/current/hosts/omp/adapters/dynamic-workflows.md": {
+          "before_sha256": "8e8f233cbc55dbc5344295dbd27996f5572ffd4a62ab13b9e49ed03d6889ad4e",
+          "after_sha256": "absent"
+        },
+        "recovery/current/hosts/omp/adapters/outcome-first-workflow-design.md": {
+          "before_sha256": "018b0c212cb3a7b4ceb704872c2c75c5ebf1d9ea0453955d983fb6d698e83fde",
+          "after_sha256": "absent"
+        },
+        "recovery/current/manifest.json": {
+          "before_sha256": "05cc60990309747cc1e079ff6ec0aa424bc72d68a7f97b12dd785c0febd2030e",
+          "after_sha256": "385a6614f49d8f444a5c9a3647f3364c62d5a247ea3c8d1b7cf4158960f96624"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "9031131e8be66964c739fbdcc6701485b64d8c00f8d1bc6d36b2c16f605265da",
+          "after_sha256": "9031131e8be66964c739fbdcc6701485b64d8c00f8d1bc6d36b2c16f605265da"
+        },
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "38a977256e23fc09f889cc2e2b366af44b11da02f2b163d369084313cee1cb18",
+          "after_sha256": "38a977256e23fc09f889cc2e2b366af44b11da02f2b163d369084313cee1cb18"
+        },
+        "skills/dynamic-workflows/references/omp-adapter.md": {
+          "before_sha256": "64a4f8c288f77529d12e0965256b31390b0627e96bc6ab4ed04f887a914f8513",
+          "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d",
+          "after_sha256": "dd2b576f4dd1558d5f7427ebdf589c10f701a8f3d6495e5770da89d55feca41d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23",
+          "after_sha256": "bc68ed6f334175526f0601927b10e1dd006fb26e0523af68b6fada897b4bad23"
+        },
+        "tests/test_host_deltas.py": {
+          "before_sha256": "437f183a25d33bc5e69c42270f30710b8d013f0fcf0bc257e1f6d3eed7bfd5d2",
+          "after_sha256": "c087be475d863a4e45f2fd453ac15f4d83139fa1cb711e5444b92ae0ca28f55d"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "docs/routing-decision-interface.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "docs/shared-memory-decision.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "recovery.json",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "recovery/current/hosts/omp/adapters/dynamic-workflows.md",
+          "disposition": "removed",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "recovery/current/hosts/omp/adapters/outcome-first-workflow-design.md",
+          "disposition": "removed",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "recovery/current/manifest.json",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "skills/dynamic-workflows/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/omp-adapter.md",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing native and shared owners retain their scope and protocols; this change concerns only redundant OMP discovery and migrated pre-use loading. No new router, provider mapping or execution permission is introduced."
+        },
+        {
+          "path": "tests/test_host_deltas.py",
+          "disposition": "updated",
+          "reason": "Selected OMP discovery deduplication, required-read preservation or corresponding recovery/ownership/status evidence; exact source bytes are bound below."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Implements existing R03/R04/R08/R10/R11/R12; shared capability intent, safety and publication criteria remain unchanged.",
+      "authority": "User commissioned Agent Sync core/scope audit, removal of demonstrated impediments, cross-agent tool verification, and routing only if remaining failures require it.",
+      "checks": "Inspect source and native catalogs, preserve the mandatory OMP read, verify recovery schema/digests and fresh native discovery. Use canonical ready qualification and retain required native body/readback and repeat-sync checks. No model inference or speculative routing test is substituted for those checks.",
+      "outcome_review": {
+        "expected": "Shared skills remain natively discoverable once, while current host protocols and access limits remain explicit.",
+        "observed": "Baseline duplicate OMP entries and native schema/config differences established; source candidate preserves unique obligations. Native post-migration acceptance remains pending.",
+        "evidence": "evals/results/capability-scope-audit-20261103.json",
+        "limitations": "Discovery and protocol preservation are structural claims. No comparative model improvement or current routed-model readiness is asserted."
+      }
+    }
+  ]
+}

@@ -13352,32 +13352,6 @@
       "strategy": "merge"
     },
     {
-      "bytes": 2041,
-      "format": "text",
-      "host": "omp",
-      "id": "dynamic-workflows-adapter",
-      "include": [],
-      "kind": "text",
-      "portable_paths": true,
-      "sha256": "8e8f233cbc55dbc5344295dbd27996f5572ffd4a62ab13b9e49ed03d6889ad4e",
-      "snapshot": "hosts/omp/adapters/dynamic-workflows.md",
-      "source": "skills/dynamic-workflows/SKILL.md",
-      "strategy": "replace-if-absent"
-    },
-    {
-      "bytes": 754,
-      "format": "text",
-      "host": "omp",
-      "id": "outcome-first-workflow-adapter",
-      "include": [],
-      "kind": "text",
-      "portable_paths": true,
-      "sha256": "018b0c212cb3a7b4ceb704872c2c75c5ebf1d9ea0453955d983fb6d698e83fde",
-      "snapshot": "hosts/omp/adapters/outcome-first-workflow-design.md",
-      "source": "skills/outcome-first-workflow-design/SKILL.md",
-      "strategy": "replace-if-absent"
-    },
-    {
       "bytes": 543,
       "format": "yaml",
       "host": "omp",
@@ -13587,7 +13561,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "7d7c576b3f7b24b6f4ef1168337aff6bf1ea637f2b43d5483ae569ef8a4b6274",
+  "policy_sha256": "9e3b385ce1736b9d408c380788a27ccd10f4a2ae59bfe73590850effcef7bed5",
   "public_safe": true,
   "schema_version": 1
 }

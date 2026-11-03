@@ -33,6 +33,18 @@ The user-authorized [claim-based testing and retirement contract](system-require
 
 ## Implementation evidence
 
+### Capability and scope audit, 2026-11-03
+
+The [capability-scope audit](../evals/results/capability-scope-audit-20261103.json)
+reviews the shared standing core and admitted skill entrypoints against current
+Codex, Hermes and OMP discovery evidence. The selected repair retires only two
+obsolete OMP host-local discovery wrappers; shared owners and native execution
+protocols remain. Catalog, schema-assembly and source checks have distinct scopes
+and do not establish universal tool readiness, model-quality gains or feature
+parity. The current V3 routing limitations remain explicit. No new router is
+selected. Native memory consolidation and provider-owned image-editing guidance
+remain outside Agent Sync source ownership.
+
 The [scoped implementation receipt](../evals/results/system-requirements-scoped-20260927.json) binds the checked source and tests, reports the independent review corrections, and retains the remaining limits. It is mechanism/discovery evidence, not a model-quality or whole-fleet parity certificate.
 
 ## Native artifact evaluation and remaining outcomes

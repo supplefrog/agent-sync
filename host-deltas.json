@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:fc6d47f1eef2bf25a188bab70fe7063adeb89c6daff0445c0542e1599e10312d"
+      "version_or_hash": "sha256:19189714762cb075f6b01ede5b9dc1cfefff9b6c865ef87aa9a2f7a0629c71ad"
     },
     {
       "category": "native-skill",
@@ -507,17 +507,17 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:fc6d47f1eef2bf25a188bab70fe7063adeb89c6daff0445c0542e1599e10312d"
+      "version_or_hash": "sha256:19189714762cb075f6b01ede5b9dc1cfefff9b6c865ef87aa9a2f7a0629c71ad"
     },
     {
       "category": "native-skill",
-      "desired_state": "all admitted portable owners plus captured thin native adapters are available",
+      "desired_state": "admitted shared owners are available through native discovery without duplicate host-local wrappers",
       "enablement": "managed",
       "host": "omp",
       "id": "omp-admitted-skills",
       "owner": "fleet-sync",
       "prerequisites": [
-        "omp runtime 17.2.13 is installed",
+        "OMP native shared-skill discovery verified for the installed version",
         "Agent Sync repository is present"
       ],
       "readback": {
@@ -527,10 +527,10 @@
       "required": true,
       "restore": {
         "kind": "fleet",
-        "reference": "rendered admitted fleet and recovery adapters"
+        "reference": "rendered admitted fleet"
       },
-      "source_identity": "fleet:rendered admitted fleet and recovery adapters",
-      "version_or_hash": "sha256:fc6d47f1eef2bf25a188bab70fe7063adeb89c6daff0445c0542e1599e10312d"
+      "source_identity": "fleet:rendered admitted fleet",
+      "version_or_hash": "sha256:19189714762cb075f6b01ede5b9dc1cfefff9b6c865ef87aa9a2f7a0629c71ad"
     },
     {
       "category": "curator",

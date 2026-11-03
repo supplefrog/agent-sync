@@ -36,7 +36,7 @@ The current snapshot contains:
 - custom MCP declarations that contain no credential values, including OMP MCP declarations;
 - public plugin selections and enablement where the source is reproducible or an external prerequisite is declared;
 - complete reviewed Hermes-local [native skill packages](native-skill-recovery.md), with support files and parked-package enablement preserved separately;
-- the two thin OMP skill adapters that consume Agent Sync's canonical workflow owners without copying their state machines;
+- OMP shared skills through native discovery; the obsolete host-local discovery wrappers are retired, with their required workflow protocol read preserved at the canonical OMP reference;
 - OMP native `AGENTS.md` generated from the shared core, the checked reduced `SYSTEM_TEMPLATE.md`, request-description hook, and selected settings/provider transport fields. Stock OMP is restored from upstream; no stock binary, stock tool implementation, credentials, or private history are copied. Codex inheritance stays disabled; fresh OMP18.8.9 context and loopback-request checks load the shared core exactly once.
 
 Config restore is a deep merge. Only allowlisted paths are written, while unknown or sensitive fields already present on the target remain untouched. If selected values already match, restore does not rewrite the file merely to normalize TOML/YAML formatting.
@@ -152,3 +152,7 @@ attempt. Target state is rechecked before the atomic replacement. Existing
 predeployment release cannot discard either history, and retries validate the
 retained bytes and obligations. This route records consistency, not action
 permission; a consumed qualification allowance is not renewed by a request.
+
+## OMP shared-skill discovery audit, 2026-11-03
+
+The installed OMP18.12.6 native RPC catalog enumerates the admitted shared skills directly. The previous outcome-first discovery wrapper adds no execution rules; the workflow wrapper duplicates the canonical lifecycle. Its pre-use runtime-contract read is preserved for both V2 and V3 in `skills/dynamic-workflows/references/omp-adapter.md`. Remove only those two host-local directories through exact recoverable archival after source qualification; recovery restore writes selected artifacts and does not delete retired live files. Preserve route-agent definitions and run pins. Source removal and catalog discovery do not establish current routed-model execution readiness. The [audit receipt](../evals/results/capability-scope-audit-20261103.json) records checks and limitations.

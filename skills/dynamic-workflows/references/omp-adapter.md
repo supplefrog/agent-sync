@@ -1,4 +1,7 @@
-# OMP V3 workflow adapter
+# OMP workflow adapter
+
+Before using an OMP workflow, read [the runtime contract](runtime-contract.md).
+This pre-use read applies to both V2 and V3 workflows.
 
 OMP uses the portable state CLI and its native task-agent mechanism. The existing `install_omp_route_agents.py` owner remains V2-only and rejects V3 catalogs before changing agent files.
 

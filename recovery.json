@@ -9703,24 +9703,6 @@
           "strategy": "merge"
         },
         {
-          "format": "text",
-          "id": "dynamic-workflows-adapter",
-          "kind": "text",
-          "portable_paths": true,
-          "snapshot": "hosts/omp/adapters/dynamic-workflows.md",
-          "source": "skills/dynamic-workflows/SKILL.md",
-          "strategy": "replace-if-absent"
-        },
-        {
-          "format": "text",
-          "id": "outcome-first-workflow-adapter",
-          "kind": "text",
-          "portable_paths": true,
-          "snapshot": "hosts/omp/adapters/outcome-first-workflow-design.md",
-          "source": "skills/outcome-first-workflow-design/SKILL.md",
-          "strategy": "replace-if-absent"
-        },
-        {
           "format": "yaml",
           "id": "astra-model-registration",
           "include": [
