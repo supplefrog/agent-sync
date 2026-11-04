@@ -15,3 +15,34 @@ integrations/hermes/native-patches/guidance/current-selector/selector.patch text
 skills/openai-delegation-route-research/scripts/selector-history/236447f07963134c965dd870a445ac3d3216349fd5d7d713bd0070b9f8eccad3.py -text
 skills/openai-delegation-route-research/scripts/selector-history/* -text
 skills/openai-delegation-route-research/references/schema-history/* -text
+
+# Preserve legacy byte-bound publications; do not invalidate recorded hashes.
+# Scoped exceptions also prevent phantom CRLF/LF edits in ordinary Git status.
+/docs/recovery.md -text !eol
+/evals/results/default-trial-validity.json -text !eol
+/evals/results/item-review-maintenance.json -text !eol
+/evals/results/outcome-design-retirement-local-20261103.json -text !eol
+/evals/results/outcome-efficiency-contract-20261017.json -text !eol
+/evals/results/outcome-efficiency-gate-reconciliation-20261019.json -text !eol
+/evals/results/outcome-efficiency-gate-replay-20261019.json -text !eol
+/evals/results/preference-reference-publication-20261021.json -text !eol
+/evals/results/systematic-debugging-retirement-20261020.json -text !eol
+/integrations/hermes-native-learning/README.md -text !eol
+/integrations/hermes-native-learning/REFERENCE-SOURCES.json -text !eol
+/integrations/hermes-native-learning/docs/INSTALL.md -text !eol
+/integrations/hermes-native-learning/docs/MATERIALS-JOBS.md -text !eol
+/skills/capability-curator/SKILL.md -text !eol
+/skills/capability-curator/references/instruction-retirement.md -text !eol
+/tests/test_completed_retirement_publication.py -text !eol
+/tests/test_preference_data_classification.py -text !eol
+/tests/test_requested_reader_installation.py -text !eol
+/tests/test_scoped_reconcile.py -text !eol
+/tools/eval.py -text !eol
+/tools/evaluation_artifact_pilot.py -text !eol
+/tools/evaluation_evidence.py -text !eol
+/tools/evaluation_measurement.py -text !eol
+/tools/evaluation_usage.py -text !eol
+/tools/reconcile.py -text !eol
+/tools/recovery.py -text !eol
+/tools/worktree_sync.py -text !eol
+/.gitattributes text eol=lf
