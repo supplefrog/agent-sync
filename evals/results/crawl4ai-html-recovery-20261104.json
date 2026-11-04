@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-04",
+  "scope": "Single-page Crawl4AI HTML recovery and native fleet connection fragments",
+  "change_reconciliation": [
+    {
+      "requirement_change": false,
+      "requirement_reason": "Implement the requested provider fallback within existing native MCP ownership; no shared behavioral requirement, model preference or approval policy changes.",
+      "authority": "User requested recovery of saved Reddit comments and Instagram profile HTML, automatic workflow fallback and fleet synchronization.",
+      "checks": "18 tests passed including real saved corpus; actual stdio MCP replay passed for both social responses; authenticated live MCP scrape recovered 25 Reddit comments; all 16 upstream tools listed; pinned dependency audit found no known vulnerabilities; independent review findings repaired.",
+      "outcome_review": {
+        "expected": "Recover only content present in returned public HTML and make that recovery automatic for single-page scrape in Codex, Hermes and OMP.",
+        "observed": "Saved Reddit response yields 25 comment records; Instagram yields matching profile biography, name, counts and 5 public links with following-count conflict retained. Actual upstream MCP scrape yields the same 25-comment recovery through the stdio adapter.",
+        "evidence": "Integration tests, saved-response MCP replay, real cloud MCP result, source hash provenance and dependency audit. Native deployment/readback is recorded separately after publication.",
+        "limitations": "Only captured HTML is recoverable. No full-thread/profile completeness or freshness claim; no login, pagination or script execution. Automatic fallback is single-page scrape only, not batch/jobs. Existing sessions require reload. OMP exposes its full upstream catalog under existing approvals."
+      },
+      "artifacts": {
+        "docs/crawl4ai.md": {
+          "before_sha256": "1ddd6a774613ec4ad892a132438c7bc4d312a31669623a0ed5c2c68592f92cfa",
+          "after_sha256": "2a501f2a4a8e3fcaedcb7490b7499c201ad8a65c6623c089a7f0543d8fc5c020"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "d8fff2519e2a19f22b7c6568092a879a192037126885d7efbff703ba34164916",
+          "after_sha256": "d8fff2519e2a19f22b7c6568092a879a192037126885d7efbff703ba34164916"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "11ee34ef0d97aeb782965fb79cb6b78b2ba66f0d3c99905dc3c383b7710bd75d",
+          "after_sha256": "11ee34ef0d97aeb782965fb79cb6b78b2ba66f0d3c99905dc3c383b7710bd75d"
+        },
+        "integrations/crawl4ai/codex.toml": {
+          "before_sha256": "db3d43435598bf4333b1ea881fef5290f9a6e57bf46007faed9fae8f37bf463c",
+          "after_sha256": "13efd71fa8499120f6754202275799f8de6fb51fe3a1a9f3090a5a728d32ffd0"
+        },
+        "integrations/crawl4ai/hermes.yaml": {
+          "before_sha256": "0db571eeeb1608d273ada70a0a188411ad8980d5672e70cbb68a62e4c86b78b4",
+          "after_sha256": "cb94e8a48a1d076324ee917af32a4a89676f8bf7a5112881734ac8b147d59587"
+        },
+        "integrations/crawl4ai/omp.json": {
+          "before_sha256": "c70fcd2ed0ad0bfcf209d4f418343c9770b5405d167c8be5ab9bb507aae088d3",
+          "after_sha256": "2a475820ad3d6885bc3eec82eb687e706457f384ebe33dc18ae6c229f626f0ad"
+        },
+        "integrations/crawl4ai/recovery.py": {
+          "before_sha256": "absent",
+          "after_sha256": "5e5b5f23ffbcde31a3ca37b33f4dec17a5422be2f01ab1c2592b9fb218cc872a"
+        },
+        "integrations/crawl4ai/requirements.txt": {
+          "before_sha256": "absent",
+          "after_sha256": "100476d84ef8f9d2585d5c968222f0f8be5cf89ec7b9df80dfa6e5cdacead5b6"
+        },
+        "integrations/crawl4ai/server.py": {
+          "before_sha256": "absent",
+          "after_sha256": "9cbe0e5919743d43ab4f0be167c3ac3608d85c8ca75efd1c1a6996da0da674eb"
+        },
+        "integrations/crawl4ai/tests/conftest.py": {
+          "before_sha256": "absent",
+          "after_sha256": "81a2c247e3e2c8f96bd63cf2a246bf99d0f8902a4eb4ea5d1a297721e2f814c7"
+        },
+        "integrations/crawl4ai/tests/replay_server.py": {
+          "before_sha256": "absent",
+          "after_sha256": "f107372b86aeacceddc646b64f80aa527faaadd4dd073d6deabd2455657e10f3"
+        },
+        "integrations/crawl4ai/tests/test_recovery.py": {
+          "before_sha256": "absent",
+          "after_sha256": "3726c423b15cc28f8166a802aa17c8e570301e9517b36502c6de2e6c42211fc9"
+        },
+        "integrations/crawl4ai/tests/test_server.py": {
+          "before_sha256": "absent",
+          "after_sha256": "c2ac5700bf1b1b9a678f68c25c9accfcc56c9e770eec922dcd3924244fab5ddd"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/crawl4ai.md",
+          "disposition": "updated",
+          "reason": "Existing native tool/credential ownership remains intact; provider-specific runtime and recovery behavior are documented without changing shared behavioral requirements."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing native tool/credential ownership remains intact; provider-specific runtime and recovery behavior are documented without changing shared behavioral requirements."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing native tool/credential ownership remains intact; provider-specific runtime and recovery behavior are documented without changing shared behavioral requirements."
+        }
+      ]
+    }
+  ]
+}

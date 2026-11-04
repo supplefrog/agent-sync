@@ -1,10 +1,10 @@
 {
   "mcpServers": {
     "crawl4ai": {
-      "type": "http",
-      "url": "https://api.crawl4ai.com/mcp",
-      "headers": {"Authorization": "Bearer ${CRAWL4AI_KEY}"},
-      "timeout": 120000
+      "type": "stdio",
+      "command": "pwsh",
+      "args": ["-NoLogo", "-NoProfile", "-NonInteractive", "-Command", "$fleet = Get-Content (Join-Path $env:USERPROFILE '.agents/skills/.agent-signal-fleet.json') -Raw | ConvertFrom-Json; $root = Split-Path -Parent (Split-Path -Parent $fleet.source_snapshot); & (Join-Path $env:USERPROFILE '.local/share/crawl4ai-recovery/venv/Scripts/python.exe') -B (Join-Path $root 'integrations/crawl4ai/server.py')"],
+      "timeout": 150000
     }
   }
 }
