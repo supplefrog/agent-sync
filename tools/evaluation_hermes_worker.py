@@ -18,6 +18,8 @@ from typing import Any, Callable
 from evaluation_runtime import native_transport_failure, require_no_install_environment
 
 ENDPOINT = "https://chatgpt.com/backend-api/codex"
+# Main-only proof of admission before controller-owned canary setup; JSON cannot forge it.
+_STUDY_ADMISSION = object()
 CONTEXT_MARKERS = ("<available_skills>", "<skills_instructions>", "MEMORY_SUMMARY",
                    "[INSTRUCTION-AUTHORING]", "[RECONCILIATION]")
 
@@ -496,7 +498,60 @@ def native_skill_read_receipt(args, parsed, catalog):
     return None
 
 
+def configure_study_exposure(job, usage_observer):
+    skill=job.get('intervention_clearance',{}).get('contract',{}).get('skill_evaluation',{})
+    if skill.get('question')=='applied-skill-effect' or skill.get('qualification_boundary'):
+        import base64
+        key=skill['target_entry_sha256']
+        entry=base64.b64decode(job['intervention_clearance']['source_bytes'][key],validate=True)
+        if hashlib.sha256(entry).hexdigest()!=key or skill.get('arm') not in ('baseline','treatment'):
+            raise ValueError('Target skill context requirement changed')
+        if skill.get('qualification_boundary'):
+            if skill.get('question')!='natural-discovery' or skill.get('arm')!='treatment' or skill['qualification_boundary']!='before-material-action':
+                raise ValueError('Discovery qualification boundary is treatment-only, not a comparative policy')
+            usage_observer.require_discovery_before_action(entry)
+        else:usage_observer.require_initial_skill_context(entry,skill['arm']=='treatment')
+
+
+def require_qualified_study_interfaces(job, schemas):
+    """Actual advertised tools must match the already qualified raw workflow."""
+    if job.get('assembly_only'):return
+    expected=job['intervention_clearance']['qualification']['native']['effective_tool_schemas']
+    def ordered(values):
+        if not isinstance(values,list) or not values:raise ValueError('Qualified interfaces missing; faithful setup blocked')
+        return sorted(values,key=lambda s:s.get('function',s)['name'])
+    if ordered(schemas)!=ordered(expected):
+        raise ValueError('Actual tools differ from qualified workflow; setup blocked, do not replace the treatment')
+
+
+def require_study_packages_unchanged(job):
+    """The evaluator may isolate the environment, never rewrite the product."""
+    from artifact_hash import freeze_candidate
+    for item in job['catalog']:
+        actual=freeze_candidate(Path(item['path']),projection='native-catalog')
+        if (actual['package_sha256']!=item['package_sha256']
+                or actual['entry_sha256']!=item['body_sha256']
+                or actual['files']!=item['files'] or actual['file_sizes']!=item['file_sizes']):
+            raise RuntimeError('Evaluated package changed; measurement invalid, repair setup without rewriting the product')
+
+
+def prepare_skill_study_entry(job, usage_observer):
+    """This helper is always a skill study, regardless of caller labels."""
+    if job.get('purpose')!='native-skill-study':
+        raise ValueError('execute_skill_study requires native-skill-study purpose')
+    if type(job.get('assembly_only',False)) is not bool:
+        raise ValueError('Study assembly_only must be boolean')
+    if not job.get('assembly_only') and job.get('_checked_study_admission') is not _STUDY_ADMISSION:
+        checked=require_worker_study_admission(job)
+        if checked.get('required') is not True or checked.get('ready') is not True:
+            raise ValueError('Required ready skill-study admission missing')
+    if usage_observer is None:raise ValueError('Actual skill exposure observation required')
+    # Assembly discovery needs the same observer initialization, without paid admission.
+    configure_study_exposure(job,usage_observer)
+
+
 def execute_skill_study(job, access_token, factory, build_prompt, usage_observer=None):
+    prepare_skill_study_entry(job,usage_observer)
     from artifact_hash import freeze_candidate
     from hermes_cli.plugins import PluginContext, PluginManifest, get_plugin_manager
     from tools.skills_tool import skills_list
@@ -566,6 +621,9 @@ def execute_skill_study(job, access_token, factory, build_prompt, usage_observer
             blocked.append({"tool": tool_name, "reason": message, 'shape': rejection_shape(tool_name, args)})
             return {"action": "block", "message": message + (' ' + TERMINAL_CONTRACT if tool_name == 'terminal' else '')}
     def completed(call_id, name, args, raw):
+        try:require_study_packages_unchanged(job)
+        except (RuntimeError,OSError,ValueError):
+            invalidate_measurement('evaluated-product-bytes-changed')
         parsed = raw if isinstance(raw, dict) else None
         if parsed is None:
             try:
@@ -623,6 +681,7 @@ def execute_skill_study(job, access_token, factory, build_prompt, usage_observer
             usage_observer.discovery['dispatch_mode']='native-sequential-qualification'
         if tool_scope!=EVIDENCE_SCOPE:advertise_study_terminal(agent)
         apply_study_tool_scope(agent,tool_scope)
+        require_qualified_study_interfaces(job,agent.tools)
         assembled = build_prompt(agent)
         if tool_scope==EVIDENCE_SCOPE:
             if usage_observer is None:raise RuntimeError('Evidence request path guard unavailable')
@@ -662,6 +721,9 @@ def execute_skill_study(job, access_token, factory, build_prompt, usage_observer
             native, deadline = run_with_deadline(agent, job["prompt"], job["timeout"])
         if tool_scope==EVIDENCE_SCOPE and isinstance(native.get('final_response'),str):
             usage_observer._retain('final-response',native['final_response'].encode())
+        try:require_study_packages_unchanged(job)
+        except (RuntimeError,OSError,ValueError):
+            invalidate_measurement('evaluated-product-bytes-changed')
         result = {"ok": bool(native.get("completed") and not any(native.get(k) for k in ("failed", "partial", "interrupted"))),
             "assembly_only": bool(job.get("assembly_only")), "model_launched": not job.get("assembly_only"),
             "requested_route": {"model": job["model"], "provider": "openai-codex", "reasoning": job["reasoning"]},
@@ -802,18 +864,9 @@ def main() -> int:
     try:
         job = json.loads(sys.stdin.read())
         admission=require_worker_study_admission(job)
-        skill=job.get('intervention_clearance',{}).get('contract',{}).get('skill_evaluation',{})
-        if skill.get('question')=='applied-skill-effect' or skill.get('qualification_boundary'):
-            import base64
-            key=skill['target_entry_sha256']
-            entry=base64.b64decode(job['intervention_clearance']['source_bytes'][key],validate=True)
-            if hashlib.sha256(entry).hexdigest()!=key or skill.get('arm') not in ('baseline','treatment'):
-                raise ValueError('Target skill context requirement changed')
-            if skill.get('qualification_boundary'):
-                if skill.get('question')!='natural-discovery' or skill.get('arm')!='treatment' or skill['qualification_boundary']!='before-material-action':
-                    raise ValueError('Discovery qualification boundary is treatment-only, not a comparative policy')
-                usage_observer.require_discovery_before_action(entry)
-            else:usage_observer.require_initial_skill_context(entry,skill['arm']=='treatment')
+        if admission.get('required') and admission.get('ready'):
+            job['_checked_study_admission']=_STUDY_ADMISSION
+        if job.get('purpose')!='native-skill-study':configure_study_exposure(job,usage_observer)
         if job.get('capability_probes'):
             if not job.get('assembly_only'):raise ValueError('Capability exercise is zero-model only')
             probe_transport['enabled']=True

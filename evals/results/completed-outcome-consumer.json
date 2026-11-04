@@ -166,25 +166,9 @@
   "change_reconciliation": [
     {
       "artifacts": {
-        "docs/evaluations/outcome-efficiency.md": {
-          "before_sha256": "673670c1306f1a4e022a2371f89f180bb14c7336f4451a9f3f740e92c18ac4f6",
-          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
-        },
-        "docs/instruction-profiles.md": {
-          "before_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569",
-          "after_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569"
-        },
-        "docs/native-instruction-diagnostic.md": {
-          "before_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a",
-          "after_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a"
-        },
         "tools/evaluation_artifact_pilot.py": {
           "before_sha256": "d21f07da8451e605eb20b0decc532b756a1945e843c26ed76904780c5d9a4304",
           "after_sha256": "9b593e16ea558b2ceb4256aadb9eb8c7d7bd3df57e6b732d744620eb5e02054f"
-        },
-        "tools/evaluation_evidence.py": {
-          "before_sha256": "c093b1c3c2cd1d7a8a44043f10bed389cac3f63273ff251d2fbb0d095ff28edf",
-          "after_sha256": "fc8ed3896a206388b8f968f5700de5f77d2c81a3fcf2a2a5d2e1747a0e9e9dc5"
         },
         "tools/evaluation_measurement.py": {
           "before_sha256": "2ffae8f351c9936f00b89c5beb7741d8f3933a4f54764d615bcd1103cdac1241",
@@ -207,26 +191,116 @@
       },
       "obligations": [
         {
-          "path": "docs/evaluations/outcome-efficiency.md",
-          "disposition": "updated",
-          "reason": "Keep existing owner, source/cost/provenance and permission boundaries. Public usage APIs remain unchanged; the required offline outcome/measurement path is selected without native observer expansion."
-        },
-        {
-          "path": "docs/instruction-profiles.md",
-          "disposition": "unchanged",
-          "reason": "Keep existing owner, source/cost/provenance and permission boundaries. Public usage APIs remain unchanged; the required offline outcome/measurement path is selected without native observer expansion."
-        },
-        {
-          "path": "docs/native-instruction-diagnostic.md",
-          "disposition": "unchanged",
-          "reason": "Keep existing owner, source/cost/provenance and permission boundaries. Public usage APIs remain unchanged; the required offline outcome/measurement path is selected without native observer expansion."
-        },
-        {
           "path": "tools/evaluation_usage.py",
           "disposition": "unchanged",
           "reason": "Keep existing owner, source/cost/provenance and permission boundaries. Public usage APIs remain unchanged; the required offline outcome/measurement path is selected without native observer expansion."
         }
       ]
+    },
+    {
+      "artifacts": {
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/instruction-profiles.md": {
+          "before_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569",
+          "after_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-instruction-diagnostic.md": {
+          "before_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a",
+          "after_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "d8fff2519e2a19f22b7c6568092a879a192037126885d7efbff703ba34164916",
+          "after_sha256": "d8fff2519e2a19f22b7c6568092a879a192037126885d7efbff703ba34164916"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "11ee34ef0d97aeb782965fb79cb6b78b2ba66f0d3c99905dc3c383b7710bd75d",
+          "after_sha256": "11ee34ef0d97aeb782965fb79cb6b78b2ba66f0d3c99905dc3c383b7710bd75d"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f",
+          "after_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807",
+          "after_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807"
+        },
+        "tests/test_raw_treatment_fidelity.py": {
+          "before_sha256": "absent",
+          "after_sha256": "3f4c0ea271cd36c6ab53f538c9599b86f5fcc7ae029e00c82d4ce2ddf34e9613"
+        },
+        "tools/evaluation_evidence.py": {
+          "before_sha256": "cbd7335398a0d23c8d5fc957428c4ca868bb26abe76716a2eda32b44bae24001",
+          "after_sha256": "919a88b152539afc908acea2c8f8b739eb3b1e62dd99dd4bdaa322c4b9f6d931"
+        },
+        "tools/evaluation_hermes_worker.py": {
+          "before_sha256": "b63361ef2dfa0e17d6ac5eb889207659670359820633580fcb3f8c7fdc335c29",
+          "after_sha256": "e7b838a74b9c673f8650ddab8c6f3511c9696ac8e6b32ed6b968cd54090ee68b"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        },
+        {
+          "path": "docs/instruction-profiles.md",
+          "disposition": "unchanged",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        },
+        {
+          "path": "docs/native-instruction-diagnostic.md",
+          "disposition": "unchanged",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        },
+        {
+          "path": "tests/test_raw_treatment_fidelity.py",
+          "disposition": "updated",
+          "reason": "Preserve existing evaluation intent, route and accounting contracts while binding raw treatment-entry fidelity and its sanitized regression."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "The correction enforces the existing applied-skill treatment and pre-material-action boundary without changing the desired product outcome.",
+      "authority": "This technical record binds implementation consistency and does not grant publication, execution, spending, provider or private-data authority.",
+      "checks": "Eight sanitized offline tests pass against these exact evaluator modules and current public dependencies. Tests cover raw body versus replacement, baseline absence, relabelled entry refusal, required-ready admission, discovery assembly, exact tool schemas, package integrity and setup without a product verdict.",
+      "outcome_review": {
+        "expected": "Require the actual skill entry and exact qualified interfaces at the paid treatment boundary; setup failure is not a negative product-quality outcome.",
+        "observed": "The sanitized offline controls pass, including direct-entry purpose and assembly-type rejection, caller-forged admission refusal, raw-body and absent-baseline checks, and unchanged package identity.",
+        "evidence": "Exact source/dependency before and after hashes and eight deterministic in-memory regression tests; native construction is a declared test seam.",
+        "limitations": "No provider call, real native treatment execution, model-quality benefit, host deployment or already-running-session refresh is established by these source checks."
+      }
     }
   ]
 }

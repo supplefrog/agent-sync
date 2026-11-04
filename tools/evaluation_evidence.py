@@ -290,6 +290,12 @@ def skill_question_readiness(binding,contract,qualification,review,source_bytes)
             if (question!='natural-discovery' or arm!='treatment' or spec['qualification_boundary']!='before-material-action'
                     or review.get('discovery_boundary')!=spec['qualification_boundary']):
                 gaps.append('discovery action boundary requires reviewed one-arm natural qualification scope')
+        # The evaluated entry is the selected source, not an evaluator-written
+        # guide substituted for it. Existing source requirements and the
+        # independent fit review bind this identity; runtime checks the package.
+        if not any(ref.get('sha256')==spec['target_entry_sha256']
+                   for ref in contract.get('source_requirements',[])):
+            gaps.append('evaluated skill entry is not the source-grounded requested treatment')
         body=skill_body(entry);target_present=any(f.get('entry_sha256')==spec['target_entry_sha256'] for f in binding.get('catalog',[]))
         if target_present!=(arm=='treatment'):gaps.append('target catalog/absence differs from intended arm')
         exposed=body in qualification.get('task_input','').replace('\r\n','\n')
@@ -453,7 +459,8 @@ def intervention_readiness(binding, contract, qualification, review, source_byte
         if review.get('claim_scope')!=contract.get('claim'):gaps.append('reviewed conclusion scope differs from intended claim')
     except (KeyError,TypeError,ValueError,AttributeError) as exc:
         gaps.append('malformed intervention evidence: '+type(exc).__name__)
-    return {'ready':not gaps,'gaps':sorted(set(gaps)),'accounting_claim':accounting,
+    return {'ready':not gaps,'status':'ready' if not gaps else 'setup-blocked','product_quality_passed':None,
+            'gaps':sorted(set(gaps)),'accounting_claim':accounting,
             'actual_usage_required':False,'mechanism_efficacy_proven':False,'execution_authenticated':False,
             'scope':'Pretrial source-grounded fidelity, functional actor-path exercise and independently reviewed task fit; usage remains optional'}
 
@@ -461,7 +468,9 @@ def intervention_readiness(binding, contract, qualification, review, source_byte
 def intervention_conclusion(design, exposure):
     """Do not convert nonselection, access failure or trace gaps into utility."""
     if not design.get('ready'):
-        return {'scope':'unqualified integration/task design','mechanism_effect':None,'usage_required':False}
+        return {'scope':'setup blocked; no verdict on the requested product',
+                'mechanism_effect':None,'product_quality_passed':None,'usage_required':False,
+                'next_action':'Repair faithful setup within authority, or record a justified cancellation if actual system constraints prevent it; do not substitute another treatment'}
     if design.get('question')=='applied-skill-effect':
         qualified=exposure.get('qualified') is True and exposure.get('continue_skill_effect_review') is True
         return {'scope':'controlled target context verified; actual behavior/quality pending' if qualified else 'skill-effect qualification failed; do not invoke qualitative reviewer',
