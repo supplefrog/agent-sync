@@ -5,6 +5,7 @@ import { LessonJobs } from './jobs.mjs';
 import { TeachingAdapter } from './adapter.mjs';
 import { PracticeAdapter } from './practice-state.mjs';
 import { requireState } from './store.mjs';
+import { TEACHER_RECOVERY } from './recovery.mjs';
 export function teacherContextPage(binding,{offset,limit=30,expectedRevision}={}) {
   const adapter=binding.kind==='practice'?new PracticeAdapter(binding.root):new TeachingAdapter(binding.root);
   const record=adapter.store.read(binding.chatId),total=record.messages.length;
@@ -33,6 +34,6 @@ export function teacherContextPage(binding,{offset,limit=30,expectedRevision}={}
     ...(binding.jobRoot?{jobs:new LessonJobs(binding).context()}:{})};
   const bytes=JSON.stringify(context);
   requireState(Buffer.byteLength(bytes)<=262144,'host_context_too_large','Page exceeds256KiB; request fewer messages, never silently truncate.');
-  return{ok:true,context,contextSha256:createHash('sha256').update(bytes).digest('hex'),
+  return{ok:true,context,recovery:TEACHER_RECOVERY,contextSha256:createHash('sha256').update(bytes).digest('hex'),
     scope:'Teacher-only exact saved content including active commitments. Not a learner projection, fabricated summary or model invocation.'};
 }

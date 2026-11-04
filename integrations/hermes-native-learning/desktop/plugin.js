@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only; LearnHarness native integration. See NOTICE.md.
 
-// aiai-learning/hermes-readability-185/package/src/desktop-entry.mjs
+// src/desktop-entry.mjs
 import { host, MessageTextContent } from "@hermes/plugin-sdk";
 import * as React from "react";
 
-// aiai-learning/hermes-readability-185/package/src/vendor/runtime/question-pure.ts
+// src/vendor/runtime/question-pure.ts
 var CONFIDENCE_STOPS = [0, 30, 50, 70, 90, 100];
 var DEFAULT_CONFIDENCE_INDEX = 2;
 var emptyDockSelection = () => ({ selected: /* @__PURE__ */ new Set(), otherSelected: false, dontKnow: false });
@@ -22,7 +22,7 @@ function toggleOther(mode, sel) {
   return { selected: /* @__PURE__ */ new Set(), otherSelected: true, dontKnow: false };
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/rich-scope.mjs
+// src/inline/rich-scope.mjs
 function createRichScope(renderRich) {
   let cleanups = [];
   return {
@@ -49,12 +49,50 @@ function createRichScope(renderRich) {
   };
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/practice-client.mjs
+// src/inline/lesson-identity.mjs
+var lessonKind = (view) => view.kind === "practice" ? "practice" : "teach";
+var lessonDraftKey = (view) => lessonKind(view) === "practice" ? `${view.chatId}:practice:${view.activeProblem?.toolCallId ?? "between"}` : `${view.chatId}:${view.question?.toolCallId ?? "idle"}`;
+function currentProjectionName(chatId) {
+  if (typeof chatId !== "string" || !/^[A-Za-z0-9_-]{1,80}$/.test(chatId)) throw new Error("Invalid lesson identity.");
+  return `current-${chatId}.json`;
+}
+function validateLessonView(view, { chatId, kind, minimumRevision = 0 }) {
+  if (!view || view.chatId !== chatId || lessonKind(view) !== kind || view.kind !== void 0 && !["teach", "practice"].includes(view.kind) || !Number.isSafeInteger(view.revision) || view.revision < minimumRevision)
+    throw new Error("Refusing a different lesson, mode or older saved revision.");
+  if (view.question && ["committedAnswer", "correctIndices", "explanation"].some((k) => k in view.question))
+    throw new Error("An active question exposed its commitment.");
+  if (view.activeProblem && Object.keys(view.activeProblem).some((k) => !["toolCallId", "statement"].includes(k)))
+    throw new Error("An active problem exposed teacher-only fields.");
+  return view;
+}
+function parseCurrentProjection(text, binding, minimumRevision = 0) {
+  if (typeof text !== "string" || new TextEncoder().encode(text).length > 4096)
+    throw new Error("Current lesson index is unavailable or oversized.");
+  const index = JSON.parse(text);
+  const match = /^(teach|practice)-r([0-9]+)-([a-f0-9]{64})\.json$/.exec(index?.snapshot ?? "");
+  if (!index || index.v !== 1 || index.chatId !== binding.chatId || index.kind !== binding.kind || Object.keys(index).some((k) => !["v", "chatId", "kind", "revision", "snapshot"].includes(k)) || !Number.isSafeInteger(index.revision) || index.revision < minimumRevision || typeof index.snapshot !== "string" || !match || match[1] !== binding.kind || match[2] !== String(index.revision))
+    throw new Error("Current lesson index differs from this lesson or saved revision.");
+  return index;
+}
+async function loadCurrentProjection(files, binding, minimumRevision, verifyBytes) {
+  const result = await files.readText(binding.folder, currentProjectionName(binding.chatId));
+  if (!result.ok) throw new Error("Current saved lesson unavailable. Ask the owning teacher to export it; no action was sent.");
+  const index = parseCurrentProjection(result.text, binding, minimumRevision);
+  const snapshot = await files.readText(binding.folder, index.snapshot);
+  if (!snapshot.ok || typeof snapshot.text !== "string" || new TextEncoder().encode(snapshot.text).length > 262144)
+    throw new Error("The current redacted lesson export is unavailable.");
+  await verifyBytes(index.snapshot, snapshot.text);
+  const view = validateLessonView(JSON.parse(snapshot.text), { ...binding, minimumRevision: index.revision });
+  if (view.revision !== index.revision) throw new Error("Current index and snapshot revisions differ.");
+  return view;
+}
+
+// src/inline/practice-client.mjs
 function mountPractice(root, initialView, options = {}) {
   const doc = root.ownerDocument, win = doc.defaultView;
-  let view = initialView, text = "", open = true, pending = false;
+  let view = initialView, text = "", open = true, pending = false, editVersion = 0;
   const rich = createRichScope(options.renderRich);
-  const key = () => `${view.chatId}:practice:${view.activeProblem?.toolCallId ?? "between"}`;
+  const key = () => lessonDraftKey(view);
   const node = (tag, value, attrs = {}) => {
     const e = doc.createElement(tag);
     if (value !== null) e.textContent = value;
@@ -102,26 +140,37 @@ function mountPractice(root, initialView, options = {}) {
     render();
     try {
       if (typeof options.send !== "function") throw new Error("Use the connected practice browser to save.");
+      const oldKey = key(), versionAtSend = editVersion, baselineIds = (view.thinkingEntries ?? []).map((entry) => entry.id);
+      const submitted = type === "practice-input" && input?.type === "thinking" && input.problemCallId === view.activeProblem?.toolCallId;
+      const draftBefore = submitted ? JSON.stringify(options.drafts?.read(oldKey)) : void 0;
       const result = await options.send({ type, chatId: view.chatId, ...input ? { input } : {} });
+      if (result?.requested === true) {
+        status("Host action requested. Confirm delivery in chat; the saved lesson response will confirm persistence. If canceled, use Resume saved lesson.");
+        return;
+      }
       if (result?.delivered === true) {
         status("Delivered to the owning agent. Waiting for the saved practice response.");
         return;
       }
       if (!result?.view || !(result.persisted || result.loaded)) throw new Error("No saved practice response received.");
-      const oldKey = key(), same = result.view.activeProblem?.toolCallId === view.activeProblem?.toolCallId;
+      const same = result.view.activeProblem?.toolCallId === view.activeProblem?.toolCallId;
+      const thinkingSaved = submitted && result.persisted === true && same && result.view.thinkingEntries?.some((entry) => typeof entry.id === "string" && entry.id && !baselineIds.includes(entry.id) && entry.text === input.text);
+      if (thinkingSaved && editVersion === versionAtSend) try {
+        if (JSON.stringify(options.drafts?.read(oldKey)) === draftBefore) options.drafts?.remove(oldKey);
+      } catch {
+      }
       view = result.view;
       pending = false;
-      if (input?.type === "thinking" || !same) {
-        try {
-          options.drafts?.remove(oldKey);
-        } catch {
-        }
+      if (!same) {
+        text = "";
+        open = true;
+        restore();
+      } else if (thinkingSaved && editVersion === versionAtSend) {
         text = "";
         open = true;
       }
-      if (!same) restore();
       render();
-      status(result.loaded ? "Saved practice reopened." : input?.type === "next" ? "Next problem requested." : "Thinking saved.");
+      status(result.loaded ? "Saved practice reopened." : input?.type === "next" ? "Next problem requested." : thinkingSaved ? "Thinking saved." : "Saved response received; draft retained until matching thinking is confirmed.");
     } catch (error) {
       pending = false;
       render();
@@ -133,6 +182,10 @@ function mountPractice(root, initialView, options = {}) {
     root.replaceChildren();
     options.onPresentation?.({ open });
     const active = view.activeProblem;
+    if (!active && options.exploration) {
+      options.exploration.hidden = false;
+      root.append(options.exploration);
+    }
     if (view.conclusion && !options.richProse) {
       root.append(node("h3", "Problem review"), prose("div", view.conclusion.statement));
       for (const thought of view.conclusion.thinking ?? []) root.append(node("p", `Your thinking: ${thought}`));
@@ -156,6 +209,10 @@ function mountPractice(root, initialView, options = {}) {
           render();
         }, { class: "lh-close" }));
         dock.append(heading);
+        if (options.exploration) {
+          options.exploration.hidden = false;
+          dock.append(options.exploration);
+        }
         if (!options.richProse) dock.append(prose("div", active.statement));
         for (const thought of view.thinking) dock.append(node("p", `Your thinking: ${thought}`));
         if (!options.richProse) for (const entry of view.feedback ?? []) dock.append(prose("div", entry.text, { "data-practice-feedback": entry.id }));
@@ -165,6 +222,7 @@ function mountPractice(root, initialView, options = {}) {
         field.value = text;
         field.addEventListener("input", () => {
           text = field.value;
+          editVersion++;
           save();
           const submit2 = root.querySelector("[data-practice-send]");
           if (submit2) submit2.disabled = pending || !text.trim();
@@ -195,7 +253,7 @@ function mountPractice(root, initialView, options = {}) {
   }, readDraft: () => ({ text, open, pending }) };
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/confidence-style.mjs
+// src/inline/confidence-style.mjs
 var CONFIDENCE_COLORS = ["#ef4444", "#f97316", "#eab308", "#84cc16", "#22c55e", "#10b981"];
 function nearestConfidenceIndex(value) {
   let best = 0;
@@ -217,7 +275,7 @@ function confidenceRailStyle(value) {
   };
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/answered-record.mjs
+// src/inline/answered-record.mjs
 function answeredRecord(doc, answer, { richProse = false, externalRichExplanation = false, renderProse } = {}) {
   const node = (tag, text, attrs = {}) => {
     const e = doc.createElement(tag);
@@ -263,7 +321,7 @@ function answeredRecord(doc, answer, { richProse = false, externalRichExplanatio
   return box;
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/lesson-prose.mjs
+// src/inline/lesson-prose.mjs
 function richTextAllowed(text) {
   if (typeof text !== "string" || text.length > 65536) return false;
   const ordinary = /* @__PURE__ */ new Set(["", "mermaid", "text", "txt", "plaintext", "python", "py", "javascript", "js", "typescript", "ts", "json", "css", "bash", "sh", "shell", "powershell", "ps1", "sql", "java", "c", "cpp", "c++", "csharp", "c#", "go", "rust", "ruby", "rb", "r", "matlab", "latex", "tex"]);
@@ -382,7 +440,7 @@ function renderLessonProse(React2, MessageTextContent2, view, state, choices) {
   );
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/inline-client.mjs
+// src/inline/inline-client.mjs
 var INLINE_PREFIX = "lh.inline ";
 function nativeTransport(win) {
   return async (action) => {
@@ -418,7 +476,7 @@ function mountInline(root, initialView, options = {}) {
     open: view.question?.open ?? true,
     pending: false
   };
-  const draftKey = () => `${view.chatId}:${view.question?.toolCallId ?? "idle"}`;
+  const draftKey = () => lessonDraftKey(view);
   function setStatus(message, error = false) {
     const status = root.querySelector("[data-status]");
     if (status) {
@@ -630,6 +688,10 @@ function mountInline(root, initialView, options = {}) {
       root.append(previous);
     }
     if (!q) {
+      if (options.exploration) {
+        options.exploration.hidden = false;
+        root.append(options.exploration);
+      }
       const last = view.answers.at(-1);
       if (last) root.append(answeredRecord(doc, last, { richProse: options.richProse, externalRichExplanation: options.richProse, renderProse: rich.render }));
       renderPlan();
@@ -653,6 +715,10 @@ function mountInline(root, initialView, options = {}) {
           render();
         }, { class: "lh-close", "data-close": "" }));
         dock.append(heading);
+        if (options.exploration) {
+          options.exploration.hidden = false;
+          dock.append(options.exploration);
+        }
         if (!options.richProse) dock.append(prose("div", q.question, { class: "lh-question-text" }));
         if (q.context && !options.richProse) dock.append(prose("div", q.context));
         if (q.mode !== "text") {
@@ -752,15 +818,10 @@ function mountInline(root, initialView, options = {}) {
   function applyView(next) {
     if (next.chatId !== view.chatId) throw new Error("The saved response belongs to a different lesson.");
     const same = next.question?.toolCallId === view.question?.toolCallId;
-    const previousKey = draftKey();
     view = next;
     if (!same) state = { selection: emptyDockSelection(), text: "", other: "", thinking: "", readingThinking: "", confidenceIndex: DEFAULT_CONFIDENCE_INDEX, open: next.question?.open ?? true, pending: false };
     else state.pending = false;
     if (!same && options.drafts) {
-      try {
-        options.drafts.remove(previousKey);
-      } catch {
-      }
       try {
         restore(options.drafts.read(draftKey()));
       } catch {
@@ -788,7 +849,7 @@ function mountInline(root, initialView, options = {}) {
   };
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/hermes-native-port.mjs
+// src/inline/hermes-native-port.mjs
 var bytes = (value) => new TextEncoder().encode(JSON.stringify(value)).length;
 function requirePort(ok, message) {
   if (!ok) throw new Error(message);
@@ -798,7 +859,7 @@ function createHermesLessonPort(ownerSessionId, view, { composer, storage }) {
   requirePort(typeof view.chatId === "string" && view.chatId.length > 0 && view.chatId.length <= 100 && Number.isSafeInteger(view.revision) && view.revision >= 0, "Invalid bound lesson view.");
   requirePort(typeof composer?.submit === "function" && ["get", "set", "remove"].every((k) => typeof storage?.[k] === "function"), "Supported Hermes composer/storage ports are unavailable.");
   const kind = view.kind === "practice" ? "practice" : "teach";
-  const key = kind === "practice" ? `${view.chatId}:practice:${view.activeProblem?.toolCallId ?? "between"}` : `${view.chatId}:${view.question?.toolCallId ?? "idle"}`;
+  const key = lessonDraftKey(view);
   const slot = "draft:v1:" + JSON.stringify([ownerSessionId, view.chatId, key]);
   function checkKey(requested) {
     requirePort(requested === key, "Draft key does not belong to this owner/question.");
@@ -872,7 +933,7 @@ function createHermesLessonPort(ownerSessionId, view, { composer, storage }) {
   } };
 }
 
-// aiai-learning/hermes-readability-185/package/src/vendor/runtime/demo-pure.ts
+// src/vendor/runtime/demo-pure.ts
 var DEMO_BRIDGE_SCRIPT = `<script>(function(){
 var send=function(m){try{parent.postMessage(m,"*")}catch(e){}};
 var post=function(){
@@ -912,7 +973,10 @@ function reduceDemoBridgeState(state, data) {
   return state;
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/artifacts.mjs
+// src/visuals-view.mjs
+var lessonVisualRows = (view) => (view.visuals ?? []).map((artifact) => ({ id: "visual-" + artifact.id, kind: artifact.kind, activity: artifact.title, execution: "saved", directVisual: true, artifact }));
+
+// src/inline/artifacts.mjs
 function demoDocument(html) {
   const policy = '<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; script-src &#39;unsafe-inline&#39;; style-src &#39;unsafe-inline&#39;; img-src data: blob:; font-src data:; connect-src &#39;none&#39;; frame-src &#39;none&#39;; form-action &#39;none&#39;; base-uri &#39;none&#39;">';
   return "<!doctype html><html><head>" + policy + "</head><body>" + buildDemoSrcDoc(html) + "</body></html>";
@@ -975,11 +1039,11 @@ function createJobArtifacts(React2) {
       h("h4", null, job.artifact.title),
       error ? h("p", { role: "status" }, error) : null,
       source ? job.kind === "demo" ? h("iframe", { ref: frame, title: job.artifact.title, sandbox: "allow-scripts", referrerPolicy: "no-referrer", srcDoc: demoDocument(source), style: { width: "100%", height: bridge.height ?? 320, border: 0 } }) : h("img", { alt: job.artifact.title, src: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source), style: { maxWidth: "100%" } }) : h("p", null, "Loading verified artifact."),
-      bridge.error ? h("div", null, h("pre", null, bridge.error), h("button", { type: "button", onClick: report }, "Send error to teacher")) : null
+      bridge.error ? h("div", null, h("pre", null, bridge.error), !job.directVisual ? h("button", { type: "button", onClick: report }, "Send error to teacher") : null) : null
     );
   }
   return function JobArtifacts({ ctx, binding, view, port }) {
-    const rows = view.jobs?.jobs ?? [];
+    const rows = [...view.jobs?.jobs ?? [], ...lessonVisualRows(view)];
     return h(
       "section",
       { "aria-label": "Materials and supporting work" },
@@ -999,7 +1063,7 @@ function createJobArtifacts(React2) {
   };
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/hermes-contribution.mjs
+// src/inline/hermes-contribution.mjs
 async function verifyProjectionBytes(snapshot, text) {
   const match = /^(teach|practice)-r([0-9]+)-([a-f0-9]{64})\.json$/.exec(snapshot);
   if (!match || !globalThis.crypto?.subtle) throw new Error("Snapshot content verification is unavailable.");
@@ -1008,35 +1072,32 @@ async function verifyProjectionBytes(snapshot, text) {
   const actual = Array.from(sum, (byte) => byte.toString(16).padStart(2, "0")).join("");
   if (actual !== match[3]) throw new Error("Snapshot bytes differ from their projection identity.");
 }
-function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextContent: MessageTextContent2, bindings, onUnbound }) {
+function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextContent: MessageTextContent2, bindings, onUnbound, onReconnect }) {
   const JobArtifacts = createJobArtifacts(React2);
   const owned = bindings.map((binding) => Object.freeze({ ...binding }));
-  if (owned.some((b) => typeof b.ownerSessionId !== "string" || !b.ownerSessionId || b.ownerSessionId !== b.ownerSessionId.trim() || b.ownerSessionId === "new" || !["teach", "practice"].includes(b.kind) || !b.chatId || !b.folder)) throw new Error("Explicit owner/lesson/export-folder bindings required.");
-  function LessonLeaf({ binding, snapshot, revision }) {
+  if (owned.some((b) => typeof b.ownerSessionId !== "string" || !b.ownerSessionId || b.ownerSessionId !== b.ownerSessionId.trim() || b.ownerSessionId === "new" || !["teach", "practice"].includes(b.kind) || !b.chatId || !b.folder || b.minimumRevision !== void 0 && (!Number.isSafeInteger(b.minimumRevision) || b.minimumRevision < 0))) throw new Error("Explicit owner/lesson/export-folder bindings required.");
+  function LessonLeaf({ binding, snapshot, revision, reconnect }) {
     const ref = React2.useRef(null);
     const control = React2.useRef(null);
+    const highestRevision = React2.useRef(Math.max(revision, binding.minimumRevision ?? 0));
     const [view, setView] = React2.useState(null);
+    const [reload, setReload] = React2.useState(0);
+    const [busy, setBusy] = React2.useState(true);
+    const [error, setError] = React2.useState("");
     const [presentation, setPresentation] = React2.useState({ open: true });
     const rich = typeof MessageTextContent2 === "function";
     React2.useEffect(() => {
       let disposed = false, controller;
       const root = ref.current;
+      root.inert = true;
       setView(null);
+      setBusy(true);
+      setError("");
       root.textContent = "Loading saved lesson.";
       (async () => {
-        const result = await ctx.files.readText(binding.folder, snapshot);
+        const view2 = await loadCurrentProjection(ctx.files, binding, Math.max(revision, highestRevision.current, binding.minimumRevision ?? 0), verifyProjectionBytes);
         if (disposed) return;
-        if (!result.ok || typeof result.text !== "string" || result.size > 262144 || new TextEncoder().encode(result.text).length > 262144)
-          throw new Error("The approved redacted lesson export is unavailable.");
-        await verifyProjectionBytes(snapshot, result.text);
-        if (disposed) return;
-        const view2 = JSON.parse(result.text);
-        if (view2.chatId !== binding.chatId || (view2.kind === "practice" ? "practice" : "teach") !== binding.kind || view2.revision !== revision)
-          throw new Error("Snapshot owner/lesson/revision differs; ask the owner to return a fresh card.");
-        if (view2.question && ["committedAnswer", "correctIndices", "explanation"].some((k) => k in view2.question))
-          throw new Error("An active question export exposed its commitment.");
-        if (view2.activeProblem && Object.keys(view2.activeProblem).some((k) => !["toolCallId", "statement"].includes(k)))
-          throw new Error("An active problem export contains teacher-only fields.");
+        highestRevision.current = view2.revision;
         setPresentation({ open: view2.question?.open ?? true });
         setView(view2);
         const ports = createHermesLessonPort(binding.ownerSessionId, view2, { composer: host2.composer, storage: ctx.storage });
@@ -1044,23 +1105,39 @@ function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextCo
           ...ports,
           richProse: rich,
           externalChoices: rich,
+          onResume: refresh,
           onPresentation: (next) => {
             if (!disposed) setPresentation((old) => old.open === next.open && old.questionId === next.questionId && old.pending === next.pending && JSON.stringify(old.selected) === JSON.stringify(next.selected) ? old : next);
           }
         });
         control.current = controller;
-      })().catch((error) => {
-        if (!disposed) root.textContent = error.message;
+        root.inert = false;
+        setBusy(false);
+      })().catch((error2) => {
+        if (!disposed) {
+          root.textContent = "";
+          setError(error2.message);
+          setBusy(false);
+        }
       });
       return () => {
         disposed = true;
         if (control.current === controller) control.current = null;
         controller?.destroy();
       };
-    }, [binding, snapshot, revision, rich]);
+    }, [binding, snapshot, revision, rich, reload]);
+    function refresh() {
+      if (ref.current) ref.current.inert = true;
+      setView(null);
+      setBusy(true);
+      setReload((value) => value + 1);
+    }
     return React2.createElement(
       "section",
       { className: "lh-native-lesson" },
+      React2.createElement("button", { type: "button", disabled: busy, onClick: refresh }, "Refresh saved lesson"),
+      reconnect?.(Math.max(revision, highestRevision.current)),
+      error ? React2.createElement("p", { role: "alert" }, error) : null,
       rich && view ? renderLessonProse(React2, MessageTextContent2, view, presentation, {
         ...presentation,
         select: (index, questionId) => control.current?.selectOption(index, questionId)
@@ -1079,43 +1156,80 @@ function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextCo
       if (props.streaming) return React2.createElement("p", null, "Waiting for the saved lesson export.");
       if (!binding) return onUnbound ? onUnbound(props) : React2.createElement("p", null, "Connect this lesson to its export folder first.");
       if (match[1] !== binding.kind) return React2.createElement("p", null, "Snapshot mode differs from its configured lesson.");
-      return React2.createElement(LessonLeaf, { binding, snapshot: props.attrs.snapshot, revision: Number(match[2]) });
+      return React2.createElement(LessonLeaf, {
+        key: JSON.stringify([binding.ownerSessionId, binding.kind, binding.chatId]),
+        binding,
+        snapshot: props.attrs.snapshot,
+        revision: Number(match[2]),
+        reconnect: onReconnect ? (minimumRevision) => onReconnect({ ...props, minimumRevision }) : void 0
+      });
     }
   } });
 }
 
-// aiai-learning/hermes-readability-185/package/src/connect-export.mjs
-async function connectLessonExport(ctx, { owner, chatId, snapshot }, { isCurrent, verifyBytes, install }) {
+// src/connect-export.mjs
+async function connectLessonExport(ctx, { owner, chatId, snapshot, minimumRevision }, { isCurrent, verifyBytes, install }) {
   const cancelled = () => ({ connected: false, cancelled: true });
   if (!isCurrent()) return cancelled();
   const match = /^(teach|practice)-r([0-9]+)-([a-f0-9]{64})\.json$/.exec(snapshot ?? "");
   if (typeof owner !== "string" || !owner || owner !== owner.trim() || owner === "new" || !/^[A-Za-z0-9_-]{1,80}$/.test(chatId ?? "") || !match) throw new Error("Invalid explicit lesson identity.");
+  minimumRevision = minimumRevision ?? Number(match[2]);
+  if (!Number.isSafeInteger(minimumRevision) || minimumRevision < Number(match[2])) throw new Error("Invalid current lesson revision floor.");
   const selected = await ctx.files.requestFolder();
   if (!isCurrent()) return cancelled();
   if (!selected.ok || !selected.folder) return { connected: false, cancelled: false };
-  const file = await ctx.files.readText(selected.folder.id, snapshot);
-  if (!isCurrent()) return cancelled();
-  if (!file.ok || typeof file.text !== "string" || new TextEncoder().encode(file.text).length > 262144)
-    throw new Error("Select this lesson's redacted exports.");
-  await verifyBytes(snapshot, file.text);
-  if (!isCurrent()) return cancelled();
-  const view = JSON.parse(file.text);
-  if (view.chatId !== chatId || (view.kind === "practice" ? "practice" : "teach") !== match[1] || view.revision !== Number(match[2]))
-    throw new Error("Snapshot lesson or revision differs.");
+  const files = { async readText(folder, file) {
+    if (!isCurrent()) return { ok: false };
+    const result = await ctx.files.readText(folder, file);
+    return isCurrent() ? result : { ok: false };
+  } };
+  let selectedView;
+  try {
+    selectedView = await loadCurrentProjection(files, { chatId, kind: match[1], folder: selected.folder.id }, minimumRevision, verifyBytes);
+  } catch (error) {
+    if (!isCurrent()) return cancelled();
+    throw error;
+  }
   if (!isCurrent()) return cancelled();
   const previous = ctx.storage.get("bindings", []);
   if (!Array.isArray(previous)) throw new Error("Invalid stored folder bindings.");
+  const old = previous.find((item) => item.ownerSessionId === owner && item.chatId === chatId);
+  const backupKey = "binding-rollback:v1:" + JSON.stringify([owner, chatId, old?.folder]);
+  if (old && ctx.storage.get(backupKey, null) === null) {
+    if (!isCurrent()) return cancelled();
+    ctx.storage.set(backupKey, { v: 1, binding: { ...old } });
+    if (!isCurrent()) return cancelled();
+    if (JSON.stringify(ctx.storage.get(backupKey, null)) !== JSON.stringify({ v: 1, binding: old })) throw new Error("Original connection backup was not retained.");
+  }
   const rows = previous.filter((item) => !(item.ownerSessionId === owner && item.chatId === chatId));
-  rows.push({ ownerSessionId: owner, chatId, kind: match[1], folder: selected.folder.id });
+  const replacement = { ownerSessionId: owner, chatId, kind: match[1], folder: selected.folder.id, minimumRevision: selectedView.revision };
+  rows.push(replacement);
   if (!isCurrent()) return cancelled();
-  ctx.storage.set("bindings", rows);
-  if (!isCurrent()) return cancelled();
-  if (JSON.stringify(ctx.storage.get("bindings", [])) !== JSON.stringify(rows)) throw new Error("Folder binding was not retained.");
-  if (!isCurrent()) return cancelled();
-  return { connected: install(rows) === true, cancelled: false };
+  function restoreIfOurs() {
+    if (!isCurrent()) return;
+    const actual = ctx.storage.get("bindings", []);
+    if (!Array.isArray(actual)) return;
+    const current = actual.find((item) => item.ownerSessionId === owner && item.chatId === chatId);
+    if (JSON.stringify(current) !== JSON.stringify(replacement)) return;
+    const restored = actual.filter((item) => !(item.ownerSessionId === owner && item.chatId === chatId));
+    if (old) restored.push(old);
+    if (isCurrent()) ctx.storage.set("bindings", restored);
+  }
+  try {
+    ctx.storage.set("bindings", rows);
+    if (!isCurrent()) return cancelled();
+    if (JSON.stringify(ctx.storage.get("bindings", [])) !== JSON.stringify(rows)) throw new Error("Folder binding was not retained.");
+    if (!isCurrent()) return cancelled();
+    const connected = install(rows) === true;
+    if (!connected) restoreIfOurs();
+    return { connected, cancelled: false };
+  } catch (error) {
+    restoreIfOurs();
+    throw error;
+  }
 }
 
-// aiai-learning/hermes-readability-185/package/src/inline/hermes-theme.mjs
+// src/inline/hermes-theme.mjs
 var HERMES_LESSON_THEME = `
 .lh-native-lesson {
   --background: var(--dt-background, Canvas);
@@ -1133,7 +1247,7 @@ var HERMES_LESSON_THEME = `
 }
 `;
 
-// aiai-learning/hermes-readability-185/package/src/desktop-entry.mjs
+// src/desktop-entry.mjs
 var canonical = (value) => typeof value === "string" && value && value === value.trim() && value !== "new";
 var desktop_entry_default = {
   id: "learnharness-native",
@@ -1155,7 +1269,14 @@ var desktop_entry_default = {
       if (!active) return false;
       remove();
       if (!active) return false;
-      const registration = registerHermesLearning(ctx, { host, React, MessageTextContent, bindings: rows, onUnbound: (props) => React.createElement(Connect, { props }) });
+      const registration = registerHermesLearning(ctx, {
+        host,
+        React,
+        MessageTextContent,
+        bindings: rows,
+        onUnbound: (props) => React.createElement(Connect, { props }),
+        onReconnect: (props) => React.createElement(Connect, { props, connected: true })
+      });
       if (!active) {
         registration();
         return false;
@@ -1163,12 +1284,13 @@ var desktop_entry_default = {
       remove = registration;
       return true;
     }
-    function Connect({ props }) {
-      const [status, setStatus] = React.useState("This conversation has not been connected to its redacted lesson exports.");
+    function Connect({ props, connected = false }) {
+      const [status, setStatus] = React.useState(connected ? "Choose this lesson's redacted exports. The existing connection is retained until the new export validates." : "This conversation has not been connected to its redacted lesson exports.");
       const [busy, setBusy] = React.useState(false);
       const lifetime = React.useRef({ mounted: false, epoch: 0, busy: false });
       const owner = props.sessionId, chatId = props.attrs.lesson, snapshot = props.attrs.snapshot;
       const match = /^(teach|practice)-r([0-9]+)-([a-f0-9]{64})\.json$/.exec(snapshot ?? "");
+      const minimumRevision = props.minimumRevision ?? Number(match?.[2]);
       React.useEffect(() => {
         const state = lifetime.current;
         state.mounted = true;
@@ -1180,16 +1302,16 @@ var desktop_entry_default = {
           state.epoch++;
           state.busy = false;
         };
-      }, [owner, chatId, snapshot]);
+      }, [owner, chatId, snapshot, minimumRevision]);
       async function connect() {
         const state = lifetime.current;
-        if (!active || !state.mounted || state.busy || !canonical(owner) || !/^[A-Za-z0-9_-]{1,80}$/.test(chatId ?? "") || !match) return;
+        if (!active || !state.mounted || state.busy || !canonical(owner) || !/^[A-Za-z0-9_-]{1,80}$/.test(chatId ?? "") || !match || !Number.isSafeInteger(minimumRevision)) return;
         state.busy = true;
         const epoch = state.epoch;
         const isCurrent = () => active && state.mounted && state.epoch === epoch;
         setBusy(true);
         try {
-          const result = await connectLessonExport(ctx, { owner, chatId, snapshot }, { isCurrent, verifyBytes: verifyProjectionBytes, install });
+          const result = await connectLessonExport(ctx, { owner, chatId, snapshot, minimumRevision }, { isCurrent, verifyBytes: verifyProjectionBytes, install });
           if (isCurrent() && !result.connected && !result.cancelled) setStatus("No folder connected.");
         } catch {
           if (isCurrent()) setStatus("The export could not be connected. Check its folder, lesson and revision; no answer was sent.");
@@ -1204,7 +1326,11 @@ var desktop_entry_default = {
         "section",
         { className: "lh-native-lesson" },
         React.createElement("p", null, status),
-        React.createElement("button", { type: "button", disabled: busy || !canonical(owner) || !match, onClick: connect }, "Connect lesson exports")
+        React.createElement(
+          "button",
+          { type: "button", disabled: busy || !canonical(owner) || !match || !Number.isSafeInteger(minimumRevision), onClick: connect },
+          connected ? "Change lesson exports" : "Connect lesson exports"
+        )
       );
     }
     install(ctx.storage.get("bindings", []));

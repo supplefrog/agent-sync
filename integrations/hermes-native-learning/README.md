@@ -1,5 +1,9 @@
 # LearnHarness native host adapters
 
+Native Codex desktop can publish the existing lesson controls and teacher-authored HTML/SVG visuals through its built-in HTML renderer. Shared state retains the visuals and reveal timing; T3 and Hermes retain their native artifact paths. See [native lesson visuals](docs/NATIVE-VISUALS.md) for the interface, answer flow and host limits.
+
+The [native rendering change record](docs/NATIVE-RENDERING-CHANGE.md) describes compatibility, verification and recovery.
+
 The Hermes contribution below is retained. A source-only T3/Codex MCP App adapter now reuses the same learning state/contracts and inline controls; see [T3 integration](docs/T3-INTEGRATION.md). It authenticates host-written MCP thread metadata rather than manufacturing Hermes caller aliases. The two hosts use their own supported UI/input/worker interfaces. No T3 application fork, provider client or teaching runtime was added. T3 live activation/evaluation was deliberately not run; the user accepted component-based compatibility and requested no additional live tests/model calls.
 
 An opt-in integration candidate for learning in an existing Hermes Desktop conversation. The existing agent writes assessments, plans, questions, explanations and practice feedback. This package provides durable tool/input contracts and inline controls; it contains no model client, background teacher, server or automatic agent wake.

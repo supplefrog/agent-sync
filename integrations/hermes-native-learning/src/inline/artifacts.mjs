@@ -2,6 +2,7 @@
 // Granted content-addressed exports only. No preview capability, network client,
 // worker dispatcher or raw SVG insertion into the host document.
 import { buildDemoSrcDoc, reduceDemoBridgeState, INITIAL_DEMO_BRIDGE_STATE } from '../vendor/runtime/demo-pure.ts';
+import {lessonVisualRows} from '../visuals-view.mjs';
 export function demoDocument(html) {
   const policy='<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; script-src &#39;unsafe-inline&#39;; style-src &#39;unsafe-inline&#39;; img-src data: blob:; font-src data:; connect-src &#39;none&#39;; frame-src &#39;none&#39;; form-action &#39;none&#39;; base-uri &#39;none&#39;">';
   // The policy precedes ALL untrusted markup, including comments or fake head
@@ -40,10 +41,10 @@ export function createJobArtifacts(React) {
     return h('section',null,h('h4',null,job.artifact.title),error?h('p',{role:'status'},error):null,
       source?(job.kind==='demo'?h('iframe',{ref:frame,title:job.artifact.title,sandbox:'allow-scripts',referrerPolicy:'no-referrer',srcDoc:demoDocument(source),style:{width:'100%',height:bridge.height??320,border:0}}):
         h('img',{alt:job.artifact.title,src:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(source),style:{maxWidth:'100%'}})):h('p',null,'Loading verified artifact.'),
-      bridge.error?h('div',null,h('pre',null,bridge.error),h('button',{type:'button',onClick:report},'Send error to teacher')):null);
+      bridge.error?h('div',null,h('pre',null,bridge.error),!job.directVisual?h('button',{type:'button',onClick:report},'Send error to teacher'):null):null);
   }
   return function JobArtifacts({ctx,binding,view,port}) {
-  const rows=view.jobs?.jobs??[];
+  const rows=[...(view.jobs?.jobs??[]),...lessonVisualRows(view)];
   return h('section',{'aria-label':'Materials and supporting work'},
     view.materials?.length?h('section',null,h('h3',null,'Attached materials'),h('ul',null,...view.materials.map(item=>h('li',{key:item.id},`${item.label} (${item.kind}) — attached source; raw contents stay private.`)))):null,
     rows.length?h('h3',null,'Supporting work'):null,

@@ -42,7 +42,7 @@ function connectFixture(stage) {
   let current=true,rows=[],writes=0,registrations=0,reads=0;
   const wait=async(name,result)=>{if(stage===name){reached.resolve();await gate.promise;}return result;};
   const ctx={files:{requestFolder:()=>wait('picker',{ok:true,folder:{id:'opaque-folder'}}),
-    readText:()=>{reads++;return wait('read',{ok:true,text});}},storage:{get:()=>structuredClone(rows),set:(key,value)=>{writes++;rows=structuredClone(value);}}};
+    readText:(_folder,file)=>{reads++;return wait('read',{ok:true,text:file.startsWith('current-')?JSON.stringify({v:1,chatId:view.chatId,kind:'teach',revision:1,snapshot}):text});}},storage:{get:()=>structuredClone(rows),set:(key,value)=>{writes++;rows=structuredClone(value);}}};
   const options={isCurrent:()=>current,verifyBytes:async(...args)=>{await verifyProjectionBytes(...args);await wait('digest',null);},
     install:()=>{registrations++;return true;}};
   return{ctx,options,identity:{owner:'synthetic-owner',chatId:view.chatId,snapshot},gate,reached,
@@ -56,7 +56,7 @@ for(const stage of ['picker','read','digest'])test('cancelled/unmounted Connect 
 });
 test('current Connect validates real digest then persists and registers exactly once',async()=>{
   const s=connectFixture(null),result=await connectLessonExport(s.ctx,s.identity,s.options);
-  assert.equal(result.connected,true);assert.deepEqual(s.counts(),{writes:1,registrations:1,reads:1});
+  assert.equal(result.connected,true);assert.deepEqual(s.counts(),{writes:1,registrations:1,reads:2});
 });
 test('disposal during a synchronous storage commit prevents subsequent registration',async()=>{
   const s=connectFixture(null),set=s.ctx.storage.set;s.ctx.storage.set=(...args)=>{set(...args);s.cancel();};

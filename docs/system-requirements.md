@@ -1,5 +1,7 @@
 # Agent Sync system requirements
 
+The native LearnHarness integration also supports teacher-authored rich HTML/SVG saved in shared lesson state, with explicit reveal timing, and native Codex desktop presentation of the existing answer controls. Preserve host-written ownership, exact learner events, revision/replay guards and durable state. Host rendering remains capability-specific; an MCP connection alone does not establish universal UI support. See [the package contract](../integrations/hermes-native-learning/docs/NATIVE-VISUALS.md).
+
 Agreed project contract, 2026-09-27. This records expected outcomes, not a claim that they are implemented or an instruction to install a new governance framework.
 
 Agent Sync assembles independently owned governance, authoring, reconciliation, and synchronization capabilities. Together they keep agents useful, consistent, and maintainable without requiring repeated audits of the complete setup. These requirements apply to skills, standing instructions, tool definitions and schemas, and their supported host adapters. Domain implementations retain their own owners.

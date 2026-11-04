@@ -10,6 +10,8 @@ import { inlineView, buildInline } from '../build-inline.mjs';
 import { dispatchInline } from '../host-actions.mjs';
 import { LessonKnowledge } from '../../knowledge.mjs';
 import { LessonJobs, jobArtifactDescriptors, publishJobAssets } from '../../jobs.mjs';
+import {visualDescriptors,publishVisualAssets} from '../../visuals.mjs';
+import { publishCurrentProjection } from './current-projection.mjs';
 
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
@@ -31,6 +33,7 @@ export function readNativeView(session, { includeAnswerHistory = false } = {}) {
   const view = viewOf(adapter, session);
   const record=adapter.store.read(session.chatId);
   view.materials=record.adapter.materials??[];
+  view.visuals=visualDescriptors(record);
   if(session.jobRoot)view.jobs=jobArtifactDescriptors(new LessonJobs(session));
   if(session.knowledgeRoot)view.knowledge=new LessonKnowledge(session.knowledgeRoot).lessonView(adapter.store.read(session.chatId));
   if (session.kind === 'teach' && !includeAnswerHistory) view.answers = [];
@@ -88,26 +91,34 @@ export function executeNativeEnvelope(binding, actualOwner, envelope) {
 export function writeNativeSnapshot(session, outputDirectory, { includeAnswerHistory = false } = {}) {
   const snapshot = readNativeView(session, { includeAnswerHistory });
   if(session.jobRoot)publishJobAssets(new LessonJobs(session),outputDirectory);
+  publishVisualAssets({...session,output:outputDirectory},adapterFor(session).store.read(session.chatId));
   const viewBytes = Buffer.from(JSON.stringify(snapshot.view), 'utf8');
   requireState(viewBytes.length<=262144,'view_too_large','Native view exceeds its256KiB reader limit; no unusable snapshot is published.');
   const projectionSha256 = digest(viewBytes);
   fs.mkdirSync(outputDirectory, { recursive: true });
   const stem = `${session.kind}-r${snapshot.view.revision}-${projectionSha256}`;
-  const html = path.join(outputDirectory, stem + '.html');
   const json = path.join(outputDirectory, stem + '.json');
   // Generate without modifying an existing identity. The existing renderer is
   // still used; no old directive may silently change under the same basename.
   const temporaryHtml = path.join(outputDirectory, '.' + randomUUID() + '.html.pending');
   buildInline(snapshot.view, temporaryHtml);
+  let html, renderedSha256;
   try {
-    publishIdenticalOrNew(html, fs.readFileSync(temporaryHtml));
+    const htmlBytes = fs.readFileSync(temporaryHtml);
+    // The projection identity is stable across renderer upgrades. Preserve old
+    // HTML identities and give each rendered result its own content identity.
+    renderedSha256 = digest(htmlBytes);
+    html = path.join(outputDirectory, `${stem}-render-${renderedSha256}.html`);
+    publishIdenticalOrNew(html, htmlBytes);
     publishIdenticalOrNew(json, viewBytes);
   } finally { fs.unlinkSync(temporaryHtml); }
-  requireState(digest(fs.readFileSync(adapterFor(session).store.file(session.chatId))) === snapshot.sourceSha256,
-    'concurrent_state_change', 'State changed during export; do not publish this snapshot.');
+  // Only the full learner-history projection is the shared reopen target.
+  // Alternate redactions retain their distinct immutable identities.
+  const currentFile=includeAnswerHistory?publishCurrentProjection(session,outputDirectory,{...snapshot,projectionSha256}):undefined;
   return { output: html, viewFile: json, revision: snapshot.view.revision,
+    currentFile,
     pending: snapshot.view.question?.toolCallId ?? snapshot.view.activeProblem?.toolCallId ?? null,
-    sourceSha256: snapshot.sourceSha256, projectionSha256, readOnly: true, priorAnswersIncluded: includeAnswerHistory };
+    sourceSha256: snapshot.sourceSha256, projectionSha256, renderedSha256, readOnly: true, priorAnswersIncluded: includeAnswerHistory };
 }
 function publishIdenticalOrNew(file, bytes) {
   try { fs.writeFileSync(file, bytes, { flag: 'wx' }); }

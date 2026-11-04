@@ -9,7 +9,8 @@ import {
   toClientQuestion, questionNeedsReveal,
 } from './vendor/runtime/question-pure.ts';
 import { parseChatInput } from './vendor/runtime/input-parser.ts';
-import { danglingQuestionOf, hasProbeDone, needsContinuation } from './vendor/runtime/native-scans.ts';
+import { danglingQuestionOf, needsContinuation } from './vendor/runtime/native-scans.ts';
+import { successfulProbeDone } from './probe-completion.mjs';
 import { toolQuestionKind, QUESTION_TOOLS } from './vendor/runtime/pending.ts';
 import { createTree } from './vendor/runtime/plan-tree.ts';
 import { derivePlanStatusesLh, derivedNodeStatus } from './vendor/runtime/plan-contract.ts';
@@ -41,7 +42,7 @@ function pending(record, expected) {
   return p;
 }
 function idle(record) { requireState(!danglingQuestionOf(record.messages), 'question_pending', 'Resolve the current question first.'); }
-function phase(record) { return !hasProbeDone(record.messages) ? 'probe' : !record.tree ? 'plan' : 'teach'; }
+function phase(record) { return !successfulProbeDone(record.messages).length ? 'probe' : !record.tree ? 'plan' : 'teach'; }
 // The revision is an audit of the learner's initial go-ahead, not a latch
 // that plan_init rewrites must renew. Pre-approval rewrites still require
 // approval of the latest presented map before teaching starts.
@@ -189,7 +190,7 @@ export class TeachingAdapter {
         appendCall(record, toolCallId, name, input);
         appendResult(record, toolCallId, name, { ok: true }, PROBE_DONE_ACK_TEXT);
       } else if (name === 'plan_init') {
-        requireState(hasProbeDone(record.messages), 'wrong_phase', 'Conclude the probe before planning.');
+        requireState(successfulProbeDone(record.messages).length > 0, 'wrong_phase', 'Conclude the probe successfully before planning.');
         text(input.mermaid, 'mermaid');
         const parsed = parseMermaidPlan(input.mermaid);
         requireState(parsed.ok && parsed.plan, 'invalid_plan', parsed.problems.join('\n'));
@@ -281,7 +282,7 @@ export class TeachingAdapter {
     const r = this.store.read(chatId);
     const p = danglingQuestionOf(r.messages);
     const statuses = r.tree ? derivePlanStatusesLh(r.tree, r.messages) : null;
-    const assessment = calls(r).find(c => c.name === 'probe_done')?.arguments.assessment ?? null;
+    const assessment = successfulProbeDone(r.messages).at(-1)?.arguments.assessment ?? null;
     return { chatId, revision: r.adapter.revision, phase: phase(r), assessment,
       plan: r.tree ? { ...clone(r.tree), planRevision: r.adapter.planRevision,
         approved: initialPlanApproved(r),

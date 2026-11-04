@@ -4,6 +4,7 @@ import { createHermesLessonPort } from './hermes-native-port.mjs';
 import { mountInline } from './inline-client.mjs';
 import { renderLessonProse } from './lesson-prose.mjs';
 import { createJobArtifacts } from './artifacts.mjs';
+import { loadCurrentProjection } from './lesson-identity.mjs';
 export async function verifyProjectionBytes(snapshot, text) {
   const match = /^(teach|practice)-r([0-9]+)-([a-f0-9]{64})\.json$/.exec(snapshot);
   if (!match || !globalThis.crypto?.subtle) throw new Error('Snapshot content verification is unavailable.');
@@ -15,47 +16,55 @@ export async function verifyProjectionBytes(snapshot, text) {
 
 // bindings are explicit approved host configuration, NEVER directive attributes.
 // Each folder is a ctx.files grant for REDACTED exports, not the state directory.
-export function registerHermesLearning(ctx, { host, React, MessageTextContent, bindings, onUnbound }) {
+export function registerHermesLearning(ctx, { host, React, MessageTextContent, bindings, onUnbound, onReconnect }) {
   const JobArtifacts=createJobArtifacts(React);
   const owned = bindings.map(binding => Object.freeze({ ...binding }));
   if (owned.some(b => typeof b.ownerSessionId !== 'string' || !b.ownerSessionId || b.ownerSessionId !== b.ownerSessionId.trim() || b.ownerSessionId === 'new' ||
-      !['teach','practice'].includes(b.kind) || !b.chatId || !b.folder)) throw new Error('Explicit owner/lesson/export-folder bindings required.');
-  function LessonLeaf({ binding, snapshot, revision }) {
+      !['teach','practice'].includes(b.kind) || !b.chatId || !b.folder ||
+      (b.minimumRevision!==undefined&&(!Number.isSafeInteger(b.minimumRevision)||b.minimumRevision<0)))) throw new Error('Explicit owner/lesson/export-folder bindings required.');
+  function LessonLeaf({ binding, snapshot, revision, reconnect }) {
     const ref = React.useRef(null);
     const control = React.useRef(null);
+    const highestRevision=React.useRef(Math.max(revision,binding.minimumRevision??0));
     const [view,setView]=React.useState(null);
+    const [reload,setReload]=React.useState(0);
+    const [busy,setBusy]=React.useState(true);
+    const [error,setError]=React.useState('');
     const [presentation,setPresentation]=React.useState({open:true});
     const rich=typeof MessageTextContent==='function';
     React.useEffect(() => {
       let disposed = false, controller;
       const root = ref.current;
+      root.inert=true;
       setView(null);
+      setBusy(true);setError('');
       root.textContent = 'Loading saved lesson.';
       (async () => {
-        const result = await ctx.files.readText(binding.folder, snapshot);
+        // The directive grants no raw paths and is only a lower revision bound.
+        // Reopen resolves the latest redacted index within the approved folder.
+        const view = await loadCurrentProjection(ctx.files,binding,Math.max(revision,highestRevision.current,binding.minimumRevision??0),verifyProjectionBytes);
         if (disposed) return;
-        if (!result.ok || typeof result.text !== 'string' || result.size > 262144 || new TextEncoder().encode(result.text).length > 262144)
-          throw new Error('The approved redacted lesson export is unavailable.');
-        await verifyProjectionBytes(snapshot, result.text);
-        if (disposed) return;
-        const view = JSON.parse(result.text);
-        if (view.chatId !== binding.chatId || (view.kind === 'practice' ? 'practice' : 'teach') !== binding.kind || view.revision !== revision)
-          throw new Error('Snapshot owner/lesson/revision differs; ask the owner to return a fresh card.');
-        if (view.question && ['committedAnswer','correctIndices','explanation'].some(k => k in view.question))
-          throw new Error('An active question export exposed its commitment.');
-        if (view.activeProblem && Object.keys(view.activeProblem).some(k => !['toolCallId','statement'].includes(k)))
-          throw new Error('An active problem export contains teacher-only fields.');
+        highestRevision.current=view.revision;
         setPresentation({open:view.question?.open??true});
         setView(view);
         const ports=createHermesLessonPort(binding.ownerSessionId,view,{composer:host.composer,storage:ctx.storage});
         controller=mountInline(root,view,{...ports,richProse:rich,externalChoices:rich,
+          onResume:refresh,
           onPresentation:next=>{if(!disposed)setPresentation(old=>old.open===next.open&&old.questionId===next.questionId&&
             old.pending===next.pending&&JSON.stringify(old.selected)===JSON.stringify(next.selected)?old:next);}});
         control.current=controller;
-      })().catch(error => { if (!disposed) root.textContent = error.message; });
+        root.inert=false;setBusy(false);
+      })().catch(error => { if (!disposed){root.textContent='';setError(error.message);setBusy(false);} });
       return () => { disposed = true;if(control.current===controller)control.current=null;controller?.destroy(); };
-    }, [binding, snapshot, revision, rich]);
+    }, [binding, snapshot, revision, rich, reload]);
+    function refresh() {
+      if(ref.current)ref.current.inert=true;
+      setView(null);setBusy(true);setReload(value=>value+1);
+    }
     return React.createElement('section',{className:'lh-native-lesson'},
+      React.createElement('button',{type:'button',disabled:busy,onClick:refresh},'Refresh saved lesson'),
+      reconnect?.(Math.max(revision,highestRevision.current)),
+      error?React.createElement('p',{role:'alert'},error):null,
       rich&&view?renderLessonProse(React,MessageTextContent,view,presentation,{...presentation,
         select:(index,questionId)=>control.current?.selectOption(index,questionId)}):null,
       React.createElement('div', { ref }),
@@ -71,7 +80,9 @@ export function registerHermesLearning(ctx, { host, React, MessageTextContent, b
       if (props.streaming) return React.createElement('p', null, 'Waiting for the saved lesson export.');
       if (!binding) return onUnbound ? onUnbound(props) : React.createElement('p', null, 'Connect this lesson to its export folder first.');
       if (match[1] !== binding.kind) return React.createElement('p', null, 'Snapshot mode differs from its configured lesson.');
-      return React.createElement(LessonLeaf, { binding, snapshot: props.attrs.snapshot, revision: Number(match[2]) });
+      return React.createElement(LessonLeaf, { key:JSON.stringify([binding.ownerSessionId,binding.kind,binding.chatId]),
+        binding, snapshot: props.attrs.snapshot, revision: Number(match[2]),
+        reconnect:onReconnect?minimumRevision=>onReconnect({...props,minimumRevision}):undefined });
     },
   } });
 }

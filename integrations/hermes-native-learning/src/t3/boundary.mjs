@@ -7,6 +7,9 @@ import { loadConfiguration } from '../config.mjs';
 import { executeLearningCommand } from '../commands.mjs';
 import { readNativeView } from '../inline/host/native-session.mjs';
 import { FileSessionStore, requireState } from '../store.mjs';
+import {publishVisualAssets} from '../visuals.mjs';
+import {nativePresentation} from './native-presentation.mjs';
+import { lessonDraftKey, validateLessonView } from '../inline/lesson-identity.mjs';
 
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const canonical=v=>typeof v==='string'&&v.length>0&&v.length<=300&&v===v.trim()&&v!=='new';
@@ -14,15 +17,10 @@ const digest=v=>createHash('sha256').update(v).digest('hex');
 function fields(value,allowed) {
   requireState(object(value)&&Object.keys(value).every(k=>allowed.includes(k)), 'invalid_input','Unknown or malformed tool argument.');
 }
-const keyOf=view=>view.kind==='practice'?`${view.chatId}:practice:${view.activeProblem?.toolCallId??'between'}`:
-  `${view.chatId}:${view.question?.toolCallId??'idle'}`;
+const keyOf=lessonDraftKey;
 function cleanView(binding) {
   const view=readNativeView(binding,{includeAnswerHistory:true}).view;
-  requireState(!view.question||!['correctIndices','committedAnswer','explanation'].some(k=>k in view.question),
-    'commitment_exposed','An active question exposed teacher-only fields.');
-  requireState(!view.activeProblem||Object.keys(view.activeProblem).every(k=>['toolCallId','statement'].includes(k)),
-    'commitment_exposed','An active practice problem exposed teacher-only fields.');
-  return view;
+  return validateLessonView(view,{chatId:binding.chatId,kind:binding.kind});
 }
 function draftStore(binding,key) {
   const root=path.join(binding.root,'.t3-drafts');
@@ -39,7 +37,8 @@ function readDraft(binding,key) {
 }
 function readAsset(binding,file) {
   requireState(typeof file==='string'&&/^asset-(demo|visual)-[a-f0-9]{64}\.(html|svg)$/.test(file),'invalid_asset','Use a saved artifact identity.');
-  const descriptor=(cleanView(binding).jobs?.jobs??[]).map(j=>j.artifact).find(a=>a?.file===file);
+  const view=cleanView(binding);
+  const descriptor=[...(view.visuals??[]),...(view.jobs?.jobs??[]).map(j=>j.artifact)].find(a=>a?.file===file);
   requireState(descriptor&&Number.isSafeInteger(descriptor.size)&&descriptor.size>0&&descriptor.size<=1048576,
     'unknown_asset','Artifact is not in the current owning lesson.');
   const target=path.join(binding.output,file);
@@ -86,6 +85,11 @@ export class T3LearningBoundary {
     fields(args,['chatId']);const b=this.binding(meta,args.chatId),view=cleanView(b),key=keyOf(view);
     const result={structuredContent:{view},_meta:{ownerThreadId:b.ownerSessionId,draft:readDraft(b,key),draftKey:key}};
     requireState(Buffer.byteLength(JSON.stringify(result))<=240*1024,'view_too_large','This card exceeds the host bridge limit; no truncation.');
+    try{publishVisualAssets(b,new FileSessionStore(b.root).read(b.chatId));
+      result.nativePresentation=nativePresentation(b,view,file=>readAsset(b,file));
+      requireState(cleanView(b).revision===view.revision,'concurrent_state_change','Lesson changed during native presentation.');}
+    catch(error){result.nativePresentation={available:false,code:error.code??'native_presentation_failed',
+      instruction:'The saved lesson is unchanged. Native presentation failed; inspect before retrying a mutation.'};}
     return result;
   }
   command(meta,args) {

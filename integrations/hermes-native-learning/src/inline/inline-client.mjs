@@ -7,6 +7,7 @@ import { CONFIDENCE_COLORS, confidenceRailStyle, nearestConfidenceIndex } from '
 import { answeredRecord } from './answered-record.mjs';
 import { createRichScope } from './rich-scope.mjs';
 import { planDiagram } from './lesson-prose.mjs';
+import { lessonDraftKey } from './lesson-identity.mjs';
 
 export const INLINE_PREFIX = 'lh.inline ';
 
@@ -37,7 +38,7 @@ export function mountInline(root, initialView, options = {}) {
   let view = initialView;
   let state = { selection: emptyDockSelection(), text: '', other: '', thinking: '', readingThinking: '',
     confidenceIndex: DEFAULT_CONFIDENCE_INDEX, open: view.question?.open ?? true, pending: false };
-  const draftKey = () => `${view.chatId}:${view.question?.toolCallId ?? 'idle'}`;
+  const draftKey = () => lessonDraftKey(view);
   function setStatus(message, error = false) {
     const status = root.querySelector('[data-status]');
     if (status) { status.textContent = message; status.setAttribute('role', error ? 'alert' : 'status'); }
@@ -186,6 +187,7 @@ export function mountInline(root, initialView, options = {}) {
     present();
     if(q&&view.answers.length){const previous=node('details',null,{'data-previous-answer':''});previous.append(node('summary','Previous answer'),answeredRecord(doc,view.answers.at(-1),{externalRichExplanation:options.richProse,renderProse:rich.render}));root.append(previous);}
     if (!q) {
+      if(options.exploration){options.exploration.hidden=false;root.append(options.exploration);}
       const last = view.answers.at(-1);
       if(last)root.append(answeredRecord(doc,last,{richProse:options.richProse,externalRichExplanation:options.richProse,renderProse:rich.render}));
       renderPlan();
@@ -201,6 +203,7 @@ export function mountInline(root, initialView, options = {}) {
         const label = q.questionType === 'predict' ? 'Prediction' : q.tool === 'probe' ? 'Probe' : q.tool === 'recall' ? 'Recall' : q.kind === 'ask' ? 'Question' : 'Check';
         heading.append(node('span', label, { class: 'lh-kind' }), button('Close', () => { state.open = false; save(); render(); }, { class: 'lh-close', 'data-close': '' }));
         dock.append(heading);
+        if(options.exploration){options.exploration.hidden=false;dock.append(options.exploration);}
         if(!options.richProse)dock.append(prose('div', q.question, {class:'lh-question-text'}));
         if (q.context&&!options.richProse) dock.append(prose('div', q.context));
         if (q.mode !== 'text') {
@@ -250,12 +253,12 @@ export function mountInline(root, initialView, options = {}) {
   function applyView(next) {
     if (next.chatId !== view.chatId) throw new Error('The saved response belongs to a different lesson.');
     const same = next.question?.toolCallId === view.question?.toolCallId;
-    const previousKey = draftKey();
     view = next;
     if (!same) state = { selection: emptyDockSelection(), text: '', other: '', thinking: '', readingThinking: '', confidenceIndex: DEFAULT_CONFIDENCE_INDEX, open: next.question?.open ?? true, pending: false };
     else state.pending = false;
     if (!same && options.drafts) {
-      try { options.drafts.remove(previousKey); } catch { /* Saved answer remains authoritative. */ }
+      // Another host may have advanced the question. Preserve the old keyed
+      // draft; a revision change is not proof that this unsent text was saved.
       try { restore(options.drafts.read(draftKey())); } catch { /* A missing draft never replaces lesson state. */ }
     }
     render();

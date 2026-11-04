@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Thin ports for the selected Hermes SDK; no backend/session creation or model.
 import { mountInline } from './inline-client.mjs';
+import { lessonDraftKey } from './lesson-identity.mjs';
 const bytes = value => new TextEncoder().encode(JSON.stringify(value)).length;
 function requirePort(ok, message) { if (!ok) throw new Error(message); }
 export function createHermesLessonPort(ownerSessionId, view, { composer, storage }) {
@@ -8,8 +9,7 @@ export function createHermesLessonPort(ownerSessionId, view, { composer, storage
   requirePort(typeof view.chatId === 'string' && view.chatId.length > 0 && view.chatId.length <= 100 && Number.isSafeInteger(view.revision) && view.revision >= 0, 'Invalid bound lesson view.');
   requirePort(typeof composer?.submit === 'function' && ['get','set','remove'].every(k => typeof storage?.[k] === 'function'), 'Supported Hermes composer/storage ports are unavailable.');
   const kind = view.kind === 'practice' ? 'practice' : 'teach';
-  const key = kind === 'practice' ? `${view.chatId}:practice:${view.activeProblem?.toolCallId ?? 'between'}`
-    : `${view.chatId}:${view.question?.toolCallId ?? 'idle'}`;
+  const key = lessonDraftKey(view);
   const slot = 'draft:v1:' + JSON.stringify([ownerSessionId, view.chatId, key]);
   function checkKey(requested) { requirePort(requested === key, 'Draft key does not belong to this owner/question.'); }
   const drafts = {

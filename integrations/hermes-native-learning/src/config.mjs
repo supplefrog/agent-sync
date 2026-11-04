@@ -24,8 +24,18 @@ export function loadConfiguration(file, { allowEmptyLessons = false } = {}) {
   requireState(fs.statSync(actual).size <= 65536, 'invalid_config', 'Configuration exceeds 64 KiB.');
   const config = JSON.parse(fs.readFileSync(actual, 'utf8'));
   requireState(config?.version === 1 && Array.isArray(config.lessons) && (allowEmptyLessons || config.lessons.length > 0) &&
-    Object.keys(config).every(k => ['version','lessons'].includes(k)), 'invalid_config', 'Use a version1 private lesson configuration.');
-  const base = path.dirname(actual), ids = new Set();
+    Object.keys(config).every(k => ['version','lessons','workspaceRoot'].includes(k)), 'invalid_config', 'Use a version1 private lesson configuration.');
+  // Explicit operator enrollment only: keep each host's trusted config and
+  // caller principal while both resolve the same physically bounded workspace.
+  // No tool argument, directive, environment alias or default grants this root.
+  let base=path.dirname(actual);
+  if(config.workspaceRoot!==undefined) {
+    requireState(typeof config.workspaceRoot==='string'&&path.isAbsolute(config.workspaceRoot),
+      'invalid_config','A shared workspace requires an explicit absolute private configuration path.');
+    base=fs.realpathSync(config.workspaceRoot);
+    requireState(fs.statSync(base).isDirectory(),'invalid_config','The explicitly enrolled shared workspace must exist.');
+  }
+  const ids = new Set();
   const lessons = config.lessons.map(item => {
     requireState(item && Object.keys(item).every(k => ['ownerSessionId','chatId','kind','stateRoot','exportRoot','graphRoot','knowledgeRoot','materials','jobRoot'].includes(k)) &&
       canonical(item.ownerSessionId) && ['teach','practice'].includes(item.kind), 'invalid_config', 'Invalid explicit lesson/owner binding.');

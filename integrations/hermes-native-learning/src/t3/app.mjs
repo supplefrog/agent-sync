@@ -4,12 +4,14 @@ import { mountInline } from '../inline/inline-client.mjs';
 import { readArtifact } from '../inline/artifacts.mjs';
 import {mountRichFragment} from './rich-fragment.mjs';
 import {createRichScope} from '../inline/rich-scope.mjs';
+import {lessonVisualRows} from '../visuals-view.mjs';
+import {lessonDraftKey,validateLessonView} from '../inline/lesson-identity.mjs';
 const root=document.querySelector('#lh-inline-lesson'),notice=document.querySelector('#lh-notice'),jobs=document.querySelector('#lh-jobs');
 const jobRich=createRichScope(mountRichFragment);
 const pending=new Map(),cache=new Map();let nextId=0,active=true,initialized=false,owner=null,view=null,controller=null,fresh=false,initialRefresh=false;
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const byteSize=v=>new TextEncoder().encode(JSON.stringify(v)).length;
-const keyOf=v=>v.kind==='practice'?`${v.chatId}:practice:${v.activeProblem?.toolCallId??'between'}`:`${v.chatId}:${v.question?.toolCallId??'idle'}`;
+const keyOf=lessonDraftKey;
 function status(text,error=false){notice.textContent=text;notice.setAttribute('role',error?'alert':'status');}
 function post(message){if(!active)throw new Error('This app was closed.');window.parent.postMessage(message,'*');}
 function rpc(method,params) {
@@ -61,8 +63,7 @@ function show(result,isFresh=false) {
     meta.ownerThreadId==='new'||byteSize(result)>256*1024)throw new Error('No valid bound lesson result received.');
   if(owner!==null&&(owner!==meta.ownerThreadId||view.chatId!==next.chatId||view.revision>next.revision))
     throw new Error('Refusing a different owner/lesson or stale replacement.');
-  if(next.question&&['correctIndices','committedAnswer','explanation'].some(k=>k in next.question))throw new Error('Active commitment exposed.');
-  if(next.activeProblem&&Object.keys(next.activeProblem).some(k=>!['toolCallId','statement'].includes(k)))throw new Error('Hidden solution exposed.');
+  validateLessonView(next,{chatId:next.chatId,kind:next.kind==='practice'?'practice':'teach',minimumRevision:view?.revision??0});
   owner=meta.ownerThreadId;view=next;fresh=isFresh;const key=keyOf(next);
   if(meta.draftKey!==key||!Number.isSafeInteger(meta.draft?.version))throw new Error('Saved draft identity differs.');
   const current=cache.get(key);
@@ -84,7 +85,7 @@ async function renderJobs(next,bound) {
   jobRich.clear();
   jobs.replaceChildren();
   for(const material of next.materials??[])jobs.append(node('p',`Attached: ${material.label} (${material.kind})`));
-  for(const job of next.jobs?.jobs??[]) {
+  for(const job of [...(next.jobs?.jobs??[]),...lessonVisualRows(next)]) {
     if(!active||view!==next)return;
     const section=document.createElement('section');section.append(node('h3',`${job.kind}: ${job.activity}`));jobs.append(section);
     if(job.error)section.append(node('pre',job.error));

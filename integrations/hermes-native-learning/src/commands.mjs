@@ -5,12 +5,14 @@ import { PracticeAdapter } from './practice-state.mjs';
 import { requireState } from './store.mjs';
 import { randomUUID } from 'node:crypto';
 import { learningWorkflow } from './workflow.mjs';
+import { TEACHER_RECOVERY } from './recovery.mjs';
 import { readNativePropositions } from './propositions.mjs';
 import { LessonKnowledge } from './knowledge.mjs';
 import { teacherContextPage } from './context-page.mjs';
 import { materialCommand } from './materials.mjs';
 import { MaterialImports } from './imports.mjs';
 import { LessonJobs } from './jobs.mjs';
+import { attachVisual } from './visuals.mjs';
 import { executeHostCommand, hostContext } from './inline/host/host-session.mjs';
 import { RevisionBoundStore, readNativeView, executeNativeEnvelope, writeNativeSnapshot } from './inline/host/native-session.mjs';
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
@@ -26,6 +28,11 @@ function guarded(b, command) {
 export function executeLearningCommand(binding, command) {
   requireState(object(command), 'invalid_command', 'One JSON command required.');
   requireState(command.chatId === binding.chatId, 'wrong_host_session', 'Command targets another configured lesson.');
+  if(command.op==='visual') {
+    fields(command,['op','chatId','expectedRevision','authorship','id','title','format','source','reveal']);
+    attachVisual(binding,command);
+    return {...executeLearningCommand(binding,{op:'view',chatId:binding.chatId}),operationComplete:true,persisted:true,visualId:command.id};
+  }
   if(command.op==='material') {
     const allowed={list:[],attach:['materialId','expectedRevision','authorship'],read:['materialId','offset','length','sourceSha256']};
     requireState(Object.hasOwn(allowed,command.action),'unsupported_command','Use list, attach or read for an enrolled material.');
@@ -84,13 +91,13 @@ export function executeLearningCommand(binding, command) {
       const response=hostContext(adapterFor(binding),binding.chatId);
       const jobs=binding.jobRoot?new LessonJobs(binding).context():[];
       requireState(Buffer.byteLength(JSON.stringify({...response,jobs}))<=262144,'host_context_too_large','Teacher context plus queued work exceeds256KiB; retrieve bounded context/job pages.');
-      return {...response,jobs,workflow:learningWorkflow('teach',readNativeView(binding).view,response.context.messages)};
+      return {...response,jobs,recovery:TEACHER_RECOVERY,workflow:learningWorkflow('teach',readNativeView(binding).view,response.context.messages)};
     }
     const context = {chatId:binding.chatId,kind:'practice',view:readNativeView(binding).view,messages:adapterFor(binding).context(binding.chatId),
       propositions:binding.knowledgeRoot?{nodes:new LessonKnowledge(binding.knowledgeRoot).graph().nodes}:
         binding.graphRoot?readNativePropositions(binding.graphRoot):null,jobs:binding.jobRoot?new LessonJobs(binding).context():[]};
     requireState(Buffer.byteLength(JSON.stringify(context)) <= 262144,'context_too_large','Teacher context exceeds256KiB; no silent truncation.');
-    return {ok:true,context,workflow:learningWorkflow('practice',context.view,context.messages),scope:'teacher-only commitment context; no model invoked'};
+    return {ok:true,context,recovery:TEACHER_RECOVERY,workflow:learningWorkflow('practice',context.view,context.messages),scope:'teacher-only commitment context; no model invoked'};
   } else if (command.op === 'learner') {
     fields(command,['op','chatId','envelope']);
     result = executeNativeEnvelope(binding,binding.ownerSessionId,command.envelope);

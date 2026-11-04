@@ -48,7 +48,8 @@ export function inlineView(adapter, chatId) {
 
 // Native fragments keep their original no-network transport. Only the explicit
 // standalone browser route opts into the same-origin local action endpoint.
-export function renderInline(view, { localBrowser = false, nonce, csrfToken } = {}) {
+export function renderInline(view, { localBrowser = false, nonce, csrfToken, codex = false, visuals = [] } = {}) {
+  if(codex&&localBrowser)throw new Error('Choose exactly one host transport.');
   if (localBrowser && (![nonce, csrfToken].every(value => typeof value === 'string' && /^[A-Za-z0-9_-]{16,128}$/.test(value)))) {
     throw new Error('Local browser bootstrap requires valid ephemeral values.');
   }
@@ -65,11 +66,11 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken } = 
   };
   // Same no-network exporter, in dependency order. Module-import tests alone
   // do not establish that this self-contained consumer contains the helpers.
-  const helpers=['rich-scope.mjs','confidence-style.mjs','answered-record.mjs','lesson-prose.mjs'].map(compose).join('\n');
-  const client=compose('inline-client.mjs'),practiceClient=compose('practice-client.mjs');
+  const helpers=['lesson-identity.mjs','rich-scope.mjs','confidence-style.mjs','answered-record.mjs','lesson-prose.mjs'].map(compose).join('\n');
+  const client=compose('inline-client.mjs'),practiceClient=compose('practice-client.mjs'),codexClient=codex?compose('codex-transport.mjs'):'';
   const safe = JSON.stringify(view).replace(/</g, '\\u003c').replace(/&/g, '\\u0026').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
   const data = `<script id="lh-inline-data" type="application/json">${safe}</script>`;
-  const browserSend = localBrowser ? `, { send: async action => {
+  const browserSend = codex ? ', codexOptions(window, JSON.parse(document.getElementById("lh-inline-data").textContent))' : localBrowser ? `, { send: async action => {
     const response = await fetch('/action', { method: 'POST', mode: 'same-origin', credentials: 'omit',
       headers: { 'Content-Type': 'application/json', 'X-LH-CSRF': ${JSON.stringify(csrfToken)} }, body: JSON.stringify(action) });
     const result = await response.json();
@@ -81,8 +82,12 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken } = 
     remove: key => localStorage.removeItem('lh-inline-draft:v1:' + key)
   } }` : '';
   const scriptNonce = localBrowser ? ` nonce="${nonce}"` : '';
-  const runtime = `<script type="module"${scriptNonce}>\n${selection}\n${helpers}\n${practiceClient}\n${client}\nmountInline(document.getElementById('lh-inline-lesson'), JSON.parse(document.getElementById('lh-inline-data').textContent)${browserSend});\n</script>`;
-  return template.replace('<!-- INLINE_PAYLOAD -->', data).replace('<!-- INLINE_RUNTIME -->', runtime);
+  const runtime = `<script type="module"${scriptNonce}>\n${selection}\n${helpers}\n${practiceClient}\n${client}\n${codexClient}\nmountInline(document.getElementById('lh-inline-lesson'), JSON.parse(document.getElementById('lh-inline-data').textContent)${browserSend});\n</script>`;
+  const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const exploration=visuals.map(v=>'<section aria-label="'+escape(v.title)+'">'+(v.format==='svg'?'<img alt="'+escape(v.title)+'" style="max-width:100%" src="data:image/svg+xml;charset=utf-8,'+encodeURIComponent(v.source)+'">':v.source)+'</section>').join('\n');
+  const nativeStyle=codex?'<style>#lh-inline-lesson .lh-dock{background:transparent;border:0;border-radius:0;padding:0}#lh-inline-lesson .lh-heading{margin-bottom:.5rem}</style>':'';
+  const visualMarkup=exploration?'\n<div id="lh-native-exploration" hidden>'+exploration+'</div>':'';
+  return template.replace('<!-- INLINE_PAYLOAD -->', data).replace('<!-- INLINE_RUNTIME -->', runtime)+visualMarkup+nativeStyle;
 }
 
 export function buildInline(view, output = path.join(INLINE_HOME, 'inline-lesson.html')) {

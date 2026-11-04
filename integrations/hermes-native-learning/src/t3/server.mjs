@@ -17,10 +17,10 @@ const tool=(name,description,inputSchema,readOnly,visibility,app=false)=>({name,
 export const TOOLS=[
   tool('learning_identity','Read the host-written native Codex thread ID for explicit private enrollment. No model-supplied identity.',schema({}),true,['model']),
   tool('learning_catalogue','List only lessons enrolled for this authenticated native Codex thread.',schema({}),true,['model']),
-  tool('learning_view','Open/resume the current redacted learning card. No model turn or learner mutation.',schema({chatId:chat}),true,['model','app'],true),
+  tool('learning_view','Open/resume the current redacted learning card. Native Codex: render nativePresentation.path with a visualize content reference. T3 retains its MCP App. No learner mutation.',schema({chatId:chat}),true,['model','app'],true),
   tool('learning_input','Persist the exact genuine lh.t3 learner event, using host-written caller metadata. Never invent an answer.',
     schema({chatId:chat,kind:{enum:['teach','practice']},expectedRevision:{type:'integer',minimum:0},action:genericObject}),false,['model']),
-  tool('learning_command','Run the existing bound learning-state/tool protocol. Context/commitments are teacher-only. After writes call learning_view.',
+  tool('learning_command','Run the bound lesson protocol. Save teacher visuals with op:visual, id,title,format:html-fragment|svg,source,reveal:now|after-question,expectedRevision,authorship:host-agent. Context/commitments are teacher-only. After writes call learning_view.',
     schema({command:genericObject}),false,['model']),
   tool('learning_draft','Save the current unsent draft only after explicit app-user confirmation. Does not submit an answer.',
     schema({chatId:chat,key:{type:'string',maxLength:300},expectedVersion:{type:'integer',minimum:-1},baseRevision:{type:'integer',minimum:0},
@@ -42,7 +42,11 @@ export function handleLearningTool(boundary,request) {
     if(args===null||typeof args!=='object'||Array.isArray(args)||Object.keys(args).length)throw new Error('Identity accepts no arguments.');
     return textResult({nativeThreadId:boundary.owner(meta)});
   }
-  if(name==='learning_view')return {content:[{type:'text',text:'Current saved lesson; use the interactive card.'}],...boundary.view(meta,args)};
+  if(name==='learning_view') {
+    const result=boundary.view(meta,args);
+    return {...result,content:[{type:'text',text:JSON.stringify({nativePresentation:result.nativePresentation,
+      instruction:'Native Codex: render the supplied fragment path. T3: use the MCP App card. Call learning_view after saved input/reaction.'})}]};
+  }
   if(name==='learning_catalogue')return textResult({lessons:boundary.catalogue(meta,args)});
   if(name==='learning_input')return textResult(t3Result(boundary.input(meta,args)));
   if(name==='learning_command')return textResult(t3Result(boundary.command(meta,args)));
