@@ -35,6 +35,7 @@ RISKS = {"read", "write", "external"}
 INTELLIGENCE_TIERS = {"routine", "standard", "strong", "demanding", "maximum"}
 FAILURE_COSTS = {"low", "medium", "high"}
 WORKFLOW_SURFACES = {"codex-workflow", "hermes-workflow", "omp-workflow"}
+CODEX_ON_DEMAND_ROUTE = "codex-workflow-on-demand"
 SURFACE_HOSTS = {
     "codex-workflow": "codex",
     "hermes-workflow": "hermes",
@@ -1329,7 +1330,7 @@ def _codex_candidate(surface, proof):
     digest = receipt_digest(proof)
     parts = {"generation": None, "verification": None, "fallback": None}
     return {
-        "id": "codex-workflow-on-demand",
+        "id": CODEX_ON_DEMAND_ROUTE,
         "route": route,
         "availability": {
             "status": "verified", "observed_at": proof["observed_at"], "valid_until": proof["valid_until"],
@@ -1348,7 +1349,7 @@ def _codex_candidate(surface, proof):
     }
 def _codex_catalog(catalog, task, surface, descriptor):
     """Overlay the exact frozen candidate without rebuilding its policy metadata."""
-    route_id = "codex-workflow-on-demand"
+    route_id = CODEX_ON_DEMAND_ROUTE
     if any(candidate["id"] == route_id for candidate in catalog["candidates"]):
         raise PlanError("The Codex on-demand route is reserved for verified native observations")
     proof = descriptor.get("codex_availability")
@@ -1365,18 +1366,22 @@ def _codex_catalog(catalog, task, surface, descriptor):
     return {**catalog, "candidates": [*catalog["candidates"], candidate]}
 
 
-def _prepare_codex_dispatch(run_dir, task_id, execution_context, trusted_manifest_sha256):
+def _prepare_codex_dispatch(run_dir, task_id, execution_context, trusted_manifest_sha256, *, required):
     """Check readiness before any native probe, without holding the run state lock."""
     plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
     task = task_map(plan).get(task_id)
     if state["target_surface"] != "codex-workflow" or task is None or "route_request" not in task:
-        raise PlanError("--reverify-codex applies to Codex V3 route_request tasks")
+        if required:
+            raise PlanError("--reverify-codex applies to Codex V3 route_request tasks")
+        return None
     if state["tasks"][task_id]["dispatch"] is not None:
+        return None
+    request = task["route_request"]
+    if not required and request["budget"]["preference_order"] != [CODEX_ON_DEMAND_ROUTE]:
         return None
     if task_id not in ready_tasks(run_dir, trusted_manifest_sha256):
         raise PlanError(f"Task is not dependency-ready for a Codex availability check: {task_id}")
     load_v3_router_snapshot(run_dir, state, manifest)
-    request = task["route_request"]
     if request["deterministic"] is not None:
         return None
     import codex_availability
@@ -1514,10 +1519,13 @@ def task_dispatch(
     execution_context: Any,
     trusted_manifest_sha256: str | None = None,
     *,
-    reverify_codex: bool = False,
+    reverify_codex: bool | None = None,
 ) -> dict[str, Any]:
-    proof = (_prepare_codex_dispatch(run_dir, task_id, execution_context, trusted_manifest_sha256)
-             if reverify_codex else None)
+    proof = None
+    if reverify_codex is not False:
+        proof = _prepare_codex_dispatch(
+            run_dir, task_id, execution_context, trusted_manifest_sha256, required=reverify_codex is True
+        )
     with state_lock(run_dir):
         plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
         task = task_map(plan).get(task_id)
@@ -1562,8 +1570,8 @@ def task_dispatch(
             task_catalog = _codex_catalog(catalog, task, state["target_surface"], descriptor)
             locator = str(policy_path.resolve()) if proof is not None else str(catalog_locator)
             receipt = selector.decide_route(task_catalog, materialized, catalog_locator=locator)
-            if proof is not None and receipt.get("route_id") != "codex-workflow-on-demand":
-                reasons = receipt["excluded"].get("codex-workflow-on-demand", [])
+            if proof is not None and receipt.get("route_id") != CODEX_ON_DEMAND_ROUTE:
+                reasons = receipt["excluded"].get(CODEX_ON_DEMAND_ROUTE, [])
                 raise PlanError(f"Codex on-demand route was not eligible: {', '.join(reasons) or receipt['selection_basis']}")
             base_dispatch = selector.dispatch_decision(receipt, task_catalog, materialized)
         except (ValueError, KeyError, TypeError) as exc:
@@ -2115,8 +2123,8 @@ def build_parser() -> argparse.ArgumentParser:
     dispatch.add_argument("run")
     dispatch.add_argument("task_id")
     dispatch.add_argument("--execution-context", required=True)
-    dispatch.add_argument("--reverify-codex", action="store_true",
-                          help="reuse or refresh the exact native Codex route before initial V3 dispatch")
+    dispatch.add_argument("--reverify-codex", action="store_true", default=None,
+                          help="compatibility flag; ordinary dispatch already verifies the on-demand Codex route")
     claim_parent = commands.add_parser("claim-parent")
     claim_parent.add_argument("run")
     claim_parent.add_argument("task_id")

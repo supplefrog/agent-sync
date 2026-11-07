@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "scope": "Ordinary V3 dispatch for Codex tasks that prefer codex-workflow-on-demand.",
+  "live": {
+    "exact_model": "gpt-6.1-sol",
+    "exact_effort": "high",
+    "tools": [
+      "apply_patch",
+      "exec_command",
+      "functions.exec"
+    ],
+    "expired_seed_refreshed": true,
+    "warm_cache_reused": true,
+    "ordinary_dispatch_only": true
+  },
+  "regression": "Without the change, flag-free dispatch selected the parent. The same test now selects the exact model, refreshes a dependency-ready task after expiry, and preserves the earlier pinned receipt. 182 targeted tests and 60 subtests passed.",
+  "compatibility": "Explicit route choices, other hosts, existing frozen receipts, resource checks, and the previous explicit flag retain their behavior.",
+  "rollback": "Reconcile a scoped revert. The previous explicit flag still selects the same on-demand verification path.",
+  "change_reconciliation": [
+    {
+      "authority": "Explicit request to make on-demand route verification the default for Codex Dynamic Workflows subagents.",
+      "requirement_change": false,
+      "requirement_reason": "The existing routed execution intent preserves exact identity, resource controls and pinned receipts. This makes the authorized verifier reachable from ordinary dispatch.",
+      "checks": "Flag-free expiry regression, real native refresh, warm cache reuse, explicit alternative routes and pinned receipt replay.",
+      "outcome_review": {
+        "expected": "Ordinary Codex V3 dispatch verifies an on-demand task's exact model and effort and refreshes stale evidence.",
+        "observed": "Native flag-free dispatch refreshed expired scratch evidence and reused that new proof on the next run.",
+        "evidence": "evals/results/codex-workflow-default-runtime-20261107.json",
+        "limitations": "Live verification exercised GPT-6.1 Sol High. The existing supported tool, verifier, and budget boundaries still apply."
+      },
+      "artifacts": {
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "skills/dynamic-workflows/scripts/workflow_state.py": {
+          "before_sha256": "2fc26620c4df85e75d4abe10678799d96633b1cc10d8770377e4bc19cb00271d",
+          "after_sha256": "293d0f984ab123ac0e0436bb60d3347672b2075bb8a0ac01c7d670e0221d1f43"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "The existing portable execution and replay contract still governs the scoped default."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "The existing portable execution and replay contract still governs the scoped default."
+        }
+      ]
+    }
+  ]
+}

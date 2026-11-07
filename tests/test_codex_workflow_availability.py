@@ -86,10 +86,10 @@ def test_refresh_after_expiry_for_unbound_dependency_preserves_existing_receipt(
     catalog = (run / "route_catalog_v3.json").read_bytes()
     context = {"profile": "fixture"}
     with pytest.raises(wf.PlanError, match="not dependency-ready"):
-        wf.task_dispatch(run, "after", context, reverify_codex=True)
+        wf.task_dispatch(run, "after", context)
     assert not fake_native
 
-    first = wf.task_dispatch(run, "inspect", context, reverify_codex=True)
+    first = wf.task_dispatch(run, "inspect", context)
     assert first["kind"] == "model"
     assert first["route"]["model"] == "future-supported-model"
     assert first["route"]["reasoning_effort"] == "future-effort"
@@ -104,12 +104,12 @@ def test_refresh_after_expiry_for_unbound_dependency_preserves_existing_receipt(
                           valid_until=(now - timedelta(days=1)).isoformat())
     wf.atomic_json(cache, stale)
 
-    second = wf.task_dispatch(run, "after", context, reverify_codex=True)
+    second = wf.task_dispatch(run, "after", context)
     assert second["kind"] == "model"
     assert "upstream evidence" in second["input"]["prompt"]
     assert len(fake_native) == 2
     assert second["input"]["codex_availability"] != stale["proof"]
-    assert wf.task_dispatch(run, "inspect", context, reverify_codex=True) == first
+    assert wf.task_dispatch(run, "inspect", context) == first
     assert Path(first["route_receipt_path"]).read_bytes() == receipt
     recorded = json.loads(receipt)
     frozen_catalog = json.loads(Path(recorded["policy_locator"]).read_bytes())
@@ -120,26 +120,26 @@ def test_refresh_after_expiry_for_unbound_dependency_preserves_existing_receipt(
 
 def test_cache_reuses_exact_scope_and_separates_effort(tmp_path, plan, fake_native):
     run = initialize(tmp_path, plan)
-    first = wf.task_dispatch(run, "inspect", {}, reverify_codex=True)
+    first = wf.task_dispatch(run, "inspect", {})
     other = initialize(tmp_path, plan)
-    same = wf.task_dispatch(other, "inspect", {}, reverify_codex=True)
+    same = wf.task_dispatch(other, "inspect", {})
     assert same["input"]["codex_availability"] == first["input"]["codex_availability"]
     assert len(fake_native) == 1
     plan["tasks"][0]["route_request"]["requirements"]["reasoning_effort"] = "different-effort"
-    different = wf.task_dispatch(initialize(tmp_path, plan), "inspect", {}, reverify_codex=True)
+    different = wf.task_dispatch(initialize(tmp_path, plan), "inspect", {})
     assert different["route"]["reasoning_effort"] == "different-effort"
     assert len(fake_native) == 2
 
 
 def test_forged_cache_does_not_establish_callability(tmp_path, plan, fake_native):
     run = initialize(tmp_path, plan)
-    wf.task_dispatch(run, "inspect", {}, reverify_codex=True)
+    wf.task_dispatch(run, "inspect", {})
     cache = next((run.parent / ".codex-availability").glob("*.json"))
     forged = json.loads(cache.read_bytes())
     forged["proof"]["context_tokens"] = 900_000
     forged["proof"]["valid_until"] = (datetime.now(timezone.utc) + timedelta(days=90)).isoformat()
     wf.atomic_json(cache, forged)
-    fresh = wf.task_dispatch(initialize(tmp_path, plan), "inspect", {}, reverify_codex=True)
+    fresh = wf.task_dispatch(initialize(tmp_path, plan), "inspect", {})
     assert fresh["input"]["codex_availability"]["context_tokens"] == 32_000
     assert len(fake_native) == 2
 
@@ -147,8 +147,8 @@ def test_forged_cache_does_not_establish_callability(tmp_path, plan, fake_native
 def test_execution_context_is_part_of_cache_scope(tmp_path, plan, fake_native):
     first = initialize(tmp_path, plan)
     second = initialize(tmp_path, plan)
-    wf.task_dispatch(first, "inspect", {"profile": "one"}, reverify_codex=True)
-    wf.task_dispatch(second, "inspect", {"profile": "two"}, reverify_codex=True)
+    wf.task_dispatch(first, "inspect", {"profile": "one"})
+    wf.task_dispatch(second, "inspect", {"profile": "two"})
     assert len(fake_native) == 2
 
 
@@ -165,11 +165,34 @@ def test_refusal_does_not_freeze_or_claim_task(tmp_path, plan, fake_native, monk
         monkeypatch.setattr(native, "probe_worker", mismatched)
     run = initialize(tmp_path, plan, "omp-workflow" if case == "wrong host" else "codex-workflow")
     with pytest.raises(wf.PlanError):
-        wf.task_dispatch(run, "inspect", {}, reverify_codex=True)
+        wf.task_dispatch(run, "inspect", {}, reverify_codex=True if case == "wrong host" else None)
     state = json.loads((run / "state.json").read_bytes())
     assert state["tasks"]["inspect"]["dispatch"] is None
     assert state["tasks"]["inspect"]["attempts"] == 0
     assert not (run / "tasks/inspect/route_receipt.json").exists()
+
+
+@pytest.mark.parametrize("case", ["named catalog route", "parent preference", "other host"])
+def test_default_dispatch_preserves_other_route_choices(tmp_path, plan, fake_native, case):
+    budget = plan["tasks"][0]["route_request"]["budget"]
+    surface = "codex-workflow"
+    if case == "named catalog route":
+        budget["preference_order"] = ["codex-gpt61-sol-medium-workflow"]
+    elif case == "parent preference":
+        budget.update(unknown_cost_policy="keep_parent", preference_order=[])
+    else:
+        surface = "omp-workflow"
+    run = initialize(tmp_path, plan, surface)
+    assert wf.task_dispatch(run, "inspect", {})["kind"] == "parent"
+    assert not fake_native
+
+
+def test_explicit_reverify_flag_remains_compatible(tmp_path, plan, fake_native):
+    run = initialize(tmp_path, plan)
+    first = wf.task_dispatch(run, "inspect", {}, reverify_codex=True)
+    assert first["kind"] == "model"
+    assert wf.task_dispatch(run, "inspect", {}) == first
+    assert len(fake_native) == 1
 
 
 def test_child_evidence_checks_real_tool_activity_and_exact_settings(tmp_path):
