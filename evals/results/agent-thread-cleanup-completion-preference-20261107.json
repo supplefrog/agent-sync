@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "scope": "Delete agent-spawned threads after completion, subject to host approval.",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "change_kind": "user-preference",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The previous rule made preservation of evidence a condition before thread cleanup.",
+      "evidence": "The user explicitly corrected the rule to delete threads after work completes.",
+      "why_instruction": "Replace the standing rule at its shared owner and render the host overlays.",
+      "alternative": "A chat-local response would leave the previous instruction in future sessions.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "bf8a576fba995b72d58b3c299d041c24c690798dd57f87e7d3631322f23b8fed",
+          "after_sha256": "d7de8418a450ef7b37eb7697e04c0d92b6cf9f0bf61f4600d237d9ec7265b5fc"
+        }
+      },
+      "user_preference": {
+        "request": "Delete agent-spawned threads when their work is complete.",
+        "scope": "Completed agent-spawned threads, within the host deletion approval boundary.",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "Explicit user correction to the shared thread cleanup rule.",
+      "requirement_change": false,
+      "requirement_reason": "The existing closeout rule already governs the same temporary threads. The correction removes the extra evidence condition.",
+      "checks": "Canonical render, recovery manifest verification, instruction profile check, and scoped live overlay readback.",
+      "outcome_review": {
+        "expected": "All generated overlays carry the same direct completion rule.",
+        "observed": "The shared core projects the revised sentence into Codex, Hermes and OMP.",
+        "evidence": "evals/results/agent-thread-cleanup-completion-preference-20261107.json",
+        "limitations": "The existing separate OMP live edit remains outside this deployment."
+      },
+      "artifacts": {
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "bf8a576fba995b72d58b3c299d041c24c690798dd57f87e7d3631322f23b8fed",
+          "after_sha256": "d7de8418a450ef7b37eb7697e04c0d92b6cf9f0bf61f4600d237d9ec7265b5fc"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing closeout and approval obligations remain in scope."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing closeout and approval obligations remain in scope."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Apply the user correction at the standing owner."
+        }
+      ]
+    }
+  ]
+}

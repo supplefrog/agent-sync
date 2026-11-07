@@ -33,7 +33,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 5069,
+      "bytes": 4915,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
@@ -49,7 +49,7 @@
         "3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082",
         "6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d"
       ],
-      "sha256": "05c5c1adaf336dbdfee7435dabddd05e7f0a5096656591c745268a115096cf49",
+      "sha256": "889bb094643f897ed3e6f44f6dad197c214d2895271a22bb5d56a698f5c28440",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -305,7 +305,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 5074,
+      "bytes": 4920,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
@@ -319,7 +319,7 @@
         "f88771c048eaf8d96521ba07aa19bc3b6e1616006e34ef199c45b9cd401497e5",
         "a2081994a39813ed8c70ec974335f9ebcce4978d6575a664aa49382d098dce43"
       ],
-      "sha256": "ca6fb8af99bfb4a6f8794e8833d48b68125cb2026c8c8c3f7b3e8018af98082d",
+      "sha256": "8425852e019d19174a35e2db87ecb24d169a212dc5f7c42e34139218a981419f",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -13523,14 +13523,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 4328,
+      "bytes": 4174,
       "format": "text",
       "host": "omp",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "b1a16f9d4d3638499640d1f31c01e8c2922515ffa13625e3a6288d52bf9514ca",
+      "sha256": "1acad90af1ab938c1f3c6215033bcce775517d60a9a17783de77126a3491c87c",
       "snapshot": "hosts/omp/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"

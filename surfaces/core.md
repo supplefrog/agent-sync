@@ -97,7 +97,7 @@ Complete the requested outcome and dependencies autonomously. Choose by total sy
 
 Judge completion by the user's intended outcome and required constraints. Load instruction owners and required references for necessary protocols, explicit skill requests or missing knowledge. Finish those reads before the decisions or actions they govern; apply requirements already in context without rereading. Select optional guidance and tools by value, not mere availability.
 
-Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. After an agent-spawned thread completes temporary work, preserve its results and required evidence, then prefer deleting the thread through the host's supported lifecycle. Keep user-owned and unfinished threads. Follow the host's deletion approval requirements.
+Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. Delete agent-spawned threads when their work is complete. Follow the host's deletion approval requirements.
 
 Reuse compatible, accessible configured native Codex cloud workspaces or repository-linked reusable environments for execution. Verify requested chat host/project separately. Use the PC for apps, files or hardware. Exclude one-off sandboxes. Export artifacts before teardown; retain spending and privacy limits.
 
