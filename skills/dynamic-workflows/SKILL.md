@@ -74,7 +74,7 @@ Before spawning a routed task, atomically claim it and retain the returned token
 
 ### Codex
 
-Follow [the Codex adapter contract](references/codex-adapter.md). V2 tasks keep the existing model/render/claim lifecycle. For a dependency-ready V3 task with an exact model and effort, use `dispatch --reverify-codex` with the actual native execution context and the on-demand route contract in the adapter. Verify native worker release before finalizing a model action.
+Follow [the Codex adapter contract](references/codex-adapter.md). V2 tasks keep the existing model/render/claim lifecycle. For eligible Codex V3 subagent tasks, use the on-demand route preference by default and set the exact requested model and effort. Use ordinary `dispatch` with the actual native execution context. Dispatch verifies or refreshes the route automatically. Verify native worker release before finalizing a model action.
 
 For an admitted model action, use Codex-native workers:
 

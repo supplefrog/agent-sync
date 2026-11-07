@@ -1,0 +1,174 @@
+{
+  "schema_version": 1,
+  "scope": "Ordinary V3 dispatch for Codex tasks that prefer codex-workflow-on-demand.",
+  "live": {
+    "exact_model": "gpt-6.1-sol",
+    "exact_effort": "high",
+    "tools": [
+      "apply_patch",
+      "exec_command",
+      "functions.exec"
+    ],
+    "expired_seed_refreshed": true,
+    "warm_cache_reused": true,
+    "ordinary_dispatch_only": true
+  },
+  "regression": "Without the change, flag-free dispatch selected the parent. The same test now selects the exact model, refreshes a dependency-ready task after expiry, and preserves the earlier pinned receipt. 182 targeted tests and 60 subtests passed.",
+  "compatibility": "Explicit route choices, other hosts, existing frozen receipts, resource checks, and the previous explicit flag retain their behavior.",
+  "rollback": "Reconcile a scoped revert. The previous explicit flag still selects the same on-demand verification path.",
+  "instruction_changes": [
+    {
+      "owner": "skills/dynamic-workflows",
+      "change_kind": "requested-edit",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The installed instructions still require an explicit refresh flag despite the new default dispatch behavior.",
+      "evidence": "The runtime receipt and this record describe the native flag-free refresh and verified cache reuse.",
+      "why_instruction": "Tell Codex to choose the on-demand preference for eligible plans and use normal dispatch while honoring explicit alternatives.",
+      "alternative": "Retaining the old flag in examples perpetuates unnecessary manual invocation. Routing and safety checks already live in the verified runtime.",
+      "artifacts": {
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "9aaa3cfc4d7bc1538903ccdf00b4feb6cebc2d8ca43813ba5e4e27696de06fac",
+          "after_sha256": "fb07611c0e0e33ec3eab8f61f84c224b14413d73a0056f457fb6788749051aba"
+        },
+        "skills/dynamic-workflows/references/codex-adapter.md": {
+          "before_sha256": "13433d13b98050e8bf6fbed4fbcdab15f26bddc14835f87b724f8eb3ebbc15ca",
+          "after_sha256": "d4d75f020b83f0a474f20446b0678399caf4a5e9486b7cd9212be8fb851401f8"
+        }
+      },
+      "requested_edit_acceptance": {
+        "classification": "requested-existing-instruction-edit",
+        "baseline_commit": "e1b68059d08f9e3a13d265db153be540c6fac228",
+        "license": "UNLICENSED",
+        "before_package_sha256": "6af71a1909348d9146ed807b86a17f2fa1aca2668f37a9f89be3faa6dff9d61e",
+        "after_package_sha256": "a3582a55b0f7ec7c83a0017a77675f83b6c93f6b5f639ba07180dc9ce30455e5",
+        "files": {
+          "agents/openai.yaml": {
+            "before_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44",
+            "after_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44"
+          },
+          "assets/templates/code-audit.json": {
+            "before_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905",
+            "after_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905"
+          },
+          "assets/templates/deep-research.json": {
+            "before_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466",
+            "after_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466"
+          },
+          "assets/templates/migration.json": {
+            "before_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02",
+            "after_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02"
+          },
+          "assets/templates/workflow-v3-execution.json": {
+            "before_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0",
+            "after_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0"
+          },
+          "assets/templates/workflow-v3-readonly.json": {
+            "before_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c",
+            "after_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c"
+          },
+          "assets/templates/workflow-v3.json": {
+            "before_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e",
+            "after_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e"
+          },
+          "assets/templates/workflow.json": {
+            "before_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b",
+            "after_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b"
+          },
+          "references/codex-adapter.md": {
+            "before_sha256": "13433d13b98050e8bf6fbed4fbcdab15f26bddc14835f87b724f8eb3ebbc15ca",
+            "after_sha256": "d4d75f020b83f0a474f20446b0678399caf4a5e9486b7cd9212be8fb851401f8"
+          },
+          "references/omp-adapter.md": {
+            "before_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989",
+            "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+          },
+          "references/runtime-contract.md": {
+            "before_sha256": "7c0489f7bb064ec0cb87803286a51219710f655c125d24e88a7495ea460cc2b6",
+            "after_sha256": "7c0489f7bb064ec0cb87803286a51219710f655c125d24e88a7495ea460cc2b6"
+          },
+          "scripts/codex_availability.py": {
+            "before_sha256": "53e1f1f4d15dc7a66a5d4dddcc504f28b6943ad5960eedb28cbe71af4eadf998",
+            "after_sha256": "53e1f1f4d15dc7a66a5d4dddcc504f28b6943ad5960eedb28cbe71af4eadf998"
+          },
+          "scripts/install_omp_route_agents.py": {
+            "before_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527",
+            "after_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527"
+          },
+          "scripts/test_workflow_state.py": {
+            "before_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c",
+            "after_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c"
+          },
+          "scripts/workflow_state.py": {
+            "before_sha256": "293d0f984ab123ac0e0436bb60d3347672b2075bb8a0ac01c7d670e0221d1f43",
+            "after_sha256": "293d0f984ab123ac0e0436bb60d3347672b2075bb8a0ac01c7d670e0221d1f43"
+          },
+          "SKILL.md": {
+            "before_sha256": "9aaa3cfc4d7bc1538903ccdf00b4feb6cebc2d8ca43813ba5e4e27696de06fac",
+            "after_sha256": "fb07611c0e0e33ec3eab8f61f84c224b14413d73a0056f457fb6788749051aba"
+          }
+        },
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "Explicit request to make on-demand route verification the default for Codex Dynamic Workflows subagents.",
+      "requirement_change": false,
+      "requirement_reason": "The existing routed execution intent preserves exact identity, resource controls and pinned receipts. This makes the authorized verifier reachable from ordinary dispatch.",
+      "checks": "Flag-free expiry regression, real native refresh, warm cache reuse, explicit alternative routes and pinned receipt replay.",
+      "outcome_review": {
+        "expected": "Ordinary Codex V3 dispatch verifies an on-demand task's exact model and effort and refreshes stale evidence.",
+        "observed": "Native flag-free dispatch refreshed expired scratch evidence and reused that new proof on the next run.",
+        "evidence": "evals/results/codex-workflow-default-instructions-20261107.json",
+        "limitations": "Live verification exercised GPT-6.1 Sol High. The existing supported tool, verifier, and budget boundaries still apply."
+      },
+      "artifacts": {
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "9aaa3cfc4d7bc1538903ccdf00b4feb6cebc2d8ca43813ba5e4e27696de06fac",
+          "after_sha256": "fb07611c0e0e33ec3eab8f61f84c224b14413d73a0056f457fb6788749051aba"
+        },
+        "skills/dynamic-workflows/references/codex-adapter.md": {
+          "before_sha256": "13433d13b98050e8bf6fbed4fbcdab15f26bddc14835f87b724f8eb3ebbc15ca",
+          "after_sha256": "d4d75f020b83f0a474f20446b0678399caf4a5e9486b7cd9212be8fb851401f8"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "The existing portable execution and replay contract still governs the scoped default."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "The existing portable execution and replay contract still governs the scoped default."
+        },
+        {
+          "path": "skills/dynamic-workflows/SKILL.md",
+          "disposition": "updated",
+          "reason": "Document normal dispatch and the default plan preference."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/codex-adapter.md",
+          "disposition": "updated",
+          "reason": "Document normal dispatch and the default plan preference."
+        }
+      ]
+    }
+  ]
+}
