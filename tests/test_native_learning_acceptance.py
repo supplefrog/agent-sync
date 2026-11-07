@@ -1,5 +1,6 @@
 """Proposed scoped consumer controls; source preparation does not execute them."""
 import copy
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -109,7 +110,23 @@ class NativeLearningMaintainedReference(unittest.TestCase):
             return gate.native_learning_source_reference(MemoryPath(self.data), name or self.name)
 
     def test_exact_maintained_package(self):
+        raw = self.data[gate.NATIVE_LEARNING_OWNER + '/PUBLIC-FILES.json']
+        self.assertEqual('070fa053f1018bd98d29ecd5f3b7922a4ef55c5172b706900a776e2730fd12be',
+                         hashlib.sha256(raw).hexdigest())
+        manifest = json.loads(raw)
+        self.assertEqual((115, 116, 115), (manifest['fileCount'], manifest['publicationFileCount'], len(manifest['files'])))
         self.assertTrue(self.call())
+
+    def test_changed_non_entrypoint_member_rejected(self):
+        # Count and entrypoint are still exact; every other member must bind too.
+        self.data[gate.NATIVE_LEARNING_OWNER + '/LICENSE'] += b' changed'
+        self.assertFalse(self.call())
+
+    def test_registered_alias_copy_rejected(self):
+        registry = json.loads(self.data['registry.json'])
+        alias = 'skills/' + registry['skills'][0]['name'] + '/SKILL.md'
+        self.data[alias] = self.data[self.name].replace(b'\n', b'\r\n')
+        self.assertFalse(self.call())
 
     def test_changed_reference_rejected(self):
         self.data[self.name] += b' changed'

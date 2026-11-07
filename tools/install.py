@@ -89,8 +89,12 @@ def verify_fleet_discovery(host: str, root: Path, required: list[str], retired: 
               'scope': 'fresh native global catalogue and managed-body readback; existing sessions may cache instructions'}
     try:
         if host == 'hermes':
-            home = hermes_home(); runtime = home / 'hermes-agent'
-            python = runtime / ('.venv/Scripts/python.exe' if os.name == 'nt' else '.venv/bin/python')
+            import evaluation_runtime
+            executable = evaluation_runtime.native_executable('hermes')
+            if not executable:
+                raise RuntimeError('Hermes native executable unavailable')
+            python, runtime = evaluation_runtime.native_hermes_runtime(executable)
+            result.update(native_executable=str(executable), runtime_python=str(python), runtime_source=str(runtime))
             code = """import sys,json,hashlib
 from pathlib import Path
 sys.path.insert(0,sys.argv[1])
@@ -109,7 +113,8 @@ for name in required:
 print(json.dumps({'names':names,'body_reads':reads,'root_configured':any(Path(x).expanduser().resolve()==root.resolve() for x in dirs)}))
 """
             p = subprocess.run([str(python), '-B', '-c', code, str(runtime), str(root), json.dumps(required), json.dumps(retired)],
-                               capture_output=True, text=True, encoding='utf-8', timeout=45)
+                               capture_output=True, text=True, encoding='utf-8', timeout=45,
+                               env=dict(os.environ, HERMES_DISABLE_LAZY_INSTALLS='1'))
             if p.returncode: raise RuntimeError('Hermes native catalogue read failed')
             value = json.loads(p.stdout.splitlines()[-1]); names = set(value['names'])
             loaded = all(value['body_reads'].values()) and value['root_configured']

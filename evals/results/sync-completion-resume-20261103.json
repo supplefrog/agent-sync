@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "scope": "Repair existing full-sync completion and exact published-phase resume. Preserve explicit partial publication, existing admission/private-proof/retirement and drift safeguards.",
+  "mechanism_changes": [
+    "Retain selected owner names and changed skill-package owners in required fresh native body readback, even after inner reconciliation already copied them.",
+    "Plan and resume an exact published partial attempt using its retained qualified receipt and current publisher proof, avoiding initial-import collision checks against the operation own completed installation.",
+    "Clear global sync/agent/installed verification flags when configured-target verification is incomplete; retain per-target results and the resumable journal.",
+    "Persist successful installation progress before later readback/native verification can fail. A blocked retry accepts only freshly checked exact content and normalized managed metadata, not a missing or truthy non-boolean progress claim.",
+    "Recognize only the exact already-published 115/116-member native-learning manifest alongside the existing V3/maintained pins, preserving project-only ownership and member/path/global-copy validation."
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454",
+          "after_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518",
+          "after_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "afaae716b7d71d45c9fbfce13630a368023741546a75d84c5d0e343090d2eff6",
+          "after_sha256": "afaae716b7d71d45c9fbfce13630a368023741546a75d84c5d0e343090d2eff6"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f",
+          "after_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807",
+          "after_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807"
+        },
+        "tests/test_native_fleet_runtime.py": {
+          "before_sha256": "absent",
+          "after_sha256": "990805ef29e1e9657c9119a632d47c51c6ab0e30222c405ab1e3d87a4226b017"
+        },
+        "tests/test_native_learning_acceptance.py": {
+          "before_sha256": "2d29e9a5c28185dc5c5993796c867c3903f5425adc27961fa4f2307ee2901352",
+          "after_sha256": "9489a7b1bfe69f6adb718a1bc06930331f3c19ea19327f38e0639fed5b3e4adc"
+        },
+        "tests/test_rollout_completion.py": {
+          "before_sha256": "2059b2efcf90e20f4d899f623592c764a05f2d3cc18d37253687f67d7d996196",
+          "after_sha256": "f4e03755d345b61f97083dfa874b3169f5298126fd088bf5d61ff0ca1abda149"
+        },
+        "tools/install.py": {
+          "before_sha256": "da0172c9d0be8a9531f56b7c0c9cf16758e0e20c2cbc8a843e737e1dc4f8193b",
+          "after_sha256": "14b62674b1f573c8268e8445d3a1c9dee0b35cfa7e85022b26accca9cfa67a6e"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "fcaec86fcb0f4b7db7f5ce1511525345ed9f72702b5caf56d5142c5af0dd7932",
+          "after_sha256": "d78e15d435ef0686b0bfcf255bc9fe72ebf1b29dc64807f96a23e9605b6b908b"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "f1e9d762479eb0ac8bf4d3b1f748961aecf0aae80400df3349cb573c8c2bbe28",
+          "after_sha256": "fecf85ec1062ff6146a40d0786d52330e9204b53029dd529ecc9bd153874d2f8"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "tests/test_native_fleet_runtime.py",
+          "disposition": "updated",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "tests/test_native_learning_acceptance.py",
+          "disposition": "updated",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "tests/test_rollout_completion.py",
+          "disposition": "updated",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "tools/install.py",
+          "disposition": "updated",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "tools/instruction_changes.py",
+          "disposition": "updated",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        },
+        {
+          "path": "tools/worktree_sync.py",
+          "disposition": "updated",
+          "reason": "Preserve the current intent, source-only native-reference ownership and deployment/private-proof guards; bind the affected implementation, tests and reverse references."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Existing full-sync completion and the accepted published native-learning reference contract are retained. Exact recognition of its current 115-member package is a source-admission correction, not global discovery, runtime activation, access or model authority.",
+      "authority": "Technical consistency and test evidence do not authenticate approval or grant publication, deployment, settings, cloud or model-call authority.",
+      "checks": "Retained source-linked ordinary CLI recovery/success/refusal controls and active-runtime verifier evidence; nine exact native-reference controls and real-file path/member/index/global-copy checks from the admission repair. Composition uses focused model-free recovery/reference controls plus normal structural/readiness checks; no native treatment or comparative model trial is claimed.",
+      "outcome_review": {
+        "expected": "Ordinary ready-sync completion verifies named selected bodies and all configured targets. A published native-verification failure stays incomplete and the same exact request can resume without another push or weakening proof/collision checks.",
+        "observed": "Real local-Git CLI fixtures reproduce empty selected-body lists and initial-import retry collision before the repair. Repaired ordinary CLI cases verify selected bodies, reject changed scope and missing private proof, retain partial journals, restore exact proof and complete on the same publication without a new push or reapplying installed bytes. Global partial-success flags are false. Private-origin protection remains enforced. A successful production apply now records durable installation completion independently of the reporting phase; a later readback exception remains incomplete and is recoverable only after fresh exact normalization checks. The exact published 115-member learning package is recognized as its existing project-local reference; prior V3 and maintained pins and all index, owner, entrypoint, member, safe-path and global-copy checks are preserved. Unknown same-count manifests and altered members remain refusals.",
+        "evidence": "Exact before/after source and reverse-dependency hashes, retained real-local-Git recovery controls, nine focused native-reference controls and real-file positive/tamper checks. Source checks do not prove live deployment, model quality or a cached-session refresh.",
+        "limitations": "No live rollout, newly published/default-path adoption, active-session refresh, model-quality improvement or prevention of arbitrary caller source-only selection is established. Explicit source-only publication remains partial; orchestration must carry authorized deployment through the existing path or report its actual blocker."
+      }
+    }
+  ],
+  "reused_component": {
+    "commit": "eb35390232aa4be849b6f64db649d4434ab90764",
+    "files": {
+      "tools/install.py": "14b62674b1f573c8268e8445d3a1c9dee0b35cfa7e85022b26accca9cfa67a6e",
+      "tests/test_native_fleet_runtime.py": "990805ef29e1e9657c9119a632d47c51c6ab0e30222c405ab1e3d87a4226b017"
+    },
+    "scope": "Previously cleared actual-PM runtime selection; not a new model, permission or persistent configuration change."
+  },
+  "new_guidance_or_cloud_edit": false,
+  "model_quality_claim": false,
+  "native_reference_admission": {
+    "manifest_sha256": "070fa053f1018bd98d29ecd5f3b7922a4ef55c5172b706900a776e2730fd12be",
+    "member_count": 115,
+    "publication_file_count": 116,
+    "source_files": {
+      "tools/instruction_changes.py": "d78e15d435ef0686b0bfcf255bc9fe72ebf1b29dc64807f96a23e9605b6b908b",
+      "tests/test_native_learning_acceptance.py": "9489a7b1bfe69f6adb718a1bc06930331f3c19ea19327f38e0639fed5b3e4adc"
+    },
+    "scope": "Exact project source reference only; no native enrollment, global skill adoption, permission or inference grant."
+  }
+}

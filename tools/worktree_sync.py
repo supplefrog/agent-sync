@@ -233,7 +233,22 @@ def ready_plan(repo, ready, *, adopt=(), include=(), machine='local-windows',
         if capture_recovery or recovery_artifacts or unsupported:
             raise sync_git.SyncBlocked('ready integration supports explicit source/portable scopes only')
         options = _options(adopt, include, machine, skill_roots, recovery_roots, message, retirement_publication)
-        result = _qualify(Path(repo).resolve(), ready, options)
+        repo = Path(repo).resolve()
+        primary, common = _primary(repo)
+        exact = sync_git.git(repo, 'rev-parse', '--verify', str(ready) + '^{commit}')
+        observed = _read(common / 'agent-signal-integration.json')
+        result = _ready_receipt(repo, exact, options, observed, continue_published)
+        if continue_published is None and observed and observed.get('phase') == 'published':
+            _validate_predecessors(common, observed)
+            if result['target'] != sync_git.destination(primary):
+                raise sync_git.SyncBlocked('publication destination changed since the retained ready input')
+            lane = Path(observed['integration_repo'])
+            pending = _completed_publisher_state(lane, observed)
+            if pending is not None:
+                _verify_completion(lane, observed, pending)
+            return dict(result, result='ready', pending_target_verification=True,
+                        attempt=observed['attempt'], published_commit=observed['last_result']['commit'],
+                        verification_scope='retained qualified publication/source proof; installed/native targets remain incomplete until normal resume; no remote or native process verification')
         if continue_published is not None:
             _, _, binding, _, _ = _published_successor_preflight(Path(repo).resolve(), result, continue_published)
             result['predecessor'] = binding
@@ -527,6 +542,15 @@ def _carried_target_holds(journal, targets):
 
 
 def _ready_receipt(repo, exact, options, observed, continuation):
+    if continuation is None and observed and observed.get('phase') == 'published':
+        receipt = observed['receipt']
+        if receipt['ready'] != exact or receipt['options'] != options:
+            raise sync_git.SyncBlocked('published integration requires the same exact ready input and selection')
+        # Initial-import collision checks describe the predeployment baseline.
+        # Reapplying them after our own verified publication would reject the
+        # package we installed. Normal completion revalidates the retained
+        # publisher proof, current source and targets without a second push.
+        return receipt
     if continuation is not None:
         if observed and observed.get('continuation_request_sha256') == _canonical_hash(continuation):
             receipt = observed['receipt']
@@ -608,6 +632,11 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
                 conflicts = [a['name'] for a in actions if a['action'] == 'conflict']
                 if conflicts:
                     raise sync_git.SyncBlocked('managed drift/unmanaged collision: ' + ', '.join(conflicts))
+                selected = set(journal.get('receipt', {}).get('options', {}).get('adopt', ()))
+                paths = journal.get('receipt', {}).get('paths', ())
+                selected.update(name for name in manifest['skills']
+                                if any(path.startswith('skills/' + name + '/') for path in paths))
+                selected.intersection_update(manifest['skills'])
                 if 'required' not in state:
                     required = []
                     for action in actions:
@@ -621,6 +650,9 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
                     state['required'] = sorted(required)
                     state['retired'] = sorted({a['name'] for a in actions if a['action'] in {'remove','forget'}} |
                                               set(journal.get('rollout_retired', [])) | retired)
+                # Inner owner reconciliation may already have copied these
+                # exact bytes. That cannot remove their named native-body check.
+                state['required'] = sorted(set(state['required']) | selected)
                 mutations = [a for a in actions if a['action'] != 'unchanged']
                 installed_state = fleet.load_state(root)
                 metadata_stale = (installed_state.get('manifest_sha256') != digest or
@@ -638,9 +670,12 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
                         save()
                     state['phase'] = 'applying'; journal['deployment_started'] = True; save()
                     fleet.apply_snapshot(snapshot, root, expected_state=fleet.state_identity(root))
+                    # Keep successful installation independent of a later
+                    # readback/native failure changing the reporting phase.
+                    state['installation_complete'] = True; save()
                 findings = fleet.verify_snapshot(snapshot, root)
                 if findings: raise sync_git.SyncBlocked('installed hashes differ: ' + str(findings))
-                state['phase'] = 'installed'; save()
+                state.update(phase='installed', installation_complete=True); save()
                 state['native'] = {host: verify_native(host, root, state['required'], state['retired']) for host in state['hosts']}
                 # A native read or another writer must not invalidate installed verification.
                 findings = fleet.verify_snapshot(snapshot, root)
@@ -1047,7 +1082,8 @@ def _finish_published(primary, common, target, lane, published, published_marker
     reconcile.fleet.render_snapshot(published, snapshot)
     if not _rollout_targets(published, journal, lambda: _atomic(common / 'agent-signal-integration.json', journal)):
         return dict(result, result='incomplete', failed_step='configured-rollout', publication_verified=True,
-                    rollout_verified=False, targets=journal['rollout']['targets'])
+                    rollout_verified=False, installed_verified=False, agents_verified=False,
+                    sync_complete=False, activation_verified=None, targets=journal['rollout']['targets'])
     native = _native_destination_completion(lane, journal)
     journal['native_destinations'] = native
     _atomic(common / 'agent-signal-integration.json', journal)
@@ -1507,8 +1543,9 @@ def _verify_completion(lane, journal, pending):
         # the checked content hash. Accept only that exact normalization during
         # a recorded rollout, including the apply-before-receipt crash window.
         target_state = journal.get('rollout', {}).get('targets', {}).get(str(root), {})
-        if not (journal.get('deployment_started') and target_state.get('phase') in
-                {'applying', 'installed', 'verified', 'native-verification-incomplete'}):
+        progress = (target_state.get('installation_complete') is True or target_state.get('phase') in
+                    {'applying', 'installed', 'verified', 'native-verification-incomplete'})
+        if not (journal.get('deployment_started') and progress):
             raise sync_git.SyncBlocked('selected installed owners changed after publisher completion')
         for name in options['adopt']:
             old = expected.get(label, {}).get(name, {})

@@ -4,6 +4,7 @@ configure()
 from pathlib import Path
 import json,sys,tempfile,unittest
 import io,base64
+from contextlib import redirect_stdout
 from types import SimpleNamespace
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
@@ -153,6 +154,12 @@ class ReadyRolloutRegressionTests(unittest.TestCase):
     worker=ready_fixtures.WorktreeSyncTests.worker
     commit=ready_fixtures.WorktreeSyncTests.commit
 
+    def bootstrap_fixture_source(self,repo):
+        # Include-only rollout starts from the managed canonical source, not
+        # an intentionally protected private authoring origin.
+        result=rollout.rollout_published(repo,self.git(repo,'rev-parse','HEAD'),machine='test')
+        self.assertEqual(result['result'],'synced',result)
+
     def test_include_only_source_update_repairs_the_stale_installed_target(self):
         adapter=fixtures.load_tool('worktree_sync')
         with provided_workspace() as temporary:
@@ -160,6 +167,7 @@ class ReadyRolloutRegressionTests(unittest.TestCase):
             name='skills/kept/fixture.txt';(repo/name).write_text('old')
             self.fleet.render_snapshot(repo,repo/'render/fleet');self.fleet.apply_snapshot(repo/'render/fleet',live)
             self.git(repo,'add',name);self.git(repo,'commit','-m','baseline asset');self.git(repo,'push','origin','main')
+            self.bootstrap_fixture_source(repo)
             worker=self.worker(repo,'worker');ready=self.commit(worker,name,'new')
             with patch.object(adapter.reconcile,'_run_checks',return_value=['fixture checks']):
                 result=adapter.ready_sync(worker,ready,machine='test',skill_roots=[live],include=[name])
@@ -174,6 +182,7 @@ class ReadyRolloutRegressionTests(unittest.TestCase):
             name='skills/kept/fixture.txt';(repo/name).write_text('old')
             self.fleet.render_snapshot(repo,repo/'render/fleet');self.fleet.apply_snapshot(repo/'render/fleet',live)
             self.git(repo,'add',name);self.git(repo,'commit','-m','baseline asset');self.git(repo,'push','origin','main')
+            self.bootstrap_fixture_source(repo)
             worker=self.worker(repo,'worker');ready=self.commit(worker,name,'new')
             with patch.object(adapter.reconcile,'_run_checks',return_value=['fixture checks']):
                 result=adapter.ready_sync(worker,ready,machine='test',skill_roots=[live],include=[name],source_only=True)
@@ -184,6 +193,183 @@ class ReadyRolloutRegressionTests(unittest.TestCase):
             resumed=adapter.rollout_published(worker,result['commit'],machine='test')
             self.assertEqual(resumed['result'],'synced',resumed)
             self.assertEqual((live/'kept/fixture.txt').read_text(),'new')
+
+    def test_include_only_still_preserves_a_private_managed_origin(self):
+        adapter=fixtures.load_tool('worktree_sync')
+        with provided_workspace() as temporary:
+            repo,live,remote=self.setup_git(Path(temporary))
+            name='skills/kept/fixture.txt';before=(live/'kept/fixture.txt').read_bytes()
+            worker=self.worker(repo,'worker');ready=self.commit(worker,name,'new')
+            with patch.object(adapter.reconcile,'_run_checks',return_value=['fixture checks']):
+                result=adapter.ready_sync(worker,ready,machine='test',skill_roots=[live],include=[name])
+            self.assertEqual(result['result'],'incomplete',result)
+            self.assertFalse(result['sync_complete'])
+            self.assertEqual((live/'kept/fixture.txt').read_bytes(),before)
+            self.assertTrue((repo/'.git/agent-signal-integration.json').is_file())
+            self.assertIn('unpublished managed owners',result['targets'][str(live)]['reason'])
+
+    def ready_cli(self, worker, ready, live, action='sync', extra=(), owner='kept'):
+        output=io.StringIO()
+        argv=[action,'--repo',str(worker),'--ready',ready,'--machine','test',
+              '--skill-root',str(live),'--adopt',owner,*extra]
+        # These minimal fixtures contain no application validation scripts.
+        # Git, publisher, install, journal and completion are real production paths.
+        with patch.object(reconcile,'_run_checks',return_value=['fixture validators']),redirect_stdout(output):
+            code=reconcile.main(argv)
+        return code,json.loads(output.getvalue())
+
+    def test_normal_cli_retains_selected_body_readback_after_inner_copy(self):
+        with provided_workspace() as temporary:
+            repo,live,remote=self.setup_git(Path(temporary))
+            worker=self.worker(repo,'worker')
+            ready=self.commit(worker,'skills/kept/fixture.txt','selected update')
+            reads=[]
+            def native(host,root,required,retired):
+                reads.append((host,list(required)))
+                return {'verified':all((root/name/'SKILL.md').read_bytes()==(worker/'skills'/name/'SKILL.md').read_bytes() for name in required)}
+            with patch.object(install,'verify_fleet_discovery',side_effect=native):
+                code,result=self.ready_cli(worker,ready,live)
+            self.assertEqual(code,0,result);self.assertEqual(result['result'],'synced',result)
+            self.assertEqual(self.git(remote,'rev-parse','main'),result['commit'])
+            self.assertTrue(result['sync_complete']);self.assertEqual((live/'kept/fixture.txt').read_text(),'selected update')
+            self.assertEqual({host for host,_ in reads},{'codex','hermes','omp'})
+            self.assertTrue(all('kept' in required for _,required in reads),reads)
+
+    def test_normal_cli_resumes_published_partial_without_new_push(self):
+        with provided_workspace() as temporary:
+            repo,live,remote=self.setup_git(Path(temporary))
+            worker=self.worker(repo,'worker')
+            ready=self.commit(worker,'skills/kept/fixture.txt','selected update')
+            with patch.object(install,'verify_fleet_discovery',return_value={'verified':False,'reason':'fixture native reader unavailable'}):
+                code,first=self.ready_cli(worker,ready,live)
+            self.assertEqual(code,2,first);self.assertEqual(first['result'],'incomplete',first)
+            commit=self.git(remote,'rev-parse','main')
+            journal=repo/'.git/agent-signal-integration.json'
+            retained=journal.read_bytes()
+            wrong_code,wrong=self.ready_cli(worker,ready,live,extra=['--include','unrelated.md'])
+            self.assertEqual(wrong_code,2,wrong);self.assertNotEqual(wrong['result'],'synced')
+            self.assertEqual(journal.read_bytes(),retained)
+            plan_code,plan=self.ready_cli(worker,ready,live,action='plan')
+            self.assertEqual(plan_code,0,plan);self.assertEqual(plan['result'],'ready',plan)
+            self.assertTrue(plan['pending_target_verification'])
+            self.assertEqual(journal.read_bytes(),retained)
+            self.assertFalse(first.get('sync_complete',True),first)
+            self.assertFalse(first.get('agents_verified',True),first)
+            self.assertFalse(first.get('installed_verified',True),first)
+            with patch.object(rollout.sync_git,'publish',side_effect=AssertionError('published retry must not push')), \
+                 patch.object(fleet,'apply_snapshot',side_effect=AssertionError('already installed bytes must not be reapplied')):
+                code,resumed=self.ready_cli(worker,ready,live)
+            self.assertEqual(code,0,resumed);self.assertEqual(resumed['result'],'synced',resumed)
+            self.assertTrue(resumed['sync_complete'])
+            self.assertEqual(resumed['commit'],commit);self.assertEqual(self.git(remote,'rev-parse','main'),commit)
+            self.assertFalse(journal.exists())
+
+    def test_normal_cli_resumes_import_without_reclassifying_own_install_as_collision(self):
+        from test_requested_import import RequestedImportTests
+        helper=RequestedImportTests();helper.fleet=self.fleet;helper.reconcile=self.reconcile
+        with provided_workspace() as temporary:
+            repo,live,remote,worker,row=helper.prepare(Path(temporary))
+            ready=helper.ready(worker,row)
+            extra=['--include','registry.json','--include','contracts/ownership.json',
+                   '--include','evals/results/requested.json']
+            with patch.object(install,'verify_fleet_discovery',return_value={'verified':False,'reason':'fixture native reader unavailable'}):
+                code,first=self.ready_cli(worker,ready,live,extra=extra,owner='requested')
+            self.assertEqual(code,2,first);self.assertEqual(first['result'],'incomplete',first)
+            self.assertTrue((live/'requested/SKILL.md').is_file())
+            commit=self.git(remote,'rev-parse','main')
+            proof=Path(first['operational_receipt']['path'])
+            held=proof.with_suffix('.held')
+            self.assertTrue(proof.resolve().is_relative_to(Path(temporary).resolve()))
+            retained=(repo/'.git/agent-signal-integration.json').read_bytes()
+            proof.rename(held)
+            try:
+                _,missing=self.ready_cli(worker,ready,live,action='plan',extra=extra,owner='requested')
+                self.assertEqual(missing['result'],'review-required',missing)
+                _,blocked=self.ready_cli(worker,ready,live,extra=extra,owner='requested')
+                self.assertEqual(blocked['result'],'incomplete',blocked)
+                self.assertEqual((repo/'.git/agent-signal-integration.json').read_bytes(),retained)
+                self.assertEqual(self.git(remote,'rev-parse','main'),commit)
+            finally:
+                held.rename(proof)
+            plan_code,plan=self.ready_cli(worker,ready,live,action='plan',extra=extra,owner='requested')
+            self.assertEqual(plan['result'],'ready',plan)
+            with patch.object(rollout.sync_git,'publish',side_effect=AssertionError('resume must not push')):
+                code,resumed=self.ready_cli(worker,ready,live,extra=extra,owner='requested')
+            self.assertEqual(code,0,resumed);self.assertEqual(resumed['result'],'synced',resumed)
+            self.assertEqual(self.git(remote,'rev-parse','main'),commit)
+
+    def test_normal_cli_recovers_after_apply_then_readback_error_without_reapply(self):
+        with provided_workspace() as temporary:
+            repo,live,remote=self.setup_git(Path(temporary))
+            worker=self.worker(repo,'worker')
+            ready=self.commit(worker,'skills/kept/fixture.txt','selected update')
+            published_snapshot=repo/'.git/agent-signal-published/render/fleet'
+            apply=fleet.apply_snapshot;verify=fleet.verify_snapshot
+            events={'applied':False,'failed_read':False}
+            def applying(snapshot,root,**options):
+                value=apply(snapshot,root,**options)
+                if Path(snapshot)==published_snapshot and root==live:
+                    events['applied']=True
+                return value
+            def reading(snapshot,root,**options):
+                if Path(snapshot)==published_snapshot and root==live and events['applied'] and not events['failed_read']:
+                    events['failed_read']=True
+                    raise OSError('fixture post-apply readback unavailable')
+                return verify(snapshot,root,**options)
+            with patch.object(fleet,'apply_snapshot',side_effect=applying), \
+                 patch.object(fleet,'verify_snapshot',side_effect=reading):
+                code,first=self.ready_cli(worker,ready,live)
+            self.assertEqual(code,2,first);self.assertEqual(first['result'],'incomplete',first)
+            self.assertTrue(events['applied']);self.assertTrue(events['failed_read'])
+            journal=repo/'.git/agent-signal-integration.json';retained=journal.read_bytes()
+            state=json.loads(retained)['rollout']['targets'][str(live)]
+            self.assertEqual(state['phase'],'blocked')
+            commit=self.git(remote,'rev-parse','main')
+            body=live/'kept/fixture.txt';body_raw=body.read_bytes()
+            metadata=live/fleet.STATE_FILE;metadata_raw=metadata.read_bytes()
+            # A legacy blocked label or a merely truthy marker cannot invent
+            # successful installation. Only the production apply recorded it.
+            for marker in (None,1):
+                changed=json.loads(retained)
+                target=changed['rollout']['targets'][str(live)]
+                if marker is None:target.pop('installation_complete',None)
+                else:target['installation_complete']=marker
+                changed_raw=json.dumps(changed).encode()
+                journal.write_bytes(changed_raw)
+                try:
+                    with patch.object(rollout.sync_git,'publish',side_effect=AssertionError('must not repush')), \
+                         patch.object(fleet,'apply_snapshot',side_effect=AssertionError('must not infer install progress')):
+                        retry_code,blocked=self.ready_cli(worker,ready,live)
+                    self.assertEqual(retry_code,2,blocked);self.assertEqual(blocked['result'],'incomplete')
+                    self.assertEqual(journal.read_bytes(),changed_raw)
+                finally:
+                    journal.write_bytes(retained)
+            # Real user content/state drift must still refuse despite retained
+            # installation progress. Restore only these disposable fixture bytes.
+            for target,changed,original in [
+                (body,body_raw+b' user edit',body_raw),
+                (metadata,json.dumps({**json.loads(metadata_raw),'skills':{
+                    **json.loads(metadata_raw)['skills'],'kept':{
+                        **json.loads(metadata_raw)['skills']['kept'],'source_snapshot':'foreign-origin'}}}).encode(),metadata_raw),
+            ]:
+                with self.subTest(target=target.name):
+                    target.write_bytes(changed)
+                    try:
+                        with patch.object(rollout.sync_git,'publish',side_effect=AssertionError('must not repush')), \
+                             patch.object(fleet,'apply_snapshot',side_effect=AssertionError('must not overwrite drift')):
+                            retry_code,blocked=self.ready_cli(worker,ready,live)
+                        self.assertEqual(retry_code,2,blocked);self.assertEqual(blocked['result'],'incomplete')
+                        self.assertEqual(target.read_bytes(),changed)
+                        self.assertEqual(journal.read_bytes(),retained)
+                    finally:
+                        target.write_bytes(original)
+            with patch.object(rollout.sync_git,'publish',side_effect=AssertionError('published retry must not push')), \
+                 patch.object(fleet,'apply_snapshot',side_effect=AssertionError('installed state must not reapply')):
+                retry_code,resumed=self.ready_cli(worker,ready,live)
+            self.assertEqual(retry_code,0,resumed);self.assertEqual(resumed['result'],'synced',resumed)
+            self.assertTrue(resumed['sync_complete'])
+            self.assertEqual(self.git(remote,'rev-parse','main'),commit)
+            self.assertFalse(journal.exists())
 
 
 class PublishedRepeatTests(unittest.TestCase):
