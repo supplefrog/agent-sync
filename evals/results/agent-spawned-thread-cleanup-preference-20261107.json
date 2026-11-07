@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "scope": "Shared standing preference for completed temporary agent-spawned threads.",
+  "checks": "Rendered all three native overlays, refreshed the exact recovery text and host bindings, and checked the explicit preference record. Updated only the three projected artifact hashes and increased each standing text budget by the exact added bytes.",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "change_kind": "user-preference",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The published shared core has a stale-file cleanup rule but lacks the requested preference for completed agent-spawned threads.",
+      "evidence": "Explicit user correction and inspection of the published shared core, host overlays, and Codex native deletion contract.",
+      "why_instruction": "Record the requested closeout preference at the shared standing owner so native overlays carry it.",
+      "alternative": "A chat-local reminder would not reach new sessions. Automatic deletion would require separate host support and authority.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "fefa76dee2bf0838fbe4126ad5249e4dd15d54be96ab68f9c2efcccefc2c4a90",
+          "after_sha256": "bf8a576fba995b72d58b3c299d041c24c690798dd57f87e7d3631322f23b8fed"
+        }
+      },
+      "user_preference": {
+        "request": "Prefer deleting agent-spawned threads after their job is done.",
+        "scope": "Completed temporary agent-spawned threads after preservation of necessary results and evidence, with existing host approval requirements and user-owned conversation boundaries.",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "Explicit user correction to the standing shared core preference.",
+      "requirement_change": false,
+      "requirement_reason": "Existing closeout and preservation intent already governs temporary work. This records the user's cleanup preference within those boundaries.",
+      "checks": "Canonical render and readback plus exact recovery manifest and host-delta bindings.",
+      "outcome_review": {
+        "expected": "Future sessions receive the same cleanup preference while preserving required evidence and host approval rules.",
+        "observed": "The shared source projects the identical preference into the Codex, Hermes, and OMP overlays.",
+        "evidence": "evals/results/agent-spawned-thread-cleanup-preference-20261107.json",
+        "limitations": "This is a user preference. Permanent chat deletion remains subject to the host's approval contract. The live OMP output-rule edit is independent and outside this scoped deployment."
+      },
+      "artifacts": {
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "fefa76dee2bf0838fbe4126ad5249e4dd15d54be96ab68f9c2efcccefc2c4a90",
+          "after_sha256": "bf8a576fba995b72d58b3c299d041c24c690798dd57f87e7d3631322f23b8fed"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing closeout and verification obligations continue to apply."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing closeout and verification obligations continue to apply."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Record the standing preference at its owner."
+        }
+      ]
+    }
+  ],
+  "rollout_scope": "Codex and Hermes native overlays match the previous managed files. The OMP source projection is checked, but its live overlay has a separate output-rule edit. Preserve that live divergence."
+}

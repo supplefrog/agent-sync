@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:b61def09b5f230af0d200c20e0148de2ef28fd39ae86d4de1e808f5e64657c83"
+      "version_or_hash": "sha256:ca6fb8af99bfb4a6f8794e8833d48b68125cb2026c8c8c3f7b3e8018af98082d"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:0cd9c0e6b5cad603d482fca7d487ec15092810be2cfbca19a6eff86b086f393d"
+      "version_or_hash": "sha256:05c5c1adaf336dbdfee7435dabddd05e7f0a5096656591c745268a115096cf49"
     },
     {
       "category": "instructions",
@@ -218,7 +218,7 @@
         "reference": "omp:global-instructions"
       },
       "source_identity": "recovery-artifact:omp:global-instructions",
-      "version_or_hash": "sha256:02d478ddfff7453c80e3e15e9162179d57ba9f45fefe2a304b41d4fc967f93ef"
+      "version_or_hash": "sha256:b1a16f9d4d3638499640d1f31c01e8c2922515ffa13625e3a6288d52bf9514ca"
     },
     {
       "category": "hook",
