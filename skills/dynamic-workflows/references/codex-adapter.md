@@ -1,8 +1,8 @@
 # Codex V3 workflow adapter
 
-Codex uses the portable state CLI plus native workers; there is no second executable adapter.
+Codex uses the portable state CLI and native workers. The Codex availability helper qualifies routes before dispatch and leaves scheduling and lifecycle state with the portable CLI.
 
-For each dependency-ready V3 task, build explicit `execution_context` JSON from the actual controller state, including inherited context or profile identity supplied separately from the task prompt. Call `dispatch` once with that JSON.
+For each dependency-ready V3 task, build explicit `execution_context` JSON from the actual controller state, including inherited context or profile identity supplied separately from the task prompt. For the on-demand route, add `--reverify-codex` on initial dispatch.
 
 - `parent` or `deterministic`: show the returned action to the parent. After the parent actually performs and checks the work, run `claim-parent`, then `start` with the exact `parent-sequential:<task-id>` handle, and `finish` with the matching token and real output path.
 - `defer`: leave the task pending and visible. Do not claim it or repeatedly call `ready` to manufacture progress.
@@ -10,7 +10,17 @@ For each dependency-ready V3 task, build explicit `execution_context` JSON from 
 
 ## Route and resource scope
 
-`codex-gpt61-sol-medium-workflow` selects the native ChatGPT subscription route for GPT-6.1 Sol at medium effort. The catalog limits this cell to tasks with no required tools or effects. For a bounded, low-risk task, provide an independent complete verifier, one attempt, a current `codex-main` quota observation in percentage points, and an explicit route preference when cost is unknown. Check the exact callability evidence and its validity window before a new dispatch. Refresh expired evidence with a new native observation and retain old pins. Reject mismatched provider, model or effort. Verify the effective child settings using native session metadata where available.
+Start with the V3 plan template. Set the exact `requirements.model`, `requirements.reasoning_effort` and tool names. Use `unknown_cost_policy: explicit_preference` and `preference_order: ["codex-workflow-on-demand"]`. The account and runtime must support the exact requested tuple. Each different model or effort requires its own native proof.
+
+The route accepts bounded, low-risk tasks with one attempt, no fallback, and an independent deterministic verifier with complete coverage. Tool tasks require `artifact-effects` verification. The native probes cover local `exec_command`, `shell_command`, `functions.exec` wrapping shell commands, and `apply_patch`. Use `none` for read-only effects or `reversible` for authorized local edits. Patch requires reversible effects. Include the current positive `codex-main` subscription quota in percentage points with zero reserve. The on-demand command may spend one additional native probe when proof is missing or stale.
+
+```text
+python scripts/workflow_state.py dispatch <run-dir> <task-id> --execution-context <json> --reverify-codex
+```
+
+The command reuses proof for 24 hours only when the exact tuple, tool scope, native profile, and controller execution context match and the native evidence still verifies. Otherwise it runs one scratch probe using the native ChatGPT subscription, with apps, web search and approval requests disabled. An unsupported tool, mismatched route or failed probe leaves the task unbound with a reason. Keep the cache and run state under the controller's ownership. The task's catalog and receipt freeze at first dispatch, so an unbound dependent node can refresh without changing an earlier node's receipt. The previously published fixed Codex cell remains available through ordinary catalog dispatch while its evidence is current.
+
+Verify the actual worker's native provider, model, effort, authorized tools and effects. Apply the workload's normal sandbox and approvals independently of the scratch probe.
 
 ## Verify worker release
 

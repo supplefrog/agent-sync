@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:a07fdc6b15f206cdf0f10858c299030c371ea6d9b7eb1a38c26103b1ee786828"
+      "version_or_hash": "sha256:4ff08d8b282cfe138151a73757b826c9197524d0bd4f625193d156cec87aa3e0"
     },
     {
       "category": "native-skill",
@@ -507,7 +507,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:a07fdc6b15f206cdf0f10858c299030c371ea6d9b7eb1a38c26103b1ee786828"
+      "version_or_hash": "sha256:4ff08d8b282cfe138151a73757b826c9197524d0bd4f625193d156cec87aa3e0"
     },
     {
       "category": "native-skill",
@@ -530,7 +530,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:a07fdc6b15f206cdf0f10858c299030c371ea6d9b7eb1a38c26103b1ee786828"
+      "version_or_hash": "sha256:4ff08d8b282cfe138151a73757b826c9197524d0bd4f625193d156cec87aa3e0"
     },
     {
       "category": "curator",

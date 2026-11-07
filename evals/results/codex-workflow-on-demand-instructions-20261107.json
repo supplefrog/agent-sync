@@ -1,0 +1,296 @@
+{
+  "schema_version": 1,
+  "scope": "Codex Dynamic Workflows V3 only. Exact native subscription tuples, local shell and patch tools, and on-demand refresh for dependency-ready tasks.",
+  "baseline": "The published Codex cell is a fixed, tool-free model and effort with an expiring manual observation.",
+  "design": "Retain the existing portable selector and lifecycle. Verify native tool and child events, reuse current scope-bound native evidence, and freeze the resulting catalog for the individual task.",
+  "live_verification": {
+    "native_runtime": "0.167.0-alpha.3.2",
+    "exact_route": {
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "provider": "openai-codex"
+    },
+    "observed_tools": [
+      "apply_patch",
+      "exec_command",
+      "functions.exec"
+    ],
+    "verified_effects": "reversible",
+    "on_demand": {
+      "cold_native_probe": true,
+      "native_probe_approval_policy": "never",
+      "warm_cache_hit": true,
+      "task_catalog_locator_matches_hash": true
+    },
+    "workload": {
+      "native_worker_terminal": true,
+      "controller_exit": 0,
+      "attempts": 1,
+      "workflow_status": "succeeded",
+      "native_workload_approval_policy": "on-request",
+      "independent_fixture_sha256": "c09da94f6a42f05a32e3450594baa261a12a4ff53b301e764ce6172290b0cc15"
+    },
+    "limits": "Live cold and warm paths tested on the named route. Expiry and other exact tuple handling are covered with deterministic controls, and any other tuple requires a native check. Ordinary workload approval settings were preserved."
+  },
+  "deterministic_verification": "178 targeted tests and 60 subtests passed, including cache reuse and expiry, profile separation, forged evidence, tool/refusal controls, legacy replay, and task-local catalog identity.",
+  "rollback": "Reconcile a scoped revert of the adapter and tests. Prior runs retain their original receipts. Runs with on-demand candidate overlays require the matching replay implementation.",
+  "limitations": "Live worker qualification exercised GPT-6.1 Sol at high effort. Generic acceptance of exact names is covered by deterministic tests. Other tuples must pass their own native probe. External connectors and effects are outside this route.",
+  "instruction_changes": [
+    {
+      "owner": "skills/dynamic-workflows",
+      "change_kind": "requested-edit",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "Current instructions describe only a static Codex route and manual availability refresh.",
+      "evidence": "The checked native dispatch and workload recorded here exercised the implemented route and its worker lifecycle.",
+      "why_instruction": "Route Codex callers to the implemented on-demand command and document its actual proof, budget, tool, and replay boundaries.",
+      "alternative": "Leaving the older adapter procedure unchanged omits the new ordinary entry point. A second scheduler would duplicate durable state and is unnecessary.",
+      "artifacts": {
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "2ed94d43c99110515a11f5d1846c24f367adeaa8be0c1b0e8d6d4d7988981596",
+          "after_sha256": "9aaa3cfc4d7bc1538903ccdf00b4feb6cebc2d8ca43813ba5e4e27696de06fac"
+        },
+        "skills/dynamic-workflows/references/codex-adapter.md": {
+          "before_sha256": "2cb871d3a781b8bf90de1b3bc668a17521aeef4ff0b1ffccd17f2085031172c7",
+          "after_sha256": "13433d13b98050e8bf6fbed4fbcdab15f26bddc14835f87b724f8eb3ebbc15ca"
+        },
+        "skills/dynamic-workflows/references/runtime-contract.md": {
+          "before_sha256": "32f567852ac6102538050a4d5005b8689192e5c07fd8b6666a85a41294f5aa76",
+          "after_sha256": "7c0489f7bb064ec0cb87803286a51219710f655c125d24e88a7495ea460cc2b6"
+        }
+      },
+      "requested_edit_acceptance": {
+        "classification": "requested-existing-instruction-edit",
+        "baseline_commit": "b496870271ff5c757aa10ae4c6ab27dddaf55aac",
+        "license": "UNLICENSED",
+        "before_package_sha256": "eada3b88e7d30ca5ecb3bf2f9db3d3d3ef40a585b4221f5953417a32bbe0e28a",
+        "after_package_sha256": "1cf947a277c115d2e03c418b018a96bccbb7e828aa60b331b9ba3db186089e71",
+        "files": {
+          "agents/openai.yaml": {
+            "before_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44",
+            "after_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44"
+          },
+          "assets/templates/code-audit.json": {
+            "before_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905",
+            "after_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905"
+          },
+          "assets/templates/deep-research.json": {
+            "before_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466",
+            "after_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466"
+          },
+          "assets/templates/migration.json": {
+            "before_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02",
+            "after_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02"
+          },
+          "assets/templates/workflow-v3-execution.json": {
+            "before_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0",
+            "after_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0"
+          },
+          "assets/templates/workflow-v3-readonly.json": {
+            "before_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c",
+            "after_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c"
+          },
+          "assets/templates/workflow-v3.json": {
+            "before_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e",
+            "after_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e"
+          },
+          "assets/templates/workflow.json": {
+            "before_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b",
+            "after_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b"
+          },
+          "references/codex-adapter.md": {
+            "before_sha256": "2cb871d3a781b8bf90de1b3bc668a17521aeef4ff0b1ffccd17f2085031172c7",
+            "after_sha256": "13433d13b98050e8bf6fbed4fbcdab15f26bddc14835f87b724f8eb3ebbc15ca"
+          },
+          "references/omp-adapter.md": {
+            "before_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989",
+            "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+          },
+          "references/runtime-contract.md": {
+            "before_sha256": "32f567852ac6102538050a4d5005b8689192e5c07fd8b6666a85a41294f5aa76",
+            "after_sha256": "7c0489f7bb064ec0cb87803286a51219710f655c125d24e88a7495ea460cc2b6"
+          },
+          "scripts/codex_availability.py": {
+            "before_sha256": "53e1f1f4d15dc7a66a5d4dddcc504f28b6943ad5960eedb28cbe71af4eadf998",
+            "after_sha256": "53e1f1f4d15dc7a66a5d4dddcc504f28b6943ad5960eedb28cbe71af4eadf998"
+          },
+          "scripts/install_omp_route_agents.py": {
+            "before_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527",
+            "after_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527"
+          },
+          "scripts/test_workflow_state.py": {
+            "before_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c",
+            "after_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c"
+          },
+          "scripts/workflow_state.py": {
+            "before_sha256": "2fc26620c4df85e75d4abe10678799d96633b1cc10d8770377e4bc19cb00271d",
+            "after_sha256": "2fc26620c4df85e75d4abe10678799d96633b1cc10d8770377e4bc19cb00271d"
+          },
+          "SKILL.md": {
+            "before_sha256": "2ed94d43c99110515a11f5d1846c24f367adeaa8be0c1b0e8d6d4d7988981596",
+            "after_sha256": "9aaa3cfc4d7bc1538903ccdf00b4feb6cebc2d8ca43813ba5e4e27696de06fac"
+          }
+        },
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "Explicit request to extend Codex Dynamic Workflows for tool use, on-demand availability, and user-selected exact native routes.",
+      "requirement_change": false,
+      "requirement_reason": "The existing durable routed execution contract already permits verified native routes under current task authorization. These changes provide the missing host implementation and document its scope.",
+      "checks": "Real native probe, cache readback, worker result and release, source-bound workflow artifacts, and deterministic controls for mismatch, expiry and replay.",
+      "outcome_review": {
+        "expected": "A dependency-ready Codex task selects its exact native tuple only after a fresh or currently verified matching observation, uses its requested local tools, and retains immutable replay.",
+        "observed": "The qualified native tool worker completed and the controller exited. A second dispatch reused the independently revalidated observation and stored its own effective catalog. A simulated expiry refreshed an unbound dependent task while preserving the upstream receipt.",
+        "evidence": "evals/results/codex-workflow-on-demand-instructions-20261107.json",
+        "limitations": "Live worker qualification exercised GPT-6.1 Sol at high effort. Generic acceptance of exact names is covered by deterministic tests. Other tuples must pass their own native probe. External connectors and effects are outside this route."
+      },
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454",
+          "after_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa",
+          "after_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "923adca7174c8205ecb6801472d7193cc4055e5c821dc759d68c8ca6515c995c",
+          "after_sha256": "923adca7174c8205ecb6801472d7193cc4055e5c821dc759d68c8ca6515c995c"
+        },
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "2ed94d43c99110515a11f5d1846c24f367adeaa8be0c1b0e8d6d4d7988981596",
+          "after_sha256": "9aaa3cfc4d7bc1538903ccdf00b4feb6cebc2d8ca43813ba5e4e27696de06fac"
+        },
+        "skills/dynamic-workflows/references/codex-adapter.md": {
+          "before_sha256": "2cb871d3a781b8bf90de1b3bc668a17521aeef4ff0b1ffccd17f2085031172c7",
+          "after_sha256": "13433d13b98050e8bf6fbed4fbcdab15f26bddc14835f87b724f8eb3ebbc15ca"
+        },
+        "skills/dynamic-workflows/references/omp-adapter.md": {
+          "before_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989",
+          "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+        },
+        "skills/dynamic-workflows/references/runtime-contract.md": {
+          "before_sha256": "32f567852ac6102538050a4d5005b8689192e5c07fd8b6666a85a41294f5aa76",
+          "after_sha256": "7c0489f7bb064ec0cb87803286a51219710f655c125d24e88a7495ea460cc2b6"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f",
+          "after_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807",
+          "after_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "skills/dynamic-workflows/SKILL.md",
+          "disposition": "updated",
+          "reason": "Document the new ordinary Codex dispatch path and its observed limits."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/codex-adapter.md",
+          "disposition": "updated",
+          "reason": "Document the new ordinary Codex dispatch path and its observed limits."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/omp-adapter.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/runtime-contract.md",
+          "disposition": "updated",
+          "reason": "Document the new ordinary Codex dispatch path and its observed limits."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        }
+      ]
+    }
+  ]
+}

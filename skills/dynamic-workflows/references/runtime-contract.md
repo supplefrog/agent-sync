@@ -30,7 +30,7 @@ requirements plan
 - V2 retries reuse the same receipt. V3 supports one execution attempt in this consumer. No automatic Medium → High → xhigh → Max ladder exists.
 - An unavailable or mismatched route fails closed. A human or separately authorized new task owns escalation.
 - Legacy `difficulty` plans retain the old three-route policy only for compatibility.
-- V3 `route_request` tasks are a third exclusive plan mode. Initialization snapshots the separate V3 catalog plus selector, materializer, and materializer-schema identities without selecting; dependency-ready dispatch binds the actual execution input once and replays it thereafter. Run snapshot filenames are fixed. Historical executable sources must match admitted current/history bytes; an old materializer whose pinned schema data is no longer admitted fails closed.
+- V3 `route_request` tasks are a third exclusive plan mode. Initialization snapshots the separate V3 catalog plus selector, materializer, and materializer-schema identities without selecting. Dependency-ready dispatch binds the actual execution input once and replays it thereafter. The Codex on-demand path also freezes a task-local catalog and native observation at that boundary. A later availability refresh applies only to unbound tasks. Historical executable sources must match admitted current/history bytes. An old materializer whose pinned schema data is no longer admitted fails closed.
 
 Task states:
 
