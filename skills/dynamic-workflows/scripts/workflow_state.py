@@ -117,7 +117,7 @@ def atomic_bytes(path: Path, value: bytes) -> None:
 
 
 @contextmanager
-def _exclusive_lock(lock_path: Path, purpose: str):
+def _exclusive_lock(lock_path: Path, purpose: str, *, timeout: float = 30):
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     with lock_path.open("a+b") as handle:
         handle.seek(0, os.SEEK_END)
@@ -129,7 +129,7 @@ def _exclusive_lock(lock_path: Path, purpose: str):
         if os.name == "nt":
             import msvcrt
 
-            deadline = time.monotonic() + 30
+            deadline = time.monotonic() + timeout
             while True:
                 try:
                     msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
@@ -1319,6 +1319,75 @@ def _v3_input_descriptor(task: dict[str, Any], prompt: str, dependencies: list[d
     }
 
 
+def _codex_candidate(surface, proof):
+    route = {
+        "host": "codex", "transport": surface, "provider": "openai-codex",
+        "model": proof["model"], "reasoning_effort": proof["reasoning_effort"],
+        "runtime": "codex-native-subagents/" + proof["version"],
+        "contract_sha256": proof["probe_contract"],
+    }
+    digest = receipt_digest(proof)
+    parts = {"generation": None, "verification": None, "fallback": None}
+    return {
+        "id": "codex-workflow-on-demand",
+        "route": route,
+        "availability": {
+            "status": "verified", "observed_at": proof["observed_at"], "valid_until": proof["valid_until"],
+            "route_sha256": receipt_digest(route), "context_tokens": proof["context_tokens"],
+            "tools_verified": proof["tools"], "allowed_effects": [proof["effects"]],
+            "evidence": {"locator": f"inline:codex-native-probe/{digest}", "sha256": digest},
+        },
+        "quality": [], "benchmark_priors": [],
+        "cost": {
+            "billing": "subscription", "basis": "unknown",
+            "task_contract_sha256": None, "verifier_sha256": None, "route_sha256": None,
+            "api_usd": parts,
+            "quota": {"bucket": "codex-main", "unit": "percentage-points", "parts": parts},
+            "evidence": None,
+        },
+    }
+def _codex_catalog(catalog, task, surface, descriptor):
+    """Overlay the exact frozen candidate without rebuilding its policy metadata."""
+    route_id = "codex-workflow-on-demand"
+    if any(candidate["id"] == route_id for candidate in catalog["candidates"]):
+        raise PlanError("The Codex on-demand route is reserved for verified native observations")
+    proof = descriptor.get("codex_availability")
+    candidate = descriptor.get("codex_catalog_candidate")
+    if proof is None and candidate is None:
+        return catalog
+    required = task["route_request"]["requirements"]
+    if (not isinstance(proof, dict) or not isinstance(candidate, dict)
+            or surface != "codex-workflow" or candidate["id"] != route_id
+            or proof["model"] != required["model"] or proof["reasoning_effort"] != required["reasoning_effort"]
+            or proof["tools"] != sorted(required["tools"]) or proof["effects"] != task["route_request"]["effects"]
+            or candidate["availability"]["evidence"]["sha256"] != receipt_digest(proof)):
+        raise PlanError("Frozen Codex availability does not match the requested route scope")
+    return {**catalog, "candidates": [*catalog["candidates"], candidate]}
+
+
+def _prepare_codex_dispatch(run_dir, task_id, execution_context, trusted_manifest_sha256):
+    """Check readiness before any native probe, without holding the run state lock."""
+    plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
+    task = task_map(plan).get(task_id)
+    if state["target_surface"] != "codex-workflow" or task is None or "route_request" not in task:
+        raise PlanError("--reverify-codex applies to Codex V3 route_request tasks")
+    if state["tasks"][task_id]["dispatch"] is not None:
+        return None
+    if task_id not in ready_tasks(run_dir, trusted_manifest_sha256):
+        raise PlanError(f"Task is not dependency-ready for a Codex availability check: {task_id}")
+    load_v3_router_snapshot(run_dir, state, manifest)
+    request = task["route_request"]
+    if request["deterministic"] is not None:
+        return None
+    import codex_availability
+    try:
+        return codex_availability.availability(
+            request, run_dir.parent / ".codex-availability", execution_context, sys.modules[__name__]
+        )
+    except (ValueError, OSError, KeyError, TypeError) as exc:
+        raise PlanError(f"Codex route availability: {exc}") from exc
+
+
 def _replay_v3_binding_locked(
     run_dir: Path,
     task_id: str,
@@ -1372,7 +1441,13 @@ def _replay_v3_binding_locked(
         )
         if expected_route_task != route_task:
             raise PlanError(f"Frozen V3 route request changed from the immutable plan for task {task_id!r}")
-        base_dispatch = selector.dispatch_decision(receipt, catalog, route_task)
+        task_catalog = _codex_catalog(catalog, task, state["target_surface"], descriptor)
+        if task_catalog is not catalog:
+            policy_path = task_artifact_path(run_dir, task_id, "route_catalog.json")
+            if (receipt.get("policy_locator") != str(policy_path.resolve())
+                    or load_json(policy_path) != task_catalog):
+                raise PlanError(f"Frozen Codex task catalog changed for task {task_id!r}")
+        base_dispatch = selector.dispatch_decision(receipt, task_catalog, route_task)
     except (ValueError, KeyError, TypeError) as exc:
         raise PlanError(f"Frozen V3 route replay failed for task {task_id!r}: {exc}") from exc
     expected_dispatch = {
@@ -1417,6 +1492,9 @@ def _replay_v3_binding_locked(
             else execution_context
         )
         live_descriptor = _v3_input_descriptor(task, prompt, dependencies, context)
+        if "codex_availability" in descriptor:
+            live_descriptor["codex_availability"] = descriptor["codex_availability"]
+            live_descriptor["codex_catalog_candidate"] = descriptor["codex_catalog_candidate"]
         try:
             live_task = materializer.materialize(
                 deepcopy(task["route_request"]), task_id=task_id,
@@ -1435,7 +1513,11 @@ def task_dispatch(
     task_id: str,
     execution_context: Any,
     trusted_manifest_sha256: str | None = None,
+    *,
+    reverify_codex: bool = False,
 ) -> dict[str, Any]:
+    proof = (_prepare_codex_dispatch(run_dir, task_id, execution_context, trusted_manifest_sha256)
+             if reverify_codex else None)
     with state_lock(run_dir):
         plan, state, manifest = load_run_snapshot(run_dir, trusted_manifest_sha256)
         task = task_map(plan).get(task_id)
@@ -1465,6 +1547,10 @@ def task_dispatch(
         materializer_source, materializer_path, (run_dir / manifest["v3_task_schema_file"]).read_bytes())
         prompt, dependencies = render_prompt_data(run_dir, task_id, trusted_manifest_sha256)
         descriptor = _v3_input_descriptor(task, prompt, dependencies, execution_context)
+        if proof is not None:
+            descriptor["codex_availability"] = proof
+            descriptor["codex_catalog_candidate"] = _codex_candidate(state["target_surface"], proof)
+        policy_path = task_artifact_path(run_dir, task_id, "route_catalog.json")
         frozen = current.get("dispatch")
         as_of = None
         try:
@@ -1473,8 +1559,13 @@ def task_dispatch(
                 host=SURFACE_HOSTS[state["target_surface"]], transport=state["target_surface"],
                 input_descriptor=descriptor, as_of=as_of,
             )
-            receipt = selector.decide_route(catalog, materialized, catalog_locator=str(catalog_locator))
-            base_dispatch = selector.dispatch_decision(receipt, catalog, materialized)
+            task_catalog = _codex_catalog(catalog, task, state["target_surface"], descriptor)
+            locator = str(policy_path.resolve()) if proof is not None else str(catalog_locator)
+            receipt = selector.decide_route(task_catalog, materialized, catalog_locator=locator)
+            if proof is not None and receipt.get("route_id") != "codex-workflow-on-demand":
+                reasons = receipt["excluded"].get("codex-workflow-on-demand", [])
+                raise PlanError(f"Codex on-demand route was not eligible: {', '.join(reasons) or receipt['selection_basis']}")
+            base_dispatch = selector.dispatch_decision(receipt, task_catalog, materialized)
         except (ValueError, KeyError, TypeError) as exc:
             raise PlanError(f"V3 dispatch failed for task {task_id!r}: {exc}") from exc
 
@@ -1499,12 +1590,14 @@ def task_dispatch(
             },
         }
         if frozen is None:
-            existing = [path.name for path in (route_task_path, receipt_path, dispatch_path) if path.exists()]
+            existing = [path.name for path in (route_task_path, receipt_path, dispatch_path, policy_path) if path.exists()]
             if existing:
                 raise PlanError(
                     f"Task {task_id!r} has an interrupted unbound V3 dispatch with existing artifacts: {existing}"
                 )
             atomic_bytes(prompt_path, prompt.encode("utf-8"))
+            if proof is not None:
+                atomic_json(policy_path, task_catalog)
             atomic_json(route_task_path, materialized)
             atomic_json(receipt_path, receipt)
             atomic_json(dispatch_path, dispatch)
@@ -2022,6 +2115,8 @@ def build_parser() -> argparse.ArgumentParser:
     dispatch.add_argument("run")
     dispatch.add_argument("task_id")
     dispatch.add_argument("--execution-context", required=True)
+    dispatch.add_argument("--reverify-codex", action="store_true",
+                          help="reuse or refresh the exact native Codex route before initial V3 dispatch")
     claim_parent = commands.add_parser("claim-parent")
     claim_parent.add_argument("run")
     claim_parent.add_argument("task_id")
@@ -2103,7 +2198,9 @@ def main(argv: list[str] | None = None) -> int:
                 execution_context = json.loads(args.execution_context)
             except json.JSONDecodeError as exc:
                 raise PlanError(f"--execution-context must be JSON: {exc}") from exc
-            print(json.dumps(task_dispatch(resolve_run(args.run), args.task_id, execution_context), indent=2, sort_keys=True))
+            action = task_dispatch(resolve_run(args.run), args.task_id, execution_context,
+                                   reverify_codex=args.reverify_codex)
+            print(json.dumps(action, indent=2, sort_keys=True))
         elif args.command == "claim-parent":
             print(claim_parent_task(resolve_run(args.run), args.task_id))
         elif args.command == "start":

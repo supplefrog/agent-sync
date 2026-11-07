@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "scope": "Codex Dynamic Workflows V3 only. Exact native subscription tuples, local shell and patch tools, and on-demand refresh for dependency-ready tasks.",
+  "baseline": "The published Codex cell is a fixed, tool-free model and effort with an expiring manual observation.",
+  "design": "Retain the existing portable selector and lifecycle. Verify native tool and child events, reuse current scope-bound native evidence, and freeze the resulting catalog for the individual task.",
+  "live_verification": {
+    "native_runtime": "0.167.0-alpha.3.2",
+    "exact_route": {
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "provider": "openai-codex"
+    },
+    "observed_tools": [
+      "apply_patch",
+      "exec_command",
+      "functions.exec"
+    ],
+    "verified_effects": "reversible",
+    "on_demand": {
+      "cold_native_probe": true,
+      "native_probe_approval_policy": "never",
+      "warm_cache_hit": true,
+      "task_catalog_locator_matches_hash": true
+    },
+    "workload": {
+      "native_worker_terminal": true,
+      "controller_exit": 0,
+      "attempts": 1,
+      "workflow_status": "succeeded",
+      "native_workload_approval_policy": "on-request",
+      "independent_fixture_sha256": "c09da94f6a42f05a32e3450594baa261a12a4ff53b301e764ce6172290b0cc15"
+    },
+    "limits": "Live cold and warm paths tested on the named route. Expiry and other exact tuple handling are covered with deterministic controls, and any other tuple requires a native check. Ordinary workload approval settings were preserved."
+  },
+  "deterministic_verification": "178 targeted tests and 60 subtests passed, including cache reuse and expiry, profile separation, forged evidence, tool/refusal controls, legacy replay, and task-local catalog identity.",
+  "rollback": "Reconcile a scoped revert of the adapter and tests. Prior runs retain their original receipts. Runs with on-demand candidate overlays require the matching replay implementation.",
+  "limitations": "Live worker qualification exercised GPT-6.1 Sol at high effort. Generic acceptance of exact names is covered by deterministic tests. Other tuples must pass their own native probe. External connectors and effects are outside this route.",
+  "change_reconciliation": [
+    {
+      "authority": "Explicit request to extend Codex Dynamic Workflows for tool use, on-demand availability, and user-selected exact native routes.",
+      "requirement_change": false,
+      "requirement_reason": "The existing durable routed execution contract already permits verified native routes under current task authorization. These changes provide the missing host implementation and document its scope.",
+      "checks": "Real native probe, cache readback, worker result and release, source-bound workflow artifacts, and deterministic controls for mismatch, expiry and replay.",
+      "outcome_review": {
+        "expected": "A dependency-ready Codex task selects its exact native tuple only after a fresh or currently verified matching observation, uses its requested local tools, and retains immutable replay.",
+        "observed": "The qualified native tool worker completed and the controller exited. A second dispatch reused the independently revalidated observation and stored its own effective catalog. A simulated expiry refreshed an unbound dependent task while preserving the upstream receipt.",
+        "evidence": "evals/results/codex-workflow-on-demand-runtime-20261107.json",
+        "limitations": "Live worker qualification exercised GPT-6.1 Sol at high effort. Generic acceptance of exact names is covered by deterministic tests. Other tuples must pass their own native probe. External connectors and effects are outside this route."
+      },
+      "artifacts": {
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "skills/dynamic-workflows/scripts/codex_availability.py": {
+          "before_sha256": "absent",
+          "after_sha256": "53e1f1f4d15dc7a66a5d4dddcc504f28b6943ad5960eedb28cbe71af4eadf998"
+        },
+        "skills/dynamic-workflows/scripts/workflow_state.py": {
+          "before_sha256": "e958248670977316c7bf5fbc0a7486f26b6ace9f922aab4ca7a1288382b85738",
+          "after_sha256": "2fc26620c4df85e75d4abe10678799d96633b1cc10d8770377e4bc19cb00271d"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing intent, lifecycle, and neighboring loading obligations still govern this scoped implementation."
+        }
+      ]
+    }
+  ]
+}
