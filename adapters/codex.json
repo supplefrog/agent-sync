@@ -44,7 +44,8 @@
         },
         {
           "label": "EXECUTION",
-          "shared": "execution"
+          "shared": "execution",
+          "suffix": "Prefer delegating browser and desktop UI work to a Codex subagent using the computer_use role when delegation is permitted and the subagent can access the required UI."
         },
         {
           "label": "RECONCILIATION",

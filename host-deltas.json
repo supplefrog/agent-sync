@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d"
+      "version_or_hash": "sha256:0cd9c0e6b5cad603d482fca7d487ec15092810be2cfbca19a6eff86b086f393d"
     },
     {
       "category": "instructions",

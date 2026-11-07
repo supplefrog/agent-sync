@@ -19,6 +19,7 @@ NATIVE_LEARNING_REFERENCE = NATIVE_LEARNING_OWNER + '/skills/hermes-native-learn
 NATIVE_LEARNING_MANIFEST_SHA256 = 'de0e5cf960ac6bc7c1cc849dde7bd72d12a94ea6e71cb62c7a275bbfb4313a9f'
 NATIVE_LEARNING_INDEX_SHA256 = '5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032'
 NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256 = '45ff625bff312262629c44be2d7aa7f6ebcf22614d6fcfec0827639c3a49f80e'
+NATIVE_LEARNING_VISUALS_MANIFEST_SHA256 = '070fa053f1018bd98d29ecd5f3b7922a4ef55c5172b706900a776e2730fd12be'
 
 GENERATED = {'recovery/current/hosts/codex/AGENTS.md',
              'recovery/current/hosts/hermes/SOUL.md',
@@ -528,9 +529,10 @@ def native_learning_source_reference(repo, name):
         if len(rows) != 1 or any(rows[0].get(key) != value for key, value in expected.items()):
             return False
         manifest_raw = read(NATIVE_LEARNING_OWNER + '/PUBLIC-FILES.json')
-        # Preserve original V3 recognition and add only this exact maintained package.
+        # Preserve prior bindings and admit only these exact maintained packages.
         counts = {NATIVE_LEARNING_MANIFEST_SHA256: (89, 90),
-                  NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256: (104, 105)}.get(_hash(manifest_raw))
+                  NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256: (104, 105),
+                  NATIVE_LEARNING_VISUALS_MANIFEST_SHA256: (115, 116)}.get(_hash(manifest_raw))
         if counts is None:
             return False
         manifest = json.loads(manifest_raw)

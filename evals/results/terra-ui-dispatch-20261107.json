@@ -1,0 +1,183 @@
+{
+  "baseline_commit": "8235bd73a973b3f5a64bcb036d836aae02ca3d60",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        ".gitattributes": {
+          "after_sha256": "5c2ad90b1dfd4a40e753a01dc3a2283d3a0330376caf8587b13a23a8793860a9",
+          "before_sha256": "507cf621923136e46f35397dae54c075d7cd969e8b7b56c0393128093e6f5b31"
+        },
+        "adapters/codex.json": {
+          "after_sha256": "c174573bb983173624c23b0e5d6516444ee87218ceb44ec7d67c3e53a3bb4294",
+          "before_sha256": "2828124a085ef2efab94460d229571b22388348c87710da06d945582fa4a4af8"
+        },
+        "contracts/surface-matrix.json": {
+          "after_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454",
+          "before_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/learning-and-taste-update.md": {
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "host-deltas.json": {
+          "after_sha256": "cd701fb729664e9b847c4f5d3988d4d3b0174cc8cbcc6f3fed0719deb5cf52e2",
+          "before_sha256": "c4e855f473d947ef39a2072280141332aa1143e36508b860208267264884c829"
+        },
+        "profiles/current-observed-defaults.json": {
+          "after_sha256": "9b27ddf9c2309c4d10228b652f1840788ce77f70bd55deb0e8ef113882a17eec",
+          "before_sha256": "6927f5f773951b75fcf1b144589ae4867cfcfbcfc5fda9fd37102f82e56ca67f"
+        },
+        "recovery.json": {
+          "after_sha256": "09e40c88e94895532f32b87658ea43c30f5cc2f3f77896b5314dab7d32331bc0",
+          "before_sha256": "b4adf217c11469817a9de23e1da68b65e0ff124f51c7c17d37ee6456c79c8d1b"
+        },
+        "recovery/current/hosts/codex/AGENTS.md": {
+          "after_sha256": "0cd9c0e6b5cad603d482fca7d487ec15092810be2cfbca19a6eff86b086f393d",
+          "before_sha256": "6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d"
+        },
+        "recovery/current/manifest.json": {
+          "after_sha256": "29042ee5e65c49184aa73e71134c734f0930d0703f371faffdee4b2cb3585867",
+          "before_sha256": "f41955bc803fe82e2d34ca623ef0ca1a81ffa0ebf17ba7e5776b09b468e1a693"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "after_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f",
+          "before_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "after_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807",
+          "before_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807"
+        },
+        "tools/instruction_changes.py": {
+          "after_sha256": "d78e15d435ef0686b0bfcf255bc9fe72ebf1b29dc64807f96a23e9605b6b908b",
+          "before_sha256": "fcaec86fcb0f4b7db7f5ce1511525345ed9f72702b5caf56d5142c5af0dd7932"
+        }
+      },
+      "authority": "The user explicitly asked to persist the Codex computer-use delegation preference and approved the scoped publication-check repair.",
+      "checks": "The canonical renderer and overlay check passed. The Codex adapter references the existing computer_use role. The existing NativeLearningMaintainedReference tests verify the published manifest and reject invalid sources.",
+      "obligations": [
+        {
+          "disposition": "updated",
+          "path": ".gitattributes",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "updated",
+          "path": "adapters/codex.json",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "unchanged",
+          "path": "contracts/surface-matrix.json",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "unchanged",
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "unchanged",
+          "path": "docs/learning-and-taste-update.md",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "unchanged",
+          "path": "docs/requirement-status.md",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "unchanged",
+          "path": "docs/system-requirements.md",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "updated",
+          "path": "host-deltas.json",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "updated",
+          "path": "profiles/current-observed-defaults.json",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "updated",
+          "path": "recovery.json",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "updated",
+          "path": "recovery/current/hosts/codex/AGENTS.md",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "updated",
+          "path": "recovery/current/manifest.json",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "unchanged",
+          "path": "skills/instruction-authoring/SKILL.md",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "unchanged",
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        },
+        {
+          "disposition": "updated",
+          "path": "tools/instruction_changes.py",
+          "reason": "Scoped preference or required verification dependency; existing capability boundaries retained."
+        }
+      ],
+      "outcome_review": {
+        "evidence": "evals/results/terra-ui-dispatch-20261107.json",
+        "expected": "Codex prefers a supported Terra subagent for UI work.",
+        "limitations": "Candidate rendering does not establish publication or behavior in a new session.",
+        "observed": "The candidate Codex overlay carries the preference in its execution section. The audit binds the exact already published package and checks every member. Two tracked LF files now check out byte-identically on Windows."
+      },
+      "requirement_change": false,
+      "requirement_reason": "The existing preference propagation requirement covers this explicit choice."
+    }
+  ],
+  "date": "2026-11-07",
+  "instruction_changes": [
+    {
+      "alternative": "Changing the general worker model would affect unrelated tasks.",
+      "artifacts": {
+        "adapters/codex.json": {
+          "after_sha256": "c174573bb983173624c23b0e5d6516444ee87218ceb44ec7d67c3e53a3bb4294",
+          "before_sha256": "2828124a085ef2efab94460d229571b22388348c87710da06d945582fa4a4af8"
+        }
+      },
+      "baseline_sufficient": false,
+      "basis": "user-correction",
+      "change_kind": "user-preference",
+      "deviation": "The computer_use role selects a model, but the Codex overlay does not prefer delegation for UI work.",
+      "evidence": "The user explicitly requested use of a GPT-6.1 Terra subagent for computer use and asked to persist that preference.",
+      "owner": "adapters/codex.json",
+      "user_preference": {
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true,
+        "request": "Prefer a GPT-6.1 Terra subagent for computer use.",
+        "scope": "Codex browser and desktop UI work where delegation and the required surface are available."
+      },
+      "why_instruction": "Add the Codex-specific dispatch preference to its existing projection and reuse the shared computer_use role."
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Codex browser and desktop UI delegation preference"
+}
