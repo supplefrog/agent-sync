@@ -67,7 +67,7 @@ A workflow task cannot widen parent authorization, filesystem roots, network acc
 
 ## Host enforcement
 
-- **Codex:** V3 parent/deterministic/defer actions use the portable dispatch and parent lifecycle directly. A model action requires an admitted `codex-workflow` catalog cell, then exact model and reasoning effort as native spawn arguments. The current V3 catalog has no such cell. Reject reported mismatches and close the worker handle; current JSONL evidence does not independently echo the child resolved route.
+- **Codex:** V3 parent/deterministic/defer actions use the portable dispatch and parent lifecycle directly. A model action requires an admitted `codex-workflow` catalog cell, then exact model and reasoning effort as native spawn arguments. Check the admitted route's current evidence and scope. Reject reported mismatches and verify handle closure or release through the Codex adapter before recording terminal workflow state.
 - **OMP:** V3 parent/deterministic/defer actions use the portable dispatch and parent lifecycle directly. A model action additionally requires an admitted `omp-workflow` catalog cell and immutable matching `route-<route-id>` agent. The current V3 catalog has no such cell, and the existing agent installer intentionally accepts only V2. Verify `resolvedModel`; reject fallback/mismatch.
 - **Hermes:** `routed_workflow` consumes this state owner and launches current native leaf children with the exact receipt tuple and fallback disabled. A trusted binding under `HERMES_HOME` pins the run manifest independently; exact run/task/handle/claim close witnesses under that trusted root gate interrupted retry. An explicit result-model mismatch fails closed. Ordinary one-shot routing remains owned by `routed_delegate_task`.
 

@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-11-07T05:50:05.072Z",
+  "route": {
+    "host": "codex",
+    "transport": "codex-workflow",
+    "provider": "openai-codex",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "medium",
+    "runtime": "codex-native-subagents/0.167.0-alpha.3.2",
+    "contract_sha256": "c0bcf216ecf14bba732e5d25ffad139896467e8065a7a0690033ea6dba2dee28"
+  },
+  "runtime": "0.167.0-alpha.3.2",
+  "scope": "One native Codex worker via dedicated Codex CLI controller and V3 workflow state.",
+  "controller": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "exit_code": 0,
+    "release": "clean exit of dedicated controller after child terminal event"
+  },
+  "child": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "medium",
+    "provider": "openai",
+    "fresh_context": true,
+    "verified_against_native_turn_context": true
+  },
+  "lifecycle": {
+    "dispatch": "model",
+    "attempts": 1,
+    "status": "succeeded",
+    "terminal_worker_before_controller_exit": true,
+    "finish_without_release_rejected": true
+  },
+  "acceptance": {
+    "oracle": "exact classification of five synthetic support requests",
+    "all_labels_matched": true,
+    "output_sha256": "2a50109fd761fe4e237f7971dbf78f59b629ff44dab0bec19391a7ba6e0ccb0d"
+  },
+  "limits": "The native launch log encrypts the prompt argument. Verification binds the workflow prompt artifact and the exact child output but does not independently compare the plaintext launch bytes. No required worker tools, external effects, comparative quality, other hosts, or cost savings were qualified. Long-lived sessions with only interrupt need a dedicated controller.",
+  "catalog_binding": {
+    "skills/openai-delegation-route-research/references/current-task-route-catalog.json": {
+      "before_sha256": "40f53732d257b0c303b65acb603119f311c778b14ca18391388adce600c6b80c",
+      "after_sha256": "6c9a7c58fe49b70675f85670f592364d67b9dd39a53ce4853d527a1537a210fc"
+    },
+    "skills/openai-delegation-route-research/references/evidence/codex-gpt61-sol-medium-native-20261107.json": {
+      "before_sha256": "absent",
+      "after_sha256": "c2741bff576a9afd58b67b009e0a2d95246a573ff4090808640b8731b410ff85"
+    }
+  },
+  "baseline": "No active V3 Codex workflow catalog cell. The native tool bridge did not expose explicit closure; two controllers stopped before claim or launch when explicit close was required.",
+  "mechanism": "Reuse V3 selector and portable state CLI. On current Codex use a dedicated native controller and require its clean exit after verified child completion. Retain direct close on hosts exposing it. Existing frozen runs and other host routes keep their bindings.",
+  "rollback": "Reconcile a revert of this scoped catalog and adapter change. New runs then use the prior catalog; existing run snapshots retain their pinned route.",
+  "support": "https://developers.openai.com/codex/subagents.md",
+  "instruction_changes": [
+    {
+      "owner": "skills/dynamic-workflows",
+      "change_kind": "requested-edit",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "Existing adapter instructions state that no Codex V3 cell exists and require a close command absent in the current tool surface.",
+      "evidence": "This receipt records a real Codex V3 routed lifecycle, including native child settings and release through dedicated controller exit.",
+      "why_instruction": "Update the existing host adapter to describe the qualified route and how its current host can supply a release witness to the unchanged workflow state machine.",
+      "alternative": "Catalog-only publication leaves stale launch guidance; a separate scheduler duplicates the existing workflow lifecycle. Completion while a long-lived controller still owns the handle fails the release requirement.",
+      "artifacts": {
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "38a977256e23fc09f889cc2e2b366af44b11da02f2b163d369084313cee1cb18",
+          "after_sha256": "2ed94d43c99110515a11f5d1846c24f367adeaa8be0c1b0e8d6d4d7988981596"
+        },
+        "skills/dynamic-workflows/references/codex-adapter.md": {
+          "before_sha256": "332a54851ff01a7d0f4f04e1af8bc9b453e1e7cf84c9872ab38300343cf051a9",
+          "after_sha256": "2cb871d3a781b8bf90de1b3bc668a17521aeef4ff0b1ffccd17f2085031172c7"
+        },
+        "skills/dynamic-workflows/references/runtime-contract.md": {
+          "before_sha256": "f7a77b8bf4342fc4d66f3f76b413aba568fbf002538575c8ad8e344d7829ac44",
+          "after_sha256": "32f567852ac6102538050a4d5005b8689192e5c07fd8b6666a85a41294f5aa76"
+        }
+      },
+      "requested_edit_acceptance": {
+        "classification": "requested-existing-instruction-edit",
+        "baseline_commit": "8235bd73a973b3f5a64bcb036d836aae02ca3d60",
+        "license": "UNLICENSED",
+        "before_package_sha256": "f6efa93353a7b4604adb69e50b5fad1ca1d426c18fb2414494061c14f7f362c6",
+        "after_package_sha256": "f402000851cba04a1fa31271f3f6ec91c1a84932dcdbed78a0f5f8b4f4fabff0",
+        "files": {
+          "agents/openai.yaml": {
+            "before_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44",
+            "after_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44"
+          },
+          "assets/templates/code-audit.json": {
+            "before_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905",
+            "after_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905"
+          },
+          "assets/templates/deep-research.json": {
+            "before_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466",
+            "after_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466"
+          },
+          "assets/templates/migration.json": {
+            "before_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02",
+            "after_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02"
+          },
+          "assets/templates/workflow-v3-execution.json": {
+            "before_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0",
+            "after_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0"
+          },
+          "assets/templates/workflow-v3-readonly.json": {
+            "before_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c",
+            "after_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c"
+          },
+          "assets/templates/workflow-v3.json": {
+            "before_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e",
+            "after_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e"
+          },
+          "assets/templates/workflow.json": {
+            "before_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b",
+            "after_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b"
+          },
+          "references/codex-adapter.md": {
+            "before_sha256": "332a54851ff01a7d0f4f04e1af8bc9b453e1e7cf84c9872ab38300343cf051a9",
+            "after_sha256": "2cb871d3a781b8bf90de1b3bc668a17521aeef4ff0b1ffccd17f2085031172c7"
+          },
+          "references/omp-adapter.md": {
+            "before_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989",
+            "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+          },
+          "references/runtime-contract.md": {
+            "before_sha256": "f7a77b8bf4342fc4d66f3f76b413aba568fbf002538575c8ad8e344d7829ac44",
+            "after_sha256": "32f567852ac6102538050a4d5005b8689192e5c07fd8b6666a85a41294f5aa76"
+          },
+          "scripts/install_omp_route_agents.py": {
+            "before_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527",
+            "after_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527"
+          },
+          "scripts/test_workflow_state.py": {
+            "before_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c",
+            "after_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c"
+          },
+          "scripts/workflow_state.py": {
+            "before_sha256": "e958248670977316c7bf5fbc0a7486f26b6ace9f922aab4ca7a1288382b85738",
+            "after_sha256": "e958248670977316c7bf5fbc0a7486f26b6ace9f922aab4ca7a1288382b85738"
+          },
+          "SKILL.md": {
+            "before_sha256": "38a977256e23fc09f889cc2e2b366af44b11da02f2b163d369084313cee1cb18",
+            "after_sha256": "2ed94d43c99110515a11f5d1846c24f367adeaa8be0c1b0e8d6d4d7988981596"
+          }
+        },
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "Explicit request to add and verify a Codex workflow route.",
+      "requirement_change": false,
+      "requirement_reason": "Existing intent already permits exact routed native execution when verified; this change supplies the missing host capability and preserves release, resource, and acceptance boundaries.",
+      "checks": "Real one-node native lifecycle; parent verified exact child route and result independently, plus the existing finish-without-release refusal.",
+      "outcome_review": {
+        "expected": "Eligible Codex V3 requests select the exact model, execute a native leaf worker and finish only after release.",
+        "observed": "One fresh native worker completed with the exact selected route. Its dedicated controller exited cleanly, and the original lifecycle finalized with one attempt and the retained result.",
+        "evidence": "evals/results/codex-workflow-v3-native-20261107.json",
+        "limitations": "The native launch log encrypts the prompt argument. Verification binds the workflow prompt artifact and the exact child output but does not independently compare the plaintext launch bytes. No required worker tools, external effects, comparative quality, other hosts, or cost savings were qualified. Long-lived sessions with only interrupt need a dedicated controller."
+      },
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454",
+          "after_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa",
+          "after_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "923adca7174c8205ecb6801472d7193cc4055e5c821dc759d68c8ca6515c995c",
+          "after_sha256": "923adca7174c8205ecb6801472d7193cc4055e5c821dc759d68c8ca6515c995c"
+        },
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "38a977256e23fc09f889cc2e2b366af44b11da02f2b163d369084313cee1cb18",
+          "after_sha256": "2ed94d43c99110515a11f5d1846c24f367adeaa8be0c1b0e8d6d4d7988981596"
+        },
+        "skills/dynamic-workflows/references/codex-adapter.md": {
+          "before_sha256": "332a54851ff01a7d0f4f04e1af8bc9b453e1e7cf84c9872ab38300343cf051a9",
+          "after_sha256": "2cb871d3a781b8bf90de1b3bc668a17521aeef4ff0b1ffccd17f2085031172c7"
+        },
+        "skills/dynamic-workflows/references/omp-adapter.md": {
+          "before_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989",
+          "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+        },
+        "skills/dynamic-workflows/references/runtime-contract.md": {
+          "before_sha256": "f7a77b8bf4342fc4d66f3f76b413aba568fbf002538575c8ad8e344d7829ac44",
+          "after_sha256": "32f567852ac6102538050a4d5005b8689192e5c07fd8b6666a85a41294f5aa76"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f",
+          "after_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807",
+          "after_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "skills/dynamic-workflows/SKILL.md",
+          "disposition": "updated",
+          "reason": "Qualify the existing Codex adapter and describe the observed release witness."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/codex-adapter.md",
+          "disposition": "updated",
+          "reason": "Qualify the existing Codex adapter and describe the observed release witness."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/omp-adapter.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/runtime-contract.md",
+          "disposition": "updated",
+          "reason": "Qualify the existing Codex adapter and describe the observed release witness."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Existing owner, load points and portable requirements remain valid for this Codex-scoped route."
+        }
+      ]
+    }
+  ],
+  "deterministic_checks": {
+    "targeted_tests": "169 passed with 60 subtests.",
+    "skill_validation": "26/26 skills valid.",
+    "selected_route_controls": "Unverified tool, wrong effort, missing quota, reversible effects and expired evidence each select the parent."
+  }
+}

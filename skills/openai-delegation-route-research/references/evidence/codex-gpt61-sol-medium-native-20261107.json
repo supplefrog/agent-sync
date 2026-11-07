@@ -1,0 +1,25 @@
+{
+  "observed_at": "2026-11-07T05:38:49.575000+00:00",
+  "route": {
+    "host": "codex",
+    "transport": "codex-workflow",
+    "provider": "openai-codex",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "medium",
+    "runtime": "codex-native-subagents/0.167.0-alpha.3.2",
+    "contract_sha256": "c0bcf216ecf14bba732e5d25ffad139896467e8065a7a0690033ea6dba2dee28"
+  },
+  "native_contract": {
+    "runtime": "codex-native-subagents/0.167.0-alpha.3.2",
+    "provider_binding": "Codex native openai provider, ChatGPT subscription",
+    "launch": "Fresh-context native subagent with explicit model and reasoning effort",
+    "identity_check": "Match the native child session's provider, model and reasoning effort to the receipt",
+    "lifecycle": "Claim, attach native handle, capture output, close, then finish with the same claim",
+    "effects": "none"
+  },
+  "observation": "Fresh native child completed a read-only fixture check. Its own Codex session metadata reported provider openai and the child turn context reported gpt-6.1-sol / medium.",
+  "worker_output": "ALPHA_TOTAL=21",
+  "independent_acceptance": "Fixture contains alpha 7, alpha 5, alpha 9, with two distractor rows. Parent computed 7 + 5 + 9 = 21.",
+  "catalog_context_window_tokens": 500000,
+  "scope": "Native callability only. The catalog admits 16000 task-context tokens and no required tools or effects. No task quality or cost estimate is inferred."
+}

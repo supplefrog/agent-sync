@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "catalog_version": "20260928T182423Z-hermes-gpt6-sol-low-execution",
+  "catalog_version": "20261107-codex-gpt61-sol-medium-workflow",
   "candidates": [
     {
       "id": "hermes-sol-low-inline",
@@ -200,6 +200,57 @@
         "evidence": {
           "locator": "references/evidence/hermes-gpt6-sol-low-workflow-20260928T182423Z.json",
           "sha256": "3e812b0c26268a23474d3e43f7d46d981cbc9bc2e6d622d3cfc46096a8abace5"
+        }
+      },
+      "quality": [],
+      "benchmark_priors": [],
+      "cost": {
+        "billing": "subscription",
+        "basis": "unknown",
+        "task_contract_sha256": null,
+        "verifier_sha256": null,
+        "route_sha256": null,
+        "api_usd": {
+          "generation": null,
+          "verification": null,
+          "fallback": null
+        },
+        "quota": {
+          "bucket": "codex-main",
+          "unit": "percentage-points",
+          "parts": {
+            "generation": null,
+            "verification": null,
+            "fallback": null
+          }
+        },
+        "evidence": null
+      }
+    },
+    {
+      "id": "codex-gpt61-sol-medium-workflow",
+      "route": {
+        "host": "codex",
+        "transport": "codex-workflow",
+        "provider": "openai-codex",
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "medium",
+        "runtime": "codex-native-subagents/0.167.0-alpha.3.2",
+        "contract_sha256": "c0bcf216ecf14bba732e5d25ffad139896467e8065a7a0690033ea6dba2dee28"
+      },
+      "availability": {
+        "status": "verified",
+        "observed_at": "2026-11-07T05:38:49.575000+00:00",
+        "valid_until": "2026-11-08T05:38:49.575000+00:00",
+        "route_sha256": "962fe2ab1fa8b572dca81c15bc66d8b5035b679d06e5164ca5b22e277214f1e7",
+        "context_tokens": 16000,
+        "tools_verified": [],
+        "allowed_effects": [
+          "none"
+        ],
+        "evidence": {
+          "locator": "references/evidence/codex-gpt61-sol-medium-native-20261107.json",
+          "sha256": "c2741bff576a9afd58b67b009e0a2d95246a573ff4090808640b8731b410ff85"
         }
       },
       "quality": [],

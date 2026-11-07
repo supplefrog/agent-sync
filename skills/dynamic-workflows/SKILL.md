@@ -74,15 +74,15 @@ Before spawning a routed task, atomically claim it and retain the returned token
 
 ### Codex
 
-Follow [the Codex adapter contract](references/codex-adapter.md). V2 tasks keep the existing model/render/claim lifecycle. For V3, call `dispatch` with the exact native execution context before deciding the action. The current admitted V3 catalog has no `codex-workflow` cell, so it cannot currently produce a Codex model action.
+Follow [the Codex adapter contract](references/codex-adapter.md). V2 tasks keep the existing model/render/claim lifecycle. For V3, call `dispatch` with the exact native execution context before deciding the action. Use the adapter's route and native worker closure checks before claiming a model action.
 
 For an admitted model action, use Codex-native workers:
 
 1. Read `model` and `render` outputs.
 2. Claim the node, then spawn with the exact model and reasoning effort; disable child delegation for the routed node.
 3. Record the native handle with `start --launch-token <claim-token>`.
-4. Wait for the worker, persist full output under `tasks/<id>/output.md`, close the worker handle, and call `finish --handle <native-handle> --launch-token <claim-token> --handle-closed`.
-5. Reject the result if Codex reports an effective model/effort that differs from the receipt. Current native evidence proves parent-selected launch-route enforcement, not an independent child resolved-route echo.
+4. Wait for the worker, persist full output under `tasks/<id>/output.md`, verify native handle closure or release as specified by the adapter, and call `finish --handle <native-handle> --launch-token <claim-token> --handle-closed`.
+5. Reject the result if Codex reports an effective model/effort that differs from the receipt. Check the native child's recorded route when available and retain the source of the route observation.
 
 Use native concurrency up to `max_workers`. Keep final integration and acceptance in the parent.
 

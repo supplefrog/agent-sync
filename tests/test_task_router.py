@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import copy
+from datetime import datetime, timedelta
+import hashlib
 import importlib.util
 import json
 import tempfile
@@ -197,6 +199,45 @@ class TaskRouterTests(unittest.TestCase):
         self.assertEqual(router.decide_route(old_catalog, old_task), old_receipt)
         self.assertEqual(router.replay_decision(old_receipt, old_catalog, old_task), old_receipt)
         self.assertEqual(router.dispatch_decision(old_receipt, old_catalog, old_task)["kind"], "model")
+
+    def test_current_catalog_dispatches_only_eligible_codex_workflow_tasks(self):
+        route_id = "codex-gpt61-sol-medium-workflow"
+        routing_skill = ROOT / REL
+        installed = json.loads((routing_skill / "references/current-task-route-catalog.json").read_bytes())
+        route = next(item for item in installed["candidates"] if item["id"] == route_id)
+        availability = route["availability"]
+        evidence = availability["evidence"]
+        self.assertEqual(
+            hashlib.sha256((routing_skill / evidence["locator"]).read_bytes()).hexdigest(),
+            evidence["sha256"],
+        )
+        task = request()
+        task["as_of"] = availability["observed_at"]
+        task["requirements"].update(transport="codex-workflow", model="gpt-6.1-sol", reasoning_effort="medium")
+        task["budget"].update(
+            quotas={"codex-main": {"unit": "percentage-points", "remaining": 10, "reserve": 0}},
+            preference_order=[route_id],
+            attempt_cap=1,
+        )
+        receipt = router.decide_route(installed, task)
+        self.assertEqual(receipt["route_id"], route_id)
+        self.assertEqual(router.dispatch_decision(receipt, installed, task)["kind"], "model")
+
+        expired = datetime.fromisoformat(availability["valid_until"].replace("Z", "+00:00"))
+        controls = (
+            ("requirements", "tools", ["terminal"], "required_tools_unverified"),
+            ("requirements", "reasoning_effort", "high", "required_reasoning_effort_mismatch"),
+            ("budget", "quotas", {}, "quota_state_unknown_or_incomparable"),
+            (None, "effects", "reversible", "effect_not_supported_on_surface"),
+            (None, "as_of", (expired + timedelta(seconds=1)).isoformat(), "availability_outside_valid_window"),
+        )
+        for section, key, value, reason in controls:
+            with self.subTest(field=key):
+                changed = copy.deepcopy(task)
+                (changed[section] if section else changed)[key] = value
+                rejected = router.decide_route(installed, changed)
+                self.assertEqual(rejected["outcome"], "keep_parent")
+                self.assertIn(reason, rejected["excluded"][route_id])
 
     def test_exact_transport_effort_tools_context_and_expiry_are_constraints(self):
         for field, expected in (("transport", "different-surface"), ("reasoning_effort", "ultra"), ("model", "other-model"), ("context_tokens", 1001), ("tools", ["terminal"])):
