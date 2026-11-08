@@ -23,9 +23,19 @@ export function attachVisual(binding,command) {
       ['ask','probe','recall','quiz','explain'].includes(b.name)&&!record.messages.some(m=>m.role==='toolResult'&&m.toolCallId===b.id)).at(-1)?.id;
     const anchor=binding.kind==='practice'?activeProblemOf(record.messages)?.toolCallId:pending;
     requireState(command.reveal==='now'||anchor,'invalid_visual','Deferred reveal requires a question or practice problem.');
+    const visuals=record.adapter.visuals??[];
+    if(command.replaces!==undefined) {
+      const previous=visuals.find(visual=>visual.id===command.replaces);
+      requireState(previous&&previous.id!==command.id&&
+        !visuals.some(visual=>visual.replaces===previous.id&&visual.id!==command.id),
+        'invalid_visual_replacement','Replace one current visual with a different, unused visual ID.');
+      requireState(visible(previous,record)||(command.reveal==='after-question'&&anchor===previous.questionId),
+        'invalid_visual_replacement','A correction cannot reveal a hidden visual before its original question is resolved.');
+    }
     const row={id:command.id,title:command.title.trim(),format:command.format,source:command.source,sha256:hash(command.source),
-      reveal:command.reveal,...(command.reveal==='after-question'?{questionId:anchor}: {})};
-    const visuals=record.adapter.visuals??[],old=visuals.find(v=>v.id===row.id);
+      reveal:command.reveal,...(command.reveal==='after-question'?{questionId:anchor}: {}),
+      ...(command.replaces!==undefined?{replaces:command.replaces}:{})};
+    const old=visuals.find(v=>v.id===row.id);
     requireState(!old||JSON.stringify(old)===JSON.stringify(row),'visual_identity_conflict','A saved visual ID is immutable; use a new ID for changed content.');
     requireState(old||visuals.length<8,'visual_limit','This lesson already has eight saved visuals.');
     if(!old)record.adapter.visuals=[...visuals,row];
@@ -39,7 +49,9 @@ function visible(row,record) {
   return anchor>=0&&record.messages.slice(anchor+1).some(m=>m.role==='assistant'&&(m.content??[]).some(b=>b.type==='toolCall'&&b.name==='conclude'));
 }
 export function visualDescriptors(record) {
-  return (record.adapter.visuals??[]).filter(row=>visible(row,record)).map(row=>{
+  const visuals=record.adapter.visuals??[];
+  const replaced=new Set(visuals.map(row=>row.replaces));
+  return visuals.filter(row=>!replaced.has(row.id)&&visible(row,record)).map(row=>{
     const kind=row.format==='svg'?'visual':'demo';
     return {id:row.id,title:row.title,format:row.format,kind,sha256:row.sha256,size:Buffer.byteLength(row.source),
       file:`asset-${kind}-${row.sha256}.${kind==='visual'?'svg':'html'}`};

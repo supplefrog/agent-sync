@@ -29,7 +29,7 @@ export function executeLearningCommand(binding, command) {
   requireState(object(command), 'invalid_command', 'One JSON command required.');
   requireState(command.chatId === binding.chatId, 'wrong_host_session', 'Command targets another configured lesson.');
   if(command.op==='visual') {
-    fields(command,['op','chatId','expectedRevision','authorship','id','title','format','source','reveal']);
+    fields(command,['op','chatId','expectedRevision','authorship','id','title','format','source','reveal','replaces']);
     attachVisual(binding,command);
     return {...executeLearningCommand(binding,{op:'view',chatId:binding.chatId}),operationComplete:true,persisted:true,visualId:command.id};
   }

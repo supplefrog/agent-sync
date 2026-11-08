@@ -1,10 +1,27 @@
 // SPDX-License-Identifier: AGPL-3.0-only; LearnHarness native integration. See NOTICE.md.
 
-// src/desktop-entry.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/desktop-entry.mjs
 import { host, MessageTextContent } from "@hermes/plugin-sdk";
 import * as React from "react";
 
-// src/vendor/runtime/question-pure.ts
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/lesson-layout.mjs
+function lessonResponseArea(dock, { exploration, workbench }) {
+  if (!exploration) return dock;
+  exploration.hidden = false;
+  if (!workbench) {
+    dock.append(exploration);
+    return dock;
+  }
+  const grid = dock.ownerDocument.createElement("div");
+  grid.className = "lh-workbench";
+  const response = dock.ownerDocument.createElement("div");
+  response.className = "lh-workbench-response";
+  grid.append(exploration, response);
+  dock.append(grid);
+  return response;
+}
+
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/vendor/runtime/question-pure.ts
 var CONFIDENCE_STOPS = [0, 30, 50, 70, 90, 100];
 var DEFAULT_CONFIDENCE_INDEX = 2;
 var emptyDockSelection = () => ({ selected: /* @__PURE__ */ new Set(), otherSelected: false, dontKnow: false });
@@ -22,7 +39,7 @@ function toggleOther(mode, sel) {
   return { selected: /* @__PURE__ */ new Set(), otherSelected: true, dontKnow: false };
 }
 
-// src/inline/rich-scope.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/rich-scope.mjs
 function createRichScope(renderRich) {
   let cleanups = [];
   return {
@@ -49,7 +66,7 @@ function createRichScope(renderRich) {
   };
 }
 
-// src/inline/lesson-identity.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/lesson-identity.mjs
 var lessonKind = (view) => view.kind === "practice" ? "practice" : "teach";
 var lessonDraftKey = (view) => lessonKind(view) === "practice" ? `${view.chatId}:practice:${view.activeProblem?.toolCallId ?? "between"}` : `${view.chatId}:${view.question?.toolCallId ?? "idle"}`;
 function currentProjectionName(chatId) {
@@ -87,10 +104,10 @@ async function loadCurrentProjection(files, binding, minimumRevision, verifyByte
   return view;
 }
 
-// src/inline/practice-client.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/practice-client.mjs
 function mountPractice(root, initialView, options = {}) {
   const doc = root.ownerDocument, win = doc.defaultView;
-  let view = initialView, text = "", open = true, pending = false, editVersion = 0;
+  let view = initialView, text = "", open = true, pending = false, editVersion = 0, historyOpen = (initialView.feedback?.length ?? 0) > 0;
   const rich = createRichScope(options.renderRich);
   const key = () => lessonDraftKey(view);
   const node = (tag, value, attrs = {}) => {
@@ -149,7 +166,7 @@ function mountPractice(root, initialView, options = {}) {
         return;
       }
       if (result?.delivered === true) {
-        status("Delivered to the owning agent. Waiting for the saved practice response.");
+        status(options.workbench ? "Delivered to the owning agent. Refresh saved lesson after the teacher responds." : "Delivered to the owning agent. Waiting for the saved practice response.");
         return;
       }
       if (!result?.view || !(result.persisted || result.loaded)) throw new Error("No saved practice response received.");
@@ -159,6 +176,7 @@ function mountPractice(root, initialView, options = {}) {
         if (JSON.stringify(options.drafts?.read(oldKey)) === draftBefore) options.drafts?.remove(oldKey);
       } catch {
       }
+      if (result.view.feedback?.at(-1)?.id !== view.feedback?.at(-1)?.id) historyOpen = true;
       view = result.view;
       pending = false;
       if (!same) {
@@ -196,12 +214,14 @@ function mountPractice(root, initialView, options = {}) {
     if (active) {
       const dock = node("section", null, { class: "lh-dock" });
       root.append(dock);
-      if (!open) dock.append(button("Practice problem \xB7 Reopen", () => {
-        open = true;
-        save();
-        render();
-      }, { class: "lh-reveal" }));
-      else {
+      if (!open) {
+        dock.append(button("Practice problem \xB7 Reopen", () => {
+          open = true;
+          save();
+          render();
+        }, { class: "lh-reveal" }));
+        if (options.workbench && options.exploration) root.append(options.exploration);
+      } else {
         const heading = node("div", null, { class: "lh-heading" });
         heading.append(node("span", "Practice problem"), button("Close", () => {
           open = false;
@@ -209,16 +229,22 @@ function mountPractice(root, initialView, options = {}) {
           render();
         }, { class: "lh-close" }));
         dock.append(heading);
-        if (options.exploration) {
-          options.exploration.hidden = false;
-          dock.append(options.exploration);
+        const response = lessonResponseArea(dock, options);
+        if (!options.richProse) response.append(prose("div", active.statement));
+        const hasHistory = view.thinking.length > 0 || !options.richProse && (view.feedback?.length ?? 0) > 0;
+        const history = options.workbench && hasHistory ? node("details", null, { class: "lh-practice-history" }) : response;
+        if (history !== response) {
+          history.open = historyOpen;
+          history.addEventListener("toggle", () => {
+            historyOpen = history.open;
+          });
+          history.append(node("summary", "Saved response and feedback"));
         }
-        if (!options.richProse) dock.append(prose("div", active.statement));
-        for (const thought of view.thinking) dock.append(node("p", `Your thinking: ${thought}`));
-        if (!options.richProse) for (const entry of view.feedback ?? []) dock.append(prose("div", entry.text, { "data-practice-feedback": entry.id }));
+        for (const thought of view.thinking) history.append(node("p", `Your thinking: ${thought}`));
+        if (!options.richProse) for (const entry of view.feedback ?? []) history.append(prose("div", entry.text, { "data-practice-feedback": entry.id }));
         const label = node("label", null, { class: "lh-field" });
         label.append(node("span", "Your thinking", { class: "lh-field-label" }));
-        const field = node("textarea", null, { rows: 4, "data-practice-thinking": "", maxlength: 16e3, placeholder: "Work here, think out loud." });
+        const field = node("textarea", null, { rows: options.workbench ? 3 : 4, "data-practice-thinking": "", maxlength: 16e3, placeholder: "Work here, think out loud." });
         field.value = text;
         field.addEventListener("input", () => {
           text = field.value;
@@ -234,10 +260,11 @@ function mountPractice(root, initialView, options = {}) {
           }
         });
         label.append(field);
-        dock.append(label, node("span", "Enter sends \xB7 Shift+Enter newline", { class: "lh-secondary" }));
+        response.append(label, node("span", "Enter sends \xB7 Shift+Enter newline", { class: "lh-secondary" }));
         const submit = button("Submit thinking", () => void send("practice-input", { type: "thinking", problemCallId: active.toolCallId, text }), { class: "lh-submit", "data-practice-send": "" });
         submit.disabled = pending || !text.trim();
-        dock.append(submit);
+        response.append(submit);
+        if (history !== response) response.append(history);
       }
     } else if (view.conclusion) {
       const next = button("Next problem", () => void send("practice-input", { type: "next" }), { class: "lh-submit" });
@@ -253,7 +280,7 @@ function mountPractice(root, initialView, options = {}) {
   }, readDraft: () => ({ text, open, pending }) };
 }
 
-// src/inline/confidence-style.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/confidence-style.mjs
 var CONFIDENCE_COLORS = ["#ef4444", "#f97316", "#eab308", "#84cc16", "#22c55e", "#10b981"];
 function nearestConfidenceIndex(value) {
   let best = 0;
@@ -275,7 +302,7 @@ function confidenceRailStyle(value) {
   };
 }
 
-// src/inline/answered-record.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/answered-record.mjs
 function answeredRecord(doc, answer, { richProse = false, externalRichExplanation = false, renderProse } = {}) {
   const node = (tag, text, attrs = {}) => {
     const e = doc.createElement(tag);
@@ -321,7 +348,7 @@ function answeredRecord(doc, answer, { richProse = false, externalRichExplanatio
   return box;
 }
 
-// src/inline/lesson-prose.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/lesson-prose.mjs
 function richTextAllowed(text) {
   if (typeof text !== "string" || text.length > 65536) return false;
   const ordinary = /* @__PURE__ */ new Set(["", "mermaid", "text", "txt", "plaintext", "python", "py", "javascript", "js", "typescript", "ts", "json", "css", "bash", "sh", "shell", "powershell", "ps1", "sql", "java", "c", "cpp", "c++", "csharp", "c#", "go", "rust", "ruby", "rb", "r", "matlab", "latex", "tex"]);
@@ -440,7 +467,7 @@ function renderLessonProse(React2, MessageTextContent2, view, state, choices) {
   );
 }
 
-// src/inline/inline-client.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/inline-client.mjs
 var INLINE_PREFIX = "lh.inline ";
 function nativeTransport(win) {
   return async (action) => {
@@ -640,7 +667,7 @@ function mountInline(root, initialView, options = {}) {
         setStatus(ack.loaded ? "Saved lesson reopened." : action.type === "approve" ? "Plan approval saved." : "Answer saved.");
         return;
       }
-      setStatus(ack?.delivered ? "Delivered to the host. Waiting for the saved lesson response." : "Host action requested. Waiting for the saved lesson response.");
+      setStatus(ack?.delivered ? options.workbench ? "Delivered to the host. Refresh saved lesson after the teacher responds." : "Delivered to the host. Waiting for the saved lesson response." : "Host action requested. Waiting for the saved lesson response.");
     } catch (error) {
       state.pending = false;
       save();
@@ -706,6 +733,7 @@ function mountInline(root, initialView, options = {}) {
           save();
           render();
         }, { class: "lh-reveal", "data-reveal": "" }));
+        if (options.workbench && options.exploration) root.append(options.exploration);
       } else {
         const heading = node("div", null, { class: "lh-heading" });
         const label = q.questionType === "predict" ? "Prediction" : q.tool === "probe" ? "Probe" : q.tool === "recall" ? "Recall" : q.kind === "ask" ? "Question" : "Check";
@@ -715,12 +743,9 @@ function mountInline(root, initialView, options = {}) {
           render();
         }, { class: "lh-close", "data-close": "" }));
         dock.append(heading);
-        if (options.exploration) {
-          options.exploration.hidden = false;
-          dock.append(options.exploration);
-        }
-        if (!options.richProse) dock.append(prose("div", q.question, { class: "lh-question-text" }));
-        if (q.context && !options.richProse) dock.append(prose("div", q.context));
+        const response = lessonResponseArea(dock, options);
+        if (!options.richProse) response.append(prose("div", q.question, { class: "lh-question-text" }));
+        if (q.context && !options.richProse) response.append(prose("div", q.context));
         if (q.mode !== "text") {
           const group = node("div", null, { role: "group", "aria-label": q.mode === "multi-select" ? "Choose all that apply" : "Choose an answer" });
           if (!options.externalChoices) q.options.forEach((option, index) => {
@@ -752,7 +777,7 @@ function mountInline(root, initialView, options = {}) {
             },
             { class: "lh-option", "aria-pressed": state.selection.dontKnow, "data-dont-know": "" }
           ));
-          dock.append(group);
+          response.append(group);
           if (q.kind === "quiz") {
             const confidence = node("label", null, { class: "lh-confidence" });
             const slider = node("input", null, {
@@ -793,13 +818,13 @@ function mountInline(root, initialView, options = {}) {
               change(Math.max(0, Math.min(CONFIDENCE_STOPS.length - 1, state.confidenceIndex + (event.key === "ArrowRight" ? 1 : -1))));
             });
             confidence.append(node("span", "Confidence"), track, value);
-            dock.append(confidence);
+            response.append(confidence);
           }
         }
-        dock.append(q.mode === "text" ? field("Your answer", "text", "Type your answer.") : field("Your thinking", "thinking", "Why this answer? Whatever comes to mind."));
+        response.append(q.mode === "text" ? field("Your answer", "text", "Type your answer.") : field("Your thinking", "thinking", "Why this answer? Whatever comes to mind."));
         const footer = node("div", null, { class: "lh-footer" });
         footer.append(node("span", "Enter submits \xB7 Shift+Enter newline", { class: "lh-secondary" }), button("Submit answer", () => void submit(), { class: "lh-submit", "data-submit": "" }));
-        dock.append(footer);
+        response.append(footer);
       }
       renderPlan();
     }
@@ -849,7 +874,7 @@ function mountInline(root, initialView, options = {}) {
   };
 }
 
-// src/inline/hermes-native-port.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/hermes-native-port.mjs
 var bytes = (value) => new TextEncoder().encode(JSON.stringify(value)).length;
 function requirePort(ok, message) {
   if (!ok) throw new Error(message);
@@ -933,7 +958,7 @@ function createHermesLessonPort(ownerSessionId, view, { composer, storage }) {
   } };
 }
 
-// src/vendor/runtime/demo-pure.ts
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/vendor/runtime/demo-pure.ts
 var DEMO_BRIDGE_SCRIPT = `<script>(function(){
 var send=function(m){try{parent.postMessage(m,"*")}catch(e){}};
 var post=function(){
@@ -973,10 +998,10 @@ function reduceDemoBridgeState(state, data) {
   return state;
 }
 
-// src/visuals-view.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/visuals-view.mjs
 var lessonVisualRows = (view) => (view.visuals ?? []).map((artifact) => ({ id: "visual-" + artifact.id, kind: artifact.kind, activity: artifact.title, execution: "saved", directVisual: true, artifact }));
 
-// src/inline/artifacts.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/artifacts.mjs
 function demoDocument(html) {
   const policy = '<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; script-src &#39;unsafe-inline&#39;; style-src &#39;unsafe-inline&#39;; img-src data: blob:; font-src data:; connect-src &#39;none&#39;; frame-src &#39;none&#39;; form-action &#39;none&#39;; base-uri &#39;none&#39;">';
   return "<!doctype html><html><head>" + policy + "</head><body>" + buildDemoSrcDoc(html) + "</body></html>";
@@ -1063,7 +1088,7 @@ function createJobArtifacts(React2) {
   };
 }
 
-// src/inline/hermes-contribution.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/hermes-contribution.mjs
 async function verifyProjectionBytes(snapshot, text) {
   const match = /^(teach|practice)-r([0-9]+)-([a-f0-9]{64})\.json$/.exec(snapshot);
   if (!match || !globalThis.crypto?.subtle) throw new Error("Snapshot content verification is unavailable.");
@@ -1167,7 +1192,7 @@ function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextCo
   } });
 }
 
-// src/connect-export.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/connect-export.mjs
 async function connectLessonExport(ctx, { owner, chatId, snapshot, minimumRevision }, { isCurrent, verifyBytes, install }) {
   const cancelled = () => ({ connected: false, cancelled: true });
   if (!isCurrent()) return cancelled();
@@ -1229,7 +1254,7 @@ async function connectLessonExport(ctx, { owner, chatId, snapshot, minimumRevisi
   }
 }
 
-// src/inline/hermes-theme.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/inline/hermes-theme.mjs
 var HERMES_LESSON_THEME = `
 .lh-native-lesson {
   --background: var(--dt-background, Canvas);
@@ -1247,7 +1272,7 @@ var HERMES_LESSON_THEME = `
 }
 `;
 
-// src/desktop-entry.mjs
+// work/learnharness-audit/responsive-source/integrations/hermes-native-learning/src/desktop-entry.mjs
 var canonical = (value) => typeof value === "string" && value && value === value.trim() && value !== "new";
 var desktop_entry_default = {
   id: "learnharness-native",

@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "base": "18d5a0fe41ac6bd8595124be1bb97747fa0269c5",
+  "selected_paths": [
+    "docs/requirement-status.md",
+    "docs/system-requirements.md",
+    "evals/results/native-learning-workbench-20261108.json",
+    "integrations/hermes-native-learning/PUBLIC-FILES.json",
+    "integrations/hermes-native-learning/build-t3.mjs",
+    "integrations/hermes-native-learning/desktop/plugin.js",
+    "integrations/hermes-native-learning/docs/NATIVE-RENDERING-CHANGE.md",
+    "integrations/hermes-native-learning/docs/NATIVE-VISUALS.md",
+    "integrations/hermes-native-learning/src/commands.mjs",
+    "integrations/hermes-native-learning/src/inline/build-inline.mjs",
+    "integrations/hermes-native-learning/src/inline/codex-lesson.css",
+    "integrations/hermes-native-learning/src/inline/codex-transport.mjs",
+    "integrations/hermes-native-learning/src/inline/inline-client.mjs",
+    "integrations/hermes-native-learning/src/inline/lesson-layout.mjs",
+    "integrations/hermes-native-learning/src/inline/practice-client.mjs",
+    "integrations/hermes-native-learning/src/t3/app.mjs",
+    "integrations/hermes-native-learning/src/t3/native-presentation.mjs",
+    "integrations/hermes-native-learning/src/t3/server.mjs",
+    "integrations/hermes-native-learning/src/visuals.mjs",
+    "integrations/hermes-native-learning/t3/BUILD.json",
+    "integrations/hermes-native-learning/t3/app.html",
+    "integrations/hermes-native-learning/test/native-visuals.test.mjs"
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454",
+          "after_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "cd1123e81a1966d23c897d8138383182414578191178eecd249b81f7cd3b27cb",
+          "after_sha256": "be3dc22bcc7b36650f874a3c50734b55a57387ad007d86b50fd23bbed1cb1802"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "a4dcbf3e9dc3f40f424477088b34a960c7a7a19b34d5f6dc25db0352449956c3",
+          "after_sha256": "e430b42f74f4f5e0fc603de4244aeb034a2673a632c9d44335726f6d9944b62b"
+        },
+        "integrations/hermes-native-learning/PUBLIC-FILES.json": {
+          "before_sha256": "070fa053f1018bd98d29ecd5f3b7922a4ef55c5172b706900a776e2730fd12be",
+          "after_sha256": "34a1446acd8dd9ad5f3039a5d9d2b6220d2f1f083adeee6101b102dc3151c084"
+        },
+        "integrations/hermes-native-learning/build-t3.mjs": {
+          "before_sha256": "7bdec1852bd62733ec7ab547c5f1387cc11a0e6545517dfc4fa2ed4aee1896e8",
+          "after_sha256": "c005c3b614cd06bba6261c1d0c29bd5dd2c6389ac8573b9bd113953007be819c"
+        },
+        "integrations/hermes-native-learning/desktop/plugin.js": {
+          "before_sha256": "043ddd9b452ef5c02be21cace7e26cd0d5f00adabebf41fe915f333a57d5fa4f",
+          "after_sha256": "fec80a2b61be3f78ec88cb8608eaf480a89bc7ac5195132187e08c74874fff09"
+        },
+        "integrations/hermes-native-learning/docs/NATIVE-RENDERING-CHANGE.md": {
+          "before_sha256": "02f577df806e681f12efc2ca66774a87e2a3a90ff15ab0b1d51f2f4f2560bdeb",
+          "after_sha256": "b12651ed536a831c0c60f26a167b7324f6c2a3caeb216e6b950f6d1a1d7b33ba"
+        },
+        "integrations/hermes-native-learning/docs/NATIVE-VISUALS.md": {
+          "before_sha256": "6a4e8cc8b549be673884a87ffdb75893ec8f4c36e97a63f0b122bfd46398d04c",
+          "after_sha256": "dfbe62f8687b8d14657beb2098b2f39b8b1cd3431f147f2fffac3b55cbc27310"
+        },
+        "integrations/hermes-native-learning/src/commands.mjs": {
+          "before_sha256": "48091e73ae33b620dec2c8574aa91d6c8df90db66c5b34617759a9a680d991f6",
+          "after_sha256": "469a663d6d84bfa2c738765317a84f04d7d70f5b1e4190272011ad047fbb0e60"
+        },
+        "integrations/hermes-native-learning/src/inline/build-inline.mjs": {
+          "before_sha256": "32c58ab07fe85c71c064cbd492b8ffe5a381c444a1f2f61aad46b98ff0b065d8",
+          "after_sha256": "214e0cb599debc58e8879e3bcf0acac227051dc81e134178feac63508ede27c5"
+        },
+        "integrations/hermes-native-learning/src/inline/codex-lesson.css": {
+          "before_sha256": "absent",
+          "after_sha256": "c298709633bb3531ed1cb5daf22abf433e8d720ac62d6017b6b0b49174105a29"
+        },
+        "integrations/hermes-native-learning/src/inline/codex-transport.mjs": {
+          "before_sha256": "8d410048e70d3390eb9d1f14de9f675e6c6ba9d95ca59fc71fb1be196e343c91",
+          "after_sha256": "418822e7dedfaa84fb07eaabe093feb3b4edde2a25f1bbdd2e82fbc4fff3a2c4"
+        },
+        "integrations/hermes-native-learning/src/inline/inline-client.mjs": {
+          "before_sha256": "b1341a591f72e0c9a0afba47fcdaa1d1455cf36fae5422fa7fb8d6faefe0ce73",
+          "after_sha256": "588c7afe1f30b91f8983d9b0255e2b5311fbc28745e57eefb691ed11e5d02fd8"
+        },
+        "integrations/hermes-native-learning/src/inline/lesson-layout.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "bcdd9c725bcb9073d96b51a197baac76674c449832527cffb173a359cc2238f7"
+        },
+        "integrations/hermes-native-learning/src/inline/practice-client.mjs": {
+          "before_sha256": "0dc2247b1a8da11c091d51ef37533ac8b71be02d8ec329969e978dbed67e4e3f",
+          "after_sha256": "114adc92ee21d074d9663b76f6e23ce111e707cf327998cd2c0622886bcbff01"
+        },
+        "integrations/hermes-native-learning/src/t3/app.mjs": {
+          "before_sha256": "6f3cc71eb1a960bc3d715ca611daed63b793dc7fa0767aacb847db9a53eaa3b2",
+          "after_sha256": "4738d34dd032e81b0b282c96c799e73a36e349d4aec8bf96b3c6426cfae19cc5"
+        },
+        "integrations/hermes-native-learning/src/t3/native-presentation.mjs": {
+          "before_sha256": "39466915bdb34b9dbbdff22b8e31173c5c12d7a23688c3af04c518490c744d55",
+          "after_sha256": "e9e39331a0eb8f5a11bae850eec71dd0114b37c0280dd3f44a6041453f759f79"
+        },
+        "integrations/hermes-native-learning/src/t3/server.mjs": {
+          "before_sha256": "dd66d1cca759aeb2225f2cce977a0b68d7029bba5a59ab835d40984ffb8116fc",
+          "after_sha256": "be1a3a297012212c5e32155f9e72a6dbdfa5ceff743658c5ea250e19076c2b66"
+        },
+        "integrations/hermes-native-learning/src/visuals.mjs": {
+          "before_sha256": "85a9d331a3c8676a432a22b1f31dfbff4dc29b291b9197c783b5356eefa86e07",
+          "after_sha256": "f8245e017a12b58b97745d3ef3bc01a2e68084b74e10ee44e1f83fc669ce8bcc"
+        },
+        "integrations/hermes-native-learning/t3/BUILD.json": {
+          "before_sha256": "9cd09ae8540aeb80fc6bf23c682c9387629e1caf46529ab374de97664a3354b6",
+          "after_sha256": "aeb216327ba62b7de95bf917689b3fc94829626c307abef22241705284c2e685"
+        },
+        "integrations/hermes-native-learning/t3/app.html": {
+          "before_sha256": "28e12ae7229cf135795a538b1d89357e84c045525713ced11ccea8911a81e286",
+          "after_sha256": "5948a835713f3885d1a85e4e49f39f92e4468f0b68e024ef1e114f878bad0ffd"
+        },
+        "integrations/hermes-native-learning/test/native-visuals.test.mjs": {
+          "before_sha256": "7f1639c68ee8c07aa692815b940b6a66c3416113a4921fe3f5e3e8abd2a04b96",
+          "after_sha256": "49e60875cc9ea311405e32c64d99b9077c258e3562950b4b2dcf70da717447ff"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f",
+          "after_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807",
+          "after_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "Requested responsive layout, Codex MCP App compatibility, and visuals that directly support lesson reasoning and reveal policy.",
+      "authority": "The user approved the workbench and compact stack and requested use on actual Codex lessons and repair of the Codex app panel.",
+      "checks": "Package suite passed 46 checks. Pinned Hermes and T3 builds succeeded. Browser fixture checked the production fragment and built app at wide and narrow widths, reproduced the baseline Codex startup refusal, and exercised current state and draft reconciliation with the observed host identity.",
+      "outcome_review": {
+        "expected": "Reuse the same saved lesson and input controls across widths and Codex app surfaces. Supersede confusing visuals without exposing gated answers.",
+        "observed": "The responsive layout rendered in Chromium. The new app acknowledged Codex and T3 in the browser fixture, loaded a saved SVG, delivered exact input, and cleared only the matching draft after durable readback. State tests exercised deferred replacement.",
+        "evidence": "integrations/hermes-native-learning/test/native-visuals.test.mjs; integrations/hermes-native-learning/docs/NATIVE-RENDERING-CHANGE.md; integrations/hermes-native-learning/t3/BUILD.json.",
+        "limitations": "The browser host fixture does not verify a live Codex mount. Installed process and Desktop app card/panel observations are separately tracked."
+      }
+    }
+  ]
+}

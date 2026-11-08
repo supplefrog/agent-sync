@@ -13,6 +13,6 @@ export function codexTransport(win,view) {
 }
 export function codexOptions(win,view) {
   const send=codexTransport(win,view);
-  return {send,exploration:win.document.getElementById('lh-native-exploration'),
+  return {send,workbench:true,exploration:win.document.getElementById('lh-native-exploration'),
     onResume:()=>send({type:'resume',chatId:view.chatId}).catch(()=>{})};
 }

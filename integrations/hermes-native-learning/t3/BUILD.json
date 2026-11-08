@@ -1,15 +1,19 @@
 {
   "built": "t3/app.html",
-  "bytes": 4944573,
-  "sha256": "28e12ae7229cf135795a538b1d89357e84c045525713ced11ccea8911a81e286",
+  "bytes": 4948738,
+  "sha256": "5948a835713f3885d1a85e4e49f39f92e4468f0b68e024ef1e114f878bad0ffd",
   "esbuild": "0.28.2",
   "builder": {
     "path": "build-t3.mjs",
-    "sha256": "7bdec1852bd62733ec7ab547c5f1387cc11a0e6545517dfc4fa2ed4aee1896e8"
+    "sha256": "c005c3b614cd06bba6261c1d0c29bd5dd2c6389ac8573b9bd113953007be819c"
   },
   "style": {
     "path": "src/inline/inline-template.html",
     "sha256": "8ecc7e7465687ddbd3e1bd2a01a70cd43d3b34f7c2f58e9a747cfb9c3e16377a"
+  },
+  "codexStyle": {
+    "path": "src/inline/codex-lesson.css",
+    "sha256": "c298709633bb3531ed1cb5daf22abf433e8d720ac62d6017b6b0b49174105a29"
   },
   "rendererPackages": [
     {
@@ -183,6 +187,10 @@
   "noticesSha256": "76000bf549fee66e01999934b0f2c4a3eaf644944fa26a28fca85a4aad8e2e7b",
   "inputs": [
     {
+      "path": "src/inline/lesson-layout.mjs",
+      "sha256": "bcdd9c725bcb9073d96b51a197baac76674c449832527cffb173a359cc2238f7"
+    },
+    {
       "path": "src/vendor/runtime/value-debris.ts",
       "sha256": "91f504a6cabaf1e85c38a3265372bc4147ba2953606e610b95ba7a9101e53a72"
     },
@@ -200,7 +208,7 @@
     },
     {
       "path": "src/inline/practice-client.mjs",
-      "sha256": "0dc2247b1a8da11c091d51ef37533ac8b71be02d8ec329969e978dbed67e4e3f"
+      "sha256": "114adc92ee21d074d9663b76f6e23ce111e707cf327998cd2c0622886bcbff01"
     },
     {
       "path": "src/inline/confidence-style.mjs",
@@ -216,7 +224,7 @@
     },
     {
       "path": "src/inline/inline-client.mjs",
-      "sha256": "b1341a591f72e0c9a0afba47fcdaa1d1455cf36fae5422fa7fb8d6faefe0ce73"
+      "sha256": "588c7afe1f30b91f8983d9b0255e2b5311fbc28745e57eefb691ed11e5d02fd8"
     },
     {
       "path": "src/vendor/runtime/demo-pure.ts",
@@ -7736,7 +7744,7 @@
     },
     {
       "path": "src/t3/app.mjs",
-      "sha256": "6f3cc71eb1a960bc3d715ca611daed63b793dc7fa0767aacb847db9a53eaa3b2"
+      "sha256": "4738d34dd032e81b0b282c96c799e73a36e349d4aec8bf96b3c6426cfae19cc5"
     }
   ],
   "hostActivation": false,

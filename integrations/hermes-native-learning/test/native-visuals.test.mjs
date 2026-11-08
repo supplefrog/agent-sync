@@ -48,6 +48,23 @@ test('oversized raw or escaped visual payloads refuse before saving lesson state
     assert.throws(()=>s.run({...visual(2),format:'svg',source}),e=>e.code==='invalid_visual');
   assert.equal(s.boundary.view({threadId:'owner'},{chatId:'trial'}).structuredContent.view.revision,2);
 });
+test('a visual correction retires its predecessor without weakening deferred reveal',t=>{
+  const s=fixture(t),meta={threadId:'owner'},args={chatId:'trial'};
+  s.run(visual(2,'after-question'));
+  const correction={...visual(3),id:'corrected-groups',replaces:'groups',
+    source:'<div>Corrected groups</div>'};
+  assert.throws(()=>s.run(correction),error=>error.code==='invalid_visual_replacement');
+  s.run({...correction,reveal:'after-question'});
+  assert.deepEqual(s.boundary.view(meta,args).structuredContent.view.visuals,[]);
+  s.run({op:'tool',expectedRevision:4,authorship:'host-agent',name:'conclude',toolCallId:'conclude1',
+    input:{outcome:'movedOn',verdict:'Fixture conclusion',rung:null,missClass:null,retest:false}});
+  const {structuredContent:{view},nativePresentation}=s.boundary.view(meta,args);
+  assert.deepEqual(view.visuals.map(item=>item.id),['corrected-groups']);
+  assert.equal(s.boundary.asset(meta,{chatId:'trial',file:view.visuals[0].file}).text,correction.source);
+  const html=fs.readFileSync(nativePresentation.path,'utf8');
+  assert.ok(html.includes('Corrected groups'));
+  assert.ok(!html.includes('group-explorer'));
+});
 test('native fragment mounts the real controls and emits exact revision-bound input without claiming persistence',async t=>{
   const s=fixture(t);s.run(visual(2));
   const r=s.boundary.view({threadId:'owner'},{chatId:'trial'}),html=fs.readFileSync(r.nativePresentation.path,'utf8');

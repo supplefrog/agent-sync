@@ -27,6 +27,8 @@ const richStyle=fs.readFileSync(richStyleFile,'utf8')+richAssets.css;
 const styleFile=path.join(here,'src/inline/inline-template.html');
 const style=fs.readFileSync(styleFile,'utf8').match(/<style>([\s\S]*?)<\/style>/)?.[1];
 if(!style)throw new Error('Existing inline control stylesheet missing.');
+const codexStyleFile=path.join(here,'src/inline/codex-lesson.css');
+const codexStyle=fs.readFileSync(codexStyleFile,'utf8').replaceAll('#lh-inline-lesson','body[data-lh-host=codex] #lh-inline-lesson');
 const result=await esbuild.build({entryPoints:[path.join(here,'src/t3/app.mjs')],bundle:true,write:false,
   platform:'browser',format:'iife',target:'es2022',minify:true,sourcemap:false,metafile:true,legalComments:'inline',nodePaths:[moduleRoot],
   plugins:[{name:'bind-renderer-sources',setup(build){build.onLoad({filter:/.*/},args=>{
@@ -42,18 +44,19 @@ const boundInputs=Object.keys(result.metafile.inputs).map(input=>{
   if(!before||before!==after)throw new Error('A bundled source input changed during generation.');
   return {path:(inside(moduleRoot,file)?'dependencies/'+path.relative(moduleRoot,file):path.relative(here,file)).replaceAll(path.sep,'/'),sha256:after};
 });
-if(hash(fs.readFileSync(styleFile))!==inputsBefore.get(styleFile)||hash(fs.readFileSync(richStyleFile))!==inputsBefore.get(richStyleFile)||hash(fs.readFileSync(buildFile))!==buildSha||hash(fs.readFileSync(assetBuilder))!==assetBuilderSha)
+if(hash(fs.readFileSync(styleFile))!==inputsBefore.get(styleFile)||hash(fs.readFileSync(codexStyleFile))!==inputsBefore.get(codexStyleFile)||hash(fs.readFileSync(richStyleFile))!==inputsBefore.get(richStyleFile)||hash(fs.readFileSync(buildFile))!==buildSha||hash(fs.readFileSync(assetBuilder))!==assetBuilderSha)
   throw new Error('Builder/style changed during generation.');
 if(JSON.stringify(readRichAssets(toolchain))!==JSON.stringify(richAssets))throw new Error('Selected renderer packages/fonts changed during generation.');
 const js=result.outputFiles[0].text.replaceAll('</script','<\\/script');
 const html='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>'+style+
-  richStyle+
-  'body{margin:0;padding:12px;box-sizing:border-box;color:var(--color-text-primary,#e6e6e6);background:var(--color-background-primary,#141414);font-family:var(--font-sans,system-ui,sans-serif);font-size:16px;line-height:1.5}#lh-notice{color:var(--color-text-secondary,#8d8d8d)}body>button{font:inherit;color:inherit;background:var(--color-background-secondary,#1c1c1c);border:1px solid var(--color-border-primary,#434343);border-radius:8px;min-height:44px;padding:8px 12px;margin:0 8px 12px 0}#lh-jobs{overflow-wrap:anywhere}'+
-  '</style></head><body><p id="lh-notice" role="status">Connecting to the owning T3 conversation.</p><button type="button" id="lh-refresh">Refresh saved lesson</button><button type="button" id="lh-save-draft" disabled>Save draft privately</button><div id="lh-inline-lesson"></div><section id="lh-jobs" aria-label="Materials and supporting work"></section><script>'+js+'</script></body></html>';
+  codexStyle+richStyle+
+  'body{margin:0;padding:12px;box-sizing:border-box;color:var(--foreground,#e6e6e6);background:var(--background,#141414);font-family:var(--font-sans,system-ui,sans-serif);font-size:16px;line-height:1.5}#lh-notice{color:var(--muted-foreground,#b8bfc7)}body>button{font:inherit;color:inherit;background:var(--card,#1c1c1c);border:1px solid var(--border,#434343);border-radius:8px;min-height:44px;padding:8px 12px;margin:0 8px 12px 0}#lh-jobs{overflow-wrap:anywhere}'+
+  '</style></head><body><p id="lh-notice" role="status">Connecting to the owning conversation.</p><button type="button" id="lh-refresh">Refresh saved lesson</button><button type="button" id="lh-save-draft" disabled>Save draft privately</button><div id="lh-inline-lesson"></div><section id="lh-jobs" aria-label="Materials and supporting work"></section><script>'+js+'</script></body></html>';
 if(Buffer.byteLength(html)>5*1024*1024)throw new Error('App exceeds T3 resource cap.');
 const notices=thirdPartyNotices(Object.keys(result.metafile.inputs),toolchain);
 const receipt={built:'t3/app.html',bytes:Buffer.byteLength(html),sha256:hash(Buffer.from(html)),esbuild:esbuild.version,
   builder:{path:'build-t3.mjs',sha256:buildSha},style:{path:'src/inline/inline-template.html',sha256:inputsBefore.get(styleFile)},
+  codexStyle:{path:'src/inline/codex-lesson.css',sha256:inputsBefore.get(codexStyleFile)},
   rendererPackages:richAssets.packages,fontAssets:richAssets.fonts,katexCssSha256:richAssets.sourceCssSha256,assetBuilderSha256:assetBuilderSha,
   noticeSourceBindings:richAssets.noticeBindings,noticesSha256:hash(Buffer.from(notices)),inputs:boundInputs,hostActivation:false,providerCalls:0,scope:'Artifact generation only; no server syntax/runtime or live host test.'};
 // Finish all validation/notice preparation before replacing any old artifact.

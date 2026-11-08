@@ -13,3 +13,11 @@ The pinned T3 dependency audit reports eight low-severity dependency entries roo
 Publication, installed release identity, fresh-process loading and observed UI behavior are separate states. The task's delivery receipt records them. Switching the configured package does not change code already loaded in an active MCP process. Reload through the host's normal lifecycle; preserve private bindings, state and recovery copies.
 
 Rollback selects the preceding MCP package path and retains state. This change adds optional visual records; it does not migrate or delete learning history. Older readers ignore optional visual metadata but cannot render it. Keep this record linked from the package README and retain deployment evidence outside shared source.
+
+## Responsive layout and MCP App startup
+
+The Codex renderer uses the same question controls with a two-column layout when an attached visual and the response both fit. On narrow surfaces the visual sits immediately above the question. Saved practice feedback stays readable and can be collapsed. T3 continues to use its original layout.
+
+The previous App accepted only the T3 host name, so it did not acknowledge initialization from Codex desktop. The App now recognizes the Codex desktop identity sent by the installed host. It uses the existing owner-scoped refresh and user-confirmed message routes. SVG can render beside the response; interactive HTML opens in the chat renderer. A browser fixture exercises the actual App bundle and state boundary using the observed host identity. It does not replace a live Codex mount check.
+
+A visual correction uses a new immutable ID and supersedes the previous asset in current projections. A correction keeps a pending reveal protected. Prior records remain available for recovery. App drafts are reconciled only when the current lesson shows a new saved entry with the exact submitted text. Typing after delivery retains the newer draft.

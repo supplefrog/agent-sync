@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+import { lessonResponseArea } from './lesson-layout.mjs';
 // Inline adaptation of LearnHarness v0.3.4 QuestionDock/ReadingThinkingField.
 // See inline/NOTICE.md. This module performs no grading or state-file writes.
 import { CONFIDENCE_STOPS, DEFAULT_CONFIDENCE_INDEX, emptyDockSelection, toggleOption, toggleOther } from '../vendor/runtime/question-pure.ts';
@@ -154,7 +155,9 @@ export function mountInline(root, initialView, options = {}) {
       if (ack?.view && (ack.persisted === true || ack.loaded === true)) {
         applyView(ack.view); setStatus(ack.loaded ? 'Saved lesson reopened.' : action.type === 'approve' ? 'Plan approval saved.' : 'Answer saved.'); return;
       }
-      setStatus(ack?.delivered ? 'Delivered to the host. Waiting for the saved lesson response.' : 'Host action requested. Waiting for the saved lesson response.');
+      setStatus(ack?.delivered
+        ? (options.workbench ? 'Delivered to the host. Refresh saved lesson after the teacher responds.' : 'Delivered to the host. Waiting for the saved lesson response.')
+        : 'Host action requested. Waiting for the saved lesson response.');
     } catch (error) {
       state.pending = false; save(); updateSubmit(); setStatus(error.message, true);
     }
@@ -198,14 +201,15 @@ export function mountInline(root, initialView, options = {}) {
       root.append(dock);
       if (!state.open) {
         dock.append(button(q.needsReveal ? 'Check your understanding · Open' : `${q.questionType === 'predict' ? 'Prediction' : 'Question'} · Reopen`, () => { state.open = true; save(); render(); }, { class: 'lh-reveal', 'data-reveal': '' }));
+        if(options.workbench&&options.exploration)root.append(options.exploration);
       } else {
         const heading = node('div', null, { class: 'lh-heading' });
         const label = q.questionType === 'predict' ? 'Prediction' : q.tool === 'probe' ? 'Probe' : q.tool === 'recall' ? 'Recall' : q.kind === 'ask' ? 'Question' : 'Check';
         heading.append(node('span', label, { class: 'lh-kind' }), button('Close', () => { state.open = false; save(); render(); }, { class: 'lh-close', 'data-close': '' }));
         dock.append(heading);
-        if(options.exploration){options.exploration.hidden=false;dock.append(options.exploration);}
-        if(!options.richProse)dock.append(prose('div', q.question, {class:'lh-question-text'}));
-        if (q.context&&!options.richProse) dock.append(prose('div', q.context));
+        const response = lessonResponseArea(dock, options);
+        if(!options.richProse)response.append(prose('div', q.question, {class:'lh-question-text'}));
+        if (q.context&&!options.richProse) response.append(prose('div', q.context));
         if (q.mode !== 'text') {
           const group = node('div', null, { role: 'group', 'aria-label': q.mode === 'multi-select' ? 'Choose all that apply' : 'Choose an answer' });
           if(!options.externalChoices)q.options.forEach((option, index) => {
@@ -222,7 +226,7 @@ export function mountInline(root, initialView, options = {}) {
           }
           if (q.kind === 'quiz') group.append(button("I don't know", () => { state.selection = { selected: new Set(), otherSelected: false, dontKnow: !state.selection.dontKnow }; save(); render(); },
             { class: 'lh-option', 'aria-pressed': state.selection.dontKnow, 'data-dont-know': '' }));
-          dock.append(group);
+          response.append(group);
           if (q.kind === 'quiz') {
             const confidence = node('label', null, { class: 'lh-confidence' });
             const slider = node('input', null, { type: 'range', min: 0, max: 100, step: 1,
@@ -236,13 +240,13 @@ export function mountInline(root, initialView, options = {}) {
             const change=index=>{state.confidenceIndex=index;slider.value=CONFIDENCE_STOPS[index];value.textContent=`${CONFIDENCE_STOPS[index]}%`;slider.setAttribute('aria-valuetext',`${CONFIDENCE_STOPS[index]} percent`);paint();save();};
             slider.addEventListener('input', () => {const raw=Number(slider.value);if(!Number.isFinite(raw)||raw<0||raw>100||slider.disabled)return;change(nearestConfidenceIndex(raw));});
             slider.addEventListener('keydown',event=>{if(slider.disabled||event.altKey||event.ctrlKey||event.metaKey||!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();change(Math.max(0,Math.min(CONFIDENCE_STOPS.length-1,state.confidenceIndex+(event.key==='ArrowRight'?1:-1))));});
-            confidence.append(node('span', 'Confidence'), track, value); dock.append(confidence);
+            confidence.append(node('span', 'Confidence'), track, value); response.append(confidence);
           }
         }
-        dock.append(q.mode === 'text' ? field('Your answer', 'text', 'Type your answer.') : field('Your thinking', 'thinking', 'Why this answer? Whatever comes to mind.'));
+        response.append(q.mode === 'text' ? field('Your answer', 'text', 'Type your answer.') : field('Your thinking', 'thinking', 'Why this answer? Whatever comes to mind.'));
         const footer = node('div', null, { class: 'lh-footer' });
         footer.append(node('span', 'Enter submits · Shift+Enter newline', { class: 'lh-secondary' }), button('Submit answer', () => void submit(), { class: 'lh-submit', 'data-submit': '' }));
-        dock.append(footer);
+        response.append(footer);
       }
       renderPlan();
     }

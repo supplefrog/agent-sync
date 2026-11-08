@@ -8,11 +8,11 @@
   "t3Source": "cc0b86ddf12a34bd65dce88d6f2ae1f069ef841e",
   "codexMetadataSource": "6b3b67d71f51db1922813dfcf64c424d3f68e5d3",
   "codexWorkerSource": "e344f4b6fc2ae01acc9ec0e3e0d797ffe0c00b85",
-  "fileCount": 115,
+  "fileCount": 117,
   "includeManifestItself": true,
-  "publicationFileCount": 116,
+  "publicationFileCount": 118,
   "selfBinding": "PUBLIC-FILES.json separately hash-bound; no circular self-hash",
-  "payloadBytes": 6247979,
+  "payloadBytes": 6265502,
   "files": [
     {
       "path": ".gitignore",
@@ -46,8 +46,8 @@
     },
     {
       "path": "build-t3.mjs",
-      "bytes": 6109,
-      "sha256": "7bdec1852bd62733ec7ab547c5f1387cc11a0e6545517dfc4fa2ed4aee1896e8"
+      "bytes": 6422,
+      "sha256": "c005c3b614cd06bba6261c1d0c29bd5dd2c6389ac8573b9bd113953007be819c"
     },
     {
       "path": "build.mjs",
@@ -56,8 +56,8 @@
     },
     {
       "path": "desktop/plugin.js",
-      "bytes": 74034,
-      "sha256": "043ddd9b452ef5c02be21cace7e26cd0d5f00adabebf41fe915f333a57d5fa4f"
+      "bytes": 76971,
+      "sha256": "fec80a2b61be3f78ec88cb8608eaf480a89bc7ac5195132187e08c74874fff09"
     },
     {
       "path": "docs/FEATURE-MAP.md",
@@ -81,13 +81,13 @@
     },
     {
       "path": "docs/NATIVE-RENDERING-CHANGE.md",
-      "bytes": 3054,
-      "sha256": "02f577df806e681f12efc2ca66774a87e2a3a90ff15ab0b1d51f2f4f2560bdeb"
+      "bytes": 4241,
+      "sha256": "b12651ed536a831c0c60f26a167b7324f6c2a3caeb216e6b950f6d1a1d7b33ba"
     },
     {
       "path": "docs/NATIVE-VISUALS.md",
-      "bytes": 5024,
-      "sha256": "6a4e8cc8b549be673884a87ffdb75893ec8f4c36e97a63f0b122bfd46398d04c"
+      "bytes": 5838,
+      "sha256": "dfbe62f8687b8d14657beb2098b2f39b8b1cd3431f147f2fffac3b55cbc27310"
     },
     {
       "path": "docs/PROTOCOL.md",
@@ -176,8 +176,8 @@
     },
     {
       "path": "src/commands.mjs",
-      "bytes": 12991,
-      "sha256": "48091e73ae33b620dec2c8574aa91d6c8df90db66c5b34617759a9a680d991f6"
+      "bytes": 13002,
+      "sha256": "469a663d6d84bfa2c738765317a84f04d7d70f5b1e4190272011ad047fbb0e60"
     },
     {
       "path": "src/config.mjs",
@@ -216,13 +216,18 @@
     },
     {
       "path": "src/inline/build-inline.mjs",
-      "bytes": 7508,
-      "sha256": "32c58ab07fe85c71c064cbd492b8ffe5a381c444a1f2f61aad46b98ff0b065d8"
+      "bytes": 7476,
+      "sha256": "214e0cb599debc58e8879e3bcf0acac227051dc81e134178feac63508ede27c5"
+    },
+    {
+      "path": "src/inline/codex-lesson.css",
+      "bytes": 1444,
+      "sha256": "c298709633bb3531ed1cb5daf22abf433e8d720ac62d6017b6b0b49174105a29"
     },
     {
       "path": "src/inline/codex-transport.mjs",
-      "bytes": 1109,
-      "sha256": "8d410048e70d3390eb9d1f14de9f675e6c6ba9d95ca59fc71fb1be196e343c91"
+      "bytes": 1124,
+      "sha256": "418822e7dedfaa84fb07eaabe093feb3b4edde2a25f1bbdd2e82fbc4fff3a2c4"
     },
     {
       "path": "src/inline/confidence-style.mjs",
@@ -266,8 +271,8 @@
     },
     {
       "path": "src/inline/inline-client.mjs",
-      "bytes": 18434,
-      "sha256": "b1341a591f72e0c9a0afba47fcdaa1d1455cf36fae5422fa7fb8d6faefe0ce73"
+      "bytes": 18674,
+      "sha256": "588c7afe1f30b91f8983d9b0255e2b5311fbc28745e57eefb691ed11e5d02fd8"
     },
     {
       "path": "src/inline/inline-template.html",
@@ -280,14 +285,19 @@
       "sha256": "3863c2001d9b4b2cccfe6b52c7d326a21e89bab0fa44c822c03b3c4114a85b4d"
     },
     {
+      "path": "src/inline/lesson-layout.mjs",
+      "bytes": 590,
+      "sha256": "bcdd9c725bcb9073d96b51a197baac76674c449832527cffb173a359cc2238f7"
+    },
+    {
       "path": "src/inline/lesson-prose.mjs",
       "bytes": 5917,
       "sha256": "f7a362b5436f5f7c7c565147565f60aa59c2e46a612f58ee4af777b9c0321527"
     },
     {
       "path": "src/inline/practice-client.mjs",
-      "bytes": 7110,
-      "sha256": "0dc2247b1a8da11c091d51ef37533ac8b71be02d8ec329969e978dbed67e4e3f"
+      "bytes": 8016,
+      "sha256": "114adc92ee21d074d9663b76f6e23ce111e707cf327998cd2c0622886bcbff01"
     },
     {
       "path": "src/inline/rich-scope.mjs",
@@ -336,8 +346,8 @@
     },
     {
       "path": "src/t3/app.mjs",
-      "bytes": 12292,
-      "sha256": "6f3cc71eb1a960bc3d715ca611daed63b793dc7fa0767aacb847db9a53eaa3b2"
+      "bytes": 14772,
+      "sha256": "4738d34dd032e81b0b282c96c799e73a36e349d4aec8bf96b3c6426cfae19cc5"
     },
     {
       "path": "src/t3/boundary.mjs",
@@ -367,7 +377,7 @@
     {
       "path": "src/t3/native-presentation.mjs",
       "bytes": 1670,
-      "sha256": "39466915bdb34b9dbbdff22b8e31173c5c12d7a23688c3af04c518490c744d55"
+      "sha256": "e9e39331a0eb8f5a11bae850eec71dd0114b37c0280dd3f44a6041453f759f79"
     },
     {
       "path": "src/t3/rich-core.mjs",
@@ -386,8 +396,8 @@
     },
     {
       "path": "src/t3/server.mjs",
-      "bytes": 10086,
-      "sha256": "dd66d1cca759aeb2225f2cce977a0b68d7029bba5a59ab835d40984ffb8116fc"
+      "bytes": 10303,
+      "sha256": "be1a3a297012212c5e32155f9e72a6dbdfa5ceff743658c5ea250e19076c2b66"
     },
     {
       "path": "src/vendor/runtime/chains.ts",
@@ -496,8 +506,8 @@
     },
     {
       "path": "src/visuals.mjs",
-      "bytes": 4624,
-      "sha256": "85a9d331a3c8676a432a22b1f31dfbff4dc29b291b9197c783b5356eefa86e07"
+      "bytes": 5413,
+      "sha256": "f8245e017a12b58b97745d3ef3bc01a2e68084b74e10ee44e1f83fc669ce8bcc"
     },
     {
       "path": "src/workflow.mjs",
@@ -516,8 +526,8 @@
     },
     {
       "path": "t3/BUILD.json",
-      "bytes": 310776,
-      "sha256": "9cd09ae8540aeb80fc6bf23c682c9387629e1caf46529ab374de97664a3354b6"
+      "bytes": 311065,
+      "sha256": "aeb216327ba62b7de95bf917689b3fc94829626c307abef22241705284c2e685"
     },
     {
       "path": "t3/SOURCES.json",
@@ -531,8 +541,8 @@
     },
     {
       "path": "t3/app.html",
-      "bytes": 4944573,
-      "sha256": "28e12ae7229cf135795a538b1d89357e84c045525713ced11ccea8911a81e286"
+      "bytes": 4948738,
+      "sha256": "5948a835713f3885d1a85e4e49f39f92e4468f0b68e024ef1e114f878bad0ffd"
     },
     {
       "path": "t3/bindings.example.json",
@@ -566,8 +576,8 @@
     },
     {
       "path": "test/native-visuals.test.mjs",
-      "bytes": 6336,
-      "sha256": "7f1639c68ee8c07aa692815b940b6a66c3416113a4921fe3f5e3e8abd2a04b96"
+      "bytes": 7494,
+      "sha256": "49e60875cc9ea311405e32c64d99b9077c258e3562950b4b2dcf70da717447ff"
     },
     {
       "path": "test/package-repair.test.mjs",

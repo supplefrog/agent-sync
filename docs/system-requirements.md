@@ -1,6 +1,6 @@
 # Agent Sync system requirements
 
-The native LearnHarness integration also supports teacher-authored rich HTML/SVG saved in shared lesson state, with explicit reveal timing, and native Codex desktop presentation of the existing answer controls. Preserve host-written ownership, exact learner events, revision/replay guards and durable state. Host rendering remains capability-specific; an MCP connection alone does not establish universal UI support. See [the package contract](../integrations/hermes-native-learning/docs/NATIVE-VISUALS.md).
+The native LearnHarness integration supports teacher-authored HTML/SVG saved in shared lesson state with explicit reveal timing. A visual should support the learner's current reasoning step and withhold a worked answer until the lesson is ready to reveal it. Codex desktop places the visual beside the response controls when they fit and stacks them when narrow. Preserve host-written ownership, exact learner events, revision guards and durable state across the chat renderer and MCP App. See [the package contract](../integrations/hermes-native-learning/docs/NATIVE-VISUALS.md).
 
 Agreed project contract, 2026-09-27. This records expected outcomes, not a claim that they are implemented or an instruction to install a new governance framework.
 

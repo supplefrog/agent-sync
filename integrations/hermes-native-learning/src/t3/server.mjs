@@ -7,7 +7,8 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 // Boundary loading is deferred until the opted-in entry observation is available.
 
-export const APP_URI='ui://learnharness/lesson.html';
+export const APP_URI='ui://learnharness/lesson-v2.html';
+const LEGACY_APP_URI='ui://learnharness/lesson.html';
 const schema=properties=>({type:'object',properties,additionalProperties:false,required:Object.keys(properties)});
 const chat={type:'string',pattern:'^[A-Za-z0-9_-]{1,80}$'};
 const genericObject={type:'object'};
@@ -17,7 +18,7 @@ const tool=(name,description,inputSchema,readOnly,visibility,app=false)=>({name,
 export const TOOLS=[
   tool('learning_identity','Read the host-written native Codex thread ID for explicit private enrollment. No model-supplied identity.',schema({}),true,['model']),
   tool('learning_catalogue','List only lessons enrolled for this authenticated native Codex thread.',schema({}),true,['model']),
-  tool('learning_view','Open/resume the current redacted learning card. Native Codex: render nativePresentation.path with a visualize content reference. T3 retains its MCP App. No learner mutation.',schema({chatId:chat}),true,['model','app'],true),
+  tool('learning_view','Open or refresh the saved lesson card. In Codex, use nativePresentation.path with a visualize content reference if the app view is unavailable or the lesson needs an interactive HTML visual. No learner mutation.',schema({chatId:chat}),true,['model','app'],true),
   tool('learning_input','Persist the exact genuine lh.t3 learner event, using host-written caller metadata. Never invent an answer.',
     schema({chatId:chat,kind:{enum:['teach','practice']},expectedRevision:{type:'integer',minimum:0},action:genericObject}),false,['model']),
   tool('learning_command','Run the bound lesson protocol. Save teacher visuals with op:visual, id,title,format:html-fragment|svg,source,reveal:now|after-question,expectedRevision,authorship:host-agent. Context/commitments are teacher-only. After writes call learning_view.',
@@ -45,7 +46,7 @@ export function handleLearningTool(boundary,request) {
   if(name==='learning_view') {
     const result=boundary.view(meta,args);
     return {...result,content:[{type:'text',text:JSON.stringify({nativePresentation:result.nativePresentation,
-      instruction:'Native Codex: render the supplied fragment path. T3: use the MCP App card. Call learning_view after saved input/reaction.'})}]};
+      instruction:'Use the MCP App card. In Codex, show nativePresentation.path in chat when the app view is unavailable or for an interactive HTML visual. Call learning_view after saved input and teacher reaction.'})}]};
   }
   if(name==='learning_catalogue')return textResult({lessons:boundary.catalogue(meta,args)});
   if(name==='learning_input')return textResult(t3Result(boundary.input(meta,args)));
@@ -106,10 +107,10 @@ export async function start(configFile,sdkRoot) {
   });
   server.setRequestHandler(types.ListResourcesRequestSchema,async()=>({resources:[{uri:APP_URI,name:'LearnHarness learning controls',mimeType:'text/html;profile=mcp-app'}]}));
   server.setRequestHandler(types.ReadResourceRequestSchema,async request=>{
-    if(request.params.uri!==APP_URI)throw new Error('Unknown static app resource.');
+    if(request.params.uri!==APP_URI&&request.params.uri!==LEGACY_APP_URI)throw new Error('Unknown static app resource.');
     const file=fileURLToPath(new URL('../../t3/app.html',import.meta.url)),stat=fs.statSync(file);
     if(!stat.isFile()||stat.size>5*1024*1024)throw new Error('Build the bounded static app resource before activation.');
-    return {contents:[{uri:APP_URI,mimeType:'text/html;profile=mcp-app',text:fs.readFileSync(file,'utf8'),
+    return {contents:[{uri:request.params.uri,mimeType:'text/html;profile=mcp-app',text:fs.readFileSync(file,'utf8'),
       _meta:{ui:{prefersBorder:true,csp:{connectDomains:[],resourceDomains:[],frameDomains:[]}}}}]};
   });
   startupObservation(configFile,'connecting');

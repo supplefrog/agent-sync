@@ -8,7 +8,8 @@ import {lessonVisualRows} from '../visuals-view.mjs';
 import {lessonDraftKey,validateLessonView} from '../inline/lesson-identity.mjs';
 const root=document.querySelector('#lh-inline-lesson'),notice=document.querySelector('#lh-notice'),jobs=document.querySelector('#lh-jobs');
 const jobRich=createRichScope(mountRichFragment);
-const pending=new Map(),cache=new Map();let nextId=0,active=true,initialized=false,owner=null,view=null,controller=null,fresh=false,initialRefresh=false;
+const pending=new Map(),cache=new Map();let nextId=0,active=true,initialized=false,owner=null,view=null,controller=null,fresh=false,codex=false,refreshAttempt=0;
+let sentThinking=null;
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const byteSize=v=>new TextEncoder().encode(JSON.stringify(v)).length;
 const keyOf=lessonDraftKey;
@@ -33,9 +34,9 @@ function applyTheme(context) {
     if(/^--[a-zA-Z0-9_-]{1,100}$/.test(key)&&typeof value==='string'&&value.length<=500)document.documentElement.style.setProperty(key,value);
   // T3 supplies MCP Apps semantic variables, not Hermes's short token names.
   // Fixed aliases share the existing dock skin without changing either host.
-  const aliases={'--foreground':['--color-text-primary','#e6e6e6'],'--background':['--color-background-primary','#141414'],
-    '--card':['--color-background-secondary','#1c1c1c'],'--muted-foreground':['--color-text-secondary','#8d8d8d'],
-    '--border':['--color-border-primary','#434343'],'--accent':['--color-background-tertiary','#2a2a2a'],
+  const aliases={'--foreground':['--color-text-primary','light-dark(#23272e,#e6e6e6)'],'--background':['--color-background-primary','light-dark(#fff,#141414)'],
+    '--card':['--color-background-secondary','light-dark(#f5f6f7,#1c1c1c)'],'--muted-foreground':['--color-text-secondary','light-dark(#515960,#b8bfc7)'],
+    '--border':['--color-border-primary','light-dark(#c7cdd3,#434343)'],'--accent':['--color-background-tertiary','light-dark(#e9edf1,#2a2a2a)'],
     '--destructive':['--color-text-danger','#ef4444'],'--ring':['--color-ring-primary','#8d8d8d']};
   for(const [name,[target,fallback]]of Object.entries(aliases))document.documentElement.style.setProperty(name,`var(${target}, ${fallback})`);
 }
@@ -51,6 +52,10 @@ async function send(action,bound) {
   const event={chatId:bound.chatId,kind:bound.kind==='practice'?'practice':'teach',expectedRevision:bound.revision,action};
   const text='lh.t3 '+JSON.stringify(event);
   if(new TextEncoder().encode(text).length>65536)throw new Error('Input exceeds64KiB; it was not sent or truncated.');
+  if(action.type==='practice-input'&&action.input?.type==='thinking') {
+    const key=keyOf(bound);
+    sentThinking={key,text:action.input.text,draft:cache.get(key),ids:new Set(bound.thinkingEntries?.map(entry=>entry.id))};
+  }
   // T3 confirms this message and routes it to the frame's owning conversation.
   // This is actual agent delivery, NOT a saved-answer acknowledgment.
   await rpc('ui/message',{role:'user',content:[{type:'text',text}]});
@@ -64,30 +69,44 @@ function show(result,isFresh=false) {
   if(owner!==null&&(owner!==meta.ownerThreadId||view.chatId!==next.chatId||view.revision>next.revision))
     throw new Error('Refusing a different owner/lesson or stale replacement.');
   validateLessonView(next,{chatId:next.chatId,kind:next.kind==='practice'?'practice':'teach',minimumRevision:view?.revision??0});
-  owner=meta.ownerThreadId;view=next;fresh=isFresh;const key=keyOf(next);
+  const key=keyOf(next);
   if(meta.draftKey!==key||!Number.isSafeInteger(meta.draft?.version))throw new Error('Saved draft identity differs.');
+  owner=meta.ownerThreadId;view=next;fresh=isFresh;
+  if(sentThinking?.key===key&&next.thinkingEntries?.some(entry=>entry.id&&!sentThinking.ids.has(entry.id)&&entry.text===sentThinking.text)) {
+    const current=cache.get(key);
+    // A new durable entry is the receipt. Delivery alone, or new typing,
+    // must never consume a draft.
+    if(current===sentThinking.draft&&current?.payload?.text===sentThinking.text) {
+      if(current.version!==meta.draft.version)cache.delete(key);
+      else cache.set(key,{version:current.version,payload:null,dirty:meta.draft.payload?.text===sentThinking.text});
+    }
+    sentThinking=null;
+  }
   const current=cache.get(key);
   if(!current?.dirty)cache.set(key,{version:meta.draft.version,payload:meta.draft.payload,dirty:false});
   controller?.destroy();
   const bound=structuredClone(next);
-  controller=mountInline(root,next,{renderRich:mountRichFragment,send:action=>send(action,bound),onResume:refresh,drafts:{
+  const exploration=codex&&next.visuals?.some(visual=>visual.kind==='visual')?document.createElement('div'):null;
+  controller=mountInline(root,next,{renderRich:mountRichFragment,send:action=>send(action,bound),onResume:refresh,workbench:codex,exploration,drafts:{
     read:requested=>cache.get(requested)?.payload??null,
     write(requested,payload){if(requested!==key||byteSize(payload)>16384)throw new Error('Draft identity/size differs.');
       const old=cache.get(key)??{version:-1};cache.set(key,{...old,payload:structuredClone(payload),dirty:true});status('Draft is local. Use Save draft to preserve it across reopen.');},
     remove:requested=>{const old=cache.get(requested);if(old)cache.set(requested,{...old,payload:null,dirty:true});},
   }});
   root.inert=!fresh;document.querySelector('#lh-save-draft').disabled=!fresh;
-  void renderJobs(next,bound);status(fresh?'Current saved lesson loaded. The existing agent remains the teacher.':'Historical snapshot loaded; refreshing without a model turn.');
+  void renderJobs(next,bound,exploration);status(fresh?'Current saved lesson loaded.':'Historical snapshot loaded; refreshing without a model turn.');
 }
 function node(tag,text){const e=document.createElement(tag);e.textContent=text;return e;}
 function prose(tag,text){const e=node(tag,'');jobRich.render(e,text);return e;}
-async function renderJobs(next,bound) {
+async function renderJobs(next,bound,exploration) {
   jobRich.clear();
   jobs.replaceChildren();
   for(const material of next.materials??[])jobs.append(node('p',`Attached: ${material.label} (${material.kind})`));
   for(const job of [...(next.jobs?.jobs??[]),...lessonVisualRows(next)]) {
     if(!active||view!==next)return;
-    const section=document.createElement('section');section.append(node('h3',`${job.kind}: ${job.activity}`));jobs.append(section);
+    const section=document.createElement('section');
+    if(exploration&&job.artifact?.kind==='visual'&&next.visuals.some(visual=>visual.file===job.artifact.file))exploration.append(section);
+    else {section.append(node('h3',`${job.kind}: ${job.activity}`));jobs.append(section);}
     if(job.error)section.append(node('pre',job.error));
     const report=job.research??job.pdf;
     if(report?.brief)section.append(prose('div',report.brief));
@@ -99,10 +118,20 @@ async function renderJobs(next,bound) {
       try {
         const source=await readArtifact({readText:async(_,file)=>({ok:true,...(await call('learning_asset',{chatId:next.chatId,file}))._meta})},{folder:'bound'},job.artifact);
         if(!active||view!==next)return;
-        const image=document.createElement('img');image.alt=job.artifact.title;image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(source);image.style.maxWidth='100%';section.append(image);
+        const image=document.createElement('img');image.alt=job.artifact.title;image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(source);image.style.maxWidth='100%';image.style.height='auto';section.append(image);
       } catch{section.append(node('p','Saved figure unavailable; inspect the owning session before trying again.'));}
     }
     if(job.artifact?.kind==='demo') {
+      if(codex) {
+        section.append(node('p','Open the lesson in chat to use this interactive visual.'));
+        const button=node('button','Open lesson in chat');button.type='button';button.dataset.lhModelAction='demo';button.disabled=!fresh;
+        button.addEventListener('click',()=>{
+          if(!active||!fresh||view!==next)return;
+          const event={chatId:bound.chatId,kind:bound.kind,expectedRevision:bound.revision,action:{type:'resume',chatId:bound.chatId}};
+          void rpc('ui/message',{role:'user',content:[{type:'text',text:'lh.t3 '+JSON.stringify(event)}]}).catch(error=>status(error.message,true));
+        });section.append(button);
+        continue;
+      }
       section.append(node('p','Demo saved. The MCP App CSP does not permit the nested demo frame; use the existing T3 native visual publisher.'));
       const button=node('button','Ask teacher to open saved demo');button.type='button';button.dataset.lhModelAction='demo';button.disabled=!active||!fresh||view!==next;
       button.addEventListener('click',()=>{
@@ -126,11 +155,16 @@ document.querySelector('#lh-save-draft').addEventListener('click',async()=>{
   }catch(error){status(error.message,true);}
 });
 async function refresh() {
-  if(!view)return;
+  if(!view||!initialized)return;
+  const attempt=++refreshAttempt;
+  status('Refreshing saved lesson…');
   fresh=false;root.inert=true;document.querySelector('#lh-save-draft').disabled=true;
   for(const button of jobs.querySelectorAll('[data-lh-model-action]'))button.disabled=true;
-  try{show(await call('learning_view',{chatId:view.chatId}),true);}
-  catch(error){status('Current state unavailable. Resume the originating T3 conversation, then Refresh. '+error.message,true);}
+  try{
+    const result=await call('learning_view',{chatId:view.chatId});
+    if(active&&attempt===refreshAttempt)show(result,true);
+  }
+  catch(error){if(active&&attempt===refreshAttempt)status('Current state unavailable. Reopen the lesson in its owning conversation, then refresh. '+error.message,true);}
 }
 document.querySelector('#lh-refresh').addEventListener('click',()=>void refresh());
 async function receive(event) {
@@ -141,7 +175,9 @@ async function receive(event) {
     for(const row of pending.values()){clearTimeout(row.timer);row.reject(new Error('App closed; inspect outcome before repeating an action.'));}pending.clear();return;
   }
   if(message.method==='ui/notifications/tool-result'){
-    try{show(message.params);if(!initialRefresh){initialRefresh=true;void refresh();}}catch(e){status(e.message,true);}return;
+    const incoming=message.params?.structuredContent?.view;
+    if(view&&incoming?.chatId===view.chatId&&message.params?._meta?.ownerThreadId===owner&&incoming.revision<=view.revision)return;
+    try{show(message.params);void refresh();}catch(e){status(e.message,true);}return;
   }
   if(message.method==='ui/notifications/host-context-changed'){applyTheme(message.params);return;}
   const row=pending.get(message.id);if(!row)return;pending.delete(message.id);clearTimeout(row.timer);
@@ -151,6 +187,11 @@ async function receive(event) {
 window.addEventListener('message',receive);
 const observer=new ResizeObserver(()=>{if(initialized&&active)post({jsonrpc:'2.0',method:'ui/notifications/size-changed',params:{height:Math.min(2000,Math.max(80,document.body.scrollHeight))}});});observer.observe(document.body);
 rpc('ui/initialize',{protocolVersion:'2026-01-26',appInfo:{name:'learnharness-native',version:'0.1.0-dev'},appCapabilities:{}})
-  .then(result=>{if(result?.hostInfo?.name!=='t3-code')throw new Error('This adapter requires the supported T3 MCP App host.');
-    applyTheme(result.hostContext);initialized=true;post({jsonrpc:'2.0',method:'ui/notifications/initialized',params:{}});})
+  .then(result=>{
+    const host=result?.hostInfo;
+    codex=host?.name==='chatgpt'&&host.client_type==='codex_desktop';
+    if(host?.name!=='t3-code'&&!codex)throw new Error('Open LearnHarness in Codex desktop or T3.');
+    if(codex)document.body.dataset.lhHost='codex';
+    applyTheme(result.hostContext);initialized=true;post({jsonrpc:'2.0',method:'ui/notifications/initialized',params:{}});
+    if(view)void refresh();})
   .catch(error=>status(error.message,true));

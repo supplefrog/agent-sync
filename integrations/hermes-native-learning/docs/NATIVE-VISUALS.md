@@ -14,13 +14,15 @@ After reading the current revision, call `learning_command` with:
 
 The teacher can use its host's Visualize authoring guidance and save that exact source. Attachment launches no worker or model. Each lesson retains up to eight immutable visual IDs, each at most 200 KiB and bounded to fit the T3 asset bridge after JSON encoding. Save changed content under a new ID. Content digests bind exported bytes to the lesson. Only descriptors in the owning public view are readable through `learning_artifact_source` or the existing app-only asset tool.
 
+Use a visual when it helps the learner see the relationship they are reasoning about. Match the lesson's quantities, labels and assumptions. Place a worked answer with feedback or review after the learner has attempted the question. Omit the visual when it would distract or turn a prediction or retrieval check into reading off the answer. To correct an existing visual, set optional `replaces` to its ID and give the correction a new ID. This removes the superseded visual from current learner views, preserves its record, and respects the original reveal gate.
+
 `reveal:"now"` means the teacher checked that content is safe at the current question. Never embed hidden answers in HTML, JavaScript, inline data or widget state. `reveal:"after-question"` binds to the current pending question/problem: teaching waits for its saved result; practice waits for its conclusion. Attachment refuses when no question/problem is active. Deferred source and descriptors remain absent from learner views and native HTML. Browser state cannot unlock them.
 
 ## Native Codex desktop
 
-`learning_view` returns the public lesson and `nativePresentation.path`, a content-addressed HTML fragment with the existing teach/practice controls and currently visible visuals. The agent includes that absolute path in a native `visualize` content reference in its final reply. No local web service is required. A descriptor alone does not prove that the UI mounted.
+`learning_view` associates the saved lesson with an MCP App resource. Codex desktop can use the same app card in the conversation and its side panel. The card uses the host bridge to refresh the current lesson and displays saved SVGs with the response controls. Interactive HTML uses the separate native chat renderer. For that path, `learning_view` supplies a content-addressed `nativePresentation.path` for a `visualize` content reference. Both use the same saved lesson and revision-bound input. A descriptor alone does not prove that the UI mounted.
 
-The native layout follows the conversation: the visual appears inside the lesson before its question and answer controls, with no outer gray panel. Resume follows the lesson. The shared controls retain their original presentation on T3/Hermes.
+The native layout puts the visual beside the question and response controls when the lesson container is wide enough. It stacks the visual above the question at narrow widths. The same controls and explorer remain mounted across resizing. The shared controls retain their original presentation on T3/Hermes.
 
 The controls send the existing `lh.t3 {chatId,kind,expectedRevision,action}` through user-confirmed `sendFollowUpMessage`. On a genuine event, pass its exact fields to `learning_input`, inspect persistence, read teacher context, save the required reaction, and return a fresh `learning_view`. Resume only reopens the view. Caller ownership still comes from host-written MCP metadata.
 

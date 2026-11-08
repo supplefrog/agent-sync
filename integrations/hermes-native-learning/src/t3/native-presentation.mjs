@@ -17,5 +17,5 @@ export function nativePresentation(binding,view,readAsset) {
     requireState(fs.realpathSync(file)===file&&fs.lstatSync(file).isFile()&&fs.readFileSync(file,'utf8')===source,
       'presentation_changed','Existing native presentation differs.');}
   return{path:file,sha256,revision:view.revision,format:'codex-visualize-fragment',
-    instruction:'In native Codex, include this absolute path in a visualize content reference in your final reply. On an actual lh.t3 user event call learning_input with its exact fields, read current context, save the required teacher reaction and return learning_view. A resume event only reopens the view. Requested delivery is not a saved answer.'};
+    instruction:'For the native Codex chat rendering, include this absolute path in a visualize content reference. On an actual lh.t3 user event call learning_input with its exact fields, read current context, save the required teacher reaction and return learning_view. A resume event only reopens the view. Requested delivery is not a saved answer.'};
 }

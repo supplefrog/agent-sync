@@ -1,0 +1,56 @@
+#lh-inline-lesson {
+  container: lh-lesson / inline-size;
+  --lh-secondary-ink: light-dark(#515960, #b8bfc7);
+}
+#lh-inline-lesson .lh-secondary,
+#lh-inline-lesson .lh-kind,
+#lh-inline-lesson .lh-field-label {
+  color: var(--lh-secondary-ink);
+}
+#lh-inline-lesson .lh-dock {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+#lh-inline-lesson .lh-heading {
+  border-block-end: 1px solid var(--border);
+  margin-block-end: .75rem;
+}
+#lh-inline-lesson .lh-workbench {
+  display: grid;
+  gap: .85rem;
+  align-items: start;
+}
+#lh-inline-lesson .lh-workbench > * {
+  min-inline-size: 0;
+}
+#lh-inline-lesson .lh-workbench-response .lh-field {
+  margin-block: .65rem .375rem;
+}
+#lh-inline-lesson .lh-workbench-response textarea {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+}
+#lh-inline-lesson .lh-practice-history {
+  border-block-start: 1px solid var(--border);
+  margin-block-start: .75rem;
+}
+#lh-inline-lesson .lh-practice-history summary {
+  color: var(--lh-secondary-ink);
+  cursor: var(--cursor-interaction, pointer);
+  padding-block: .45rem;
+}
+#lh-inline-lesson .lh-practice-history p {
+  margin-block: .5rem;
+}
+@container lh-lesson (min-width: 37.5rem) {
+  #lh-inline-lesson .lh-workbench {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr);
+    gap: 1.15rem;
+  }
+  #lh-inline-lesson .lh-workbench-response {
+    border-inline-start: 1px solid var(--border);
+    padding-inline-start: 1.15rem;
+  }
+}

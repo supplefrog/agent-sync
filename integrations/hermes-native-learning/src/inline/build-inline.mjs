@@ -66,7 +66,7 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken, cod
   };
   // Same no-network exporter, in dependency order. Module-import tests alone
   // do not establish that this self-contained consumer contains the helpers.
-  const helpers=['lesson-identity.mjs','rich-scope.mjs','confidence-style.mjs','answered-record.mjs','lesson-prose.mjs'].map(compose).join('\n');
+  const helpers=['lesson-identity.mjs','rich-scope.mjs','confidence-style.mjs','answered-record.mjs','lesson-prose.mjs','lesson-layout.mjs'].map(compose).join('\n');
   const client=compose('inline-client.mjs'),practiceClient=compose('practice-client.mjs'),codexClient=codex?compose('codex-transport.mjs'):'';
   const safe = JSON.stringify(view).replace(/</g, '\\u003c').replace(/&/g, '\\u0026').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
   const data = `<script id="lh-inline-data" type="application/json">${safe}</script>`;
@@ -84,8 +84,8 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken, cod
   const scriptNonce = localBrowser ? ` nonce="${nonce}"` : '';
   const runtime = `<script type="module"${scriptNonce}>\n${selection}\n${helpers}\n${practiceClient}\n${client}\n${codexClient}\nmountInline(document.getElementById('lh-inline-lesson'), JSON.parse(document.getElementById('lh-inline-data').textContent)${browserSend});\n</script>`;
   const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const exploration=visuals.map(v=>'<section aria-label="'+escape(v.title)+'">'+(v.format==='svg'?'<img alt="'+escape(v.title)+'" style="max-width:100%" src="data:image/svg+xml;charset=utf-8,'+encodeURIComponent(v.source)+'">':v.source)+'</section>').join('\n');
-  const nativeStyle=codex?'<style>#lh-inline-lesson .lh-dock{background:transparent;border:0;border-radius:0;padding:0}#lh-inline-lesson .lh-heading{margin-bottom:.5rem}</style>':'';
+  const exploration=visuals.map(v=>'<section aria-label="'+escape(v.title)+'">'+(v.format==='svg'?'<img alt="'+escape(v.title)+'" style="max-width:100%;height:auto" src="data:image/svg+xml;charset=utf-8,'+encodeURIComponent(v.source)+'">':v.source)+'</section>').join('\n');
+  const nativeStyle=codex?'\n<style>'+fs.readFileSync(path.join(INLINE_HOME,'codex-lesson.css'),'utf8')+'</style>':'';
   const visualMarkup=exploration?'\n<div id="lh-native-exploration" hidden>'+exploration+'</div>':'';
   return template.replace('<!-- INLINE_PAYLOAD -->', data).replace('<!-- INLINE_RUNTIME -->', runtime)+visualMarkup+nativeStyle;
 }
