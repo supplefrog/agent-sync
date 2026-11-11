@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "scope": "Explicit opt-in review models and bounded read-only review probes.",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "change_kind": "user-preference",
+      "basis": "user-correction",
+      "deviation": "The reviewer handoff did not describe disposable probe writes and the standing model route did not offer an explicit opt-in review pass through Terra or Claude Free.",
+      "evidence": "The user selected both opt-in routes and requested execution of missing final-revision probes.",
+      "baseline_sufficient": false,
+      "why_instruction": "Reviewer dispatch and read-only scope are decided from the shared instruction owner.",
+      "alternative": "Changing the default reviewer would spend capacity on ordinary tasks and would not settle probe ownership.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "d7de8418a450ef7b37eb7697e04c0d92b6cf9f0bf61f4600d237d9ec7265b5fc",
+          "after_sha256": "9cc6c8d7e609273d154c0a8ecba40748f1535ac2c24071cd080ff133f1933e27"
+        }
+      },
+      "user_preference": {
+        "request": "Add opt-in GPT-6.1 Terra and Sonnet 5.5 on Claude Free review passes and run missing material probes in a safe isolated runner.",
+        "scope": "Requested additional code review passes and authorized read-only code verification.",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "Explicit user request to implement opt-in reviewers and final-revision probe rules.",
+      "requirement_change": false,
+      "requirement_reason": "Apply an opt-in review preference within existing scoped orchestration and verification requirements.",
+      "checks": "Canonical renderer, recovery manifest and artifact-only instruction profile checks. Local production-path replay with a simulated review request.",
+      "outcome_review": {
+        "expected": "Opt-in selection and isolated probes are available without changing default roles. A missing final-head runtime observation delays the simulated review request.",
+        "observed": "The renderer projects the shared source. The final-head runtime probe ran before the mock review request.",
+        "evidence": "The scoped local Windows workflow replay and render/profile checks.",
+        "limitations": "The replay isolates one behavior claim and uses a simulated review request. It does not measure comparative model quality or host-wide parity."
+      },
+      "artifacts": {
+        "docs/system-requirements.md": {
+          "before_sha256": "e430b42f74f4f5e0fc603de4244aeb034a2673a632c9d44335726f6d9944b62b",
+          "after_sha256": "e430b42f74f4f5e0fc603de4244aeb034a2673a632c9d44335726f6d9944b62b"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "be3dc22bcc7b36650f874a3c50734b55a57387ad007d86b50fd23bbed1cb1802",
+          "after_sha256": "be3dc22bcc7b36650f874a3c50734b55a57387ad007d86b50fd23bbed1cb1802"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "d7de8418a450ef7b37eb7697e04c0d92b6cf9f0bf61f4600d237d9ec7265b5fc",
+          "after_sha256": "9cc6c8d7e609273d154c0a8ecba40748f1535ac2c24071cd080ff133f1933e27"
+        }
+      },
+      "obligations": [
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing system contract still applies."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing system contract still applies."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Implement the selected review preference."
+        }
+      ]
+    }
+  ]
+}
