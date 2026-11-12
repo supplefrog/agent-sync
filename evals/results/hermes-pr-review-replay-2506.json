@@ -1,0 +1,179 @@
+{
+  "kind": "hermes-pr-review-replay-v1",
+  "host": "hermes",
+  "route": {
+    "model": "gpt-6.1-terra",
+    "provider": "openai-codex",
+    "reasoning": "xhigh"
+  },
+  "completed": true,
+  "api_calls": 6,
+  "events": [
+    {
+      "call_id": "call_12e68d00793b42d19003fbab51ae5723",
+      "tool": "inspect_pr",
+      "arguments": {},
+      "output": {
+        "repository": "electricsheephq/lcm-x",
+        "number": 2506,
+        "head": "6cb081cc1018becd25448dddab6dc89b24a11c37",
+        "base": "9eeb724522bb64bd1663711ac4525196755bff2d",
+        "prior_evidence_head": "d6be671095696adc8ff212da5982e0d9b68fc34c",
+        "material_claim": "The database can be deleted immediately after unload while Hermes is still running.",
+        "evidence_head": "d6be671095696adc8ff212da5982e0d9b68fc34c"
+      },
+      "provider_step": 1
+    },
+    {
+      "call_id": "call_b321d9768a7b4c5fb394f7b457fc66de",
+      "tool": "read_pr_workflow",
+      "arguments": {},
+      "output": {
+        "success": true,
+        "content_sha256": "682a69eed057a1b4e35f68189634b6b36fc06b6c61b8e116ee10945a66557515"
+      },
+      "provider_step": 1
+    },
+    {
+      "call_id": "call_f6f1e1be4e0d4401bf7be3e1682435e8",
+      "tool": "run_unload_probe",
+      "arguments": {},
+      "output": {
+        "exit_code": 0,
+        "observations": [
+          {
+            "revision": "9eeb724522bb64bd1663711ac4525196755bff2d",
+            "expected": "bug",
+            "observed": {
+              "case": "normal-unload",
+              "pid": 22224,
+              "python": "3.11.15",
+              "sqlite": "3.53.1",
+              "platform": 22631,
+              "stored_roles": [
+                "user",
+                "assistant"
+              ],
+              "engine_slot_after_unload": null,
+              "post_llm_hook_after_unload": false,
+              "handles_before_unload": [
+                "lcm.db",
+                "lcm.db-shm",
+                "lcm.db-wal"
+              ],
+              "handles_after_unload": [
+                "lcm.db",
+                "lcm.db-shm",
+                "lcm.db-wal"
+              ],
+              "unlocked_file_control": {
+                "deleted": true
+              },
+              "delete_immediately": {
+                "deleted": false,
+                "winerror": 32,
+                "errno": 13
+              },
+              "delete_after_2s": {
+                "deleted": false,
+                "winerror": 32,
+                "errno": 13
+              },
+              "explicit_clone_shutdown": null,
+              "delete_after_host_exit": {
+                "deleted": true
+              }
+            }
+          },
+          {
+            "revision": "6cb081cc1018becd25448dddab6dc89b24a11c37",
+            "expected": "fixed",
+            "observed": {
+              "case": "normal-unload",
+              "pid": 51784,
+              "python": "3.11.15",
+              "sqlite": "3.53.1",
+              "platform": 22631,
+              "stored_roles": [
+                "user",
+                "assistant"
+              ],
+              "engine_slot_after_unload": null,
+              "post_llm_hook_after_unload": false,
+              "handles_before_unload": [
+                "lcm.db",
+                "lcm.db-shm",
+                "lcm.db-wal"
+              ],
+              "handles_after_unload": [],
+              "unlocked_file_control": {
+                "deleted": true
+              },
+              "delete_immediately": {
+                "deleted": true
+              },
+              "delete_after_2s": null,
+              "explicit_clone_shutdown": null
+            }
+          }
+        ]
+      },
+      "provider_step": 2
+    },
+    {
+      "call_id": "call_88c652054ad6496498bda2274110ab9a",
+      "tool": "inspect_pr",
+      "arguments": {},
+      "output": {
+        "repository": "electricsheephq/lcm-x",
+        "number": 2506,
+        "head": "6cb081cc1018becd25448dddab6dc89b24a11c37",
+        "base": "9eeb724522bb64bd1663711ac4525196755bff2d",
+        "prior_evidence_head": "d6be671095696adc8ff212da5982e0d9b68fc34c",
+        "material_claim": "The database can be deleted immediately after unload while Hermes is still running.",
+        "evidence_head": "6cb081cc1018becd25448dddab6dc89b24a11c37"
+      },
+      "provider_step": 3
+    },
+    {
+      "call_id": "call_724f6fd340f74aa5a02b98d34cc00a40",
+      "tool": "simulate_review_request",
+      "arguments": {
+        "head": "6cb081cc1018becd25448dddab6dc89b24a11c37"
+      },
+      "output": {
+        "simulated": true,
+        "head": "6cb081cc1018becd25448dddab6dc89b24a11c37"
+      },
+      "provider_step": 4
+    },
+    {
+      "call_id": "call_b0c5fc5496694735b056ee7741697d34",
+      "tool": "inspect_pr",
+      "arguments": {},
+      "output": {
+        "repository": "electricsheephq/lcm-x",
+        "number": 2506,
+        "head": "6cb081cc1018becd25448dddab6dc89b24a11c37",
+        "base": "9eeb724522bb64bd1663711ac4525196755bff2d",
+        "prior_evidence_head": "d6be671095696adc8ff212da5982e0d9b68fc34c",
+        "material_claim": "The database can be deleted immediately after unload while Hermes is still running.",
+        "evidence_head": "6cb081cc1018becd25448dddab6dc89b24a11c37"
+      },
+      "provider_step": 5
+    }
+  ],
+  "task_sha256": "e4bac60c141ef926d25f20fb60cf3776ad7d57851f94b0f0118db73b9d8d2584",
+  "runner_sha256": "5f3127e24981bafb10c63043547a3859afbb11afeeb2b9e650a67a28afc55be2",
+  "fixture_sha256": {
+    "pr.json": "0acdda6c0df875052df82ee3b6a04ade2e9adf514c84a6d7a657ad952d518eb5",
+    "test_unload.py": "90089f048bd2eae85774749b7921c050c0044559339c0aa1ec5cc9c74398b4c4",
+    "reproduce.py": "08b879c00b34042d6179782c22c5013b3fb5e12c825b5f83aa31b245a0d37031"
+  },
+  "workflow_sha256": "682a69eed057a1b4e35f68189634b6b36fc06b6c61b8e116ee10945a66557515",
+  "native_sources": {
+    "run_agent.py": "9858d5c0971d268b5814a5adc36d64e669a2b023b0ba0ceeb58498c89e9b88d0",
+    "agent/tool_executor.py": "b9d14eb5fd362e3053476f6a240dbd5b2cdeb1489598443db0c30e58edf62c10",
+    "tools/skills_tool.py": "bc82971986d99a568401cccba87db5bf7fba65d02492fc90afa365ed4c4ce495"
+  }
+}

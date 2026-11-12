@@ -1,0 +1,8 @@
+{
+  "repository": "electricsheephq/lcm-x",
+  "number": 2506,
+  "head": "6cb081cc1018becd25448dddab6dc89b24a11c37",
+  "base": "9eeb724522bb64bd1663711ac4525196755bff2d",
+  "prior_evidence_head": "d6be671095696adc8ff212da5982e0d9b68fc34c",
+  "material_claim": "The database can be deleted immediately after unload while Hermes is still running."
+}

@@ -129,6 +129,30 @@ The latest post-edit output is authoritative. If verification becomes stale afte
 
 
 
+### Risk-based review rounds
+
+Plan up to five distinct passes for a risky change. Choose the applicable passes from the changed production paths and failure modes. Keep smaller work proportional and honor an explicitly requested round count. Give each fresh reviewer the pinned revision, one material question, the expected and forbidden outcomes, and the evidence the question needs. Use the Agent Sync review dispatch and model preferences where available. Read-only review permits isolated probes and disposable outputs. The writer owns source changes, and the parent owns remaining probes and acceptance.
+
+| Pass | Failure mode | Check |
+| --- | --- | --- |
+| 1 | Ordinary operation regresses | Exercise real callers and nearby behavior under normal use, including concurrency before a shutdown or reconfiguration. |
+| 2 | Work crosses an ownership or lifecycle boundary | Force meaningful interleavings around admission, shutdown, reload, or rebind. Observe what finishes, what is refused, and which owner keeps the resources. |
+| 3 | Partial failure drops or duplicates work or leaks resources | Inject the relevant timeout, persistent contention, or failure after a partial commit. Observe durable state, retry behavior, diagnostics, and release. |
+| 4 | Host or version assumptions fail | Exercise the supported runtime, compatibility fallback, and host rejection where relevant. Verify production entry points with representative prior data or configuration. |
+| 5 | The integrated change or test gives a false pass | Reconcile findings and verify the real path on the final commit. Check that the control distinguishes the old or incomplete behavior and that the observation comes from the intended host, process, and revision. |
+
+- **Finish early** when all applicable material claims have evidence valid for the final commit, material findings are resolved, and required review is complete. Record why a planned pass is inapplicable or already covered.
+- **Continue after five** when a named material claim is missing, fails, or has invalidated evidence, a material finding is disputed, or the probe cannot distinguish the failure. Name the observation that could change the decision. Run a concrete authorized check directly when possible. Use a fresh round when a different failure hypothesis, probe, or interpretation needs independent review. Repeating a verdict gives no new evidence.
+- **Stop blocked** when a material gap remains and the decisive probe cannot run on an authorized equivalent runner. Record the claim, missing prerequisite, and next action. Finish independent checks. An available probe is work to do before declaring a blocker.
+
+### Final-commit gate for requesting review
+
+Apply this immediately before creating a ready PR, marking a draft ready, or requesting or re-requesting reviewers on an own PR through any GitHub surface. Preserve separate authorization for the GitHub write and the repository's CI and merge rules.
+
+1. Identify the clean committed candidate and base. For each applicable material claim, retain the tested SHA, host/runner, command, observed result, and relevant control. Bind required fresh review to the revision it covered. Reuse earlier evidence only after checking and recording why changed inputs leave that claim and its verification valid for the final commit.
+2. If any applicable evidence is missing, failed, or stale, **hold the review action and run the next authorized probe against the final commit**. Use the real production boundary when runtime behavior is the claim. Route the probe to the parent or an authorized runner when needed. Repair within scope and rerun affected checks, or report a concrete blocker. A bot verdict or resolved thread alone cannot close a runtime evidence gap.
+3. Once the evidence is complete, read back the exact PR head (and base when it affects the evidence), or the remote branch tip for a new PR. Compare it with the verified commit immediately before the action. A mismatch returns to verification. For an authorized request use GitHub's review control, then read back the target and resulting review state.
+
 ## 7. Commit, push, and create/update the PR
 
 Use focused Conventional Commits. Stage explicit files when practical.

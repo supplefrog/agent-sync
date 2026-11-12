@@ -7676,14 +7676,14 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 17020,
+      "bytes": 21141,
       "format": "text",
       "host": "hermes",
       "id": "native-2da7b342e9a7e6062f17",
       "include": [],
       "kind": "text",
       "portable_paths": true,
-      "sha256": "6b0bb9127f7f7fae35f63ce354b2e53494ffd25bd67f04ba1277257b822c174a",
+      "sha256": "682a69eed057a1b4e35f68189634b6b36fc06b6c61b8e116ee10945a66557515",
       "snapshot": "hosts/hermes/skills/github/github-collaboration-workflows/references/github-pr-workflow/SKILL.md",
       "source": "skills/github/github-collaboration-workflows/references/github-pr-workflow/SKILL.md",
       "strategy": "replace-if-absent"

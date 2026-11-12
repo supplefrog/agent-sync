@@ -57,6 +57,14 @@ These are responsibility boundaries, not requirements for four services, separat
 
 Tool governance additionally considers schema clarity, parameter necessity, caller compatibility, side effects, errors, and supported execution boundaries. Governance decides whether a tool change meets the contract; the domain/tool owner remains responsible for its implementation. A smaller interface is not automatically a better interface.
 
+## Native Hermes PR workflow publication
+
+The user's requirement is “fix Agent Sync’s publication check to validate real Hermes tool runs. rerun #2506 and verify Hermes chooses and runs the probe before a simulated review request, then publish the recovery copy if it passes”.
+
+For this user-directed recovery update, require a completed native Hermes model turn, the exact workflow and fixture, an observed read of the stale PR evidence, the real Windows probe on the base and head, a fresh head read after the probe, and a simulated request on that head. Require separate provider steps for decisions that depend on earlier tool results. Scripted dispatch is runtime diagnostics. This conformance check covers the requested workflow behavior and leaves comparative improvement claims under R02’s existing measurement rules.
+
+The Windows replay command is `python -B tools/hermes_pr_review_replay.py --fixture evals/fixtures/hermes-pr-review --skill WORKFLOW_ROOT --probe-assets ASSETS --probe-python HERMES_PYTHON --runtime-parent TEMP_DIR --output REPORT`. Use a fresh output path. The probe fixture takes Git archives and matching source exports for the pinned LCM-X revisions from ASSETS, and the pinned Windows Hermes checkout from its sibling `lcmx-unload` directory. The live reviewer uses the local Hermes Codex subscription. GitHub writes remain inside the fixture.
+
 ## Claim-based testing and retirement
 
 This governs future skill-value and retirement comparisons under R02, R07, R13 and R14. Use each skill's source-backed stated claim, intended scope and existing ownership-purpose record. Mark missing or inferred claims explicitly; do not invent a claim or a new justification after seeing results.

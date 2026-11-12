@@ -1,0 +1,107 @@
+{
+  "instruction_changes": [
+    {
+      "owner": "recovery:hermes:native-2da7b342e9a7e6062f17",
+      "basis": "user-correction",
+      "deviation": "The prior hold decision did not explicitly assign a missing final-revision probe before marking ready or requesting reviewers.",
+      "evidence": "Native Hermes read the candidate workflow and detected stale evidence on PR #2506. It ran the Windows probe, read back the final head, and then made one simulated review request in a separate model response.",
+      "baseline_sufficient": false,
+      "why_instruction": "The contributor workflow owns the readiness decision across GitHub clients.",
+      "alternative": "A client-specific wrapper leaves other supported review controls outside its scope.",
+      "artifacts": {
+        "recovery/current/hosts/hermes/skills/github/github-collaboration-workflows/references/github-pr-workflow/SKILL.md": {
+          "before_sha256": "6b0bb9127f7f7fae35f63ce354b2e53494ffd25bd67f04ba1277257b822c174a",
+          "after_sha256": "682a69eed057a1b4e35f68189634b6b36fc06b6c61b8e116ee10945a66557515"
+        }
+      },
+      "behavior_measurements": [
+        {
+          "profile_sha256": "d9c8935c7f7d9cb8b6cca2c3e8e49a4711b11cbfadcc1cdebcb3d545795434e6",
+          "report": "evals/results/hermes-pr-review-replay-2506.json",
+          "report_sha256": "12ed199d7cdf5f70ab52bbe4ee39da4a31d6e7d82d9d4f641edf6bd3db6734a9",
+          "suite": "evals/fixtures/hermes-pr-review/pr.json",
+          "suite_sha256": "0acdda6c0df875052df82ee3b6a04ade2e9adf514c84a6d7a657ad952d518eb5"
+        }
+      ],
+      "task_contract": {
+        "claim": "Hermes runs the missing Windows probe on the current PR head before requesting review.",
+        "suite_sha256": "0acdda6c0df875052df82ee3b6a04ade2e9adf514c84a6d7a657ad952d518eb5"
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "User-directed Agent Sync publication check and conditional recovery publication.",
+      "requirement_change": true,
+      "requirement_reason": "The requested publication check must verify actual Hermes tool calls and their order.",
+      "checks": "Native Hermes model replay and fail-closed evidence tests.",
+      "outcome_review": {
+        "expected": "Hermes runs the missing Windows probe on the current PR head before requesting review.",
+        "observed": "The base returned Windows sharing violation 32. The final head released every database handle and deleted lcm.db in the same process. Hermes read back that head before the simulated request.",
+        "evidence": "evals/results/hermes-pr-review-replay-2506.json",
+        "limitations": "One public PR fixture with a local stand-in for GitHub writes. This is an observed conformance check; it does not authenticate receipts or measure comparative improvement."
+      },
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "ee7326c3a7587cba5db157017204de0906e655c5296127f37401f798febdea42",
+          "after_sha256": "79df4b7b9b39864e9434f51f513a6134e5c9981cb1fa3a7f48808f82bde85449"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "be9784a13a940f44dab278ff6123f17d56ab9c3836aaea3210db57bfaf66fb8e",
+          "after_sha256": "8e2db77beb44e391939d4d3d60125902926580a6dacf01bd1eef3eab39f974a3"
+        },
+        "recovery/current/hosts/hermes/skills/github/github-collaboration-workflows/references/github-pr-workflow/SKILL.md": {
+          "before_sha256": "6b0bb9127f7f7fae35f63ce354b2e53494ffd25bd67f04ba1277257b822c174a",
+          "after_sha256": "682a69eed057a1b4e35f68189634b6b36fc06b6c61b8e116ee10945a66557515"
+        },
+        "tools/hermes_pr_review_evidence.py": {
+          "before_sha256": "absent",
+          "after_sha256": "2b45eb65b3286e4ec89f5fe968a6f63b178727c5188afc09276ef65b598f6fcc"
+        },
+        "tools/hermes_pr_review_replay.py": {
+          "before_sha256": "absent",
+          "after_sha256": "5f3127e24981bafb10c63043547a3859afbb11afeeb2b9e650a67a28afc55be2"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "7fb0db30bb6dbf2d67aba8f6bd90f6cbdff13e24e191c7dac7ed38250b219181",
+          "after_sha256": "b729ba1aa6ed04d5fccb8a61735f00e2263edcad25e07ce162ba59f4d8932bd6"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "The existing dependency remains accurate with this bounded publication check."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependency remains accurate with this bounded publication check."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Records the requested exact-head Hermes conformance check."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Records the requested exact-head Hermes conformance check."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/skills/github/github-collaboration-workflows/references/github-pr-workflow/SKILL.md",
+          "disposition": "updated",
+          "reason": "Records the requested exact-head Hermes conformance check."
+        }
+      ]
+    }
+  ]
+}

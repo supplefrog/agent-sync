@@ -198,3 +198,5 @@ The evaluator source binds trial intent, observed exercise, frozen-plan projecti
 ## Direct user preference acceptance
 
 R02/R08: explicit user preferences have direct source acceptance at existing standing owners. The user-preference consumer checks source scope and bindings without model measurements; declared authority and retained guarantees still require owner review. Agent-proposed improvement claims remain measured. Deployment and source acceptance remain distinct.
+
+R02 native PR workflow recovery uses a source-bound tool trace for the user-directed Windows replay. The publication consumer verifies the observed route, workflow read, before-and-after probe controls, head readback, and simulated request order. General native skill studies retain their diagnostic scope.

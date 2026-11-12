@@ -1067,6 +1067,16 @@ def measurement_eligibility(candidate, source, name, owner, row, base):
                     raise ValueError('measurement record bytes mismatch')
                 return json.loads(raw)
             report, suite = read('report'), read('suite')
+            if report.get('kind') == 'hermes-pr-review-replay-v1':
+                from hermes_pr_review_evidence import CLAIM, FIXTURE, OWNER, WORKFLOW, validate_replay
+                if (name != WORKFLOW or owner != OWNER or row.get('basis') != 'user-correction'
+                        or hosts != {'hermes'} or len(records) != 1
+                        or measurement['suite'] != (FIXTURE / 'pr.json').as_posix()
+                        or contract != {'claim': CLAIM, 'suite_sha256': measurement['suite_sha256']}):
+                    raise ValueError('native PR review replay is outside its requested publication scope')
+                validate_replay(candidate, report, suite, row['artifacts'][name]['after_sha256'])
+                return {'eligible': True, 'reason': 'native Hermes verified the requested PR review tool order',
+                        'behavioral_proof': True, 'execution_authenticated': False}
             if report.get('kind') == 'native-skill-study':
                 # Inspect the bound raw plan/report without treating a leaf
                 # study as a legacy admission suite or granting it authority.
