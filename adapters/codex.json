@@ -31,7 +31,7 @@
         {
           "label": "SCOPE",
           "shared": "scope",
-          "suffix": "Small tasks: side browser by default."
+          "suffix": "Small tasks: side browser by default. For images or GIFs using the user's ChatGPT account, open ChatGPT Images in the signed-in side browser."
         },
         {
           "label": "EVIDENCE",

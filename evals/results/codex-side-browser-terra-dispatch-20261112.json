@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "scope": "Codex side browser for ChatGPT Images",
+  "instruction_changes": [
+    {
+      "owner": "adapters/codex.json",
+      "change_kind": "user-preference",
+      "basis": "user-correction",
+      "deviation": "ChatGPT Images had no Codex-specific routing rule.",
+      "evidence": "The user asked to retain the Codex side-browser route for ChatGPT Images.",
+      "baseline_sufficient": false,
+      "why_instruction": "The Codex adapter owns the app-specific browser route.",
+      "alternative": "A project-only instruction does not cover the Codex-wide workflow.",
+      "artifacts": {
+        "adapters/codex.json": {
+          "before_sha256": "c174573bb983173624c23b0e5d6516444ee87218ceb44ec7d67c3e53a3bb4294",
+          "after_sha256": "b6b2595b2b257adf59095fde0394d8e37c549766f463ef58b3352ba3f6aa3642"
+        }
+      },
+      "user_preference": {
+        "request": "Use the signed-in Codex side browser for image and GIF requests using the ChatGPT account.",
+        "scope": "Codex image and GIF requests using the user\u2019s ChatGPT session.",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "The user requested the ChatGPT Images route and the original computer-use preference.",
+      "requirement_change": false,
+      "requirement_reason": "Keeps the Codex-wide image routing preference within the existing execution and browser access contracts.",
+      "checks": "Rendered Codex instructions and compared them byte for byte against the published version outside the image routing sentence.",
+      "outcome_review": {
+        "expected": "Use the signed-in side browser for ChatGPT Images.",
+        "observed": "The render adds the ChatGPT Images route and preserves the existing computer-use guidance.",
+        "evidence": "Read-only parent browser check from this session and the scoped Codex instruction render.",
+        "limitations": "The draft is not installed."
+      },
+      "artifacts": {
+        "adapters/codex.json": {
+          "before_sha256": "c174573bb983173624c23b0e5d6516444ee87218ceb44ec7d67c3e53a3bb4294",
+          "after_sha256": "b6b2595b2b257adf59095fde0394d8e37c549766f463ef58b3352ba3f6aa3642"
+        },
+        "recovery/current/hosts/codex/AGENTS.md": {
+          "before_sha256": "cb7118da4d730144d4a675e6d5ffd00bbdf59944096962fe3a13dc5217e73ae3",
+          "after_sha256": "17abe1d7d57e866c3f8bcf77b05a0ae3a1522d5fdc2d0514fbd838169b305d68"
+        },
+        "profiles/current-observed-defaults.json": {
+          "before_sha256": "016ce489860925256c06379850d37fb8f3c2df13bb6d00746bcf45786fb1dce6",
+          "after_sha256": "b69f55fc631b33f9c8fd6088d403c377ebdb3b7438675c11233b4beaadbb0379"
+        },
+        "recovery/current/manifest.json": {
+          "before_sha256": "9b813f4dfbc58c10152b6bc4d1ba7141d6e93464f3c0c5e0c39775f5b883d344",
+          "after_sha256": "4cf0c548d1967d3f511c57d708fa58c77792288e9fb3b84f3a4efa2cb3926efe"
+        },
+        "host-deltas.json": {
+          "before_sha256": "a994a6a70aa033ccbbd51a177e8dd403a05374e32ae394d2361c969088f43cf8",
+          "after_sha256": "8d3efe42c7e95e3bba7f3a63058777ff270c1b6f8410b2e0ae35217633f517fe"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "e430b42f74f4f5e0fc603de4244aeb034a2673a632c9d44335726f6d9944b62b",
+          "after_sha256": "e430b42f74f4f5e0fc603de4244aeb034a2673a632c9d44335726f6d9944b62b"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "be3dc22bcc7b36650f874a3c50734b55a57387ad007d86b50fd23bbed1cb1802",
+          "after_sha256": "be3dc22bcc7b36650f874a3c50734b55a57387ad007d86b50fd23bbed1cb1802"
+        }
+      },
+      "obligations": [
+        {
+          "path": "adapters/codex.json",
+          "disposition": "updated",
+          "reason": "Codex-only preference or its derived native binding."
+        },
+        {
+          "path": "recovery/current/hosts/codex/AGENTS.md",
+          "disposition": "updated",
+          "reason": "Codex-only preference or its derived native binding."
+        },
+        {
+          "path": "profiles/current-observed-defaults.json",
+          "disposition": "updated",
+          "reason": "Codex-only preference or its derived native binding."
+        },
+        {
+          "path": "recovery/current/manifest.json",
+          "disposition": "updated",
+          "reason": "Codex-only preference or its derived native binding."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Codex-only preference or its derived native binding."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "The existing orchestration contract governs this preference."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "The existing orchestration contract governs this preference."
+        }
+      ]
+    }
+  ]
+}

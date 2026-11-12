@@ -33,7 +33,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 5459,
+      "bytes": 5563,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
@@ -49,7 +49,7 @@
         "3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082",
         "6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d"
       ],
-      "sha256": "cb7118da4d730144d4a675e6d5ffd00bbdf59944096962fe3a13dc5217e73ae3",
+      "sha256": "17abe1d7d57e866c3f8bcf77b05a0ae3a1522d5fdc2d0514fbd838169b305d68",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
