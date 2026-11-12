@@ -114,7 +114,7 @@ Before dispatch, resolve Agent Sync via the shared skill root's `.agent-signal-f
 
 Read-only reviewers may run isolated probes with disposable outputs. The parent runs missing checks. Stop when material claims have final-revision evidence and required review is complete. Go beyond five for a material gap with a decisive check. Report a blocker when no authorized runner can answer it.
 
-On explicit review opt-in, use fresh GPT-6.1 Terra xhigh for code-path analysis and Sonnet 5.5 on Claude Free for probe design with public or sanitized context. Confirm model and effort. Report unavailable routes and continue verification.
+Use xhigh reasoning for every reviewer across workflows, including opt-in passes and future reviewer models. Verify the selected model and xhigh or the provider's equivalent before dispatch. Report unavailable routes and continue verification. On explicit review opt-in, use fresh GPT-6.1 Terra for code-path analysis and Sonnet 5.5 on Claude Free for probe design with public or sanitized context.
 
 Cloud agents do not inherit local skills. Supply applicable `SKILL.md` files, required support files and task context; verify reads. Remote commands retain the current model's context.
 

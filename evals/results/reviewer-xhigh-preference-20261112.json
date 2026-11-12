@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "scope": "Apply xhigh reasoning to every reviewer model across workflows.",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "change_kind": "user-preference",
+      "basis": "user-correction",
+      "deviation": "The default reviewer and Terra had xhigh, but the standing rules did not assign xhigh to every present or future reviewer model.",
+      "evidence": "The user explicitly requested a general rule for future reviewer model preferences.",
+      "baseline_sufficient": false,
+      "why_instruction": "The shared reviewer preference governs dispatch across workflows and hosts.",
+      "alternative": "Setting effort separately on each named route leaves future models dependent on a route-specific edit.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "9cc6c8d7e609273d154c0a8ecba40748f1535ac2c24071cd080ff133f1933e27",
+          "after_sha256": "5a1e85f19e4140dfacfb2b290f363be56c307f7d843b38db302dfabe4666f391"
+        }
+      },
+      "user_preference": {
+        "request": "Use xhigh when the user adds any future reviewer model preference.",
+        "scope": "All reviewer models across workflows, including opt-in passes, using a verified provider equivalent when needed.",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "Explicit user request to generalize the xhigh reviewer preference.",
+      "requirement_change": false,
+      "requirement_reason": "Apply the explicit model effort preference within the existing dispatch and verification contract.",
+      "checks": "Canonical rendering, selected recovery bindings, and the artifact-only instruction profile.",
+      "outcome_review": {
+        "expected": "Every managed host receives the same reviewer reasoning rule.",
+        "observed": "The standing source rendered the universal rule into the three managed overlays.",
+        "evidence": "Canonical generated instruction files and their bound recovery identities.",
+        "limitations": "These checks establish policy and artifact identity. Availability and effort are verified at dispatch."
+      },
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "9cc6c8d7e609273d154c0a8ecba40748f1535ac2c24071cd080ff133f1933e27",
+          "after_sha256": "5a1e85f19e4140dfacfb2b290f363be56c307f7d843b38db302dfabe4666f391"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "e430b42f74f4f5e0fc603de4244aeb034a2673a632c9d44335726f6d9944b62b",
+          "after_sha256": "e430b42f74f4f5e0fc603de4244aeb034a2673a632c9d44335726f6d9944b62b"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "be3dc22bcc7b36650f874a3c50734b55a57387ad007d86b50fd23bbed1cb1802",
+          "after_sha256": "be3dc22bcc7b36650f874a3c50734b55a57387ad007d86b50fd23bbed1cb1802"
+        }
+      },
+      "obligations": [
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Generalize reviewer effort at its shared owner."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Existing system contract applies."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Existing system contract applies."
+        }
+      ]
+    }
+  ]
+}
