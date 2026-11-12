@@ -20,7 +20,8 @@
       "sections": [
         {
           "label": "Communication",
-          "shared": "communication"
+          "shared": "communication",
+          "suffix": "In public artifacts, keep internal coordination, permission narration and agent/model/tool or budget accounting private; omit generic privacy assurances. Publish only audience-relevant facts and required disclosures."
         },
         {
           "label": "Judgment",
@@ -40,7 +41,8 @@
         },
         {
           "label": "Scope",
-          "shared": "scope"
+          "shared": "scope",
+          "suffix": "Delete agent-spawned threads when their work is complete. Follow the host's deletion approval requirements."
         },
         {
           "label": "Evidence",

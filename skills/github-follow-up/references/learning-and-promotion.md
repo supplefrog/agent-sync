@@ -33,7 +33,7 @@ GitHub-workflow-only corrections stay in this skill and use direct workflow test
 
 ### Workflow or Hermes-surface improvements
 
-Use `hermes-self-engineering` and `instruction-authoring`.
+Use the skill or standing-instruction owner that matches the correction.
 
 A manual or scheduled run may automatically patch only this GitHub skill, its reference/script, or its narrow Hermes integration. Require a deterministic reproducer; stage the smallest diff; show the baseline failure and post-change pass plus relevant near-miss checks; inspect the diff; load/read back the promoted artifact; and record rollback. If any condition is missing or the change exceeds that allowlist, put it in **Waiting** for user review. A general engineering candidate must instead pass the cross-project promotion gate and the owning capability's admission checks; it is never an automatic follow-up patch.
 

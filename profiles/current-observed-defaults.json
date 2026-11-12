@@ -3,9 +3,9 @@
   "claim": "Configured defaults with per-host observation time and source identities; not active-session model identities or universal behavior parity. Unselected host observations retain their recorded or unknown time.",
   "context_policy": {
     "max_standing_bytes": {
-      "codex": 5641,
-      "hermes": 5615,
-      "omp": 4879
+      "codex": 6014,
+      "hermes": 5988,
+      "omp": 4927
     },
     "recovery_loaded_into_prompt": false,
     "skills": "on-demand",
@@ -24,7 +24,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "b508c274306b06ed8ec4201623f11e555d8d072dcce2615f82ae44607dcbb42f"
+        "5b296326aff2c804cd004e6094933f7f40358586b7eb0269459a4bbaa0507223"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -58,7 +58,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "5ef00d578c64c6a4891ce080a60da47d735266fdc706ba4bb34d2c69b79a7753"
+        "f4e45c4dd6b66eec29df7d1ab907c09369a10f9670e4da00daa6bad6a972dcdd"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -95,7 +95,7 @@
     },
     "omp": {
       "artifact_sha256": [
-        "656e341b1a9f2456cab664fe1acfac9e9888a60f41139e8b2d4669e522608e03"
+        "a01ca869e04f1e05359747af95c60bab2b829c0640a2a3cccacd6e2b4a88a368"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -147,10 +147,20 @@
     "reasoning": "medium"
   },
   "writing_routes": {
-    "model-facing-instructions": {
+    "agent-handoffs": {
       "loading": "on-demand",
-      "owner": "skills/instruction-authoring",
-      "scope": "Dense model-facing rules, skills, triggers, references, and proportional behavior evaluation."
+      "owner": "skills/prompting",
+      "scope": "Task wording when one agent prompts another."
+    },
+    "standing-instructions": {
+      "loading": "on-demand",
+      "owner": "skills/system-instruction-writing",
+      "scope": "AGENTS.md, SOUL.md, and their shared source."
+    },
+    "skill-instructions": {
+      "loading": "on-demand",
+      "owner": "skills/skill-writing",
+      "scope": "Writing or editing skills."
     },
     "public-prose": {
       "loading": "on-demand",

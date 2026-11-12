@@ -28,6 +28,6 @@ When no trustworthy reproduction exists, choose a realistic signal: a test, CLI 
 
 ## Agent-behavior failures
 
-For recurring, consequential, or explicitly requested agent failures, trace input → applicable instruction/skill → model/tool boundary → persisted transition → user-visible output. Identify absent rules, failed triggering, conflicts, lost context, or unenforced transitions. Repair the owning mechanism, including sibling paths that can cause the same failure; correcting an artifact or the nearest loaded skill does not establish resolution. A local correction alone does not justify durable changes. Use `instruction-authoring` before durable instruction edits; keep an unchangeable owning mechanism explicit as a blocker.
+For recurring, consequential, or explicitly requested agent failures, trace input → applicable instruction/skill → model/tool boundary → persisted transition → user-visible output. Identify absent rules, failed triggering, conflicts, lost context, or unenforced transitions. Repair the owning mechanism, including sibling paths that can cause the same failure; correcting an artifact or the nearest loaded skill does not establish resolution. A local correction alone does not justify durable changes. Name the blocker when the owning mechanism cannot be changed.
 
 For requested postmortems, use the host's available postmortem workflow with the confirmed symptom, cause, fix, and validation scope.

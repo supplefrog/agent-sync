@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from difflib import SequenceMatcher
 from pathlib import Path
 import subprocess
 
@@ -20,6 +21,7 @@ NATIVE_LEARNING_MANIFEST_SHA256 = 'de0e5cf960ac6bc7c1cc849dde7bd72d12a94ea6e71cb
 NATIVE_LEARNING_INDEX_SHA256 = '5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032'
 NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256 = '45ff625bff312262629c44be2d7aa7f6ebcf22614d6fcfec0827639c3a49f80e'
 NATIVE_LEARNING_VISUALS_MANIFEST_SHA256 = '070fa053f1018bd98d29ecd5f3b7922a4ef55c5172b706900a776e2730fd12be'
+NATIVE_LEARNING_WORKBENCH_MANIFEST_SHA256 = '34a1446acd8dd9ad5f3039a5d9d2b6220d2f1f083adeee6101b102dc3151c084'
 
 GENERATED = {'recovery/current/hosts/codex/AGENTS.md',
              'recovery/current/hosts/hermes/SOUL.md',
@@ -532,7 +534,8 @@ def native_learning_source_reference(repo, name):
         # Preserve prior bindings and admit only these exact maintained packages.
         counts = {NATIVE_LEARNING_MANIFEST_SHA256: (89, 90),
                   NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256: (104, 105),
-                  NATIVE_LEARNING_VISUALS_MANIFEST_SHA256: (115, 116)}.get(_hash(manifest_raw))
+                  NATIVE_LEARNING_VISUALS_MANIFEST_SHA256: (115, 116),
+                  NATIVE_LEARNING_WORKBENCH_MANIFEST_SHA256: (117, 118)}.get(_hash(manifest_raw))
         if counts is None:
             return False
         manifest = json.loads(manifest_raw)
@@ -1317,8 +1320,91 @@ def _loading_review(candidate, source, base, owner, row, changed):
             raise sync_git.SyncBlocked('loading review omits changed destination source: ' + name)
 
 
-def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, retirement_publication=None):
+def requested_replacement(candidate, source, base, paths):
+    """Read the existing reconciliation record for an exact operator-directed split."""
+    if 'registry.json' not in paths:
+        return set(), set()
+    rows = []
+    for name in sorted(paths):
+        if name.startswith('evals/results/') and name.endswith('.json') and (candidate / name).is_file():
+            document = json.loads((candidate / name).read_bytes())
+            if isinstance(document, dict):
+                rows.extend((name, row) for row in document.get('change_reconciliation', [])
+                            if isinstance(row, dict) and 'requested_replacement' in row)
+    if not rows:
+        return set(), set()
+    if len(rows) != 1:
+        raise sync_git.SyncBlocked('requested replacement requires one reconciliation record')
+    receipt, row = rows[0]
+    selection = row['requested_replacement']
+    old = json.loads(_before(source, base, 'registry.json'))
+    new = json.loads((candidate / 'registry.json').read_bytes())
+    old_entries, new_entries = old.pop('skills'), new.pop('skills')
+    before = {entry['name']: entry for entry in old_entries}
+    after = {entry['name']: entry for entry in new_entries}
+    added = after.keys() - before.keys()
+    retired = {name for name, entry in before.items()
+               if entry.get('status') == 'admitted' and after.get(name) == {**entry, 'status': 'retired'}}
+    if (row.get('requirement_change') is not True or old != new or len(retired) != 1 or not added
+            or len(before) != len(old_entries) or len(after) != len(new_entries)
+            or selection != {'retire': sorted(retired), 'admit': sorted(added)}
+            or any(after.get(name) != entry for name, entry in before.items() if name not in retired)
+            or any(after[name].get('status') != 'admitted' for name in added)):
+        raise sync_git.SyncBlocked('requested replacement changes an unselected registry owner or lifecycle')
+    for name in added | retired:
+        package = candidate / 'skills' / name
+        if (not re.fullmatch(r'[a-z0-9][a-z0-9-]*', name)
+                or {path.relative_to(package).as_posix() for path in package.rglob('*') if not path.is_dir()} != {'SKILL.md'}
+                or validate.validate_skill(package / 'SKILL.md', expected_name=name)):
+            raise sync_git.SyncBlocked('requested replacement must use instruction-only SKILL.md packages: ' + name)
+    changed = {}
+    for name in set(paths) - {receipt}:
+        old_hash = _hash(_before(source, base, name))
+        path = candidate / name
+        new_hash = _hash(path.read_bytes() if path.is_file() else None)
+        if old_hash != new_hash:
+            if name.startswith('skills/') and path.suffix != '.md' and new_hash != 'absent':
+                raise sync_git.SyncBlocked('requested replacement cannot write non-Markdown skill files: ' + name)
+            changed[name] = {'before_sha256': old_hash, 'after_sha256': new_hash}
+    artifacts = row.get('artifacts')
+    if not isinstance(artifacts, dict) or any(not isinstance(hashes, dict) for hashes in artifacts.values()):
+        raise sync_git.SyncBlocked('requested replacement requires exact source bindings')
+    bound = {name: hashes for name, hashes in artifacts.items()
+             if hashes.get('before_sha256') != hashes.get('after_sha256')}
+    if (bound != changed or not (CONTRACTS | {'registry.json', 'contracts/ownership.json'}) <= changed.keys()
+            or any('skills/' + name + '/SKILL.md' not in changed for name in added | retired)):
+        raise sync_git.SyncBlocked('requested replacement must bind the complete changed selection and intent')
+    return set(added), retired
+
+
+def _replacement_instruction(name, old, new, added, retired):
+    if name.startswith('skills/') and name.split('/')[1] in added | retired:
+        return True
+    if old is None or new is None:
+        return False
+    if name in ADAPTERS:
+        before, after = json.loads(old), json.loads(new)
+        before['instructions']['projection'] = after['instructions']['projection']
+        return before == after
+    if name == 'surfaces/core.md':
+        marker = b'# Execution contract\n'
+        end = b'## Dispatch and review\n'
+        return marker in old and marker in new and (
+            old.split(marker, 1)[1].split(end, 1)[0] == new.split(marker, 1)[1].split(end, 1)[0])
+    old_lines, new_lines = old.decode('utf-8').splitlines(), new.decode('utf-8').splitlines()
+    # Other instructions can only remove their old load routes. Unrelated
+    # instructions in the same release keep their usual evidence requirements.
+    changes = SequenceMatcher(a=old_lines, b=new_lines, autojunk=False).get_opcodes()
+    return all(stop > start and last - first <= stop - start
+               and all(any(owner in line for owner in retired) for line in old_lines[start:stop])
+               and not any(any(owner in line for owner in retired) for line in new_lines[first:last])
+               for op, start, stop, first, last in changes if op != 'equal')
+
+
+def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, retirement_publication=None,
+          ready=False):
     paths = set(paths)
+    added, retired = requested_replacement(candidate, source, base, paths) if ready else (set(), set())
     old_index = _before(source, base, INDEX)
     current = candidate / INDEX
     before = json.loads(old_index) if old_index is not None else {}
@@ -1380,6 +1466,8 @@ def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, r
                 raise sync_git.SyncBlocked('unowned standing instruction source: ' + name)
         elif path.name.upper() in {'AGENTS.MD', 'SOUL.MD', 'RULES.MD', 'SKILL.MD'}:
             owner = native_owners.get(name, owners.get(name))
+            if added and name == 'AGENTS.md':
+                owner = name  # Repository-local routing for the replaced skill.
             if not owner:
                 raise sync_git.SyncBlocked('unowned instruction source: ' + name)
         if owner:
@@ -1388,6 +1476,11 @@ def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, r
             if old != new:
                 required[name] = (owner, _hash(old), _hash(new))
     dependencies = _dependency_review(candidate, source, base, paths, required)
+    if added:
+        required = {name: item for name, item in required.items()
+                    if not _replacement_instruction(name, _before(source, base, name),
+                        (candidate / name).read_bytes() if (candidate / name).is_file() else None,
+                        added, retired)}
     if not required:
         return dependencies
     records = []

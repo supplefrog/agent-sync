@@ -60,7 +60,7 @@ Choose the cheapest checks that prove the outcome and relevant failure boundary.
 
 For acceptance or evaluation workflows, demonstrate that the checks reject relevant faulty outputs and accept nearby valid outputs before using their verdict for promotion. Bind the evidence to the actual artifact or action being judged; metadata, authored pass labels and check counts do not establish the human outcome.
 
-Before authoring instruction or trigger candidates, load `instruction-authoring` for staging outside live discovery, proportional evaluation and regression boundaries. For shared capability admission or promotion, load `cross-agent-surface-engineering` for checked deployment, evidence, rollback and unresolved checks; no candidate is promoted without the required correction or supported improvement and no material regression.
+Stage instruction or trigger candidates outside live discovery. For shared capability admission or promotion, load `cross-agent-surface-engineering` for checked deployment, evidence, rollback and unresolved checks; no candidate is promoted without the required correction or supported improvement and no material regression.
 
 ## Output
 

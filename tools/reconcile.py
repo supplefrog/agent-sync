@@ -1734,7 +1734,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             with sync_git.prepare_candidate(repo, files, base=base_commit, overrides=overrides) as (candidate, candidate_tree):
                 check_dependencies(candidate)
                 import instruction_changes
-                instruction_changes.check(candidate, repo, base_commit, files, **({"retirement_publication": retirement_publication} if retirement_publication is not None else {}))
+                instruction_changes.check(candidate, repo, base_commit, files, ready=integration_attempt is not None,
+                                          retirement_publication=retirement_publication)
                 _prepare_candidate_bindings(candidate, names, artifacts, files)
                 sync_git.assert_publishable(candidate, files)
                 if (candidate / "registry.json").is_file():

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "capability": "system-instruction-writing",
+  "basis": "Explicit user-directed replacement",
+  "source": {
+    "path": "skills/system-instruction-writing/SKILL.md",
+    "sha256": "23165a4ef700f252ff7fc06b91f4701319de274b74e57a4c0490f99e2560a6bf"
+  },
+  "evidence_scope": "Candidate source and structure. No comparative model benefit or managed rollout claimed.",
+  "candidate_readback": "All three host overlays render. Hermes discovered and read the exact skill body from the temporary fleet destination."
+}

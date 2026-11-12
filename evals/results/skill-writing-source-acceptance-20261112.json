@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "capability": "skill-writing",
+  "basis": "Explicit user-directed replacement",
+  "source": {
+    "path": "skills/skill-writing/SKILL.md",
+    "sha256": "3ca8b3747c0397d338930bfa70676297e54a13d1f71d093177327947fe1fa03d"
+  },
+  "evidence_scope": "Candidate source and structure. No comparative model benefit or managed rollout claimed.",
+  "candidate_readback": "Hermes discovered and read the exact skill body from the temporary fleet destination."
+}

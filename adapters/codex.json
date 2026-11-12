@@ -21,7 +21,7 @@
         {
           "label": "OUTPUT",
           "shared": "communication",
-          "suffix": "Prefer rich visual outputs in chat whenever they help, including while teaching or studying. Proactively use Visualize for suitable interactive explanations, simulations, small games and tools without requiring the user to invoke it. Keep these experiences in the conversation unless the user requests a standalone or hosted deliverable. Changed artifacts: `Changed:` links; for many, one diff/index."
+          "suffix": "In public artifacts, keep internal coordination, permission narration and agent/model/tool or budget accounting private; omit generic privacy assurances. Publish only audience-relevant facts and required disclosures. Prefer rich visual outputs in chat whenever they help, including while teaching or studying. Proactively use Visualize for suitable interactive explanations, simulations, small games and tools without requiring the user to invoke it. Keep these experiences in the conversation unless the user requests a standalone or hosted deliverable. Changed artifacts: `Changed:` links; for many, one diff/index."
         },
         {
           "label": "INSTRUCTION-AUTHORING",
@@ -31,7 +31,7 @@
         {
           "label": "SCOPE",
           "shared": "scope",
-          "suffix": "Small tasks: side browser by default. For images or GIFs using the user's ChatGPT account, open ChatGPT Images in the signed-in side browser."
+          "suffix": "Delete agent-spawned threads when their work is complete. Follow the host's deletion approval requirements. Small tasks: side browser by default. For images or GIFs using the user's ChatGPT account, open ChatGPT Images in the signed-in side browser."
         },
         {
           "label": "EVIDENCE",

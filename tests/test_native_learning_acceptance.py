@@ -111,10 +111,10 @@ class NativeLearningMaintainedReference(unittest.TestCase):
 
     def test_exact_maintained_package(self):
         raw = self.data[gate.NATIVE_LEARNING_OWNER + '/PUBLIC-FILES.json']
-        self.assertEqual('070fa053f1018bd98d29ecd5f3b7922a4ef55c5172b706900a776e2730fd12be',
+        self.assertEqual('34a1446acd8dd9ad5f3039a5d9d2b6220d2f1f083adeee6101b102dc3151c084',
                          hashlib.sha256(raw).hexdigest())
         manifest = json.loads(raw)
-        self.assertEqual((115, 116, 115), (manifest['fileCount'], manifest['publicationFileCount'], len(manifest['files'])))
+        self.assertEqual((117, 118, 117), (manifest['fileCount'], manifest['publicationFileCount'], len(manifest['files'])))
         self.assertTrue(self.call())
 
     def test_changed_non_entrypoint_member_rejected(self):

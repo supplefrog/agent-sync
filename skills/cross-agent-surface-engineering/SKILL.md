@@ -8,12 +8,12 @@ compatibility: Requires an Agent Sync checkout and access to the affected live h
 metadata:
   hermes:
     tags: [hermes, codex, omp, cross-agent, convergence]
-    related_skills: [fleet-sync, instruction-authoring, hermes-self-engineering]
+    related_skills: [fleet-sync, hermes-self-engineering]
 ---
 
 # Cross-Agent Surface Engineering
 
-Use this for cross-host placement, parity, or reconciliation across Hermes, Codex, and OMP. Authorized managed-surface changes include checked deployment, commit, push, and remote readback; no separate reconciliation phrase or routine confirmation is needed. Discussion and audits alone do not authorize mutation. Review unrelated dirty work before including it, and preserve approval gates for new or high-stakes actions. Known-owner wording edits use `instruction-authoring`; ordinary host use and project code stay with their narrower owners.
+Use this for cross-host placement, parity, or reconciliation across Hermes, Codex, and OMP. Authorized managed-surface changes include checked deployment, commit, push, and remote readback; no separate reconciliation phrase or routine confirmation is needed. Discussion and audits alone do not authorize mutation. Review unrelated dirty work before including it, and preserve approval gates for new or high-stakes actions. Ordinary host use and project code stay with their owners.
 
 ## Canonical owner
 
@@ -100,6 +100,6 @@ When preserving a curated host, inventory skill and plugin packages, support fil
 
 Automatic learning is an intended capability, not drift merely because it spends inference or proposes frequent updates. Distinguish enforced ownership/approval/rollback boundaries from uncertain output quality; reproduce a safeguard failure before recommending a restriction on that basis. Curator, background review, and notification settings are separate controls.
 
-Hermes skill proposals use its existing write-approval queue, not live edits. During reconciliation, review `skill-proposals` findings with `instruction-authoring`; use `tools/hermes_skill_review.py show ID` for the private payload and review token. Approve checked native changes through that helper; promote shared/new owners from canonical source, then discard the proposal. Rejected or unresolved candidates stay out of live discovery; unrelated sync is not approval. Commands and limits: `docs/hermes-skill-proposals.md` in the owning checkout. Do not publish proposal bodies.
+Hermes skill proposals use its existing write-approval queue, not live edits. For `skill-proposals` findings, use `tools/hermes_skill_review.py show ID` for the private payload and review token. Approve checked native changes through that helper; promote shared/new owners from canonical source, then discard the proposal. Rejected or unresolved candidates stay out of live discovery; unrelated sync is not approval. Commands and limits: `docs/hermes-skill-proposals.md` in the owning checkout. Do not publish proposal bodies.
 
 Never copy credentials, sessions, memories, logs, caches, private user data, or provider-hidden prompts into Agent Sync. Do not modify another profile without explicit authorization. Do not infer parity from identical files, and do not lower one host to the weakest common mechanism.

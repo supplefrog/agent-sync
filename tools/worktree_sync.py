@@ -81,8 +81,6 @@ def _qualify(repo, ready, options):
             raise sync_git.SyncBlocked('ready integration requires a linear non-merge commit range')
         current = dict(admission(commit))
         if any(current.get(name) != status for name, status in public_admission):
-            if retirement_publication is None:
-                raise sync_git.SyncBlocked('ready integration cannot change registry admission or lifecycle; normal review is required')
             lifecycle_changes.append(current)
         paths.update(_names(repo, 'diff-tree', '--no-commit-id', '--no-renames', '--name-only', '-r', commit))
     if retirement_publication is not None:
@@ -106,7 +104,20 @@ def _qualify(repo, ready, options):
         if any(registry[name].get('status') != 'admitted' for name in owners):
             raise sync_git.SyncBlocked('ready owners must already be admitted')
         import instruction_changes
-        added_names = set(dict(admission(exact))) - set(dict(public_admission))
+        final_admission = dict(admission(exact))
+        replacements, replaced = instruction_changes.requested_replacement(candidate, repo, base, paths)
+        if replacements:
+            if (owners or retirement_publication is not None
+                    or any(dict(admission(commit)) not in (dict(public_admission), final_admission) for commit in commits)):
+                raise sync_git.SyncBlocked('requested replacement requires one exact include-only registry transition')
+            prior_entries = sync_git._tree_entries(repo, base)
+            ready_entries = sync_git._tree_entries(repo, tree)
+            if any(ready_entries[name][0] != prior_entries.get(name, ('100644',))[0]
+                   for name in paths & ready_entries.keys()):
+                raise sync_git.SyncBlocked('requested replacement cannot add executable files or change Git file modes')
+        elif lifecycle_changes and retirement_publication is None:
+            raise sync_git.SyncBlocked('ready integration cannot change registry admission or lifecycle; normal review is required')
+        added_names = set(final_admission) - set(dict(public_admission)) - replacements
         imports = (instruction_changes.requested_import_owners(candidate, repo, base, paths)
                    if added_names else set())
         if not imports <= owners:
@@ -135,7 +146,7 @@ def _qualify(repo, ready, options):
                 raise sync_git.SyncBlocked('requested edit cannot change package file set or Git modes')
         for commit in commits:
             added = set(dict(admission(commit))) - set(dict(public_admission))
-            if not added <= imports or any(dict(admission(commit))[name] != 'admitted' for name in added):
+            if not added <= imports | replacements or any(dict(admission(commit))[name] != 'admitted' for name in added):
                 raise sync_git.SyncBlocked('ready registry additions require bound requested imports')
         if owners:
             published_registry = json.loads(sync_git.git(repo, 'show', base + ':registry.json'))
@@ -162,21 +173,25 @@ def _qualify(repo, ready, options):
                     raise sync_git.SyncBlocked('ready metadata policy requires explicit host-deltas.json review')
         selected_paths = sorted(paths - ({'host-deltas.json'} if omit_metadata else set()))
         import instruction_changes
-        instruction_changes.check(candidate, repo, base, selected_paths, **({'retirement_publication': retirement_publication} if retirement_publication is not None else {}))
+        instruction_changes.check(candidate, repo, base, selected_paths, ready=True,
+                                  retirement_publication=retirement_publication)
         sync_git.assert_publishable(candidate, paths)
         reconcile._prepare_candidate_bindings(candidate, owners, None, selected_paths)
         if (candidate / 'registry.json').is_file():
             reconcile.fleet.render_snapshot(candidate, reconcile._snapshot(candidate))
         checks = reconcile._run_candidate_checks(candidate, reconcile._candidate_commands(candidate, owners, selected_paths), tree)
-        if imports:
+        if imports or replacements:
             roots = {path for _, path in reconcile._destinations(candidate, options['machine'], options['skill_roots'])}
             for spec in reconcile.fleet.load_fleet(candidate)['machines'].values():
                 roots.update(reconcile.fleet.resolve_template(p) for p in spec['skill_roots'])
             for root in roots:
-                for owner in imports:
+                for owner in imports | replacements:
                     if ((root / owner).exists() or (root / owner).is_symlink()
                             or owner in reconcile.fleet.load_state(root).get('skills', {})):
                         raise sync_git.SyncBlocked('requested import destination collision: ' + owner)
+                if replaced and any(action['name'] in replaced and action['action'] == 'conflict'
+                                    for action in reconcile.fleet.plan_snapshot(reconcile._snapshot(candidate), root)):
+                    raise sync_git.SyncBlocked('requested retirement has a managed destination conflict')
     return {'ready': exact, 'source_base': base, 'source_commits': commits,
             'paths': selected_paths, 'requested_imports': sorted(imports), 'omit_metadata': omit_metadata, 'target': target,
             'source_repo': str(repo), 'common_repo': str(common), 'options': options,

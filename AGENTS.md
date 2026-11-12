@@ -1,6 +1,6 @@
 # Repository rules
 
-Use [instruction-authoring](skills/instruction-authoring/SKILL.md) for durable/shared instruction content and preference placement. Codex's bundled `.system/skill-creator` owns native scaffolding, UI metadata and validation.
+Use the [user requirements](docs/system-requirements.md) when editing [standing instructions](skills/system-instruction-writing/SKILL.md) or [skills](skills/skill-writing/SKILL.md). Edit shared standing rules in `surfaces/core.md` and render the host overlays with `python tools/run.py render_instructions render`.
 
 Use [cross-agent-surface-engineering](skills/cross-agent-surface-engineering/SKILL.md) for cross-host placement or parity, and [hermes-self-engineering](skills/hermes-self-engineering/SKILL.md) for unresolved Hermes placement. Preserve native capabilities and explicit unsupported mappings; existing procedures remain reviewable within the user's authorization.
 

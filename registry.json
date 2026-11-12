@@ -114,9 +114,27 @@
     },
     {
       "name": "instruction-authoring",
-      "status": "admitted",
+      "status": "retired",
       "license": "MIT",
       "eval": "evals/results/authoring-loading-20261015.json"
+    },
+    {
+      "name": "prompting",
+      "status": "admitted",
+      "license": "MIT",
+      "eval": "evals/results/prompting-source-acceptance-20261112.json"
+    },
+    {
+      "name": "system-instruction-writing",
+      "status": "admitted",
+      "license": "MIT",
+      "eval": "evals/results/system-instruction-writing-source-acceptance-20261112.json"
+    },
+    {
+      "name": "skill-writing",
+      "status": "admitted",
+      "license": "MIT",
+      "eval": "evals/results/skill-writing-source-acceptance-20261112.json"
     },
     {
       "name": "humanizer",

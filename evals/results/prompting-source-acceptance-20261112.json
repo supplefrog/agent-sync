@@ -1,0 +1,672 @@
+{
+  "schema_version": 1,
+  "capability": "prompting",
+  "basis": "Explicit user-directed replacement",
+  "source": {
+    "path": "skills/prompting/SKILL.md",
+    "sha256": "1ac7f4319268a07f763d252909f28717614284558897b5161cd7dabb59f2d8ee"
+  },
+  "evidence_scope": "Candidate source and structure. No comparative model benefit or managed rollout claimed.",
+  "native_handoff": {
+    "host": "Hermes",
+    "source_revision": "95fc3e668f",
+    "transport": "local OpenAI-compatible test server",
+    "user_messages": 1,
+    "context_separate": true,
+    "task_sha256": "913d590ecb2f9bbad6a632eb174870e72909d403852b7096aafa3c8a57cfe5e8",
+    "native_trailing_whitespace_removed": 2
+  },
+  "candidate_readback": "Fleet replacement in a temporary destination was idempotent. Hermes read all three new skill bodies and did not find the retired skill.",
+  "change_reconciliation": [
+    {
+      "requested_replacement": {
+        "retire": [
+          "instruction-authoring"
+        ],
+        "admit": [
+          "prompting",
+          "skill-writing",
+          "system-instruction-writing"
+        ]
+      },
+      "authority": "Explicit user direction to replace the combined instruction-writing skill, suspend questioned skills, and preserve OMP edits.",
+      "requirement_change": true,
+      "requirement_reason": "Separates prompting and the two writing tasks, and prevents applying a skill under review by the user.",
+      "checks": "Exact source bindings, host projections, registry transition, native recovery preimages, and ordinary fleet collision and discovery checks.",
+      "outcome_review": {
+        "expected": "Three small skills carry the selected requirements. The old skill is retired and the standing rule suspends questioned skills.",
+        "observed": "The staged fleet and actual Hermes outbound request verified discovery, retirement, and separate task and context. The OMP projection preserves the saved output and scope edits.",
+        "evidence": "evals/results/prompting-source-acceptance-20261112.json",
+        "limitations": "Records explicit source intent and bounded transport evidence. Claims of improved model behavior require separate evidence."
+      },
+      "artifacts": {
+        "AGENTS.md": {
+          "before_sha256": "ed6b700fab62973550c2ce765e5129e8121874f42da76ddef9ec615e905d24a5",
+          "after_sha256": "43b69dec8150fc73f7fcec99aa45036e556e586943af7368d054ba964959f1ed"
+        },
+        "adapters/codex.json": {
+          "before_sha256": "b6b2595b2b257adf59095fde0394d8e37c549766f463ef58b3352ba3f6aa3642",
+          "after_sha256": "48aea5ab97706bc8e1920879d99f26e9f6278cb6f7a08cdf76ba22db5ff3bb7b"
+        },
+        "adapters/hermes.json": {
+          "before_sha256": "a2f011e48a0cd772ab32e692873d354f6e23c8a48b9a5e7508e27b6f6efb30e8",
+          "after_sha256": "7c0e952fd7fe83cc51ca5e352d6dd2a683d1bb806cc9958b4cc81c661719912a"
+        },
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032",
+          "after_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032"
+        },
+        "contracts/ownership.json": {
+          "before_sha256": "22980c77e9a6784559c201bf81c2bd5d69d280bcefb58327c36f36ac04f02b3d",
+          "after_sha256": "d05f5c822b3f85353194db9defe1ffb7101baba99b31d074e6e7c44af51af7f6"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "b347a7047bd61cd31097ea515b06bda53113abf4434fda68ba713129e0def454",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "c98f2b160c844df22002ef0fb3e92e60ab4b96fd169d17d6aaa4fb09eb4b2ecb",
+          "after_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53"
+        },
+        "docs/artifact-pilot.md": {
+          "before_sha256": "5e1a17ae4c5d0bd1847652cd23898f8c4d137ba8fc39925596b39923a8f31cb8",
+          "after_sha256": "caa2aee577e11a0c4c3cee7049996ec5b89b24c07e6733cbbc698e58225c3e43"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518",
+          "after_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/hermes-skill-proposals.md": {
+          "before_sha256": "caba7d4ae905ba3a4495fea1021d352332205b77e293d0e6bf1a8adf95842167",
+          "after_sha256": "1f0879a8e7069935761d96194a1f604f05bb84321877ae18533eac37f8d86402"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "330f999717b1497e60daa11b66982edd29f3f1b0c7d65fa4a3f2f36f098e5974",
+          "after_sha256": "56fa9c8e775a074772f9abeaf0c378c45015fdff99f2206c3a0c014ef2d5892e"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa",
+          "after_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "be3dc22bcc7b36650f874a3c50734b55a57387ad007d86b50fd23bbed1cb1802",
+          "after_sha256": "ee7326c3a7587cba5db157017204de0906e655c5296127f37401f798febdea42"
+        },
+        "docs/routing-decision-interface.md": {
+          "before_sha256": "2ecd7f7ce357ca4b8fc0e5c4b2e5b815639d6973cf6bd444b2b9fa218a9fa811",
+          "after_sha256": "2ecd7f7ce357ca4b8fc0e5c4b2e5b815639d6973cf6bd444b2b9fa218a9fa811"
+        },
+        "docs/shared-memory-decision.md": {
+          "before_sha256": "eae6406fb5b465afe5eacdde6d211b96727fc4942c59a77e0db0bc5ada2650e4",
+          "after_sha256": "eae6406fb5b465afe5eacdde6d211b96727fc4942c59a77e0db0bc5ada2650e4"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "e430b42f74f4f5e0fc603de4244aeb034a2673a632c9d44335726f6d9944b62b",
+          "after_sha256": "be9784a13a940f44dab278ff6123f17d56ab9c3836aaea3210db57bfaf66fb8e"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "afaae716b7d71d45c9fbfce13630a368023741546a75d84c5d0e343090d2eff6",
+          "after_sha256": "afaae716b7d71d45c9fbfce13630a368023741546a75d84c5d0e343090d2eff6"
+        },
+        "evals/results/skill-writing-source-acceptance-20261112.json": {
+          "before_sha256": "absent",
+          "after_sha256": "db4865d2b27ae904b6646b2bbf3dd3a52c59720a09058b19c22681d972a8fe29"
+        },
+        "evals/results/system-instruction-writing-source-acceptance-20261112.json": {
+          "before_sha256": "absent",
+          "after_sha256": "b87790f8b2f64045d3ec2922a98e0c5f5926e51ac8e7b04e5ab4b5902e83630d"
+        },
+        "host-deltas.json": {
+          "before_sha256": "c867a1001964fad38d23bc895fa38ff65ab6a38309ffaa55d9be99fa64906718",
+          "after_sha256": "1b7431b8e17d2dc3bab59f29f1f9cc03959ac97b8d0cff84904e45da6750cf8a"
+        },
+        "profiles/current-observed-defaults.json": {
+          "before_sha256": "c7eb6d77723944588e6508a85df1bfb252b81a4278838074b967b2def02c79b9",
+          "after_sha256": "d9c8935c7f7d9cb8b6cca2c3e8e49a4711b11cbfadcc1cdebcb3d545795434e6"
+        },
+        "recovery.json": {
+          "before_sha256": "09e40c88e94895532f32b87658ea43c30f5cc2f3f77896b5314dab7d32331bc0",
+          "after_sha256": "91049fd5aaae59faee26a08953f50efbe89625d3585d9bbd68d4809a3f452bdf"
+        },
+        "recovery/current/hosts/codex/AGENTS.md": {
+          "before_sha256": "b508c274306b06ed8ec4201623f11e555d8d072dcce2615f82ae44607dcbb42f",
+          "after_sha256": "5b296326aff2c804cd004e6094933f7f40358586b7eb0269459a4bbaa0507223"
+        },
+        "recovery/current/hosts/hermes/SOUL.md": {
+          "before_sha256": "5ef00d578c64c6a4891ce080a60da47d735266fdc706ba4bb34d2c69b79a7753",
+          "after_sha256": "f4e45c4dd6b66eec29df7d1ab907c09369a10f9670e4da00daa6bad6a972dcdd"
+        },
+        "recovery/current/hosts/omp/AGENTS.md": {
+          "before_sha256": "656e341b1a9f2456cab664fe1acfac9e9888a60f41139e8b2d4669e522608e03",
+          "after_sha256": "a01ca869e04f1e05359747af95c60bab2b829c0640a2a3cccacd6e2b4a88a368"
+        },
+        "recovery/current/manifest.json": {
+          "before_sha256": "ac0678f1207d71da1884732af582ab1cb71a19943228a26484f15f0810f57cf4",
+          "after_sha256": "dc608dbb3826bccd63a3bd250f8742d3a611ab64ad2b661502e4d406dd024000"
+        },
+        "registry.json": {
+          "before_sha256": "f4aa13a0d92c9323cf3da9afceb6d36b6c6fbb84b03a995390298c34ee2f18fa",
+          "after_sha256": "670119b96610179419070a0b5bf848cd9f6736039a4f04f2a1e423b7b591b6de"
+        },
+        "skills/breadcrumb-records/SKILL.md": {
+          "before_sha256": "8e6b99667ddce5704700a2a1e66f6d24687673180d35aabb9841c1b4d7742160",
+          "after_sha256": "e5ff9e0c1f1f0ea937b4b3a20292a9d78091382f261abee10ef8741fd2c99333"
+        },
+        "skills/breadcrumb-records/references/handoff-continuity.md": {
+          "before_sha256": "2c49a4b41e54741603adcfdd7ccb46b7a3afc953fc2ab4ac1afea7cb4f45f6a6",
+          "after_sha256": "96ace8d207c687c92c1d8da92a44310d431c4a1853c5f592c4bf6d7cfd269a2b"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "923adca7174c8205ecb6801472d7193cc4055e5c821dc759d68c8ca6515c995c",
+          "after_sha256": "a8c9fa1a276d18f82206ac74ceda72684a768b9f03880a550985175e04b63b41"
+        },
+        "skills/frontend-ui-engineering/SKILL.md": {
+          "before_sha256": "592d3bd22a7dbbfa08b3f9ad4a37bccd6a7eac7ae1e02de8f825f2e4d88a884a",
+          "after_sha256": "bdc3a52be65961a3f7724c554742ba50fdf98ee5869c881b28309da7f3a6b45d"
+        },
+        "skills/frontend-ui-engineering/references/component-selection.md": {
+          "before_sha256": "9028545890aac4370d5f16c969368c4f2bdf9e7ee7cdbe751b8944b6b27eee6d",
+          "after_sha256": "9028545890aac4370d5f16c969368c4f2bdf9e7ee7cdbe751b8944b6b27eee6d"
+        },
+        "skills/frontend-ui-engineering/references/design-mode.md": {
+          "before_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3",
+          "after_sha256": "976e8ff29644106926655e4c4eb363a2f77d222d16a506c412250adae4173dc3"
+        },
+        "skills/frontend-ui-engineering/references/implementation-mode.md": {
+          "before_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b",
+          "after_sha256": "095998445c585e913c4bf429e07d273549a49cfea6d5f30b05a85dbe5a8a633b"
+        },
+        "skills/frontend-ui-engineering/references/liked-motion-options.md": {
+          "before_sha256": "9821fce6161291587e6e121a902a2063893b695d90a389ed3f48432b72c1ec54",
+          "after_sha256": "9821fce6161291587e6e121a902a2063893b695d90a389ed3f48432b72c1ec54"
+        },
+        "skills/frontend-ui-engineering/references/motion-design.md": {
+          "before_sha256": "6b7c842751423c798a18847d90961639d8baac7f2b684ce4bc5313e974fa0b4d",
+          "after_sha256": "6b7c842751423c798a18847d90961639d8baac7f2b684ce4bc5313e974fa0b4d"
+        },
+        "skills/frontend-ui-engineering/references/personal-design-defaults.md": {
+          "before_sha256": "08c4228d4746fa3f84a1e89d3b526b31d3f1746f94b13f86a9cd01263043c3cb",
+          "after_sha256": "08c4228d4746fa3f84a1e89d3b526b31d3f1746f94b13f86a9cd01263043c3cb"
+        },
+        "skills/frontend-ui-engineering/references/prototype-variants.md": {
+          "before_sha256": "9293b8b08ab0d02ba4e3ac7193903cf2705badb6ad23981030dbae0f90c98a55",
+          "after_sha256": "9293b8b08ab0d02ba4e3ac7193903cf2705badb6ad23981030dbae0f90c98a55"
+        },
+        "skills/frontend-ui-engineering/references/provenance.md": {
+          "before_sha256": "575224739df560111408fd9c6c0b13e6d692efeaf09dc209b31b7ca36e5a9bf3",
+          "after_sha256": "575224739df560111408fd9c6c0b13e6d692efeaf09dc209b31b7ca36e5a9bf3"
+        },
+        "skills/frontend-ui-engineering/references/resource-catalog.md": {
+          "before_sha256": "c26cbad205afbf2008984d68b0608fb04337d47dd9798b61383180bc40bda588",
+          "after_sha256": "c26cbad205afbf2008984d68b0608fb04337d47dd9798b61383180bc40bda588"
+        },
+        "skills/frontend-ui-engineering/references/selector-feedback.md": {
+          "before_sha256": "68552c02760e938d1a315b2bc1314436b71d0934beccc99f66a8248aec4336b2",
+          "after_sha256": "68552c02760e938d1a315b2bc1314436b71d0934beccc99f66a8248aec4336b2"
+        },
+        "skills/frontend-ui-engineering/references/taste-selection.md": {
+          "before_sha256": "db2556c57c80b0b34d30eac1f9b98c3cd2339adc5cf5d2a23c48684e8d9d6fbf",
+          "after_sha256": "db2556c57c80b0b34d30eac1f9b98c3cd2339adc5cf5d2a23c48684e8d9d6fbf"
+        },
+        "skills/frontend-ui-engineering/references/webpage-workflow.md": {
+          "before_sha256": "23bc2b208284619b3cbcbaa1d018e23c125e560c8def8e0f9c4a012eb3152654",
+          "after_sha256": "23bc2b208284619b3cbcbaa1d018e23c125e560c8def8e0f9c4a012eb3152654"
+        },
+        "skills/github-follow-up/SKILL.md": {
+          "before_sha256": "75c425a3d1d690cd69916a929cfe22e17cf5c8a4429b6c30795dd34dd6f19d6b",
+          "after_sha256": "be50dd37970ca776f1a4102de16d44a3732fb37fd2679ddf02fb8548cbca3689"
+        },
+        "skills/github-follow-up/references/learning-and-promotion.md": {
+          "before_sha256": "ad086cb774320bc52f6afa21ea51de1ad0a7953e103520c6ba0eee8cb91c50fa",
+          "after_sha256": "b6bc4c47a329239661d26467dd81a4ee4673327f4d70d57e5c985e634d7798d5"
+        },
+        "skills/global-learning-intake/SKILL.md": {
+          "before_sha256": "7d1d0963b0387c2a9c2fc694f88249b9b43cc4f8093a67a0e607a47764469c0c",
+          "after_sha256": "1f1fde48bee9ae82d64d8e7ac43c44b46cca5798768eef580730895ed3619c47"
+        },
+        "skills/hermes-self-engineering/SKILL.md": {
+          "before_sha256": "052f986f0a7781d30bddc84c357a8fa47c0f8f2faa16b00a806b4b71b23b71f4",
+          "after_sha256": "eefe4822e3ae2efb5c68f2d2829309f27461801f78ffb80ea5c9fe06214e34de"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "c7361a8510af81757405ade3cea2510d6e0291f5448be53cc669af87c59fec6f",
+          "after_sha256": "37d957962c5bc100ea961db6fa906a9c4bc91c5b430b766728dddc7f661ef56d"
+        },
+        "skills/instruction-authoring/references/change-review.md": {
+          "before_sha256": "ab3eed214dc487b01788203e902ca231c12e245dbbf47c8c179edf8025317807",
+          "after_sha256": "absent"
+        },
+        "skills/instruction-authoring/references/claim-based-testing-and-retirement.md": {
+          "before_sha256": "fce6e25097ec08dcb3fce3ccf9b99c02efaa4462b91bd9f92eb251dce303670e",
+          "after_sha256": "absent"
+        },
+        "skills/instruction-authoring/references/item-review-loop.md": {
+          "before_sha256": "70b4ecf1c7d893fb519aa2907306acb3fea4ef9397a8252adf310a0648ba7e02",
+          "after_sha256": "absent"
+        },
+        "skills/instruction-authoring/references/useful-behaviors.md": {
+          "before_sha256": "c16ee11e63c9c443b12e761f0a400270fb26f90236ce4dd5b062420219cc90e4",
+          "after_sha256": "absent"
+        },
+        "skills/learn-from-youtube/SKILL.md": {
+          "before_sha256": "f402f24a16c7d11932ff2b03b050ff36790f5e971baa26052e28ad1b40834762",
+          "after_sha256": "c889fd0aa4a99975e3e2129e71f2c2a3a1b67c81dabf4fee49192edc178e6d90"
+        },
+        "skills/outcome-first-workflow-design/SKILL.md": {
+          "before_sha256": "83119c6a5674cab0f407ae0218159f4cf30245f364c761d5c67520ac6fa7fe13",
+          "after_sha256": "864746424363390941d085b4f1dfe0309796703eede81b6c172f3f28bbe74f6f"
+        },
+        "skills/prompting/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "1ac7f4319268a07f763d252909f28717614284558897b5161cd7dabb59f2d8ee"
+        },
+        "skills/skill-writing/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "3ca8b3747c0397d338930bfa70676297e54a13d1f71d093177327947fe1fa03d"
+        },
+        "skills/system-instruction-writing/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "23165a4ef700f252ff7fc06b91f4701319de274b74e57a4c0490f99e2560a6bf"
+        },
+        "skills/systematic-debugging/SKILL.md": {
+          "before_sha256": "2aeaadec04aa91dea335366da79111abe28ee502c3e204ca2fe84be06ca9f1eb",
+          "after_sha256": "e9c56b6ebf2943805df6ab983c04bfd49c752a9135117c5c42117f29348decb5"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "5a1e85f19e4140dfacfb2b290f363be56c307f7d843b38db302dfabe4666f391",
+          "after_sha256": "d5c9ae5d89c42a517635d7e6813b489179d553211995f3f8c9c5856340b586f8"
+        },
+        "tests/test_native_learning_acceptance.py": {
+          "before_sha256": "9489a7b1bfe69f6adb718a1bc06930331f3c19ea19327f38e0639fed5b3e4adc",
+          "after_sha256": "2d0cfa8cfa6ed1e3e5b152926fa3728c2496a581c695ae021fa2872a50b6b621"
+        },
+        "tests/test_requested_import.py": {
+          "before_sha256": "3419dc8d1a0b74a10064c4673da2cdd7a37495374b382b78d84c22b112f49259",
+          "after_sha256": "0a09ce489abdd7bf416624de07d90815df500ba17ab6a0835a97c3bf40664424"
+        },
+        "tools/capability_intake.py": {
+          "before_sha256": "cb9ddc488f74dab52dd60f3f07dc243c2a806582b7b3787983f789b071393808",
+          "after_sha256": "2cbf482317db78a89ead60440aee009add83f71d6a147d528fbbf486cc02b131"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "d78e15d435ef0686b0bfcf255bc9fe72ebf1b29dc64807f96a23e9605b6b908b",
+          "after_sha256": "7fb0db30bb6dbf2d67aba8f6bd90f6cbdff13e24e191c7dac7ed38250b219181"
+        },
+        "tools/reconcile.py": {
+          "before_sha256": "f1332e5863f56379cf5c9166d3031197a9d5ae56155ae287a0de750879a8574e",
+          "after_sha256": "ce469ccccb6a8c00aaccd5d4eb7652b4b35767b5688a86bf74abe8b43da575f6"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "fecf85ec1062ff6146a40d0786d52330e9204b53029dd529ecc9bd153874d2f8",
+          "after_sha256": "8a50d67c45922f719e0ee1898b80e1c56ed1bfacbd09f68cf18b4ebd81f8a4ed"
+        }
+      },
+      "obligations": [
+        {
+          "path": "AGENTS.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "adapters/codex.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "adapters/hermes.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "docs/artifact-pilot.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "docs/hermes-skill-proposals.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "docs/routing-decision-interface.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "docs/shared-memory-decision.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "evals/results/skill-writing-source-acceptance-20261112.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "evals/results/system-instruction-writing-source-acceptance-20261112.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "profiles/current-observed-defaults.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "recovery.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "recovery/current/hosts/codex/AGENTS.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/SOUL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "recovery/current/hosts/omp/AGENTS.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "recovery/current/manifest.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "registry.json",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/breadcrumb-records/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/breadcrumb-records/references/handoff-continuity.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/component-selection.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/design-mode.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/implementation-mode.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/liked-motion-options.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/motion-design.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/personal-design-defaults.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/prototype-variants.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/provenance.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/resource-catalog.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/selector-feedback.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/taste-selection.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/frontend-ui-engineering/references/webpage-workflow.md",
+          "disposition": "unchanged",
+          "reason": "Existing guidance and guards continue to apply to their own scope."
+        },
+        {
+          "path": "skills/github-follow-up/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/github-follow-up/references/learning-and-promotion.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/global-learning-intake/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/hermes-self-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/instruction-authoring/references/change-review.md",
+          "disposition": "removed",
+          "reason": "The combined skill and its private load routes are retired in this release."
+        },
+        {
+          "path": "skills/instruction-authoring/references/claim-based-testing-and-retirement.md",
+          "disposition": "removed",
+          "reason": "The combined skill and its private load routes are retired in this release."
+        },
+        {
+          "path": "skills/instruction-authoring/references/item-review-loop.md",
+          "disposition": "removed",
+          "reason": "The combined skill and its private load routes are retired in this release."
+        },
+        {
+          "path": "skills/instruction-authoring/references/useful-behaviors.md",
+          "disposition": "removed",
+          "reason": "The combined skill and its private load routes are retired in this release."
+        },
+        {
+          "path": "skills/learn-from-youtube/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/outcome-first-workflow-design/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/prompting/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/skill-writing/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/system-instruction-writing/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "skills/systematic-debugging/SKILL.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "tests/test_native_learning_acceptance.py",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "tests/test_requested_import.py",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "tools/capability_intake.py",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "tools/instruction_changes.py",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "tools/reconcile.py",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        },
+        {
+          "path": "tools/worktree_sync.py",
+          "disposition": "updated",
+          "reason": "Carry the selected split, exact native projections, or release checks into the same reviewed release."
+        }
+      ],
+      "framework_review": {
+        "affected": [
+          "docs/system-requirements.md",
+          "docs/requirement-status.md",
+          "skills/prompting/SKILL.md",
+          "skills/skill-writing/SKILL.md",
+          "skills/system-instruction-writing/SKILL.md"
+        ],
+        "selection_reason": "These sources own the clarified requirements and the three independent writing routes.",
+        "unaffected_reason": "Other skill ownership, route limits, and publication categories remain outside the selected lifecycle change.",
+        "checks": "Short package validation, checked host renders, and exact dependency and registry bindings."
+      }
+    }
+  ]
+}

@@ -18,6 +18,93 @@ class RequestedImportTests(unittest.TestCase):
     worker = ready_fixtures.WorktreeSyncTests.worker
     run_ready = ready_fixtures.WorktreeSyncTests.run_ready
 
+    def test_explicit_replacement_retires_old_owner_and_installs_new_skills(self):
+        import instruction_changes as changes
+
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote = self.setup_git(Path(temp))
+            adapter = fixtures.load_tool('worktree_sync')
+            baseline = {
+                'contracts/instruction-surfaces.json': {'schema_version': 2, 'surfaces': []},
+                'contracts/ownership.json': {'capabilities': [{'id': name, 'owner': 'skills/' + name}
+                                                             for name in ('kept', 'unrelated')]},
+                **{name: 'Keep existing skill.' for name in changes.CONTRACTS},
+            }
+            fixtures.write_skill(repo, 'unrelated', 'Unrelated guidance.')
+            original_registry = json.loads((repo / 'registry.json').read_bytes())
+            original_registry['skills'].append({'name': 'unrelated', 'status': 'staged', 'license': 'MIT'})
+            (repo / 'registry.json').write_text(json.dumps(original_registry), encoding='utf-8')
+            for name, value in baseline.items():
+                path = repo / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(value), encoding='utf-8')
+            self.git(repo, 'add', '.')
+            self.git(repo, 'commit', '-m', 'baseline intent')
+            self.git(repo, 'push', 'origin', 'main')
+            worker = self.worker(repo, 'replacement-worker')
+            (worker / 'primer.txt').write_text('Bind the installed fleet to the published checkout.', encoding='utf-8')
+            self.git(worker, 'add', '.')
+            self.git(worker, 'commit', '-m', 'bind fleet origin')
+            base = self.run_ready(adapter, worker, 'HEAD', live, include=['primer.txt'])
+            self.assertEqual('synced', base['result'], base)
+            self.git(worker, 'reset', '--hard', base['commit'])
+            baseline_commit = base['commit']
+            registry = json.loads((worker / 'registry.json').read_bytes())
+            registry['skills'][0]['status'] = 'retired'
+            for name in ('first', 'second'):
+                fixtures.write_skill(worker, name, 'Replacement skill.')
+                registry['skills'].append({'name': name, 'status': 'admitted', 'license': 'MIT'})
+            (worker / 'registry.json').write_text(json.dumps(registry), encoding='utf-8')
+            owners = [{'id': name, 'owner': 'skills/' + name} for name in ('kept', 'unrelated', 'first', 'second')]
+            (worker / 'contracts/ownership.json').write_text(json.dumps({'capabilities': owners}), encoding='utf-8')
+            (worker / 'skills/kept/fixture.txt').unlink()
+            (worker / 'skills/kept/SKILL.md').write_text('---\nname: kept\ndescription: Retired.\nlicense: MIT\n---\n\nRetired.\n', encoding='utf-8')
+            for name in changes.CONTRACTS:
+                (worker / name).write_text('Replace kept with first and second.', encoding='utf-8')
+            self.git(worker, 'add', '.')
+            files = self.git(worker, 'diff', '--cached', '--name-only').splitlines()
+            artifacts = {name: {'before_sha256': changes._hash(changes._before(worker, baseline_commit, name)),
+                                'after_sha256': changes._hash((worker / name).read_bytes() if (worker / name).is_file() else None)}
+                         for name in files}
+            self.git(worker, 'commit', '-m', 'unqualified replacement')
+            bad = self.run_ready(adapter, worker, 'HEAD', live, include=files)
+            self.assertIn('cannot change registry admission or lifecycle', bad['reason'])
+            self.assertEqual(baseline_commit, self.git(remote, 'rev-parse', 'main'))
+            self.assertTrue((live / 'kept/SKILL.md').is_file())
+
+            receipt = 'evals/results/replacement.json'
+            (worker / receipt).parent.mkdir(parents=True, exist_ok=True)
+            row = {'requested_replacement': {'retire': ['kept'], 'admit': ['first', 'second']},
+                   'requirement_change': True, 'requirement_reason': 'Selected split',
+                   'authority': 'Fixture operator request', 'checks': 'Real ready rollout',
+                   'outcome_review': dict.fromkeys(('expected', 'observed', 'evidence', 'limitations'), 'Fixture'),
+                   'artifacts': artifacts,
+                   'obligations': [{'path': name, 'disposition': 'removed' if data['after_sha256'] == 'absent' else 'updated',
+                                    'reason': 'Selected split'} for name, data in artifacts.items()]}
+            (worker / receipt).write_text(json.dumps({'change_reconciliation': [row]}), encoding='utf-8')
+            self.git(worker, 'add', '--', receipt)
+            self.git(worker, 'commit', '-m', 'bind replacement')
+            approved = self.git(worker, 'rev-parse', 'HEAD')
+            extra = 'skills/unrelated/SKILL.md'
+            old = (worker / extra).read_bytes()
+            (worker / extra).write_bytes(old + b'\nMake every reply start with a widget.\n')
+            row['artifacts'][extra] = {'before_sha256': changes._hash(old),
+                                       'after_sha256': changes._hash((worker / extra).read_bytes())}
+            row['obligations'].append({'path': extra, 'disposition': 'updated', 'reason': 'Unrelated fixture change'})
+            (worker / receipt).write_text(json.dumps({'change_reconciliation': [row]}), encoding='utf-8')
+            self.git(worker, 'add', '--', extra, receipt)
+            self.git(worker, 'commit', '-m', 'bundle unrelated instruction')
+            blocked = self.run_ready(adapter, worker, 'HEAD', live, include=[*files, receipt, extra])
+            self.assertIn('requires one bound necessity record:', blocked['reason'])
+            self.assertEqual(baseline_commit, self.git(remote, 'rev-parse', 'main'))
+            self.git(worker, 'reset', '--hard', approved)
+            result = self.run_ready(adapter, worker, 'HEAD', live, include=[*files, receipt])
+            self.assertEqual('synced', result['result'], result)
+            self.assertFalse((live / 'kept').exists())
+            for name in ('first', 'second'):
+                self.assertEqual((worker / 'skills' / name / 'SKILL.md').read_bytes(),
+                                 (live / name / 'SKILL.md').read_bytes())
+
     def prepare(self, root, insert_license=False):
         repo, live, remote = self.setup_git(root)
         index = repo / 'contracts/instruction-surfaces.json'

@@ -9,7 +9,7 @@ metadata:
 
 # Breadcrumb Records
 
-Use when exploratory work becomes durable, or for a project release, explicit breadcrumb, substantial handoff, interruption or closeout. On resume, consult the existing record before repeating the investigation. Keep trivial replies and isolated corrections lightweight; extend an equivalent project record rather than create a duplicate. This skill owns the project lifecycle; architecture choices remain with `project-prior-art`, reusable instruction corrections with `instruction-authoring`, and native thread association with the host adapter.
+Use when exploratory work becomes durable, or for a project release, explicit breadcrumb, substantial handoff, interruption or closeout. On resume, consult the existing record before repeating the investigation. Keep trivial replies and isolated corrections lightweight; extend an equivalent project record rather than create a duplicate. This skill owns the project lifecycle; architecture choices remain with `project-prior-art`, and native thread association with the host adapter.
 
 ## Decide and organize
 
@@ -37,7 +37,7 @@ Before interruption or delegation, save state and next action; do not mark unfin
 
 At completion, verify deliverables, commands, links and record completeness; report material gaps and update the result/limits. Keep consequential architecture rationale beside the decision, using an ADR when a later maintainer may revisit it. Use concise outcome-first prose.
 
-Route supported reusable methods/corrections to the existing `instruction-authoring` owner under current authorization; project facts/taste stay local and memory obeys host authorization. Completion alone requires no new skill and grants no shared admission or publication authority.
+Record settled shared requirements at their source. Project facts and taste stay local. Completion alone requires no new skill and grants no shared admission or publication authority.
 
 ## Map unresolved questions when useful
 

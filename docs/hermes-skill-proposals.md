@@ -15,7 +15,7 @@ python tools/hermes_skill_review.py approve ID --review-token TOKEN
 python tools/hermes_skill_review.py reject ID --review-token TOKEN
 ```
 
-`show` is private working context, not a publishable report. It returns the full pending payload, each operation's native diff, and a token binding the candidate to the currently reviewed packages. Read the owning skill and evidence; use `instruction-authoring` for proportional checks. Reject duplication, unsupported generalization, and needless restrictions; shortening or replacing existing guidance is equally valid. A generated proposal is not evidence of improvement.
+`show` is private working context, not a publishable report. It returns the full pending payload, each operation's native diff, and a token binding the candidate to the currently reviewed packages. Read the owning skill and check the affected behavior. Reject duplication, unsupported generalization, and needless restrictions; shortening or replacing existing guidance is equally valid. A generated proposal is not evidence of improvement.
 
 - **Existing native owner:** after review/checks, `approve` delegates to Hermes's native approval function and preserves its mutation ledger/rollback behavior. Verify the resulting file and fresh load. It refuses a changed proposal/package since `show`.
 - **Shared/external or new owner:** make the reviewed change in the canonical source and use its normal deployment path. The helper refuses direct approval for these; after verified promotion, discard the redundant proposal with `reject`.

@@ -7,8 +7,8 @@ This file owns shared standing rules, model preferences, and reviewer dispatch. 
 | Shared standing preferences and orchestration consent | `surfaces/core.md`; generated host overlays |
 | Host formatting, artifact links, and necessary native differences | `adapters/codex.json`, `adapters/hermes.json` |
 | Model preferences and fresh reviewer dispatch | `surfaces/core.md`; host overlays load this owner before dispatch |
-| Instruction content, triggers, sentence-level intent, and evaluation | `skills/instruction-authoring` |
-| Supported instruction corrections during work | `skills/instruction-authoring`; thin standing reminders in the effective host overlays |
+| User intent | `docs/system-requirements.md` |
+| Agent handoffs, standing rules, and skills | `prompting`, `system-instruction-writing`, and `skill-writing` |
 | Unresolved Hermes placement | `skills/hermes-self-engineering` |
 | Cross-host placement, parity, deployment, and recovery | `skills/cross-agent-surface-engineering` |
 | Starting, redirecting, or reviewing a project's architecture | `skills/project-prior-art` |
@@ -71,15 +71,15 @@ Concurrent writers to one Git project use separate worktrees. Read-only reviewer
 
 When the user requests review, or a specific consequential uncertainty benefits from separate inspection, spawn a fresh reviewer using the reviewer preference. Bound the review to that uncertainty; tiny unambiguous edits need no reviewer unless requested. Each review pass uses a new agent or session, not the author or a reused reviewer; in Codex use `fork_turns="none"` with explicit model and reasoning overrides. On other hosts use the supported fresh-child equivalent. Do not claim a fresh review if the host cannot provide one.
 
-Give the reviewer a self-contained bounded handoff: intended and undesired outcomes, constraints and acceptance criteria, repository/artifact path, exact revision or patch identity, relevant evidence, and a read-only review scope. Let it inspect the artifact before the author's explanation; omit inherited conversation and other reviewers' verdicts. Request actionable findings with locations, evidence and remaining uncertainty. Shared models, instructions and tools still correlate errors; freshness alone is not proof of independence.
+For a fresh review, pass the artifact, exact revision, and read-only scope as context. Omit earlier reviewers' verdicts. Let the reviewer inspect the artifact before sharing the author's explanation.
 
-The parent checks findings against the current artifact, makes authorized fixes, and verifies acceptance. Request a fresh follow-up when a fix introduces new material risk or leaves a disputed finding unresolved; otherwise verify the fix directly. Stop when criteria are met; no automatic fix-agent loops or expanding swarms. State desired and undesired outcomes and contraindications; leave methods open unless linear work benefits from steps.
+The parent checks findings against the current artifact, makes authorized fixes, and verifies acceptance. Request a fresh follow-up when a fix introduces new material risk or leaves a disputed finding unresolved; otherwise verify the fix directly. Stop when criteria are met.
 
 Verify the requested model/reasoning and fresh-context controls are supported before dispatch. If unavailable, report the specific blocker; do not silently substitute a model or call self-review fresh review. Delegation adds no permission for paid inference, external or destructive actions, or approval bypasses. Parent acceptance, deployment and publication authority remain separate from reviewer findings.
 
 ## Discovery
 
-Resolve the Agent Sync checkout from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json`: strip the trailing `render/fleet` to get the checkout. Read this file before selecting a worker or reviewer. A missing contract is a dispatch blocker, not a reason to revive a remembered preference table.
+Resolve the Agent Sync checkout from `source_snapshot` in the shared skill root's `.agent-signal-fleet.json`: strip the trailing `render/fleet` to get the checkout. Read this file before selecting a worker or reviewer.
 
 # Standing instructions
 
@@ -87,17 +87,19 @@ Only this delimited section is projected into host overlays. Keep shared behavio
 
 <!-- agent-sync-standing -->
 ## Communication
-Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence. In public artifacts, keep internal coordination, permission narration and agent/model/tool or budget accounting private; omit generic privacy assurances. Publish only audience-relevant facts and required disclosures.
+Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence.
 
 ## Authoring
-Load `skills/instruction-authoring/SKILL.md` before instructions, managed tool changes or preferences. Edit for supported corrections or explicit preferences in scope; success alone warrants no edit. Memory writes require explicit request. Stage uncertainty; keep project rules local; render overlays.
+When the user reports a regression or discusses a requirement, clarify intent when needed and record the settled requirement in their words in the existing requirements document. Keep project requirements with their project. Memory writes require explicit request. Use `system-instruction-writing` for standing instructions and `skill-writing` for skills.
+
+Suspend a skill for the affected work when the user questions its suitability. You may inspect its files as evidence. Resume using the skill only when the user resolves the concern. This takes precedence over routine skill loading.
 
 ## Scope
 Complete the requested outcome and dependencies autonomously. Choose by total system cost, not patch size. For material redesign, challenge assumed constraints and compare the strongest credible alternative. Ask before unrelated outcomes or actions beyond authorization. Stop when criteria are met.
 
 Judge completion by the user's intended outcome and required constraints. Load instruction owners and required references for necessary protocols, explicit skill requests or missing knowledge. Finish those reads before the decisions or actions they govern; apply requirements already in context without rereading. Select optional guidance and tools by value, not mere availability.
 
-Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. Delete agent-spawned threads when their work is complete. Follow the host's deletion approval requirements.
+Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work.
 
 Reuse compatible, accessible configured native Codex cloud workspaces or repository-linked reusable environments for execution. Verify requested chat host/project separately. Use the PC for apps, files or hardware. Exclude one-off sandboxes. Export artifacts before teardown; retain spending and privacy limits.
 
@@ -110,13 +112,15 @@ Before selecting a nontrivial approach, proactively research relevant solutions 
 For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 
 ## Execution
-Before dispatch, resolve Agent Sync via the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`); read `surfaces/core.md`. Concurrent Git writers use separate worktrees. Delegate useful bounded work with context; the parent integrates and verifies. Use `dynamic-workflows` for useful dependent or resumable DAGs; keep simple work in the parent. Retain spending and action limits.
+Use `prompting` when preparing a task for another agent. Pass required files, skill references, and review metadata as separate context. Before selecting a worker or reviewer, read Agent Sync's `surfaces/core.md` from the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`). Concurrent Git writers use separate worktrees. The parent integrates and verifies delegated work. Use `dynamic-workflows` for useful dependent or resumable DAGs. Retain spending and action limits.
 
 Read-only reviewers may run isolated probes with disposable outputs. The parent runs missing checks. Stop when material claims have final-revision evidence and required review is complete. Go beyond five for a material gap with a decisive check. Report a blocker when no authorized runner can answer it.
 
-Use xhigh reasoning for every reviewer across workflows, including opt-in passes and future reviewer models. Verify the selected model and xhigh or the provider's equivalent before dispatch. Report unavailable routes and continue verification. On explicit review opt-in, use fresh GPT-6.1 Terra for code-path analysis and Sonnet 5.5 on Claude Free for probe design with public or sanitized context.
+Use xhigh reasoning for every reviewer across workflows, including opt-in passes and future reviewer models. Verify the selected model and xhigh or the provider's equivalent before dispatch. Report unavailable routes and continue verification.
 
-Cloud agents do not inherit local skills. Supply applicable `SKILL.md` files, required support files and task context; verify reads. Remote commands retain the current model's context.
+On explicit review opt-in, use fresh GPT-6.1 Terra for code-path analysis and Sonnet 5.5 on Claude Free for probe design with public or sanitized context.
+
+Cloud agents do not inherit local skills. Make required files available through their workspace and verify the required reads. Remote commands retain the current model's context.
 
 ## Reconciliation
 For authorized managed-surface changes or explicit reconciliation requests, load `cross-agent-surface-engineering` and use canonical `tools/reconcile.py`. Keep review-required changes staged and project-specific changes with their project. Discussion alone does not authorize sync.

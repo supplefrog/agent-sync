@@ -1,13 +1,13 @@
 ---
 name: hermes-self-engineering
-description: Use when the owning Hermes behavior surface is unclear. Select the supported placement; instruction-authoring owns instruction content and cross-agent-surface-engineering owns cross-host parity.
+description: Use when the owning Hermes behavior surface is unclear. Select the supported Hermes placement.
 version: 2.1.1
 author: Hermes Agent
 license: MIT
 metadata:
   hermes:
     tags: [hermes, self-engineering, prompt, config, skills, routing]
-    related_skills: [hermes-agent, instruction-authoring, cross-agent-surface-engineering]
+    related_skills: [hermes-agent, system-instruction-writing, skill-writing, cross-agent-surface-engineering]
 ---
 
 # Hermes surface placement
@@ -20,17 +20,17 @@ Load `hermes-agent` for supported operations. Inspect the active home/profile, r
 
 - **Provider request setting:** generation mechanics such as verbosity, reasoning, service tier, JSON mode, or token limits. Display verbosity, reasoning visibility, reasoning effort, and answer length are different controls; backend acceptance does not prove the desired behavior.
 - **Task-specific auxiliary/delegation config:** routing for a defined side task. A catalog entry is not proof of account availability or usable rate limits.
-- **Skill:** a reusable task procedure, local trap, script, template, or conditional reference. Once selected, use `instruction-authoring` for content and proportional evaluation.
+- **Skill:** a reusable task procedure, local trap, script, template, or conditional reference. Use `skill-writing` for skill edits.
 - **SOUL.md:** instance-wide communication and judgment defaults. Author Agent Sync-managed shared rules in `surfaces/core.md`, then render. Keep useful short rules inline; do not move them solely to reduce word count.
 - **agent.system_prompt / API override:** deployment-specific or experimental text when no named personality is selected; not a second baseline communication owner.
 - **/personality / agent.personalities:** temporary or named persona overlays.
-- **Memory/user profile:** authorized stable facts and contextual preferences, not task results or short-lived rankings. Behavioral rules use the applicable standing or task owner through `instruction-authoring`.
+- **Memory/user profile:** authorized stable facts and contextual preferences, not task results or short-lived rankings. Behavioral rules use the applicable standing or task owner.
 - **Source/plugin:** only when supported higher-level surfaces cannot implement the behavior. Within authorization, preserve the source revision, diff, rollback, and fresh-runtime check. Publishing issues or PRs remains a separate action.
 
 A one-off execution mistake or an already-correct rule may need no durable change. Do not edit another profile without explicit authorization.
 
 ## Verify placement
 
-Check the chosen surface's actual load path, precedence, and effect. For a config change, read back the value and check backend acceptance before judging output. For a prompt/trigger change, `instruction-authoring` owns baseline/candidate and nearby-case checks. Compare useful outcomes and induced work, not template compliance alone.
+Check the chosen surface's actual load path, precedence, and effect. For a config change, read back the value and check backend acceptance before judging output. For a prompt or trigger change, check the intended case and a nearby case. Compare useful outcomes and induced work, not template compliance alone.
 
 Cross-host behavior or deployment inconsistency uses `cross-agent-surface-engineering`. Orchestration design and model routing stay with their existing owners; they are not reasons to expand this placement guide into a second control plane.

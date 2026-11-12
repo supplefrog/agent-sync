@@ -8,7 +8,7 @@ platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [github, follow-up, pull-request, issues, reviews, cron]
-    related_skills: [github-auth, github-issues, github-pr-workflow, github-code-review, hermes-self-engineering, instruction-authoring, code-change-verification]
+    related_skills: [github-auth, github-issues, github-pr-workflow, github-code-review, hermes-self-engineering, code-change-verification]
 ---
 
 # GitHub Follow-up

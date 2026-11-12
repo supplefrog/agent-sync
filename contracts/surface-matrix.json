@@ -390,7 +390,8 @@
       },
       "owners": [
         "surfaces/core.md",
-        "skills/instruction-authoring",
+        "skills/system-instruction-writing",
+        "skills/skill-writing",
         "skills/cross-agent-surface-engineering",
         "tools/audit.py",
         "tools/reconcile.py"
@@ -435,7 +436,8 @@
       },
       "owners": [
         "surfaces/core.md",
-        "skills/instruction-authoring",
+        "skills/system-instruction-writing",
+        "skills/skill-writing",
         "tools/reconcile.py",
         "tools/worktree_sync.py",
         "tools/instruction_changes.py"
