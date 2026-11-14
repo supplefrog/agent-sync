@@ -1,0 +1,95 @@
+{
+  "instruction_changes": [
+    {
+      "owner": "recovery:hermes:native-2da7b342e9a7e6062f17",
+      "basis": "user-correction",
+      "deviation": "The prior review workflow left caller enumeration and review-triggering pushes implicit.",
+      "evidence": "The LCM-X replay found missing ownership in unchanged callers. Hermes ran the Windows unload probe before a simulated review request.",
+      "baseline_sufficient": false,
+      "why_instruction": "The pull request workflow owns proof before an action starts review.",
+      "alternative": "Another generic review pass can leave the same caller coverage gap.",
+      "artifacts": {
+        "recovery/current/hosts/hermes/skills/github/github-collaboration-workflows/references/github-pr-workflow/SKILL.md": {
+          "before_sha256": "682a69eed057a1b4e35f68189634b6b36fc06b6c61b8e116ee10945a66557515",
+          "after_sha256": "c8cd76587e737f7c2f8e600dde21122557c53e9184feaba189aaed1ed3ec8c0f"
+        }
+      },
+      "behavior_measurements": [
+        {
+          "profile_sha256": "d9c8935c7f7d9cb8b6cca2c3e8e49a4711b11cbfadcc1cdebcb3d545795434e6",
+          "report": "evals/results/hermes-pr-review-causal-replay-2506.json",
+          "report_sha256": "be8d25b5fc7411a89e93a3eda4cba4560bb5038028011da2d6b8a56e4622889d",
+          "suite": "evals/fixtures/hermes-pr-review/pr.json",
+          "suite_sha256": "0acdda6c0df875052df82ee3b6a04ade2e9adf514c84a6d7a657ad952d518eb5"
+        }
+      ],
+      "task_contract": {
+        "claim": "Hermes runs the missing Windows probe on the current PR head before requesting review.",
+        "suite_sha256": "0acdda6c0df875052df82ee3b6a04ade2e9adf514c84a6d7a657ad952d518eb5"
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "User-directed update and commit of the review workflow after the LCM-X replay.",
+      "requirement_change": true,
+      "requirement_reason": "Carry forward caller enumeration, decisive probes, and verification before review-triggering pushes.",
+      "checks": "Source inspection and the native Windows replay with a simulated review request.",
+      "outcome_review": {
+        "expected": "Hermes runs the missing Windows probe on the current PR head before requesting review.",
+        "observed": "Hermes ran the Windows before-and-after probe, read the final head, and simulated a review request in a separate provider step.",
+        "evidence": "evals/results/hermes-pr-review-causal-replay-2506.json",
+        "limitations": "The fixture verifies exact-head gating for one historical PR. Comparative review quality is unmeasured."
+      },
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "79df4b7b9b39864e9434f51f513a6134e5c9981cb1fa3a7f48808f82bde85449",
+          "after_sha256": "1435db6a45519875d37da7fb57b6f285636ea9847f25cde4f8d6ead8f30c7150"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "8e2db77beb44e391939d4d3d60125902926580a6dacf01bd1eef3eab39f974a3",
+          "after_sha256": "8f66728b1ac318bd99d00ffc2ce82d1f9ec3b0618026f120bb1031f708f402e4"
+        },
+        "recovery/current/hosts/hermes/skills/github/github-collaboration-workflows/references/github-pr-workflow/SKILL.md": {
+          "before_sha256": "682a69eed057a1b4e35f68189634b6b36fc06b6c61b8e116ee10945a66557515",
+          "after_sha256": "c8cd76587e737f7c2f8e600dde21122557c53e9184feaba189aaed1ed3ec8c0f"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "The existing contract still applies."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "The existing contract still applies."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Owns the updated review contract."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Owns the updated review contract."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/skills/github/github-collaboration-workflows/references/github-pr-workflow/SKILL.md",
+          "disposition": "updated",
+          "reason": "Owns the updated review contract."
+        }
+      ]
+    }
+  ]
+}

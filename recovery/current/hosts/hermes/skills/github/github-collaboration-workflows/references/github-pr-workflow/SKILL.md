@@ -133,6 +133,10 @@ The latest post-edit output is authoritative. If verification becomes stale afte
 
 Plan up to five distinct passes for a risky change. Choose the applicable passes from the changed production paths and failure modes. Keep smaller work proportional and honor an explicitly requested round count. Give each fresh reviewer the pinned revision, one material question, the expected and forbidden outcomes, and the evidence the question needs. Use the Agent Sync review dispatch and model preferences where available. Read-only review permits isolated probes and disposable outputs. The writer owns source changes, and the parent owns remaining probes and acceptance.
 
+For each changed shared contract, enumerate its callers and implementations, including unchanged siblings. Trace from the entry point through ownership checks to the persisted write, external call, or resource close. Use the cheapest decisive probe at that boundary. Vary the neighboring supported state or call order and read the resulting durable state or handles.
+
+Reproduce a material finding on the original revision and require the same probe to pass after the fix. When several reproduced failures share a cause, compare a fix at that boundary with separate patches using the same regression probes. Use another reviewer or model only for a different material question. Keep CodeRabbit, where configured, as an independent reviewer after local verification.
+
 | Pass | Failure mode | Check |
 | --- | --- | --- |
 | 1 | Ordinary operation regresses | Exercise real callers and nearby behavior under normal use, including concurrency before a shutdown or reconfiguration. |
@@ -147,11 +151,11 @@ Plan up to five distinct passes for a risky change. Choose the applicable passes
 
 ### Final-commit gate for requesting review
 
-Apply this immediately before creating a ready PR, marking a draft ready, or requesting or re-requesting reviewers on an own PR through any GitHub surface. Preserve separate authorization for the GitHub write and the repository's CI and merge rules.
+Apply this before any action that starts review, including pushing an update to a branch with automatic review, creating a ready PR, marking a draft ready, or requesting or re-requesting a reviewer or review bot. Preserve separate authorization for the GitHub write and the repository's CI and merge rules.
 
 1. Identify the clean committed candidate and base. For each applicable material claim, retain the tested SHA, host/runner, command, observed result, and relevant control. Bind required fresh review to the revision it covered. Reuse earlier evidence only after checking and recording why changed inputs leave that claim and its verification valid for the final commit.
 2. If any applicable evidence is missing, failed, or stale, **hold the review action and run the next authorized probe against the final commit**. Use the real production boundary when runtime behavior is the claim. Route the probe to the parent or an authorized runner when needed. Repair within scope and rerun affected checks, or report a concrete blocker. A bot verdict or resolved thread alone cannot close a runtime evidence gap.
-3. Once the evidence is complete, read back the exact PR head (and base when it affects the evidence), or the remote branch tip for a new PR. Compare it with the verified commit immediately before the action. A mismatch returns to verification. For an authorized request use GitHub's review control, then read back the target and resulting review state.
+3. Once the evidence is complete, verify the commit being pushed and the expected remote tip for a push that automatically starts review. For a review request, read back the exact PR head (and base when it affects the evidence) immediately before the action and compare it with the verified commit. An unexpected revision returns to verification. Use GitHub's review control for authorized requests, then read back the target and resulting review state.
 
 ## 7. Commit, push, and create/update the PR
 

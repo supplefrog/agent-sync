@@ -59,6 +59,8 @@ Tool governance additionally considers schema clarity, parameter necessity, call
 
 ## Native Hermes PR workflow publication
 
+The user asked to “go for the high signal wins each time, research, implementation, review, code, mergeability” and then to “update and commit our new workflow”. For risky PR changes, check all callers of changed shared contracts, use a probe that distinguishes the reported defect from adjacent supported behavior, and verify its repair on the final commit before any action that starts CodeRabbit or other review. Investigate whether verified defects share a cause. Choose added review passes by the specific uncertainty they can resolve. Keep independent external review where configured. This adopts the observed mechanisms from the #2506 pilot without asserting equivalent defect discovery.
+
 The user's requirement is “fix Agent Sync’s publication check to validate real Hermes tool runs. rerun #2506 and verify Hermes chooses and runs the probe before a simulated review request, then publish the recovery copy if it passes”.
 
 For this user-directed recovery update, require a completed native Hermes model turn, the exact workflow and fixture, an observed read of the stale PR evidence, the real Windows probe on the base and head, a fresh head read after the probe, and a simulated request on that head. Require separate provider steps for decisions that depend on earlier tool results. Scripted dispatch is runtime diagnostics. This conformance check covers the requested workflow behavior and leaves comparative improvement claims under R02’s existing measurement rules.
