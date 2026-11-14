@@ -24,6 +24,8 @@ Use a visual when it helps the learner see the relationship they are reasoning a
 
 The native layout puts the visual beside the question and response controls when the lesson container is wide enough. It stacks the visual above the question at narrow widths. The same controls and explorer remain mounted across resizing. The shared controls retain their original presentation on T3/Hermes.
 
+The optional panel should “display the current lesson while I keep chatting.” **Refresh saved lesson** reads the current revision through the owning chat without sending a learner response. Inline lessons remain available. The UI acknowledges a valid MCP Apps handshake even when the host omits product-specific identity fields. Lesson access still requires server-side ownership.
+
 The controls send the existing `lh.t3 {chatId,kind,expectedRevision,action}` through user-confirmed `sendFollowUpMessage`. On a genuine event, pass its exact fields to `learning_input`, inspect persistence, read teacher context, save the required reaction, and return a fresh `learning_view`. Resume only reopens the view. Caller ownership still comes from host-written MCP metadata.
 
 Snapshots keep their original revision. Late answers refuse instead of targeting newer questions. Requested delivery is not persistence. Pending controls suppress repeated submission; after canceled confirmation, **Resume saved lesson** requests a fresh view. After uncertain saves, inspect current state before retrying. Widget state is optional interface restoration, not the lesson database; this change adds no durable practice-draft guarantee.

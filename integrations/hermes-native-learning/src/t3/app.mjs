@@ -188,10 +188,17 @@ window.addEventListener('message',receive);
 const observer=new ResizeObserver(()=>{if(initialized&&active)post({jsonrpc:'2.0',method:'ui/notifications/size-changed',params:{height:Math.min(2000,Math.max(80,document.body.scrollHeight))}});});observer.observe(document.body);
 rpc('ui/initialize',{protocolVersion:'2026-01-26',appInfo:{name:'learnharness-native',version:'0.1.0-dev'},appCapabilities:{}})
   .then(result=>{
-    const host=result?.hostInfo;
-    codex=host?.name==='chatgpt'&&host.client_type==='codex_desktop';
-    if(host?.name!=='t3-code'&&!codex)throw new Error('Open LearnHarness in Codex desktop or T3.');
+    if(!active)return;
+    if(!object(result)||typeof result.protocolVersion!=='string')throw new Error('The host returned an invalid MCP Apps initialization response.');
+    // Host identity extensions can be omitted by a standards-only bridge.
+    // Reply to the handshake before applying optional presentation metadata.
+    initialized=true;
+    post({jsonrpc:'2.0',method:'ui/notifications/initialized',params:{}});
+    codex=result.hostInfo?.name!=='t3-code';
     if(codex)document.body.dataset.lhHost='codex';
-    applyTheme(result.hostContext);initialized=true;post({jsonrpc:'2.0',method:'ui/notifications/initialized',params:{}});
+    applyTheme(result.hostContext);
     if(view)void refresh();})
-  .catch(error=>status(error.message,true));
+  .catch(error=>{
+    console.warn('LearnHarness MCP App initialization failed.');
+    status(error.message,true);
+  });

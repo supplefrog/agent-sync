@@ -7,8 +7,8 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 // Boundary loading is deferred until the opted-in entry observation is available.
 
-export const APP_URI='ui://learnharness/lesson-v2.html';
-const LEGACY_APP_URI='ui://learnharness/lesson.html';
+export const APP_URI='ui://learnharness/lesson-v3.html';
+const LEGACY_APP_URIS=new Set(['ui://learnharness/lesson.html','ui://learnharness/lesson-v2.html']);
 const schema=properties=>({type:'object',properties,additionalProperties:false,required:Object.keys(properties)});
 const chat={type:'string',pattern:'^[A-Za-z0-9_-]{1,80}$'};
 const genericObject={type:'object'};
@@ -107,7 +107,7 @@ export async function start(configFile,sdkRoot) {
   });
   server.setRequestHandler(types.ListResourcesRequestSchema,async()=>({resources:[{uri:APP_URI,name:'LearnHarness learning controls',mimeType:'text/html;profile=mcp-app'}]}));
   server.setRequestHandler(types.ReadResourceRequestSchema,async request=>{
-    if(request.params.uri!==APP_URI&&request.params.uri!==LEGACY_APP_URI)throw new Error('Unknown static app resource.');
+    if(request.params.uri!==APP_URI&&!LEGACY_APP_URIS.has(request.params.uri))throw new Error('Unknown static app resource.');
     const file=fileURLToPath(new URL('../../t3/app.html',import.meta.url)),stat=fs.statSync(file);
     if(!stat.isFile()||stat.size>5*1024*1024)throw new Error('Build the bounded static app resource before activation.');
     return {contents:[{uri:request.params.uri,mimeType:'text/html;profile=mcp-app',text:fs.readFileSync(file,'utf8'),

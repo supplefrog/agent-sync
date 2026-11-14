@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "base": "60ae5d30686a9337e1b59fc714238fc574ff1c57",
+  "selected_paths": [
+    "evals/results/native-learning-panel-20261115.json",
+    "integrations/hermes-native-learning/PUBLIC-FILES.json",
+    "integrations/hermes-native-learning/docs/NATIVE-VISUALS.md",
+    "integrations/hermes-native-learning/src/t3/app.mjs",
+    "integrations/hermes-native-learning/src/t3/server.mjs",
+    "integrations/hermes-native-learning/t3/BUILD.json",
+    "integrations/hermes-native-learning/t3/app.html"
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "02c08e239a32f7a05be84e7af392ad9942df6d68b7dff67d091089b7f3d81a80",
+          "after_sha256": "02c08e239a32f7a05be84e7af392ad9942df6d68b7dff67d091089b7f3d81a80"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "c9130b7044517091f327d5b0ce1298cd1712853f7463dee5f907f76ce9c22d2b",
+          "after_sha256": "c9130b7044517091f327d5b0ce1298cd1712853f7463dee5f907f76ce9c22d2b"
+        },
+        "integrations/hermes-native-learning/PUBLIC-FILES.json": {
+          "before_sha256": "34a1446acd8dd9ad5f3039a5d9d2b6220d2f1f083adeee6101b102dc3151c084",
+          "after_sha256": "6e799dc271bf8a7a9f5d204833c81d9efecb286e1d747b9e80742c72873223e1"
+        },
+        "integrations/hermes-native-learning/docs/NATIVE-VISUALS.md": {
+          "before_sha256": "dfbe62f8687b8d14657beb2098b2f39b8b1cd3431f147f2fffac3b55cbc27310",
+          "after_sha256": "ee30c011934a285f6f4f34ede9fdb1446ba5b151412a5333a5bba303530ecee2"
+        },
+        "integrations/hermes-native-learning/src/t3/app.mjs": {
+          "before_sha256": "4738d34dd032e81b0b282c96c799e73a36e349d4aec8bf96b3c6426cfae19cc5",
+          "after_sha256": "f45c5e5bbc7939004738483e3dca2ec8602016fb80575d3cbdd5c091c7a205b5"
+        },
+        "integrations/hermes-native-learning/src/t3/server.mjs": {
+          "before_sha256": "be1a3a297012212c5e32155f9e72a6dbdfa5ceff743658c5ea250e19076c2b66",
+          "after_sha256": "7e608a688021a6e89005925cdbaf942d7017b3618386c8fc64cfdc22c2f04e58"
+        },
+        "integrations/hermes-native-learning/t3/BUILD.json": {
+          "before_sha256": "aeb216327ba62b7de95bf917689b3fc94829626c307abef22241705284c2e685",
+          "after_sha256": "7ef815e925ce9a9ca5761a07cce55060545a4946a0866cbda7b10209d5d73c69"
+        },
+        "integrations/hermes-native-learning/t3/app.html": {
+          "before_sha256": "5948a835713f3885d1a85e4e49f39f92e4468f0b68e024ef1e114f878bad0ffd",
+          "after_sha256": "4988a12de6b6cd3aba7da4dddd7a108e550771157783681df5823adafe95bf20"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Repair the existing optional app display and refresh requirement.",
+      "authority": "The user asked to finish the optional Codex side panel, with current lesson display and read-only refresh alongside chat.",
+      "checks": "All 46 package tests passed. The pinned app build passed a browser regression probe and fresh stdio resource byte readback. Live desktop Codex after reload mounted the saved lesson in the side panel. Refresh and independent tool readback matched the saved revision, thinking and feedback without a learner submission.",
+      "outcome_review": {
+        "expected": "Keep the saved lesson visible beside the chat and refresh it through its existing owner-bound MCP connection. Keep inline rendering available.",
+        "observed": "The baseline app refused a standard handshake without the product-specific client_type field in the browser fixture. The replacement accepted that response, preserved T3 layout, and refreshed without sending a learner event. After reload, the live Codex panel loaded and refreshed the same lesson.",
+        "evidence": "integrations/hermes-native-learning/test/native-visuals.test.mjs; integrations/hermes-native-learning/docs/NATIVE-RENDERING-CHANGE.md; integrations/hermes-native-learning/t3/BUILD.json.",
+        "limitations": "Live verification covered opening and refreshing. The exact host handshake payload and learner input submission were outside the live check."
+      }
+    }
+  ]
+}

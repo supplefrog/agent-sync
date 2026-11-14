@@ -12,7 +12,7 @@
   "includeManifestItself": true,
   "publicationFileCount": 118,
   "selfBinding": "PUBLIC-FILES.json separately hash-bound; no circular self-hash",
-  "payloadBytes": 6265502,
+  "payloadBytes": 6266260,
   "files": [
     {
       "path": ".gitignore",
@@ -86,8 +86,8 @@
     },
     {
       "path": "docs/NATIVE-VISUALS.md",
-      "bytes": 5838,
-      "sha256": "dfbe62f8687b8d14657beb2098b2f39b8b1cd3431f147f2fffac3b55cbc27310"
+      "bytes": 6224,
+      "sha256": "ee30c011934a285f6f4f34ede9fdb1446ba5b151412a5333a5bba303530ecee2"
     },
     {
       "path": "docs/PROTOCOL.md",
@@ -346,8 +346,8 @@
     },
     {
       "path": "src/t3/app.mjs",
-      "bytes": 14772,
-      "sha256": "4738d34dd032e81b0b282c96c799e73a36e349d4aec8bf96b3c6426cfae19cc5"
+      "bytes": 15024,
+      "sha256": "f45c5e5bbc7939004738483e3dca2ec8602016fb80575d3cbdd5c091c7a205b5"
     },
     {
       "path": "src/t3/boundary.mjs",
@@ -396,8 +396,8 @@
     },
     {
       "path": "src/t3/server.mjs",
-      "bytes": 10303,
-      "sha256": "be1a3a297012212c5e32155f9e72a6dbdfa5ceff743658c5ea250e19076c2b66"
+      "bytes": 10355,
+      "sha256": "7e608a688021a6e89005925cdbaf942d7017b3618386c8fc64cfdc22c2f04e58"
     },
     {
       "path": "src/vendor/runtime/chains.ts",
@@ -527,7 +527,7 @@
     {
       "path": "t3/BUILD.json",
       "bytes": 311065,
-      "sha256": "aeb216327ba62b7de95bf917689b3fc94829626c307abef22241705284c2e685"
+      "sha256": "7ef815e925ce9a9ca5761a07cce55060545a4946a0866cbda7b10209d5d73c69"
     },
     {
       "path": "t3/SOURCES.json",
@@ -541,8 +541,8 @@
     },
     {
       "path": "t3/app.html",
-      "bytes": 4948738,
-      "sha256": "5948a835713f3885d1a85e4e49f39f92e4468f0b68e024ef1e114f878bad0ffd"
+      "bytes": 4948806,
+      "sha256": "4988a12de6b6cd3aba7da4dddd7a108e550771157783681df5823adafe95bf20"
     },
     {
       "path": "t3/bindings.example.json",
