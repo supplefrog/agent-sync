@@ -8,6 +8,8 @@ Agent Sync assembles independently owned governance, authoring, reconciliation, 
 
 ## Writing and handing off instructions
 
+- **Final replies.** “you have a habit of adding too many words” and “the short status update u just provided rn is sane. the at the end summaries are not”. The user clarified that replies already give results and open issues. Cut sentences that add nothing the user needs.
+- **Agent-facing writing.** Write “according to the cause rather than symptoms”. Check what the agent already does before adding a rule. Change the decision behind an observed gap, then “monitor how they behave and iterate”.
 - **Prompting.** “Only send the exact clarified user requirement to send to the agent.” Use the supplied wording for a finalized task.
 - **Delegation.** If the user leaves delegation to the agent, it can give a worker a narrow subtask. “ideally the intention conveyed through my wordings should not be lost, and would prefer if they were rather clearly understood and refined first”.
 - **Workflow selection.** The user asked whether the agent was authorized “to use dynamic workflows to parallelize work when needed” and wanted it to make that choice on its own. Make the choice before dispatch. Use ordinary parallel work when it can be integrated in the current turn. Use Dynamic Workflows when a consequential action depends on several independent checks or when progress needs to survive an interruption. Keep the action tied to passing evidence on the relevant revision or artifact.

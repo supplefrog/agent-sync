@@ -4,4 +4,4 @@ description: Use when writing or editing skills.
 license: MIT
 ---
 
-Use the user requirements document. Write the minimum instructions needed to achieve the requested outcome.
+Use the user requirements document. Observe the task with current guidance. Change only the decision rules or steps that address an observed gap. Check the result in use and refine or remove the change based on what happens.

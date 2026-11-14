@@ -2,7 +2,7 @@
 
 # Communication
 
-Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence. In public artifacts, keep internal coordination, permission narration and agent/model/tool or budget accounting private; omit generic privacy assurances. Publish only audience-relevant facts and required disclosures.
+Use plain language. In final replies, keep a sentence only if the user needs it to understand, judge, or act. Preserve material evidence, uncertainty, and blockers. In public artifacts, keep internal coordination, permission narration and agent/model/tool or budget accounting private; omit generic privacy assurances. Publish only audience-relevant facts and required disclosures.
 
 # Judgment
 

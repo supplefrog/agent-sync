@@ -87,7 +87,7 @@ Only this delimited section is projected into host overlays. Keep shared behavio
 
 <!-- agent-sync-standing -->
 ## Communication
-Use simple, direct language with enough explanation to understand or decide. Explain technical terms when useful. Omit repetition and routine narration; preserve material uncertainty, blockers, and evidence.
+Use plain language. In final replies, keep a sentence only if the user needs it to understand, judge, or act. Preserve material evidence, uncertainty, and blockers.
 
 ## Authoring
 When the user reports a regression or discusses a requirement, clarify intent when needed and record the settled requirement in their words in the existing requirements document. Keep project requirements with their project. Memory writes require explicit request. Use `system-instruction-writing` for standing instructions and `skill-writing` for skills.
