@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "scope": "Choose a persisted workflow for consequential dependencies or resumable work.",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "change_kind": "user-preference",
+      "basis": "user-correction",
+      "deviation": "The former standing rule asked agents to use Dynamic Workflows when useful without identifying the point at which a decision is needed.",
+      "evidence": "The user asked the agent to make the selection on its own and explicitly requested an update to the rule.",
+      "baseline_sufficient": false,
+      "why_instruction": "The decision precedes dispatch and applies across tasks and hosts.",
+      "alternative": "Keep ordinary parallel execution for work that can be integrated in the current turn without a consequential dependency.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "d5c9ae5d89c42a517635d7e6813b489179d553211995f3f8c9c5856340b586f8",
+          "after_sha256": "bd6da0d2d5fd2e32701c7d84a49e5d0c9b50b649de64e14b5ffa354d3d9871be"
+        }
+      },
+      "user_preference": {
+        "request": "Update the standing rule so the agent chooses when to use Dynamic Workflows on its own.",
+        "scope": "Workflow selection before dispatch, revision-bound check results, and fallback when the route is unavailable.",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "authority": "Explicit user preference to clarify and update the existing orchestration rule.",
+      "requirement_change": true,
+      "requirement_reason": "Specify when to choose a persisted workflow within the existing authorization and resource limits.",
+      "checks": "Canonical renderer check across Codex, Hermes, and OMP; nine rendering tests and eleven direct-preference tests.",
+      "outcome_review": {
+        "expected": "Each managed overlay carries the same pre-dispatch trigger, ordinary parallel path, and dependency-preserving fallback.",
+        "observed": "The canonical renderer generated and checked the three host overlays, and the existing rendering and direct-preference tests passed.",
+        "evidence": "Rendered recovery overlays and the renderer and preference tests.",
+        "limitations": "Checks establish source, projection, and preference acceptance; live workflow routing was outside the test."
+      },
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "d5c9ae5d89c42a517635d7e6813b489179d553211995f3f8c9c5856340b586f8",
+          "after_sha256": "bd6da0d2d5fd2e32701c7d84a49e5d0c9b50b649de64e14b5ffa354d3d9871be"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "8f66728b1ac318bd99d00ffc2ce82d1f9ec3b0618026f120bb1031f708f402e4",
+          "after_sha256": "c9130b7044517091f327d5b0ce1298cd1712853f7463dee5f907f76ce9c22d2b"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "1435db6a45519875d37da7fb57b6f285636ea9847f25cde4f8d6ead8f30c7150",
+          "after_sha256": "02c08e239a32f7a05be84e7af392ad9942df6d68b7dff67d091089b7f3d81a80"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        }
+      },
+      "obligations": [
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Define the explicit selection rule at its shared owner."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Record the user's autonomous workflow selection requirement."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Record the scope of checked implementation evidence."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Host execution routes, prerequisites, and portability remain governed by the existing matrix."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "The existing method for measuring total cost remains applicable to the execution choice."
+        }
+      ]
+    }
+  ]
+}

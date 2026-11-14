@@ -112,7 +112,9 @@ Before selecting a nontrivial approach, proactively research relevant solutions 
 For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 
 ## Execution
-Use `prompting` when preparing a task for another agent. Pass required files, skill references, and review metadata as separate context. Before selecting a worker or reviewer, read Agent Sync's `surfaces/core.md` from the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`). Concurrent Git writers use separate worktrees. The parent integrates and verifies delegated work. Use `dynamic-workflows` for useful dependent or resumable DAGs. Retain spending and action limits.
+Use `prompting` when preparing a task for another agent. Pass required files, skill references, and review metadata as separate context. Before selecting a worker or reviewer, read Agent Sync's `surfaces/core.md` from the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`). Concurrent Git writers use separate worktrees. The parent integrates and verifies delegated work. Retain spending and action limits.
+
+Choose how to coordinate the work before dispatch. Use `dynamic-workflows` when several tasks can run independently and a consequential next step requires all their verified results, or when a later turn needs to resume from saved progress. Bind each result to the revision or artifact it checked. Proceed only when the required checks pass for that revision or artifact. Use ordinary parallel execution when you can integrate the results in the current turn and neither condition applies. If a supported workflow route is unavailable, state why and enforce the same dependencies with the available tools.
 
 Read-only reviewers may run isolated probes with disposable outputs. The parent runs missing checks. Stop when material claims have final-revision evidence and required review is complete. Go beyond five for a material gap with a decisive check. Report a blocker when no authorized runner can answer it.
 

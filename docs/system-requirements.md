@@ -10,6 +10,7 @@ Agent Sync assembles independently owned governance, authoring, reconciliation, 
 
 - **Prompting.** “Only send the exact clarified user requirement to send to the agent.” Use the supplied wording for a finalized task.
 - **Delegation.** If the user leaves delegation to the agent, it can give a worker a narrow subtask. “ideally the intention conveyed through my wordings should not be lost, and would prefer if they were rather clearly understood and refined first”.
+- **Workflow selection.** The user asked whether the agent was authorized “to use dynamic workflows to parallelize work when needed” and wanted it to make that choice on its own. Make the choice before dispatch. Use ordinary parallel work when it can be integrated in the current turn. Use Dynamic Workflows when a consequential action depends on several independent checks or when progress needs to survive an interruption. Keep the action tied to passing evidence on the relevant revision or artifact.
 - **System instructions.** “write base behaviors that are to be followed with every response based on user_requirements doc”.
 - **Skills.** “write the minimum instructions that help the model achieve the desired outcome based on user_requirements doc”.
 - **Capture intent.** “whenever a user explains grievances/regressions/discusses requirements, clarify their intention if unclear or more detail would help and note them in the doc”.
