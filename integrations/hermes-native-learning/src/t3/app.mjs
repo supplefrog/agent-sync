@@ -86,8 +86,8 @@ function show(result,isFresh=false) {
   if(!current?.dirty)cache.set(key,{version:meta.draft.version,payload:meta.draft.payload,dirty:false});
   controller?.destroy();
   const bound=structuredClone(next);
-  const exploration=codex&&next.visuals?.some(visual=>visual.kind==='visual')?document.createElement('div'):null;
-  controller=mountInline(root,next,{renderRich:mountRichFragment,send:action=>send(action,bound),onResume:refresh,workbench:codex,exploration,drafts:{
+  const exploration=next.visuals?.some(visual=>visual.kind==='visual')?document.createElement('div'):null;
+  controller=mountInline(root,next,{renderRich:mountRichFragment,send:action=>send(action,bound),onResume:refresh,workbench:true,exploration,drafts:{
     read:requested=>cache.get(requested)?.payload??null,
     write(requested,payload){if(requested!==key||byteSize(payload)>16384)throw new Error('Draft identity/size differs.');
       const old=cache.get(key)??{version:-1};cache.set(key,{...old,payload:structuredClone(payload),dirty:true});status('Draft is local. Use Save draft to preserve it across reopen.');},
@@ -195,7 +195,6 @@ rpc('ui/initialize',{protocolVersion:'2026-01-26',appInfo:{name:'learnharness-na
     initialized=true;
     post({jsonrpc:'2.0',method:'ui/notifications/initialized',params:{}});
     codex=result.hostInfo?.name!=='t3-code';
-    if(codex)document.body.dataset.lhHost='codex';
     applyTheme(result.hostContext);
     if(view)void refresh();})
   .catch(error=>{

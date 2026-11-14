@@ -1,11 +1,11 @@
 {
   "built": "t3/app.html",
-  "bytes": 4948806,
-  "sha256": "4988a12de6b6cd3aba7da4dddd7a108e550771157783681df5823adafe95bf20",
+  "bytes": 4948384,
+  "sha256": "697dce5736d917b1942a04004921180f2ba3869ef48664d9c0a9b980a754b976",
   "esbuild": "0.28.2",
   "builder": {
     "path": "build-t3.mjs",
-    "sha256": "c005c3b614cd06bba6261c1d0c29bd5dd2c6389ac8573b9bd113953007be819c"
+    "sha256": "cf4c784e099e2ba0f758cdf3cbfe4852583d006e09ac933d3281f4ca171826fa"
   },
   "style": {
     "path": "src/inline/inline-template.html",
@@ -7744,7 +7744,7 @@
     },
     {
       "path": "src/t3/app.mjs",
-      "sha256": "f45c5e5bbc7939004738483e3dca2ec8602016fb80575d3cbdd5c091c7a205b5"
+      "sha256": "dfb4f0fb05488301873927d2b2583999e4897406b42cdbf0c7ffe7e4010a6093"
     }
   ],
   "hostActivation": false,

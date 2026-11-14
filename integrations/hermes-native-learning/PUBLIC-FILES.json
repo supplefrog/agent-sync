@@ -12,7 +12,7 @@
   "includeManifestItself": true,
   "publicationFileCount": 118,
   "selfBinding": "PUBLIC-FILES.json separately hash-bound; no circular self-hash",
-  "payloadBytes": 6266260,
+  "payloadBytes": 6265937,
   "files": [
     {
       "path": ".gitignore",
@@ -46,8 +46,8 @@
     },
     {
       "path": "build-t3.mjs",
-      "bytes": 6422,
-      "sha256": "c005c3b614cd06bba6261c1d0c29bd5dd2c6389ac8573b9bd113953007be819c"
+      "bytes": 6345,
+      "sha256": "cf4c784e099e2ba0f758cdf3cbfe4852583d006e09ac933d3281f4ca171826fa"
     },
     {
       "path": "build.mjs",
@@ -86,8 +86,8 @@
     },
     {
       "path": "docs/NATIVE-VISUALS.md",
-      "bytes": 6224,
-      "sha256": "ee30c011934a285f6f4f34ede9fdb1446ba5b151412a5333a5bba303530ecee2"
+      "bytes": 6270,
+      "sha256": "313f53b5442157e2ef521e63acbb7503e91db4651f7bbb130a2416e603d7e7ab"
     },
     {
       "path": "docs/PROTOCOL.md",
@@ -346,8 +346,8 @@
     },
     {
       "path": "src/t3/app.mjs",
-      "bytes": 15024,
-      "sha256": "f45c5e5bbc7939004738483e3dca2ec8602016fb80575d3cbdd5c091c7a205b5"
+      "bytes": 14965,
+      "sha256": "dfb4f0fb05488301873927d2b2583999e4897406b42cdbf0c7ffe7e4010a6093"
     },
     {
       "path": "src/t3/boundary.mjs",
@@ -396,8 +396,8 @@
     },
     {
       "path": "src/t3/server.mjs",
-      "bytes": 10355,
-      "sha256": "7e608a688021a6e89005925cdbaf942d7017b3618386c8fc64cfdc22c2f04e58"
+      "bytes": 10544,
+      "sha256": "7669ae9b547329188f077fb1eb031fd906fb9a43c11210f36e47b7f8d998c3fd"
     },
     {
       "path": "src/vendor/runtime/chains.ts",
@@ -527,7 +527,7 @@
     {
       "path": "t3/BUILD.json",
       "bytes": 311065,
-      "sha256": "7ef815e925ce9a9ca5761a07cce55060545a4946a0866cbda7b10209d5d73c69"
+      "sha256": "602173ddc0eee6171604df608bb2a6837da5228ac2dce26b745813e3e4a69c25"
     },
     {
       "path": "t3/SOURCES.json",
@@ -541,8 +541,8 @@
     },
     {
       "path": "t3/app.html",
-      "bytes": 4948806,
-      "sha256": "4988a12de6b6cd3aba7da4dddd7a108e550771157783681df5823adafe95bf20"
+      "bytes": 4948384,
+      "sha256": "697dce5736d917b1942a04004921180f2ba3869ef48664d9c0a9b980a754b976"
     },
     {
       "path": "t3/bindings.example.json",

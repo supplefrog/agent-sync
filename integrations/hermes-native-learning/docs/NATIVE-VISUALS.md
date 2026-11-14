@@ -22,7 +22,7 @@ Use a visual when it helps the learner see the relationship they are reasoning a
 
 `learning_view` associates the saved lesson with an MCP App resource. Codex desktop can use the same app card in the conversation and its side panel. The card uses the host bridge to refresh the current lesson and displays saved SVGs with the response controls. Interactive HTML uses the separate native chat renderer. For that path, `learning_view` supplies a content-addressed `nativePresentation.path` for a `visualize` content reference. Both use the same saved lesson and revision-bound input. A descriptor alone does not prove that the UI mounted.
 
-The native layout puts the visual beside the question and response controls when the lesson container is wide enough. It stacks the visual above the question at narrow widths. The same controls and explorer remain mounted across resizing. The shared controls retain their original presentation on T3/Hermes.
+Codex and T3 share the responsive workbench. The figure sits alongside the question and response when there is room and above them in a compact stack when narrow. The controls stay mounted across resizing. Hermes uses its existing presentation.
 
 The optional panel should “display the current lesson while I keep chatting.” **Refresh saved lesson** reads the current revision through the owning chat without sending a learner response. Inline lessons remain available. The UI acknowledges a valid MCP Apps handshake even when the host omits product-specific identity fields. Lesson access still requires server-side ownership.
 
@@ -34,7 +34,7 @@ Presentation failure is separate from saved state. Combined native content has a
 
 ## Other hosts
 
-T3 keeps its MCP App controls. The card lists direct visuals with existing artifacts: SVG renders in the card; HTML uses its native visual publisher because the App blocks nested demo frames. Read verified source with `learning_artifact_source`; wrap a fragment as a full document when that renderer requires one. Hermes uses its existing sandboxed artifact components and export grant. No CSP weakening or new frame origin is required.
+In T3, open the existing lesson conversation, including from **Settled** if needed, and use **Refresh saved lesson** or call `learning_view` there. That call supplies the lesson card. For an interactive demo, read the saved artifact with `learning_artifact_source` and preview and publish only that demo through T3's native HTML renderer in the same conversation. The app displays the SVG figure next to the lesson controls and uses the host renderer for interactive HTML. Hermes uses its existing sandboxed artifact components and export grant.
 
 Other explicitly enrolled MCP clients can read the same permitted sources, but need their own renderer and confirmed-input adapter. Clients without an HTML surface cannot become interactive just by receiving a path. Remote renderers also need supported access to files on their execution host.
 

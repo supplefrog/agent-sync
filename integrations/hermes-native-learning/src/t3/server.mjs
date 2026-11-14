@@ -7,8 +7,8 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 // Boundary loading is deferred until the opted-in entry observation is available.
 
-export const APP_URI='ui://learnharness/lesson-v3.html';
-const LEGACY_APP_URIS=new Set(['ui://learnharness/lesson.html','ui://learnharness/lesson-v2.html']);
+export const APP_URI='ui://learnharness/lesson-v4.html';
+const LEGACY_APP_URIS=new Set(['ui://learnharness/lesson.html','ui://learnharness/lesson-v2.html','ui://learnharness/lesson-v3.html']);
 const schema=properties=>({type:'object',properties,additionalProperties:false,required:Object.keys(properties)});
 const chat={type:'string',pattern:'^[A-Za-z0-9_-]{1,80}$'};
 const genericObject={type:'object'};
@@ -46,7 +46,7 @@ export function handleLearningTool(boundary,request) {
   if(name==='learning_view') {
     const result=boundary.view(meta,args);
     return {...result,content:[{type:'text',text:JSON.stringify({nativePresentation:result.nativePresentation,
-      instruction:'Use the MCP App card. In Codex, show nativePresentation.path in chat when the app view is unavailable or for an interactive HTML visual. Call learning_view after saved input and teacher reaction.'})}]};
+      instruction:'In T3, reopen in the existing lesson conversation and use the MCP App card. Publish only a saved interactive demo through T3’s native HTML renderer in that same conversation. In Codex desktop, use nativePresentation.path when the app view is unavailable or for an interactive HTML visual. Call learning_view after saved input and teacher reaction.'})}]};
   }
   if(name==='learning_catalogue')return textResult({lessons:boundary.catalogue(meta,args)});
   if(name==='learning_input')return textResult(t3Result(boundary.input(meta,args)));

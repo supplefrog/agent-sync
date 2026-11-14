@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "base": "2e621488a325dbd11926692c56eeb5139d6c28f9",
+  "selected_paths": [
+    "docs/requirement-status.md",
+    "docs/system-requirements.md",
+    "evals/results/native-learning-t3-workbench-20261115.json",
+    "integrations/hermes-native-learning/PUBLIC-FILES.json",
+    "integrations/hermes-native-learning/build-t3.mjs",
+    "integrations/hermes-native-learning/docs/NATIVE-VISUALS.md",
+    "integrations/hermes-native-learning/src/t3/app.mjs",
+    "integrations/hermes-native-learning/src/t3/server.mjs",
+    "integrations/hermes-native-learning/t3/BUILD.json",
+    "integrations/hermes-native-learning/t3/app.html"
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "02c08e239a32f7a05be84e7af392ad9942df6d68b7dff67d091089b7f3d81a80",
+          "after_sha256": "3d19bd02824286b83b1529f7c8968cda47e1908514e5164429d992986f1ec174"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "c9130b7044517091f327d5b0ce1298cd1712853f7463dee5f907f76ce9c22d2b",
+          "after_sha256": "2b182ff519ad65748b52142f1e3baf44139e8396014ef1eda752d128c6f722b8"
+        },
+        "integrations/hermes-native-learning/PUBLIC-FILES.json": {
+          "before_sha256": "6e799dc271bf8a7a9f5d204833c81d9efecb286e1d747b9e80742c72873223e1",
+          "after_sha256": "3b90ba9935de8a27071ba7dec19cc09bc77360e532ff7008fca23f9faba67c46"
+        },
+        "integrations/hermes-native-learning/build-t3.mjs": {
+          "before_sha256": "c005c3b614cd06bba6261c1d0c29bd5dd2c6389ac8573b9bd113953007be819c",
+          "after_sha256": "cf4c784e099e2ba0f758cdf3cbfe4852583d006e09ac933d3281f4ca171826fa"
+        },
+        "integrations/hermes-native-learning/docs/NATIVE-VISUALS.md": {
+          "before_sha256": "ee30c011934a285f6f4f34ede9fdb1446ba5b151412a5333a5bba303530ecee2",
+          "after_sha256": "313f53b5442157e2ef521e63acbb7503e91db4651f7bbb130a2416e603d7e7ab"
+        },
+        "integrations/hermes-native-learning/src/t3/app.mjs": {
+          "before_sha256": "f45c5e5bbc7939004738483e3dca2ec8602016fb80575d3cbdd5c091c7a205b5",
+          "after_sha256": "dfb4f0fb05488301873927d2b2583999e4897406b42cdbf0c7ffe7e4010a6093"
+        },
+        "integrations/hermes-native-learning/src/t3/server.mjs": {
+          "before_sha256": "7e608a688021a6e89005925cdbaf942d7017b3618386c8fc64cfdc22c2f04e58",
+          "after_sha256": "7669ae9b547329188f077fb1eb031fd906fb9a43c11210f36e47b7f8d998c3fd"
+        },
+        "integrations/hermes-native-learning/t3/BUILD.json": {
+          "before_sha256": "7ef815e925ce9a9ca5761a07cce55060545a4946a0866cbda7b10209d5d73c69",
+          "after_sha256": "602173ddc0eee6171604df608bb2a6837da5228ac2dce26b745813e3e4a69c25"
+        },
+        "integrations/hermes-native-learning/t3/app.html": {
+          "before_sha256": "4988a12de6b6cd3aba7da4dddd7a108e550771157783681df5823adafe95bf20",
+          "after_sha256": "697dce5736d917b1942a04004921180f2ba3869ef48664d9c0a9b980a754b976"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Preserve the existing teacher, owner, reveal and input contracts while qualifying the requested Codex presentation and safe visual corrections."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "Requested Codex and T3 layout parity, relevant figures, native demo rendering, and reopen in the existing lesson conversation.",
+      "authority": "The user requested the same responsive workbench in T3 and Codex, with native demos and reuse of the existing lesson chat.",
+      "checks": "All 46 tests passed. The package binds every local bundle input and matches the installed workbench App. Browser checks loaded the saved T3 question and figure at 800 and 360 pixels and checked read-only refresh and native demo routing. One native lesson card and one native demo were emitted in the existing T3 chat.",
+      "outcome_review": {
+        "expected": "Use the same responsive lesson card in T3 and Codex. Keep interactive demos in the host renderer and reopen the existing conversation.",
+        "observed": "The figure and response rendered side by side at 800 pixels and stacked at 360 pixels. T3 previewed and rendered the verified saved demo in the same conversation as the App card. The pending question and prior answers matched saved state after the reopen.",
+        "evidence": "integrations/hermes-native-learning/test/native-visuals.test.mjs; integrations/hermes-native-learning/docs/NATIVE-RENDERING-CHANGE.md; integrations/hermes-native-learning/t3/BUILD.json.",
+        "limitations": "The original T3 desktop chat visibly mounted the workbench with the saved figure and the native interactive demo. Wide and narrow geometry and the policy toggle response were exercised independently in local browser checks."
+      }
+    }
+  ]
+}

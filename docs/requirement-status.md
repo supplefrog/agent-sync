@@ -1,6 +1,6 @@
 # Requirement status
 
-Native LearnHarness visuals: the Codex lesson renderer supports the responsive workbench. The MCP App accepts the installed Codex desktop host identity as well as T3. The package checks cover exact input, replacement and reveal boundaries. The browser fixture tests the app's handshake, refresh, and layout against saved fixture state. Live app panel verification and installation are tracked separately. See [native lesson visuals](../integrations/hermes-native-learning/docs/NATIVE-VISUALS.md).
+Native LearnHarness visuals use the responsive workbench in Codex and T3. Browser checks exercised the workbench at wide and narrow widths with a saved lesson and figure. Live Codex panel refresh and T3 native demo delivery were checked separately. Reopen in the existing lesson conversation. See [native lesson visuals](../integrations/hermes-native-learning/docs/NATIVE-VISUALS.md).
 
 Source review, 2026-09-27. The [agreed contract](system-requirements.md) remains authoritative. This map records implementation and evidence coverage; it does not certify every capability or host. The accountable roles coordinate existing owners rather than introduce new services.
 

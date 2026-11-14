@@ -28,7 +28,7 @@ const styleFile=path.join(here,'src/inline/inline-template.html');
 const style=fs.readFileSync(styleFile,'utf8').match(/<style>([\s\S]*?)<\/style>/)?.[1];
 if(!style)throw new Error('Existing inline control stylesheet missing.');
 const codexStyleFile=path.join(here,'src/inline/codex-lesson.css');
-const codexStyle=fs.readFileSync(codexStyleFile,'utf8').replaceAll('#lh-inline-lesson','body[data-lh-host=codex] #lh-inline-lesson');
+const codexStyle=fs.readFileSync(codexStyleFile,'utf8');
 const result=await esbuild.build({entryPoints:[path.join(here,'src/t3/app.mjs')],bundle:true,write:false,
   platform:'browser',format:'iife',target:'es2022',minify:true,sourcemap:false,metafile:true,legalComments:'inline',nodePaths:[moduleRoot],
   plugins:[{name:'bind-renderer-sources',setup(build){build.onLoad({filter:/.*/},args=>{
