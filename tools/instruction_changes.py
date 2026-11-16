@@ -23,6 +23,8 @@ NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256 = '45ff625bff312262629c44be2d7aa7f6e
 NATIVE_LEARNING_VISUALS_MANIFEST_SHA256 = '070fa053f1018bd98d29ecd5f3b7922a4ef55c5172b706900a776e2730fd12be'
 NATIVE_LEARNING_WORKBENCH_MANIFEST_SHA256 = '34a1446acd8dd9ad5f3039a5d9d2b6220d2f1f083adeee6101b102dc3151c084'
 NATIVE_LEARNING_CONTROLS_MANIFEST_SHA256 = '587d206f1f1e022ff9bbb0bf040ec8579a104366dc697921f972d4cba43e1185'
+NATIVE_LEARNING_RANKED_GUIDES_MANIFEST_SHA256 = '7ccf7c961c320ebd72ce16b0edc9a5373c33045796edbe48b5274aa9a8f54da0'
+NATIVE_LEARNING_RANKED_GUIDES_REPLAY_SHA256 = 'acf65913fb19961dbf9901fdc7ce0a195b32a29f67ea066eb58c6342af476feb'
 
 GENERATED = {'recovery/current/hosts/codex/AGENTS.md',
              'recovery/current/hosts/hermes/SOUL.md',
@@ -537,7 +539,8 @@ def native_learning_source_reference(repo, name):
                   NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256: (104, 105),
                   NATIVE_LEARNING_VISUALS_MANIFEST_SHA256: (115, 116),
                   NATIVE_LEARNING_WORKBENCH_MANIFEST_SHA256: (117, 118),
-                  NATIVE_LEARNING_CONTROLS_MANIFEST_SHA256: (152, 153)}.get(_hash(manifest_raw))
+                  NATIVE_LEARNING_CONTROLS_MANIFEST_SHA256: (152, 153),
+                  NATIVE_LEARNING_RANKED_GUIDES_MANIFEST_SHA256: (152, 153)}.get(_hash(manifest_raw))
         if counts is None:
             return False
         manifest = json.loads(manifest_raw)
@@ -572,12 +575,43 @@ def native_learning_source_reference(repo, name):
         return False
 
 
+def _approved_ranked_audit_reference(candidate, source, name, acceptance, base, paths):
+    """Bind the explicitly approved graph reference correction and its local replay."""
+    prefix = NATIVE_LEARNING_OWNER
+    guides = {prefix + '/docs/KNOWLEDGE.md', prefix + '/docs/MATERIALS-JOBS.md'}
+    manifest = prefix + '/PUBLIC-FILES.json'
+    receipt = 'evals/results/native-learning-ranked-audit-guides-20261116.json'
+    expected = {'basis': 'ranked-audit-reference',
+                'manifest_sha256': NATIVE_LEARNING_RANKED_GUIDES_MANIFEST_SHA256,
+                'replay_sha256': NATIVE_LEARNING_RANKED_GUIDES_REPLAY_SHA256}
+    if (name not in guides or acceptance != expected
+            or set(paths) != guides | {manifest, receipt, 'tools/instruction_changes.py'}):
+        raise sync_git.SyncBlocked('ranked audit reference requires the exact approved publication scope')
+    if (_hash(_before(source, base, manifest)) != NATIVE_LEARNING_CONTROLS_MANIFEST_SHA256
+            or _hash((candidate / manifest).read_bytes()) != NATIVE_LEARNING_RANKED_GUIDES_MANIFEST_SHA256
+            or not native_learning_source_reference(candidate, NATIVE_LEARNING_REFERENCE)):
+        raise sync_git.SyncBlocked('ranked audit reference package differs from reviewed bytes')
+    replay_path = candidate / sync_git.safe_path(candidate, receipt)
+    replay = json.loads(replay_path.read_bytes()).get('ranked_audit_replay')
+    if _hash(json.dumps(replay, sort_keys=True, separators=(',', ':')).encode()) != expected['replay_sha256']:
+        raise sync_git.SyncBlocked('ranked audit reference replay differs from the reviewed evidence')
+    for guide in guides:
+        actual = {'before_sha256': _hash(_before(source, base, guide)),
+                  'after_sha256': _hash((candidate / guide).read_bytes())}
+        if actual != replay['guide_bindings'][guide]:
+            raise sync_git.SyncBlocked('ranked audit replay does not bind the exact guide bytes')
+    return 'exact approved ranked audit reference with bounded command replay'
+
+
 def _approved_native_learning_source(candidate, source, name, owner, row, base, paths, reconciliations):
     """One pinned requested-capability source package, never an activation grant."""
     prefix = NATIVE_LEARNING_OWNER
     model_sources = ['integrations/hermes-native-learning/docs/KNOWLEDGE.md', 'integrations/hermes-native-learning/docs/MATERIALS-JOBS.md', 'integrations/hermes-native-learning/docs/PROTOCOL.md', 'integrations/hermes-native-learning/reference/planning.md', 'integrations/hermes-native-learning/reference/practice-base.md', 'integrations/hermes-native-learning/reference/practice-doctrine.md', 'integrations/hermes-native-learning/reference/probe-doctrine.md', 'integrations/hermes-native-learning/reference/teacher-cycle.md', 'integrations/hermes-native-learning/reference/teacher-step.md', 'integrations/hermes-native-learning/skills/hermes-native-learning/SKILL.md', 'integrations/hermes-native-learning/t3/AGENT-PROTOCOL.md']
     if owner != prefix or name not in model_sources or row.get("basis") != "user-correction":
         return None
+    acceptance = row.get('native_learning_acceptance')
+    if isinstance(acceptance, dict) and acceptance.get('basis') == 'ranked-audit-reference':
+        return _approved_ranked_audit_reference(candidate, source, name, acceptance, base, paths)
     expected_acceptance = {'manifest_sha256': NATIVE_LEARNING_MANIFEST_SHA256, 'source_review_sha256': 'ec6c83f3e10d58136a8690ff47fee09807415632cac2e490dfa8a36cce2f607a', 'basis': 'requested-capability-source', 'hermes_evidence': 'bounded native walkthrough', 't3_evidence': 'reviewed source/components; no live qualification', 'activation': 'separate', 'behavioral_benefit_claim': False}
     if row.get("native_learning_acceptance") != expected_acceptance:
         raise sync_git.SyncBlocked("native learning source acceptance is not the selected V3 scope")

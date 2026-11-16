@@ -12,7 +12,7 @@
   "includeManifestItself": true,
   "publicationFileCount": 153,
   "selfBinding": "PUBLIC-FILES.json separately hash-bound; no circular self-hash",
-  "payloadBytes": 7464584,
+  "payloadBytes": 7466152,
   "files": [
     {
       "path": ".gitignore",
@@ -86,8 +86,8 @@
     },
     {
       "path": "docs/KNOWLEDGE.md",
-      "bytes": 5421,
-      "sha256": "5f74d691b35296a8567a91474c1606610bf1b40db041e1abf96d845910e81bbc"
+      "bytes": 7088,
+      "sha256": "a05fea506fa296aa80e0fe7e5dacd5acfedae9813f8e94cbe961ffa3ff5d0eb8"
     },
     {
       "path": "docs/LEARNER-FEATURES.md",
@@ -96,8 +96,8 @@
     },
     {
       "path": "docs/MATERIALS-JOBS.md",
-      "bytes": 12444,
-      "sha256": "7ec0310ef36c641f6ad3ef70eb9ea2fbbadc7070de538e234269b782e1dd97c4"
+      "bytes": 12345,
+      "sha256": "d687aa5578c4bb6c02262bc9abc65524b382579a6c278d1b039461b3abd94ad4"
     },
     {
       "path": "docs/NATIVE-RENDERING-CHANGE.md",

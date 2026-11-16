@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "base": "d5468cff49393b887b201e688473013f9f471f0e",
+  "selected_paths": [
+    "evals/results/native-learning-ranked-audit-guides-20261116.json",
+    "integrations/hermes-native-learning/PUBLIC-FILES.json",
+    "integrations/hermes-native-learning/docs/KNOWLEDGE.md",
+    "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md",
+    "tools/instruction_changes.py"
+  ],
+  "ranked_audit_replay": {
+    "published_runtime": "d5468cff49393b887b201e688473013f9f471f0e",
+    "graph_audit_sha256": "e3b06638f483bf509eb8d0c25780dac6f2e6650a7e186d5e34cd0a7c49a2f7f7",
+    "guide_bindings": {
+      "integrations/hermes-native-learning/docs/KNOWLEDGE.md": {
+        "before_sha256": "5f74d691b35296a8567a91474c1606610bf1b40db041e1abf96d845910e81bbc",
+        "after_sha256": "a05fea506fa296aa80e0fe7e5dacd5acfedae9813f8e94cbe961ffa3ff5d0eb8"
+      },
+      "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md": {
+        "before_sha256": "7ec0310ef36c641f6ad3ef70eb9ea2fbbadc7070de538e234269b782e1dd97c4",
+        "after_sha256": "d687aa5578c4bb6c02262bc9abc65524b382579a6c278d1b039461b3abd94ad4"
+      }
+    },
+    "manifest_before": "587d206f1f1e022ff9bbb0bf040ec8579a104366dc697921f972d4cba43e1185",
+    "manifest_after": "7ccf7c961c320ebd72ce16b0edc9a5373c33045796edbe48b5274aa9a8f54da0",
+    "method": "Each treatment used one fresh Codex run with the same four synthetic audit outcomes. The resulting command objects were replayed through the real learning command API in isolated state.",
+    "scenarios": {
+      "link": "Link exact lesson identities and retain provenance without adding duplicate nodes.",
+      "page": "Return the next ranked notes candidates at the captured revision.",
+      "preview": "Retrieve the exact statement and matching alias before equivalence judgment.",
+      "stale": "Read a fresh audit after a stale graph response."
+    },
+    "results": {
+      "published": {
+        "link": true,
+        "page": false,
+        "preview": false,
+        "stale": true
+      },
+      "revised": {
+        "link": true,
+        "page": true,
+        "preview": true,
+        "stale": true
+      },
+      "absent": {
+        "link": false,
+        "page": false,
+        "preview": false,
+        "stale": true
+      },
+      "knowledge-only": {
+        "link": true,
+        "page": true,
+        "preview": true,
+        "stale": true
+      },
+      "materials-only": {
+        "link": false,
+        "page": false,
+        "preview": false,
+        "stale": true
+      },
+      "release-pair": {
+        "link": true,
+        "page": true,
+        "preview": true,
+        "stale": true
+      }
+    },
+    "release_pair_prompt_sha256": "06305aae83aeb0ef44c052bbd3d6c40cdf09dfb8fb83618055b78575c39f7b56",
+    "limitations": "One fresh run per treatment in Codex. Tests cover command selection and replay against disposable state."
+  },
+  "instruction_changes": [
+    {
+      "owner": "integrations/hermes-native-learning",
+      "artifacts": {
+        "integrations/hermes-native-learning/docs/KNOWLEDGE.md": {
+          "before_sha256": "5f74d691b35296a8567a91474c1606610bf1b40db041e1abf96d845910e81bbc",
+          "after_sha256": "a05fea506fa296aa80e0fe7e5dacd5acfedae9813f8e94cbe961ffa3ff5d0eb8"
+        },
+        "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md": {
+          "before_sha256": "7ec0310ef36c641f6ad3ef70eb9ea2fbbadc7070de538e234269b782e1dd97c4",
+          "after_sha256": "d687aa5578c4bb6c02262bc9abc65524b382579a6c278d1b039461b3abd94ad4"
+        }
+      },
+      "change_kind": "requested-native-learning",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The published reference described the former general graph page and omitted the current ranked continuation and exact evidence lookups.",
+      "evidence": "The command replays in ranked_audit_replay compare current, revised, absent, and isolated guides against the same graph fixtures.",
+      "why_instruction": "The existing command contract accepts bounded JSON operations. The reference supplies the exact fields learners\u2019 agents need to call that existing protocol.",
+      "alternative": "The no-guide comparison guessed unavailable operations. The knowledge guide alone passed all cases, so the notes guide links to its ranked-audit section.",
+      "native_learning_acceptance": {
+        "basis": "ranked-audit-reference",
+        "manifest_sha256": "7ccf7c961c320ebd72ce16b0edc9a5373c33045796edbe48b5274aa9a8f54da0",
+        "replay_sha256": "acf65913fb19961dbf9901fdc7ce0a195b32a29f67ea066eb58c6342af476feb"
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/instruction-surfaces.json": {
+          "before_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032",
+          "after_sha256": "5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "1e26afdea2be4478755c0502414538043d63a12497d387a732ab11abbbbef186",
+          "after_sha256": "1e26afdea2be4478755c0502414538043d63a12497d387a732ab11abbbbef186"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "fb1bd502cb4792a55c8fe36d7515dde22cfed7b3416b2b79823add675a46df39",
+          "after_sha256": "fb1bd502cb4792a55c8fe36d7515dde22cfed7b3416b2b79823add675a46df39"
+        },
+        "integrations/hermes-native-learning/PUBLIC-FILES.json": {
+          "before_sha256": "587d206f1f1e022ff9bbb0bf040ec8579a104366dc697921f972d4cba43e1185",
+          "after_sha256": "7ccf7c961c320ebd72ce16b0edc9a5373c33045796edbe48b5274aa9a8f54da0"
+        },
+        "integrations/hermes-native-learning/docs/KNOWLEDGE.md": {
+          "before_sha256": "5f74d691b35296a8567a91474c1606610bf1b40db041e1abf96d845910e81bbc",
+          "after_sha256": "a05fea506fa296aa80e0fe7e5dacd5acfedae9813f8e94cbe961ffa3ff5d0eb8"
+        },
+        "integrations/hermes-native-learning/docs/MATERIALS-JOBS.md": {
+          "before_sha256": "7ec0310ef36c641f6ad3ef70eb9ea2fbbadc7070de538e234269b782e1dd97c4",
+          "after_sha256": "d687aa5578c4bb6c02262bc9abc65524b382579a6c278d1b039461b3abd94ad4"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "034e7dce3bced67a50e91fd24c5c33fe0b280d894efb87f05cbd458b6a808373",
+          "after_sha256": "62becc96acc34235aa35862e57c1d1cc55c90563e0461e1eaf6eb52431d22f3b"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/instruction-surfaces.json",
+          "disposition": "unchanged",
+          "reason": "Keep the conditional teaching reference aligned with the existing command protocol."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Keep the conditional teaching reference aligned with the existing command protocol."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Keep the conditional teaching reference aligned with the existing command protocol."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "Keep the conditional teaching reference aligned with the existing command protocol."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "Keep the conditional teaching reference aligned with the existing command protocol."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Correct two conditional guides to describe the existing ranked graph protocol.",
+      "authority": "After comparing the guides, the user asked to publish the tested ranked guidance and notes pointer.",
+      "checks": "Five initial guide comparisons and one run with the exact release pair. Replays verified the resulting commands with the published graph implementation on disposable lessons.",
+      "outcome_review": {
+        "expected": "The guide enables valid ranked pagination, exact candidate lookup, and revision-bound merges.",
+        "observed": "The published guides passed two cases. The revised knowledge guide and the exact release pair each passed all four.",
+        "evidence": "evals/results/native-learning-ranked-audit-guides-20261116.json ranked_audit_replay",
+        "limitations": "One fresh run per treatment in Codex. Tests cover command selection and replay against disposable state."
+      }
+    }
+  ]
+}
