@@ -9,6 +9,9 @@ import { answeredRecord } from './answered-record.mjs';
 import { createRichScope } from './rich-scope.mjs';
 import { planDiagram } from './lesson-prose.mjs';
 import { lessonDraftKey } from './lesson-identity.mjs';
+import { drawingPad } from './drawing-client.mjs';
+import { validDrawing } from '../drawing.mjs';
+import { mountCodingEditor } from './coding-client.mjs';
 
 export const INLINE_PREFIX = 'lh.inline ';
 
@@ -37,8 +40,9 @@ export function mountInline(root, initialView, options = {}) {
   const rich=createRichScope(options.renderRich);
   let destroyed=false;
   let view = initialView;
-  let state = { selection: emptyDockSelection(), text: '', other: '', thinking: '', readingThinking: '',
-    confidenceIndex: DEFAULT_CONFIDENCE_INDEX, open: view.question?.open ?? true, pending: false };
+  let state = { selection: emptyDockSelection(), text: view.question?.coding?.starterCode??'', other: '', thinking: '', readingThinking: '',
+    confidenceIndex: DEFAULT_CONFIDENCE_INDEX, open: view.question?.open ?? true, pending: false, drawing: [] };
+  let drawingHistory = [], codingReceipt;
   const draftKey = () => lessonDraftKey(view);
   function setStatus(message, error = false) {
     const status = root.querySelector('[data-status]');
@@ -47,7 +51,8 @@ export function mountInline(root, initialView, options = {}) {
   function save() {
     const snapshot = { key: draftKey(), selected: [...state.selection.selected], otherSelected: state.selection.otherSelected,
       dontKnow: state.selection.dontKnow, text: state.text, other: state.other, thinking: state.thinking,
-      readingThinking: state.readingThinking, confidenceIndex: state.confidenceIndex, open: state.open, pending: state.pending };
+      readingThinking: state.readingThinking, confidenceIndex: state.confidenceIndex, open: state.open, pending: state.pending,
+      ...(state.drawing.length ? {drawing:state.drawing} : {}) };
     if (!options.drafts && typeof win.openai?.setWidgetState !== 'function') return;
     const payload = { modelContent: null, privateContent: { lhInlineDraft: snapshot } };
     if (new TextEncoder().encode(JSON.stringify(payload)).length > 16 * 1024) {
@@ -67,7 +72,7 @@ export function mountInline(root, initialView, options = {}) {
       text: typeof s.text === 'string' ? s.text : '', other: typeof s.other === 'string' ? s.other : '',
       thinking: typeof s.thinking === 'string' ? s.thinking : '', readingThinking: typeof s.readingThinking === 'string' ? s.readingThinking : '',
       confidenceIndex: Number.isInteger(s.confidenceIndex) && s.confidenceIndex >= 0 && s.confidenceIndex < CONFIDENCE_STOPS.length ? s.confidenceIndex : DEFAULT_CONFIDENCE_INDEX,
-      open: typeof s.open === 'boolean' ? s.open : state.open, pending: false };
+      open: typeof s.open === 'boolean' ? s.open : state.open, pending: false, drawing:validDrawing(s.drawing)?s.drawing:[] };
   }
   let draftLoadError = false;
   try { restore(options.drafts ? options.drafts.read(draftKey()) : win.openai?.widgetState); }
@@ -99,7 +104,7 @@ export function mountInline(root, initialView, options = {}) {
   }
   function canSubmit() {
     const q = view.question;
-    return q && !state.pending && (q.mode === 'text' ? state.text.trim().length > 0
+    return q && !state.pending && (!q.coding||new TextEncoder().encode(state.text).length<=8192) && (q.mode === 'text' ? state.text.trim().length > 0
       : state.selection.dontKnow || state.selection.selected.size > 0 || (state.selection.otherSelected && state.other.trim().length > 0));
   }
   function renderLessonPanels() {
@@ -138,7 +143,11 @@ export function mountInline(root, initialView, options = {}) {
   function answerRequest() {
     const q = view.question;
     const request = {};
-    if (q.mode === 'text') request.text = state.text;
+    if (q.mode === 'text') {
+      request.text = state.text;
+      if(q.coding&&state.thinking.trim())request.thinking=state.thinking;
+      if(q.coding&&codingReceipt)request.codingRunId=codingReceipt.runId;
+    }
     else {
       request.dontKnow = state.selection.dontKnow;
       request.values = [...state.selection.selected].map(i => q.options[i].value);
@@ -147,6 +156,7 @@ export function mountInline(root, initialView, options = {}) {
       if (q.kind === 'quiz' && !state.selection.dontKnow) request.confidence = CONFIDENCE_STOPS[state.confidenceIndex];
     }
     if (state.readingThinking.trim()) request.readingThinking = state.readingThinking;
+    if (state.drawing.length) request.drawing = state.drawing;
     return request;
   }
   async function deliver(action) {
@@ -156,7 +166,7 @@ export function mountInline(root, initialView, options = {}) {
         applyView(ack.view); setStatus(ack.loaded ? 'Saved lesson reopened.' : action.type === 'approve' ? 'Plan approval saved.' : 'Answer saved.'); return;
       }
       setStatus(ack?.delivered
-        ? (options.workbench ? 'Delivered to the host. Refresh saved lesson after the teacher responds.' : 'Delivered to the host. Waiting for the saved lesson response.')
+        ? (options.appPresentation ? 'Answer sent. Waiting for the lesson to continue.' : 'Delivered to the host. Waiting for the saved lesson response.')
         : 'Host action requested. Waiting for the saved lesson response.');
     } catch (error) {
       state.pending = false; save(); updateSubmit(); setStatus(error.message, true);
@@ -185,10 +195,14 @@ export function mountInline(root, initialView, options = {}) {
   function render() {
     rich.clear();
     root.replaceChildren();
-    renderLessonPanels();
+    if(!options.appPresentation)renderLessonPanels();
     const q = view.question;
     present();
-    if(q&&view.answers.length){const previous=node('details',null,{'data-previous-answer':''});previous.append(node('summary','Previous answer'),answeredRecord(doc,view.answers.at(-1),{externalRichExplanation:options.richProse,renderProse:rich.render}));root.append(previous);}
+    const previous=q&&view.answers.length?node('details',null,{'data-previous-answer':''}):null;
+    if(previous){
+      previous.append(node('summary','Previous answer'),answeredRecord(doc,view.answers.at(-1),{externalRichExplanation:options.richProse,renderProse:rich.render}));
+      if(!options.appPresentation)root.append(previous);
+    }
     if (!q) {
       if(options.exploration){options.exploration.hidden=false;root.append(options.exploration);}
       const last = view.answers.at(-1);
@@ -205,8 +219,10 @@ export function mountInline(root, initialView, options = {}) {
       } else {
         const heading = node('div', null, { class: 'lh-heading' });
         const label = q.questionType === 'predict' ? 'Prediction' : q.tool === 'probe' ? 'Probe' : q.tool === 'recall' ? 'Recall' : q.kind === 'ask' ? 'Question' : 'Check';
-        heading.append(node('span', label, { class: 'lh-kind' }), button('Close', () => { state.open = false; save(); render(); }, { class: 'lh-close', 'data-close': '' }));
-        dock.append(heading);
+        if(!options.appPresentation||q.questionType==='predict')heading.append(node('span', label, { class: 'lh-kind' }));
+        const close=button(options.appPresentation?'Hide question':'Close', () => { state.open = false; save(); render(); }, { class: 'lh-close', 'data-close': '' });
+        if(!options.appPresentation)heading.append(close);
+        if(heading.childElementCount)dock.append(heading);
         const response = lessonResponseArea(dock, options);
         if(!options.richProse)response.append(prose('div', q.question, {class:'lh-question-text'}));
         if (q.context&&!options.richProse) response.append(prose('div', q.context));
@@ -243,22 +259,39 @@ export function mountInline(root, initialView, options = {}) {
             confidence.append(node('span', 'Confidence'), track, value); response.append(confidence);
           }
         }
-        response.append(q.mode === 'text' ? field('Your answer', 'text', 'Type your answer.') : field('Your thinking', 'thinking', 'Why this answer? Whatever comes to mind.'));
+        if(q.coding) {
+          mountCodingEditor(response,{spec:q.coding,value:state.text,disabled:state.pending,observations:codingReceipt?.observations,
+            onChange:code=>{state.text=code;save();updateSubmit();},onReceipt:receipt=>{codingReceipt=receipt;},
+            onRun:options.runCoding?code=>options.runCoding(q.toolCallId,code):undefined});
+          response.append(field('Your thinking','thinking','Explain the reasoning behind your code.'));
+        } else response.append(q.mode === 'text' ? field('Your answer', 'text', 'Type your answer.') : field('Your thinking', 'thinking', 'Why this answer? Whatever comes to mind.'));
+        if(options.allowDrawing!==false)response.append(drawingPad(doc,{value:state.drawing,disabled:state.pending,history:drawingHistory,
+          onChange:drawing=>{state.drawing=drawing;save();}}));
         const footer = node('div', null, { class: 'lh-footer' });
-        footer.append(node('span', 'Enter submits · Shift+Enter newline', { class: 'lh-secondary' }), button('Submit answer', () => void submit(), { class: 'lh-submit', 'data-submit': '' }));
+        if(!q.coding)footer.append(node('span', 'Enter submits · Shift+Enter newline', { class: 'lh-secondary' }));
+        footer.append(button(q.coding?'Submit code':'Submit answer', () => void submit(), { class: 'lh-submit', 'data-submit': '' }));
         response.append(footer);
+        if(options.appPresentation)response.append(close);
       }
       renderPlan();
     }
     root.append(node('p', state.pending ? 'Waiting for the saved lesson response.' : '', { 'data-status': '', 'aria-live': 'polite', role: 'status' }));
-    root.append(button('Resume saved lesson', () => { if(options.onResume){void options.onResume();return;} state.pending = true; save(); void deliver({ type: 'resume', chatId: view.chatId }); }, { class: 'lh-resume', 'data-resume': '' }));
+    if(options.appPresentation){
+      if(previous)root.append(previous);
+      renderLessonPanels();
+    }else root.append(button('Resume saved lesson', () => { if(options.onResume){void options.onResume();return;} state.pending = true; save(); void deliver({ type: 'resume', chatId: view.chatId }); }, { class: 'lh-resume', 'data-resume': '' }));
     updateSubmit();
   }
   function applyView(next) {
     if (next.chatId !== view.chatId) throw new Error('The saved response belongs to a different lesson.');
     const same = next.question?.toolCallId === view.question?.toolCallId;
+    if(!same||next.revision!==view.revision)codingReceipt=undefined;
     view = next;
-    if (!same) state = { selection: emptyDockSelection(), text: '', other: '', thinking: '', readingThinking: '', confidenceIndex: DEFAULT_CONFIDENCE_INDEX, open: next.question?.open ?? true, pending: false };
+    if (!same) {
+      drawingHistory=[];
+      state = { selection: emptyDockSelection(), text: next.question?.coding?.starterCode??'', other: '', thinking: '', readingThinking: '', confidenceIndex: DEFAULT_CONFIDENCE_INDEX,
+        open: next.question?.open ?? true, pending: false, drawing:[] };
+    }
     else state.pending = false;
     if (!same && options.drafts) {
       // Another host may have advanced the question. Preserve the old keyed

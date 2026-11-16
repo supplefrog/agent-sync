@@ -337,18 +337,19 @@ hello world this works
         public_check = load("public_check_allowlist", REPO / "tools" / "public_check.py")
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            target = root / "fixture.txt"
+            target = root / "fixture.cjs"
             line = "generic example: C:/" + "Users/<user>/file.txt"
             target.write_text(line + "\n", encoding="utf-8")
             allowlist = root / "review.json"
             allowlist.write_text(json.dumps({"schema_version": 1, "findings": [{
-                "path": "fixture.txt", "line": 1, "rule": "windows-user-path",
+                "path": "fixture.cjs", "line": 1, "rule": "windows-user-path",
                 "line_sha256": __import__("hashlib").sha256(line.encode()).hexdigest(),
                 "disposition": "generic placeholder",
             }]}), encoding="utf-8")
 
             reviewed = public_check.reviewed_findings(root, allowlist)
-            self.assertEqual(reviewed, {(Path("fixture.txt"), 1, "windows-user-path")})
+            self.assertEqual(reviewed, {(Path("fixture.cjs"), 1, "windows-user-path")})
+            self.assertEqual(set(public_check.scan(root)), reviewed)
             target.write_text("changed: C:/" + "Users/<user>/file.txt\n", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "stale public-safety allowlist row"):
                 public_check.reviewed_findings(root, allowlist)

@@ -12,6 +12,7 @@ import { LessonKnowledge } from '../../knowledge.mjs';
 import { LessonJobs, jobArtifactDescriptors, publishJobAssets } from '../../jobs.mjs';
 import {visualDescriptors,publishVisualAssets} from '../../visuals.mjs';
 import { publishCurrentProjection } from './current-projection.mjs';
+import { readCodingRun } from '../../coding.mjs';
 
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
@@ -21,11 +22,7 @@ function adapterFor(session) {
 }
 function viewOf(adapter, session) {
   if (session.kind !== 'practice') return inlineView(adapter, session.chatId);
-  const view = { ...adapter.practiceView(session.chatId), kind: 'practice' };
-  view.thinkingEntries = adapter.context(session.chatId).filter(message => message.role === 'custom' &&
-    message.customType === 'practice-thinking' && message.details.problemCallId === view.activeProblem?.toolCallId)
-    .map(message => ({ id: message.id, text: message.details.text }));
-  return view;
+  return { ...adapter.practiceView(session.chatId), kind: 'practice' };
 }
 export function readNativeView(session, { includeAnswerHistory = false } = {}) {
   const adapter = adapterFor(session), file = adapter.store.file(session.chatId);
@@ -61,6 +58,17 @@ export function executeNativeLearnerAction(session, action, { expectedRevision }
   if (action.type !== 'resume' && expectedRevision !== undefined) {
     requireState(Number.isSafeInteger(expectedRevision) && expectedRevision >= 0, 'invalid_revision', 'Expected revision required.');
     adapter.store = new RevisionBoundStore(session.root, session.chatId, expectedRevision);
+  }
+  const input=action.type==='answer'?action.request:(action.type==='practice-input'&&action.input?.type==='thinking'?action.input:null);
+  if(input?.codingRunId!==undefined) {
+    const active=session.kind==='practice'?adapter.practiceView(session.chatId):adapter.view(session.chatId);
+    const prompt=active.activeProblem??active.question;
+    const promptId=prompt?.toolCallId;
+    requireState(active.revision===expectedRevision&&prompt?.coding&&promptId===(action.toolCallId??input.problemCallId),
+      'stale_coding_receipt','This test run belongs to an earlier or different question.');
+    const {codingRunId,...clean}=input;
+    adapter.codingObservations=readCodingRun(session,{revision:expectedRevision,promptId,code:input.code??input.text,runId:codingRunId});
+    action=action.type==='answer'?{...action,request:clean}:{...action,input:clean};
   }
   let result;
   if (session.kind === 'practice') {

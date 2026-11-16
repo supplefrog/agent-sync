@@ -1,11 +1,11 @@
 {
   "built": "t3/app.html",
-  "bytes": 4948384,
-  "sha256": "697dce5736d917b1942a04004921180f2ba3869ef48664d9c0a9b980a754b976",
+  "bytes": 4972411,
+  "sha256": "304876412dd4e5c686b00e0c71172c1fdfac32f34af8a98880e6f02d9c3e962e",
   "esbuild": "0.28.2",
   "builder": {
     "path": "build-t3.mjs",
-    "sha256": "cf4c784e099e2ba0f758cdf3cbfe4852583d006e09ac933d3281f4ca171826fa"
+    "sha256": "020ae9b595a335439ef4533875c285fb62a6783f20a143feb7af46156c7265e2"
   },
   "style": {
     "path": "src/inline/inline-template.html",
@@ -14,6 +14,10 @@
   "codexStyle": {
     "path": "src/inline/codex-lesson.css",
     "sha256": "c298709633bb3531ed1cb5daf22abf433e8d720ac62d6017b6b0b49174105a29"
+  },
+  "flashcardsStyle": {
+    "path": "src/inline/flashcards.css",
+    "sha256": "5b2716415766f67dfc0480b3f5a8075c978ba442ef672c632a3d8c46a0f52590"
   },
   "rendererPackages": [
     {
@@ -204,11 +208,19 @@
     },
     {
       "path": "src/inline/lesson-identity.mjs",
-      "sha256": "3863c2001d9b4b2cccfe6b52c7d326a21e89bab0fa44c822c03b3c4114a85b4d"
+      "sha256": "9bf666c312f3389da130a8d5942473024f14d1f8ac0f8e3cb31bb04d8388532b"
     },
     {
-      "path": "src/inline/practice-client.mjs",
-      "sha256": "114adc92ee21d074d9663b76f6e23ce111e707cf327998cd2c0622886bcbff01"
+      "path": "src/drawing.mjs",
+      "sha256": "cc78f79abbd6fd5e07c3af8f57c941d19b5b849b1974cc92c23ef8926b320103"
+    },
+    {
+      "path": "src/inline/drawing-client.mjs",
+      "sha256": "7cf5c15ba9ce3a1395e41489eee06d8834c5b4ee0d5b57ea8c125502183075ce"
+    },
+    {
+      "path": "src/inline/coding-client.mjs",
+      "sha256": "461c7c5011c6841345e6a61c8fa30666f91351844b614ff9ac1d658f60c6ff15"
     },
     {
       "path": "src/inline/confidence-style.mjs",
@@ -216,15 +228,19 @@
     },
     {
       "path": "src/inline/answered-record.mjs",
-      "sha256": "72d4e356a333b81daa1ae7213c1a60895b44ac85cc8c5cc56039c5b885a50aa2"
+      "sha256": "8da020e8d072775ef06e09ef6ad677a9bede3a96bcbc4f92488e95347c347b45"
+    },
+    {
+      "path": "src/inline/practice-client.mjs",
+      "sha256": "016e587052c40ac191835569624ab8c43d0e6a302058d756e4bccba8c6dfbffe"
     },
     {
       "path": "src/inline/lesson-prose.mjs",
-      "sha256": "f7a362b5436f5f7c7c565147565f60aa59c2e46a612f58ee4af777b9c0321527"
+      "sha256": "96ddacf67ca8097c2be5b768ff3537ed55894c141044e613950707f59bdb32d3"
     },
     {
       "path": "src/inline/inline-client.mjs",
-      "sha256": "588c7afe1f30b91f8983d9b0255e2b5311fbc28745e57eefb691ed11e5d02fd8"
+      "sha256": "5b2898ba994e1a8b838f7f187d8dddae71fcf29ae7fb1a892010c4992a32ded8"
     },
     {
       "path": "src/vendor/runtime/demo-pure.ts",
@@ -7736,15 +7752,19 @@
     },
     {
       "path": "src/t3/rich-core.mjs",
-      "sha256": "d42344532438f2f2dc6cec788bbaff1358a766952db70d42308abd4eca20d797"
+      "sha256": "4c7aef675d23ffd75282f5e014423f92b63d7f178afcf89bee3032cc00e18cbd"
     },
     {
       "path": "src/t3/rich-fragment.mjs",
-      "sha256": "de0a7e4d6001d26fe5ef4996efd8ff8b8f03e357d22a1fa2c79dd4a0bbe7e70e"
+      "sha256": "d20dd389ab7a54a1b5df3aabc7e87ab06cf59a9e1e0410d2f0b55bda4ddc475f"
+    },
+    {
+      "path": "src/inline/flashcards-client.mjs",
+      "sha256": "2cae5bd9e3d5d2285dc2862dba9a53f21711a83a6654ee975a55aab515ee59b8"
     },
     {
       "path": "src/t3/app.mjs",
-      "sha256": "dfb4f0fb05488301873927d2b2583999e4897406b42cdbf0c7ffe7e4010a6093"
+      "sha256": "93636456c1d78eede6305e433ade5da6f4153611b3568a078461edafc2ff09af"
     }
   ],
   "hostActivation": false,

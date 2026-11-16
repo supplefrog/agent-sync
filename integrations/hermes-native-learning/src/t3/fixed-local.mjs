@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Local command authority is user admission + filesystem permissions, NOT env labels.
+import { isPublicCoding } from '../inline/lesson-identity.mjs';
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const canonical=v=>typeof v==='string'&&v.length>0&&v.length<=300&&v===v.trim()&&v!=='new';
 export function localCheck(ok,code,message) {
@@ -34,7 +35,9 @@ export function requirePublicView(view) {
   localCheck(object(view)&&Number.isSafeInteger(view.revision),'invalid_public_view','Current redacted projection required.');
   localCheck(!view.question||!['correctIndices','committedAnswer','explanation','correctAnswer'].some(k=>k in view.question),
     'commitment_exposed','Pending question contains teacher-only fields.');
-  localCheck(!view.activeProblem||Object.keys(view.activeProblem).every(k=>['toolCallId','statement'].includes(k)),
+  localCheck(!view.activeProblem||Object.keys(view.activeProblem).every(k=>['toolCallId','statement','coding'].includes(k)),
     'commitment_exposed','Active practice problem contains teacher-only fields.');
+  for(const prompt of [view.question,view.activeProblem])localCheck(prompt?.coding===undefined||isPublicCoding(prompt.coding),
+    'commitment_exposed','Active coding exercise contains teacher-only fields.');
   return view;
 }

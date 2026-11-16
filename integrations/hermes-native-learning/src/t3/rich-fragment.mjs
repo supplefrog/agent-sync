@@ -8,4 +8,6 @@ import {createMathPlugin} from '@streamdown/math';
 import {createMermaidPlugin} from '@streamdown/mermaid';
 import remarkBreaks from 'remark-breaks';
 import {createRichRenderer} from './rich-core.mjs';
-export const {mount:mountRichFragment}=createRichRenderer({React,createRoot,Streamdown,cjk,createMathPlugin,createMermaidPlugin,remarkBreaks});
+export const createHostRichRenderer=renderNotation=>createRichRenderer({React,createRoot,Streamdown,cjk,createMathPlugin,
+  createMermaidPlugin,remarkBreaks,renderNotation});
+export const {mount:mountRichFragment}=createHostRichRenderer();

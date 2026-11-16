@@ -1,0 +1,473 @@
+{
+  "schema_version": 1,
+  "base": "d4421fb246fc0cecd389ac5b8efa52fb4613fe9c",
+  "selected_paths": [
+    "docs/requirement-status.md",
+    "docs/system-requirements.md",
+    "docs/worktree-publication.md",
+    "evals/results/native-learning-lesson-controls-20261116.json",
+    "evidence/public-safety-allowlist.json",
+    "integrations/hermes-native-learning/NOTICE.md",
+    "integrations/hermes-native-learning/PUBLIC-FILES.json",
+    "integrations/hermes-native-learning/REFERENCE-SOURCES.json",
+    "integrations/hermes-native-learning/build-coding-runtime.mjs",
+    "integrations/hermes-native-learning/build-t3.mjs",
+    "integrations/hermes-native-learning/desktop/plugin.js",
+    "integrations/hermes-native-learning/docs/CODING.md",
+    "integrations/hermes-native-learning/docs/FLASHCARDS.md",
+    "integrations/hermes-native-learning/docs/LEARNER-FEATURES.md",
+    "integrations/hermes-native-learning/docs/NATIVE-VISUALS.md",
+    "integrations/hermes-native-learning/licenses/FSRS-LICENSE.txt",
+    "integrations/hermes-native-learning/licenses/QuickJS-LICENSE.txt",
+    "integrations/hermes-native-learning/notation-runtime/package-lock.json",
+    "integrations/hermes-native-learning/notation-runtime/package.json",
+    "integrations/hermes-native-learning/src/adapter.mjs",
+    "integrations/hermes-native-learning/src/coding-worker.mjs",
+    "integrations/hermes-native-learning/src/coding.mjs",
+    "integrations/hermes-native-learning/src/commands.mjs",
+    "integrations/hermes-native-learning/src/drawing-image.mjs",
+    "integrations/hermes-native-learning/src/drawing.mjs",
+    "integrations/hermes-native-learning/src/flashcards.mjs",
+    "integrations/hermes-native-learning/src/graph-audit.mjs",
+    "integrations/hermes-native-learning/src/imports.mjs",
+    "integrations/hermes-native-learning/src/inline/answered-record.mjs",
+    "integrations/hermes-native-learning/src/inline/build-inline.mjs",
+    "integrations/hermes-native-learning/src/inline/coding-client.mjs",
+    "integrations/hermes-native-learning/src/inline/drawing-client.mjs",
+    "integrations/hermes-native-learning/src/inline/flashcards-client.mjs",
+    "integrations/hermes-native-learning/src/inline/flashcards.css",
+    "integrations/hermes-native-learning/src/inline/hermes-native-port.mjs",
+    "integrations/hermes-native-learning/src/inline/host/native-session.mjs",
+    "integrations/hermes-native-learning/src/inline/inline-client.mjs",
+    "integrations/hermes-native-learning/src/inline/lesson-identity.mjs",
+    "integrations/hermes-native-learning/src/inline/lesson-prose.mjs",
+    "integrations/hermes-native-learning/src/inline/practice-client.mjs",
+    "integrations/hermes-native-learning/src/knowledge.mjs",
+    "integrations/hermes-native-learning/src/notation-worker.mjs",
+    "integrations/hermes-native-learning/src/notation.mjs",
+    "integrations/hermes-native-learning/src/practice-history.mjs",
+    "integrations/hermes-native-learning/src/practice-state.mjs",
+    "integrations/hermes-native-learning/src/t3/app.mjs",
+    "integrations/hermes-native-learning/src/t3/boundary.mjs",
+    "integrations/hermes-native-learning/src/t3/fixed-local.mjs",
+    "integrations/hermes-native-learning/src/t3/rich-core.mjs",
+    "integrations/hermes-native-learning/src/t3/rich-fragment.mjs",
+    "integrations/hermes-native-learning/src/t3/server.mjs",
+    "integrations/hermes-native-learning/src/vendor/coding-runtime.cjs",
+    "integrations/hermes-native-learning/src/vendor/notation/appearance.ts",
+    "integrations/hermes-native-learning/src/vendor/notation/contract.ts",
+    "integrations/hermes-native-learning/src/vendor/notation/svg.ts",
+    "integrations/hermes-native-learning/src/vendor/runtime/fsrs.cjs",
+    "integrations/hermes-native-learning/src/vendor/runtime/proposition-candidates.ts",
+    "integrations/hermes-native-learning/t3/BUILD.json",
+    "integrations/hermes-native-learning/t3/app.html",
+    "integrations/hermes-native-learning/test/coding.dom.test.mjs",
+    "integrations/hermes-native-learning/test/coding.integration.test.mjs",
+    "integrations/hermes-native-learning/test/coding.test.mjs",
+    "integrations/hermes-native-learning/test/drawing.integration.test.mjs",
+    "integrations/hermes-native-learning/test/flashcards.dom.test.mjs",
+    "integrations/hermes-native-learning/test/flashcards.test.mjs",
+    "integrations/hermes-native-learning/test/graph-audit.test.mjs",
+    "integrations/hermes-native-learning/test/notation.integration.test.mjs",
+    "tests/test_integration_release.py",
+    "tests/test_tools.py",
+    "tools/instruction_changes.py",
+    "tools/public_check.py",
+    "tools/worktree_sync.py"
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518",
+          "after_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa",
+          "after_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "97b86d0a661ca62b86de87e7ea08a1dc688f21a7a71d16edb4d742180417caf8",
+          "after_sha256": "1e26afdea2be4478755c0502414538043d63a12497d387a732ab11abbbbef186"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "1e90c08e3b10027c4c5ac9983fb8b0b0b34c1f9a3d10eea5f9c94b546adc38e8",
+          "after_sha256": "fb1bd502cb4792a55c8fe36d7515dde22cfed7b3416b2b79823add675a46df39"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "afaae716b7d71d45c9fbfce13630a368023741546a75d84c5d0e343090d2eff6",
+          "after_sha256": "6b8f2b777d21a58142103e08321b3d13a9b0c04640a0d6ecfafee64b8ae8a232"
+        },
+        "evidence/public-safety-allowlist.json": {
+          "before_sha256": "29425b15a3bb18efe19895cedcf10bffbfe87a797d4c46a57b8b737a4102206d",
+          "after_sha256": "6ef0ed8f151610cb29a8fea1d7fde67757532003b22ba0c47e76cc67112728d2"
+        },
+        "integrations/hermes-native-learning/NOTICE.md": {
+          "before_sha256": "9cdd15603cb632dd525b2cd0ca6e37cad9403f6a94c184df6741d79576e182fd",
+          "after_sha256": "b997b4c38c6966798b385c6f36ec6b586074520265b23e9c5ef5be350fe95d43"
+        },
+        "integrations/hermes-native-learning/PUBLIC-FILES.json": {
+          "before_sha256": "3b90ba9935de8a27071ba7dec19cc09bc77360e532ff7008fca23f9faba67c46",
+          "after_sha256": "587d206f1f1e022ff9bbb0bf040ec8579a104366dc697921f972d4cba43e1185"
+        },
+        "integrations/hermes-native-learning/REFERENCE-SOURCES.json": {
+          "before_sha256": "f31a0bb37967de9f1d0b57206228543155e18ed5d04613c8630c70389e8053a4",
+          "after_sha256": "3e24fc69c6cfb35878a1b903763e0cdce234ce76a84dc7f11f6878d91f3d5525"
+        },
+        "integrations/hermes-native-learning/build-coding-runtime.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "b1e79834d40a18416b6745e95be0b9a8d702c89eb8352b1522f0f5e963420b0e"
+        },
+        "integrations/hermes-native-learning/build-t3.mjs": {
+          "before_sha256": "cf4c784e099e2ba0f758cdf3cbfe4852583d006e09ac933d3281f4ca171826fa",
+          "after_sha256": "020ae9b595a335439ef4533875c285fb62a6783f20a143feb7af46156c7265e2"
+        },
+        "integrations/hermes-native-learning/desktop/plugin.js": {
+          "before_sha256": "fec80a2b61be3f78ec88cb8608eaf480a89bc7ac5195132187e08c74874fff09",
+          "after_sha256": "6253d3f17ebbe26d62f04f1f45874d960d3ae660af0d947d7f1fd6da6bfaebc1"
+        },
+        "integrations/hermes-native-learning/docs/CODING.md": {
+          "before_sha256": "absent",
+          "after_sha256": "3d05d343be1face09d3bd91f7716263427038c9fc31ec2622b8d3c2043790e5e"
+        },
+        "integrations/hermes-native-learning/docs/FLASHCARDS.md": {
+          "before_sha256": "absent",
+          "after_sha256": "ceb1334417dbb78287130a66cc56de80a5337ddb038136995a17ed6d9d2732a5"
+        },
+        "integrations/hermes-native-learning/docs/LEARNER-FEATURES.md": {
+          "before_sha256": "absent",
+          "after_sha256": "37321ec6faa762e758f11e90380aa1ff358fa7fa6eeb2a148d5d3539c16f5284"
+        },
+        "integrations/hermes-native-learning/docs/NATIVE-VISUALS.md": {
+          "before_sha256": "313f53b5442157e2ef521e63acbb7503e91db4651f7bbb130a2416e603d7e7ab",
+          "after_sha256": "35cc15e454068e81d88cd3277a68bf075bd53b717267eea4d30346dccbda395b"
+        },
+        "integrations/hermes-native-learning/licenses/FSRS-LICENSE.txt": {
+          "before_sha256": "absent",
+          "after_sha256": "0c54254b8a636de80837694005078375e24024e38d111fe76dff2532bbaacda8"
+        },
+        "integrations/hermes-native-learning/licenses/QuickJS-LICENSE.txt": {
+          "before_sha256": "absent",
+          "after_sha256": "a01561a16d3f9698640e5f92f760959aa19f64ec69ae75c572b90111aa0a96c1"
+        },
+        "integrations/hermes-native-learning/notation-runtime/package-lock.json": {
+          "before_sha256": "absent",
+          "after_sha256": "068f6bb951f7ade47fb5dd103d9134ce3c909418350188b1a104ac88265736c2"
+        },
+        "integrations/hermes-native-learning/notation-runtime/package.json": {
+          "before_sha256": "absent",
+          "after_sha256": "17c41b66af957fd963f0c7b1feba9a598a1aa8de345e985260962fadc73b2017"
+        },
+        "integrations/hermes-native-learning/src/adapter.mjs": {
+          "before_sha256": "7fad5f254ca7de70ae21b2a2ac0cb117bb0749976c9670faa42d748e758955b1",
+          "after_sha256": "2e3508a54495fea629d10483635a6f47ac0f9b77f144ca7d95dde42b5dfb05ef"
+        },
+        "integrations/hermes-native-learning/src/coding-worker.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "a48b3f321d6998a5ad5543f635e369f8fb658856a027766285c7de5a4dc931fa"
+        },
+        "integrations/hermes-native-learning/src/coding.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "118227bb76f2ad7b123ab0dd51752532a9a4e3c627d8ba32daebcccb541ad89b"
+        },
+        "integrations/hermes-native-learning/src/commands.mjs": {
+          "before_sha256": "469a663d6d84bfa2c738765317a84f04d7d70f5b1e4190272011ad047fbb0e60",
+          "after_sha256": "81b4d123bb5704266123251b4c03b89a9daaa1c02392790fdcd6ddf99dcbd12e"
+        },
+        "integrations/hermes-native-learning/src/drawing-image.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "1117bcb343a5c50a1eb10d951316e3c28f89a843b1d8a4c4fa3340888818e0bc"
+        },
+        "integrations/hermes-native-learning/src/drawing.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "cc78f79abbd6fd5e07c3af8f57c941d19b5b849b1974cc92c23ef8926b320103"
+        },
+        "integrations/hermes-native-learning/src/flashcards.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "32fa7656c54ffa2a86fe31fcadba2b9b1af6e3473e34d001fbf01af206572ce0"
+        },
+        "integrations/hermes-native-learning/src/graph-audit.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "e3b06638f483bf509eb8d0c25780dac6f2e6650a7e186d5e34cd0a7c49a2f7f7"
+        },
+        "integrations/hermes-native-learning/src/imports.mjs": {
+          "before_sha256": "7ef3b56bfbb961b55f53c52eda720f3c06bf77cbc94aaf07db6cc00922803688",
+          "after_sha256": "b254ffc0113d185da622c95bd4fb898d77cc4c18e8bf5e4beeb22f68ccc52048"
+        },
+        "integrations/hermes-native-learning/src/inline/answered-record.mjs": {
+          "before_sha256": "72d4e356a333b81daa1ae7213c1a60895b44ac85cc8c5cc56039c5b885a50aa2",
+          "after_sha256": "8da020e8d072775ef06e09ef6ad677a9bede3a96bcbc4f92488e95347c347b45"
+        },
+        "integrations/hermes-native-learning/src/inline/build-inline.mjs": {
+          "before_sha256": "214e0cb599debc58e8879e3bcf0acac227051dc81e134178feac63508ede27c5",
+          "after_sha256": "5bd47f39f435b6b5f71f2c91cc98672bfa882d71bacc007a1c05bff358331afa"
+        },
+        "integrations/hermes-native-learning/src/inline/coding-client.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "461c7c5011c6841345e6a61c8fa30666f91351844b614ff9ac1d658f60c6ff15"
+        },
+        "integrations/hermes-native-learning/src/inline/drawing-client.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "7cf5c15ba9ce3a1395e41489eee06d8834c5b4ee0d5b57ea8c125502183075ce"
+        },
+        "integrations/hermes-native-learning/src/inline/flashcards-client.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "2cae5bd9e3d5d2285dc2862dba9a53f21711a83a6654ee975a55aab515ee59b8"
+        },
+        "integrations/hermes-native-learning/src/inline/flashcards.css": {
+          "before_sha256": "absent",
+          "after_sha256": "5b2716415766f67dfc0480b3f5a8075c978ba442ef672c632a3d8c46a0f52590"
+        },
+        "integrations/hermes-native-learning/src/inline/hermes-native-port.mjs": {
+          "before_sha256": "bedbba9e282f46fe2509bf930438157247befba32dec6ef7f0b3c77b63e7d449",
+          "after_sha256": "5429ffcecf27032cac678913b21c28f8c1ca3d0afeb7a69f6d9d9c10db94f30d"
+        },
+        "integrations/hermes-native-learning/src/inline/host/native-session.mjs": {
+          "before_sha256": "1582204529fecd5e975c8fc8ac4ebf14966015304a883d8b6965be0084a1a7e8",
+          "after_sha256": "bc3847fd70865f7a50ece1e267cedb3dcb2fc73a054d9b9c88e68e446a4f30e2"
+        },
+        "integrations/hermes-native-learning/src/inline/inline-client.mjs": {
+          "before_sha256": "588c7afe1f30b91f8983d9b0255e2b5311fbc28745e57eefb691ed11e5d02fd8",
+          "after_sha256": "5b2898ba994e1a8b838f7f187d8dddae71fcf29ae7fb1a892010c4992a32ded8"
+        },
+        "integrations/hermes-native-learning/src/inline/lesson-identity.mjs": {
+          "before_sha256": "3863c2001d9b4b2cccfe6b52c7d326a21e89bab0fa44c822c03b3c4114a85b4d",
+          "after_sha256": "9bf666c312f3389da130a8d5942473024f14d1f8ac0f8e3cb31bb04d8388532b"
+        },
+        "integrations/hermes-native-learning/src/inline/lesson-prose.mjs": {
+          "before_sha256": "f7a362b5436f5f7c7c565147565f60aa59c2e46a612f58ee4af777b9c0321527",
+          "after_sha256": "96ddacf67ca8097c2be5b768ff3537ed55894c141044e613950707f59bdb32d3"
+        },
+        "integrations/hermes-native-learning/src/inline/practice-client.mjs": {
+          "before_sha256": "114adc92ee21d074d9663b76f6e23ce111e707cf327998cd2c0622886bcbff01",
+          "after_sha256": "016e587052c40ac191835569624ab8c43d0e6a302058d756e4bccba8c6dfbffe"
+        },
+        "integrations/hermes-native-learning/src/knowledge.mjs": {
+          "before_sha256": "e4c30f272d269d6f7ec1cbbc3ef51e2cf7cb90706b1e72a6cf6fb182bde44998",
+          "after_sha256": "0d951a9e1b9b830edc57c117cc0d86e9d43db80d7679040a8f77c626586a37df"
+        },
+        "integrations/hermes-native-learning/src/notation-worker.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "88f8f4c6ad941790f9cf15c9d940d3fd43e25ac99d493556d0b4159e267360fa"
+        },
+        "integrations/hermes-native-learning/src/notation.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "3e0241b225ae85585038ac909bf1df2b20da869f5ed973fcc91a778e8d31467f"
+        },
+        "integrations/hermes-native-learning/src/practice-history.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "9d6d1e9719a4e67c68e126a1ea149888fce35b87753e6592475a02c366de2f31"
+        },
+        "integrations/hermes-native-learning/src/practice-state.mjs": {
+          "before_sha256": "056ca6e928a76b720bb95f0f640dcd2cacb796d4c917f27b1242595dda398966",
+          "after_sha256": "e55df13ab46250bd0877f41fa9df56c021a972f12255a75347508b5114a6d9ff"
+        },
+        "integrations/hermes-native-learning/src/t3/app.mjs": {
+          "before_sha256": "dfb4f0fb05488301873927d2b2583999e4897406b42cdbf0c7ffe7e4010a6093",
+          "after_sha256": "93636456c1d78eede6305e433ade5da6f4153611b3568a078461edafc2ff09af"
+        },
+        "integrations/hermes-native-learning/src/t3/boundary.mjs": {
+          "before_sha256": "b4109b0ea2a148a4da40332f5cd5dda635b697269c258202223de97ba844a3ba",
+          "after_sha256": "99bd4111339bee665e8ffe61dfc86e4b617c5d2f6f53a1da5ca089d5d4297a32"
+        },
+        "integrations/hermes-native-learning/src/t3/fixed-local.mjs": {
+          "before_sha256": "43c5bf269810ea76caafc1c23b752ab2a4043307ab0bccbaf35a0de3bc8884d0",
+          "after_sha256": "afaa25e8640f6780053ebbfdcc6a1e9a5bf85601f0b8fde22047bbfd84c18b10"
+        },
+        "integrations/hermes-native-learning/src/t3/rich-core.mjs": {
+          "before_sha256": "d42344532438f2f2dc6cec788bbaff1358a766952db70d42308abd4eca20d797",
+          "after_sha256": "4c7aef675d23ffd75282f5e014423f92b63d7f178afcf89bee3032cc00e18cbd"
+        },
+        "integrations/hermes-native-learning/src/t3/rich-fragment.mjs": {
+          "before_sha256": "de0a7e4d6001d26fe5ef4996efd8ff8b8f03e357d22a1fa2c79dd4a0bbe7e70e",
+          "after_sha256": "d20dd389ab7a54a1b5df3aabc7e87ab06cf59a9e1e0410d2f0b55bda4ddc475f"
+        },
+        "integrations/hermes-native-learning/src/t3/server.mjs": {
+          "before_sha256": "7669ae9b547329188f077fb1eb031fd906fb9a43c11210f36e47b7f8d998c3fd",
+          "after_sha256": "c379a35d5e949cab69be3144d0c46b43a955aef8d23507d555004ebcb146ecbe"
+        },
+        "integrations/hermes-native-learning/src/vendor/coding-runtime.cjs": {
+          "before_sha256": "absent",
+          "after_sha256": "1bbb91829b033956c0472b80f4fa8062f37163c3bb4e1e69de9371eaadd52cd8"
+        },
+        "integrations/hermes-native-learning/src/vendor/notation/appearance.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "fe3be4958d42eb638024f18d70df519a0b49331854fb4073e3bc8caea2c1d548"
+        },
+        "integrations/hermes-native-learning/src/vendor/notation/contract.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "82749a48bb591970aa9710e0b8b72e1ce986aaea38659d66eb89b07a9a50c875"
+        },
+        "integrations/hermes-native-learning/src/vendor/notation/svg.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "926595bd0c67bffb70deb3d1ced1950e4c128bcc66e777388d2462c4a5390cd2"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/fsrs.cjs": {
+          "before_sha256": "absent",
+          "after_sha256": "e9715bf7bfff4c1a4830dffd0f7fbe242b44d1441e74eec0fd583487c9082280"
+        },
+        "integrations/hermes-native-learning/src/vendor/runtime/proposition-candidates.ts": {
+          "before_sha256": "absent",
+          "after_sha256": "641943d9d3229e2df40a2f868dba42e97cc797a765df58be0cdc732c1fbb26de"
+        },
+        "integrations/hermes-native-learning/t3/BUILD.json": {
+          "before_sha256": "602173ddc0eee6171604df608bb2a6837da5228ac2dce26b745813e3e4a69c25",
+          "after_sha256": "8d799eed0e385fce5c67e3a1d593da68f5987cd42dbf102f7144ef76c4f2d76b"
+        },
+        "integrations/hermes-native-learning/t3/app.html": {
+          "before_sha256": "697dce5736d917b1942a04004921180f2ba3869ef48664d9c0a9b980a754b976",
+          "after_sha256": "304876412dd4e5c686b00e0c71172c1fdfac32f34af8a98880e6f02d9c3e962e"
+        },
+        "integrations/hermes-native-learning/test/coding.dom.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "533859b8d5d93feda995784fe857f61cb0827f1f8ea6fc370cfe8c7ad6d94ab7"
+        },
+        "integrations/hermes-native-learning/test/coding.integration.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "b5198795258a072a1c291210ffc6b4790eeb2daf791943b861ca37e97b941d71"
+        },
+        "integrations/hermes-native-learning/test/coding.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "8ccd4b15e9914e87df506311bc3292390e37cc79ab0b252a3b1cc1bd22b915f2"
+        },
+        "integrations/hermes-native-learning/test/drawing.integration.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "d078966e1494966ebd242941a036e75b7f1e330d165757a14275eb6f79f3537b"
+        },
+        "integrations/hermes-native-learning/test/flashcards.dom.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "3f1cbbccda7f47c683246ebdb250c0d3a489c986cc95353e2a76340319afdb83"
+        },
+        "integrations/hermes-native-learning/test/flashcards.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "25a0bc6ccfedc177b3c029e12401ebeb11538ec3bd0653072d87b10d9d5026a6"
+        },
+        "integrations/hermes-native-learning/test/graph-audit.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "6ac2aade923e6cf13284cb6da53dfd5a978c7ed1daf43571d77abce99452433b"
+        },
+        "integrations/hermes-native-learning/test/notation.integration.test.mjs": {
+          "before_sha256": "absent",
+          "after_sha256": "5396ed4f4726827ef031ac2bdef0c8b68b9278c19f8798fb44a337c948e66243"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "a8c9fa1a276d18f82206ac74ceda72684a768b9f03880a550985175e04b63b41",
+          "after_sha256": "a8c9fa1a276d18f82206ac74ceda72684a768b9f03880a550985175e04b63b41"
+        },
+        "tests/test_integration_release.py": {
+          "before_sha256": "ee8b511b269573724a4c38ae707e8755546a84d014fd6b4b5e8eff4e25dac0e5",
+          "after_sha256": "f9a1145db4f25fbfe4653dcdd1b88de0f9765c7cd2771550a4a23798904126ba"
+        },
+        "tests/test_tools.py": {
+          "before_sha256": "589ad4b6a447c408a3b18ce7e1d392615b373ecb7097710be5e3acb95cd48767",
+          "after_sha256": "ee09d310563db86089daec06880f1202f9f0719e87aaf4257a4d0db40813aba2"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "b729ba1aa6ed04d5fccb8a61735f00e2263edcad25e07ce162ba59f4d8932bd6",
+          "after_sha256": "034e7dce3bced67a50e91fd24c5c33fe0b280d894efb87f05cbd458b6a808373"
+        },
+        "tools/public_check.py": {
+          "before_sha256": "37fe34d24774393168cd4c69821fb8b4014961e53470c18596b36ecdf0fd662e",
+          "after_sha256": "41f9fb63845ce375e5c87132bf914a9a225697cce763d26ce40fd5e0f35431ca"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "8a50d67c45922f719e0ee1898b80e1c56ed1bfacbd09f68cf18b4ebd81f8a4ed",
+          "after_sha256": "89e27e3a87570c3995e3087147d2a1b976b7c02201dc08cf913a7ddd09bf1084"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "evidence/public-safety-allowlist.json",
+          "disposition": "updated",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "tests/test_integration_release.py",
+          "disposition": "updated",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        },
+        {
+          "path": "tests/test_tools.py",
+          "disposition": "updated",
+          "reason": "Preserve the lesson controls, learner tools, and the verified release procedure."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "One reload action, an explicit save for unfinished work, and a persistent Think out loud label.",
+      "authority": "The user approved publishing the rendered control changes and identified flashcards, coding view, and graph search as features to retain. The user requested recovery of the retained graph attempt and completion of publication.",
+      "checks": "All 71 package tests passed. The combined app was checked at 800 and 360 pixels. Browser and tool checks covered drafts, exact submissions, coding tests, drawing persistence, flashcard scheduling, notation, and the per-finding graph ranker. The integration release suite verifies archival of a stale, undeployed dependency refusal and refusal of deployed, unbound or uncertain records. Public safety scans CommonJS and binds the static QuickJS virtual home finding to the reviewed bundle line. The conditional LearnHarness reference recognizes the exact reviewed package manifest and continues to reject changed members or a global copy.",
+      "outcome_review": {
+        "expected": "Foreground the current question and answer, keep history compact, and retain the recent learning features.",
+        "observed": "A single reload action appears in Lesson options. Unsaved prose, code, and drawings can be saved and recovered. Earlier cards remain compact. The flashcard and coding controls operate through the same lesson connection.",
+        "evidence": "integrations/hermes-native-learning/t3/BUILD.json and the package test suite. The coordinator recovery is covered by tests/test_integration_release.py.",
+        "limitations": "The integrated app was exercised with a browser and real tool handlers on disposable lessons. Existing desktop sessions require their normal connection reload."
+      }
+    }
+  ]
+}

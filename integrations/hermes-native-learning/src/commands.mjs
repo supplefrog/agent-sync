@@ -8,6 +8,7 @@ import { learningWorkflow } from './workflow.mjs';
 import { TEACHER_RECOVERY } from './recovery.mjs';
 import { readNativePropositions } from './propositions.mjs';
 import { LessonKnowledge } from './knowledge.mjs';
+import { executeFlashcards } from './flashcards.mjs';
 import { teacherContextPage } from './context-page.mjs';
 import { materialCommand } from './materials.mjs';
 import { MaterialImports } from './imports.mjs';
@@ -28,6 +29,7 @@ function guarded(b, command) {
 export function executeLearningCommand(binding, command) {
   requireState(object(command), 'invalid_command', 'One JSON command required.');
   requireState(command.chatId === binding.chatId, 'wrong_host_session', 'Command targets another configured lesson.');
+  if(command.op==='flashcards')return executeFlashcards(binding,command);
   if(command.op==='visual') {
     fields(command,['op','chatId','expectedRevision','authorship','id','title','format','source','reveal','replaces']);
     attachVisual(binding,command);
@@ -39,7 +41,7 @@ export function executeLearningCommand(binding, command) {
     fields(command,['op','chatId','action',...allowed[command.action]]);return materialCommand(binding,command);
   }
   if(command.op==='import') {
-    const allowed={prepare:['budget'],findings:['part','findings','authorship'],audit:[],merge:['part','verdicts','graphRevision','authorship'],abort:[]};
+    const allowed={prepare:['budget'],findings:['part','findings','authorship'],audit:['requests','graphRevision'],merge:['part','verdicts','graphRevision','authorship'],abort:[]};
     requireState(Object.hasOwn(allowed,command.action),'unsupported_command','Use the explicit notes import stages.');
     fields(command,['op','chatId','action','importId','materialId',...allowed[command.action]]);return new MaterialImports(binding).execute(command);
   }
@@ -57,12 +59,19 @@ export function executeLearningCommand(binding, command) {
     requireState(binding.knowledgeRoot,'knowledge_unavailable','Knowledge requires an explicitly configured private directory; no default graph access.');
     const knowledge=new LessonKnowledge(binding.knowledgeRoot),lesson=adapterFor(binding).store.read(binding.chatId);
     if(command.action==='status'||command.action==='graph') {
-      fields(command,['op','chatId','action',...(command.action==='graph'?['query','offset','limit','graphRevision']:[])]);
-      const {query,offset,limit,graphRevision}=command;
-      return{ok:true,...(command.action==='status'?knowledge.status(lesson):{graph:knowledge.query({query,offset,limit,graphRevision})}),scope:'Teacher proposition evidence, not learner mastery; no model invoked.'};
+      fields(command,['op','chatId','action',...(command.action==='graph'?['query','offset','limit','graphRevision','nodeId','aliasIndex']:[])]);
+      const scope='Teacher proposition evidence, not learner mastery; no model invoked.';
+      if(command.action==='status')return{ok:true,...knowledge.status(lesson),scope};
+      const {query,offset,limit,graphRevision,nodeId,aliasIndex}=command;
+      if(nodeId!==undefined||aliasIndex!==undefined) {
+        requireState(query===undefined&&offset===undefined&&limit===undefined,
+          'invalid_graph_query','Choose exact node lookup or graph search/pagination.');
+        return{ok:true,graph:knowledge.lookup({nodeId,aliasIndex,graphRevision}),scope};
+      }
+      return{ok:true,graph:knowledge.query({query,offset,limit,graphRevision}),scope};
     }
     requireState(binding.kind==='teach','wrong_session_kind','Practice cannot extract or write graph evidence.');
-    const allowed={prepare:['expectedRevision','budget'],findings:['batchId','findings','authorship'],audit:['batchId'],merge:['batchId','graphRevision','verdicts','authorship']};
+    const allowed={prepare:['expectedRevision','budget'],findings:['batchId','findings','authorship'],audit:['batchId','requests','graphRevision'],merge:['batchId','graphRevision','verdicts','authorship']};
     requireState(Object.hasOwn(allowed,command.action),'unsupported_command','Use prepare, findings, audit, merge, graph or status.');
     fields(command,['op','chatId','action',...allowed[command.action]]);
     const {op,chatId,action,...args}=command;

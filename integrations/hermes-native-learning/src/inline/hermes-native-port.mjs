@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Thin ports for the selected Hermes SDK; no backend/session creation or model.
 import { mountInline } from './inline-client.mjs';
-import { lessonDraftKey } from './lesson-identity.mjs';
+import { lessonDraftKey, samePracticeSubmission, practiceSubmissionIn } from './lesson-identity.mjs';
 const bytes = value => new TextEncoder().encode(JSON.stringify(value)).length;
 function requirePort(ok, message) { if (!ok) throw new Error(message); }
 export function createHermesLessonPort(ownerSessionId, view, { composer, storage }) {
@@ -21,8 +21,8 @@ export function createHermesLessonPort(ownerSessionId, view, { composer, storage
       // entry after its captured baseline can clear. Old equal text cannot.
       const submitted = saved.submission;
       if (kind === 'practice' && submitted && submitted.draftId === saved.draftId &&
-          submitted.text === saved.payload?.text && Array.isArray(submitted.baselineIds) &&
-          view.thinkingEntries?.some(entry => !submitted.baselineIds.includes(entry.id) && entry.text === submitted.text)) {
+          samePracticeSubmission(submitted,saved.payload) && Array.isArray(submitted.baselineIds) &&
+          view.thinkingEntries?.some(entry => !submitted.baselineIds.includes(entry.id) && practiceSubmissionIn(view,entry,submitted))) {
         storage.remove(slot); return null;
       }
       return saved.payload;
@@ -32,7 +32,7 @@ export function createHermesLessonPort(ownerSessionId, view, { composer, storage
       const previous = storage.get(slot, null);
       requirePort(!previous || previous.baseRevision <= view.revision, 'A newer card owns this draft; keep this card open.');
       const sameDraft = previous?.key === key && (kind === 'practice'
-        ? previous.payload?.text === payload?.text : JSON.stringify(previous.payload) === JSON.stringify(payload));
+        ? samePracticeSubmission(previous.payload,payload) : JSON.stringify(previous.payload) === JSON.stringify(payload));
       const saved = { owner: ownerSessionId, chatId: view.chatId, key, baseRevision: view.revision, payload,
         draftId: sameDraft && previous.draftId ? previous.draftId : globalThis.crypto.randomUUID(), submission: sameDraft ? previous.submission : null };
       requirePort(bytes(saved) <= 16384, 'Native draft exceeds the 16 KiB task limit; keep the card open.');
@@ -50,8 +50,10 @@ export function createHermesLessonPort(ownerSessionId, view, { composer, storage
     if (kind === 'practice' && action.type === 'practice-input' && action.input?.type === 'thinking') {
       const saved = storage.get(slot, null);
       requirePort(!saved || saved.baseRevision <= view.revision, 'A newer card owns this draft; nothing was sent.');
-      if (saved?.draftId && Number.isSafeInteger(saved.baseRevision) && saved.payload?.text === action.input.text && Array.isArray(view.thinkingEntries)) {
+      if (saved?.draftId && Number.isSafeInteger(saved.baseRevision) && samePracticeSubmission(saved.payload,action.input) && Array.isArray(view.thinkingEntries)) {
         submission = { before: JSON.stringify(saved), draftId: saved.draftId, text: action.input.text,
+          ...(action.input.code!==undefined?{code:action.input.code}:{}),
+          ...(action.input.drawing?{drawing:action.input.drawing}:{}),
           baselineIds: view.thinkingEntries.map(entry => entry.id) };
       }
     }

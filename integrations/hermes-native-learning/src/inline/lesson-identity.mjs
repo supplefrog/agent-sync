@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Shared projection/draft identity, not caller authorization or a host transport.
+export const MAX_LESSON_DRAFT_BYTES=64*1024;
 export const lessonKind = view => view.kind === 'practice' ? 'practice' : 'teach';
 export const lessonDraftKey = view => lessonKind(view) === 'practice'
   ? `${view.chatId}:practice:${view.activeProblem?.toolCallId ?? 'between'}`
@@ -8,6 +9,23 @@ export function currentProjectionName(chatId) {
   if (typeof chatId !== 'string' || !/^[A-Za-z0-9_-]{1,80}$/.test(chatId)) throw new Error('Invalid lesson identity.');
   return `current-${chatId}.json`;
 }
+export function samePracticeSubmission(a,b) {
+  if(!a||!b||a.code!==b.code)return false;
+  const thinking=value=>value.code!==undefined&&typeof value.text==='string'&&!value.text.trim()?'':value.text;
+  return thinking(a)===thinking(b)&&JSON.stringify(a.drawing)===JSON.stringify(b.drawing);
+}
+export function practiceSubmissionIn(view,entry,input) {
+  if(!entry?.id)return false;
+  return samePracticeSubmission({text:entry.text,code:view.codingAttempts?.find(row=>row.id===entry.id)?.code,
+    drawing:view.drawings?.find(row=>row.id===entry.id)?.drawing},input);
+}
+export function isPublicCoding(value) {
+  return value!==null&&typeof value==='object'&&!Array.isArray(value)&&
+    Object.keys(value).every(key=>['language','starterCode','testNames'].includes(key))&&
+    value.language==='javascript'&&typeof value.starterCode==='string'&&new TextEncoder().encode(value.starterCode).length<=8192&&
+    Array.isArray(value.testNames)&&value.testNames.length<=8&&
+    value.testNames.every(name=>typeof name==='string'&&name.length<=100);
+}
 export function validateLessonView(view, {chatId, kind, minimumRevision = 0}) {
   if (!view || view.chatId !== chatId || lessonKind(view) !== kind ||
       (view.kind !== undefined && !['teach','practice'].includes(view.kind)) ||
@@ -15,8 +33,10 @@ export function validateLessonView(view, {chatId, kind, minimumRevision = 0}) {
     throw new Error('Refusing a different lesson, mode or older saved revision.');
   if (view.question && ['committedAnswer','correctIndices','explanation'].some(k => k in view.question))
     throw new Error('An active question exposed its commitment.');
-  if (view.activeProblem && Object.keys(view.activeProblem).some(k => !['toolCallId','statement'].includes(k)))
+  if (view.activeProblem && Object.keys(view.activeProblem).some(k => !['toolCallId','statement','coding'].includes(k)))
     throw new Error('An active problem exposed teacher-only fields.');
+  for(const prompt of [view.question,view.activeProblem])if(prompt?.coding!==undefined&&!isPublicCoding(prompt.coding))
+    throw new Error('An active exercise exposed private coding fields.');
   return view;
 }
 export function parseCurrentProjection(text, binding, minimumRevision = 0) {

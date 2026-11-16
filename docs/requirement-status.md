@@ -1,5 +1,7 @@
 # Requirement status
 
+LearnHarness lesson controls use one reload action and offer to save an unfinished answer after an edit. Earlier cards show a compact history marker. The combined build passed browser checks at wide and narrow widths with the current lesson, coding tests, drawing, flashcard scheduling, and notation. Ranked graph results are covered by the package tests. Existing desktop sessions adopt the updated app on connection reload.
+
 Native LearnHarness visuals use the responsive workbench in Codex and T3. Browser checks exercised the workbench at wide and narrow widths with a saved lesson and figure. Live Codex panel refresh and T3 native demo delivery were checked separately. Reopen in the existing lesson conversation. See [native lesson visuals](../integrations/hermes-native-learning/docs/NATIVE-VISUALS.md).
 
 Source review, 2026-09-27. The [agreed contract](system-requirements.md) remains authoritative. This map records implementation and evidence coverage; it does not certify every capability or host. The accountable roles coordinate existing owners rather than introduce new services.

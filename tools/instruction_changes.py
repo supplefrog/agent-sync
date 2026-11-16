@@ -22,6 +22,7 @@ NATIVE_LEARNING_INDEX_SHA256 = '5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951
 NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256 = '45ff625bff312262629c44be2d7aa7f6ebcf22614d6fcfec0827639c3a49f80e'
 NATIVE_LEARNING_VISUALS_MANIFEST_SHA256 = '070fa053f1018bd98d29ecd5f3b7922a4ef55c5172b706900a776e2730fd12be'
 NATIVE_LEARNING_WORKBENCH_MANIFEST_SHA256 = '34a1446acd8dd9ad5f3039a5d9d2b6220d2f1f083adeee6101b102dc3151c084'
+NATIVE_LEARNING_CONTROLS_MANIFEST_SHA256 = '587d206f1f1e022ff9bbb0bf040ec8579a104366dc697921f972d4cba43e1185'
 
 GENERATED = {'recovery/current/hosts/codex/AGENTS.md',
              'recovery/current/hosts/hermes/SOUL.md',
@@ -535,7 +536,8 @@ def native_learning_source_reference(repo, name):
         counts = {NATIVE_LEARNING_MANIFEST_SHA256: (89, 90),
                   NATIVE_LEARNING_MAINTENANCE_MANIFEST_SHA256: (104, 105),
                   NATIVE_LEARNING_VISUALS_MANIFEST_SHA256: (115, 116),
-                  NATIVE_LEARNING_WORKBENCH_MANIFEST_SHA256: (117, 118)}.get(_hash(manifest_raw))
+                  NATIVE_LEARNING_WORKBENCH_MANIFEST_SHA256: (117, 118),
+                  NATIVE_LEARNING_CONTROLS_MANIFEST_SHA256: (152, 153)}.get(_hash(manifest_raw))
         if counts is None:
             return False
         manifest = json.loads(manifest_raw)

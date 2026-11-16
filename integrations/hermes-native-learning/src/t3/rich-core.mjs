@@ -5,7 +5,7 @@
 import {richTextAllowed} from '../inline/lesson-prose.mjs';
 import {repairMathForDisplay,transformMathDelimiters} from '../vendor/runtime/math-delims.ts';
 
-export function createRichRenderer({React,createRoot,Streamdown,cjk,createMathPlugin,createMermaidPlugin,remarkBreaks}) {
+export function createRichRenderer({React,createRoot,Streamdown,cjk,createMathPlugin,createMermaidPlugin,remarkBreaks,renderNotation}) {
   const h=React.createElement,roots=new WeakMap();
   const plugins={cjk:{...cjk,remarkPluginsAfter:[...cjk.remarkPluginsAfter,remarkBreaks]},math:createMathPlugin({singleDollarTextMath:true})};
   const diagram=createMermaidPlugin();let sequence=0;
@@ -37,9 +37,28 @@ export function createRichRenderer({React,createRoot,Streamdown,cjk,createMathPl
     if(Array.isArray(children))return children.map(textOf).join('');
     return React.isValidElement(children)?textOf(children.props.children):'';
   }
+  function Notation({family,source}) {
+    const [result,setResult]=React.useState(null);
+    React.useEffect(()=>{
+      let active=true;
+      setResult(null);
+      Promise.resolve().then(()=>renderNotation(family,source)).then(value=>{
+        if(typeof value?.svg!=='string'||typeof value.label!=='string')throw new Error('No notation image');
+        if(active)setResult(value);
+      }).catch(()=>{if(active)setResult(false);});
+      return()=>{active=false;};
+    },[family,source]);
+    if(result===null)return h('span',{role:'status'},'Rendering notation…');
+    if(result===false)return h('span',{'data-rich-fallback':'notation'},
+      h('span',{role:'status'},'Notation could not be rendered.'),h('code',null,source));
+    return h('img',{alt:result.label,src:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(result.svg),
+      'data-notation':family,style:{display:'block',maxWidth:'100%',height:'auto',boxSizing:'border-box',background:'#fff',padding:'8px',borderRadius:'5px'}});
+  }
   function Code({children,className,...props}) {
     const language=/language-([^\s]+)/.exec(className??'')?.[1]??'';
     if('data-block' in props&&language==='mermaid')return h(Diagram,{source:textOf(children)});
+    if('data-block' in props&&typeof renderNotation==='function'&&['smiles','abc','tikz'].includes(language))
+      return h(Notation,{family:language,source:textOf(children)});
     return h('code',{className},children);
   }
   // Streamdown's default emphasis uses Tailwind spans. Semantic tags use the

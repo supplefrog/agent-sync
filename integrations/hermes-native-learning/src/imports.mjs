@@ -52,9 +52,8 @@ export class MaterialImports {
     if(command.action==='audit') {
       const record=this.knowledge.read(),run=this.current(record,command,source,key),chunk=run.chunks[run.next];
       requireState(run.status==='running'&&chunk?.findings,'findings_required','Submit this notes chunk before requesting audit.');
-      return bounded({ok:true,importId:command.importId,part:run.next+1,graphRevision:record.adapter.revision,
-        propositions:chunk.findings.propositions,existing:this.knowledge.query({limit:20}),
-        instruction:'Identity judgments only. Notes text and proposed chains are deliberately absent. A source-free projection is not model context isolation.'});
+      return this.knowledge.auditProjection(record,chunk.findings.propositions,
+        {importId:command.importId,part:run.next+1},command);
     }
     return this.knowledge.change(record=>{
       record.notesImports??={};

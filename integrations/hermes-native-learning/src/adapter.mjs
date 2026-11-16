@@ -16,6 +16,8 @@ import { createTree } from './vendor/runtime/plan-tree.ts';
 import { derivePlanStatusesLh, derivedNodeStatus } from './vendor/runtime/plan-contract.ts';
 import { parseMermaidPlan } from './vendor/runtime/mermaid-plan.ts';
 import { PROBE_DONE_ACK_TEXT } from './vendor/runtime/probe-ack.ts';
+import { validDrawing, drawingText } from './drawing.mjs';
+import { normalizeCoding, publicCoding, validateCodingText } from './coding.mjs';
 
 const now = () => new Date().toISOString();
 const id = () => `msg_${randomUUID()}`;
@@ -74,7 +76,13 @@ function questionData(name, input, toolCallId) {
     text(input.correctAnswer, 'correctAnswer');
     requireState(!explainInputProblems(input).length, 'invalid_question', 'A committed answer is required.');
     q.committedAnswer = input.correctAnswer;
+    if (input.coding!==undefined) {
+      requireState(name==='explain','invalid_coding_spec','Coding answers use teaching explain questions.');
+      q.coding=normalizeCoding(input.coding);
+      requireState(q.coding.solution===input.correctAnswer,'invalid_coding_spec','Use the same committed coding solution in both fields.');
+    }
   } else {
+    requireState(input.coding===undefined,'invalid_coding_spec','Coding answers require a text question.');
     const list = parseOptionsIfString(input.options);
     if (kind === 'quiz' || input.options !== undefined) {
       requireState(Array.isArray(list) && list.length >= (kind === 'quiz' ? 2 : 1) && list.length <= 30,
@@ -105,7 +113,7 @@ function questionData(name, input, toolCallId) {
 
 function validateRequest(q, request) {
   object(request, 'answer request');
-  requireState(Object.keys(request).every(k => ['values', 'dontKnow', 'other', 'text', 'thinking', 'readingThinking', 'confidence'].includes(k)),
+  requireState(Object.keys(request).every(k => ['values', 'dontKnow', 'other', 'text', 'thinking', 'readingThinking', 'confidence', 'drawing'].includes(k)),
     'invalid_answer', 'Unknown answer request field.');
   for (const key of ['text', 'other', 'thinking', 'readingThinking']) {
     if (request[key] !== undefined) requireState(typeof request[key] === 'string' && request[key].length <= 16000, 'invalid_answer', `Invalid ${key}.`);
@@ -120,15 +128,26 @@ function validateRequest(q, request) {
     'invalid_answer', 'Confidence is a probability from 0–100 on a real quiz answer.');
   requireState(q.kind === 'ask' || !request.other, 'invalid_answer', 'Other is an ask-only response.');
   requireState(q.mode === 'text' || !request.text, 'invalid_answer', 'Use option values for this question.');
+  requireState(request.drawing === undefined || validDrawing(request.drawing), 'invalid_drawing', 'The drawing is invalid or exceeds its size limit.');
   requireState(request.dontKnow || (q.mode === 'text' ? Boolean(request.text?.trim()) : Boolean(values.length || (q.kind === 'ask' && request.other?.trim()))),
     'invalid_answer', 'Choose an answer or explicitly say dontKnow.');
+  if(q.coding) {
+    requireState(!request.dontKnow,'invalid_coding_answer','Submit your current code for a coding question.');
+    validateCodingText(request.text);
+  }
 }
 
 function answerFromRequest(record, toolCallId, request) {
   const p = pending(record, toolCallId);
   const q = record.adapter.questions[toolCallId];
   validateRequest(q, request);
-  return buildAnswer(q, request, p.tool);
+  const answer = buildAnswer(q, request, p.tool);
+  if (q.coding) {
+    answer.text = request.text;
+    answer.coding = {language:q.coding.language, code:request.text, solution:q.coding.solution};
+  }
+  if (request.drawing) answer.drawing = clone(request.drawing);
+  return answer;
 }
 
 function answerFromEnvelope(record, input) {
@@ -138,7 +157,7 @@ function answerFromEnvelope(record, input) {
     'invalid_answer', 'Answer kind must match the pending question. Closing a view is not a dismissal.');
   requireState(answer.answers.every(a => a && typeof a.value === 'string'), 'invalid_answer', 'Malformed answer selections.');
   const request = { values: answer.answers.map(a => a.value) };
-  for (const key of ['dontKnow', 'text', 'other', 'thinking', 'readingThinking', 'confidence']) if (answer[key] !== undefined) request[key] = answer[key];
+  for (const key of ['dontKnow', 'text', 'other', 'thinking', 'readingThinking', 'confidence', 'drawing']) if (answer[key] !== undefined) request[key] = answer[key];
   const canonical = answerFromRequest(record, input.toolCallId, request);
   for (const key of ['questionText', 'tool', 'questionType', 'options', 'correct', 'correctIndices', 'committed', 'explanation', 'answers']) {
     if (answer[key] !== undefined) requireState(isDeepStrictEqual(answer[key], canonical[key]), 'altered_answer', `Answer field ${key} disagrees with the stored commitment.`);
@@ -232,7 +251,12 @@ export class TeachingAdapter {
       if (input.type === 'answer') {
         const answer = answerFromEnvelope(record, input);
         const p = pending(record, input.toolCallId);
-        appendResult(record, input.toolCallId, p.tool, answer, compactAnswerForModel(answer));
+        const condensed = compactAnswerForModel(answer);
+        if(answer.coding&&this.codingObservations)answer.coding.observations=clone(this.codingObservations);
+        const saved = appendResult(record, input.toolCallId, p.tool, answer, condensed);
+        if(answer.coding)saved.content.push({type:'text',text:'Exact learner code and recorded test observations: '+JSON.stringify({
+          code:answer.coding.code,observations:answer.coding.observations})});
+        if (answer.drawing) saved.content.push({type:'text',text:drawingText(answer.drawing, saved.id)});
         record.adapter.continuation = null;
       } else if (input.type === 'text') {
         idle(record); text(input.text, 'text');
@@ -288,6 +312,7 @@ export class TeachingAdapter {
         approved: initialPlanApproved(r),
         nodes: r.tree.nodes.map(n => ({ ...n, status: derivedNodeStatus(statuses, n.id) })) } : null,
       question: p ? { toolCallId: p.toolCallId, tool: p.tool, ...toClientQuestion(r.adapter.questions[p.toolCallId]),
+        ...(r.adapter.questions[p.toolCallId].coding?{coding:publicCoding(r.adapter.questions[p.toolCallId].coding)}:{}),
         questionType: r.adapter.questions[p.toolCallId].questionType, nodeId: p.input.nodeId,
         needsReveal: questionNeedsReveal(p.tool, p.input, phase(r)), open: r.adapter.questionOpen[p.toolCallId] } : null,
       continuationOwed: needsContinuation(r.messages), continuation: r.adapter.continuation,

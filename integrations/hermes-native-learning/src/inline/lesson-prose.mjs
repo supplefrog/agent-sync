@@ -2,7 +2,7 @@
 // Host-native presentation projection; no Markdown parser or HTML execution.
 export function richTextAllowed(text) {
   if(typeof text!=='string'||text.length>65536)return false;
-  const ordinary=new Set(['','mermaid','text','txt','plaintext','python','py','javascript','js','typescript','ts','json','css','bash','sh','shell','powershell','ps1','sql','java','c','cpp','c++','csharp','c#','go','rust','ruby','rb','r','matlab','latex','tex']);
+  const ordinary=new Set(['','mermaid','text','txt','plaintext','python','py','javascript','js','typescript','ts','json','css','bash','sh','shell','powershell','ps1','sql','java','c','cpp','c++','csharp','c#','go','rust','ruby','rb','r','matlab','latex','tex','smiles','abc','tikz']);
   for(const match of text.matchAll(/(?:`{3,}|~{3,})[ \t]*([^\s`~]*)/g))
     if(!ordinary.has(match[1].toLowerCase()))return false;
   return !/(?:https?:|file:|data:|MEDIA:|!\s*\[|\]\s*\(|^\s{0,3}\[[^\]]+\]:|<\/?[a-z][^>]*>)/im.test(text);

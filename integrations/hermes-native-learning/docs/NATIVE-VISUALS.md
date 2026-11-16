@@ -24,7 +24,7 @@ Use a visual when it helps the learner see the relationship they are reasoning a
 
 Codex and T3 share the responsive workbench. The figure sits alongside the question and response when there is room and above them in a compact stack when narrow. The controls stay mounted across resizing. Hermes uses its existing presentation.
 
-The optional panel should “display the current lesson while I keep chatting.” **Refresh saved lesson** reads the current revision through the owning chat without sending a learner response. Inline lessons remain available. The UI acknowledges a valid MCP Apps handshake even when the host omits product-specific identity fields. Lesson access still requires server-side ownership.
+The optional panel should “display the current lesson while I keep chatting.” **Reload lesson** under **Lesson options** reads the current revision through the owning chat without sending a learner response. When there are unsaved edits, **Save unfinished answer** saves them for reopening the same question. On initial load the app checks the revision before showing the question. If its opening result is older than the saved lesson, it shows a short history marker. The UI acknowledges a valid MCP Apps handshake even when the host omits product-specific identity fields. Lesson access still requires server-side ownership.
 
 The controls send the existing `lh.t3 {chatId,kind,expectedRevision,action}` through user-confirmed `sendFollowUpMessage`. On a genuine event, pass its exact fields to `learning_input`, inspect persistence, read teacher context, save the required reaction, and return a fresh `learning_view`. Resume only reopens the view. Caller ownership still comes from host-written MCP metadata.
 
@@ -34,7 +34,7 @@ Presentation failure is separate from saved state. Combined native content has a
 
 ## Other hosts
 
-In T3, open the existing lesson conversation, including from **Settled** if needed, and use **Refresh saved lesson** or call `learning_view` there. That call supplies the lesson card. For an interactive demo, read the saved artifact with `learning_artifact_source` and preview and publish only that demo through T3's native HTML renderer in the same conversation. The app displays the SVG figure next to the lesson controls and uses the host renderer for interactive HTML. Hermes uses its existing sandboxed artifact components and export grant.
+Use `learning_catalogue` and `learning_command` with `op:view` for lesson lists and recaps. Give that information directly in chat. When the learner wants to continue, open the existing lesson conversation, including from **Settled** in T3 if needed, and call `learning_view` there. For a requested interactive demo, read the saved artifact with `learning_artifact_source` and open it through the host's native HTML renderer in the same conversation. The app keeps relevant SVG figures next to the lesson controls. Other materials are available under **Lesson materials**. Hermes uses its existing sandboxed artifact components and export grant.
 
 Other explicitly enrolled MCP clients can read the same permitted sources, but need their own renderer and confirmed-input adapter. Clients without an HTML surface cannot become interactive just by receiving a path. Remote renderers also need supported access to files on their execution host.
 

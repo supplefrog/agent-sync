@@ -1,0 +1,73 @@
+.lh-flashcards {
+  border-block-start: 1px solid var(--border, GrayText);
+  margin-block: .85rem 0;
+  padding-block-start: .5rem;
+  min-inline-size: 0;
+}
+.lh-flashcards summary {
+  cursor: pointer;
+  padding-block: .4rem;
+}
+.lh-flashcards-body > * + *,
+.lh-flashcards form > * + * {
+  margin-block-start: .55rem;
+}
+.lh-flashcards-field {
+  display: grid;
+  gap: .3rem;
+}
+.lh-flashcards-field > :is(input, textarea, select) {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: .45rem .55rem;
+  font: inherit;
+  color: inherit;
+  background: var(--bg, Canvas);
+  border: 1px solid var(--border, GrayText);
+  border-radius: .35rem;
+}
+.lh-flashcards-field > select {
+  padding-inline-end: 1.35rem;
+}
+.lh-flashcards-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin-block-start: .55rem;
+}
+.lh-flashcards button {
+  white-space: normal;
+  min-block-size: 2.25rem;
+  padding: .35rem .55rem;
+  color: inherit;
+  font: inherit;
+  background: var(--card, Canvas);
+  border: 1px solid var(--border, GrayText);
+  border-radius: .45rem;
+}
+.lh-flashcards-review {
+  border-block-start: 1px solid var(--border, GrayText);
+  margin-block-start: .65rem;
+  padding-block-start: .65rem;
+}
+.lh-flashcards-content {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.lh-flashcards-content:has(> *) {
+  white-space: normal;
+}
+.lh-flashcards-answer {
+  margin-block-start: .55rem;
+  border-inline-start: 2px solid var(--border, GrayText);
+  padding-inline-start: .5rem;
+}
+.lh-flashcards-notice:empty {
+  display: none;
+}
+.lh-flashcards :is(summary, button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--focus, Highlight);
+  outline-offset: 2px;
+}

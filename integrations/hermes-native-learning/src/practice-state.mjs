@@ -3,6 +3,9 @@
 import { TeachingAdapter } from './adapter.mjs';
 import { requireState } from './store.mjs';
 import { parseChatInput } from './vendor/runtime/input-parser.ts';
+import { validDrawing, drawingText } from './drawing.mjs';
+import { normalizeCoding, publicCoding, validateCodingText } from './coding.mjs';
+import { newestWithin, practiceAttempts } from './practice-history.mjs';
 import { resolveTargetId } from './vendor/runtime/target-pure.ts';
 import { activeProblemOf, modelSolutionForConclude, newThinkingMessage, newNextMessage,
   newMessageId, CONCLUDE_ACK_TEXT } from './vendor/runtime/practice-pure.ts';
@@ -27,10 +30,14 @@ export class PracticeAdapter extends TeachingAdapter {
       const active=activeProblemOf(record.messages);
       if(name==='problem') {
         requireState(!active && record.adapter.practiceNextAllowed===true,'practice_next_required','One active problem; after conclusion wait for explicit next.');
-        requireState(keys(input,['statement','mode','modelSolution','target']) && text(input.statement) && text(input.modelSolution) && ['recall','discrimination','composition'].includes(input.mode),'invalid_problem','Valid statement, mode and committed modelSolution required.');
+        requireState(keys(input,['statement','mode','modelSolution','target','coding']) && text(input.statement) && text(input.modelSolution) && ['recall','discrimination','composition'].includes(input.mode),'invalid_problem','Valid statement, mode and committed modelSolution required.');
         requireState(input.target===undefined||(Array.isArray(input.target)&&input.target.every(t=>typeof t==='string')),
           'invalid_problem','Practice targets must be proposition IDs or names.');
         const normalized={...input};
+        if(input.coding!==undefined) {
+          normalized.coding=normalizeCoding(input.coding);
+          requireState(normalized.coding.solution===input.modelSolution,'invalid_coding_spec','Use the same committed coding solution in both fields.');
+        }
         if(!input.target?.length)delete normalized.target;
         else {
           requireState(typeof this.graphNodes==='function','graph_unavailable','Tagged practice requires an enrolled proposition source; omit target for topic practice.');
@@ -52,13 +59,28 @@ export class PracticeAdapter extends TeachingAdapter {
   }
   practiceInput(envelope) {
     requireState(keys(envelope,['chatId','input']),'invalid_input','Use {chatId,input}.');
-    const input=parseChatInput(envelope.input);
+    const raw=envelope.input;
+    requireState(raw?.drawing===undefined||raw.type==='thinking','invalid_drawing','Attach a drawing to an active practice response.');
+    const codeOnly=raw?.type==='thinking'&&typeof raw.text==='string'&&!raw.text.trim()&&raw.code!==undefined;
+    const input=codeOnly?{type:'thinking',problemCallId:raw.problemCallId,text:''}:parseChatInput(raw);
     this.store.change(envelope.chatId, record=>{
       requireState(record.kind==='practice','wrong_session_kind','Practice session required.');
       const active=activeProblemOf(record.messages);
       if(input.type==='thinking') {
-        requireState(active?.toolCallId===input.problemCallId && text(input.text),'stale_problem','Thinking must target the active problem.');
-        record.messages.push(newThinkingMessage(input.problemCallId,input.text));
+        requireState(active&&active.toolCallId===input.problemCallId&&(codeOnly||text(input.text)),'stale_problem','Thinking must target the active problem.');
+        const message = newThinkingMessage(input.problemCallId,input.text);
+        if(active.input.coding) {
+          const code=validateCodingText(raw.code);
+          message.details.coding={language:active.input.coding.language,code,...(this.codingObservations?{observations:this.codingObservations}:{})};
+          if(typeof message.content==='string')message.content+='\n\nExact learner code and recorded test observations: '+JSON.stringify(message.details.coding);
+        } else requireState(raw.code===undefined,'invalid_coding_answer','Use ordinary thinking for this problem.');
+        const drawing = envelope.input.drawing;
+        requireState(drawing === undefined || validDrawing(drawing), 'invalid_drawing', 'The drawing is invalid or exceeds its size limit.');
+        if (drawing) {
+          message.details.drawing = structuredClone(drawing);
+          if (typeof message.content === 'string') message.content += '\n\n' + drawingText(drawing, message.id);
+        }
+        record.messages.push(message);
       } else if(input.type==='next') {
         requireState(!active,'problem_active','Conclude the active problem first.');
         if(record.messages.at(-1)?.customType==='practice-next')return{record,result:{ok:true},changed:false};
@@ -80,15 +102,22 @@ export class PracticeAdapter extends TeachingAdapter {
     const reviewed=conclude ? activeProblemOf(record.messages.slice(0,concludeIndex)) : null;
     const problemId=(active??reviewed)?.toolCallId;
     const problemIndex=record.messages.findIndex(m=>m.role==='assistant' && m.content.some(b=>b.type==='toolCall' && b.id===problemId));
-    const feedback=problemIndex<0 ? [] : record.messages.slice(problemIndex+1,active?undefined:concludeIndex)
-      .filter(m=>m.role==='assistant').flatMap(m=>m.content.filter(b=>b.type==='text').map(b=>({id:m.id,text:b.text})));
-    return{chatId,revision:record.adapter.revision,activeProblem:active ? {toolCallId:active.toolCallId,statement:active.input.statement} : null,
-      feedback,
-      discussion:active||concludeIndex<0?[]:record.messages.slice(concludeIndex+2).flatMap(m=>m.role==='user'?
-        [{id:m.id,role:'user',text:m.content}]:m.role==='assistant'?m.content.filter(b=>b.type==='text').map(b=>({id:m.id,role:'assistant',text:b.text})):[]),
-      thinking:record.messages.filter(m=>m.role==='custom' && m.customType==='practice-thinking' && m.details.problemCallId===(active??reviewed)?.toolCallId).map(m=>m.details.text),
+    const feedback=problemIndex<0 ? [] : newestWithin(record.messages.slice(problemIndex+1,active?undefined:concludeIndex)
+      .filter(m=>m.role==='assistant').flatMap(m=>m.content.filter(b=>b.type==='text').map(b=>({id:m.id,text:b.text}))),24*1024);
+    const { rows, nextBefore }=practiceAttempts(record,problemId);
+    const codingAttempts=rows.filter(row=>row.coding).map(row=>({id:row.id,...row.coding}));
+    const discussion=active||concludeIndex<0?[]:newestWithin(record.messages.slice(concludeIndex+2).flatMap(m=>m.role==='user'?
+      [{id:m.id,role:'user',text:m.content}]:m.role==='assistant'?m.content.filter(b=>b.type==='text').map(b=>({id:m.id,role:'assistant',text:b.text})):[]),24*1024);
+    return{chatId,revision:record.adapter.revision,activeProblem:active ? {toolCallId:active.toolCallId,statement:active.input.statement,
+      ...(active.input.coding?{coding:publicCoding(active.input.coding)}:{})} : null,
+      feedback,discussion,thinking:rows.map(row=>row.text),
+      thinkingEntries:active?rows.map(({id,text})=>({id,text})):[],
+      drawings:rows.filter(row=>row.drawing).map(({id,drawing})=>({id,drawing})),
+      ...(codingAttempts.length?{codingAttempts}:{}),
+      ...(nextBefore?{earlierResponses:{problemId,before:nextBefore}}:{}),
       conclusion:conclude ? {...conclude.arguments,statement:reviewed?.input.statement,
-        thinking:record.messages.filter(m=>m.role==='custom'&&m.customType==='practice-thinking'&&m.details.problemCallId===reviewed?.toolCallId).map(m=>m.details.text),
+        thinking:active?newestWithin(practiceAttempts(record,reviewed?.toolCallId).rows.map(row=>row.text),24*1024):rows.map(row=>row.text),
+        ...(reviewed?.input.coding?{codingLanguage:reviewed.input.coding.language}:{}),
         modelSolution:modelSolutionForConclude(record.messages,conclude.id)} : null,
       nextAllowed:!active && record.adapter.practiceNextAllowed===true};
   }

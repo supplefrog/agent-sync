@@ -2,17 +2,43 @@
 // Standard MCP Apps client for the existing controls, not a T3 frontend fork.
 import { mountInline } from '../inline/inline-client.mjs';
 import { readArtifact } from '../inline/artifacts.mjs';
-import {mountRichFragment} from './rich-fragment.mjs';
+import {createHostRichRenderer} from './rich-fragment.mjs';
+import {mountFlashcards} from '../inline/flashcards-client.mjs';
 import {createRichScope} from '../inline/rich-scope.mjs';
 import {lessonVisualRows} from '../visuals-view.mjs';
-import {lessonDraftKey,validateLessonView} from '../inline/lesson-identity.mjs';
+import {lessonDraftKey,validateLessonView,MAX_LESSON_DRAFT_BYTES,practiceSubmissionIn,samePracticeSubmission} from '../inline/lesson-identity.mjs';
 const root=document.querySelector('#lh-inline-lesson'),notice=document.querySelector('#lh-notice'),jobs=document.querySelector('#lh-jobs');
-const jobRich=createRichScope(mountRichFragment);
+const options=document.querySelector('#lh-options'),materials=document.querySelector('#lh-materials');
+const refreshButton=document.querySelector('#lh-refresh'),saveDraft=document.querySelector('#lh-save-draft');
 const pending=new Map(),cache=new Map();let nextId=0,active=true,initialized=false,owner=null,view=null,controller=null,fresh=false,codex=false,refreshAttempt=0;
+const {mount:mountRichFragment}=createHostRichRenderer(async(family,source)=>{
+  if(!view)throw new Error('Open the saved lesson first.');
+  const result=await call('learning_notation',{chatId:view.chatId,family,source});
+  return result.structuredContent;
+});
+const jobRich=createRichScope(mountRichFragment);
+let flashcards=null;
+const flashcardSection=document.querySelector('#lh-flashcards');
 let sentThinking=null;
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const byteSize=v=>new TextEncoder().encode(JSON.stringify(v)).length;
 const keyOf=lessonDraftKey;
+function unfinishedAnswer(payload) {
+  const draft=payload?.privateContent?.lhInlineDraft??payload;
+  if(!draft)return null;
+  const {text,other,otherSelected,thinking,readingThinking,selected,dontKnow,confidenceIndex,drawing}=draft;
+  const exercise=view?.activeProblem?.coding;
+  const starter=view?.codingAttempts?.at(-1)?.code??exercise?.starterCode;
+  const editedCode=exercise&&typeof draft.code==='string'&&draft.code!==starter?draft.code:undefined;
+  if(!text&&!other&&!thinking&&!readingThinking&&!selected?.length&&!dontKnow&&!drawing?.length&&editedCode===undefined)return null;
+  return JSON.stringify({text,other,otherSelected,thinking,readingThinking,selected,dontKnow,confidenceIndex,drawing,editedCode});
+}
+function updateDraftControl() {
+  const entry=view&&cache.get(keyOf(view));
+  const answer=unfinishedAnswer(entry?.payload);
+  saveDraft.hidden=!fresh||!entry?.dirty||answer===(entry.savedAnswer??null);
+  saveDraft.textContent=answer?'Save unfinished answer':'Discard unfinished answer';
+}
 function status(text,error=false){notice.textContent=text;notice.setAttribute('role',error?'alert':'status');}
 function post(message){if(!active)throw new Error('This app was closed.');window.parent.postMessage(message,'*');}
 function rpc(method,params) {
@@ -54,14 +80,15 @@ async function send(action,bound) {
   if(new TextEncoder().encode(text).length>65536)throw new Error('Input exceeds64KiB; it was not sent or truncated.');
   if(action.type==='practice-input'&&action.input?.type==='thinking') {
     const key=keyOf(bound);
-    sentThinking={key,text:action.input.text,draft:cache.get(key),ids:new Set(bound.thinkingEntries?.map(entry=>entry.id))};
+    sentThinking={key,text:action.input.text,code:action.input.code,drawing:action.input.drawing,
+      draft:cache.get(key),ids:new Set(bound.thinkingEntries?.map(entry=>entry.id))};
   }
   // T3 confirms this message and routes it to the frame's owning conversation.
   // This is actual agent delivery, NOT a saved-answer acknowledgment.
   await rpc('ui/message',{role:'user',content:[{type:'text',text}]});
   return {delivered:true};
 }
-function show(result,isFresh=false) {
+function validateResult(result) {
   const next=result?.structuredContent?.view,meta=result?._meta;
   if(!object(next)||!Number.isSafeInteger(next.revision)||typeof next.chatId!=='string'||
     typeof meta?.ownerThreadId!=='string'||!meta.ownerThreadId||meta.ownerThreadId.trim()!==meta.ownerThreadId||
@@ -71,42 +98,66 @@ function show(result,isFresh=false) {
   validateLessonView(next,{chatId:next.chatId,kind:next.kind==='practice'?'practice':'teach',minimumRevision:view?.revision??0});
   const key=keyOf(next);
   if(meta.draftKey!==key||!Number.isSafeInteger(meta.draft?.version))throw new Error('Saved draft identity differs.');
-  owner=meta.ownerThreadId;view=next;fresh=isFresh;
-  if(sentThinking?.key===key&&next.thinkingEntries?.some(entry=>entry.id&&!sentThinking.ids.has(entry.id)&&entry.text===sentThinking.text)) {
+  return {next,meta,key};
+}
+function show({next,meta,key}) {
+  view=next;fresh=true;
+  if(sentThinking?.key===key&&next.thinkingEntries?.some(entry=>!sentThinking.ids.has(entry.id)&&practiceSubmissionIn(next,entry,sentThinking))) {
     const current=cache.get(key);
     // A new durable entry is the receipt. Delivery alone, or new typing,
     // must never consume a draft.
-    if(current===sentThinking.draft&&current?.payload?.text===sentThinking.text) {
+    if(current===sentThinking.draft&&samePracticeSubmission(current?.payload,sentThinking)) {
       if(current.version!==meta.draft.version)cache.delete(key);
-      else cache.set(key,{version:current.version,payload:null,dirty:meta.draft.payload?.text===sentThinking.text});
+      else cache.set(key,{...current,payload:null,dirty:samePracticeSubmission(meta.draft.payload,sentThinking)});
     }
     sentThinking=null;
   }
   const current=cache.get(key);
-  if(!current?.dirty)cache.set(key,{version:meta.draft.version,payload:meta.draft.payload,dirty:false});
+  if(!current?.dirty)cache.set(key,{version:meta.draft.version,payload:meta.draft.payload,savedAnswer:unfinishedAnswer(meta.draft.payload),dirty:false});
   controller?.destroy();
   const bound=structuredClone(next);
   const exploration=next.visuals?.some(visual=>visual.kind==='visual')?document.createElement('div'):null;
-  controller=mountInline(root,next,{renderRich:mountRichFragment,send:action=>send(action,bound),onResume:refresh,workbench:true,exploration,drafts:{
+  controller=mountInline(root,next,{renderRich:mountRichFragment,send:action=>send(action,bound),workbench:true,exploration,appPresentation:true,
+    runCoding:async(promptId,code)=>{
+      if(!fresh||view.chatId!==bound.chatId||view.revision!==bound.revision)throw new Error('Refresh the current coding question first.');
+      const result=await call('learning_coding_test',{chatId:bound.chatId,expectedRevision:bound.revision,promptId,code});
+      return result.structuredContent;
+    },readPracticeHistory:async(cursor)=>{
+      if(!fresh||view.chatId!==bound.chatId||view.revision!==bound.revision)throw new Error('Refresh saved practice before reading responses.');
+      return (await call('learning_practice_history',{chatId:bound.chatId,expectedRevision:bound.revision,...cursor})).structuredContent;
+    },drafts:{
     read:requested=>cache.get(requested)?.payload??null,
-    write(requested,payload){if(requested!==key||byteSize(payload)>16384)throw new Error('Draft identity/size differs.');
-      const old=cache.get(key)??{version:-1};cache.set(key,{...old,payload:structuredClone(payload),dirty:true});status('Draft is local. Use Save draft to preserve it across reopen.');},
-    remove:requested=>{const old=cache.get(requested);if(old)cache.set(requested,{...old,payload:null,dirty:true});},
+    write(requested,payload){if(requested!==key||byteSize(payload)>MAX_LESSON_DRAFT_BYTES)throw new Error('Draft identity or size differs.');
+      const old=cache.get(key)??{version:-1};cache.set(key,{...old,payload:structuredClone(payload),dirty:true});updateDraftControl();},
+    remove:requested=>{const old=cache.get(requested);if(old)cache.set(requested,{...old,payload:null,dirty:true});updateDraftControl();},
   }});
-  root.inert=!fresh;document.querySelector('#lh-save-draft').disabled=!fresh;
-  void renderJobs(next,bound,exploration);status(fresh?'Current saved lesson loaded.':'Historical snapshot loaded; refreshing without a model turn.');
+  root.inert=false;options.hidden=false;updateDraftControl();
+  if(flashcardSection) {
+    flashcardSection.hidden=false;
+    flashcardSection.inert=false;
+    if(!flashcards)flashcards=mountFlashcards(flashcardSection,{renderRich:mountRichFragment,request:async request=>{
+      if(!fresh)throw new Error('Open the current saved lesson to review flashcards.');
+      const tool=['decks','next','reveal'].includes(request.action)?'learning_flashcards_view':'learning_flashcards';
+      return (await call(tool,{chatId:bound.chatId,request})).structuredContent;
+    }});
+  }
+  void renderJobs(next,bound,exploration);status('');
 }
 function node(tag,text){const e=document.createElement(tag);e.textContent=text;return e;}
 function prose(tag,text){const e=node(tag,'');jobRich.render(e,text);return e;}
 async function renderJobs(next,bound,exploration) {
   jobRich.clear();
   jobs.replaceChildren();
+  materials.hidden=true;
   for(const material of next.materials??[])jobs.append(node('p',`Attached: ${material.label} (${material.kind})`));
   for(const job of [...(next.jobs?.jobs??[]),...lessonVisualRows(next)]) {
     if(!active||view!==next)return;
     const section=document.createElement('section');
-    if(exploration&&job.artifact?.kind==='visual'&&next.visuals.some(visual=>visual.file===job.artifact.file))exploration.append(section);
-    else {section.append(node('h3',`${job.kind}: ${job.activity}`));jobs.append(section);}
+    if(exploration&&job.directVisual&&job.artifact.kind==='visual')exploration.append(section);
+    else {
+      if(job.artifact?.kind!=='demo')section.append(node('h3',job.activity));
+      jobs.append(section);
+    }
     if(job.error)section.append(node('pre',job.error));
     const report=job.research??job.pdf;
     if(report?.brief)section.append(prose('div',report.brief));
@@ -119,12 +170,11 @@ async function renderJobs(next,bound,exploration) {
         const source=await readArtifact({readText:async(_,file)=>({ok:true,...(await call('learning_asset',{chatId:next.chatId,file}))._meta})},{folder:'bound'},job.artifact);
         if(!active||view!==next)return;
         const image=document.createElement('img');image.alt=job.artifact.title;image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(source);image.style.maxWidth='100%';image.style.height='auto';section.append(image);
-      } catch{section.append(node('p','Saved figure unavailable; inspect the owning session before trying again.'));}
+      } catch{section.append(node('p','Couldn’t load the figure.'));}
     }
     if(job.artifact?.kind==='demo') {
       if(codex) {
-        section.append(node('p','Open the lesson in chat to use this interactive visual.'));
-        const button=node('button','Open lesson in chat');button.type='button';button.dataset.lhModelAction='demo';button.disabled=!fresh;
+        const button=node('button',`Open ${job.artifact.title} in chat`);button.type='button';button.dataset.lhModelAction='demo';button.disabled=!fresh;
         button.addEventListener('click',()=>{
           if(!active||!fresh||view!==next)return;
           const event={chatId:bound.chatId,kind:bound.kind,expectedRevision:bound.revision,action:{type:'resume',chatId:bound.chatId}};
@@ -132,8 +182,7 @@ async function renderJobs(next,bound,exploration) {
         });section.append(button);
         continue;
       }
-      section.append(node('p','Demo saved. The MCP App CSP does not permit the nested demo frame; use the existing T3 native visual publisher.'));
-      const button=node('button','Ask teacher to open saved demo');button.type='button';button.dataset.lhModelAction='demo';button.disabled=!active||!fresh||view!==next;
+      const button=node('button',`Open ${job.artifact.title}`);button.type='button';button.dataset.lhModelAction='demo';button.disabled=!active||!fresh||view!==next;
       button.addEventListener('click',()=>{
         if(!active||!fresh||view!==next){status('Refresh current state before asking the teacher to open this saved demo.',true);return;}
         void rpc('ui/message',{role:'user',content:[{type:'text',text:
@@ -141,43 +190,69 @@ async function renderJobs(next,bound,exploration) {
       });section.append(button);
     }
   }
+  materials.hidden=!jobs.childElementCount;
 }
-document.querySelector('#lh-save-draft').addEventListener('click',async()=>{
-  if(!view||!fresh)return;const key=keyOf(view),saved=cache.get(key);if(!saved?.dirty){status('No changed draft to save.');return;}
+saveDraft.addEventListener('click',async()=>{
+  if(!view||!fresh||saveDraft.hidden)return;
+  const key=keyOf(view),saved=cache.get(key);
+  if(!saved?.dirty)return;
   const captured=JSON.stringify(saved.payload),baseRevision=view.revision,chatId=view.chatId;
+  const answer=unfinishedAnswer(saved.payload);
+  saveDraft.disabled=true;
   try {
     const result=await call('learning_draft',{chatId,key,baseRevision,expectedVersion:saved.version,payload:JSON.parse(captured)});
     const version=result.structuredContent?.version;
     if(!Number.isSafeInteger(version))throw new Error('Draft save outcome is unknown.');
     const current=cache.get(key);
-    if(current)cache.set(key,{...current,version,dirty:JSON.stringify(current.payload)!==captured});
-    status(cache.get(key)?.dirty?'Earlier draft saved; newer typing is still local.':'Draft saved privately. No answer or model turn was submitted.');
+    if(current)cache.set(key,{...current,version,savedAnswer:answer,dirty:JSON.stringify(current.payload)!==captured});
+    if(view?.chatId===chatId&&keyOf(view)===key) {
+      updateDraftControl();
+      const result=answer?'Unfinished answer saved.':'Unfinished answer discarded.';
+      status(saveDraft.hidden?result:result+' Newer edits are still unsaved.');
+    }
   }catch(error){status(error.message,true);}
+  finally{saveDraft.disabled=false;}
 });
-async function refresh() {
+async function refresh(checkOpeningRevision=false) {
   if(!view||!initialized)return;
   const attempt=++refreshAttempt;
-  status('Refreshing saved lesson…');
-  fresh=false;root.inert=true;document.querySelector('#lh-save-draft').disabled=true;
+  status(checkOpeningRevision?'Loading lesson…':'Refreshing lesson…');
+  fresh=false;root.inert=true;refreshButton.disabled=true;saveDraft.hidden=true;
+  if(flashcardSection)flashcardSection.inert=true;
   for(const button of jobs.querySelectorAll('[data-lh-model-action]'))button.disabled=true;
   try{
-    const result=await call('learning_view',{chatId:view.chatId});
-    if(active&&attempt===refreshAttempt)show(result,true);
+    const result=validateResult(await call('learning_view',{chatId:view.chatId}));
+    if(!active||attempt!==refreshAttempt)return;
+    if(checkOpeningRevision&&result.next.revision>view.revision) {
+      options.hidden=true;
+      status('Earlier lesson step');
+      return;
+    }
+    show(result);
   }
-  catch(error){if(active&&attempt===refreshAttempt)status('Current state unavailable. Reopen the lesson in its owning conversation, then refresh. '+error.message,true);}
+  catch(error){
+    if(active&&attempt===refreshAttempt) {
+      options.hidden=false;
+      status('Couldn’t load the lesson here.',true);
+    }
+  }
+  finally{if(active&&attempt===refreshAttempt)refreshButton.disabled=false;}
 }
-document.querySelector('#lh-refresh').addEventListener('click',()=>void refresh());
+refreshButton.addEventListener('click',()=>void refresh(!controller));
 async function receive(event) {
   if(!active||event.source!==window.parent||!object(event.data)||event.data.jsonrpc!=='2.0')return;
   const message=event.data;if(byteSize(message)>256*1024)return;
   if(message.method==='ui/resource-teardown'&&message.id!==undefined) {
-    controller?.destroy();jobRich.clear();post({jsonrpc:'2.0',id:message.id,result:{}});active=false;
+    controller?.destroy();flashcards?.destroy();jobRich.clear();post({jsonrpc:'2.0',id:message.id,result:{}});active=false;
     for(const row of pending.values()){clearTimeout(row.timer);row.reject(new Error('App closed; inspect outcome before repeating an action.'));}pending.clear();return;
   }
   if(message.method==='ui/notifications/tool-result'){
-    const incoming=message.params?.structuredContent?.view;
-    if(view&&incoming?.chatId===view.chatId&&message.params?._meta?.ownerThreadId===owner&&incoming.revision<=view.revision)return;
-    try{show(message.params);void refresh();}catch(e){status(e.message,true);}return;
+    if(view)return; // The opening result identifies this transcript entry.
+    try{
+      const {next,meta}=validateResult(message.params);
+      owner=meta.ownerThreadId;view=next;
+      if(initialized)void refresh(true);
+    }catch{status('Couldn’t open the lesson here.',true);}return;
   }
   if(message.method==='ui/notifications/host-context-changed'){applyTheme(message.params);return;}
   const row=pending.get(message.id);if(!row)return;pending.delete(message.id);clearTimeout(row.timer);
@@ -196,8 +271,8 @@ rpc('ui/initialize',{protocolVersion:'2026-01-26',appInfo:{name:'learnharness-na
     post({jsonrpc:'2.0',method:'ui/notifications/initialized',params:{}});
     codex=result.hostInfo?.name!=='t3-code';
     applyTheme(result.hostContext);
-    if(view)void refresh();})
+    if(view)void refresh(true);})
   .catch(error=>{
     console.warn('LearnHarness MCP App initialization failed.');
-    status(error.message,true);
+    status('Couldn’t connect to the lesson.',true);
   });

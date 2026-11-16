@@ -66,7 +66,8 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken, cod
   };
   // Same no-network exporter, in dependency order. Module-import tests alone
   // do not establish that this self-contained consumer contains the helpers.
-  const helpers=['lesson-identity.mjs','rich-scope.mjs','confidence-style.mjs','answered-record.mjs','lesson-prose.mjs','lesson-layout.mjs'].map(compose).join('\n');
+  const helpers=['../drawing.mjs','drawing-client.mjs','coding-client.mjs','lesson-identity.mjs','rich-scope.mjs',
+    'confidence-style.mjs','answered-record.mjs','lesson-prose.mjs','lesson-layout.mjs'].map(compose).join('\n');
   const client=compose('inline-client.mjs'),practiceClient=compose('practice-client.mjs'),codexClient=codex?compose('codex-transport.mjs'):'';
   const safe = JSON.stringify(view).replace(/</g, '\\u003c').replace(/&/g, '\\u0026').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
   const data = `<script id="lh-inline-data" type="application/json">${safe}</script>`;
@@ -77,7 +78,7 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken, cod
     if (!response.ok || result.ok !== true) throw new Error(result.error || 'The local handler could not save this response.');
     return result;
   }, drafts: {
-    read: key => { const raw = localStorage.getItem('lh-inline-draft:v1:' + key); return raw && raw.length <= 16384 ? JSON.parse(raw) : null; },
+    read: key => { const raw = localStorage.getItem('lh-inline-draft:v1:' + key); return raw && new TextEncoder().encode(raw).length <= MAX_LESSON_DRAFT_BYTES ? JSON.parse(raw) : null; },
     write: (key, payload) => localStorage.setItem('lh-inline-draft:v1:' + key, JSON.stringify(payload)),
     remove: key => localStorage.removeItem('lh-inline-draft:v1:' + key)
   } }` : '';
@@ -87,7 +88,7 @@ export function renderInline(view, { localBrowser = false, nonce, csrfToken, cod
   const exploration=visuals.map(v=>'<section aria-label="'+escape(v.title)+'">'+(v.format==='svg'?'<img alt="'+escape(v.title)+'" style="max-width:100%;height:auto" src="data:image/svg+xml;charset=utf-8,'+encodeURIComponent(v.source)+'">':v.source)+'</section>').join('\n');
   const nativeStyle=codex?'\n<style>'+fs.readFileSync(path.join(INLINE_HOME,'codex-lesson.css'),'utf8')+'</style>':'';
   const visualMarkup=exploration?'\n<div id="lh-native-exploration" hidden>'+exploration+'</div>':'';
-  return template.replace('<!-- INLINE_PAYLOAD -->', data).replace('<!-- INLINE_RUNTIME -->', runtime)+visualMarkup+nativeStyle;
+  return template.replace('<!-- INLINE_PAYLOAD -->', () => data).replace('<!-- INLINE_RUNTIME -->', () => runtime)+visualMarkup+nativeStyle;
 }
 
 export function buildInline(view, output = path.join(INLINE_HOME, 'inline-lesson.html')) {

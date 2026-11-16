@@ -6,6 +6,7 @@ import { isDeepStrictEqual } from 'node:util';
 import { FileSessionStore, requireState } from './store.mjs';
 import { coverageOf, batchRuns, messageViewLines } from './vendor/runtime/coverage.ts';
 import { mergeFindings, getGraph, deriveView } from './vendor/runtime/graph.ts';
+import { graphAudit } from './graph-audit.mjs';
 
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
 const text = value => typeof value === 'string' && value.trim().length > 0 && value.length <= 16000;
@@ -48,6 +49,25 @@ export class LessonKnowledge {
     const nodes=all.slice(offset,offset+limit),nextOffset=offset+nodes.length<all.length?offset+nodes.length:null;
     const result={graphRevision:record.adapter.revision,nodes,total:all.length,offset,nextOffset,query};
     requireState(Buffer.byteLength(JSON.stringify(result))<=262144,'graph_page_too_large','Graph page exceeds256KiB; request fewer items.');
+    return result;
+  }
+  lookup({ nodeId, aliasIndex, graphRevision }) {
+    requireState(typeof nodeId === 'string' && nodeId.trim() && nodeId.length <= 200 &&
+      (aliasIndex === undefined || Number.isSafeInteger(aliasIndex) && aliasIndex >= 0),
+    'invalid_graph_query', 'Use an exact graph node ID and an optional nonnegative alias index.');
+    const record = this.read();
+    requireState(graphRevision === record.adapter.revision, 'stale_graph',
+      'Exact lookup requires the current audit revision. Refresh the audit after graph changes.');
+    const node = getGraph(ports(record)).nodes.find(entry => entry.id === nodeId);
+    requireState(node, 'graph_node_not_found', 'This exact node ID does not exist at the requested revision.');
+    requireState(aliasIndex === undefined || aliasIndex < node.aliases.length,
+      'graph_alias_not_found', 'This alias index does not exist at the requested revision.');
+    const result = {
+      graphRevision, nodeId, aliasCount: node.aliases.length,
+      ...(aliasIndex === undefined ? { name: node.name, statement: node.statement } : { aliasIndex, alias: node.aliases[aliasIndex] }),
+    };
+    requireState(Buffer.byteLength(JSON.stringify(result)) <= 256 * 1024,
+      'graph_page_too_large', 'Exact graph evidence exceeds the 256 KiB response limit.');
     return result;
   }
   lessonView(lesson) {
@@ -121,17 +141,16 @@ export class LessonKnowledge {
       return{record,result:{ok:true,batchId}};
     });
   }
-  audit(lesson,{ownerSessionId,batchId}) {
+  audit(lesson,{ownerSessionId,batchId,requests,graphRevision}) {
     const record=this.read(),batch=this.batch(record,batchId,ownerSessionId,lesson);
     requireState(batch.findings,'findings_required','Submit extractor findings before identity audit.');
     // Auditor receives propositions and existing identities only: no teacher
     // source, chain proposals, learner answers or commitments in this projection.
-    const result={ok:true,batchId,graphRevision:record.adapter.revision,
-      propositions:batch.findings.propositions.map(({id,name,statement,aliases})=>({id,name,statement,aliases})),
-      existing:this.query({limit:20}),
-      instruction:'Return identity links only. Equivalent propositions link to existing IDs; absent links create. Do not alter findings or mint edges. This projection does not isolate a model that already saw the source.'};
-    requireState(Buffer.byteLength(JSON.stringify(result))<=262144,'audit_context_too_large','Audit context exceeds256KiB; prepare a smaller source batch.');
-    return result;
+    return this.auditProjection(record,batch.findings.propositions,{batchId},{requests,graphRevision});
+  }
+  auditProjection(record,findings,identity,{requests,graphRevision}) {
+    return graphAudit({revision:record.adapter.revision,getNodes:()=>getGraph(ports(record)).nodes,
+      findings,identity,requests,graphRevision});
   }
   merge(lesson,{ownerSessionId,batchId,graphRevision,verdicts,authorship}) {
     requireState(['host-agent','synthetic-fixture'].includes(authorship)&&ownFields(verdicts,['links'])&&Array.isArray(verdicts.links)&&

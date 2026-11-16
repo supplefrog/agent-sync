@@ -9,7 +9,14 @@ import { readNativeView } from '../inline/host/native-session.mjs';
 import { FileSessionStore, requireState } from '../store.mjs';
 import {publishVisualAssets} from '../visuals.mjs';
 import {nativePresentation} from './native-presentation.mjs';
-import { lessonDraftKey, validateLessonView } from '../inline/lesson-identity.mjs';
+import { lessonDraftKey, MAX_LESSON_DRAFT_BYTES, validateLessonView } from '../inline/lesson-identity.mjs';
+import { readLearnerDrawing } from '../drawing-image.mjs';
+import { renderNotation } from '../notation.mjs';
+import { executeFlashcards } from '../flashcards.mjs';
+import { recordCodingRun } from '../coding.mjs';
+import { danglingQuestionOf } from '../vendor/runtime/native-scans.ts';
+import { activeProblemOf } from '../vendor/runtime/practice-pure.ts';
+import { readPracticeHistory } from '../practice-history.mjs';
 
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const canonical=v=>typeof v==='string'&&v.length>0&&v.length<=300&&v===v.trim()&&v!=='new';
@@ -111,7 +118,7 @@ export class T3LearningBoundary {
     requireState(args.key===keyOf(view)&&args.baseRevision===view.revision&&Number.isSafeInteger(args.expectedVersion),
       'stale_draft','Reload the current question before saving its draft.');
     requireState(args.payload===null||object(args.payload),'invalid_draft','Draft must be an object or explicit tombstone.');
-    requireState(Buffer.byteLength(JSON.stringify(args.payload))<=16384,'draft_too_large','Draft exceeds16KiB.');
+    requireState(Buffer.byteLength(JSON.stringify(args.payload))<=MAX_LESSON_DRAFT_BYTES,'draft_too_large','Draft exceeds 64 KiB.');
     const current=readDraft(b,args.key);
     requireState(current.version===args.expectedVersion,'stale_draft','Another card owns a newer draft; do not overwrite it.');
     requireState(current.baseRevision===undefined||current.baseRevision<=args.baseRevision,'stale_draft','An older lesson revision cannot replace a newer draft.');
@@ -125,4 +132,36 @@ export class T3LearningBoundary {
     return saved;
   }
   asset(meta,args) {fields(args,['chatId','file']);return readAsset(this.binding(meta,args.chatId),args.file);}
+  drawing(meta,args) {
+    fields(args,['chatId','messageId']);
+    return readLearnerDrawing(this.binding(meta,args.chatId),args.messageId);
+  }
+  practiceHistory(meta,args) {
+    fields(args,['chatId','problemId','before','expectedRevision']);
+    return readPracticeHistory(this.binding(meta,args.chatId),args);
+  }
+  notation(meta,args) {
+    fields(args,['chatId','family','source']);
+    this.binding(meta,args.chatId);
+    return renderNotation({family:args.family,source:args.source});
+  }
+  flashcards(meta,args,write) {
+    fields(args,['chatId','request']);requireState(object(args.request),'invalid_flashcards','Use a flashcard request.');
+    const accepted=write?['create-deck','add','rate']:['decks','next','reveal'];
+    requireState(accepted.includes(args.request.action),'invalid_flashcards','Flashcard action does not match this tool.');
+    const binding=this.binding(meta,args.chatId);
+    return executeFlashcards(binding,{...args.request,op:'flashcards',chatId:binding.chatId},{origin:'app'});
+  }
+  async codingTest(meta,args) {
+    fields(args,['chatId','expectedRevision','promptId','code']);
+    const binding=this.binding(meta,args.chatId);
+    const current=()=>new FileSessionStore(binding.root).read(binding.chatId);
+    const record=current();
+    const active=binding.kind==='practice'?activeProblemOf(record.messages):danglingQuestionOf(record.messages);
+    requireState(record.adapter.revision===args.expectedRevision&&active?.toolCallId===args.promptId&&active?.input.coding,
+      'stale_coding_question','Refresh the lesson before running tests for the current coding question.');
+    const result=await recordCodingRun(binding,{revision:args.expectedRevision,promptId:args.promptId,spec:active.input.coding,code:args.code});
+    requireState(current().adapter.revision===args.expectedRevision,'stale_coding_question','The coding question changed during the test run.');
+    return result;
+  }
 }

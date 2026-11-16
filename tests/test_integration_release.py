@@ -158,6 +158,54 @@ class IntegrationReleaseTests(unittest.TestCase):
         self.save()
         self.assert_refused()
 
+    def stale_dependency_attempt(self):
+        reason = 'change reconciliation has stale dependency bytes: docs/requirement-status.md'
+        phase = 'scoped-preflight-or-reconcile'
+        self.journal['receipt']['options'] = {
+            'adopt': [], 'include': sorted(self.journal['composition_files']),
+        }
+        result = self.journal['last_result']
+        del result['owners']
+        result.update(result='incomplete', reason=reason, failed_step=phase, completed_checks=[],
+                      failure={'phase': phase, 'command': None, 'exit_code': None, 'diagnostic': reason})
+        self.save()
+
+    def test_release_include_only_attempt_with_stale_unselected_dependency(self):
+        self.stale_dependency_attempt()
+        original = self.journal_path.read_bytes()
+        result = self.release()
+        self.assertEqual('released', result['result'], result)
+        self.assertEqual(original, (Path(result['archive']) / 'attempt.json').read_bytes())
+        self.assertEqual(self.before, self.snapshot(Path(result['retained_worktree'])))
+        self.assertEqual(self.published_before, self.snapshot(self.published))
+        self.assertFalse(self.journal_path.exists())
+
+    def test_stale_dependency_release_refuses_mutation_or_uncertain_evidence(self):
+        self.stale_dependency_attempt()
+        original = self.journal_path.read_bytes()
+        cases = (
+            ('deployment started', lambda journal: journal.update(deployment_started=True)),
+            ('deployment unknown', lambda journal: journal.pop('deployment_started')),
+            ('unbound result', lambda journal: journal['last_result'].update(ready='b' * 40)),
+            ('completed checks', lambda journal: journal['last_result'].update(completed_checks=['verify'])),
+            ('unknown diagnostic', lambda journal: journal['last_result']['failure'].update(diagnostic='unknown')),
+            ('selected owner', lambda journal: journal['receipt']['options'].update(adopt=['kept'])),
+            ('unrelated dependency', lambda journal: journal['last_result'].update(
+                reason='change reconciliation has stale dependency bytes: kept.txt',
+                failure={**journal['last_result']['failure'],
+                         'diagnostic': 'change reconciliation has stale dependency bytes: kept.txt'})),
+        )
+        for label, change in cases:
+            with self.subTest(label=label):
+                self.journal = json.loads(original)
+                change(self.journal)
+                self.save()
+                self.assert_refused()
+        self.journal = json.loads(original)
+        self.save()
+        (sync_git.git_dir(self.lane) / 'agent-signal-sync.json').write_bytes(b'{}')
+        self.assert_refused()
+
     def test_unbound_result_refused(self):
         self.journal['last_result']['ready'] = 'b' * 40
         self.save()
@@ -496,12 +544,15 @@ class IntegrationReleaseTests(unittest.TestCase):
 
     def test_low_level_ready_sync_marks_before_later_work(self):
         core = coordinator.reconcile.sync.__wrapped__.__wrapped__
+        owner = {'name': 'kept', 'mode': 'deploy-canonical', 'canonical_sha256': 'a' * 64}
         with patch.object(coordinator.reconcile, '_selected_owners', return_value=['kept']), \
              patch.object(coordinator.reconcile, '_snapshot', return_value=self.lane / 'render'), \
              patch.object(coordinator.reconcile, '_destinations', return_value=[]), \
              patch.object(coordinator.reconcile, '_agent_scope_identities', return_value={}), \
-             patch.object(coordinator.reconcile, '_skill_state', side_effect=RuntimeError('stop after mark')):
-            with self.assertRaisesRegex(RuntimeError, 'stop after mark'):
+             patch.object(coordinator.reconcile, '_skill_state', return_value=owner), \
+             patch.object(coordinator.reconcile, '_assert_skill_public_safe'), \
+             patch.object(coordinator.reconcile.fleet, 'render_snapshot', side_effect=KeyboardInterrupt('stop at first write')):
+            with self.assertRaisesRegex(KeyboardInterrupt, 'stop at first write'):
                 core(self.lane, adopt=['kept'], ready_input={'attempt': self.attempt,
                     'files': self.journal['composition_files'], 'agent_identities': {}})
         self.assertIs(True, json.loads(self.journal_path.read_bytes())['deployment_started'])
@@ -509,12 +560,15 @@ class IntegrationReleaseTests(unittest.TestCase):
 
     def test_failed_marker_write_prevents_later_work(self):
         core = coordinator.reconcile.sync.__wrapped__.__wrapped__
+        owner = {'name': 'kept', 'mode': 'deploy-canonical', 'canonical_sha256': 'a' * 64}
         with patch.object(coordinator.reconcile, '_selected_owners', return_value=['kept']), \
              patch.object(coordinator.reconcile, '_snapshot', return_value=self.lane / 'render'), \
              patch.object(coordinator.reconcile, '_destinations', return_value=[]), \
              patch.object(coordinator.reconcile, '_agent_scope_identities', return_value={}), \
+             patch.object(coordinator.reconcile, '_skill_state', return_value=owner), \
+             patch.object(coordinator.reconcile, '_assert_skill_public_safe'), \
              patch.object(sync_git.os, 'replace', side_effect=OSError('injected marker persistence failure')), \
-             patch.object(coordinator.reconcile, '_skill_state') as later_work:
+             patch.object(coordinator.reconcile.fleet, 'render_snapshot') as later_work:
             with self.assertRaisesRegex(OSError, 'persistence failure'):
                 core(self.lane, adopt=['kept'], ready_input={'attempt': self.attempt,
                     'files': self.journal['composition_files'], 'agent_identities': {}})

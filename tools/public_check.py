@@ -23,7 +23,7 @@ EXCLUDED_DIRS = {
     "render",
 }
 EXCLUDED_PREFIXES = {("evals", "reports", "raw")}
-TEXT_SUFFIXES = {"", ".md", ".json", ".py", ".toml", ".yaml", ".yml", ".txt"}
+TEXT_SUFFIXES = {"", ".md", ".json", ".py", ".toml", ".yaml", ".yml", ".txt", ".cjs"}
 RULES = {
     "windows-user-path": re.compile(
         r"(?i)[a-z]:(?:[\\/]|\\\\)(?:users|documents and settings)(?:[\\/]|\\\\)"

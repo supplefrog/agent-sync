@@ -1817,11 +1817,13 @@ def _retain_release_bytes(path, data):
 
 def _release_source_kind(original):
     """Classify truthful pre-publisher evidence, never manufacture a rejection."""
+    from instruction_changes import CONTRACTS
+
     result = original.get('last_result')
     receipt = original.get('receipt')
     options = receipt.get('options') if isinstance(receipt, dict) else None
-    if (original.get('schema_version') == 1 and original.get('phase') == 'reconciling'
-            and original.get('deployment_started') is False and result is None
+    if not (original.get('schema_version') == 1 and original.get('phase') == 'reconciling'
+            and original.get('deployment_started') is False
             and isinstance(options, dict) and options.get('adopt') == []
             and isinstance(options.get('include'), list) and options['include']
             and original.get('origin_destinations') == []
@@ -1829,7 +1831,23 @@ def _release_source_kind(original):
             and set(options['include']) == set(original['composition_files'])
             and isinstance(original.get('composed_tree'), str)
             and re.fullmatch('[0-9a-f]{40}', original['composed_tree'])):
+        return 'owner-classification'
+    if result is None:
         return 'interrupted-include-only'
+    if isinstance(result, dict):
+        phase = 'scoped-preflight-or-reconcile'
+        prefix = 'change reconciliation has stale dependency bytes: '
+        reason = result.get('reason')
+        measurements = result.get('measurements')
+        allowed = {'result', 'reason', 'failed_step', 'failure', 'completed_checks', 'measurements',
+                   'ready', 'base', 'integration_repo', 'published_repo', 'source_base', 'source_commits'}
+        if (set(result) == allowed and result['result'] == 'incomplete'
+                and result['failed_step'] == phase and result['completed_checks'] == []
+                and isinstance(measurements, dict) and measurements.get('checks') == []
+                and isinstance(reason, str) and reason.startswith(prefix)
+                and reason[len(prefix):] in CONTRACTS - set(options['include'])
+                and result['failure'] == {'phase': phase, 'command': None, 'exit_code': None, 'diagnostic': reason}):
+            return 'stale-dependency-include-only'
     return 'owner-classification'
 
 
@@ -1837,24 +1855,25 @@ def _release_preflight(primary, common, original, archive, archived_lane, archiv
     """Verify an exact rejected or interrupted source before any publisher action."""
     if original.get('predecessors') or original.get('source_failures'):
         raise sync_git.SyncBlocked('inherited published obligations cannot use predeployment release')
-    interrupted = _release_source_kind(original) == 'interrupted-include-only'
+    source_kind = _release_source_kind(original)
+    owner_rejection = source_kind == 'owner-classification'
     result = original.get('last_result') or {}
     allowed_result = {'result', 'reason', 'owners', 'measurements', 'ready', 'base',
                       'published_repo', 'integration_repo', 'source_base', 'source_commits'}
-    if not interrupted and (original.get('schema_version') != 1 or original.get('phase') != 'reconciling'
+    if owner_rejection and (original.get('schema_version') != 1 or original.get('phase') != 'reconciling'
             or not (original.get('deployment_started') is False
                     or ('deployment_started' not in original and qualification is not None))
             or result.get('result') != 'review-required'
             or result.get('reason') != 'selected owner missing, unadmitted, or conflicting'
             or set(result) - allowed_result
             or result.get('measurements', {}).get('checks', [])):
-        raise sync_git.SyncBlocked('only a recorded pre-publisher owner-classification rejection can be released')
+        raise sync_git.SyncBlocked('release requires a qualifying predeployment rejection or interruption')
     if qualification is not None:
         _release_live_qualification(qualification, original)
     target = original['receipt']['target']
     receipt = original['receipt']
-    if not interrupted and (result.get('ready') != receipt['ready'] or result.get('base') != original['base']
-            or result.get('owners') != sorted(receipt['options']['adopt'])
+    if source_kind != 'interrupted-include-only' and (result.get('ready') != receipt['ready'] or result.get('base') != original['base']
+            or (owner_rejection and result.get('owners') != sorted(receipt['options']['adopt']))
             or any(result.get(key) != original[key] for key in ('integration_repo', 'published_repo'))
             or any(result.get(key) != receipt[key] for key in ('source_base', 'source_commits'))):
         raise sync_git.SyncBlocked('release rejection is not bound to the pending source and selection')
@@ -1880,11 +1899,11 @@ def _release_preflight(primary, common, original, archive, archived_lane, archiv
     for owned, record in ((lane, marker), (published, published_marker)):
         if (not record or record['common_repo'] != str(common) or record['target'] != target
                 or (owned == lane and record['head'] != original['base'])
-                or (not interrupted and record['head'] != original['base'])
+                or (owner_rejection and record['head'] != original['base'])
                 or sync_git.common_dir(owned) != common
                 or sync_git.git(owned, 'rev-parse', 'HEAD') != record['head']):
             raise sync_git.SyncBlocked('release worktree identity, marker or publication HEAD changed')
-        if interrupted and owned == published:
+        if not owner_rejection and owned == published:
             # Source-only history can leave the stable cache behind the published base.
             # It is not modified by release; only an exact owned ancestor is acceptable.
             sync_git.git(published, 'merge-base', '--is-ancestor', record['head'], original['base'])
@@ -1898,7 +1917,8 @@ def _release_preflight(primary, common, original, archive, archived_lane, archiv
         configured['branch'] = target['branch']
         if configured != target:
             raise sync_git.SyncBlocked('release worktree upstream changed')
-        if (sync_git.git_dir(owned) / 'agent-signal-sync.json').exists():
+        receipt_path = admin / 'agent-signal-sync.json'
+        if receipt_path.exists() or receipt_path.is_symlink():
             raise sync_git.SyncBlocked('publisher evidence exists; release cannot undo deployment or publication')
     branch = sync_git.git(lane, 'symbolic-ref', '--short', 'HEAD')
     if branch not in ({INTEGRATION_BRANCH, archived_branch} if lane == old_lane else {archived_branch}):
