@@ -81,12 +81,14 @@ python tools/recovery.py verify
 python tools/recovery.py diff
 python tools/public_check.py
 
-git diff -- recovery.json recovery/current contracts/recovery*.json
+git diff -- recovery.json recovery/current recovery/hermes-local-inventory.json contracts/recovery*.json
 ```
 
 For exact reviewed recovery, use repeated `--artifact HOST:ID` with `snapshot`, `diff`, or `restore`, and repeated `--capture-artifact HOST:ID` with `reconcile.py sync`. Scoped capture verifies the full existing snapshot first. It also accepts new policy artifact rows when every new identity is explicitly selected and removing those rows exactly reproduces the prior policy digest. Existing policy fields and artifact metadata must remain unchanged; removals and unselected additions fail. The resulting full snapshot is verified against the current policy before capture completes. Scoped capture cannot initialize a sparse snapshot. The corresponding selected `diff` must be clean; unrelated live drift can remain pending. Shared manifest or host-delta files with unrelated changed fields require explicit whole-file publication review and `--include`; artifact selection does not authorize those unrelated fields.
 
 For full capture, `diff` must report no changes and no conflicts against the source machine after capture. The manifest is written last, stale files are removed only from its previous managed inventory, and no persistent backup directory is created. When capture runs through `python tools/reconcile.py sync --capture-recovery`, the recovery snapshot and every host-delta recovery-artifact binding are refreshed and validated in the same transaction.
+
+Capturing reviewed Hermes files or settings refreshes the matching fields in the repository inventory. Reconciliation includes the generated inventory in the same publication, including matching changes from an earlier standalone capture. Review unrelated inventory edits and select the file with `--include recovery/hermes-local-inventory.json` when those edits should be published too.
 
 ## Restore safety
 

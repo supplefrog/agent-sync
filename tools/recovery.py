@@ -38,6 +38,7 @@ class RecoveryError(RuntimeError):
 
 HOSTS = ("hermes", "codex", "omp")
 _HOST_SET = frozenset(HOSTS)
+HERMES_INVENTORY = "recovery/hermes-local-inventory.json"
 
 
 _SECRET_PATH_PART = re.compile(
@@ -606,6 +607,135 @@ def _select_artifacts(policy, artifacts=None, hosts=None):
     return set(values)
 
 
+def _inventory_artifact(host, item):
+    source = item["source"]
+    return host == "hermes" and (
+        item["id"] == "settings" or
+        (source.startswith("skills/") and source != "skills/.bundled_manifest") or
+        source.startswith("plugins/hermes-lcm/")
+    )
+
+
+def hermes_inventory_path(repo: Path, artifacts=None, *, policy=None) -> Path | None:
+    """Select the existing inventory only for a capture that covers its data."""
+    path = repo / HERMES_INVENTORY
+    if not path.exists() and not path.is_symlink():
+        if not (repo / ".git").exists():
+            return None
+        import sync_git
+        try:
+            tracked = sync_git.git(repo, "ls-tree", "--name-only", "HEAD", "--", HERMES_INVENTORY)
+        except sync_git.GitFailure:
+            # New repositories can capture before their first commit.
+            tracked = sync_git.git(repo, "ls-files", "--", HERMES_INVENTORY)
+        if not tracked:
+            return None
+    policy = policy if policy is not None else _load_policy(repo / "recovery.json")
+    selected = _select_artifacts(policy, artifacts)
+    if any(f"{host}:{item['id']}" in selected and _inventory_artifact(host, item)
+           for host, item in _policy_artifacts(policy)):
+        return _safe_join(repo, HERMES_INVENTORY, must_exist=True)
+    return None
+
+
+def _inventory_fingerprints(inventory):
+    hashes = {f"skills/{package['path']}/{file['path']}": file["sha256"]
+              for package in inventory["packages"] for file in package["files"]}
+    lcm = inventory["native_plugins"].get("hermes-lcm", {})
+    hashes.update({file["source"]: file["sha256"] for file in lcm.get("runtime_files", [])})
+    return hashes
+
+
+def _refresh_hermes_inventory(inventory, records, prepared, captured):
+    from validate import frontmatter
+
+    if inventory.get("schema_version") != 1:
+        raise RecoveryError("unsupported Hermes recovery inventory schema")
+    packages = {package["path"]: package for package in inventory["packages"]}
+    prior_hashes = _inventory_fingerprints(inventory)
+    hashes = prior_hashes | captured
+    hermes = {row["source"]: row for row in records if _inventory_artifact(row["host"], row)}
+    settings = next((row for source, row in hermes.items()
+                     if row["id"] == "settings" and source in captured), None)
+    if settings is not None:
+        config = json.loads(prepared[settings["snapshot"]])
+        for section, field in (("skills", "skill_selection"), ("plugins", "plugin_selection")):
+            if section in config:
+                inventory[field] = config[section]
+
+    def fingerprint(source):
+        if source not in hashes:
+            raise RecoveryError(f"Hermes inventory has no source hash for {source}; capture that reviewed file")
+        return hashes[source]
+
+    def retained_order(previous, current):
+        return [key for key in dict.fromkeys([*previous, *sorted(current)]) if key in current]
+
+    skills = {PurePosixPath(source).relative_to("skills"): source
+              for source in hermes if source.startswith("skills/")}
+    roots = {path.parent for path in skills if path.name == "SKILL.md"}
+    known_roots = {PurePosixPath(path) for path in packages}
+    files = {}
+    for relative, source in sorted(skills.items(), key=lambda item: str(item[0])):
+        root = next((parent for parent in relative.parents if parent in known_roots), None)
+        if root is None:
+            root = next((parent for parent in reversed(relative.parents) if parent in roots), None)
+        if root is None or root not in roots or root == PurePosixPath("."):
+            raise RecoveryError(f"Hermes inventory file has no reviewed SKILL.md: {source}")
+        name = relative.relative_to(root).as_posix()
+        files.setdefault(root.as_posix(), {})[name] = fingerprint(source)
+    inventory["packages"] = []
+    disabled = set(inventory["skill_selection"].get("disabled", []))
+    for path in retained_order(packages, files):
+        entries = files[path]
+        package = packages.get(path)
+        root = PurePosixPath(path)
+        source = skills[root / "SKILL.md"]
+        if package is None or (source in captured and captured[source] != prior_hashes.get(source)):
+            entry = hermes[source]
+            metadata, _ = frontmatter(prepared[entry["snapshot"]].decode("utf-8"))
+            package = dict(package or {"path": path, "name": root.name, "declared_license": None,
+                                       "exclusions": [], "files": [], "upstream_baseline": None})
+            package["name"] = metadata.get("name") or package["name"]
+            package["declared_license"] = metadata.get("license") or package["declared_license"]
+        inventory["packages"].append(dict(package, disabled=package["name"] in disabled, files=[
+            {"path": name, "sha256": entries[name]}
+            for name in retained_order([file["path"] for file in package["files"]], entries)
+        ]))
+    lcm = inventory["native_plugins"].get("hermes-lcm")
+    if lcm is not None:
+        runtime = {source: fingerprint(source) for source in hermes if source.startswith("plugins/hermes-lcm/")}
+        lcm["runtime_files"] = [
+            {"source": source, "sha256": runtime[source]}
+            for source in retained_order([file["source"] for file in lcm["runtime_files"]], runtime)
+        ]
+    return _canonical_json(inventory)
+
+
+def inventory_matches_capture(repo: Path, previous, current, artifacts) -> bool:
+    """Accept pending derived edits only for the files this capture will refresh."""
+    policy_path = repo / "recovery.json"
+    output = repo / "recovery/current"
+    policy = _load_policy(policy_path)
+    selected = _select_artifacts(policy, artifacts)
+    manifest = (_verify_scoped_capture_baseline(policy_path, output, policy, selected)
+                if artifacts is not None else verify_snapshot(policy_path, output))
+    records = manifest["artifacts"]
+    hashes = _inventory_fingerprints(current)
+    prepared = {}
+    captured = {}
+    for row in records:
+        if not _inventory_artifact(row["host"], row):
+            continue
+        source = row["source"]
+        if row["id"] == "settings" or PurePosixPath(source).name == "SKILL.md":
+            prepared[row["snapshot"]] = _safe_join(output, row["snapshot"], must_exist=True).read_bytes()
+        if f"{row['host']}:{row['id']}" in selected:
+            captured[source] = hashes.get(source, row["sha256"])
+    expected = _refresh_hermes_inventory(deepcopy(previous), records, prepared, captured)
+    return json.loads(expected) == current
+
+
 def _mutation_lock(function):
     @wraps(function)
     def wrapped(policy_path, directory, roots, **kwargs):
@@ -618,6 +748,14 @@ def _mutation_lock(function):
         policy = _load_policy(Path(policy_path))
         selected = _select_artifacts(policy, kwargs.get("artifacts"), kwargs.get("hosts"))
         paths = [Path(directory)]
+        if function.__name__ == "snapshot":
+            repo = Path(policy_path).resolve().parent
+            inventory = kwargs.get("inventory_path")
+            if inventory is None and Path(directory).resolve() == (repo / "recovery/current").resolve():
+                inventory = hermes_inventory_path(repo, selected, policy=policy)
+            if inventory is not None:
+                kwargs["inventory_path"] = Path(inventory)
+                paths.append(Path(inventory))
         # Capture and restore share source/destination root locks so a
         # cooperating restore cannot alter a capture's native input mid-read.
         paths.extend(Path(roots[host]) for host in sorted({v.split(":", 1)[0] for v in selected}) if host in roots)
@@ -649,6 +787,7 @@ def snapshot(
     *,
     repo_root: str | Path | None = None,
     artifacts: Iterable[str] | None = None,
+    inventory_path: Path | None = None,
 ) -> dict[str, Any]:
     """Build a deterministic public-safe snapshot and return its manifest."""
 
@@ -667,6 +806,7 @@ def snapshot(
     prepared: dict[str, bytes] = {}
     records: list[dict[str, Any]] = []
     sources = {}
+    inventory_hashes = {}
 
     for host, artifact in _policy_artifacts(policy):
         identity = f"{host}:{artifact['id']}"
@@ -702,6 +842,8 @@ def snapshot(
         if _file_identity(source) != source_identity:
             raise RecoveryError(f"capture source changed during read: {identity}")
         sources[source] = source_identity
+        if inventory_path is not None and _inventory_artifact(host, artifact):
+            inventory_hashes[source_rel] = source_identity[-1]
         snapshot_rel = str(_canonical_relative(artifact["snapshot"], label=f"{identity} snapshot"))
         if artifact["kind"] == "text":
             _assert_artifact_public_safe(data, snapshot_rel, repo)
@@ -766,25 +908,57 @@ def snapshot(
         if old_manifest is not None and relative not in selected_paths:
             continue
         updates[_safe_join(output_dir, relative, must_exist=False)] = data
+    for stale in sorted(old_paths - set(prepared)):
+        stale_path = _safe_join(output_dir, stale, must_exist=False)
+        if stale_path.is_file():
+            updates[stale_path] = None
+    inventory_original = None
+    if inventory_path is not None:
+        inventory_identity = _file_identity(inventory_path)
+        inventory_original = inventory_path.read_bytes()
+        if inventory_identity is None or _sha256(inventory_original) != inventory_identity[-1]:
+            raise RecoveryError("Hermes inventory changed during capture")
+        inventory_data = _refresh_hermes_inventory(json.loads(inventory_original), records, prepared, inventory_hashes)
+        _assert_public_safe(inventory_data, label=HERMES_INVENTORY)
+        if _file_identity(inventory_path) != inventory_identity:
+            raise RecoveryError("Hermes inventory changed during capture")
+        if inventory_data != inventory_original:
+            updates[inventory_path] = inventory_data
     updates[_safe_join(output_dir, "manifest.json", must_exist=False)] = manifest_data
-    originals = {path: path.read_bytes() if path.is_file() else None for path in updates}
-    identities = {path: _file_identity(path) for path in updates}
+    originals, identities = {}, {}
+    for path in updates:
+        if path == inventory_path:
+            originals[path], identities[path] = inventory_original, inventory_identity
+            continue
+        identity = _file_identity(path)
+        original = path.read_bytes() if identity is not None else None
+        if identity is not None and _sha256(original) != identity[-1]:
+            raise RecoveryError(f"snapshot output changed while saving rollback data: {path}")
+        originals[path], identities[path] = original, identity
     written = {}
     try:
         for path, data in updates.items():
             if _file_identity(path) != identities[path]:
                 raise RecoveryError(f"snapshot output changed before commit: {path}")
-            _atomic_write(path, data)
+            if data is None:
+                path.unlink()
+            else:
+                _atomic_write(path, data)
             written[path] = _file_identity(path)
-            if path.read_bytes() != data:
+            if (path.read_bytes() if path.is_file() else None) != data:
                 raise RecoveryError(f"snapshot output readback mismatch: {path}")
         if old_manifest is not None:
             verify_snapshot(policy_path, output_dir)
+        if inventory_path is not None and (
+                _file_identity(inventory_path) != written.get(inventory_path, inventory_identity)
+                or inventory_path.read_bytes() != inventory_data):
+            raise RecoveryError("Hermes inventory changed during capture readback")
     except Exception as exc:
         incomplete = []
         for path in reversed(written):
             try:
-                if _file_identity(path) != written[path] or path.read_bytes() != updates[path]:
+                if (_file_identity(path) != written[path]
+                        or (path.read_bytes() if path.is_file() else None) != updates[path]):
                     raise RecoveryError("snapshot output changed after write")
                 if originals[path] is None:
                     path.unlink()
@@ -802,10 +976,6 @@ def snapshot(
             (backup / "conflicts.json").write_bytes(_canonical_json(evidence))
             raise RecoveryError(f"snapshot failed; rollback conflicts preserved at {backup}") from exc
         raise
-    for stale in sorted(old_paths - set(prepared)):
-        stale_path = _safe_join(output_dir, stale, must_exist=False)
-        if stale_path.is_file() and not _is_reparse_point(stale_path):
-            stale_path.unlink()
     return manifest
 
 

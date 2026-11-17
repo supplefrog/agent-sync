@@ -17,6 +17,129 @@ class ScopedReconcileTests(unittest.TestCase):
     setup_git = completion.CompleteSyncTests.setup_git
     run_sync = completion.CompleteSyncTests.run_sync
 
+    def _hermes_inventory_fixture(self, root):
+        repo, live, remote = self.setup_git(root)
+        native = root / 'hermes'
+        native.mkdir()
+        policy = repo / 'recovery.json'
+        recovery = self.reconcile.recovery
+        inventory = repo / recovery.HERMES_INVENTORY
+        inventory.parent.mkdir()
+        inventory.write_text(json.dumps({'schema_version': 1, 'packages': [], 'native_plugins': {},
+            'excluded_state': ['private state'], 'skill_selection': {}, 'plugin_selection': {}}))
+        settings = native / 'config.json'
+        settings.write_text('{"skills":{"disabled":[]},"plugins":{"enabled":[]}}')
+        policy.write_text(json.dumps({'schema_version': 1, 'machine': 'test', 'public_safe': True,
+            'hosts': {'hermes': {'artifacts': [{'id': 'settings', 'kind': 'config', 'format': 'json',
+                'strategy': 'merge', 'source': 'config.json', 'snapshot': 'hosts/hermes/config.json',
+                'include': ['skills', 'plugins']}]}}}))
+        recovery.snapshot(policy, repo / 'recovery/current', {'hermes': native})
+        self.git(repo, 'add', '.')
+        self.git(repo, 'commit', '-m', 'reviewed capture baseline')
+        self.git(repo, 'push', 'origin', 'main')
+        settings.write_text('{"skills":{"disabled":["weekly-review"]},"plugins":{"enabled":["example"]}}')
+        return repo, live, remote, native, inventory
+
+    def _sync_hermes_inventory(self, repo, live, native):
+        with patch.object(self.reconcile, '_run_checks', return_value=[]):
+            return self.reconcile.complete_sync(repo, machine='test', skill_roots=[live],
+                recovery_roots={'hermes': native}, recovery_artifacts=['hermes:settings'])
+
+    def test_hermes_capture_publishes_generated_inventory_with_settings(self):
+        for standalone in (False, True):
+            with self.subTest(standalone=standalone), tempfile.TemporaryDirectory() as temp:
+                repo, live, remote, native, inventory = self._hermes_inventory_fixture(Path(temp))
+                recovery = self.reconcile.recovery
+                if standalone:
+                    recovery.snapshot(repo / 'recovery.json', repo / 'recovery/current',
+                                      {'hermes': native}, artifacts=['hermes:settings'])
+                report = self._sync_hermes_inventory(repo, live, native)
+                self.assertEqual('synced', report['result'], report)
+                published = json.loads(self.git(remote, 'show', 'main:' + recovery.HERMES_INVENTORY))
+                self.assertEqual({'disabled': ['weekly-review']}, published['skill_selection'])
+                self.assertEqual({'enabled': ['example']}, published['plugin_selection'])
+                self.assertEqual(['private state'], published['excluded_state'])
+                self.assertEqual(published, json.loads(inventory.read_bytes()))
+
+    def test_hermes_capture_keeps_unselected_inventory_edits_out_of_publication(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote, native, inventory = self._hermes_inventory_fixture(Path(temp))
+            recovery = self.reconcile.recovery
+            recovery.snapshot(repo / 'recovery.json', repo / 'recovery/current',
+                              {'hermes': native}, artifacts=['hermes:settings'])
+            current = json.loads(inventory.read_bytes())
+            current['excluded_state'].append('pending edit')
+            inventory.write_text(json.dumps(current))
+            old_head = self.git(remote, 'rev-parse', 'main')
+            report = self._sync_hermes_inventory(repo, live, native)
+            self.assertEqual('incomplete', report['result'], report)
+            self.assertIn('Hermes inventory has unselected edits', report['reason'])
+            self.assertEqual(current, json.loads(inventory.read_bytes()))
+            self.assertEqual(old_head, self.git(remote, 'rev-parse', 'main'))
+
+    def test_hermes_capture_rejects_a_missing_tracked_inventory(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote, native, inventory = self._hermes_inventory_fixture(Path(temp))
+            old_head = self.git(remote, 'rev-parse', 'main')
+            snapshot = repo / 'recovery/current/hosts/hermes/config.json'
+            before = snapshot.read_bytes()
+            inventory.unlink()
+            report = self._sync_hermes_inventory(repo, live, native)
+            self.assertEqual('incomplete', report['result'], report)
+            self.assertIn('required artifact is missing', report['reason'])
+            self.assertEqual(before, snapshot.read_bytes())
+            self.assertEqual(old_head, self.git(remote, 'rev-parse', 'main'))
+
+    def test_hermes_capture_preserves_external_inventory_edit_during_rollback(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote, native, inventory = self._hermes_inventory_fixture(Path(temp))
+            recovery = self.reconcile.recovery
+            old_head = self.git(remote, 'rev-parse', 'main')
+            snapshot = repo / 'recovery/current/hosts/hermes/config.json'
+            old_snapshot = snapshot.read_bytes()
+            write = recovery._atomic_write
+            def concurrent_edit(target, data):
+                write(target, data)
+                if target == inventory:
+                    target.write_bytes(b'external edit')
+            with patch.object(recovery, '_atomic_write', side_effect=concurrent_edit):
+                report = self._sync_hermes_inventory(repo, live, native)
+            self.assertEqual('incomplete', report['result'], report)
+            self.assertEqual(b'external edit', inventory.read_bytes())
+            self.assertEqual(old_snapshot, snapshot.read_bytes())
+            self.assertEqual(old_head, self.git(remote, 'rev-parse', 'main'))
+
+    def test_hermes_capture_never_publishes_inventory_edited_after_capture(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, remote, native, inventory = self._hermes_inventory_fixture(Path(temp))
+            old_head = self.git(remote, 'rev-parse', 'main')
+            sync = self.reconcile.sync
+            def concurrent_edit(*args, **kwargs):
+                report = sync(*args, **kwargs)
+                self.assertEqual('applied', report['result'], report)
+                inventory.write_bytes(b'external edit')
+                return report
+            with patch.object(self.reconcile, 'sync', side_effect=concurrent_edit):
+                report = self._sync_hermes_inventory(repo, live, native)
+            self.assertEqual('incomplete', report['result'], report)
+            self.assertIn('Hermes inventory changed after capture', report['reason'])
+            self.assertEqual(b'external edit', inventory.read_bytes())
+            self.assertEqual(old_head, self.git(remote, 'rev-parse', 'main'))
+
+    def test_hermes_capture_preserves_unchanged_inventory_identity_during_owner_update(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, live, _, native, inventory = self._hermes_inventory_fixture(Path(temp))
+            recovery = self.reconcile.recovery
+            recovery.snapshot(repo / 'recovery.json', repo / 'recovery/current',
+                              {'hermes': native}, artifacts=['hermes:settings'])
+            identity = self.fleet.path_identity(inventory)
+            (repo / 'skills/kept/fixture.txt').write_text('reviewed content update\n')
+            report = self.reconcile.sync(repo, machine='test', adopt=['kept'], skill_roots=[live],
+                recovery_roots={'hermes': native}, recovery_artifacts=['hermes:settings'],
+                scoped=True, check_commands=[], public_receipts=[])
+            self.assertEqual('applied', report['result'], report)
+            self.assertEqual(identity, self.fleet.path_identity(inventory))
+
     def extra_owner(self, repo, live):
         fixtures.write_skill(repo, 'other', 'baseline other')
         registry = json.loads((repo / 'registry.json').read_text())

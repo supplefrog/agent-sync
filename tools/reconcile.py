@@ -464,6 +464,9 @@ def _transaction_lock(function):
             paths.extend([repo / "recovery/current", repo / "host-deltas.json"])
             roots = kwargs.get("recovery_roots") or recovery._default_roots()
             selected = kwargs.get("recovery_artifacts")
+            inventory = recovery.hermes_inventory_path(repo, selected)
+            if inventory is not None:
+                paths.append(inventory)
             hosts = {value.split(":", 1)[0] for value in selected} if selected else set(roots)
             paths.extend(Path(roots[host]) for host in hosts if host in roots)
         with sync_git.path_locks(paths):
@@ -833,6 +836,7 @@ def sync(
     binding_identities: Sequence[str] = (),
     ready_input: Mapping[str, Any] | None = None,
     public_receipts: Sequence[str] | None = None,
+    expected_inventory_hash: str | None = None,
 ) -> dict[str, Any]:
     """Reconcile selected owners and optionally capture allowlisted host state."""
 
@@ -926,11 +930,24 @@ def sync(
         workspace = Path(temporary)
         backup = workspace / "backup"
         prepared_recovery: Path | None = None
+        prepared_inventory: Path | None = None
+        inventory_path = None
+        inventory_before = None
+        inventory_after = None
         recovery_before: str | None = None
         recovery_after: str | None = None
         resolved_recovery_roots = dict(recovery_roots) if recovery_roots is not None else recovery._default_roots()
         if capture_recovery:
             prepared_recovery = workspace / "prepared-recovery"
+            inventory_path = recovery.hermes_inventory_path(repo, recovery_artifacts)
+            if inventory_path is not None:
+                inventory_identity = _mutation_identity(inventory_path)
+                prepared_inventory = workspace / "hermes-local-inventory.json"
+                _copy_optional(inventory_path, prepared_inventory)
+            if expected_inventory_hash is not None and (
+                    (fleet.sha256_file(prepared_inventory) if prepared_inventory else "deleted")
+                    != expected_inventory_hash):
+                raise RuntimeError("Hermes inventory changed after publication preflight")
             if recovery_artifacts is not None:
                 shutil.copytree(repo / "recovery/current", prepared_recovery)
             recovery.snapshot(
@@ -939,9 +956,17 @@ def sync(
                 resolved_recovery_roots,
                 repo_root=repo,
                 artifacts=recovery_artifacts,
+                **({"inventory_path": prepared_inventory} if prepared_inventory is not None else {}),
             )
             recovery_before = _tree_hash(repo / "recovery" / "current")
             recovery_after = _tree_hash(prepared_recovery)
+            if prepared_inventory is not None:
+                if _mutation_identity(inventory_path) != inventory_identity:
+                    raise RuntimeError("Hermes inventory changed during recovery preparation")
+                inventory_before = fleet.sha256_file(inventory_path)
+                inventory_after = fleet.sha256_file(prepared_inventory)
+                recovery_before = hashlib.sha256((recovery_before + inventory_before).encode()).hexdigest()
+                recovery_after = hashlib.sha256((recovery_after + inventory_after).encode()).hexdigest()
 
         binding_sources = set(binding_identities)
         binding_result = None
@@ -1024,7 +1049,7 @@ def sync(
             _publication_receipt_paths(repo, {'request_id': request_id, 'operational_receipt': reference},
                                        [_request_relative(request_id)] if public_receipts is None else public_receipts)
             return {"schema_version": 1, "result": "unchanged", "mutation_performed": False, "request_id": request_id,
-                    "owners": owners, "operational_receipt": reference}
+                    "owners": owners, "operational_receipt": reference, "inventory_sha256": inventory_after}
 
         if ready_input is not None and (names or capture_recovery):
             sync_git.mark_integration_deployment_started(repo, ready_input['attempt'])
@@ -1076,11 +1101,16 @@ def sync(
             targets.append(fleet_snapshot)
         if capture_recovery:
             targets.extend([repo / "recovery" / "current", host_delta_path])
+            if inventory_path is not None:
+                targets.append(inventory_path)
         elif binding_result is not None:
             targets.append(host_delta_path)
         prewrite = {target: _mutation_identity(target) for target in targets}
+        if inventory_path is not None and prewrite[inventory_path] != inventory_identity:
+            raise RuntimeError("Hermes inventory changed before recovery installation")
         snapshot_existed = _copy_optional(fleet_snapshot, backup / "snapshot") if states else False
         recovery_existed = _copy_optional(repo / "recovery" / "current", backup / "recovery") if capture_recovery else False
+        inventory_existed = _copy_optional(inventory_path, backup / "hermes-local-inventory.json") if inventory_path is not None else False
         host_delta_existed = _copy_optional(host_delta_path, backup / "host-deltas.json") if capture_recovery or binding_result is not None else False
         host_delta_before = fleet.sha256_file(host_delta_path) if host_delta_existed else None
         host_delta_after = host_delta_before
@@ -1103,13 +1133,13 @@ def sync(
                 raise RuntimeError("transaction target changed before mutation")
             attempted.add(target)
         installed_state = None
-        def wrote(target, saved, existed, expected_sha=None):
+        def wrote(target, saved, existed, expected_sha=None, *, installed=None):
             if expected_sha is not None and fleet.installed_hash(target) != expected_sha:
                 rollback_conflicts.append(str(target))
                 return
             # Repeated own writes share one original backup and latest identity.
             written[:] = [row for row in written if row[0] != target]
-            written.append((target, saved, existed, _mutation_identity(target)))
+            written.append((target, saved, existed, installed if installed is not None else _mutation_identity(target)))
         try:
             failed_phase = "canonicalize"
             for state in states:
@@ -1126,6 +1156,13 @@ def sync(
                 before_write(repo / "recovery" / "current")
                 _replace_tree(prepared_recovery, repo / "recovery" / "current")
                 wrote(repo / "recovery" / "current", backup / "recovery", recovery_existed)
+            if prepared_inventory is not None and inventory_before != inventory_after:
+                before_write(inventory_path)
+                recovery._atomic_write(inventory_path, prepared_inventory.read_bytes())
+                installed = _mutation_identity(inventory_path)
+                if installed[-1] != ("file", inventory_after):
+                    raise RuntimeError("Hermes inventory readback differs from prepared capture")
+                wrote(inventory_path, backup / "hermes-local-inventory.json", inventory_existed, installed=installed)
             if binding_result is not None:
                 before_write(host_delta_path)
                 host_deltas._write_bound_manifest(host_delta_path, binding_result["manifest"], binding_input_identity)
@@ -1211,6 +1248,7 @@ def sync(
                 )
                 if postflight["changes"] or postflight["conflicts"]:
                     raise RuntimeError("recovery postflight verification failed")
+                _verify_inventory_readback(repo, inventory_after)
             if binding_result is not None:
                 host_deltas._validate_bindings(host_deltas._load_manifest_unbound(host_delta_path, repo),
                     prospective, source_identities=binding_sources)
@@ -1320,7 +1358,7 @@ def sync(
                 # distinct; preserve their status with the retained backup.
                 fleet.atomic_json(durable / "outcome.json", report)
             return report
-    report = {"schema_version": 1, "result": "applied", "mutation_performed": True, "request_id": request_id, "owners": owners, "operational_receipt": _request_reference(repo, saved_request_path, request_id)}
+    report = {"schema_version": 1, "result": "applied", "mutation_performed": True, "request_id": request_id, "owners": owners, "operational_receipt": _request_reference(repo, saved_request_path, request_id), "inventory_sha256": inventory_after}
     if binding_result is not None:
         report["binding_refresh"] = {"committed": True, "selected": binding_result["selected"],
                                      "deferred": binding_result["deferred"]}
@@ -1343,7 +1381,10 @@ def _recovery_owned_paths(repo: Path) -> set[str]:
     actual = {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}
     if actual != owned or any(p.is_symlink() for p in root.rglob("*")):
         raise RuntimeError("unexpected recovery files require review; capture cannot delete or publish them")
-    return {"recovery/current/" + name for name in owned}
+    result = {"recovery/current/" + name for name in owned}
+    if recovery.hermes_inventory_path(repo) is not None:
+        result.add(recovery.HERMES_INVENTORY)
+    return result
 
 
 
@@ -1401,6 +1442,30 @@ def _capture_shared_preflight(repo, artifacts, included):
         current = _recovery_metadata_policy(json.loads((repo / "host-deltas.json").read_text(encoding="utf-8")), current_manifest, artifacts)
         if baseline != current:
             raise sync_git.SyncBlocked("unselected host-delta fields differ; review the exact shared metadata file before publication")
+    return _capture_inventory_preflight(repo, artifacts, included)
+
+
+def _capture_inventory_preflight(repo, artifacts, included):
+    import sync_git
+
+    inventory = recovery.hermes_inventory_path(repo, artifacts)
+    if inventory is None:
+        return "deleted"
+    data = inventory.read_bytes()
+    if recovery.HERMES_INVENTORY not in included:
+        committed = json.loads(sync_git.git(repo, "show", "HEAD:" + recovery.HERMES_INVENTORY))
+        current = json.loads(data)
+        if committed != current and not recovery.inventory_matches_capture(repo, committed, current, artifacts):
+            raise sync_git.SyncBlocked("Hermes inventory has unselected edits; review the exact inventory file before publication")
+    return hashlib.sha256(data).hexdigest()
+
+
+def _verify_inventory_readback(repo, expected, files=None):
+    if expected is None:
+        return
+    if (fleet.path_identity(repo / recovery.HERMES_INVENTORY)[-1] != ("file", expected)
+            or (files is not None and files.get(recovery.HERMES_INVENTORY) != expected)):
+        raise RuntimeError("Hermes inventory changed after capture")
 
 
 def _scope_dependencies(repo, machine, names, capture=False, recovery_artifacts=None, binding_identities=(), *, project_bindings=False):
@@ -1428,7 +1493,7 @@ def _scope_dependencies(repo, machine, names, capture=False, recovery_artifacts=
         dependencies["binding_metadata_policy"] = _binding_policy(metadata, derived, project_derived=project_bindings)
     if capture:
         dependencies["recovery_artifacts"] = sorted(recovery_artifacts or ())
-        paths += ["recovery.json", "tools/recovery.py", "tools/host_deltas.py"]
+        paths += ["recovery.json", "tools/recovery.py", "tools/host_deltas.py", "tools/validate.py"]
         dependencies["recovery_metadata_policy"] = _recovery_metadata_policy(json.loads((repo / "host-deltas.json").read_text(encoding="utf-8")), json.loads((repo / "recovery/current/manifest.json").read_text(encoding="utf-8")), recovery_artifacts)
         derived = set(binding_identities) | _binding_selection(dependencies["recovery_metadata_policy"], names, recovery_artifacts)
         for row in dependencies["recovery_metadata_policy"]["entries"]:
@@ -1618,6 +1683,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                         raise sync_git.SyncBlocked("selected work depends on unpublished admission, destination, or execution changes; include the reviewed dependency")
 
             checked_agents = pending.get("agent_identities") if pending else None
+            captured_inventory = pending["files"].get(recovery.HERMES_INVENTORY) if pending and capture else None
             expected_owners = pending.get("owner_identities", {}) if pending else {}
             def readback():
                 if retirement_publication is not None:
@@ -1634,6 +1700,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                     probe = recovery.restore(repo / "recovery.json", repo / "recovery/current", roots, apply=False, repo_root=repo, artifacts=artifacts)
                     if probe["changes"] or probe["conflicts"]:
                         raise sync_git.SyncBlocked("selected native recovery changed after capture")
+                    _verify_inventory_readback(repo, captured_inventory)
                 if checked_agents is not None and _agent_scope_identities(destinations, names) != checked_agents:
                     raise sync_git.SyncBlocked("selected agent content or managed identity changed during sync")
                 if names:
@@ -1686,8 +1753,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                 _operational_receipt_state(repo, pending)
                 return finish(sync_git.publish(repo, pending, verify=verify, readback=readback, integration_attempt=integration_attempt), pending)
             target = sync_git.destination(repo)
-            if capture:
-                _capture_shared_preflight(repo, artifacts, set(include))
+            inventory_hash = _capture_shared_preflight(repo, artifacts, set(include)) if capture else None
             snapshot = _snapshot(repo) if names else None
             states = {name: _skill_state(repo, snapshot, destinations, name) for name in names}
             if integration_attempt is not None and any(state.get("origin") for state in states.values()):
@@ -1715,6 +1781,8 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
             if capture:
                 selected.add("host-deltas.json")
                 selected.add("recovery/current/manifest.json")
+                if recovery.hermes_inventory_path(repo, artifacts) is not None:
+                    selected.add(recovery.HERMES_INVENTORY)
                 policy = recovery._load_policy(repo / "recovery.json")
                 selected.update("recovery/current/" + item["snapshot"] for host, item in recovery._policy_artifacts(policy) if f"{host}:{item['id']}" in set(artifacts))
             if not selected and not names:
@@ -1751,6 +1819,7 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                                   skill_roots=skill_roots, capture_recovery=capture, recovery_artifacts=artifacts,
                                   check_commands=[], scoped=True, binding_repo=candidate, binding_identities=sorted(bind_owners),
                                   public_receipts=approved_paths,
+                                  **({"expected_inventory_hash": inventory_hash} if inventory_hash is not None else {}),
                                   ready_input={"attempt": integration_attempt, "files": before_files,
                                                "agent_identities": before_agents} if integration_attempt is not None else None)
                     if result["result"] not in {"applied", "unchanged"}:
@@ -1759,9 +1828,11 @@ def _scoped_complete_sync(repo, *, machine, adopt, recovery_roots, skill_roots,
                     sync_git.assert_publication_paths(repo, approved_paths, outgoing)
                     selected = outgoing
                     operational_receipt = result.get("operational_receipt")
+                    captured_inventory = result.get("inventory_sha256")
             checked_agents = _agent_scope_identities(destinations, names)
             readback()
             final_files = sync_git.identities(repo, selected)
+            _verify_inventory_readback(repo, captured_inventory, final_files)
             sync_git.assert_publication_paths(repo, approved_paths, final_files)
             publication_overrides = {}
             if project_bindings and bind_owners:
@@ -1854,6 +1925,7 @@ def _complete_source_sync(
             resolved_roots = {host: str(Path(path).resolve()) for host, path in
                               (recovery_roots if recovery_roots is not None else recovery._default_roots()).items()}
             checked_agents = pending.get("agent_identities") if pending else None
+            captured_inventory = pending["files"].get(recovery.HERMES_INVENTORY) if pending and capture else None
             receipt_state = pending
             commands = [
                 [sys.executable, str(repo / "tools/validate.py")],
@@ -1888,6 +1960,7 @@ def _complete_source_sync(
                                               apply=False, repo_root=repo)
                     if report["changes"] or report["conflicts"]:
                         raise RuntimeError("agent settings differ from their saved recovery files")
+                    _verify_inventory_readback(repo, captured_inventory)
 
             def verify():
                 readback()
@@ -1951,6 +2024,7 @@ def _complete_source_sync(
             if blocked:
                 return {"result": "review-required", "findings": blocked}
             recovery_owned = _recovery_owned_paths(repo) if capture else set()
+            inventory_hash = _capture_inventory_preflight(repo, None, set(include)) if capture else None
             agents_before = _agent_identities(destinations)
             before = sync_git.changed(repo)
             selected = {sync_git.safe_path(repo, name) for name in include}
@@ -1991,11 +2065,13 @@ def _complete_source_sync(
             operational_receipt = None
             if names or capture:
                 result = sync(repo, machine=machine, adopt=sorted(names), recovery_roots=recovery_roots,
-                              skill_roots=skill_roots, capture_recovery=capture, public_receipts=selected)
+                              skill_roots=skill_roots, capture_recovery=capture, public_receipts=selected,
+                              **({"expected_inventory_hash": inventory_hash} if inventory_hash is not None else {}))
                 if result["result"] not in {"applied", "unchanged"}:
                     return result
                 selected.update(_publication_receipt_paths(repo, result, selected))
                 operational_receipt = result.get("operational_receipt")
+                captured_inventory = result.get("inventory_sha256")
                 if result.get("binding_refresh"):
                     selected.add("host-deltas.json")
             checked_agents = _agent_identities(destinations)
@@ -2007,19 +2083,23 @@ def _complete_source_sync(
             selected.update(name for name in sync_git.changed(repo) if any(name.startswith(f"skills/{owner}/") for owner in names))
             if capture:
                 selected.update(sync_git.changed(repo) & (_recovery_owned_paths(repo) | {"host-deltas.json"}))
+                if captured_inventory is not None:
+                    selected.add(recovery.HERMES_INVENTORY)
             if capture and machine == "local-windows" and all((repo / name).is_file() for name in evidence_paths):
                 import audit
                 selected.update(audit.refresh_current_evidence(repo))
             if sync_git.changed(repo) - selected:
                 raise sync_git.SyncBlocked("unreviewed changes appeared during reconciliation")
             instruction_changes.check(repo, repo, "HEAD", selected)
+            files = sync_git.identities(repo, selected)
+            _verify_inventory_readback(repo, captured_inventory, files)
             pending = {"schema_version": 2, "machine": machine, "owners": sorted(names),
                        "destinations": [str(p) for _, p in destinations], "capture_recovery": capture,
                        "recovery_roots": resolved_roots, "agent_identities": checked_agents,
                        "operational_receipt": operational_receipt,
                        "operational_receipt_required": bool(names or capture),
                        "target": target, "base": sync_git.git(repo, "rev-parse", "HEAD"),
-                       "message": message, "files": sync_git.identities(repo, selected)}
+                       "message": message, "files": files}
             sync_git.save_pending(repo, pending)
             return publish_broad(pending)
     except (OSError, RuntimeError, subprocess.SubprocessError) as exc:
@@ -2121,20 +2201,30 @@ def complete_defaults_sync(repo, *, hosts=None, **options):
             paths = [repo / "recovery/current", repo / "host-deltas.json", profile_path,
                      *(entry["path"] for entry in prepared.entries),
                      *(Path(roots[host]) for host in {item.split(":", 1)[0] for item in artifacts})]
+            inventory = recovery.hermes_inventory_path(repo, artifacts)
+            if inventory is not None:
+                paths.append(inventory)
             with sync_git.path_locks(paths), tempfile.TemporaryDirectory(prefix="agent-sync-defaults-stage-") as temporary:
                 policy_rows = {f"{host}:{item['id']}": item for host, item in recovery._policy_artifacts(policy)}
                 # Ordinary editors do not honor our locks. Freeze every implicit
                 # output before reading its baseline or preparing candidate checks.
                 derived = {"recovery/current/manifest.json", "host-deltas.json", profile_name}
                 derived.update("recovery/current/" + policy_rows[item]["snapshot"] for item in artifacts)
+                capture_options = {}
+                if inventory is not None:
+                    derived.add(recovery.HERMES_INVENTORY)
+                    capture_options["inventory_path"] = Path(temporary) / "hermes-local-inventory.json"
                 expected = {name: fleet.path_identity(repo / name) for name in derived}
                 _capture_shared_preflight(repo, artifacts, included)
                 if profile_name not in included and outside_profile(baseline_profile) != outside_profile(json.loads(profile_path.read_text(encoding="utf-8"))):
                     raise sync_git.SyncBlocked("unselected observed profile fields differ; include the reviewed profile")
                 stage = Path(temporary) / "snapshot"
                 shutil.copytree(repo / "recovery/current", stage)
+                if inventory is not None:
+                    _copy_optional(inventory, capture_options["inventory_path"])
                 # Capture current allowlisted data first; only approved selector keys are projected.
-                manifest = recovery.snapshot(repo / "recovery.json", stage, roots, repo_root=repo, artifacts=artifacts)
+                manifest = recovery.snapshot(repo / "recovery.json", stage, roots, repo_root=repo,
+                                             artifacts=artifacts, **capture_options)
                 records = {f"{row['host']}:{row['id']}": row for row in manifest["artifacts"]}
                 for entry in prepared.entries:
                     identity = entry["host"] + ":settings"
@@ -2176,10 +2266,12 @@ def complete_defaults_sync(repo, *, hosts=None, **options):
                 # Bind observations to the actual allowlisted readback, using the
                 # capture serializer that subsequent scoped sync will repeat.
                 recovery.snapshot(repo / "recovery.json", stage, roots,
-                                  repo_root=repo, artifacts=artifacts)
+                                  repo_root=repo, artifacts=artifacts, **capture_options)
                 targets["recovery/current/manifest.json"] = (stage / "manifest.json").read_bytes()
                 targets.update({"recovery/current/" + policy_rows[item]["snapshot"]:
                                 (stage / policy_rows[item]["snapshot"]).read_bytes() for item in artifacts})
+                if inventory is not None:
+                    targets[recovery.HERMES_INVENTORY] = capture_options["inventory_path"].read_bytes()
                 observation = instruction_profile.refresh_observed_profile(repo, receipt, write=False, snapshot=stage)
                 targets[observation["path"]] = _json_bytes(observation["value"])
                 if recovery._file_identity(profile_path) != observation["expected_identity"]:
@@ -2200,8 +2292,10 @@ def complete_defaults_sync(repo, *, hosts=None, **options):
                     written.append(journal)
                     recovery._atomic_write(target, data)
                     journal[3] = fleet.path_identity(target)
+                    if journal[3][-1] != ("file", hashlib.sha256(data).hexdigest()):
+                        raise sync_git.SyncBlocked("selected derived metadata changed during default installation")
                 options.update(capture_recovery=True, scoped=True, recovery_artifacts=artifacts,
-                               include=sorted(included | set(targets)))
+                               include=sorted(included | (set(targets) - {recovery.HERMES_INVENTORY})))
                 report = complete_sync(repo, **options)
                 report["defaults"] = receipt
                 if getattr(prepared, "private_backup", None) is not None:

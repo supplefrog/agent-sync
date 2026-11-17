@@ -164,6 +164,142 @@ class ScopedRecoveryTests(unittest.TestCase):
         recovery.restore(self.policy, self.snapshot, {'hermes': self.roots['hermes']}, artifacts=['hermes:settings'], apply=True)
         self.assertEqual(json.loads(target.read_text()), {'model': 'old', 'private': 'keep'})
 
+    def _reviewed_inventory(self):
+        policy = json.loads(self.policy.read_text())
+        artifacts = policy['hosts']['hermes']['artifacts']
+        artifacts[0]['include'].extend(['skills', 'plugins'])
+        self.hermes = self.roots['hermes']
+        (self.hermes / 'config.json').write_text(json.dumps({
+            'model': 'old', 'skills': {'disabled': []}, 'plugins': {'enabled': []},
+        }))
+        for name in ('SKILL.md', 'old.md'):
+            source = 'skills/example/' + name
+            (self.hermes / source).parent.mkdir(parents=True, exist_ok=True)
+            (self.hermes / source).write_bytes(b'---\nname: example\nlicense: MIT\n---\nSkill.\n' if name == 'SKILL.md' else b'Original.\n')
+            artifacts.append({'id': 'example-' + name.lower().split('.')[0], 'kind': 'text',
+                'source': source, 'snapshot': 'hermes/' + source, 'format': 'text',
+                'strategy': 'replace-if-absent'})
+        self.policy.write_text(json.dumps(policy))
+        self.snapshot = self.root / 'recovery/current'
+        inventory = self.root / 'recovery/hermes-local-inventory.json'
+        inventory.parent.mkdir()
+        inventory.write_text(json.dumps({'schema_version': 1, 'packages': [],
+            'excluded_state': ['private state'], 'native_plugins': {}, 'skill_selection': {},
+            'plugin_selection': {}}))
+        recovery.snapshot(self.policy, self.snapshot, self.roots)
+        return inventory
+
+    def test_inventory_follows_only_selected_capture_and_rolls_back_with_snapshot(self):
+        inventory = self._reviewed_inventory()
+        roots = {'hermes': self.hermes}
+        initial = json.loads(inventory.read_bytes())
+        self.assertEqual(['SKILL.md', 'old.md'], [r['path'] for r in initial['packages'][0]['files']])
+        self.assertEqual('MIT', initial['packages'][0]['declared_license'])
+        live_file = self.hermes / 'skills/example/old.md'
+        live_file.write_bytes(b'Updated with native line endings.\r\n')
+        (self.hermes / 'skills/example/unreviewed.md').write_text('Ignore this file.')
+        (self.hermes / 'config.json').write_text(json.dumps({
+            'model': 'old', 'skills': {'disabled': ['example']}, 'plugins': {'enabled': ['demo']},
+        }))
+        recovery.snapshot(self.policy, self.snapshot, roots, artifacts=['hermes:example-old'])
+        current = json.loads(inventory.read_bytes())
+        self.assertEqual(initial['skill_selection'], current['skill_selection'])
+        self.assertEqual(initial['plugin_selection'], current['plugin_selection'])
+        self.assertEqual(initial['excluded_state'], current['excluded_state'])
+        self.assertEqual([
+            initial['packages'][0]['files'][0],
+            {'path': 'old.md', 'sha256': recovery._sha256(live_file.read_bytes())},
+        ], current['packages'][0]['files'])
+        self.assertFalse(current['packages'][0]['disabled'])
+        baseline = inventory.read_bytes()
+        with patch.object(recovery, 'verify_snapshot', side_effect=recovery.RecoveryError('injected failure')):
+            with self.assertRaisesRegex(recovery.RecoveryError, 'injected failure'):
+                recovery.snapshot(self.policy, self.snapshot, roots, artifacts=['hermes:settings'])
+        self.assertEqual(baseline, inventory.read_bytes())
+        recovery.snapshot(self.policy, self.snapshot, roots, artifacts=['hermes:settings'])
+        current = json.loads(inventory.read_bytes())
+        self.assertEqual({'disabled': ['example']}, current['skill_selection'])
+        self.assertEqual({'enabled': ['demo']}, current['plugin_selection'])
+        self.assertTrue(current['packages'][0]['disabled'])
+        self.assertEqual(initial['excluded_state'], current['excluded_state'])
+        (self.hermes / 'skills/example/SKILL.md').write_text(
+            '---\nname: new-example\nlicense: Apache-2.0\n---\nSkill.\n')
+        (self.hermes / 'config.json').write_text(json.dumps({
+            'model': 'old', 'skills': {'disabled': ['new-example']}, 'plugins': {'enabled': ['demo']},
+        }))
+        recovery.snapshot(self.policy, self.snapshot, roots, artifacts=['hermes:settings', 'hermes:example-skill'])
+        current = json.loads(inventory.read_bytes())
+        self.assertEqual('new-example', current['packages'][0]['name'])
+        self.assertEqual('Apache-2.0', current['packages'][0]['declared_license'])
+        self.assertTrue(current['packages'][0]['disabled'])
+
+    def test_inventory_follows_reviewed_addition_and_full_policy_removal(self):
+        inventory = self._reviewed_inventory()
+        policy = json.loads(self.policy.read_text())
+        old = policy['hosts']['hermes']['artifacts'][-1]
+        new = dict(old, id='example-new', source='skills/example/new.md', snapshot='hermes/skills/example/new.md')
+        (self.hermes / new['source']).write_text('Reviewed addition.\n')
+        policy['hosts']['hermes']['artifacts'].append(new)
+        self.policy.write_text(json.dumps(policy))
+        recovery.snapshot(self.policy, self.snapshot, {'hermes': self.hermes}, artifacts=['hermes:example-new'])
+        current = json.loads(inventory.read_bytes())
+        self.assertEqual(['SKILL.md', 'old.md', 'new.md'], [r['path'] for r in current['packages'][0]['files']])
+        policy['hosts']['hermes']['artifacts'].remove(old)
+        self.policy.write_text(json.dumps(policy))
+        baseline = inventory.read_bytes()
+        snapshot_before = self._snapshot_bytes()
+        write = recovery._atomic_write
+        def fail_manifest(path, data):
+            if path.name == 'manifest.json':
+                raise OSError('manifest write failed')
+            write(path, data)
+        with patch.object(recovery, '_atomic_write', side_effect=fail_manifest):
+            with self.assertRaisesRegex(OSError, 'manifest write failed'):
+                recovery.snapshot(self.policy, self.snapshot, self.roots)
+        self.assertEqual(baseline, inventory.read_bytes())
+        self.assertEqual(snapshot_before, self._snapshot_bytes())
+        recovery.snapshot(self.policy, self.snapshot, self.roots)
+        current = json.loads(inventory.read_bytes())
+        self.assertEqual(['SKILL.md', 'new.md'], [r['path'] for r in current['packages'][0]['files']])
+        self.assertFalse((self.snapshot / old['snapshot']).exists())
+
+    def test_inventory_readback_preserves_external_edit_during_manifest_write(self):
+        inventory = self._reviewed_inventory()
+        before = self._snapshot_bytes()
+        write = recovery._atomic_write
+
+        def concurrent_edit(target, data):
+            write(target, data)
+            if target.name == 'manifest.json':
+                inventory.write_bytes(b'external edit')
+
+        with patch.object(recovery, '_atomic_write', side_effect=concurrent_edit):
+            with self.assertRaisesRegex(recovery.RecoveryError, 'inventory changed during capture readback'):
+                recovery.snapshot(self.policy, self.snapshot, {'hermes': self.hermes}, artifacts=['hermes:settings'])
+        self.assertEqual(b'external edit', inventory.read_bytes())
+        self.assertEqual(before, self._snapshot_bytes())
+
+    def test_full_capture_keeps_stale_file_edited_while_saving_rollback_data(self):
+        inventory = self._reviewed_inventory()
+        before = inventory.read_bytes()
+        policy = json.loads(self.policy.read_text())
+        reviewed = policy['hosts']['hermes']['artifacts'].pop()
+        self.policy.write_text(json.dumps(policy))
+        stale = self.snapshot / reviewed['snapshot']
+        identity = recovery._file_identity
+
+        def concurrent_edit(path):
+            current = identity(path)
+            if path == stale:
+                path.write_bytes(b'external edit')
+            return current
+
+        with patch.object(recovery, '_file_identity', side_effect=concurrent_edit):
+            with self.assertRaisesRegex(recovery.RecoveryError, 'changed while saving rollback data'):
+                recovery.snapshot(self.policy, self.snapshot, self.roots)
+        self.assertEqual(b'external edit', stale.read_bytes())
+        self.assertEqual(before, inventory.read_bytes())
+
     def test_preflight_race_preserves_newer_edit(self):
         target = self.roots['hermes'] / 'config.json'
         target.write_text('{"model":"changed","private":"keep"}')
