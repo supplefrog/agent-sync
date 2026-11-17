@@ -86,6 +86,15 @@ test('portable teaching command lane retains commitment, one reaction, check fee
   r=s.tool(r.view,'quiz','predict',{type:'predict',nodeId:'ratio',question:'Synthetic: 6 divided by 3?',options:[{label:'2',value:'two'},{label:'3',value:'three'}],correctAnswer:'two',explanation:'Six divided by three is two.'});
   assert.ok(!JSON.stringify(r.view).includes('correctAnswer'));
   const original=r.view;
+  const savedBeforeClarification=s.run({op:'view'}).view;
+  const clarification=s.run({op:'context'}).workflow;
+  assert.equal(clarification.toolCallId,'predict');
+  assert.deepEqual(clarification.allowed,[]);
+  assert.match(clarification.instruction,/clarification.*owning conversation.*without revealing/i);
+  assert.throws(()=>s.run({op:'continue'}),error=>error.code==='question_pending');
+  assert.throws(()=>s.tool(original,'quiz','another-question',{type:'predict',nodeId:'ratio',question:'Synthetic replacement?'}),
+    error=>error.code==='question_pending');
+  assert.deepEqual(s.run({op:'view'}).view,savedBeforeClarification);
   r=s.learner(original,{type:'answer',toolCallId:'predict',request:{values:['two'],thinking:'Synthetic calculation',confidence:80}});
   assert.throws(()=>s.learner(original,{type:'answer',toolCallId:'predict',request:{values:['two']}}));
   const claimed=s.run({op:'continue'}),again=s.run({op:'continue'});

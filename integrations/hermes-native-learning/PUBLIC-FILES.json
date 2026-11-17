@@ -12,7 +12,7 @@
   "includeManifestItself": true,
   "publicationFileCount": 153,
   "selfBinding": "PUBLIC-FILES.json separately hash-bound; no circular self-hash",
-  "payloadBytes": 7468336,
+  "payloadBytes": 7469905,
   "files": [
     {
       "path": ".gitignore",
@@ -51,8 +51,8 @@
     },
     {
       "path": "build-t3.mjs",
-      "bytes": 7541,
-      "sha256": "020ae9b595a335439ef4533875c285fb62a6783f20a143feb7af46156c7265e2"
+      "bytes": 7580,
+      "sha256": "0f19a63c27ab1fb7d60c580d6157d10ba49d765d64714dde2387bd0bae9e5600"
     },
     {
       "path": "build.mjs",
@@ -91,8 +91,8 @@
     },
     {
       "path": "docs/LEARNER-FEATURES.md",
-      "bytes": 2169,
-      "sha256": "37321ec6faa762e758f11e90380aa1ff358fa7fa6eeb2a148d5d3539c16f5284"
+      "bytes": 2553,
+      "sha256": "a4b7548611567a17ee9bc82dc54677110418d4728b0dc6a572e7727e469e46b3"
     },
     {
       "path": "docs/MATERIALS-JOBS.md",
@@ -451,8 +451,8 @@
     },
     {
       "path": "src/t3/app.mjs",
-      "bytes": 18250,
-      "sha256": "93636456c1d78eede6305e433ade5da6f4153611b3568a078461edafc2ff09af"
+      "bytes": 18335,
+      "sha256": "11271fc2000b43b941b15f33eccd55324daa6052d0d415838a2a1ae54b411089"
     },
     {
       "path": "src/t3/boundary.mjs",
@@ -501,8 +501,8 @@
     },
     {
       "path": "src/t3/server.mjs",
-      "bytes": 13319,
-      "sha256": "c379a35d5e949cab69be3144d0c46b43a955aef8d23507d555004ebcb146ecbe"
+      "bytes": 13517,
+      "sha256": "07e9c24e722bca7169c05dec6fb8c8e7340d180679960568218e645e4b701520"
     },
     {
       "path": "src/vendor/coding-runtime.cjs",
@@ -646,8 +646,8 @@
     },
     {
       "path": "src/workflow.mjs",
-      "bytes": 3070,
-      "sha256": "9ef50b8a6779d78980766eb696cad9f8bda3041da24db7a39216fbd5a4189669"
+      "bytes": 3210,
+      "sha256": "d6f287ee32ea6d12c2cef4456cd3c48da8a6e6f1b6630ba6039c14c145565e2a"
     },
     {
       "path": "t3-rich-assets.mjs",
@@ -662,7 +662,7 @@
     {
       "path": "t3/BUILD.json",
       "bytes": 311775,
-      "sha256": "d519a920cc38605f85355f31f3d24a53cc43ae159e108fae1791bfc52c55c6ee"
+      "sha256": "f259b81060480e26ebcd13fd2322b8c1dd847d41fba59ae7b18fc2ba716f19b9"
     },
     {
       "path": "t3/SOURCES.json",
@@ -676,8 +676,8 @@
     },
     {
       "path": "t3/app.html",
-      "bytes": 4972942,
-      "sha256": "2bee69041b269be202b29500d58ddb2fc77a152943bca21036f4960c50c17931"
+      "bytes": 4973026,
+      "sha256": "6db83cb3e63e7aad53276893498446eb30595a7e0b303be0d407bf5e0024970b"
     },
     {
       "path": "t3/bindings.example.json",
@@ -696,8 +696,8 @@
     },
     {
       "path": "test/backend.test.mjs",
-      "bytes": 12104,
-      "sha256": "d16b292156b9fc1965c069fe6926e5d4c2f1add5880de01797092d6777deedd9"
+      "bytes": 12743,
+      "sha256": "b9bbd661849bfdd8b4f010034065ece496b5d9a86a6cea4f7a79e6a9273933ed"
     },
     {
       "path": "test/coding.dom.test.mjs",

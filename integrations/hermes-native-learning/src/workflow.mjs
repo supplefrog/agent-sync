@@ -13,7 +13,7 @@ export function learningWorkflow(kind, view, messages) {
     return {stage:'practice-pause',allowed:[],instruction:'Wait for a question or explicit Next. Do not auto-advance.'};
   }
   if(view.question) return {stage:'await-answer',allowed:[],toolCallId:view.question.toolCallId,
-    instruction:'One pending question. Wait for the learner; no answer, assessment or explanation may be invented.'};
+    instruction:'Answer a requested clarification in the owning conversation using visible lesson material without revealing the committed answer. Keep the pending question and its draft intact. Wait for an explicit learner submission before progressing.'};
   if(view.phase==='probe') return {stage:'diagnose',allowed:['probe','recall','ask','probe_done'],
     instruction:'Bracket the narrow prerequisite strands from real answers. Persist the evidence-grounded assessment before planning.'};
   if(!view.plan) return {stage:'plan',allowed:['plan_init'],instruction:'Build the validated dependency DAG from the diagnosis; stable node IDs, no dangling references.'};

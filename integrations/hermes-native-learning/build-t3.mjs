@@ -61,8 +61,8 @@ const html='<!doctype html><html><head><meta charset="utf-8"><meta name="viewpor
   #lh-notice[role=alert]{color:var(--destructive);margin-block:.5rem}
   #lh-options,#lh-materials,#lh-inline-lesson details{margin-block:.5rem;font-size:.875rem}
   #lh-options>summary,#lh-materials>summary,#lh-inline-lesson summary{cursor:pointer;color:var(--muted-foreground)}
-  #lh-options>button,#lh-jobs button{font:inherit;color:inherit;background:var(--card,#1c1c1c);border:1px solid var(--border,#434343);border-radius:8px;min-height:36px;padding:6px 10px;margin:.5rem .5rem 0 0}
-  #lh-options>button:disabled,#lh-jobs button:disabled{opacity:.55}
+  #lh-save-draft,#lh-options>button,#lh-jobs button{font:inherit;color:inherit;background:var(--card,#1c1c1c);border:1px solid var(--border,#434343);border-radius:8px;min-height:36px;padding:6px 10px;margin:.5rem .5rem 0 0}
+  #lh-save-draft:disabled,#lh-options>button:disabled,#lh-jobs button:disabled{opacity:.55}
   #lh-jobs{overflow-wrap:anywhere}`+
   '</style></head><body><div id="lh-inline-lesson"></div><section id="lh-flashcards" hidden aria-label="Flashcards"></section><details id="lh-materials" hidden><summary>Lesson materials</summary><div id="lh-jobs"></div></details><p id="lh-notice" role="status">Loading lesson…</p><details id="lh-options" hidden><summary>Lesson options</summary><button type="button" id="lh-refresh">Reload lesson</button><button type="button" id="lh-save-draft" hidden>Save unfinished answer</button></details><script>'+js+'</script></body></html>';
 if(Buffer.byteLength(html)>5*1024*1024)throw new Error('App exceeds T3 resource cap.');

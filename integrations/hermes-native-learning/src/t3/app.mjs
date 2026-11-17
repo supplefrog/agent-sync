@@ -131,6 +131,8 @@ function show({next,meta,key}) {
       const old=cache.get(key)??{version:-1};cache.set(key,{...old,payload:structuredClone(payload),dirty:true});updateDraftControl();},
     remove:requested=>{const old=cache.get(requested);if(old)cache.set(requested,{...old,payload:null,dirty:true});updateDraftControl();},
   }});
+  if(next.kind==='practice')options.append(saveDraft);
+  else root.after(saveDraft);
   root.inert=false;options.hidden=false;updateDraftControl();
   if(flashcardSection) {
     flashcardSection.hidden=false;

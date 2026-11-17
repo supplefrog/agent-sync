@@ -2,6 +2,8 @@
 
 Use the existing LearnHarness workbench in the conversation that owns the lesson.
 
+If you need clarification during a teaching question, ask in the same conversation. The reply can explain a concept while the lesson stays on the pending question and keeps its solution hidden. In the Codex or T3 lesson card, choose **Save unfinished answer** before closing the card to keep your edits. Reopen the lesson in the same conversation to pick up that question and draft.
+
 - Open **Flashcards** to create a deck, write cards, or review due cards. Reveal the answer and choose Again, Hard, Good, or Easy to set the next review date. Extra practice leaves the schedule intact. The tutor can draft cards from an enrolled graph proposition or lesson material. Decks are stored with the enrolled lesson.
 - For a JavaScript coding question, edit the starter code and choose **Run tests** to see the individual results. **Submit code** sends the code and any thinking or drawing to the tutor. A submitted test receipt is valid for that code and question revision only. Practice accepts further attempts until the tutor concludes the problem and reveals the committed solution.
 - Open **Draw** below the response. The pen supports mouse, touch, and stylus pressure. Eraser removes a stroke, Undo restores the previous state, and Clear empties the pad. Saving the draft preserves the strokes for that question. Submitting the ordinary response attaches the drawing.
