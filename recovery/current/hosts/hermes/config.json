@@ -1,5 +1,5 @@
 {
-  "_config_version": 49,
+  "_config_version": 53,
   "agent": {
     "api_max_retries": 3,
     "clarify_timeout": 600,
@@ -380,7 +380,7 @@
     "write_approval": true
   },
   "model": {
-    "default": "gpt-6.1-sol",
+    "default": "gpt-6.2-sol",
     "provider": "openai-codex",
     "request_overrides": {
       "extra_body": {
@@ -474,10 +474,6 @@
     "allow_lazy_installs": true,
     "allow_private_urls": false,
     "redact_secrets": true,
-    "tirith_enabled": true,
-    "tirith_fail_open": true,
-    "tirith_path": "tirith",
-    "tirith_timeout": 5,
     "website_blocklist": {
       "domains": [],
       "enabled": false,

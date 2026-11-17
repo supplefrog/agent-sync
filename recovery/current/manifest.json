@@ -96,7 +96,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 17832,
+      "bytes": 17720,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -268,10 +268,6 @@
         "security.allow_lazy_installs",
         "security.allow_private_urls",
         "security.redact_secrets",
-        "security.tirith_enabled",
-        "security.tirith_fail_open",
-        "security.tirith_path",
-        "security.tirith_timeout",
         "security.website_blocklist",
         "session_reset",
         "sessions.auto_prune",
@@ -301,7 +297,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "bd7dd27b18f0e6e10d1c8019649b55c5f9c25fbb71abbbda20ad7ae42e971413",
+      "sha256": "61f6c0fd892374a08d6c8e1037d9351c30b4acc1a5bf5c10dc17910107f74084",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
@@ -13636,7 +13632,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "4090f351d6d42301f94538e8b772dd72737a30f6d6cfb163793e5d29b2f813ba",
+  "policy_sha256": "35f1cd8f78a7592da33350c1aa920f02d60c85b5658ce6a5a026ba841df99afe",
   "public_safe": true,
   "schema_version": 1
 }

@@ -210,3 +210,5 @@ Explicit user preferences at existing standing owners may be saved directly thro
 ## Model preferences, 2026-11-18
 
 Use GPT-6.2 Sol for regular work, including computer use. Remove the extra Terra subagent preference for computer use. Use GPT-6.2 Astra for work that requires design taste or complex problem solving, including website, product, and 3D design. GPT-6.2 Astra, GPT-6.2 Sol, GPT-6.1 Terra, and Sonnet 5.5 are review models. Sonnet 5.5 can also supplement design work. The [shared execution contract](../surfaces/core.md#model-preferences) owns the routing details.
+
+The Hermes recovery snapshot should restore GPT-6.2 Sol and capture properly by default with the current Hermes configuration.

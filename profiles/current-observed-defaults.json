@@ -79,15 +79,15 @@
         "hermes.evidence",
         "hermes.research"
       ],
-      "model": "gpt-6.1-sol",
+      "model": "gpt-6.2-sol",
       "observation": {
         "kind": "configured-defaults",
-        "observed_at": "2026-11-03T03:26:44.484815Z",
+        "observed_at": "2026-11-17T21:21:01.510370Z",
         "time_status": "known",
         "source": "recovery/current/hosts/hermes/config.json",
-        "source_sha256": "bd7dd27b18f0e6e10d1c8019649b55c5f9c25fbb71abbbda20ad7ae42e971413",
-        "native_source_sha256": "498cc206d35f526a287bb8d33e5e264de1572755ab22b4203844dcd92be2ba8c",
-        "preference_sha256": "2b306ff51a7a8845b7b7bb26db43f51ef0fa77d54b772ab54bcd8d4accd3d6eb"
+        "source_sha256": "61f6c0fd892374a08d6c8e1037d9351c30b4acc1a5bf5c10dc17910107f74084",
+        "native_source_sha256": "a3358e57e97d70a0142685d9f9f9a2c142fc95d5c115db1fbf7d7839bbc8b4b8",
+        "preference_sha256": "9d22214173af12a647c42fb56255f4c1eaa6303bf90b407a53b561541a7b925f"
       },
       "provider": "openai-codex",
       "reasoning": "medium",

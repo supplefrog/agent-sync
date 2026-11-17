@@ -41,6 +41,8 @@ The current snapshot contains:
 
 Config restore is a deep merge. Only allowlisted paths are written, while unknown or sensitive fields already present on the target remain untouched. If selected values already match, restore does not rewrite the file merely to normalize TOML/YAML formatting.
 
+The Hermes allowlist follows the current config schema. Hermes config migration 50 retired the four `security.tirith_*` fields. Capture accepts the numeric `tools.tool_search.listing_max_tokens` budget under the existing integer validation for token budgets.
+
 Portable path markers use `{{agent-signal:HOME}}`, `{{agent-signal:HERMES_HOME}}`, `{{agent-signal:CODEX_HOME}}`, `{{agent-signal:OMP_HOME}}`, and `{{agent-signal:AGENT_SIGNAL_ROOT}}`. They are intentionally distinct from shell variables such as `${HOME}`, so source code and hook patterns are not rewritten accidentally.
 
 Codex Desktop's `notify` executable is not portable declarative state: its path contains a generated runtime-cache build identifier. It is excluded from capture and the receiving Desktop installation owns it. Restore leaves any existing target notification setting untouched.

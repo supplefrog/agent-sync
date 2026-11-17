@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "a2f68317ed6d80b00be5ad39cf732589a975dd58",
+  "change_reconciliation": [
+    {
+      "requirement_change": true,
+      "requirement_reason": "The Hermes settings snapshot must restore GPT-6.2 Sol and capture under the current native config.",
+      "authority": "Explicit user correction to the existing Hermes recovery requirement.",
+      "checks": "The typed budget regression failed before the fix and passed after. Recovery, scoped recovery, and runtime-default focused suites passed. Live Hermes settings capture and disposable restore succeeded.",
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53",
+          "after_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2",
+          "after_sha256": "0c379c00e38f024561f9f202c62fa995de8c0cf898a3de3151f95be0f6d254c2"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "2e7ef517547abd86fde70a46d9d666d2f15744edf0506f002c656ba5c550b0aa",
+          "after_sha256": "c41f786ca83ecdc643db0cee8463616399147e2ac894f3ec34527294c25801d2"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "95aaab3acdedfd2d80458247d9f4a13b2ad7a06c595f4d82b194fce5cae0bf07",
+          "after_sha256": "a5031412d6855b8701187e84c01bf4c47c6c05a6a27840d0f5cdc5d23287b450"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "94296f4f6510920847b437289bc620b9605c92557573501c2ecfacf9add0d3c3",
+          "after_sha256": "96fdd6d4ae6ebc33daff8cf9b616784bd17e9dd08537ea124aa0c0f34fb7d990"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "a8c9fa1a276d18f82206ac74ceda72684a768b9f03880a550985175e04b63b41",
+          "after_sha256": "a8c9fa1a276d18f82206ac74ceda72684a768b9f03880a550985175e04b63b41"
+        },
+        "tools/recovery.py": {
+          "before_sha256": "221b4cd7c3bbefda0718673a90584a638a26a79de632bfca25fea7c3c61a1c58",
+          "after_sha256": "79eb86ccd81363715ae9c93c6c2b894a4b6606c9856440276b5fdc6f80e7dcf3"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing recovery ownership, scope, or verification guidance still applies."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Existing recovery ownership, scope, or verification guidance still applies."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing recovery ownership, scope, or verification guidance still applies."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing recovery ownership, scope, or verification guidance still applies."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "Existing recovery ownership, scope, or verification guidance still applies."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "updated",
+          "reason": "Records the requested Hermes capture or restore behavior."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Records the requested Hermes capture or restore behavior."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Records the requested Hermes capture or restore behavior."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing recovery ownership, scope, or verification guidance still applies."
+        }
+      ],
+      "outcome_review": {
+        "expected": "Capture current Hermes settings without retired Tirith fields and restore GPT-6.2 Sol.",
+        "observed": "The normal recovery owner captured the live Hermes settings. The checked snapshot restored GPT-6.2 Sol into a disposable config, preserved an unselected value, and planned no further write.",
+        "evidence": "Hermes native config migration 50, exact typed-field regression, and scoped capture and restore.",
+        "limitations": "The publication includes only the config schema version, retired fields, and model correction from the live capture. The native package inventory test also failed on the unchanged baseline and checks a different artifact family."
+      }
+    }
+  ]
+}

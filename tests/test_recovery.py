@@ -329,6 +329,34 @@ class RecoveryTests(unittest.TestCase):
             recovery.snapshot(self.policy, self.snapshot, self.roots)
         self.assertFalse(self.snapshot.exists())
 
+    def test_snapshot_captures_tool_search_listing_budget_and_rejects_other_token_fields(self) -> None:
+        payload = json.loads(self.policy.read_text("utf-8"))
+        payload["hosts"]["hermes"]["artifacts"][0]["include"].append("tools")
+        self.policy.write_text(json.dumps(payload), encoding="utf-8")
+        path = self.hermes / "config.yaml"
+        config = yaml.safe_load(path.read_text("utf-8"))
+        search = {"listing_max_tokens": 4000}
+        config["tools"] = {"tool_search": search}
+        path.write_text(yaml.safe_dump(config), encoding="utf-8")
+
+        recovery.snapshot(self.policy, self.snapshot, self.roots)
+        captured = self.snapshot / "hosts/hermes/config.json"
+        original = captured.read_bytes()
+        self.assertEqual(4000, json.loads(original)["tools"]["tool_search"]["listing_max_tokens"])
+
+        for invalid in ("not-an-integer", True, -1):
+            with self.subTest(invalid=invalid):
+                search["listing_max_tokens"] = invalid
+                path.write_text(yaml.safe_dump(config), encoding="utf-8")
+                with self.assertRaisesRegex(recovery.RecoveryError, "token-budget config path"):
+                    recovery.snapshot(self.policy, self.snapshot, self.roots)
+                self.assertEqual(original, captured.read_bytes())
+        search.update(listing_max_tokens=4000, tokens=4000)
+        path.write_text(yaml.safe_dump(config), encoding="utf-8")
+        with self.assertRaisesRegex(recovery.RecoveryError, "tools.tool_search.tokens"):
+            recovery.snapshot(self.policy, self.snapshot, self.roots)
+        self.assertEqual(original, captured.read_bytes())
+
     def test_policy_rejects_plural_sensitive_source_names(self) -> None:
         original = json.loads(self.policy.read_text("utf-8"))
         for source in (

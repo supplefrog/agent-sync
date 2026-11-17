@@ -48,7 +48,6 @@ _SECRET_PATH_PART = re.compile(
 )
 _SAFE_SECRET_NAMED_PATHS = {
     "providers.openai-codex.auth",
-    "compression.proactive_prune_tokens",
     "security.redact_secrets",
     "features.memories",
     "memory.backend",
@@ -68,6 +67,7 @@ _SAFE_SECRET_NAMED_PATHS = {
 }
 _SAFE_NONNEGATIVE_INTEGER_PATHS = {
     "compression.proactive_prune_tokens",
+    "tools.tool_search.listing_max_tokens",
 }
 _SENSITIVE_CONFIG_PARTS = {
     "memory",
@@ -222,7 +222,7 @@ def _canonical_relative(raw: Any, *, label: str) -> PurePosixPath:
 
 
 def _secret_path(dotted: str) -> bool:
-    if dotted in _SAFE_SECRET_NAMED_PATHS:
+    if dotted in _SAFE_SECRET_NAMED_PATHS or dotted in _SAFE_NONNEGATIVE_INTEGER_PATHS:
         return False
     leaf = dotted.rsplit(".", 1)[-1].lower()
     if leaf.endswith(("_env", "_env_var")):
