@@ -46,7 +46,7 @@
       "timeout": 120
     },
     "curator": {
-      "model": "gpt-6-astra",
+      "model": "gpt-6.1-sol",
       "provider": "openai-codex",
       "reasoning_effort": "low",
       "timeout": 600
@@ -213,6 +213,8 @@
     "ephemeral_system_ttl": 0,
     "file_mutation_verifier": true,
     "final_response_markdown": "strip",
+    "in_app_tips": false,
+    "in_app_tours": false,
     "inline_diffs": true,
     "interface": "cli",
     "interim_assistant_messages": true,
@@ -495,6 +497,7 @@
   "skills": {
     "creation_nudge_interval": 0,
     "disabled": [
+      "systematic-debugging",
       "action-item-extraction",
       "adversarial-ux-test",
       "airtable",

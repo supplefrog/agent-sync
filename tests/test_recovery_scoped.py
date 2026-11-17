@@ -137,6 +137,25 @@ class ScopedRecoveryTests(unittest.TestCase):
         self.assertEqual(before, {path: path.read_bytes() for path in self.snapshot.rglob('*') if path.is_file()})
         recovery.verify_snapshot(self.policy, self.snapshot)
 
+    def test_hermes_only_capture_normalizes_paths_beneath_windows_user_home(self):
+        home = self.root / 'source-user'
+        hermes = home / 'AppData/Local/hermes'
+        hermes.mkdir(parents=True)
+        source = home / '.agents/skills'
+        (hermes / 'config.json').write_text(json.dumps({'model': {'path': str(source)}}))
+        recovery.snapshot(self.policy, self.snapshot, {'hermes': hermes}, artifacts=['hermes:settings'])
+        captured = json.loads((self.snapshot / 'hermes/config.json').read_bytes())
+        self.assertEqual('{{agent-signal:HOME}}' + str(source)[len(str(home)):], captured['model']['path'])
+        result = recovery.restore(self.policy, self.snapshot, {'hermes': hermes}, artifacts=['hermes:settings'])
+        self.assertEqual([], result['changes'])
+        self.assertEqual([], result['conflicts'])
+
+    def test_scoped_capture_rejects_json_escaped_windows_user_path(self):
+        path = 'C:' + '\\'.join(('', 'Users', 'private-person', 'skills'))
+        value = {'model': {'path': path}}
+        (self.roots['hermes'] / 'config.json').write_text(json.dumps(value))
+        self._assert_capture_rejected_without_mutation(['hermes:settings'], 'absolute user path')
+
     def test_capture_source_race_prevents_output(self):
         target = self.roots['hermes'] / 'config.json'
         before = (self.snapshot / 'manifest.json').read_bytes()

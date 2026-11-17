@@ -21,23 +21,23 @@
           "source": "plugins/hermes-lcm/__init__.py"
         },
         {
-          "sha256": "538f659a74761e2ba5826b13e9dc6cb3396e47c2c6cef0d7ad4c57dd0e5c9a26",
+          "sha256": "18675436427392dcf5c1d7505a74f92d068a2066f6b61a9c13e17fa7a055ffaa",
           "source": "plugins/hermes-lcm/adaptive_retrieval.py"
         },
         {
-          "sha256": "608da7fd323f4cdd7bfeecad68771e3eb54364a60ebfaef4e08fc895f97ddc54",
+          "sha256": "94dbd1cd5551c90aa8917c5ffe6a4c9cd3d53dc75630b6bfb95ad55bb6a2e704",
           "source": "plugins/hermes-lcm/answer_contract.py"
         },
         {
-          "sha256": "831ddebcba55021f770305fbcb0bbf08987c77cf26e4261b09d8cda36de9a08a",
+          "sha256": "9c443f0417eb342e2bcd89d9eb2aa539a5465886d0d9e41bf2acff95636f3eed",
           "source": "plugins/hermes-lcm/assertion_extraction.py"
         },
         {
-          "sha256": "dd495ce66b83cf82982bcb167cdb57538cf80561509269095c1b8876af567ed6",
+          "sha256": "0088ce6baf6a3998e9c89ae87bea3d1d58078de7061d5a6bc5504e747f5cc41e",
           "source": "plugins/hermes-lcm/assertion_rebuild.py"
         },
         {
-          "sha256": "ea2156f68295707ccc97cd80f6d4d8dba86d1a8130e24c36908f47191a3acf13",
+          "sha256": "f9c195a293a54fa1ddc0a16db3c5142e9fb8954c309fe4285a467cfb0a973c10",
           "source": "plugins/hermes-lcm/assertion_state.py"
         },
         {
@@ -45,15 +45,15 @@
           "source": "plugins/hermes-lcm/assertion_store.py"
         },
         {
-          "sha256": "c700e99c3827221a954ce393c2472662f4a6a32309380fb88d05987e449168ca",
+          "sha256": "211b90f7635e1158e293d4d4855d24b2b52b6ce91cf58ee7f976764f9f4d5ed8",
           "source": "plugins/hermes-lcm/aux_session.py"
         },
         {
-          "sha256": "57c5f291f958e64a420094fdb49f1931b000cc1fbb4eb3cfea4e19100fd59615",
+          "sha256": "a3cc7821b91a96b2ea4d4b8a27fdb7acea9d035755ed4b7a595e8a1bb2edc922",
           "source": "plugins/hermes-lcm/bypass.py"
         },
         {
-          "sha256": "285d219b659a839f6b75899710478a2d1dd5e70c07df2b45725e69015ab5d8ff",
+          "sha256": "23087ae3e55a5e305d71ff927552e4bd90ded6c1aec909f285853c92936ec052",
           "source": "plugins/hermes-lcm/chunking.py"
         },
         {
@@ -61,19 +61,19 @@
           "source": "plugins/hermes-lcm/codex_routing.py"
         },
         {
-          "sha256": "f17ecba5c90388ac039b76cd9ff2f4a03faa6414c434d15b468d3f20b2d5b2ac",
+          "sha256": "0929ad2a01f930ffbc63e4cf4a1decafa165b6892e4689a0c61f92be2a36549b",
           "source": "plugins/hermes-lcm/command.py"
         },
         {
-          "sha256": "95f1f708cf412d56641fd22c423a9c476dfda42865789ed7812e7bdffb261329",
+          "sha256": "3a2b90e05e62600a4676eb7d5d62ac33e10a4bd9e8d1a868dd98a9ca8d0e2fd3",
           "source": "plugins/hermes-lcm/compaction.py"
         },
         {
-          "sha256": "16147f0c6026936de25c44c6266fee09cd31729ce30a63a5f08e6bcf748a79cf",
+          "sha256": "d4f46a9c002570fcb66f6654333d74d53d407b4141f600f9937eb86e29d6f1d0",
           "source": "plugins/hermes-lcm/config.py"
         },
         {
-          "sha256": "0b34f3d366c64e5fab568fbce500e3a7afe81f894b057370d9fd8949661336cc",
+          "sha256": "c8b61b799a8ae04fa75d25dc16077ff75e73ee2aa4d898a3fd6c8e99b38070a5",
           "source": "plugins/hermes-lcm/dag.py"
         },
         {
@@ -81,11 +81,11 @@
           "source": "plugins/hermes-lcm/db_bootstrap.py"
         },
         {
-          "sha256": "0c16c4a1abc528b0d4dc2921bfc4440c63a66b4a2ff27026a779f1e185fd07b1",
+          "sha256": "ab1b47b620181d8823dfaa230f34e31ec557a5bd2a045b7722e9f0cd80db0db1",
           "source": "plugins/hermes-lcm/diagnostics.py"
         },
         {
-          "sha256": "b8d4240d6f933ec7cad92660b1e62a07c489d14ada98473a4605c0f6a4e8fd04",
+          "sha256": "9bf744790d65e51ca3ef33cfc79dd56b91854948d91c8d262a8c26e1c28f415a",
           "source": "plugins/hermes-lcm/embedding_provider.py"
         },
         {
@@ -93,7 +93,7 @@
           "source": "plugins/hermes-lcm/engine.py"
         },
         {
-          "sha256": "69db9f093ea3017d1216a27f94efb5867ae5811e47cae52d4e9c0510c1035549",
+          "sha256": "6d3256b6953ed00853f5244a18c97800ea830ec8f2c327e12e98cbf2ac6d890d",
           "source": "plugins/hermes-lcm/engine_registry.py"
         },
         {
@@ -101,11 +101,11 @@
           "source": "plugins/hermes-lcm/escalation.py"
         },
         {
-          "sha256": "6ac0601046f353dafd4d1d7d6784ba3ca28e730068915b0620f1baa605ed9225",
+          "sha256": "b89b343c5dd6ed6a0ded12e3721057ac3a7e68cdcc6344d35713c85edb31fdc4",
           "source": "plugins/hermes-lcm/evidence_compiler.py"
         },
         {
-          "sha256": "509522404533b9590399debfa4fc58d1cfab53d42ce89a65c3123c55b3cdc687",
+          "sha256": "84f13ae24dbcf9776704560b741f36ec7e0ebe55e7b06b6650e2ac112d4e48bb",
           "source": "plugins/hermes-lcm/evidence_pack.py"
         },
         {
@@ -113,19 +113,19 @@
           "source": "plugins/hermes-lcm/externalize.py"
         },
         {
-          "sha256": "1db3c9589c02978938a3fd0808e0f61c2fa0fb696105465086827e4dcfb5c3b3",
+          "sha256": "683e07b54c31504d74273ae1ba269e23c956a3c00a664a459914f0ab4ce1379e",
           "source": "plugins/hermes-lcm/extraction.py"
         },
         {
-          "sha256": "ec66e7043bee7513d95ff7ccb56c4740b0632beb607515112c5f734f31f14dca",
+          "sha256": "3402def382f6ee8d8d0a79925524aa7f6ef2138bb55b217e2ca1304bfbc97aba",
           "source": "plugins/hermes-lcm/fresh_tail.py"
         },
         {
-          "sha256": "4a75d6b629936fa8c40dfb2e05f2c50a6e0660c8eeeaa13c7fb26084f13f1255",
+          "sha256": "4e155aed152032319c5d24ec0f39805aa06e6807a0c09ea8b75679849d628770",
           "source": "plugins/hermes-lcm/guidance.py"
         },
         {
-          "sha256": "c72320cb0e67d73fdf07ef8431055e7d4f7758af598b27e0e7776c4677338882",
+          "sha256": "1206bfb230d433fac4f2e3cf3821a069916078dcea70d4a8acac170d7c7e49df",
           "source": "plugins/hermes-lcm/host_evidence.py"
         },
         {
@@ -133,11 +133,11 @@
           "source": "plugins/hermes-lcm/ingest_protection.py"
         },
         {
-          "sha256": "045d43eef93afd7fbdbc827d2ea0c578b251a6a8d95a30ee8a53d27e9fc226eb",
+          "sha256": "2e6197fc446cea62efa627742a43a6f336cee9e73d9dd338a7f1c26696aeb264",
           "source": "plugins/hermes-lcm/LICENSE"
         },
         {
-          "sha256": "3451de8e07f003d199722d072e69cfaab74e7b731f141818f4b9c29776bae4ea",
+          "sha256": "9eba3de2ead41b6458c2fb00c2b52b76f476dbd59f3fda96e008ca24401fa76d",
           "source": "plugins/hermes-lcm/lifecycle_state.py"
         },
         {
@@ -145,27 +145,27 @@
           "source": "plugins/hermes-lcm/maintenance.py"
         },
         {
-          "sha256": "246f1a498a48a5d28870f0ff982e9a93051cda0971382874f5d75555a1cdcf21",
+          "sha256": "cf7748dc27dbb69d6bf0524f7729439b02b6904388c5ea0ab81fb399eee30351",
           "source": "plugins/hermes-lcm/message_analysis.py"
         },
         {
-          "sha256": "5d1a743cc0f6d9558b7d661a1e5d81021a3d3d4ef2e36a28d0120097a2894f71",
+          "sha256": "56399451c95b62c7941db1d2c359fef7b484fcca51f726454ee2f330189d468a",
           "source": "plugins/hermes-lcm/message_content.py"
         },
         {
-          "sha256": "d2cf9005bc796238d9b1a6849769c90053b24ae799c026ade856a7a879f98254",
+          "sha256": "36bf8da7e26debce9e731adf1de9791bf15785a8a0a29243b1db77a5edba2fb8",
           "source": "plugins/hermes-lcm/message_patterns.py"
         },
         {
-          "sha256": "298651f89bfc6508fffb8257d61e38d4ccc811e692d283574d02a5b105100244",
+          "sha256": "580859f036c4aeaeb33ed7e9265027330460e63ebbcd246e997cdfc91347118e",
           "source": "plugins/hermes-lcm/model_routing.py"
         },
         {
-          "sha256": "f717eb64dd5428d239e1bda678fee79a74ee8c4a5ff29edcbc0964ecadf9e9f2",
+          "sha256": "0f6dad7199144e3752edc8b15e164f2998d8c0158f6427046e08909e61c80482",
           "source": "plugins/hermes-lcm/occurrence_time.py"
         },
         {
-          "sha256": "ecb13a8fcc7753c91e840f877c052b7432b6b89a148e848d72e2e4016e6adef8",
+          "sha256": "7f1b378560869d68212453f539aca7a8becafaf2717b15404c8e4bef6ed82ced",
           "source": "plugins/hermes-lcm/placeholder_ledger.py"
         },
         {
@@ -173,55 +173,55 @@
           "source": "plugins/hermes-lcm/plugin.yaml"
         },
         {
-          "sha256": "667d0a70abde68d58ad5614fb0c732b542e83d8b242374157cecf81ee83bf3a5",
+          "sha256": "5b2daeb64b30523a8202976262b6e8a5045a9528e042a2f353b31518461fc3b2",
           "source": "plugins/hermes-lcm/preanswer_evidence.py"
         },
         {
-          "sha256": "4d9dd64179b9a5400a390527c0040aa7506d9ed47b9465affdf6d3a49feb6a34",
+          "sha256": "84cb1f66e5989b25ab07c4be4588757528e35a85ce798384868b721ce59599a9",
           "source": "plugins/hermes-lcm/presets.py"
         },
         {
-          "sha256": "cce3db4e9c7f878a91780ca2635ccbf2ba3b021300960bf12acc95d2c4499656",
+          "sha256": "2d74a5394cf5ba5c49babc827b579508bc27b57c96b68748555eb67e2be6d40d",
           "source": "plugins/hermes-lcm/query_view_store.py"
         },
         {
-          "sha256": "5f957adf06306cd4de972a18320c19c0f5f4bbae165300ef11165238f2a18d4d",
+          "sha256": "6c5a79ae4ba02dbd721cee558238f59d64ab095cdea025e4ed5bcaa46c933ef7",
           "source": "plugins/hermes-lcm/reasoning.py"
         },
         {
-          "sha256": "450723b6d65838eff2506713498895775651aa0c1604104633d47ed5a3af6d7a",
+          "sha256": "6d59a9a073b826bf4c80b95e84ba112ea838493cb607552a360b09b0d4a04a9c",
           "source": "plugins/hermes-lcm/reconcile.py"
         },
         {
-          "sha256": "c379d94a34b137250af06172068430584788976541d4c055abee0e8776a83266",
+          "sha256": "262580562a476880057365214e7c1e118029a8033c0e2bc361abb2a5b84faa94",
           "source": "plugins/hermes-lcm/requirements_compiler.py"
         },
         {
-          "sha256": "d50fb63bf8a5420c5b69b4ac3ee1f7175e05ea04e528cc5c7fa87f6808695691",
+          "sha256": "7118b2dd38cade0cc969c55d0de842e8d63ef3de0f5f4c2e9a034d0d7244f6f1",
           "source": "plugins/hermes-lcm/reset_state.py"
         },
         {
-          "sha256": "064829f0cd7c19a417d42c2de4384e96fa3c7a9641c98275ea7b32edfc88c27a",
+          "sha256": "2c857f9b4da1c6ea7f2c51df109cfdb5d9d8494a2eeab721af87689772ded70b",
           "source": "plugins/hermes-lcm/retrieval_core.py"
         },
         {
-          "sha256": "8943e8daceb1fccc4394f2c3c777be80329f635114dc5f1b2770c615464115ac",
+          "sha256": "7ae8197eb3e29461053eb6ab03f437588b572a2f32f4401c617516087d53acb0",
           "source": "plugins/hermes-lcm/rollup_builder.py"
         },
         {
-          "sha256": "4dda6e123280275ea93890022d3dde5a47a2beff3197ba05a4a0791869fba2a2",
+          "sha256": "1c7d91de412154086cd4b7311a0ea446960dd3d50a19cf634b4fb97f2c96046b",
           "source": "plugins/hermes-lcm/rollup_periods.py"
         },
         {
-          "sha256": "763b6f5501863659e5bf54d7ef2a7981563a26ffad02a51703ed43fd66b8830c",
+          "sha256": "44e2c8b624e6cf21471b67ca12fd5fdea34e17f2ae8bdf151df0db380f327c9b",
           "source": "plugins/hermes-lcm/rollup_store.py"
         },
         {
-          "sha256": "5cb5d4abbef4e003887e22f7c7cff139f34a29243b018fd6a9e33a81cd576a3b",
+          "sha256": "5503aaa29859d5d2a2f4cb048d89616df937b7284d267a8f0cbe2bea3e4bff37",
           "source": "plugins/hermes-lcm/runtime_identity.py"
         },
         {
-          "sha256": "2f288e49b210780994c242cf68468c95609f4d6492938cc03a8a5502426c763c",
+          "sha256": "67f27d94df29b6c41ff278fec64fd60bafd35e0509178ee06372795f4ff6165d",
           "source": "plugins/hermes-lcm/sanitize.py"
         },
         {
@@ -229,19 +229,19 @@
           "source": "plugins/hermes-lcm/schemas.py"
         },
         {
-          "sha256": "32daccea38a8a3d94175a44b2d9c369a9ce3761ea2e88fbc3d0a24beb46932d4",
+          "sha256": "f33df24aa5ade736ca4b9556e771df5c1d7f37e5d56543fa6f15ac4006fb429a",
           "source": "plugins/hermes-lcm/search_query.py"
         },
         {
-          "sha256": "d538c4f305b92fea07159675c2e1a464efef46fb17a3ef866d636407e7028244",
+          "sha256": "c612d48d846bb7f69ad845508d0a9b8e1712a21cebd8db158cad620d12e8bf7a",
           "source": "plugins/hermes-lcm/selective_compiler.py"
         },
         {
-          "sha256": "c380acfdda06a0cc619b2340db1463187f6448f589327f4055b164cd6d32d65b",
+          "sha256": "d18cddd4695c652a94336ff573c9a8aaa41737b1c9b444875ff5629127285d3b",
           "source": "plugins/hermes-lcm/selective_recall.py"
         },
         {
-          "sha256": "8073717e06981a368184f4d16eac9ddd94a68ddfee86558790963c7e675403aa",
+          "sha256": "96102d099238c7901d707d1384ebe73ba4ed09d031d55dfdb38ba314f4b338b1",
           "source": "plugins/hermes-lcm/session_patterns.py"
         },
         {
@@ -253,7 +253,7 @@
           "source": "plugins/hermes-lcm/store.py"
         },
         {
-          "sha256": "5a4ce28998d7903d41a07bb88c582ce5a80b5849c67004e5610c227be79c166d",
+          "sha256": "a8a63c64418dbe9801c8daba04b85c21a6b6d3206fdaebeebe3e8c490427d417",
           "source": "plugins/hermes-lcm/tokens.py"
         },
         {
@@ -261,15 +261,15 @@
           "source": "plugins/hermes-lcm/tools.py"
         },
         {
-          "sha256": "6fd5f6d2d7e46dac2b51edc63f43d8bc3a2f2e2bfb24ff6ed3e26b46a0df5bb0",
+          "sha256": "6a1ecf62a6abc3314e407994ce9b4557de68cbbecc2fc5e631ed8a10d19e81db",
           "source": "plugins/hermes-lcm/trajectory_store.py"
         },
         {
-          "sha256": "fa3e1e3957e5a19a235f0ec2b62fc8d891cbe6ba663e8ab98b73523c6a4c8c60",
+          "sha256": "37414a3395571d68f92ae06558578c770e938a46a673c361bc48aae5f852bf66",
           "source": "plugins/hermes-lcm/vector_store.py"
         },
         {
-          "sha256": "6bc38802a2a29459b55a330b8e2f44be72b9c925aa3155f18f723cf3fdfec956",
+          "sha256": "a65995c303f9d6ff7e4a72bc10e2450eb9b3fb21c6653d38f22fd9a69acec59e",
           "source": "plugins/hermes-lcm/skills/hermes-lcm/references/architecture.md"
         },
         {
@@ -277,23 +277,23 @@
           "source": "plugins/hermes-lcm/skills/hermes-lcm/references/configuration.md"
         },
         {
-          "sha256": "48e81acf632e0bc0a597234d7975342f900e02ed1e69ed6f69c7303d5088d776",
+          "sha256": "241a15f98a5c7b0e0bdd7104f830cdca42e1a54f41f0a832e0c4f8ab4f8ec510",
           "source": "plugins/hermes-lcm/skills/hermes-lcm/references/diagnostics.md"
         },
         {
-          "sha256": "c8b51f1f842ff1b7e4885d110fa1bef782fdbe6f2845fe149dca349711c8ea50",
+          "sha256": "c54b2948fcb2b1ebbdfa0f9cd8d7cf0c36d79a7829babb049407eceb1c23d17e",
           "source": "plugins/hermes-lcm/skills/hermes-lcm/references/recall-policy.md"
         },
         {
-          "sha256": "7f2c3c110ea1fbed7c84956a79dbadbac6a7623ba879139c27f94fcdb01fbec8",
+          "sha256": "6b8e1b345aaba4cb0109383c5a5f0584d758fec7ccdcd7c35bceae0f089f9739",
           "source": "plugins/hermes-lcm/skills/hermes-lcm/references/recall-tools.md"
         },
         {
-          "sha256": "d175a5d8a15757696d815b1c7815dde67790013a3ad809fef9757f1e3b689480",
+          "sha256": "42044e5e14a32ecf88e2be4c0c8b86f04b0ef011e00640c5ae36e0088da86819",
           "source": "plugins/hermes-lcm/skills/hermes-lcm/references/session-lifecycle.md"
         },
         {
-          "sha256": "0c549e0f8612e83aa7e79b52ac69fc3555f1d4e1ab2302526a6f5bd7b523d925",
+          "sha256": "3db2ed5c5ce73b950afb91e3fcdb73c0e5602dfd575b01e59feb2d3cf0af7284",
           "source": "plugins/hermes-lcm/skills/hermes-lcm/SKILL.md"
         }
       ],
@@ -340,7 +340,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "371694b7ad002354e0c70607e955bcebee4d2103b61c7e251b559350f7dde70f"
+          "sha256": "5e37b19924f33c7c0a4c8885ed2b93cd154e73257960fc27d821df0a59384162"
         },
         {
           "path": "references/adaptive-model-routing.md",
@@ -400,7 +400,7 @@
         },
         {
           "path": "references/external-coding-agent-clis/references/codex.md",
-          "sha256": "275a76065c8b831fb1d84096077be12bed263e559c0e3da580b484b936d77317"
+          "sha256": "188fd66bb23eff6ded57b95f004a4cfe2f2daecd51a1f60b35e34953f03d6e74"
         },
         {
           "path": "references/external-coding-agent-clis/references/codex/codex-plugin-evaluation.md",
@@ -490,7 +490,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "a054ae991e5de96a26a6338042d226b9423e7faf83cce5e65e17fde2fba80b86"
+          "sha256": "535583654bcde72b8feb2e1104c90ee99eb447ce3879fa01374666ba31c403fc"
         }
       ],
       "name": "delegation-workflows",
@@ -504,7 +504,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "cb19f1dc5be92d498884f236e3177d7f5fc76d9ec6df8068b25a90f89764d90f"
+          "sha256": "464472bb3affdacb16f2b19fe259e8fbac9d3de2ade0d63fc2d57dccde52590d"
         },
         {
           "path": "references/conditional-recipes.md",
@@ -2090,7 +2090,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "2a16f556326509c3fe1f513d323b9f2fdf38498aa509cb4803b8bdf84ada06ad"
+          "sha256": "f406ef0aed07de7535fb79457e0252df6ccff26cf012b1959df585ef0e88749c"
         },
         {
           "path": "references/capability-admission/SKILL.md",
@@ -2270,7 +2270,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "225c1927421223554d6f2f4d6a5cfa9ed047e7eadda027a0446d63a7276e442f"
+          "sha256": "be8545a3f4546621ed485eff8362ca2e2f750f832fe54bcc90b86567314c02fc"
         },
         {
           "path": "references/approval-boundary-review.md",
@@ -2282,7 +2282,7 @@
         },
         {
           "path": "references/behavior-engineering/latency-cost-tuning.md",
-          "sha256": "1e12347ee459fdabd19fe2f23d062ed51faae54ffbaf564ef82a8cbb6f2d44fe"
+          "sha256": "ac5fd17c947582d0d62dc10f67f30a1248c520885abd5b1ed698b029b72aed98"
         },
         {
           "path": "references/behavior-engineering/references/model-routing-evals/SKILL.md",
@@ -2562,7 +2562,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "cbea1f523c630d403a4729f8dd134c65f0506edfd480baf2fe8915201cf8c394"
+          "sha256": "7d84c46cf64d814c8aa53026ef43d7a740363aff16560d7b557917edde76ed46"
         }
       ],
       "name": "kanban-worker",
@@ -2590,7 +2590,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "6d2147fbc1939f3e42c867503f52b318d441756d38de42b370173484f4669ef3"
+          "sha256": "6d1f86c47dd74d9e02e475ee970f561d3e508714fe759f26a522aef88f146d14"
         },
         {
           "path": "references/codex-workspace-relocation.md",
@@ -2602,7 +2602,7 @@
         },
         {
           "path": "references/windows-app-lifecycle.md",
-          "sha256": "dcc03d8a69819f64e96ae9c6dcdaa1dbe8bfb1125f9f5ecd8739fd38ab7bea91"
+          "sha256": "e7441faaac5a931f1055ccf3f2c1d2cf209b14a27b0d71467145ef376a5f1b20"
         },
         {
           "path": "references/windows-openssh-remote-access.md",
@@ -2646,7 +2646,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "cd57ccc9d563b5186012b41d6bbf52e96c2837c5b8e79d524e8e5e6a44af6021"
+          "sha256": "deeade1bb70f8835b2f3158980030b8aa41bb1ea6f798631451c89cfd632bcc8"
         }
       ],
       "name": "email-inbox-triage",
@@ -2742,7 +2742,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "790c92d2ad5f436e4bca64020c8599b8f27dd917233a70b3d1bc62308dba0b75"
+          "sha256": "15b33d4db6077725bad5bdd20944091e85f876ac4217c2fb8db09b3fc0d14468"
         },
         {
           "path": "references/github-authored-thread-audits/SKILL.md",
@@ -2766,7 +2766,7 @@
         },
         {
           "path": "references/github-issues/SKILL.md",
-          "sha256": "e4a1c5add7a9d46114075be195173efd9bb29ec10fbad4f02426066d1975d423"
+          "sha256": "62e8c64be9c83144141a90c2ec52a17a4f34d7a84f35760e369443784d7b4592"
         },
         {
           "path": "references/github-issues/references/audit-recreate-issue.md",
@@ -2830,7 +2830,7 @@
         },
         {
           "path": "references/github-pr-workflow/SKILL.md",
-          "sha256": "a91017d7fbdd128642a7f38ce93ae5941a0701abef812c0f4633c99a50a61900"
+          "sha256": "c8cd76587e737f7c2f8e600dde21122557c53e9184feaba189aaed1ed3ec8c0f"
         },
         {
           "path": "references/github-pr-workflow/references/ci-troubleshooting.md",
@@ -2906,11 +2906,11 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "0c549e0f8612e83aa7e79b52ac69fc3555f1d4e1ab2302526a6f5bd7b523d925"
+          "sha256": "3db2ed5c5ce73b950afb91e3fcdb73c0e5602dfd575b01e59feb2d3cf0af7284"
         },
         {
           "path": "references/architecture.md",
-          "sha256": "6bc38802a2a29459b55a330b8e2f44be72b9c925aa3155f18f723cf3fdfec956"
+          "sha256": "a65995c303f9d6ff7e4a72bc10e2450eb9b3fb21c6653d38f22fd9a69acec59e"
         },
         {
           "path": "references/configuration.md",
@@ -2918,19 +2918,19 @@
         },
         {
           "path": "references/diagnostics.md",
-          "sha256": "48e81acf632e0bc0a597234d7975342f900e02ed1e69ed6f69c7303d5088d776"
+          "sha256": "241a15f98a5c7b0e0bdd7104f830cdca42e1a54f41f0a832e0c4f8ab4f8ec510"
         },
         {
           "path": "references/recall-policy.md",
-          "sha256": "c8b51f1f842ff1b7e4885d110fa1bef782fdbe6f2845fe149dca349711c8ea50"
+          "sha256": "c54b2948fcb2b1ebbdfa0f9cd8d7cf0c36d79a7829babb049407eceb1c23d17e"
         },
         {
           "path": "references/recall-tools.md",
-          "sha256": "7f2c3c110ea1fbed7c84956a79dbadbac6a7623ba879139c27f94fcdb01fbec8"
+          "sha256": "6b8e1b345aaba4cb0109383c5a5f0584d758fec7ccdcd7c35bceae0f089f9739"
         },
         {
           "path": "references/session-lifecycle.md",
-          "sha256": "d175a5d8a15757696d815b1c7815dde67790013a3ad809fef9757f1e3b689480"
+          "sha256": "42044e5e14a32ecf88e2be4c0c8b86f04b0ef011e00640c5ae36e0088da86819"
         }
       ],
       "name": "hermes-lcm",
@@ -4065,11 +4065,11 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "9e1191cb1d399b3b94bf3bcf79e336c3bd74a8e4d77479d4c15850b3d0990729"
+          "sha256": "00f877dbc89a90fbfd8e805da20d54b5f56d28cae7559ff5ad78fe61ad96dad6"
         },
         {
           "path": "references/desktop-session-api.md",
-          "sha256": "44e680b140da092a438cda278a4d270264cc7effaff279b79a4b675a7369bdf7"
+          "sha256": "4bd966f623014ce32a56a7b9da7467854da1bd9b0b7d0770f4cf2e88905469cc"
         }
       ],
       "name": "session-librarian",
@@ -4237,7 +4237,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "20f25bf9dfc1569021af8284f0001cfb4e8dbaac16ebe4b9a3aa9f8448704679"
+          "sha256": "560a655c04ff290c4ce5ac1c63cbda7e8550ba8edd0cab16fe8c3740f5de2ae9"
         }
       ],
       "name": "iterative-blind-research",
@@ -4439,7 +4439,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "a7e6d1cfdaf61273298ac38f754fe32de84cdbb1c52c7ea171713366537d5fc2"
+          "sha256": "da42e0e779c22297d4a80cd5f37e952291356a61695c367f80ae32ba7c673147"
         },
         {
           "path": "references/evidence-and-portfolios.md",
@@ -4451,7 +4451,7 @@
         },
         {
           "path": "references/paper-apis.md",
-          "sha256": "6e9ad5e9e4bf7e08c5f1fb6d08921021e7b2f7b3fb3b0dda3a446cc815719a40"
+          "sha256": "96927453f1221dd1826a991a1407bf22dbf7f292a96e37cb8ebfba5d7653dae2"
         },
         {
           "path": "scripts/fetch_youtube_transcript.py",
@@ -4591,7 +4591,7 @@
         },
         {
           "path": "references/ci-troubleshooting.md",
-          "sha256": "c72b2301e9b85c545c4960722dbd4c0d49c5d883e6d86438e932bd47b1d8eee0"
+          "sha256": "ed40533dfe79a045075f7c486fd0f6588588b97bbfc791236b45633586bcfb57"
         },
         {
           "path": "references/code-review.md",
@@ -4615,11 +4615,11 @@
         },
         {
           "path": "references/pr-workflow.md",
-          "sha256": "0be42677bf500fe292c221468c2f9c48b4c8326dad508b8ef3287c010364adc8"
+          "sha256": "59a530cabfd9a40ba9fcf81859d90c20928af9750671ed0082f99e96df403774"
         },
         {
           "path": "references/repo-management.md",
-          "sha256": "c74500946263f6bdb4925d4de96aa09dcd49146c9e918bf73863f0b6186e0543"
+          "sha256": "18c0417791971aa5a928b87250105c11ab8c8e73c41bf6b3f50093ed93cd8e02"
         },
         {
           "path": "references/review-output-template.md",
@@ -4689,7 +4689,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "a78a5f8d277a1d6d39fccd5ecf1e76ce519a1ace831f06078dfcc91cb54a3399"
+          "sha256": "fcba852b396a58e3c157bbbb7bea6adb9f2756c80660c4f8a9d7564064cd1750"
         }
       ],
       "name": "inspecting-hermes-desktop-dom",
@@ -4735,7 +4735,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "67a7ae09b6995dbb59a319ec56fbfa6c224cd5104be2221b656b070fb80d4757"
+          "sha256": "d66f6c4f84ceeeda32c64dca522df9f08ab712de4f2cbf1e8f9144e99847e84e"
         },
         {
           "path": "references/canonical-owner-selection-audits.md",
@@ -4939,7 +4939,7 @@
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "7f7d321f177399ca928e11ab38942cfa76d6e931a82d887671c50661fb411d51"
+          "sha256": "d947beb7fc66d9a16844f2af8567fdb95ba9633b6088d859c82008baed360b64"
         },
         {
           "path": "scripts/recover_page.py",
@@ -5058,6 +5058,7 @@
   "skill_selection": {
     "creation_nudge_interval": 0,
     "disabled": [
+      "systematic-debugging",
       "action-item-extraction",
       "adversarial-ux-test",
       "airtable",

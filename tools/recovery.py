@@ -460,7 +460,7 @@ def _path_replacements(roots: Mapping[str, Path], repo_root: Path | None = None)
             (str(repo_root.resolve(strict=False)), _PORTABLE_PLACEHOLDERS["AGENT_SIGNAL_ROOT"])
         )
     replacements.append(
-        (str(_logical_home(roots).resolve(strict=False)), _PORTABLE_PLACEHOLDERS["HOME"])
+        (str(_target_home(roots, tuple(roots)).resolve(strict=False)), _PORTABLE_PLACEHOLDERS["HOME"])
     )
     replacements.sort(key=lambda item: len(item[0]), reverse=True)
     return replacements
@@ -529,7 +529,8 @@ def _assert_public_safe(data: bytes, *, label: str) -> None:
         if pattern.search(text):
             raise RecoveryError(f"public-safety violation in {label}: secret-like value")
     # Absolute user-home paths must have been normalized before persistence.
-    if re.search(r"(?i)\b[A-Z]:[/\\]Users[/\\][^/\\\s]+", text):
+    # JSON serializes backslashes as doubled separators.
+    if re.search(r"(?i)\b[A-Z]:[/\\]+Users[/\\]+[^/\\\s]+", text):
         raise RecoveryError(f"public-safety violation in {label}: absolute user path")
     if re.search(
         r"(?i)(?<![A-Za-z0-9_])/(?:home/[A-Za-z0-9._-]+|root)(?:/[A-Za-z0-9._~+-]*)?",

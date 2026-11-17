@@ -96,7 +96,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 17720,
+      "bytes": 17803,
       "format": "yaml",
       "host": "hermes",
       "id": "settings",
@@ -297,7 +297,7 @@
       ],
       "kind": "config",
       "portable_paths": false,
-      "sha256": "61f6c0fd892374a08d6c8e1037d9351c30b4acc1a5bf5c10dc17910107f74084",
+      "sha256": "e154b3d00953190091c635697e7315b886bb79045fd86f9f47dc29ec63655279",
       "snapshot": "hosts/hermes/config.json",
       "source": "config.yaml",
       "strategy": "merge"
@@ -13530,14 +13530,14 @@
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12",
-      "snapshot": "hosts/omp/AGENTS.md",
-      "source": "AGENTS.md",
-      "strategy": "replace-if-absent",
       "replace_sha256": [
         "656e341b1a9f2456cab664fe1acfac9e9888a60f41139e8b2d4669e522608e03",
         "b0c8ebea12f1f3aecdb1c45e5bc3c58ddc9243bcdbeca6fea97750d3b9718fc8"
-      ]
+      ],
+      "sha256": "408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12",
+      "snapshot": "hosts/omp/AGENTS.md",
+      "source": "AGENTS.md",
+      "strategy": "replace-if-absent"
     },
     {
       "bytes": 3176,

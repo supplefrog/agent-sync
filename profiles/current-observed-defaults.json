@@ -82,10 +82,10 @@
       "model": "gpt-6.2-sol",
       "observation": {
         "kind": "configured-defaults",
-        "observed_at": "2026-11-17T21:21:01.510370Z",
+        "observed_at": "2026-11-17T22:35:23.224115Z",
         "time_status": "known",
         "source": "recovery/current/hosts/hermes/config.json",
-        "source_sha256": "61f6c0fd892374a08d6c8e1037d9351c30b4acc1a5bf5c10dc17910107f74084",
+        "source_sha256": "e154b3d00953190091c635697e7315b886bb79045fd86f9f47dc29ec63655279",
         "native_source_sha256": "a3358e57e97d70a0142685d9f9f9a2c142fc95d5c115db1fbf7d7839bbc8b4b8",
         "preference_sha256": "9d22214173af12a647c42fb56255f4c1eaa6303bf90b407a53b561541a7b925f"
       },
