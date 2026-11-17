@@ -33,7 +33,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 6594,
+      "bytes": 6448,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
@@ -48,9 +48,10 @@
         "7133808408d1a214b6495c2bb0ecfca2dbaddb6ee40ab7d66d4e40375da1e8da",
         "3b7640a0e5e0af1e74cfe8c0c9454eccae0228c9425ecae7dc0c56c67d38b082",
         "6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d",
-        "b508c274306b06ed8ec4201623f11e555d8d072dcce2615f82ae44607dcbb42f"
+        "b508c274306b06ed8ec4201623f11e555d8d072dcce2615f82ae44607dcbb42f",
+        "bdb843d02a4b07f2acd5dae7e2f55ed0b6407ad81469ba6cd5b4b54323860b40"
       ],
-      "sha256": "bdb843d02a4b07f2acd5dae7e2f55ed0b6407ad81469ba6cd5b4b54323860b40",
+      "sha256": "b689e11c082aa762a21c722e916937547b4c15371f98d79bca08bf56caa6f33d",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -306,7 +307,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 6495,
+      "bytes": 6517,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
@@ -319,9 +320,10 @@
         "79b9f6de0930cf5b3dc61802baae52e151dd19faef0b9681259fedb2ccdbde7e",
         "f88771c048eaf8d96521ba07aa19bc3b6e1616006e34ef199c45b9cd401497e5",
         "a2081994a39813ed8c70ec974335f9ebcce4978d6575a664aa49382d098dce43",
-        "5ef00d578c64c6a4891ce080a60da47d735266fdc706ba4bb34d2c69b79a7753"
+        "5ef00d578c64c6a4891ce080a60da47d735266fdc706ba4bb34d2c69b79a7753",
+        "7d00f86605f8c21e2ef5751a85db67a719e52f700a65b7a74ed7c62f8c549364"
       ],
-      "sha256": "7d00f86605f8c21e2ef5751a85db67a719e52f700a65b7a74ed7c62f8c549364",
+      "sha256": "c87954f42407075b8d277b14c4183a34e568ae7dd2459de8b72261ecaae6f303",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -13525,19 +13527,20 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5424,
+      "bytes": 5446,
       "format": "text",
       "host": "omp",
       "id": "global-instructions",
       "include": [],
       "kind": "text",
       "portable_paths": false,
-      "sha256": "b0c8ebea12f1f3aecdb1c45e5bc3c58ddc9243bcdbeca6fea97750d3b9718fc8",
+      "sha256": "408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12",
       "snapshot": "hosts/omp/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent",
       "replace_sha256": [
-        "656e341b1a9f2456cab664fe1acfac9e9888a60f41139e8b2d4669e522608e03"
+        "656e341b1a9f2456cab664fe1acfac9e9888a60f41139e8b2d4669e522608e03",
+        "b0c8ebea12f1f3aecdb1c45e5bc3c58ddc9243bcdbeca6fea97750d3b9718fc8"
       ]
     },
     {
@@ -13633,7 +13636,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "eb69809fd383e72ab028c47498409d6b9056227a83b0321975d5ab413b6397dd",
+  "policy_sha256": "4090f351d6d42301f94538e8b772dd72737a30f6d6cfb163793e5d29b2f813ba",
   "public_safe": true,
   "schema_version": 1
 }

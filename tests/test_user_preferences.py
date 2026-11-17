@@ -120,6 +120,30 @@ class UserPreferenceTests(unittest.TestCase):
         with self.assertRaises(sync_git.SyncBlocked):
             self.check()
 
+    def model_preferences(self):
+        self.name = 'surfaces/core.md'
+        self.row['owner'] = self.name
+        source = Path(__file__).resolve().parents[1] / self.name
+        self.baseline[self.name] = source.read_bytes()
+        return self.baseline[self.name]
+
+    def test_model_preferences_at_existing_owner_qualify(self):
+        source = self.model_preferences()
+        self.put(self.name, source.replace(b'"gpt-6.2-sol"', b'"gpt-6.2-astra"')
+                 .replace(b'### Review models', b'### Reviewer choices'))
+        self.assertTrue(self.check())
+
+    def test_model_preference_cannot_change_native_mapping_or_other_reference_rules(self):
+        source = self.model_preferences()
+        for old, new in ((b'"codex": "worker"', b'"codex": "hermes"'),
+                         (b'### Review models', b'### Review models\n\n## Dispatch and review'),
+                         (b'## Discovery', b'## Different discovery')):
+            with self.subTest(old=old):
+                self.assertIn(old, source)
+                self.put(self.name, source.replace(old, new))
+                with self.assertRaises(sync_git.SyncBlocked):
+                    self.check()
+
     def test_new_owner_or_executable_not_a_preference(self):
         self.name = 'tools/new.py'
         self.row['owner'] = self.name

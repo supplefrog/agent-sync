@@ -1,6 +1,6 @@
 ## Design authority and delegated taste
 
-Before briefing a new reference image or planning substantial frontend design, read [references/design-planning.md](design-planning.md). It routes the pre-image brief and the detailed plan based on the selected image through the current preferred planner and fallback. Implementation/review roles and human taste authority stay with their existing owners; routine repairs reuse the accepted direction.
+Before briefing a new reference image or planning substantial frontend design, read [references/design-planning.md](design-planning.md). It routes the pre-image brief and the detailed plan based on the selected image through the current preferred design model. Implementation and review have separate roles. The user owns taste decisions, and routine repairs reuse the accepted direction.
 
 For a new visual identity or major redesign, load [references/design-judgment.md](design-judgment.md) and use its image-led direction workflow before selecting parts. Explore coherent whole-page worlds, then derive required layouts and consequential states from the selected master. An approved identity or routine repair reuses its references and working parts without new exploration.
 

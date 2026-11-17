@@ -964,8 +964,24 @@ def _approved_user_preference(candidate, source, name, owner, row, base):
             prefix, body = data.split(start)
             _, suffix = body.split(end)
             return prefix, suffix
-        if outside(old) != outside(new):
-            raise sync_git.SyncBlocked('user preference cannot change core outside standing instructions')
+        old_prefix, old_suffix = outside(old)
+        new_prefix, new_suffix = outside(new)
+        if (old_prefix, old_suffix) != (new_prefix, new_suffix):
+            from runtime_defaults import DefaultsError, _parse_preferences
+
+            section = re.compile(rb'^## Model preferences\r?\n.*?(?=^## |\Z)', re.M | re.S)
+            before = section.findall(old_prefix)
+            after = section.findall(new_prefix)
+            if (old_suffix != new_suffix or len(before) != 1 or len(after) != 1
+                    or section.split(old_prefix) != section.split(new_prefix)):
+                raise sync_git.SyncBlocked('user preference may change only standing instructions or model preferences')
+            try:
+                old_selectors = _parse_preferences(before[0].decode('utf-8'))
+                new_selectors = _parse_preferences(after[0].decode('utf-8'))
+            except (DefaultsError, UnicodeError) as exc:
+                raise sync_git.SyncBlocked('user preference must retain valid model selectors') from exc
+            if any(old_selectors[key] != new_selectors[key] for key in old_selectors if key != 'roles'):
+                raise sync_git.SyncBlocked('user preference cannot change native host or default-role mapping')
     else:
         try:
             def unique(pairs):

@@ -4,15 +4,15 @@ Use at the start of a new frontend identity, a substantial redesign, or an unres
 
 ## Route and scope
 
-Load the current `surfaces/core.md` through Agent Sync's installed fleet `source_snapshot`, following the existing execution contract. Its frontend design-planning exception owns the preferred model, effort, free-account restriction and fallback; keep no second model table here. On a cloud host, supply that applicable source with the skill package and verify its read. A tool named Claude Context supplies retrieval, not a planner consultation.
+Load the current `surfaces/core.md` through Agent Sync's installed fleet `source_snapshot`. Follow its design model preference for both planning phases and its guidance for optional supplementary advice. On a cloud host, supply that source with the skill package and verify its read.
 
-Use the permitted browser route for the user's free Claude account. Verify the selected model/effort and usable quota from the actual UI. An unavailable browser/login/model, exhausted quota or missing completed response invokes the selected native fallback; report the cause and do not repeatedly retry the free route or wait indefinitely for its quota. Apply the host's ordinary access and data-transfer boundaries. Do not run routine engineering through this planner or create a user-owned chat as an implementation workaround.
+Verify the chosen model, effort and ability to inspect the relevant inputs. Use the host's existing authorized routes and report any limitation that affects the plan.
 
 ## Reference brief, then detailed plan
 
 Before generating a new reference, give the planner the current task, audience, required content and states, applicable constraints, and explicit user decisions. Request a complete standalone GPT Image brief that makes the product's idea perceptible. Let the task draw out the planner's visual direction; do not impose experimental effects merely to make an ordinary task look unusual. Send that brief through the existing authorized native image-generation route. The planner writes the brief; the image tool generates the reference.
 
-After the user selects a reference or delegates that selection, supply the actual selected image to the planner with the task and accepted qualities. Verify that the planner can view it. If image transfer or viewing is unavailable, report that limitation and use the permitted fallback with the actual image; do not represent a prompt-only interpretation as an image-based plan. For an existing selected reference, start here without regenerating it.
+After the user selects a reference or delegates that selection, supply the actual selected image to the planner with the task and accepted qualities. Verify that the planner can view it. If the chosen route cannot inspect the image, use an authorized image-capable route or report the limitation. For an existing selected reference, start here without regenerating it.
 
 Request one detailed implementation-ready plan grounded in the image: the perceptual idea, consequential anatomy/proportions/materials, typography and palette relationships, layout and responsive behavior, content and interaction states, motion, construction assumptions, and observable checks. Distinguish visible image evidence from inferred behavior or proposed additions. Explain how to reproduce the consequential visual relationships while keeping implementation methods open. When a flawed construction constrains the result, compare a credible replacement with repairing it. Record the actual planner/effort for each phase and retain the generation brief, selected image identity, user decisions and detailed plan in the project's existing brief or handoff; a proposed plan is not acceptance.
 

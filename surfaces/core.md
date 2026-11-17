@@ -35,12 +35,11 @@ This block owns approved desired values. Native adapters read it; observations a
 {
   "schema_version": 1,
   "roles": {
-    "reviewer": {"model": "gpt-6.1-sol", "reasoning": "xhigh"},
-    "coordinator": {"model": "gpt-6.1-sol", "reasoning": "xhigh"},
-    "worker": {"model": "gpt-6.1-sol", "reasoning": "medium"},
-    "linear": {"model": "gpt-6.1-sol", "reasoning": "high"},
-    "hermes": {"model": "gpt-6.1-sol", "reasoning": "medium"},
-    "computer_use": {"model": "gpt-6.1-terra", "reasoning": "medium"}
+    "reviewer": {"model": "gpt-6.2-sol", "reasoning": "xhigh"},
+    "coordinator": {"model": "gpt-6.2-sol", "reasoning": "xhigh"},
+    "worker": {"model": "gpt-6.2-sol", "reasoning": "medium"},
+    "linear": {"model": "gpt-6.2-sol", "reasoning": "high"},
+    "hermes": {"model": "gpt-6.2-sol", "reasoning": "medium"}
   },
   "runtime_defaults": {"codex": "worker", "hermes": "hermes"},
   "maintained_hosts": ["codex", "hermes"],
@@ -49,15 +48,17 @@ This block owns approved desired values. Native adapters read it; observations a
 ```
 <!-- /agent-sync-preferences -->
 
-The general migration target is GPT-6.1 Sol for reasoning, planning, coding, design direction, and review, subject to the frontend design-planning exception below. Do not introduce Astra, Fable, Kimi, or a cheaper reasoning tier unless the user selects one. Preserve each role's supported reasoning effort. Specialized embedding, transcription, rendering, and media-generation tools are capability dependencies, not reasoning-model preferences; check compatibility before proposing their replacement.
+Use GPT-6.2 Sol for regular work, including computer use. Apply the regular worker preference when browser or desktop work is delegated. Preserve each role's supported reasoning effort. Check compatibility before proposing changes to specialized embedding, transcription, rendering, or media-generation models.
 
-### Frontend design-planning exception
+### Design and complex problem solving
 
-For substantial frontend design work, use Sonnet 5.5 Extra/xhigh through the user's free Claude web account for both planner phases: write the brief for native GPT Image reference generation, then inspect the selected reference image and produce the detailed design plan from it. Use xhigh in both phases and record the actual UI model/effort label. Reserve its limited quota for these design phases; no routine coding, repository exploration, diagnostic tooling or general engineering/workflow planning. Do not upgrade the account, use a paid/API route, or infer free availability from the model name.
+Prefer GPT-6.2 Astra for difficult problems that require substantial judgment and work that depends on design taste, including website, product, and 3D design. For frontend work, this includes the reference-image brief and the plan based on the selected image. Use high effort for design planning, with xhigh for harder cases or when requested.
 
-When the free Claude route is unavailable, quota-limited or cannot supply the selected model/effort, use GPT-6 Astra (`gpt-6-astra`) for the affected planner phase through an authorized native Codex route: High by default, xhigh for harder design planning or an explicit user choice. Report the actual planner, effort and fallback reason for each phase. If the selected fallback cannot run under the host/session constraints, report the limitation rather than silently substituting Sol or a paid provider. Current permissions and dispatch restrictions still apply.
+Sonnet 5.5 can supplement Astra when an independent design perspective helps. Use the authorized free Claude route at Extra/xhigh with public or sanitized context. Check model, effort and quota before selecting that route. Use existing host permissions and spending limits.
 
-This is a design-planner exception, not a change to general runtime defaults, implementation workers or reviewer roles above. The frontend skill owns phase placement and human taste selection; planner advice never establishes acceptance. The user's current choice supersedes the earlier Sol design-planner fallback.
+### Review models
+
+Choose a fresh reviewer suited to the work from GPT-6.2 Astra, GPT-6.2 Sol, GPT-6.1 Terra, and Sonnet 5.5. Sol is the routine reviewer. Use xhigh or the verified provider equivalent. Use the authorized free Claude route for Sonnet with public or sanitized context.
 
 A user-authorized model migration includes the named legacy defaults, examples, workflow definitions, and resumable model pins, including historical configurations when selected. Update their executable model choices and any dependent identity/validation fields. Record what changed without claiming old executions used the replacement model. Generic preservation advice and superseded project prose cannot exempt an explicitly selected migration target.
 
@@ -112,7 +113,7 @@ Before selecting a nontrivial approach, proactively research relevant solutions 
 For web research, use Parallel first; use Tavily while Parallel is unavailable or rate-limited.
 
 ## Execution
-Use `prompting` when preparing a task for another agent. Pass required files, skill references, and review metadata as separate context. Before selecting a worker or reviewer, read Agent Sync's `surfaces/core.md` from the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`). Concurrent Git writers use separate worktrees. The parent integrates and verifies delegated work. Retain spending and action limits.
+Use `prompting` when preparing a task for another agent. Pass required files, skill references, and review metadata as separate context. Before choosing a model or dispatching a worker or reviewer, read Agent Sync's `surfaces/core.md` from the shared skill root's `.agent-signal-fleet.json` `source_snapshot` (strip `render/fleet`). Concurrent Git writers use separate worktrees. The parent integrates and verifies delegated work. Retain spending and action limits.
 
 Choose how to coordinate the work before dispatch. Use `dynamic-workflows` when several tasks can run independently and a consequential next step requires all their verified results, or when a later turn needs to resume from saved progress. Bind each result to the revision or artifact it checked. Proceed only when the required checks pass for that revision or artifact. Use ordinary parallel execution when you can integrate the results in the current turn and neither condition applies. If a supported workflow route is unavailable, state why and enforce the same dependencies with the available tools.
 
