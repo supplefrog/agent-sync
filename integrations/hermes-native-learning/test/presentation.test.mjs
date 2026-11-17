@@ -36,6 +36,34 @@ test('host Markdown port has no active transcript directive child or implicit me
   assert.equal(richTextAllowed('```mermaid\ngraph TD\n a --> b\n```'),true);
   assert.equal(richTextAllowed('```python\nprint(2)\n```'),true);
 });
+test('host Markdown renders a fully escaped SQL example and preserves existing code and literal fallbacks',()=>{
+  const React={createElement:(type,props,...children)=>({type,props,children})},Markdown=()=>{};
+  const render=text=>renderLessonProse(React,Markdown,{teachingText:text,answers:[]}).children[0].children[0];
+  const sql=['Compare the query:', '', '```sql', 'SELECT name', "FROM cities WHERE country = 'Spain';", '```', '', 'What does it return?'].join('\n');
+  const escaped=sql.replaceAll('\n','\\n');
+  const repaired=render(escaped);
+  assert.equal(repaired.type,Markdown);
+  assert.equal(repaired.props.text,sql);
+  const existing=['```js','console.log("\\n");','```'].join('\n');
+  const doubleEscaped=['```js','console.log("\\\\n");','```'].join('\\n');
+  assert.equal(render(existing).props.text,existing);
+  assert.equal(render(doubleEscaped).props.text,existing);
+  const crlf=escaped.replaceAll('\\n','\\r\\n').replaceAll('```','~~~~');
+  assert.equal(render(crlf).props.text,sql.replaceAll('```','~~~~'));
+  for(const literal of [
+    escaped.replace(/\\n`{3}\\n/, '\\n~~~\\n'),
+    escaped.replace('SELECT name','SELECT name\n'),
+    escaped.replace('sql','mermaid'),
+    escaped.replace('sql','listing'),
+    escaped+'\\n\\n> ```mermaid\\n> graph TD\\n> A --> B\\n> ```',
+    'Inline citation: ````sql\\nSELECT 1;\\n````',
+    escaped.replace('Spain','https://example.invalid'),
+  ]) {
+    const result=render(literal);
+    assert.equal(result.type,'pre');
+    assert.equal(result.children[0],literal);
+  }
+});
 test('plan diagram reuses only validated IDs/edges and escaped labels; it is not mastery',()=>{
   const plan={nodes:[{id:'ratio',title:'Ratio "label"'},{id:'secant',title:'Secant'}],edges:[{from:'ratio',to:'secant'}]};
   assert.match(planDiagram(plan),/ratio --> secant/);

@@ -2,7 +2,7 @@
 // Narrow port of LearnHarness MessageResponse/MermaidInline, not its app shell.
 // Library bindings live in rich-fragment.mjs, allowing checks with real libraries
 // without invoking a browser builder or accessing a live host/lesson.
-import {richTextAllowed} from '../inline/lesson-prose.mjs';
+import {prepareRichText} from '../inline/lesson-prose.mjs';
 import {repairMathForDisplay,transformMathDelimiters} from '../vendor/runtime/math-delims.ts';
 
 export function createRichRenderer({React,createRoot,Streamdown,cjk,createMathPlugin,createMermaidPlugin,remarkBreaks,renderNotation}) {
@@ -67,10 +67,11 @@ export function createRichRenderer({React,createRoot,Streamdown,cjk,createMathPl
     a:({children})=>h('span',null,children),img:({alt})=>h('span',null,alt??'')};
   function Content({source}) {
     const content=typeof source==='string'?source:'';
-    if(!richTextAllowed(content))return h('span',{'data-rich-fallback':'literal',style:{whiteSpace:'pre-wrap'}},content);
+    const prepared=prepareRichText(content);
+    if(prepared===null)return h('span',{'data-rich-fallback':'literal',style:{whiteSpace:'pre-wrap'}},content);
     return h(RenderBoundary,{key:content,source:content},h(Streamdown,{mode:'static',parseIncompleteMarkdown:false,
       className:'lh-prose',skipHtml:true,controls:false,plugins,components,urlTransform:()=>''},
-      transformMathDelimiters(repairMathForDisplay(content))));
+      transformMathDelimiters(repairMathForDisplay(prepared))));
   }
   function mount(element,text) {
     let row=roots.get(element);

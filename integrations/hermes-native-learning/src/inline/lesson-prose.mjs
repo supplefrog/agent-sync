@@ -1,10 +1,45 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Host-native presentation projection; no Markdown parser or HTML execution.
+const codeLanguages=new Set(['','text','txt','plaintext','python','py','javascript','js','typescript','ts','json','css','bash','sh','shell','powershell','ps1','sql','java','c','cpp','c++','csharp','c#','go','rust','ruby','rb','r','matlab','latex','tex']);
+const richLanguages=new Set([...codeLanguages,'mermaid','smiles','abc','tikz']);
+
+// Like LearnHarness #401, recover one escaped layer only when a complete
+// fenced example provides structural evidence. Never repair mixed layouts
+// or turn an escaped example into a diagram, notation, or resource.
+function recoverEscapedCode(text) {
+  if(typeof text!=='string'||text.length>65536||/[\r\n]/.test(text)||!text.includes('\\n'))return text;
+  const decoded=text.replace(/\\\\|\\r\\n|\\n/g,token=>token==='\\\\'?'\\':'\n');
+  let open=null,complete=false;
+  for(const line of decoded.split('\n')){
+    const fence=/^[ \t]{0,3}(`{3,}|~{3,})[ \t]*(.*)$/.exec(line);
+    if(!fence)continue;
+    const [,marker,info]=fence,language=info.trim().toLowerCase();
+    if(open===null){
+      if(!codeLanguages.has(language))return text;
+      open=marker;
+    }else{
+      if(language||marker[0]!==open[0]||marker.length<open.length)return text;
+      open=null;
+      complete=true;
+    }
+  }
+  return complete&&open===null?decoded:text;
+}
+
+export function prepareRichText(text) {
+  const prepared=recoverEscapedCode(text);
+  const languages=prepared===text?richLanguages:codeLanguages;
+  return richTextAllowedFor(prepared,languages)?prepared:null;
+}
+
 export function richTextAllowed(text) {
+  return richTextAllowedFor(text,richLanguages);
+}
+
+function richTextAllowedFor(text,languages) {
   if(typeof text!=='string'||text.length>65536)return false;
-  const ordinary=new Set(['','mermaid','text','txt','plaintext','python','py','javascript','js','typescript','ts','json','css','bash','sh','shell','powershell','ps1','sql','java','c','cpp','c++','csharp','c#','go','rust','ruby','rb','r','matlab','latex','tex','smiles','abc','tikz']);
   for(const match of text.matchAll(/(?:`{3,}|~{3,})[ \t]*([^\s`~]*)/g))
-    if(!ordinary.has(match[1].toLowerCase()))return false;
+    if(!languages.has(match[1].toLowerCase()))return false;
   return !/(?:https?:|file:|data:|MEDIA:|!\s*\[|\]\s*\(|^\s{0,3}\[[^\]]+\]:|<\/?[a-z][^>]*>)/im.test(text);
 }
 export function planDiagram(plan) {
@@ -35,16 +70,22 @@ export function lessonProse(view,{open=true}={}) {
 export function renderSettledExplanation(React,MessageTextContent,answer) {
   if(answer?.kind!=='quiz'||typeof answer.explanation!=='string'||!answer.explanation)return null;
   const text=answer.explanation;
+  const prepared=prepareRichText(text);
   return React.createElement('details',{key:'why-'+answer.toolCallId,'data-learning-answer-why':''},
     React.createElement('summary',null,'Why'),
-    richTextAllowed(text)&&typeof MessageTextContent==='function'
-      ?React.createElement(MessageTextContent,{text,media:false,decorateText:children=>React.createElement('span',null,children)})
+    prepared!==null&&typeof MessageTextContent==='function'
+      ?React.createElement(MessageTextContent,{text:prepared,media:false,decorateText:children=>React.createElement('span',null,children)})
       :React.createElement('pre',{style:{whiteSpace:'pre-wrap'}},text));
 }
 export function renderLessonProse(React,MessageTextContent,view,state,choices) {
-  const textContent=text=>richTextAllowed(text)
-    ?React.createElement(MessageTextContent,{text,media:false,decorateText:children=>React.createElement('span',null,children)})
-    :React.createElement('pre',{style:{whiteSpace:'pre-wrap'}},text);
+  const textContent=text=>{
+    const prepared=prepareRichText(text);
+    return prepared!==null
+      ?React.createElement(MessageTextContent,{text:prepared,media:false,
+        // Wrapping paragraphs prevents nested transcript directives.
+        decorateText:children=>React.createElement('span',null,children)})
+      :React.createElement('pre',{style:{whiteSpace:'pre-wrap'}},text);
+  };
   const q=view.question,external=typeof choices?.select==='function'&&q&&q.mode!=='text';
   return React.createElement('div',{'data-learning-prose':'',className:'lh-native-prose'},
     ...lessonProse(view,state).map(entry=>{
@@ -65,12 +106,6 @@ export function renderLessonProse(React,MessageTextContent,view,state,choices) {
           }},
           textContent(entry.text),q.kind!=='quiz'&&typeof option.description==='string'&&option.description?React.createElement('span',{className:'lh-secondary'},textContent(option.description)):null);
       }
-      return React.createElement('section',{key:entry.id,'data-learning-prose-part':entry.id},
-      richTextAllowed(entry.text)
-        ? React.createElement(MessageTextContent,{text:entry.text,media:false,
-          // Core paragraphPlainText accepts only string children. Wrapping
-          // every paragraph prevents nested transcript directives in prose.
-          decorateText:children=>React.createElement('span',null,children)})
-        : React.createElement('pre',{style:{whiteSpace:'pre-wrap'}},entry.text));}),
+      return React.createElement('section',{key:entry.id,'data-learning-prose-part':entry.id},textContent(entry.text));}),
     view.kind==='practice'?null:renderSettledExplanation(React,MessageTextContent,view.answers?.at(-1)));
 }

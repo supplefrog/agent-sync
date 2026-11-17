@@ -1,7 +1,7 @@
 {
   "built": "t3/app.html",
-  "bytes": 4972411,
-  "sha256": "304876412dd4e5c686b00e0c71172c1fdfac32f34af8a98880e6f02d9c3e962e",
+  "bytes": 4972942,
+  "sha256": "2bee69041b269be202b29500d58ddb2fc77a152943bca21036f4960c50c17931",
   "esbuild": "0.28.2",
   "builder": {
     "path": "build-t3.mjs",
@@ -236,7 +236,7 @@
     },
     {
       "path": "src/inline/lesson-prose.mjs",
-      "sha256": "96ddacf67ca8097c2be5b768ff3537ed55894c141044e613950707f59bdb32d3"
+      "sha256": "6b42f7996c0e9dda09add5c1e8d1c1280d2ffc9c1e65b91b70a2577b922fb294"
     },
     {
       "path": "src/inline/inline-client.mjs",
@@ -7752,7 +7752,7 @@
     },
     {
       "path": "src/t3/rich-core.mjs",
-      "sha256": "4c7aef675d23ffd75282f5e014423f92b63d7f178afcf89bee3032cc00e18cbd"
+      "sha256": "8fea5ef5a90976b56b310e0b6ac599640dfb453e8c6d09e6973a26582807044f"
     },
     {
       "path": "src/t3/rich-fragment.mjs",

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only; LearnHarness native integration. See NOTICE.md.
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/desktop-entry.mjs
+// src/desktop-entry.mjs
 import { host, MessageTextContent } from "@hermes/plugin-sdk";
 import * as React from "react";
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/lesson-layout.mjs
+// src/inline/lesson-layout.mjs
 function lessonResponseArea(dock, { exploration, workbench }) {
   if (!exploration) return dock;
   exploration.hidden = false;
@@ -21,7 +21,7 @@ function lessonResponseArea(dock, { exploration, workbench }) {
   return response;
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/vendor/runtime/question-pure.ts
+// src/vendor/runtime/question-pure.ts
 var CONFIDENCE_STOPS = [0, 30, 50, 70, 90, 100];
 var DEFAULT_CONFIDENCE_INDEX = 2;
 var emptyDockSelection = () => ({ selected: /* @__PURE__ */ new Set(), otherSelected: false, dontKnow: false });
@@ -39,7 +39,7 @@ function toggleOther(mode, sel) {
   return { selected: /* @__PURE__ */ new Set(), otherSelected: true, dontKnow: false };
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/rich-scope.mjs
+// src/inline/rich-scope.mjs
 function createRichScope(renderRich) {
   let cleanups = [];
   return {
@@ -66,7 +66,7 @@ function createRichScope(renderRich) {
   };
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/lesson-identity.mjs
+// src/inline/lesson-identity.mjs
 var MAX_LESSON_DRAFT_BYTES = 64 * 1024;
 var lessonKind = (view) => view.kind === "practice" ? "practice" : "teach";
 var lessonDraftKey = (view) => lessonKind(view) === "practice" ? `${view.chatId}:practice:${view.activeProblem?.toolCallId ?? "between"}` : `${view.chatId}:${view.question?.toolCallId ?? "idle"}`;
@@ -123,7 +123,7 @@ async function loadCurrentProjection(files, binding, minimumRevision, verifyByte
   return view;
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/drawing.mjs
+// src/drawing.mjs
 var MAX_STROKES = 40;
 var MAX_POINTS = 320;
 var DRAWING_WIDTH = 1e3;
@@ -137,7 +137,7 @@ function validDrawing(value) {
   });
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/drawing-client.mjs
+// src/inline/drawing-client.mjs
 var SVG = "http://www.w3.org/2000/svg";
 function svgElement(doc, name, attributes) {
   const element = doc.createElementNS(SVG, name);
@@ -316,7 +316,7 @@ function drawingPad(doc, { value, onChange, disabled = false, isOpen, history = 
   return details;
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/coding-client.mjs
+// src/inline/coding-client.mjs
 var LIMIT = 8192;
 var encoder = new TextEncoder();
 var palette = {
@@ -471,7 +471,7 @@ function mountCodingEditor(root, { spec, value, onChange, onRun, onReceipt, obse
   return panel;
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/confidence-style.mjs
+// src/inline/confidence-style.mjs
 var CONFIDENCE_COLORS = ["#ef4444", "#f97316", "#eab308", "#84cc16", "#22c55e", "#10b981"];
 function nearestConfidenceIndex(value) {
   let best = 0;
@@ -493,7 +493,7 @@ function confidenceRailStyle(value) {
   };
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/answered-record.mjs
+// src/inline/answered-record.mjs
 function answeredRecord(doc, answer, { richProse = false, externalRichExplanation = false, renderProse } = {}) {
   const node = (tag, text, attrs = {}) => {
     const e = doc.createElement(tag);
@@ -563,7 +563,7 @@ function codingRecord(doc, coding) {
   return box;
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/practice-client.mjs
+// src/inline/practice-client.mjs
 function mountPractice(root, initialView, options = {}) {
   const doc = root.ownerDocument, win = doc.defaultView;
   let view = initialView, text = "", open = true, pending = false, editVersion = 0, historyOpen = (initialView.feedback?.length ?? 0) > 0;
@@ -851,12 +851,37 @@ function mountPractice(root, initialView, options = {}) {
   }, readDraft: () => ({ text, open, pending }) };
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/lesson-prose.mjs
-function richTextAllowed(text) {
+// src/inline/lesson-prose.mjs
+var codeLanguages = /* @__PURE__ */ new Set(["", "text", "txt", "plaintext", "python", "py", "javascript", "js", "typescript", "ts", "json", "css", "bash", "sh", "shell", "powershell", "ps1", "sql", "java", "c", "cpp", "c++", "csharp", "c#", "go", "rust", "ruby", "rb", "r", "matlab", "latex", "tex"]);
+var richLanguages = /* @__PURE__ */ new Set([...codeLanguages, "mermaid", "smiles", "abc", "tikz"]);
+function recoverEscapedCode(text) {
+  if (typeof text !== "string" || text.length > 65536 || /[\r\n]/.test(text) || !text.includes("\\n")) return text;
+  const decoded = text.replace(/\\\\|\\r\\n|\\n/g, (token) => token === "\\\\" ? "\\" : "\n");
+  let open = null, complete = false;
+  for (const line of decoded.split("\n")) {
+    const fence = /^[ \t]{0,3}(`{3,}|~{3,})[ \t]*(.*)$/.exec(line);
+    if (!fence) continue;
+    const [, marker, info] = fence, language = info.trim().toLowerCase();
+    if (open === null) {
+      if (!codeLanguages.has(language)) return text;
+      open = marker;
+    } else {
+      if (language || marker[0] !== open[0] || marker.length < open.length) return text;
+      open = null;
+      complete = true;
+    }
+  }
+  return complete && open === null ? decoded : text;
+}
+function prepareRichText(text) {
+  const prepared = recoverEscapedCode(text);
+  const languages = prepared === text ? richLanguages : codeLanguages;
+  return richTextAllowedFor(prepared, languages) ? prepared : null;
+}
+function richTextAllowedFor(text, languages) {
   if (typeof text !== "string" || text.length > 65536) return false;
-  const ordinary = /* @__PURE__ */ new Set(["", "mermaid", "text", "txt", "plaintext", "python", "py", "javascript", "js", "typescript", "ts", "json", "css", "bash", "sh", "shell", "powershell", "ps1", "sql", "java", "c", "cpp", "c++", "csharp", "c#", "go", "rust", "ruby", "rb", "r", "matlab", "latex", "tex", "smiles", "abc", "tikz"]);
   for (const match of text.matchAll(/(?:`{3,}|~{3,})[ \t]*([^\s`~]*)/g))
-    if (!ordinary.has(match[1].toLowerCase())) return false;
+    if (!languages.has(match[1].toLowerCase())) return false;
   return !/(?:https?:|file:|data:|MEDIA:|!\s*\[|\]\s*\(|^\s{0,3}\[[^\]]+\]:|<\/?[a-z][^>]*>)/im.test(text);
 }
 function planDiagram(plan) {
@@ -907,15 +932,24 @@ ${typeof option === "string" ? option : option.text ?? option.label ?? ""}`);
 function renderSettledExplanation(React2, MessageTextContent2, answer) {
   if (answer?.kind !== "quiz" || typeof answer.explanation !== "string" || !answer.explanation) return null;
   const text = answer.explanation;
+  const prepared = prepareRichText(text);
   return React2.createElement(
     "details",
     { key: "why-" + answer.toolCallId, "data-learning-answer-why": "" },
     React2.createElement("summary", null, "Why"),
-    richTextAllowed(text) && typeof MessageTextContent2 === "function" ? React2.createElement(MessageTextContent2, { text, media: false, decorateText: (children) => React2.createElement("span", null, children) }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, text)
+    prepared !== null && typeof MessageTextContent2 === "function" ? React2.createElement(MessageTextContent2, { text: prepared, media: false, decorateText: (children) => React2.createElement("span", null, children) }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, text)
   );
 }
 function renderLessonProse(React2, MessageTextContent2, view, state, choices) {
-  const textContent = (text) => richTextAllowed(text) ? React2.createElement(MessageTextContent2, { text, media: false, decorateText: (children) => React2.createElement("span", null, children) }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, text);
+  const textContent = (text) => {
+    const prepared = prepareRichText(text);
+    return prepared !== null ? React2.createElement(MessageTextContent2, {
+      text: prepared,
+      media: false,
+      // Wrapping paragraphs prevents nested transcript directives.
+      decorateText: (children) => React2.createElement("span", null, children)
+    }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, text);
+  };
   const q = view.question, external = typeof choices?.select === "function" && q && q.mode !== "text";
   return React2.createElement(
     "div",
@@ -954,23 +988,13 @@ function renderLessonProse(React2, MessageTextContent2, view, state, choices) {
           q.kind !== "quiz" && typeof option.description === "string" && option.description ? React2.createElement("span", { className: "lh-secondary" }, textContent(option.description)) : null
         );
       }
-      return React2.createElement(
-        "section",
-        { key: entry.id, "data-learning-prose-part": entry.id },
-        richTextAllowed(entry.text) ? React2.createElement(MessageTextContent2, {
-          text: entry.text,
-          media: false,
-          // Core paragraphPlainText accepts only string children. Wrapping
-          // every paragraph prevents nested transcript directives in prose.
-          decorateText: (children) => React2.createElement("span", null, children)
-        }) : React2.createElement("pre", { style: { whiteSpace: "pre-wrap" } }, entry.text)
-      );
+      return React2.createElement("section", { key: entry.id, "data-learning-prose-part": entry.id }, textContent(entry.text));
     }),
     view.kind === "practice" ? null : renderSettledExplanation(React2, MessageTextContent2, view.answers?.at(-1))
   );
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/inline-client.mjs
+// src/inline/inline-client.mjs
 var INLINE_PREFIX = "lh.inline ";
 function nativeTransport(win) {
   return async (action) => {
@@ -1431,7 +1455,7 @@ function mountInline(root, initialView, options = {}) {
   };
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/hermes-native-port.mjs
+// src/inline/hermes-native-port.mjs
 var bytes = (value) => new TextEncoder().encode(JSON.stringify(value)).length;
 function requirePort(ok, message) {
   if (!ok) throw new Error(message);
@@ -1517,7 +1541,7 @@ function createHermesLessonPort(ownerSessionId, view, { composer, storage }) {
   } };
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/vendor/runtime/demo-pure.ts
+// src/vendor/runtime/demo-pure.ts
 var DEMO_BRIDGE_SCRIPT = `<script>(function(){
 var send=function(m){try{parent.postMessage(m,"*")}catch(e){}};
 var post=function(){
@@ -1557,10 +1581,10 @@ function reduceDemoBridgeState(state, data) {
   return state;
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/visuals-view.mjs
+// src/visuals-view.mjs
 var lessonVisualRows = (view) => (view.visuals ?? []).map((artifact) => ({ id: "visual-" + artifact.id, kind: artifact.kind, activity: artifact.title, execution: "saved", directVisual: true, artifact }));
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/artifacts.mjs
+// src/inline/artifacts.mjs
 function demoDocument(html) {
   const policy = '<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; script-src &#39;unsafe-inline&#39;; style-src &#39;unsafe-inline&#39;; img-src data: blob:; font-src data:; connect-src &#39;none&#39;; frame-src &#39;none&#39;; form-action &#39;none&#39;; base-uri &#39;none&#39;">';
   return "<!doctype html><html><head>" + policy + "</head><body>" + buildDemoSrcDoc(html) + "</body></html>";
@@ -1647,7 +1671,7 @@ function createJobArtifacts(React2) {
   };
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/hermes-contribution.mjs
+// src/inline/hermes-contribution.mjs
 async function verifyProjectionBytes(snapshot, text) {
   const match = /^(teach|practice)-r([0-9]+)-([a-f0-9]{64})\.json$/.exec(snapshot);
   if (!match || !globalThis.crypto?.subtle) throw new Error("Snapshot content verification is unavailable.");
@@ -1751,7 +1775,7 @@ function registerHermesLearning(ctx, { host: host2, React: React2, MessageTextCo
   } });
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/connect-export.mjs
+// src/connect-export.mjs
 async function connectLessonExport(ctx, { owner, chatId, snapshot, minimumRevision }, { isCurrent, verifyBytes, install }) {
   const cancelled = () => ({ connected: false, cancelled: true });
   if (!isCurrent()) return cancelled();
@@ -1813,7 +1837,7 @@ async function connectLessonExport(ctx, { owner, chatId, snapshot, minimumRevisi
   }
 }
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/inline/hermes-theme.mjs
+// src/inline/hermes-theme.mjs
 var HERMES_LESSON_THEME = `
 .lh-native-lesson {
   --background: var(--dt-background, Canvas);
@@ -1831,7 +1855,7 @@ var HERMES_LESSON_THEME = `
 }
 `;
 
-// work/learnharness-audit/learner-focus/release-source/integrations/hermes-native-learning/src/desktop-entry.mjs
+// src/desktop-entry.mjs
 var canonical = (value) => typeof value === "string" && value && value === value.trim() && value !== "new";
 var desktop_entry_default = {
   id: "learnharness-native",
