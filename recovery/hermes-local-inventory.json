@@ -441,6 +441,10 @@
         {
           "path": "references/session-lifecycle-cleanup.md",
           "sha256": "2db19455ef1f0b9036ddb1a84375fd1666d58df6a0dc8234adf05ad36680dd86"
+        },
+        {
+          "path": "references/user-project-retirement.md",
+          "sha256": "af278b86c57e9465cc071f62ef95ba0b43872e158f7e9b5c8a1c97f6a0ebbd6e"
         }
       ],
       "name": "agent-orchestration-operations",
@@ -2599,6 +2603,10 @@
         {
           "path": "references/windows-app-lifecycle.md",
           "sha256": "dcc03d8a69819f64e96ae9c6dcdaa1dbe8bfb1125f9f5ecd8739fd38ab7bea91"
+        },
+        {
+          "path": "references/windows-openssh-remote-access.md",
+          "sha256": "652005f97ee69f62d94fef57a03fdf130ea7731d03f29a2ebaaec40aacd760a1"
         }
       ],
       "name": "windows-system-operations",
@@ -2815,6 +2823,10 @@
         {
           "path": "references/github-issues/templates/feature-request.md",
           "sha256": "43962f5a398b4badeeb94280299ba4511940ad0e32afcfce5f2a6e1afd21c7a8"
+        },
+        {
+          "path": "references/github-pages-reader.md",
+          "sha256": "d9f40683ad8fb949968c7165bfe2f2f6af1edcc0ababb4a600845be69e6501a0"
         },
         {
           "path": "references/github-pr-workflow/SKILL.md",
@@ -4098,7 +4110,7 @@
     },
     {
       "declared_license": "MIT",
-      "disabled": false,
+      "disabled": true,
       "exclusions": [],
       "files": [
         {
@@ -4434,12 +4446,20 @@
           "sha256": "cc2f54173a07c0cf48be9a65b7ccc80619a3982fea2cb3f9e17fb04585bdd8ae"
         },
         {
+          "path": "references/openai-docs-source.md",
+          "sha256": "c5305835b0ba3372ed3624726b36855aef4df215aba951428257a455fe1eddc0"
+        },
+        {
           "path": "references/paper-apis.md",
           "sha256": "6e9ad5e9e4bf7e08c5f1fb6d08921021e7b2f7b3fb3b0dda3a446cc815719a40"
         },
         {
           "path": "scripts/fetch_youtube_transcript.py",
           "sha256": "5f4178b9feeab258da9f543c449d2b429647aa8562b1e0437f192fed0c473854"
+        },
+        {
+          "path": "scripts/read_codex_openai_docs.py",
+          "sha256": "6d57e93acb776d8bf6465050bdba3cc0bf9b547f7444cbf9afe3aa4f7f315382"
         },
         {
           "path": "scripts/search_arxiv.py",
@@ -5000,14 +5020,23 @@
       "browser/browser_use",
       "foreground-context-router",
       "image_gen/fal",
-      "video_gen/fal"
+      "mnemosyne-dashboard",
+      "video_gen/fal",
+      "homeassistant",
+      "hermes-lcm"
     ],
     "enabled": [
+      "browserclaw",
       "disk-cleanup",
-      "hermes-lcm",
+      "hermes-auto-titler",
+      "hermes-memory-ui",
       "image_gen/openai-codex",
+      "jekyll-hyde",
+      "prompt-optimizer",
+      "quota",
       "routed-delegation",
-      "security-guidance"
+      "security-guidance",
+      "agent-sync-model-skills"
     ],
     "entries": {
       "foreground-context-router": {
@@ -5027,7 +5056,7 @@
   "runtime_source_revision": "3e09e5a15f43e7253abaf4760f0487fece39ff93",
   "schema_version": 1,
   "skill_selection": {
-    "creation_nudge_interval": 15,
+    "creation_nudge_interval": 0,
     "disabled": [
       "action-item-extraction",
       "adversarial-ux-test",
@@ -5096,6 +5125,7 @@
       "touchdesigner-mcp",
       "tui-widgets",
       "unsloth",
+      "weekly-review-planning",
       "weights-and-biases",
       "xurl",
       "yuanbao"
@@ -5107,6 +5137,6 @@
     "inline_shell": false,
     "inline_shell_timeout": 10,
     "template_vars": true,
-    "write_approval": false
+    "write_approval": true
   }
 }

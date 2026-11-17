@@ -4,7 +4,7 @@ Agent Sync can preserve reviewed host-local skill customizations without promoti
 
 ## Captured Hermes packages
 
-The explicit text-artifact allowlist now covers the inventoried Hermes catalogue: 102 packages and 864 package files, plus bundled-origin metadata. [The inventory](../recovery/hermes-local-inventory.json) records every included file and exclusion. Examples include:
+The text-artifact allowlist covers 102 Hermes packages and 869 package files, plus bundled-origin metadata. [The inventory](../recovery/hermes-local-inventory.json) records every included file and exclusion. Examples include:
 
 - `mcp/native-mcp`: narrowed server setup and connection troubleshooting.
 - `research/research-source-operations`: paper lookup, source acquisition, supporting scripts and references.
@@ -34,7 +34,7 @@ Use the [selected-host recovery procedure](recovery.md) and the [verification re
 
 The Codex-local `prototype` package is captured as five exact text artifacts: its adapted entrypoint/UI owner redirect, unchanged logic procedure and UI metadata, and upstream MIT notice. UI comparison now belongs to the admitted frontend owner; logic remains native. The [upstream license](https://github.com/emilkowalski/skills/blob/main/LICENSE) and authorship are retained. This scoped addition does not claim coverage of the rest of Codex's native skill catalog. Restore may replace only the reviewed original entrypoint/UI hashes; unexpected edits remain conflicts.
 
-When a task changes a reviewed native package, include its complete scripts, references, templates, and applicable license notices in the recovery inventory. Add new support files explicitly, and review removed files instead of silently dropping knowledge. Do not copy bytecode, dot-state, usage/curator records, logs, caches, sessions, source data, or credentials.
+When a task changes a reviewed native package, include its complete scripts, references, templates, and applicable license notices in the recovery inventory. Add new support files explicitly, and review removed files instead of silently dropping knowledge. Update the inventory with each approved change to the captured file list, skill settings, or plugin settings. The restore test checks exact paths and restored settings. Do not copy bytecode, dot-state, usage/curator records, logs, caches, sessions, source data, or credentials.
 
 Run the normal reconciliation path after the edit: review the proposed recovery capture, public-safety findings, and exact publication scope; then sync and verify. Existing allowlisted file edits are captured by that path. New or previously unreviewed files need allowlist review first. A local edit alone does not update the remote hub.
 
