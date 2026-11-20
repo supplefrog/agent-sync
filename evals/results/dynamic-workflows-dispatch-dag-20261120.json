@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-20",
+  "scope": "Small tool-free V3 workflow tasks through the stock T3 and local Paseo dispatchers",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "0eb53936cf3a1ee9d787a52e072e3b2f78fb6c93c08d147cdd5ea784bfd99ea4",
+          "after_sha256": "a5a6f356595d951f1624d06edc7d8405ced723dd9cbdb91b283fd2c747eb4d41"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "1bd48c617bb85b5e88e6305e124fc6574067cfee3ae756d2a186ed14a15f3386",
+          "after_sha256": "2e7b5b5e3142c5fc2a8b4b5ae79548740e6cf281088031f4f474a41b2866c1a2"
+        },
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "fb07611c0e0e33ec3eab8f61f84c224b14413d73a0056f457fb6788749051aba",
+          "after_sha256": "13112df42c4cbaffb47c187e54fd050aa5c36508829e192c8bf4b57e3f2c427d"
+        },
+        "skills/dynamic-workflows/references/dispatcher-adapter.md": {
+          "before_sha256": "absent",
+          "after_sha256": "34da3bf3f4f6f278c329b116f51e92e7149e1c7859c692ec80e0791bb5608257"
+        },
+        "skills/dynamic-workflows/scripts/test_worker_dispatch.py": {
+          "before_sha256": "absent",
+          "after_sha256": "de0655d7193d8e6f41429753a3f2f322a242ab5a14011eadcdb7b3f6f6c45856"
+        },
+        "skills/dynamic-workflows/scripts/worker_dispatch.py": {
+          "before_sha256": "absent",
+          "after_sha256": "30bf6002c4e6a693a805ec59a33dbbea8832ac0b8fda9586a4d5007579905a72"
+        },
+        "skills/dynamic-workflows/scripts/workflow_state.py": {
+          "before_sha256": "293d0f984ab123ac0e0436bb60d3347672b2075bb8a0ac01c7d670e0221d1f43",
+          "after_sha256": "14a16172e825906e8ff6f46d254df361a21de5e860360258b36861d8749d6ed4"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "This dependency still applies to both dispatchers. Existing host support, approval and routing rules apply."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "This dependency still applies to both dispatchers. Existing host support, approval and routing rules apply."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Records the native dispatch contract or the verified dispatcher scope at its current owner."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Records the native dispatch contract or the verified dispatcher scope at its current owner."
+        },
+        {
+          "path": "skills/dynamic-workflows/SKILL.md",
+          "disposition": "updated",
+          "reason": "Records the native dispatch contract or the verified dispatcher scope at its current owner."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/dispatcher-adapter.md",
+          "disposition": "updated",
+          "reason": "Records the native dispatch contract or the verified dispatcher scope at its current owner."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "Use stock T3 native dispatch and the shared local Paseo fallback with the same persisted workflow.",
+      "authority": "The user explicitly requested both dispatch paths, route renewal, and an Agent Sync push.",
+      "checks": "The focused dispatcher, workflow and route regression suites and two live dependent-task probes.",
+      "outcome_review": {
+        "expected": "A scoped native worker result can advance a persisted dependency on either dispatcher.",
+        "observed": "Stock T3 dispatched a Codex worker and Paseo dispatched an OMP worker. Each workflow validated the terminal handle and passed its exact output into a dependent task. Offline checks covered route renewal, duplicate launch rejection and dependency result binding.",
+        "evidence": "docs/requirement-status.md",
+        "limitations": "Checks cover small tool-free text tasks. The installation reported its T3 OMP child unavailable. These runtime checks do not constitute comparative shared instruction measurements."
+      }
+    }
+  ],
+  "instruction_changes": [
+    {
+      "owner": "skills/dynamic-workflows",
+      "artifacts": {
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "fb07611c0e0e33ec3eab8f61f84c224b14413d73a0056f457fb6788749051aba",
+          "after_sha256": "13112df42c4cbaffb47c187e54fd050aa5c36508829e192c8bf4b57e3f2c427d"
+        },
+        "skills/dynamic-workflows/references/dispatcher-adapter.md": {
+          "before_sha256": "absent",
+          "after_sha256": "34da3bf3f4f6f278c329b116f51e92e7149e1c7859c692ec80e0791bb5608257"
+        }
+      },
+      "baseline_sufficient": false,
+      "basis": "user-correction",
+      "deviation": "The shared workflow instructions contained no path to apply T3 or Paseo worker handles to saved tasks.",
+      "evidence": "docs/requirement-status.md",
+      "why_instruction": "The existing shared workflow owner guides controllers through native or fallback dispatch, expiry and resume.",
+      "alternative": "Pairwise agent integrations would duplicate worker selection and lifecycle, and a T3 patch would require update maintenance."
+    }
+  ]
+}

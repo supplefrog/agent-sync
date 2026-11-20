@@ -72,6 +72,8 @@ Before spawning a routed task, atomically claim it and retain the returned token
 
 ## Host adapters
 
+Use [the dispatcher adapter](references/dispatcher-adapter.md) for a cross-provider workflow in T3 or a standalone workflow that needs a shared worker. T3 uses its own delegation tools. Outside T3, prefer an eligible native adapter for same-agent work and use the configured Paseo dispatcher for a different agent or an unavailable native route. Choose the dispatcher before the workflow binds or launches a task.
+
 ### Codex
 
 Follow [the Codex adapter contract](references/codex-adapter.md). V2 tasks keep the existing model/render/claim lifecycle. For eligible Codex V3 subagent tasks, use the on-demand route preference by default and set the exact requested model and effort. Use ordinary `dispatch` with the actual native execution context. Dispatch verifies or refreshes the route automatically. Verify native worker release before finalizing a model action.

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import re
@@ -20,6 +21,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+_worker_spec = importlib.util.spec_from_file_location(
+    "_agent_sync_worker_dispatch", Path(__file__).with_name("worker_dispatch.py")
+)
+if _worker_spec is None or _worker_spec.loader is None:
+    raise ImportError("Cannot load the workflow dispatcher adapter")
+worker_dispatch = importlib.util.module_from_spec(_worker_spec)
+_worker_spec.loader.exec_module(worker_dispatch)
 
 MAX_WORKERS = 16
 MAX_ATTEMPTS = 5
@@ -34,12 +42,13 @@ ROLES = {"discover", "researcher", "explorer", "worker", "reviewer", "verifier",
 RISKS = {"read", "write", "external"}
 INTELLIGENCE_TIERS = {"routine", "standard", "strong", "demanding", "maximum"}
 FAILURE_COSTS = {"low", "medium", "high"}
-WORKFLOW_SURFACES = {"codex-workflow", "hermes-workflow", "omp-workflow"}
+WORKFLOW_SURFACES = {"codex-workflow", "hermes-workflow", "omp-workflow", *worker_dispatch.SURFACES}
 CODEX_ON_DEMAND_ROUTE = "codex-workflow-on-demand"
 SURFACE_HOSTS = {
     "codex-workflow": "codex",
     "hermes-workflow": "hermes",
     "omp-workflow": "omp",
+    **worker_dispatch.SURFACES,
 }
 _CONTEXT_OMITTED = object()
 DEFAULT_DIFFICULTIES = {
@@ -604,6 +613,8 @@ def init_run(
     plan = read_plan(plan_path)
     if target_surface not in WORKFLOW_SURFACES:
         raise PlanError(f"Unsupported workflow target surface: {target_surface}")
+    if target_surface in worker_dispatch.SURFACES and any("route_request" not in task for task in plan["tasks"]):
+        raise PlanError("Dispatcher targets require a V3 workflow plan")
     has_legacy_tasks = any("difficulty" in task for task in plan["tasks"])
     model_policy = (
         resolve_model_policy(model_catalog or default_model_catalog()) if has_legacy_tasks else {}
@@ -1250,6 +1261,12 @@ def render_prompt_data(
         output_path = Path(output_value)
         allowance = min(MAX_INJECTED_CHARS, remaining)
         content, truncated, artifact_sha256 = read_capped_hashed(output_path, allowance)
+        dispatcher_output = state["tasks"][dependency].get("dispatcher_output_sha256")
+        if dispatcher_output:
+            result_path = task_artifact_path(run_dir, dependency, "dispatcher-result.json")
+            result_digest = state["tasks"][dependency]["dispatcher_result_sha256"]
+            if artifact_sha256 != dispatcher_output or receipt_digest(load_json(result_path)) != result_digest:
+                raise PlanError(f"Dispatcher result or output for {dependency!r} changed after completion")
         remaining -= len(content)
         dependencies.append({
             "task_id": dependency,
@@ -1393,6 +1410,26 @@ def _prepare_codex_dispatch(run_dir, task_id, execution_context, trusted_manifes
         raise PlanError(f"Codex route availability: {exc}") from exc
 
 
+def _execution_catalog(catalog, task, surface, descriptor, as_of):
+    if surface in worker_dispatch.SURFACES:
+        candidate = descriptor.get("dispatcher_candidate")
+        return {**catalog, "candidates": [*catalog["candidates"], candidate]} if candidate else catalog
+    return _codex_catalog(catalog, task, surface, descriptor)
+
+
+def _worker_cache(run_dir):
+    return run_dir.parent / ".worker-dispatch"
+
+
+def _current_worker_observation(run_dir, selected):
+    try:
+        return worker_dispatch.current_observation(
+            _worker_cache(run_dir), selected, datetime.now(timezone.utc), sys.modules[__name__],
+        )
+    except (ValueError, OSError, KeyError, TypeError) as exc:
+        raise PlanError(f"Refresh the exact dispatcher target before launch: {exc}") from exc
+
+
 def _replay_v3_binding_locked(
     run_dir: Path,
     task_id: str,
@@ -1446,12 +1483,12 @@ def _replay_v3_binding_locked(
         )
         if expected_route_task != route_task:
             raise PlanError(f"Frozen V3 route request changed from the immutable plan for task {task_id!r}")
-        task_catalog = _codex_catalog(catalog, task, state["target_surface"], descriptor)
+        task_catalog = _execution_catalog(catalog, task, state["target_surface"], descriptor, route_task["as_of"])
         if task_catalog is not catalog:
             policy_path = task_artifact_path(run_dir, task_id, "route_catalog.json")
             if (receipt.get("policy_locator") != str(policy_path.resolve())
                     or load_json(policy_path) != task_catalog):
-                raise PlanError(f"Frozen Codex task catalog changed for task {task_id!r}")
+                raise PlanError(f"Frozen task catalog changed for task {task_id!r}")
         base_dispatch = selector.dispatch_decision(receipt, task_catalog, route_task)
     except (ValueError, KeyError, TypeError) as exc:
         raise PlanError(f"Frozen V3 route replay failed for task {task_id!r}: {exc}") from exc
@@ -1500,6 +1537,8 @@ def _replay_v3_binding_locked(
         if "codex_availability" in descriptor:
             live_descriptor["codex_availability"] = descriptor["codex_availability"]
             live_descriptor["codex_catalog_candidate"] = descriptor["codex_catalog_candidate"]
+        if "dispatcher_candidate" in descriptor:
+            live_descriptor["dispatcher_candidate"] = descriptor["dispatcher_candidate"]
         try:
             live_task = materializer.materialize(
                 deepcopy(task["route_request"]), task_id=task_id,
@@ -1562,13 +1601,24 @@ def task_dispatch(
         frozen = current.get("dispatch")
         as_of = None
         try:
+            surface = state["target_surface"]
+            if surface in worker_dispatch.SURFACES:
+                as_of = datetime.now(timezone.utc).isoformat()
+                observation = execution_context.get("dispatcher_observation") if isinstance(execution_context, dict) else None
+                if not isinstance(observation, dict):
+                    raise PlanError("Refresh dispatcher availability before freezing this task")
+                selected = worker_dispatch.target(observation["target"])
+                if _current_worker_observation(run_dir, selected) != observation:
+                    raise PlanError("Refresh the dispatcher context from the current local cache")
+                overlaid = worker_dispatch.overlay(catalog, task, surface, descriptor, as_of)
+                descriptor["dispatcher_candidate"] = overlaid["candidates"][-1]
             materialized = materializer.materialize(
                 deepcopy(task["route_request"]), task_id=task_id,
                 host=SURFACE_HOSTS[state["target_surface"]], transport=state["target_surface"],
                 input_descriptor=descriptor, as_of=as_of,
             )
-            task_catalog = _codex_catalog(catalog, task, state["target_surface"], descriptor)
-            locator = str(policy_path.resolve()) if proof is not None else str(catalog_locator)
+            task_catalog = _execution_catalog(catalog, task, state["target_surface"], descriptor, materialized["as_of"])
+            locator = str(policy_path.resolve()) if task_catalog is not catalog else str(catalog_locator)
             receipt = selector.decide_route(task_catalog, materialized, catalog_locator=locator)
             if proof is not None and receipt.get("route_id") != CODEX_ON_DEMAND_ROUTE:
                 reasons = receipt["excluded"].get(CODEX_ON_DEMAND_ROUTE, [])
@@ -1604,7 +1654,7 @@ def task_dispatch(
                     f"Task {task_id!r} has an interrupted unbound V3 dispatch with existing artifacts: {existing}"
                 )
             atomic_bytes(prompt_path, prompt.encode("utf-8"))
-            if proof is not None:
+            if task_catalog is not catalog:
                 atomic_json(policy_path, task_catalog)
             atomic_json(route_task_path, materialized)
             atomic_json(receipt_path, receipt)
@@ -1652,6 +1702,8 @@ def _claim_task(
         expected = allowed_kinds or {"model"}
         if dispatch.get("kind") not in expected:
             raise PlanError(f"Task {task_id!r} has no eligible {'/'.join(sorted(expected))} dispatch")
+        if dispatch["kind"] == "model" and state["target_surface"] in worker_dispatch.SURFACES:
+            _current_worker_observation(run_dir, dispatch["input"]["execution_context"]["dispatcher_observation"]["target"])
     elif "intelligence_tier" not in task:
         raise PlanError("Launch claims apply only to receipt-routed tasks")
     token = secrets.token_hex(16)
@@ -1754,6 +1806,37 @@ def start_task(
         )
 
 
+def broker_launch(run_dir: Path, task_id: str, launch_token: str, capabilities=None) -> dict[str, Any]:
+    with state_lock(run_dir):
+        plan, state, manifest = load_run_snapshot(run_dir)
+        current = state["tasks"].get(task_id)
+        if (state["target_surface"] not in worker_dispatch.SURFACES or not current
+                or current["status"] != "launching" or current["launch_token"] != launch_token
+                or launch_claim_path(run_dir, task_id).read_text(encoding="ascii").strip() != launch_token):
+            raise PlanError("Dispatcher launch requires the exact active task claim")
+        if state["stop_requested"]:
+            raise PlanError("Workflow stop was requested before dispatcher launch")
+        dispatch = _replay_v3_binding_locked(run_dir, task_id, plan, state, manifest, verify_live_input=True)
+        if dispatch["kind"] != "model":
+            raise PlanError("Dispatcher launch requires a pinned model action")
+        selected = dispatch["input"]["execution_context"]["dispatcher_observation"]["target"]
+        intent_path = task_artifact_path(run_dir, task_id, "dispatcher-launch.json")
+        if intent_path.is_file():
+            raise PlanError(f"Dispatcher launch already issued. Reconcile the original child using {intent_path}")
+        _current_worker_observation(run_dir, selected)
+        if selected["dispatcher"] == "t3":
+            try:
+                worker_dispatch.validate_t3_capabilities(selected, capabilities)
+            except (KeyError, TypeError, ValueError) as exc:
+                raise PlanError(f"T3 capability check: {exc}") from exc
+        request = worker_dispatch.launch(
+            selected, worker_dispatch.task_assignment(dispatch["input"]["prompt"], launch_token),
+            worker_dispatch.digest(launch_token)[:32],
+        )
+        atomic_json(intent_path, {"claim_sha256": worker_dispatch.digest(launch_token), "request": request})
+        return request
+
+
 def _start_task(
     run_dir: Path,
     task_id: str,
@@ -1794,6 +1877,10 @@ def _start_task(
                 raise PlanError(f"Task {task_id!r} parent/local action requires exact handle {parent_handle!r}")
             if dispatch_kind == "model" and handle.startswith("parent-sequential:"):
                 raise PlanError(f"Task {task_id!r} model dispatch requires a native worker handle")
+            if dispatch_kind == "model" and state["target_surface"] in worker_dispatch.SURFACES:
+                path = task_artifact_path(run_dir, task_id, "dispatcher-launch.json")
+                if not path.is_file() or load_json(path).get("claim_sha256") != worker_dispatch.digest(launch_token):
+                    raise PlanError(f"Task {task_id!r} needs its issued dispatcher launch before recording a handle")
     else:
         ready = ready_tasks(run_dir, trusted_manifest_sha256)
         _, state = load_run(run_dir, trusted_manifest_sha256)
@@ -1861,8 +1948,9 @@ def _finish_task(
             "A native worker result must be persisted, its handle closed, and --handle-closed supplied before finish"
         )
     task = task_map(plan)[task_id]
+    dispatch = None
     if status == "succeeded" and "route_request" in task:
-        _replay_v3_binding_locked(
+        dispatch = _replay_v3_binding_locked(
             run_dir, task_id, plan, state, manifest, verify_live_input=False
         )
     output_path = ""
@@ -1872,6 +1960,19 @@ def _finish_task(
         resolved = Path(output).resolve()
         if not resolved.is_file():
             raise PlanError(f"Output file does not exist: {resolved}")
+        if dispatch and dispatch["kind"] == "model" and state["target_surface"] in worker_dispatch.SURFACES:
+            selected = dispatch["input"]["execution_context"]["dispatcher_observation"]["target"]
+            result = load_json(task_artifact_path(run_dir, task_id, "dispatcher-result.json"))
+            assignment = worker_dispatch.task_assignment(dispatch["input"]["prompt"], launch_token)
+            try:
+                expected_output = worker_dispatch.verify_result(selected, result, assignment, handle)
+            except (ValueError, KeyError, TypeError, AttributeError) as exc:
+                raise PlanError(f"Dispatcher terminal readback: {exc}") from exc
+            output_bytes = resolved.read_bytes()
+            if output_bytes.decode("utf-8").strip() != expected_output.strip():
+                raise PlanError("Workflow output does not match the dispatcher's terminal child result")
+            current["dispatcher_output_sha256"] = hashlib.sha256(output_bytes).hexdigest()
+            current["dispatcher_result_sha256"] = receipt_digest(result)
         output_path = str(resolved)
     current.update({
         "status": status,
@@ -2122,7 +2223,9 @@ def build_parser() -> argparse.ArgumentParser:
     dispatch = commands.add_parser("dispatch")
     dispatch.add_argument("run")
     dispatch.add_argument("task_id")
-    dispatch.add_argument("--execution-context", required=True)
+    context = dispatch.add_mutually_exclusive_group(required=True)
+    context.add_argument("--execution-context")
+    context.add_argument("--execution-context-file", type=Path)
     dispatch.add_argument("--reverify-codex", action="store_true", default=None,
                           help="compatibility flag; ordinary dispatch already verifies the on-demand Codex route")
     claim_parent = commands.add_parser("claim-parent")
@@ -2133,6 +2236,11 @@ def build_parser() -> argparse.ArgumentParser:
     start.add_argument("task_id")
     start.add_argument("--handle", required=True)
     start.add_argument("--launch-token", default="")
+    launch = commands.add_parser("broker-launch")
+    launch.add_argument("run")
+    launch.add_argument("task_id")
+    launch.add_argument("--launch-token", required=True)
+    launch.add_argument("--capabilities", type=Path)
     abort = commands.add_parser("abort-launch")
     abort.add_argument("run")
     abort.add_argument("task_id")
@@ -2203,7 +2311,8 @@ def main(argv: list[str] | None = None) -> int:
             print(claim_task(resolve_run(args.run), args.task_id))
         elif args.command == "dispatch":
             try:
-                execution_context = json.loads(args.execution_context)
+                execution_context = (load_json(args.execution_context_file) if args.execution_context_file
+                                     else json.loads(args.execution_context))
             except json.JSONDecodeError as exc:
                 raise PlanError(f"--execution-context must be JSON: {exc}") from exc
             action = task_dispatch(resolve_run(args.run), args.task_id, execution_context,
@@ -2213,6 +2322,10 @@ def main(argv: list[str] | None = None) -> int:
             print(claim_parent_task(resolve_run(args.run), args.task_id))
         elif args.command == "start":
             start_task(resolve_run(args.run), args.task_id, args.handle, args.launch_token)
+        elif args.command == "broker-launch":
+            capabilities = load_json(args.capabilities) if args.capabilities else None
+            print(json.dumps(broker_launch(resolve_run(args.run), args.task_id, args.launch_token, capabilities),
+                             sort_keys=True))
         elif args.command == "abort-launch":
             abort_launch(resolve_run(args.run), args.task_id, args.error, args.launch_token)
         elif args.command == "finish":
