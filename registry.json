@@ -203,6 +203,13 @@
       "license": "Apache-2.0",
       "source": "https://github.com/supplefrog/agent-sync/tree/0c7af240475cf783dd6e4d2854db45f115b815d2/skills/skill-authoring",
       "eval": "evals/results/skill-authoring-installation-20261120.json"
+    },
+    {
+      "name": "skill-evaluation",
+      "status": "admitted",
+      "license": "UNLICENSED",
+      "source": "https://github.com/supplefrog/agent-sync/tree/233a52a96adea63fae344141f671d02091de8fd5/skills/skill-evaluation",
+      "eval": "evals/results/skill-evaluation-installation-20261121.json"
     }
   ]
 }

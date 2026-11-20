@@ -220,3 +220,5 @@ A stock T3 Codex turn used the local Paseo daemon to launch OMP in Always Ask mo
 ## Skill Evaluation
 
 The OMP artifact runner completed four Windows trials using the same model, tools and handoff input. All four produced the required files and tied on the reviewed rubric. NVIDIA's keyless package checks are documented in [Skill Evaluation](artifact-pilot.md). The adapted Skill Creator package is selected for installation with its [exact package and review evidence](../evals/results/skill-authoring-installation-20261120.json). The earlier trial does not establish a quality advantage.
+
+The [Skill Evaluation skill](../skills/skill-evaluation/SKILL.md) gives existing skills a direct route to package checks, native compatibility checks, and matched output comparisons. It uses the current runners and reuses evidence that matches the claim and revision.

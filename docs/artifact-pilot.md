@@ -1,5 +1,7 @@
 # Skill Evaluation
 
+Use the [Skill Evaluation skill](../skills/skill-evaluation/SKILL.md) to choose between package checks, native compatibility checks, and matched task trials. The steps below run the corresponding checks and retain their evidence.
+
 Compare actual files produced with and without a skill under the same model, tools, fixture and limits. Verify that the actor used the tools and read the candidate entrypoint. Run the independent oracle on each final file set, then review the outputs against the frozen task criteria. A tooling check or a successful oracle run alone cannot establish that a skill improves the work.
 
 ## OMP file trials

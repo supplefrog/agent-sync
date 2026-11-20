@@ -382,6 +382,21 @@
         "added_value": "Anthropic’s grading and revision workflow, bundled local reviewer and benchmarks, with host-native matched trials and Agent Sync ownership guidance.",
         "retirement_test": "Retire when native authoring can reliably produce, grade and revise usable skill packages with comparable artifact evidence."
       }
+    },
+    {
+      "id": "skill-evaluation",
+      "owner": "skills/skill-evaluation",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/skill-evaluation-installation-20261121.json"
+      ],
+      "selection_reason": "Requested entry point for checking existing skills. Reuses NVIDIA QC, native discovery and matched output runners. A live OMP case used the entrypoint to assess current package evidence and a historical task tie.",
+      "purpose": {
+        "objective": "Assess packaging, host compatibility and actual task performance for a selected skill.",
+        "added_value": "Direct workflow for evaluating existing skills, selecting the relevant checks and reusing matching evidence.",
+        "retirement_test": "Retire when agents can reliably select the existing check and trial routes and produce evidence-scoped decisions without the entrypoint."
+      }
     }
   ],
   "retired_artifacts": [

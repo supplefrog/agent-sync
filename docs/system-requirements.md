@@ -234,4 +234,6 @@ Publish the complete reviewed Skill Creator package through Fleet Sync, includin
 
 Skill Evaluation compares real file outputs with and without the skill using the same model, tools and fixture. Verify tool use and final files, reuse comparable evidence and prefer an authorized OMP subscription route. Use NVIDIA SkillEvaluator for package checks and supported isolated trials. Missing live access leaves the behavior claim unassessed.
 
+Use Skill Evaluation for requests to check an existing skill. Report package findings, target-host discovery and tool support, and observed task results at the scope the user requested. Use Skill Creator for authoring and revision.
+
 Fleet Admission checks evidence for the exact revision and required rollout hosts. Fleet Sync installs approved revisions. Retire the older capability-curator name after verifying its replacements.
