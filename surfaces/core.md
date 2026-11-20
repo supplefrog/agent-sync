@@ -52,9 +52,9 @@ Use GPT-6.2 Sol for regular work, including computer use. Apply the regular work
 
 ### Design and complex problem solving
 
-Prefer GPT-6.2 Astra for difficult problems that require substantial judgment and work that depends on design taste, including website, product, and 3D design. For frontend work, this includes the reference-image brief and the plan based on the selected image. Use high effort for design planning, with xhigh for harder cases or when requested.
+Prefer GPT-6.2 Astra for 3D design and hard logic or programming problems. Follow the regular-work model preference for UX design, including frontend planning. Use high effort for design planning, with xhigh for harder cases or when requested.
 
-Sonnet 5.5 can supplement Astra when an independent design perspective helps. Use the authorized free Claude route at Extra/xhigh with public or sanitized context. Check model, effort and quota before selecting that route. Use existing host permissions and spending limits.
+Sonnet 5.5 can supplement design work when an independent perspective helps. Use the authorized free Claude route at Extra/xhigh with public or sanitized context. Check model, effort and quota before selecting that route. Use existing host permissions and spending limits.
 
 ### Review models
 

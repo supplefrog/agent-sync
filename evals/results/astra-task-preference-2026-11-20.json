@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "2f0f4a6181a67c55c028e6a8386772f348e20555",
+  "date": "2026-11-20",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "change_kind": "user-preference",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The shared rule preferred Astra for website and product design, including both frontend planning phases.",
+      "evidence": "The user narrowed the task preference to 3D and hard logical or programming problems.",
+      "why_instruction": "The standing model owner guides model selection when a task calls for it.",
+      "alternative": "A host-specific edit would leave conflicting guidance for other hosts.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "9d22214173af12a647c42fb56255f4c1eaa6303bf90b407a53b561541a7b925f",
+          "after_sha256": "2206c13551d53bbe22f2ea118a7953683f84e0f380b339e7e0d7a9ecda7270dc"
+        }
+      },
+      "user_preference": {
+        "request": "Prefer GPT-6.2 Astra for 3D design and hard logic or programming problems. UX design follows the regular-work preference.",
+        "scope": "Shared task model selection",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "requirement_change": true,
+      "requirement_reason": "Prefer GPT-6.2 Astra for 3D design and hard logic or programming problems. UX design follows the regular-work preference.",
+      "authority": "Explicit user correction to the standing model preference.",
+      "checks": "Focused preference tests, parsed selector comparison, generated overlay verification, artifact profile check, and public-safety scan.",
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "e1692c4f1951f4e76be7cbfd9889c8b97fecb91a87e6555441fc8cd1bab0ae79",
+          "after_sha256": "071d9ab644a5df2549c718f1edb10cb7d174ceeee26e7d1af08f39209db5cd3b"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "aff2739ddc9b64b864d1b4ef3f0c4627ff551bd6d3b4a80ad102fee3ec3c878b",
+          "after_sha256": "ea04846a0545c8ac14760d59eee874643a98d7a6c6eae499fd2414ff321c1f0a"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "9d22214173af12a647c42fb56255f4c1eaa6303bf90b407a53b561541a7b925f",
+          "after_sha256": "2206c13551d53bbe22f2ea118a7953683f84e0f380b339e7e0d7a9ecda7270dc"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Its existing guidance and dependency still apply."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Its existing guidance and dependency still apply."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Records the corrected Astra task preference."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Records the corrected Astra task preference."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Records the corrected Astra task preference."
+        }
+      ],
+      "outcome_review": {
+        "expected": "Prefer GPT-6.2 Astra for 3D design and hard logic or programming problems. UX design follows the regular-work preference. Sonnet remains available for supplementary design input, and Astra stays in the general review pool.",
+        "observed": "The canonical routing text reflects the correction. Parsed selectors, review text, and generated overlays match the baseline.",
+        "evidence": "The source and its dependencies are hash-bound. The existing preference suite passed 13 tests.",
+        "limitations": "The checks cover source and projection. No model selection or quality claim was tested through inference."
+      }
+    }
+  ]
+}
