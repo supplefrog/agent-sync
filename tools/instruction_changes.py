@@ -59,6 +59,23 @@ def _hash(data):
     return hashlib.sha256(data).hexdigest() if data is not None else 'absent'
 
 
+def _already_retired(candidate, source, base, owner):
+    """Identify archive source whose deletion cannot change fleet selection."""
+    skill = owner.removeprefix('skills/')
+    for name, collection, key in (
+        ('registry.json', 'skills', 'name'),
+        ('contracts/ownership.json', 'capabilities', 'id'),
+    ):
+        before = _before(source, base, name)
+        path = candidate / name
+        if before is None or not path.is_file() or path.read_bytes() != before:
+            return False
+        matches = [row for row in json.loads(before)[collection] if row.get(key) == skill]
+        if len(matches) != 1 or matches[0].get('status') != 'retired':
+            return False
+    return True
+
+
 CONTRACTS = {'docs/system-requirements.md', 'docs/requirement-status.md'}
 
 
@@ -1540,6 +1557,11 @@ def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, r
             old = _before(source, base, name)
             new = path.read_bytes() if path.is_file() else None
             if old != new:
+                if (len(parts) >= 3 and parts[0] == 'skills' and new is None
+                        and not path.exists() and not path.is_symlink()
+                        and _already_retired(candidate, source, base, owner)):
+                    # Dependency review still covers the removed source and its callers.
+                    continue
                 required[name] = (owner, _hash(old), _hash(new))
     dependencies = _dependency_review(candidate, source, base, paths, required)
     if added:

@@ -211,6 +211,27 @@ class AuditTests(unittest.TestCase):
 
             self.assertIn("unregistered portable skill: shadow-owner", errors)
 
+    def test_only_retired_skills_may_lack_source(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = self._fixture_repo(Path(temp), admitted=False)
+            name = "capability-curator"
+            (repo / "skills" / name / "SKILL.md").unlink()
+
+            errors = self.audit.validate_repo(repo)
+            self.assertIn(f"registry skill/path mismatch: {name}", errors)
+            self.assertIn(f"invalid canonical owner for capability: {name}", errors)
+
+            for filename, collection, key in (
+                ("registry.json", "skills", "name"),
+                ("contracts/ownership.json", "capabilities", "id"),
+            ):
+                path = repo / filename
+                data = json.loads(path.read_bytes())
+                next(item for item in data[collection] if item[key] == name)["status"] = "retired"
+                path.write_text(json.dumps(data), encoding="utf-8")
+
+            self.assertEqual(self.audit.validate_repo(repo), [])
+
     def test_skill_entrypoint_under_integration_is_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             repo = self._fixture_repo(Path(temp))

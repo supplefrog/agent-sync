@@ -419,7 +419,7 @@ def validate_repo(repo: Path, live: bool = False, *, current_evidence: bool = Tr
             if skill.get("status") not in ALLOWED_REGISTRY_STATUSES:
                 errors.append(f"invalid status for registry skill {name}: {skill.get('status')}")
             skill_path = repo / "skills" / str(name) / "SKILL.md"
-            if not skill_path.is_file():
+            if skill.get("status") != "retired" and not skill_path.is_file():
                 errors.append(f"registry skill/path mismatch: {name}")
             if skill.get("status") == "admitted":
                 suite_name = None
@@ -505,8 +505,6 @@ def validate_repo(repo: Path, live: bool = False, *, current_evidence: bool = Tr
     for item in capability_records:
         capability_id = str(item.get("id"))
         expected_owner = f"skills/{capability_id}"
-        if item.get("owner") != expected_owner or not (repo / expected_owner / "SKILL.md").is_file():
-            errors.append(f"invalid canonical owner for capability: {capability_id}")
         registry_status = next(
             (
                 skill.get("status")
@@ -515,6 +513,9 @@ def validate_repo(repo: Path, live: bool = False, *, current_evidence: bool = Tr
             ),
             None,
         )
+        if (item.get("owner") != expected_owner or
+                (registry_status != "retired" and not (repo / expected_owner / "SKILL.md").is_file())):
+            errors.append(f"invalid canonical owner for capability: {capability_id}")
         if item.get("status") != registry_status:
             errors.append(f"ownership status differs from registry: {capability_id}")
         selection_state = item.get("selection_state")

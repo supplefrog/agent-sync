@@ -12,6 +12,47 @@ import test_worktree_sync as fixtures
 
 
 class InstructionChangeTests(unittest.TestCase):
+    def test_removing_retired_skill_source_does_not_require_live_behavior_evidence(self):
+        import instruction_changes
+        import sync_git
+
+        with provided_workspace() as temporary:
+            repo = Path(temporary)
+            self.git(repo, 'init', '-q')
+            self.git(repo, 'config', 'user.name', 'Fixture Author')
+            self.git(repo, 'config', 'user.email', 'fixture@example.com')
+            name = 'skills/kept/SKILL.md'
+            entry = repo / name
+            entry.parent.mkdir(parents=True)
+            original = b'Archived instructions.\n'
+            entry.write_bytes(original)
+            registry = repo / 'registry.json'
+            ownership = repo / 'contracts/ownership.json'
+            row = {'name': 'kept', 'status': 'retired'}
+            entries = {'skills': [row]}
+            registry.write_text(json.dumps(entries), encoding='utf-8')
+            ownership.parent.mkdir()
+            ownership.write_text(json.dumps({'capabilities': [
+                {'id': 'kept', 'owner': 'skills/kept', 'status': 'retired'}]}), encoding='utf-8')
+            (ownership.parent / 'instruction-surfaces.json').write_text(
+                json.dumps({'schema_version': 2, 'surfaces': []}), encoding='utf-8')
+            self.git(repo, 'add', '.')
+            self.git(repo, 'commit', '-m', 'record previous retirement')
+
+            entry.unlink()
+            self.assertEqual(instruction_changes.check(repo, repo, 'HEAD', [name]), [])
+
+            row['status'] = 'admitted'
+            registry.write_text(json.dumps(entries), encoding='utf-8')
+            with self.assertRaisesRegex(sync_git.SyncBlocked, 'instruction change requires'):
+                instruction_changes.check(repo, repo, 'HEAD', [name])
+
+            row['status'] = 'retired'
+            registry.write_text(json.dumps(entries), encoding='utf-8')
+            entry.write_bytes(original + b'\nReplacement instruction.\n')
+            with self.assertRaisesRegex(sync_git.SyncBlocked, 'instruction change requires'):
+                instruction_changes.check(repo, repo, 'HEAD', [name])
+
     def test_later_restructuring_declaration_is_checked_with_unchanged_routes(self):
         adapter = self.adapter()
         with provided_workspace() as temporary:
