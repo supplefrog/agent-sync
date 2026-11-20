@@ -206,3 +206,7 @@ R08/R14: the shared rule now defines when to choose Dynamic Workflows before dis
 R02 native PR workflow recovery uses a source-bound tool trace for the user-directed Windows replay. The publication consumer verifies the observed route, workflow read, before-and-after probe controls, head readback, and simulated request order. General native skill studies retain their diagnostic scope.
 
 The [caller and failure-boundary workflow update](system-requirements.md#native-hermes-pr-workflow-publication) passed the same [native probe-order check](../evals/results/hermes-pr-review-causal-replay-2506.json) on the exact updated workflow. The check uses one historical Windows replay and a simulated review request.
+
+## Shared worker routing
+
+R02/R14: the release evaluator can run stock OMP in its isolated single-turn comparison, with native model, reasoning, prompt, tool and terminal result readback. The comparison is limited to the explicit text shown to the model. Shared runtime routing requires a native workflow check.

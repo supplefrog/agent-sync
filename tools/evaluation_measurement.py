@@ -155,6 +155,15 @@ def observed_usage(run, host):
             source = 'native-Codex-turn-completed-usage'
             semantics = 'Codex native turn aggregate: cached input is a subset of input; other categories unknown'
             complete = tokens['input_tokens'] is not None and tokens['output_tokens'] is not None
+    elif host == 'omp':
+        values = (run.get('native_omp_evidence') or {}).get('result', {}).get('usage', {})
+        for target, key in (('input_tokens', 'input'), ('output_tokens', 'output'),
+                            ('cache_read_tokens', 'cacheRead'), ('cache_write_tokens', 'cacheWrite'),
+                            ('total_tokens', 'totalTokens')):
+            tokens[target] = counter(values.get(key))
+        source = 'native-OMP-assistant-result'
+        semantics = 'OMP assistant-message usage; provider attempts outside that message are unobserved'
+        complete = all(tokens[key] is not None for key in ('input_tokens', 'output_tokens', 'total_tokens'))
     lifecycle = usage.get('lifecycle') if isinstance(usage, dict) else None
     if isinstance(lifecycle, dict) and lifecycle.get('source') == 'native-Hermes-lifecycle-hooks':
         from evaluation_usage import HOOKS

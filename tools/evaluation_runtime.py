@@ -32,7 +32,7 @@ SYSTEM_ENV_KEYS = {
 def supported_lane(agent: str, provider: str | None, tool_policy: str, full_tools: bool) -> None:
     if tool_policy != "none" or full_tools:
         raise ValueError("unsupported evaluator tool policy: this inline-text lane requires none and full_tools=False")
-    providers = {"codex": {"openai", "openai-codex"}, "hermes": {"openai-codex"}}
+    providers = {"codex": {"openai", "openai-codex"}, "hermes": {"openai-codex"}, "omp": {"openai-codex"}}
     if provider not in providers.get(agent, set()):
         raise ValueError("unsupported evaluator provider: only the built-in OpenAI/Codex route is implemented")
 
@@ -172,7 +172,7 @@ def native_version(agent: str) -> dict[str, Any]:
                                     text=True, encoding="utf-8", timeout=10, check=False)
             # Never retain arbitrary wrapper/diagnostic output. Recognize only
             # bounded product/version lines and reject conflicting versions.
-            pattern = re.compile(r"(?i)^(?:codex(?:-cli)?|hermes(?: agent|-agent|-cli)?)(?: version)?\s+v?(\d+\.\d+\.\d+(?:[-+][A-Za-z0-9._-]{1,48})?)(?=\s|$)")
+            pattern = re.compile(r"(?i)^(?:omp/|(?:codex(?:-cli)?|hermes(?: agent|-agent|-cli)?)(?: version)?\s+)v?(\d+\.\d+\.\d+(?:[-+][A-Za-z0-9._-]{1,48})?)(?=\s|$)")
             versions = {match.group(1) for line in (result.stdout or "").splitlines()
                         if len(line) <= 128 and (match := pattern.match(line.strip()))}
             if result.returncode == 0 and len(versions) == 1:
@@ -412,7 +412,13 @@ def cleanup_runtime(root: Path, fixture: Path) -> dict[str, Any]:
             (state / "auth.json").unlink(missing_ok=True)
         except OSError as exc:
             errors.append(f"credential cleanup failed: {type(exc).__name__}")
-    credentials_removed = not any((root / state / "auth.json").exists() for state in ("codex", "hermes"))
+    for name in ("agent.db", "agent.db-wal", "agent.db-shm", "agent.db-journal"):
+        try:
+            (root / "omp" / name).unlink(missing_ok=True)
+        except OSError as exc:
+            errors.append(f"OMP credential cleanup failed: {type(exc).__name__}")
+    credentials_removed = (not any((root / state / "auth.json").exists() for state in ("codex", "hermes"))
+                           and not any((root / "omp").glob("agent.db*")))
     try:
         shutil.rmtree(root)
     except OSError as exc:
@@ -498,6 +504,27 @@ def run_no_tools(agent: str, prompt: str, fixture: Path, timeout: int, model: st
         runtime_access_preflight(runtime)
         contract['setup_operation'] = 'runtime-environment'
         env = runtime_environment(source, runtime)
+        if agent == "omp":
+            from evaluation_omp_worker import OMP_CONTROLS, run_omp, stage_omp_auth
+            env["PI_CODING_AGENT_DIR"] = str(runtime / "omp")
+            omp_workspace = runtime / "omp-workspace"
+            omp_workspace.mkdir()
+            contract["controls"] = OMP_CONTROLS.copy()
+            contract["setup_operation"] = "native-omp-local-auth-projection"
+            stage_omp_auth(exe, source, env, omp_workspace, provider, timeout)
+            contract["phase"] = "launch"
+            worker = run_omp(exe, prompt, omp_workspace, env, timeout, requested, strict_json)
+            attestation = worker["route_attestation"]
+            contract.update(prompt_isolation=worker["prompt_isolation"], tool_observation=worker["tool_observation"])
+            result.update(output=worker["output"], returncode=worker["returncode"],
+                          native_omp_evidence=worker["evidence"],
+                          route_attestation={"required": require_attestation, **attestation})
+            result["execution_ok"] = worker["returncode"] == 0 and attestation["ok"]
+            if result["execution_ok"]:
+                contract["phase"] = "complete"
+            else:
+                result["failure"] = {"kind": "runtime", "source": "runtime-control", "code": "native-omp-result-mismatch"}
+            return result
         if agent == "hermes":
             require_no_install_environment(env)
         output_file = fixture / f"last-{time.time_ns()}.txt"

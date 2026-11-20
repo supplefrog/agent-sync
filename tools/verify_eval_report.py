@@ -98,6 +98,7 @@ def verify_report(
         "hard_cap": rule.get("max_agent_runs"),
         "hermes_runs": validation["host_run_counts"]["hermes"],
         "codex_runs": validation["host_run_counts"]["codex"],
+        "omp_runs": validation["host_run_counts"]["omp"],
         "created_sessions": len(report.get("session_lifecycle", {}).get("created", [])),
         "computed_summary": validation["computed_summary"],
         "errors": sorted(set(errors)),
@@ -110,7 +111,7 @@ def main() -> int:
     parser.add_argument("--suite", type=Path, required=True)
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--baseline", type=Path)
-    parser.add_argument("--agent", choices=("hermes", "codex"), required=True)
+    parser.add_argument("--agent", choices=("hermes", "codex", "omp"), required=True)
     parser.add_argument("--decision", choices=("admit", "reject", "retire", "retain", "inconclusive", "harness-failure"), required=True)
     parser.add_argument("--model", required=True)
     parser.add_argument("--provider", required=True)

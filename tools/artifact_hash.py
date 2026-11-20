@@ -11,7 +11,7 @@ LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 TEXT_SUFFIXES = {".md", ".txt", ".json", ".yaml", ".yml"}
 MAX_LINKED_BYTES = 100_000
 HARNESS_SOURCES = ("artifact_hash.py", "eval.py", "evaluation_runtime.py",
-                   "evaluation_hermes_worker.py", "evaluation_evidence.py",
+                   "evaluation_hermes_worker.py", "evaluation_omp_worker.py", "evaluation_evidence.py",
                    "evaluation_measurement.py", "evaluation_usage.py", "fleet.py")
 
 

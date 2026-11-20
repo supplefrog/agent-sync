@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-20",
+  "scope": "OMP generation and native evidence for the existing isolated text evaluator",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53",
+          "after_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53"
+        },
+        "docs/artifact-pilot.md": {
+          "before_sha256": "caa2aee577e11a0c4c3cee7049996ec5b89b24c07e6733cbbc698e58225c3e43",
+          "after_sha256": "caa2aee577e11a0c4c3cee7049996ec5b89b24c07e6733cbbc698e58225c3e43"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/grounded-verification.md": {
+          "before_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7",
+          "after_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7"
+        },
+        "docs/instruction-profiles.md": {
+          "before_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569",
+          "after_sha256": "7af9a2679ad0e00b7a424ccdf7192cda4b2bf8a26b29a739e03e183b41a26569"
+        },
+        "docs/native-instruction-diagnostic.md": {
+          "before_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a",
+          "after_sha256": "1ac28a3bbeb4a22fcd90e91bde2b24d14de8807c268b2b23dbf63b480711860a"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "071d9ab644a5df2549c718f1edb10cb7d174ceeee26e7d1af08f39209db5cd3b",
+          "after_sha256": "0eb53936cf3a1ee9d787a52e072e3b2f78fb6c93c08d147cdd5ea784bfd99ea4"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "ea04846a0545c8ac14760d59eee874643a98d7a6c6eae499fd2414ff321c1f0a",
+          "after_sha256": "1bd48c617bb85b5e88e6305e124fc6574067cfee3ae756d2a186ed14a15f3386"
+        },
+        "skills/capability-curator/SKILL.md": {
+          "before_sha256": "59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5",
+          "after_sha256": "59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5"
+        },
+        "skills/capability-curator/references/instruction-retirement.md": {
+          "before_sha256": "a3bbe9ee22fbfbb7a1496fc01b9b895dda486f995b7300e7c8350215130bcda4",
+          "after_sha256": "a3bbe9ee22fbfbb7a1496fc01b9b895dda486f995b7300e7c8350215130bcda4"
+        },
+        "skills/surface-convergence/SKILL.md": {
+          "before_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70",
+          "after_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70"
+        },
+        "tools/artifact_hash.py": {
+          "before_sha256": "193ba2f816ff0b4741dc39096eb6744424cc262f3f58a41818ecdeef29f84788",
+          "after_sha256": "7d5cbac3b903d265d0c8df2756e493896e70ae6557ecf41d5bde7b7b1dbe8c52"
+        },
+        "tools/eval.py": {
+          "before_sha256": "e57f89bdfb14d87f9a218cce08e7fa7b6b53a84ad17c14848ed64acac133ba97",
+          "after_sha256": "3aadc951cc585d2225b2b2c6db9567c14150c94c0533cfc920371f11ad5a7c3c"
+        },
+        "tools/evaluation_evidence.py": {
+          "before_sha256": "919a88b152539afc908acea2c8f8b739eb3b1e62dd99dd4bdaa322c4b9f6d931",
+          "after_sha256": "57719d346a2d78ef58489e24175845e7ae819d3ad029755e6cf2797c93caf507"
+        },
+        "tools/evaluation_measurement.py": {
+          "before_sha256": "fa2172761ec6e600d482000d58fc52229256f404d0ef34d62736a93fc110e2e1",
+          "after_sha256": "a4a0823db071423e2b3375aafe9de1b559c57f330d8433b52eaa00bdf10d86b8"
+        },
+        "tools/evaluation_omp_worker.py": {
+          "before_sha256": "absent",
+          "after_sha256": "6d8f0a33e986dfd5df0f4630b0ef2060b648313c1717141c59f417a213cb956a"
+        },
+        "tools/evaluation_runtime.py": {
+          "before_sha256": "d81569b8aa329e35659ab65be5b278dc0c4b763c53f09fdf82c7bbf71f1d64d8",
+          "after_sha256": "6d377612fb264ec3534953c2704efa82eb57a9d983ec4082fc1dab1e30b15d6a"
+        },
+        "tools/verify_eval_report.py": {
+          "before_sha256": "b939f271b993e86316e24747a521f2084dfc79042c80e64d89e7bcc49b958999",
+          "after_sha256": "1ca240420f208e8830c41c18dd87f854e8050342c0b83c2ce6fa8ed59ea11d4c"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "docs/artifact-pilot.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "docs/grounded-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "docs/instruction-profiles.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "docs/native-instruction-diagnostic.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Records the requested OMP evaluation scope at its existing owner."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Records the requested OMP evaluation scope at its existing owner."
+        },
+        {
+          "path": "skills/capability-curator/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "skills/capability-curator/references/instruction-retirement.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        },
+        {
+          "path": "skills/surface-convergence/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Existing subject, criteria and admission boundaries apply to OMP. The new generator reuses the isolated text consumer."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "Support OMP in the release evaluator alongside Codex and Hermes.",
+      "authority": "The user explicitly requested OMP evaluator support, checks and publication.",
+      "checks": "Two focused OMP tests verify the exact terminal-route and credential-ownership boundaries. Stock OMP 18.22.1 ran a synthetic GPT-6.2 Sol medium result in the production no-tools launcher. It excluded supplied project and environment canaries, observed no tools and removed disposable state and credentials. The existing test subset recorded 26 passes and 32 failures on both the published baseline and the changed source.",
+      "outcome_review": {
+        "expected": "A stock OMP generator yields one fresh, exact, tool-free result for the existing evaluator.",
+        "observed": "Native RPC reported the expected model, effort and exact synthetic result in a settled ephemeral session.",
+        "evidence": "tests/test_evaluation_omp_worker.py; live production launcher canary OMP-EVAL-LIVE-CHECK",
+        "limitations": "The live check exercises one stock OMP route with a local subscription login. Provider-resolved backend identity and whole-job provider attempts remain unknown. This lane measures explicit text projection and does not qualify automatic mixed-provider workflow dispatch."
+      }
+    }
+  ]
+}

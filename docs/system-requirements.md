@@ -214,3 +214,9 @@ Use GPT-6.2 Sol for regular work, including computer use and UX design. Remove t
 The Hermes recovery snapshot should restore GPT-6.2 Sol and capture properly by default with the current Hermes configuration.
 
 Normal Hermes recovery capture should update the inventory automatically when reviewed files or skill and plugin settings change.
+
+## Shared worker routing
+
+Support “any permutation of Hermes Codex or OMP” without writing a separate integration for each pair. A controller can route to any of the three configured workers through one shared interface. Retain native permissions, verify the worker that ran, and refresh availability when it expires. Keep T3 stock.
+
+The shared release evaluator must also accept OMP generation so the same qualification can cover all three agents.

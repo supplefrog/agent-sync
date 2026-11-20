@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Blind baseline-versus-skill evaluation on fresh Hermes or Codex sessions."""
+"""Blind baseline-versus-skill evaluation on fresh Hermes, Codex or OMP sessions."""
 
 from __future__ import annotations
 
@@ -477,9 +477,9 @@ def hermes_route_attestation(
 
 
 def v3_route_supported(agent: str, judge_agent: str) -> bool:
-    """V3 supports attested Codex/Hermes generators and Codex judges."""
+    """V3 supports isolated generation and attested Codex judges."""
 
-    return agent in {"codex", "hermes"} and judge_agent == "codex"
+    return agent in {"codex", "hermes", "omp"} and judge_agent == "codex"
 
 
 def run_agent(
@@ -528,7 +528,7 @@ class AgentRunBudget:
 
 ATTEMPT_WRAPPER_KEYS = {"attempt", "transient", "attempts", "attempt_count", "transient_retry_count", "run_budget_exhausted"}
 RUN_RESULT_KEYS = {"ok", "execution_ok", "operational_ok", "returncode", "seconds", "output", "stderr",
-                   "session_ids", "session_receipt_error", "route_attestation", "runtime_contract", "native_events",
+                   "session_ids", "session_receipt_error", "route_attestation", "runtime_contract", "native_events", "native_omp_evidence",
                    "native_result_metadata", "native_usage", "workflow_accounting", "catalog_evidence", "model_launched", "runtime_error", "failure", "evidence_incomplete"}
 
 
@@ -1312,7 +1312,7 @@ def main() -> int:
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument('--accounting-evidence',type=Path,help='Explicit source-bound supporting native receipts; no paths inside receipts are executed')
     parser.add_argument("--baseline-candidate", type=Path, help="Optional current/full instruction artifact for retirement A/B tests")
-    parser.add_argument("--agent", choices=("hermes", "codex"), default="hermes")
+    parser.add_argument("--agent", choices=("hermes", "codex", "omp"), default="hermes")
     parser.add_argument("--judge-agent", choices=("hermes", "codex"))
     parser.add_argument("--model", required=True, help="Exact model override for baseline and candidate")
     parser.add_argument("--provider", required=True, help="Exact provider override for baseline, candidate, and same-host judge")
@@ -1378,14 +1378,14 @@ def main() -> int:
         parser.error("transient-retries must be non-negative")
     if args.retry_delay < 0:
         parser.error("retry-delay must be non-negative")
-    judge_agent = args.judge_agent or args.agent
+    judge_agent = args.judge_agent or ("codex" if args.agent == "omp" else args.agent)
     effective_prompt_assembly = args.prompt_assembly
     if is_v3:
         stability_trials = int(suite["stability"]["trials"])
         if args.decision_mode != "admission":
             parser.error("schema v3 currently supports admission decisions only")
         if not v3_route_supported(args.agent, judge_agent):
-            parser.error("schema v3 requires attested Codex or Hermes generation with Codex judging")
+            parser.error("schema v3 requires attested Codex, Hermes or OMP generation with Codex judging")
         if not args.baseline_candidate:
             parser.error("schema v3 requires --baseline-candidate for matched evaluation")
         if args.prompt_assembly not in {

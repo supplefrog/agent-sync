@@ -1223,7 +1223,7 @@ validation means the recorded evidence is internally consistent, not authentic.
         "errors": [], "computed_decision": None, "computed_summary": {},
         "runs": [], "physical_attempts": 0, "positive_decision_sufficient": False,
         "operational_errors": [], "evidence_complete": False,
-        "host_run_counts": {"codex": 0, "hermes": 0}, "scope": None,
+        "host_run_counts": {"codex": 0, "hermes": 0, "omp": 0}, "scope": None,
         "limitations": [], "attempt_evidence_complete": True,
         "unpaired_attempts": 0,
     }
@@ -1321,6 +1321,8 @@ validation means the recorded evidence is internally consistent, not authentic.
         require(stack.get("tool_policy") in ("none", "safe", "full"), "invalid generation tool policy")
         runtime_lane = stack.get("runtime_lane")
         require(runtime_lane in (None, "inline-text-no-tools-v1"), "unsupported producer runtime lane")
+        if report.get("agent") == "omp":
+            same(runtime_lane, "inline-text-no-tools-v1", "OMP requires isolated native RPC evidence")
         if runtime_lane == "inline-text-no-tools-v1":
             same(stack.get("context_policy"), "fresh-session-per-output", "context_policy differs from producer execution")
             same(stack.get("prompt_assembly"),
@@ -1331,7 +1333,7 @@ validation means the recorded evidence is internally consistent, not authentic.
         if runtime_lane and status == "complete":
             same(stack.get("tool_policy"), "none", "generation tool policy differs from no-tools producer plan")
         same(stack.get("judge_reasoning"), stack.get("reasoning"), "judge reasoning differs from producer plan")
-        require(report.get("agent") in ("codex", "hermes"), "invalid generation host")
+        require(report.get("agent") in ("codex", "hermes", "omp"), "invalid generation host")
         require(report.get("judge_agent") in ("codex", "hermes"), "invalid judge host")
         require(schema != 3 or evaluator.v3_route_supported(report.get("agent"), report.get("judge_agent")), "unsupported v3 generation/judge route")
         same(stack.get("judge_panel"), "two-order-swapped-plus-bounded-tiebreak" if schema == 3 else "two-order-swapped", "judge panel mismatch")
@@ -1488,6 +1490,20 @@ validation means the recorded evidence is internally consistent, not authentic.
                         same(run["failure"], recomputed_events.get("failure"), f"{label}: retryable failure contradicts native transport evidence")
                 else:
                     require(not execution_ok(run), f"{label}: completed native events missing")
+            elif host == "omp":
+                from evaluation_omp_worker import OMP_CONTROLS, evaluate_evidence
+                native = run.get("native_omp_evidence")
+                if not isinstance(native, dict):
+                    require(not execution_ok(run), f"{label}: completed OMP native evidence missing")
+                else:
+                    replay = evaluate_evidence(native, requested)
+                    same(replay["route_attestation"]["observed"], observed, f"{label}: OMP route evidence mismatch")
+                    same(replay["route_attestation"]["ok"], att.get("ok"), f"{label}: OMP terminal verdict mismatch")
+                    same(replay["tool_observation"], observation, f"{label}: OMP tool evidence mismatch")
+                    same(replay["prompt_isolation"], isolation, f"{label}: OMP prompt isolation mismatch")
+                    same(replay["output"], run.get("output"), f"{label}: OMP final output mismatch")
+                if execution_ok(run):
+                    same(controls, OMP_CONTROLS, f"{label}: OMP runtime controls mismatch")
             else:
                 if execution_ok(run):
                     for key, expected in {"adapter": "native-AIAgent-API", "safe_mode": True, "toolsets": "none", "ignore_rules": True, "skip_context_files": True, "skip_memory": True, "load_soul_identity": False, "skip_background_review": True, "fallback_model": None, "save_trajectories": False, "credentials_in_memory_only": True, "credential_refresh_if_expiring": False}.items():
