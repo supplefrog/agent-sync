@@ -72,7 +72,7 @@ Before spawning a routed task, atomically claim it and retain the returned token
 
 ## Host adapters
 
-Inside T3, use its native dispatcher for cross-provider workflows. Outside T3, use an eligible native adapter for same-agent work and the configured local Paseo dispatcher for a different agent or an unavailable native route. Choose before binding a task and follow the [T3 and Paseo dispatch procedure](references/runtime-contract.md#t3-and-paseo-dispatch).
+Inside T3, prefer the configured local Paseo route when the selected worker is OMP and the route is eligible. Use native T3 delegation if the Paseo workspace, availability or permissions do not match. Outside T3, use an eligible native adapter for same-agent work and the configured local Paseo dispatcher for a different agent or an unavailable native route. Choose before initializing a run and follow the [T3 and Paseo dispatch procedure](references/runtime-contract.md#t3-and-paseo-dispatch).
 
 ### Codex
 

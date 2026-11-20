@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-20",
+  "scope": "Prefer eligible Paseo OMP work from stock T3: instructions",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/hermes-recovery-verification.md": {
+          "before_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc",
+          "after_sha256": "0dbca7526a6fec5aa1dad8ac4d0faea09c6c20db6d0245df839b6aa1e5803bdc"
+        },
+        "docs/native-skill-recovery.md": {
+          "before_sha256": "5f0b0f23320e4c05bede98ee37b6fabb1fa85bb38260aeecdc92bc37f860fdd7",
+          "after_sha256": "5f0b0f23320e4c05bede98ee37b6fabb1fa85bb38260aeecdc92bc37f860fdd7"
+        },
+        "docs/recovery.md": {
+          "before_sha256": "6ad48287e0e4b6cf4f563d0f1411213f0a419b1d502d8c8768b711bea506aac6",
+          "after_sha256": "6ad48287e0e4b6cf4f563d0f1411213f0a419b1d502d8c8768b711bea506aac6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "c4b28943439e6005ff8f18a86d4292b834e6ed6eede09d7657f864342fa2e307",
+          "after_sha256": "c4b28943439e6005ff8f18a86d4292b834e6ed6eede09d7657f864342fa2e307"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "7171ee75d620e2c3bc229d2fd70d91b0e0c63f1fd82b00ec245337946cd0e632",
+          "after_sha256": "7171ee75d620e2c3bc229d2fd70d91b0e0c63f1fd82b00ec245337946cd0e632"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "69b95df5c7585530b390ea9508f76c85d06e863cee5e9a6de3ef347aed3c9c30",
+          "after_sha256": "69b95df5c7585530b390ea9508f76c85d06e863cee5e9a6de3ef347aed3c9c30"
+        },
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "5647be6fabfe6d6b18427a845a50a94090d69679d262f0c87e8255cc3886c423",
+          "after_sha256": "fd09bb9b102e1e7809c7dd49f6d70c05deb46a1a2dddfe18baaa19ab36a0c716"
+        },
+        "skills/dynamic-workflows/references/omp-adapter.md": {
+          "before_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989",
+          "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+        },
+        "skills/dynamic-workflows/references/runtime-contract.md": {
+          "before_sha256": "4b88cfa7748b9677f26dde9f6f1e2e914004b1019be8f3c2b5e8393492a1b3e0",
+          "after_sha256": "672c2f9373a4c2124143c3f05ce3d48c49dcada98621ecca3143186b0923efbc"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "docs/hermes-recovery-verification.md",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "docs/native-skill-recovery.md",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "docs/recovery.md",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "skills/dynamic-workflows/SKILL.md",
+          "disposition": "updated",
+          "reason": "Records the requested scope in the existing owner."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/omp-adapter.md",
+          "disposition": "unchanged",
+          "reason": "The existing requirement or owner still governs native dispatch."
+        },
+        {
+          "path": "skills/dynamic-workflows/references/runtime-contract.md",
+          "disposition": "updated",
+          "reason": "Records the requested scope in the existing owner."
+        }
+      ],
+      "requirement_change": false,
+      "requirement_reason": "Document the already released runtime in its existing skill.",
+      "authority": "The user asked to prefer the maintained Paseo OMP integration in T3 and keep the T3 installation stock.",
+      "checks": "Exact release scope, native dependent-task checks, and dispatcher, state and route regressions.",
+      "outcome_review": {
+        "expected": "A stock T3 controller can choose eligible Paseo OMP work and carry verified output into a dependent task.",
+        "observed": "A stock T3 controller in auto-accept-edits selected OMP in a matching local Paseo workspace. The verified output appeared in the dependent task. Expiry, launch claims, and replay have deterministic controls. Strict approvals, Plan mode, and drifted workspaces fail before dispatch.",
+        "evidence": "docs/requirement-status.md",
+        "limitations": "Small, tool-free text tasks with OMP in Always Ask mode. No comparative model benefit is claimed."
+      }
+    }
+  ],
+  "instruction_changes": [
+    {
+      "owner": "skills/dynamic-workflows",
+      "change_kind": "requested-edit",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "artifacts": {
+        "skills/dynamic-workflows/SKILL.md": {
+          "before_sha256": "5647be6fabfe6d6b18427a845a50a94090d69679d262f0c87e8255cc3886c423",
+          "after_sha256": "fd09bb9b102e1e7809c7dd49f6d70c05deb46a1a2dddfe18baaa19ab36a0c716"
+        },
+        "skills/dynamic-workflows/references/runtime-contract.md": {
+          "before_sha256": "4b88cfa7748b9677f26dde9f6f1e2e914004b1019be8f3c2b5e8393492a1b3e0",
+          "after_sha256": "672c2f9373a4c2124143c3f05ce3d48c49dcada98621ecca3143186b0923efbc"
+        }
+      },
+      "deviation": "The existing skill selects native T3 only and omits the eligible local Paseo route inside T3.",
+      "evidence": "docs/requirement-status.md",
+      "why_instruction": "The route choice belongs at the host-adapter entry point. Existing runtime guidance owns the lifecycle details.",
+      "alternative": "An additional skill would duplicate the existing workflow owner and its runtime contract.",
+      "requested_edit_acceptance": {
+        "classification": "requested-existing-instruction-edit",
+        "baseline_commit": "3475eb9f46e428a8e2e997214ac83024eaeab00c",
+        "license": "UNLICENSED",
+        "before_package_sha256": "7c5ea5cdd07e6b143a04144c14c5d75bb17f799db3dc987dc027e73ec928c6fe",
+        "after_package_sha256": "d998ce04661d397d2271bc09e45134b559d80f614afd89948c6abcaae1f85938",
+        "files": {
+          "SKILL.md": {
+            "before_sha256": "5647be6fabfe6d6b18427a845a50a94090d69679d262f0c87e8255cc3886c423",
+            "after_sha256": "fd09bb9b102e1e7809c7dd49f6d70c05deb46a1a2dddfe18baaa19ab36a0c716"
+          },
+          "agents/openai.yaml": {
+            "before_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44",
+            "after_sha256": "0e5fc5611210c842be41d1a76e886b3b540451f8c9509eafe97a26931fb94d44"
+          },
+          "assets/templates/code-audit.json": {
+            "before_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905",
+            "after_sha256": "d60e22f2b5c5241cce3adf089565be60cb3ebd141f7e8cf7c7c0dcee22dc1905"
+          },
+          "assets/templates/deep-research.json": {
+            "before_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466",
+            "after_sha256": "9c0fa945f80b7b5d37b5eef1476fc9492d902be5f53b96a31494bc4a98f68466"
+          },
+          "assets/templates/migration.json": {
+            "before_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02",
+            "after_sha256": "791a381c48c5e7286ca5fd9f6ecc52b77db5b0c3c986012db3c659e4dc639b02"
+          },
+          "assets/templates/workflow-v3-execution.json": {
+            "before_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0",
+            "after_sha256": "83a015bbe05d58e8190e0a145ed9dbc95f61978a9067e8ed1ea03498eaea4fa0"
+          },
+          "assets/templates/workflow-v3-readonly.json": {
+            "before_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c",
+            "after_sha256": "35e9cb68b11e85edb9e52fc611e51c8c3a5c4911010a401d25f0aaa3cf03839c"
+          },
+          "assets/templates/workflow-v3.json": {
+            "before_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e",
+            "after_sha256": "4a72333a7b4f4cbd703a47e0ba18b6b226c2e6456142dba3d788784068f6319e"
+          },
+          "assets/templates/workflow.json": {
+            "before_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b",
+            "after_sha256": "4f8d112ed0b8018335cbd18a688a8d5329f0862b96710a9acc16efd9ce6ebe9b"
+          },
+          "references/codex-adapter.md": {
+            "before_sha256": "d4d75f020b83f0a474f20446b0678399caf4a5e9486b7cd9212be8fb851401f8",
+            "after_sha256": "d4d75f020b83f0a474f20446b0678399caf4a5e9486b7cd9212be8fb851401f8"
+          },
+          "references/omp-adapter.md": {
+            "before_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989",
+            "after_sha256": "956fcc04bd826d695043627b0dc2b55d1220a10af2dc3600bd02af521a337989"
+          },
+          "references/runtime-contract.md": {
+            "before_sha256": "4b88cfa7748b9677f26dde9f6f1e2e914004b1019be8f3c2b5e8393492a1b3e0",
+            "after_sha256": "672c2f9373a4c2124143c3f05ce3d48c49dcada98621ecca3143186b0923efbc"
+          },
+          "scripts/codex_availability.py": {
+            "before_sha256": "53e1f1f4d15dc7a66a5d4dddcc504f28b6943ad5960eedb28cbe71af4eadf998",
+            "after_sha256": "53e1f1f4d15dc7a66a5d4dddcc504f28b6943ad5960eedb28cbe71af4eadf998"
+          },
+          "scripts/install_omp_route_agents.py": {
+            "before_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527",
+            "after_sha256": "5ddd02e3aac7a403e1dd2747646ff5d74df77ca5c4bc0e7cfcc3fbd87dad1527"
+          },
+          "scripts/test_worker_dispatch.py": {
+            "before_sha256": "13dbba6f6b3df7c6f6dc7196f571f80ec42eace8dbb4b6ed1e38a3e8ca071b5c",
+            "after_sha256": "13dbba6f6b3df7c6f6dc7196f571f80ec42eace8dbb4b6ed1e38a3e8ca071b5c"
+          },
+          "scripts/test_workflow_state.py": {
+            "before_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c",
+            "after_sha256": "26aa50e4e70d24ea3bcde9a6890645d75434b370ad26c676cb5733e93457016c"
+          },
+          "scripts/worker_dispatch.py": {
+            "before_sha256": "61a287d61ea3ad9564295d6026be4e5497d8a31caec8e1e2ad7562d600b5bae9",
+            "after_sha256": "61a287d61ea3ad9564295d6026be4e5497d8a31caec8e1e2ad7562d600b5bae9"
+          },
+          "scripts/workflow_state.py": {
+            "before_sha256": "14a16172e825906e8ff6f46d254df361a21de5e860360258b36861d8749d6ed4",
+            "after_sha256": "14a16172e825906e8ff6f46d254df361a21de5e860360258b36861d8749d6ed4"
+          }
+        },
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      },
+      "loading_review": {
+        "entrypoint_reason": "The host-specific choice stays near the existing adapter list. Callers load the existing runtime contract after choosing T3 or Paseo.",
+        "checks": "Existing native adapter links are preserved. The entry point links directly to the runtime contract, and skill validation passed.",
+        "obligations": [
+          {
+            "obligation": "Choose an authorized host adapter before launch.",
+            "applies_when": "A persisted workflow needs a worker.",
+            "load_when": "Review the host adapter section before binding a route.",
+            "before": [
+              "skills/dynamic-workflows/SKILL.md#Host adapters"
+            ],
+            "after": [
+              "skills/dynamic-workflows/SKILL.md#Host adapters"
+            ],
+            "required": true,
+            "disposition": "changed",
+            "reason": "Prefers the eligible local Paseo OMP worker inside T3 and keeps native fallback."
+          },
+          {
+            "obligation": "Preserve plan, claim, handle, and acceptance guarantees.",
+            "applies_when": "Any Dynamic Workflows runtime path is used.",
+            "load_when": "Read the runtime contract when implementing and operating an adapter.",
+            "before": [
+              "skills/dynamic-workflows/references/runtime-contract.md#Scheduler contract",
+              "skills/dynamic-workflows/references/runtime-contract.md#Host enforcement"
+            ],
+            "after": [
+              "skills/dynamic-workflows/references/runtime-contract.md#Scheduler contract",
+              "skills/dynamic-workflows/references/runtime-contract.md#Host enforcement"
+            ],
+            "required": true,
+            "disposition": "preserved",
+            "reason": "Existing native adapter obligations still govern."
+          },
+          {
+            "obligation": "Use the published dispatcher lifecycle for T3 and Paseo.",
+            "applies_when": "The controller chose stock T3 or local Paseo.",
+            "load_when": "Follow the runtime contract link before preparing the target.",
+            "before": [
+              "skills/dynamic-workflows/references/runtime-contract.md#T3 and Paseo dispatch"
+            ],
+            "after": [
+              "skills/dynamic-workflows/references/runtime-contract.md#T3 and Paseo dispatch"
+            ],
+            "required": true,
+            "disposition": "changed",
+            "reason": "Adds the local connection and T3 workspace conditions to the existing procedure."
+          }
+        ]
+      }
+    }
+  ]
+}
