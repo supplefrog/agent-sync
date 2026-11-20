@@ -220,3 +220,5 @@ Normal Hermes recovery capture should update the inventory automatically when re
 Support “any permutation of Hermes Codex or OMP” without writing a separate integration for each pair. A controller can route to any of the three configured workers through one shared interface. Retain native permissions, verify the worker that ran, and refresh availability when it expires. Keep T3 stock.
 
 The shared release evaluator must also accept OMP generation so the same qualification can cover all three agents.
+
+“T3 can use its own cross provider delegation and Paseo’s can be the fallback for other agents.” Dynamic Workflows should work with both native and shared dispatch. Start the configured local dispatcher on demand when standalone work needs it. Keep the same workflow and approval contract through either dispatcher.
