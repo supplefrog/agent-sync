@@ -1,4 +1,36 @@
-# Routed artifact pilots
+# Skill Evaluation
+
+Compare actual files produced with and without a skill under the same model, tools, fixture and limits. Verify that the actor used the tools and read the candidate entrypoint. Run the independent oracle on each final file set, then review the outputs against the frozen task criteria. A tooling check or a successful oracle run alone cannot establish that a skill improves the work.
+
+## OMP file trials
+
+The `omp-artifact-study` runs two to four arms on stock OMP via stdio RPC. The control has no optional skill. Each treatment has one frozen package explicitly selected for discovery in a fresh project catalog. All arms use `read`, `write`, `edit`, and `bash` and the identical user prompt. The worker checks the native model/provider/effort, catalog, tool schema, tool start and completion, complete skill-entry reads, ephemeral session completion and file changes. Numbered reads or verbatim ranges are checked against the frozen entry. The controller records per-arm file hashes, oracle evidence, wall time and observed token records. Review the model-visible output files for semantic quality. The runner covers local text artifacts and a leaf task. Use reviewed packages and fixtures with no external side effects. Run untrusted packages in a supported OS sandbox.
+
+### Run a matched OMP comparison
+
+Use OMP 18.22.1 and Agent Sync's Python dependencies. Set the suite's `purpose` to `omp-artifact-study`, `agent` to `omp`, `provider` to `openai-codex`, and `quota_remaining` to the observed subscription quota percentage. Supply the exact model, reasoning, one no-skill arm, up to three candidate packages, and a frozen fixture, workload review and independent oracle for each case. The live runner uses the selected provider's native OMP OAuth login.
+
+```sh
+python tools/run.py eval artifact-pilot prepare --suite "$suite" --out "$run_dir"
+python tools/run.py eval artifact-pilot run --out "$run_dir"
+```
+
+The [pinned Skill Creator candidate](https://github.com/supplefrog/agent-sync/tree/1a271d6ceb64a65064c067b51ca8a7dd8049602e) carries the four-arm handoff suite, its scripted tool check and the grading loop. [Recorded evidence](https://github.com/supplefrog/agent-sync/blob/1a271d6ceb64a65064c067b51ca8a7dd8049602e/evals/results/skill-evaluation-cloud-20261120.json) includes four live OMP trials on Windows and their output review.
+
+## Package QC
+
+Run NVIDIA SkillEvaluator 1.0.1 on each candidate package before live trials. Create the report directory, then run these keyless checks:
+
+```sh
+skillevaluator tier1 "$skill_dir" --no-llm --checks schema,license,unicode,quality,lint,harness \
+  --policy evals/nvidia-tier1-policy.yaml -r json -o "$report_dir"
+```
+
+Use structural failures to catch invalid packages and review the weighted quality score and harness findings as advice. The policy keeps the optional Markdown title advisory. OMP loaded the legacy heading-free package, and the policy still failed a control package with its required description removed. The selected checks cover package structure, licensing, Unicode, quality, script lint and versioned harness profiles. Use the applicable security, PII and dependency checks for those claims. Check OMP discovery and tool use in the live trial. Use NVIDIA's isolated Tier 3 trials when they support the chosen harness and authorized model route.
+
+Fleet Admission (`tools/eval_gate.py --suite SUITE --candidate SKILL.md --required-host HOST ...`) revalidates the exact candidate and reports for all required rollout hosts using the existing release-evidence schema. The staged artifact report is exploratory and carries `admission: false`. Fleet Sync acts on approved registry entries.
+
+## Earlier routed artifact pilots
 
 Status: experimental, supervised native-Windows lane. This extends `tools/eval.py`; it is not a replacement evaluator, admission gate, sandbox, or production scheduler.
 

@@ -214,3 +214,7 @@ The [caller and failure-boundary workflow update](system-requirements.md#native-
 R02/R14: the release evaluator can run stock OMP in its isolated single-turn comparison, with native model, reasoning, prompt, tool and terminal result readback. The comparison is limited to the explicit text shown to the model. Shared runtime routing requires a native workflow check.
 
 The Dynamic Workflows dispatcher candidate reuses stock T3 dispatch from an active T3 thread and local Paseo dispatch outside T3. Both share V3 decisions, launch claims and resume. The first supported task class is small, tool-free text work with independent acceptance. Local tests cover renewal without rewriting a saved decision. A live stock T3 run delegated to Codex, and a live Paseo run delegated to OMP. Both fed the verified output into a dependent task. This T3 installation reported its OMP ACP instance unavailable for a child when checked. Shared release qualification remains separate from these runtime checks.
+
+## Skill Evaluation
+
+The OMP artifact runner completed four Windows trials using the same model, tools and handoff input. All four produced the required files and tied on the reviewed rubric. NVIDIA's keyless package checks are documented in [Skill Evaluation](artifact-pilot.md). The adapted Skill Creator package and its [evidence](https://github.com/supplefrog/agent-sync/blob/1a271d6ceb64a65064c067b51ca8a7dd8049602e/evals/results/skill-evaluation-cloud-20261120.json) remain on the review branch pending fleet admission.

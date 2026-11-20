@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-20",
+  "scope": "Tool-backed OMP artifact evaluation and opt-in NVIDIA package checks",
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53",
+          "after_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53"
+        },
+        "docs/artifact-pilot.md": {
+          "before_sha256": "caa2aee577e11a0c4c3cee7049996ec5b89b24c07e6733cbbc698e58225c3e43",
+          "after_sha256": "af11a4955418c59187d50b9501a66e3f3458bb981ef24caf34dc5c8365fb7ba2"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/grounded-verification.md": {
+          "before_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7",
+          "after_sha256": "2dd964e278952054de779dba1c9609ec2301dd5b691c08d6ccba7d8436fc54d7"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "cc704aeefa2238059eaa581e7b003583c42e36168db9520f988acbf1d2b038f4",
+          "after_sha256": "5c5d3118706e3202a1c460e47f46f1e43aa8259184397a18cd4afd52457d6ec2"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "da51df6bc4e44c14637a7b89e0097dcee59ee036e51892f98098c307d24fa846",
+          "after_sha256": "83d969210830537a8c41d16285a667cf82967c6878bd21f12f8b69a21a7f03aa"
+        },
+        "skills/capability-curator/SKILL.md": {
+          "before_sha256": "59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5",
+          "after_sha256": "59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5"
+        },
+        "skills/surface-convergence/SKILL.md": {
+          "before_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70",
+          "after_sha256": "9cb16e22f1e6b5023474210d12faeb9405eae84b8aaca43f3e4f2be2ff7a7e70"
+        },
+        "tools/artifact_hash.py": {
+          "before_sha256": "7d5cbac3b903d265d0c8df2756e493896e70ae6557ecf41d5bde7b7b1dbe8c52",
+          "after_sha256": "65e9fa5bd8f4113fcc9f7da64e950bf5de66235dda394d93c9bf8796ceec3da2"
+        },
+        "tools/eval_gate.py": {
+          "before_sha256": "e0dbc9da89342b32671753c33819cc1d09cdd05441ea2c4796ee96f52ad52d37",
+          "after_sha256": "96913b9081304e7c5c77e024a3fa3a9d7113363f9b9711344f43cf7af2c69a00"
+        },
+        "tools/evaluation_artifact_pilot.py": {
+          "before_sha256": "bc9c26cb1ac70714a2541fae92e4b100ac7a3d9dfed64329edda0592906085ea",
+          "after_sha256": "35b6bf10328a48da1a16c7ccecc40a997e395e562b256d0557ec7c0775561743"
+        },
+        "tools/evaluation_omp_artifact.py": {
+          "before_sha256": "absent",
+          "after_sha256": "a8cef4ac08600193c2455c6ab11eb75430f2fc7a882aae0ccec488862c5d430f"
+        },
+        "tools/evaluation_omp_worker.py": {
+          "before_sha256": "6d8f0a33e986dfd5df0f4630b0ef2060b648313c1717141c59f417a213cb956a",
+          "after_sha256": "ab66294327264d510159bd70584ff89cc31562fb841de25cd9e2caf857760936"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "The fleet lifecycle contract still requires complete and reproducible admission and rollout. OMP gains another source of trial evidence within that contract."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "Evaluation and admission keep the same existing tool owners. This change adds an OMP artifact route within them."
+        },
+        {
+          "path": "docs/artifact-pilot.md",
+          "disposition": "updated",
+          "reason": "Document the exact native OMP tool and skill controls, revision binding, separate judgments and NVIDIA package check command."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "The existing outcome and efficiency rules continue to require successful deliverables, matching trial scope and independent grading. The new runtime supplies native artifact evidence for those checks."
+        },
+        {
+          "path": "docs/grounded-verification.md",
+          "disposition": "unchanged",
+          "reason": "Existing frozen intent, independent grading and world-state evidence rules still apply. Candidate revision binding adds a further check for artifact evidence."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Record four live tool-backed OMP arms and the separate limits of package checks and fleet admission."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Record the requested evaluation of real task outputs with equivalent tools in both arms and separate adoption authority."
+        },
+        {
+          "path": "skills/capability-curator/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "This staged owner leaves the evaluator and admission commands with their existing owners. Its current contract already requires exact stack and artifact evidence. Retirement awaits ownership and rollout evidence."
+        },
+        {
+          "path": "skills/surface-convergence/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "Every declared rollout host must still submit matching admitted evidence. Adding a producer for OMP does not alter that requirement."
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "Evaluate skills on the artifacts they produce, using the tools each task needs in both conditions. Run package quality checks separately and retain revision-bound fleet admission.",
+      "authority": "The user requested tool-backed artifact comparisons on OMP, NVIDIA package quality checks, and publication of the evaluated changes.",
+      "checks": "The publication subset passed 24 focused tests and 24 subtests. Its runtime and QC policy match the Windows live trial. Four live OMP arms each authored two expected files using native read and write tools, despite an unrelated ambient project skill. The scoped NVIDIA policy passed the adapted package and caught a missing-description control.",
+      "outcome_review": {
+        "expected": "Matched trials use identical native tools, expose only the requested skill in each treatment, preserve the task input, and retain file evidence. Package checks run without a model.",
+        "observed": "All four OMP arms completed and produced two files each. Each treatment read its allowed skill, and the control ran without skills. Independent grading recorded eight of eight on this task for each arm. Package QC passed.",
+        "evidence": "Windows replay in evals/results/skill-evaluation-cloud-20261120.json at reviewed commit 1a271d6ceb64a65064c067b51ca8a7dd8049602e. The offline loopback also checks for ambient skill leakage.",
+        "limitations": "One synthetic task with one run per arm. NVIDIA harness checks cover its packaged profiles. Separate import and target-host evidence are required for actual fleet admission."
+      }
+    }
+  ]
+}

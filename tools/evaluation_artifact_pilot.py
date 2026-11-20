@@ -168,8 +168,11 @@ def require_intervention_qualification(plan):
     return {'required':True,'results':results,'actual_usage_required':True}
 
 
+OMP_STUDY = 'omp-artifact-study'
+
+
 def is_native(spec):
-    return spec.get('purpose') in ('native-skill-study', 'native-runtime-smoke', 'native-tool-study')
+    return spec.get('purpose') in ('native-skill-study', 'native-runtime-smoke', 'native-tool-study', OMP_STUDY)
 
 
 def native_prompt(spec, case, frozen):
@@ -180,10 +183,23 @@ def native_prompt(spec, case, frozen):
 
 
 def validate(spec):
-    if spec.get('purpose') not in ('runtime-smoke', 'injected-instruction-study', 'native-skill-study', 'native-runtime-smoke', 'native-tool-study'):
-        raise ValueError('Explicit purpose required: runtime-smoke, injected-instruction-study, native-runtime-smoke or native-skill-study. '
+    if spec.get('purpose') not in ('runtime-smoke', 'injected-instruction-study', 'native-skill-study', 'native-runtime-smoke', 'native-tool-study', OMP_STUDY):
+        raise ValueError('Explicit artifact pilot purpose required. '
                          'This leaf runner cannot evaluate architecture or delegation workflows.')
-    if is_native(spec):
+    if spec['purpose'] == OMP_STUDY:
+        if (spec.get('agent') != 'omp' or spec.get('provider') != 'openai-codex'
+                or not isinstance(spec.get('model'), str) or not spec['model'].strip()
+                or spec.get('reasoning') not in ('low', 'medium', 'high', 'xhigh')
+                or spec.get('max_workers') != 1
+                or not 2 <= len(spec['arms']) <= 4
+                or sum(a.get('instructions') is None for a in spec['arms']) != 1
+                or spec.get('instruction_exposure', 'native-discovery') != 'native-discovery'
+                or any(spec.get(key) for key in ('prior_attempts', 'terminal_backend', 'catalog',
+                                                'prepared_runtime_parent', 'request_recording_parent'))):
+            raise ValueError('OMP study requires a sequential exact subscription route and one absent-skill baseline')
+        if any(case.get('task_qualification', {}).get('output_kind') != 'text' for case in spec['cases']):
+            raise ValueError('OMP artifact study currently supports text deliverables')
+    elif is_native(spec):
         if spec.get('instruction_exposure', 'native-discovery') not in ('native-discovery', 'explicit-body'):
             raise ValueError('Unknown native instruction exposure')
         if spec.get('instruction_exposure') == 'explicit-body' and spec.get('agent') != 'hermes':
@@ -212,7 +228,7 @@ def validate(spec):
     extended = extended_workflow_budget_review(spec)
     if not 1 <= spec['timeout'] <= (extended['seconds'] if extended else 600):
         raise ValueError('Invalid time ceiling')
-    if not (spec['purpose']=='native-tool-study' and spec.get('quota_remaining') is None) and (not isinstance(spec['quota_remaining'], (int, float)) or not 0 < spec['quota_remaining'] <= 100):
+    if not (spec['purpose'] in ('native-tool-study', OMP_STUDY) and spec.get('quota_remaining') is None) and (not isinstance(spec['quota_remaining'], (int, float)) or not 0 < spec['quota_remaining'] <= 100):
         raise ValueError('An observed nonzero subscription quota is required')
     if len({a['id'] for a in spec['arms']}) != len(spec['arms']):
         raise ValueError('Duplicate arm')
@@ -243,7 +259,7 @@ def extended_workflow_budget_review(spec):
 
 def workflow_budget_review(spec):
     """Validate declared review, not semantic budget adequacy or reviewer identity."""
-    comparison = spec.get('purpose') in ('native-skill-study','native-tool-study','injected-instruction-study') and len(spec.get('arms',[])) > 1
+    comparison = spec.get('purpose') in ('native-skill-study','native-tool-study','injected-instruction-study',OMP_STUDY) and len(spec.get('arms',[])) > 1
     if not comparison: return {'required':False}
     required = ('claim','required_quality','verification_and_revision','adequacy_rationale','reviewer')
     reviews = {}
@@ -421,7 +437,7 @@ def prepare(spec, out):
             else:
                 catalog = []
                 catalog_frames = {}
-                instructions = frames[arm['id']]['prompt_text']
+                instructions = frames[arm['id']]['prompt_text'] if frames[arm['id']] else ''
             prompt = case['prompt'] + '\n\nProject: ' + str(fixture) + '\nWork only in this project. Do not delegate, use network services, or modify parent directories.'
             if is_native(spec):
                 prompt = native_prompt(spec, case, frames[arm['id']])
@@ -440,6 +456,8 @@ def prepare(spec, out):
             'resource_limits': {'timeout_seconds': spec['timeout'],
                                 'max_iterations': spec['max_iterations'] if spec.get('agent') == 'hermes' else None,
                                 'iteration_limit_enforced': spec.get('agent') == 'hermes'}}
+    if spec['purpose'] == OMP_STUDY:
+        plan['omp_sources'] = omp_sources()
     if is_native(spec):
         plan.update(case_source_trees=source_trees, common_catalog_snapshots=common_catalog)
     if len(spec['arms'])>1:
@@ -559,7 +577,8 @@ def validate_jobs(plan):
                 raise ValueError('Native study cannot inject instructions')
         if item['prompt'] != prompt:
             raise ValueError('Prepared prompt differs from the declared case')
-        if not is_native(spec) and item['instructions'] != plan['candidate_snapshots'][item['arm']]['prompt_text']:
+        frame = plan['candidate_snapshots'][item['arm']]
+        if not is_native(spec) and item['instructions'] != (frame['prompt_text'] if frame else ''):
             raise ValueError('Prepared instructions differ from the frozen candidate')
         expected_current = prior[ident]['final_tree'] if ident in prior else item['initial_tree']
         if tree(fixture) != expected_current:
@@ -584,9 +603,13 @@ def run(plan, out):
     if sha(Path(__file__).with_name('evaluation_usage.py')) != plan.get('usage_observer_sha256'):
         raise ValueError('Frozen usage observer changed')
     validate_jobs(plan)
-    require_intervention_qualification(plan)  # Before credential/runtime/model dispatch.
     if len(spec['arms'])>1 and sha(out/'oracle-control-preflight.json')!=plan.get('oracle_control_preflight_sha256'):
         raise ValueError('Frozen executed oracle-control preflight changed')
+    if spec['purpose'] == OMP_STUDY:
+        if plan.get('omp_sources') != omp_sources():
+            raise ValueError('Frozen OMP runtime changed')
+        return run_omp_plan(plan, out)
+    require_intervention_qualification(plan)  # Before credential/runtime/model dispatch.
     if is_native(spec):
         if sha(Path(__file__).with_name('evaluation_runtime.py')) != plan['runtime_sha256']:
             raise ValueError('Frozen native runtime changed')
@@ -680,6 +703,79 @@ def run(plan, out):
     (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     return report
 
+
+
+def omp_sources():
+    return {name: sha(Path(__file__).with_name(name)) for name in (
+        'evaluation_omp_artifact.py', 'evaluation_omp_worker.py', 'evaluation_runtime.py',
+        'artifact_hash.py', 'evaluation_evidence.py')}
+
+
+def run_omp_plan(plan, out):
+    from evaluation_evidence import trial_oracle_validity
+    from evaluation_omp_artifact import run_trial
+    from evaluation_runtime import native_version
+
+    spec = plan['spec']
+    if (out / 'report.json').exists() or any((out / job['id']).exists() for job in plan['jobs']):
+        raise ValueError('Trial output exists: implicit reruns forbidden')
+    version = native_version('omp')
+    executable = native_executable('omp')
+    report = {'kind': OMP_STUDY, 'admission': False, 'workflow_comparison_supported': False,
+              'runtime': version['version'], 'completed_trials': 0, 'expected_trials': len(plan['jobs']),
+              'comparison_ready': False, 'results': []}
+    if not executable or not version['ok']:
+        report['blocker'] = 'Native OMP executable/version unavailable'
+    tool_schema = None
+    for item in plan['jobs'] if 'blocker' not in report else []:
+        fixture = Path(item['fixture'])
+        path = out / item['id']
+        path.mkdir()
+        started = time.monotonic()
+        result = {'id': item['id'], 'arm': item['arm'], 'case': item['case'], 'trial_valid': False}
+        try:
+            if tree(fixture) != item['initial_tree'] or sha(spec['oracle']) != plan['oracle_sha256']:
+                raise ValueError('Frozen fixture or oracle changed before launch')
+            worker = run_trial(executable, item, spec)
+            result['native'] = worker
+            tool_schema = tool_schema or worker['tool_schema_sha256']
+            if not worker['ok'] or tool_schema != worker['tool_schema_sha256']:
+                raise ValueError('Missing completed native tool/skill evidence or changed tool schemas')
+            if sha(spec['oracle']) != plan['oracle_sha256']:
+                raise ValueError('Frozen oracle changed during trial')
+            final_tree = tree(fixture)
+            if final_tree == item['initial_tree']:
+                raise ValueError('Native tool activity produced no file changes')
+            if any(final_tree.get(name) != value for name, value in item['initial_tree'].items()
+                   if name.startswith('.agents/skills/')):
+                raise ValueError('Frozen skill package changed during trial')
+            oracle, execution = run_bound_program([sys.executable, spec['oracle'], str(fixture), item['case']],
+                                                  fixture, 90, evidence_dir=path / 'oracle-execution')
+            result.update(oracle=json.loads(oracle.stdout), oracle_execution=execution,
+                          oracle_exit_code=oracle.returncode)
+            if (not trial_oracle_validity(result['oracle'], execution, oracle.returncode)['valid']
+                    or execution['source_tree_before'] != final_tree or tree(fixture) != final_tree):
+                raise ValueError('Independent oracle did not return usable evidence for the final outputs')
+            result['trial_valid'] = True
+            result['artifact_passed'] = oracle.returncode == 0
+        except (OSError, ValueError) as exc:
+            result['blocker'] = str(exc)
+        except subprocess.TimeoutExpired:
+            result['blocker'] = 'Bounded OMP authentication or independent oracle timed out'
+        except (KeyError, TypeError, AttributeError):
+            result['blocker'] = 'Native OMP response did not match the expected schema'
+        finally:
+            result['final_tree'] = tree(fixture)
+            result['seconds'] = time.monotonic() - started
+            (path / 'result.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+            report['results'].append(result)
+        if not result['trial_valid']:
+            report['blocker'] = result['blocker']
+            break
+    report['completed_trials'] = sum(row['trial_valid'] for row in report['results'])
+    report['comparison_ready'] = report['completed_trials'] == report['expected_trials']
+    (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+    return report
 
 
 def run_native_plan(plan, out):
@@ -987,7 +1083,10 @@ def main(argv=None):
         return 0 if result['completed_review_decision']['ready'] else 1
     else:
         result = run(json.loads((out / 'plan.json').read_text(encoding='utf-8')), out)
-        print(json.dumps({'completed_trials': result['completed_trials'], 'report': str(out / 'report.json')}))
+        print(json.dumps({'completed_trials': result['completed_trials'], 'report': str(out / 'report.json'),
+                          **({'blocker': result['blocker']} if 'blocker' in result else {})}))
+        if result['kind'] == OMP_STUDY and not result['comparison_ready']:
+            return 1
     return 0
 
 

@@ -59,6 +59,8 @@ def stage_omp_auth(exe, source, env, fixture, provider, timeout):
             auth = config.get("auth") or {}
             if any(key.startswith("auth.broker") for key in config) or auth.get("broker"):
                 raise ValueError("OMP evaluation does not project a broker-managed credential")
+    if not database.is_file():
+        raise ValueError("OMP subscription credential store (agent.db) is unavailable")
     expires_after = int((time.time() + timeout + 300) * 1000)
     with closing(sqlite3.connect(database.as_uri() + "?mode=ro", uri=True, timeout=5)) as store:
         accounts = store.execute(
@@ -142,11 +144,12 @@ def evaluate_evidence(evidence, requested):
 class OmpRpc:
     """Keep the preflight and inference inside one owned native process."""
 
-    def __init__(self, command, fixture, env, timeout, strict_json):
+    def __init__(self, command, fixture, env, timeout, strict_json, *, tool_event=None):
         self.process = subprocess.Popen(command, cwd=fixture, env=env, stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, encoding="utf-8")
         self.deadline = time.monotonic() + timeout
         self.strict_json = strict_json
+        self.tool_event = tool_event
         self.events = {"starts": 0, "ends": 0, "tools": 0, "settled": 0}
         self.lines = queue.Queue()
         self.reader = threading.Thread(target=self.read, daemon=True)
@@ -163,8 +166,11 @@ class OmpRpc:
             self.lines.put(None)
 
     def next(self):
+        remaining = self.deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError("OMP RPC attempt exceeded its deadline")
         try:
-            raw = self.lines.get(timeout=max(0, self.deadline - time.monotonic()))
+            raw = self.lines.get(timeout=remaining)
         except queue.Empty as exc:
             raise TimeoutError("OMP RPC attempt exceeded its deadline") from exc
         if raw is None:
@@ -179,7 +185,9 @@ class OmpRpc:
             self.events["settled"] += 1
         elif isinstance(kind, str) and kind.startswith(("tool_execution_", "host_tool_")):
             self.events["tools"] += 1
-            raise ValueError("OMP attempted tool execution in the no-tools lane")
+            if self.tool_event is None:
+                raise ValueError("OMP attempted tool execution in the no-tools lane")
+            self.tool_event(event)
         return event
 
     def request(self, kind, request_id, **fields):

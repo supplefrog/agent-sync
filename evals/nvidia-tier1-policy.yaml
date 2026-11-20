@@ -1,0 +1,4 @@
+# Agent Skills allows a Markdown body without a title.
+# OMP successfully discovered and read the heading-free skill-writing package.
+severity_overrides:
+  SCHEMA.body_heading: low
