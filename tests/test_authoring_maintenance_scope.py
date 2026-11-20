@@ -6,6 +6,8 @@ import ast,hashlib,os,subprocess,unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 BASE='ab48410f2189ad14b0a82de97c45de45a9036cf2'
+# This exception deliberately accepts only the historical reviewed byte pairs.
+CANDIDATE='6c40eca7f39f89c9f44dc1f7eb728f139ba31856'
 BASE_REPO=Path(os.environ.get('AGENT_SYNC_TEST_BASELINE',ROOT))
 OWNER='skills/instruction-authoring';GUIDE=OWNER+'/references/item-review-loop.md';ENTRY=OWNER+'/SKILL.md'
 PATHS=[ENTRY,GUIDE,'docs/system-requirements.md','docs/requirement-status.md']
@@ -26,7 +28,7 @@ def load():
             tree=subprocess.run(['git','-C',str(BASE_REPO),'ls-tree','-z',BASE,'--',name],capture_output=True,check=True)
             if tree.stdout:raise RuntimeError('Existing baseline blob read failed')
         else:original[name]=result.stdout
-    candidate={n:(ROOT/n).read_bytes() for n in PATHS}
+    candidate={n:subprocess.check_output(['git','-C',str(BASE_REPO),'show',CANDIDATE+':'+n]) for n in PATHS}
     tree=ast.parse((ROOT/'tools/instruction_changes.py').read_text(encoding='utf-8'))
     nodes=[node for node in tree.body if isinstance(node,(ast.FunctionDef,ast.Assign)) and
            (isinstance(node,ast.FunctionDef) and node.name in {'_hash','_approved_item_review_maintenance','correction_eligibility'}

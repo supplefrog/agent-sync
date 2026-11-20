@@ -1,0 +1,336 @@
+{
+  "date": "2026-11-20",
+  "checkout": {
+    "repo": "supplefrog/agent-sync",
+    "verified_base": "07338905b253cc6916212bb0912b9cd462ba7ebd",
+    "python": "3.14.10",
+    "publication": "local working copy only"
+  },
+  "task": {
+    "id": "create-handoff",
+    "fixture": "evals/fixtures/native-skill-study/fixtures/create-handoff",
+    "prompt_sha256": "94e268c47dbd85f1d81c4d3ea9ac1d7a28d307eb4e5672a9322a89e2086a4348",
+    "oracle_sha256": "d26bdde22b370431ce5a439b4a2ba3a0ad3cdc82f672466450c8e03e4a8830f8",
+    "inputs": {
+      "context/team-notes.md": "69d91dc07406929fbcac27b225ddb096c40b97bb21087f91bd825f662f86f9ce",
+      "sample-account/activity.csv": "966b36d8a575ebee3f78f02a6594ba8300c19c81fe824a51d3331646554ab763",
+      "sample-account/call-notes.md": "aa38f32cda5d84e53be00d96a8855e217c37217c0ee0f25fc9b578a59bba9770",
+      "sample-account/success-plan.md": "5cf8e97a25b452259dd175fd2984ddb05117a970d8fa7de66c6618c876bb784f"
+    },
+    "historical_reuse": "Prior blind A/B review qualified both handoffs as usable and tied. Their source-bound outputs are positive oracle controls. They do not rate the three current candidates."
+  },
+  "candidates": {
+    "without-skill": null,
+    "legacy": "4c8edcf36e82a0758ede41123703289c3ff6aa6217cc37e7e81df87c239e34d0",
+    "anthropic": "412558e2d4103a965f8bd319273797a4787f1d4635c2b16f1df0d77d7e0680f4",
+    "agent-sync": "785e9c529215a8da8ade19ef324a16d29440a5f5fff5f1d73fc2e9727bc25896"
+  },
+  "cloud_omp_offline": {
+    "runtime": "omp 18.22.1",
+    "mode": "deterministic loopback, no inference",
+    "scope": "Actual OMP RPC discovery, read/write tools, frozen files and independent oracle. The scripted reference outputs are identical and cannot measure lift.",
+    "controller_sha256": "35b6bf10328a48da1a16c7ccecc40a997e395e562b256d0557ec7c0775561743",
+    "runtime_sources": {
+      "evaluation_omp_artifact.py": "26e4c0db1c7c36573f7f054a15ac29e78b1f4e2ba7784ae9168bb1c60f4ef09f",
+      "evaluation_omp_worker.py": "ab66294327264d510159bd70584ff89cc31562fb841de25cd9e2caf857760936",
+      "evaluation_runtime.py": "6d377612fb264ec3534953c2704efa82eb57a9d983ec4082fc1dab1e30b15d6a",
+      "artifact_hash.py": "65e9fa5bd8f4113fcc9f7da64e950bf5de66235dda394d93c9bf8796ceec3da2",
+      "evaluation_evidence.py": "57719d346a2d78ef58489e24175845e7ae819d3ad029755e6cf2797c93caf507"
+    },
+    "private_report_sha256": "abb69f3e442298f97232d2d3f4695f3cbee650c91270a7e5c84b8dd3f5602710",
+    "controls": [
+      true,
+      true,
+      false
+    ],
+    "arms": [
+      {
+        "arm": "without-skill",
+        "skill_bodies_read": [],
+        "tool_schema_sha256": "40e30254f932de2912a2b5928731cb23c15f3558ee49398c3988a063623ee8e7",
+        "tool_events": [
+          {
+            "tool_call_id": "call_0",
+            "tool": "read",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          },
+          {
+            "tool_call_id": "call_1",
+            "tool": "write",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          },
+          {
+            "tool_call_id": "call_2",
+            "tool": "write",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          }
+        ],
+        "oracle": {
+          "passed": 17,
+          "failed": 0,
+          "failures": []
+        },
+        "deliverables": {
+          "deliverables/sample-handoff.md": "7f2019fdc5676206b75a82d86642339ea33edfde3cebb83b4f8b9e22f0e9ac9c",
+          "deliverables/trial-handoff/SKILL.md": "d32054e5a6d9074ce62e80f7b501006234ca2f299e7fffc02ec10678d00d84ae"
+        }
+      },
+      {
+        "arm": "legacy",
+        "skill_bodies_read": [
+          "skill-writing"
+        ],
+        "tool_schema_sha256": "40e30254f932de2912a2b5928731cb23c15f3558ee49398c3988a063623ee8e7",
+        "tool_events": [
+          {
+            "tool_call_id": "call_0",
+            "tool": "read",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          },
+          {
+            "tool_call_id": "call_1",
+            "tool": "read",
+            "skill": "skill-writing",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 7
+          },
+          {
+            "tool_call_id": "call_2",
+            "tool": "write",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          },
+          {
+            "tool_call_id": "call_3",
+            "tool": "write",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          }
+        ],
+        "oracle": {
+          "passed": 17,
+          "failed": 0,
+          "failures": []
+        },
+        "deliverables": {
+          "deliverables/sample-handoff.md": "7f2019fdc5676206b75a82d86642339ea33edfde3cebb83b4f8b9e22f0e9ac9c",
+          "deliverables/trial-handoff/SKILL.md": "d32054e5a6d9074ce62e80f7b501006234ca2f299e7fffc02ec10678d00d84ae"
+        }
+      },
+      {
+        "arm": "anthropic",
+        "skill_bodies_read": [
+          "skill-creator"
+        ],
+        "tool_schema_sha256": "40e30254f932de2912a2b5928731cb23c15f3558ee49398c3988a063623ee8e7",
+        "tool_events": [
+          {
+            "tool_call_id": "call_0",
+            "tool": "read",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          },
+          {
+            "tool_call_id": "call_1",
+            "tool": "read",
+            "skill": "skill-creator",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 80
+          },
+          {
+            "tool_call_id": "call_2",
+            "tool": "read",
+            "skill": "skill-creator",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 80
+          },
+          {
+            "tool_call_id": "call_3",
+            "tool": "read",
+            "skill": "skill-creator",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 80
+          },
+          {
+            "tool_call_id": "call_4",
+            "tool": "read",
+            "skill": "skill-creator",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 80
+          },
+          {
+            "tool_call_id": "call_5",
+            "tool": "read",
+            "skill": "skill-creator",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 80
+          },
+          {
+            "tool_call_id": "call_6",
+            "tool": "read",
+            "skill": "skill-creator",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 80
+          },
+          {
+            "tool_call_id": "call_7",
+            "tool": "read",
+            "skill": "skill-creator",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 5
+          },
+          {
+            "tool_call_id": "call_8",
+            "tool": "write",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          },
+          {
+            "tool_call_id": "call_9",
+            "tool": "write",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          }
+        ],
+        "oracle": {
+          "passed": 17,
+          "failed": 0,
+          "failures": []
+        },
+        "deliverables": {
+          "deliverables/sample-handoff.md": "7f2019fdc5676206b75a82d86642339ea33edfde3cebb83b4f8b9e22f0e9ac9c",
+          "deliverables/trial-handoff/SKILL.md": "d32054e5a6d9074ce62e80f7b501006234ca2f299e7fffc02ec10678d00d84ae"
+        }
+      },
+      {
+        "arm": "agent-sync",
+        "skill_bodies_read": [
+          "skill-creator"
+        ],
+        "tool_schema_sha256": "40e30254f932de2912a2b5928731cb23c15f3558ee49398c3988a063623ee8e7",
+        "tool_events": [
+          {
+            "tool_call_id": "call_0",
+            "tool": "read",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          },
+          {
+            "tool_call_id": "call_1",
+            "tool": "read",
+            "skill": "skill-creator",
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 38
+          },
+          {
+            "tool_call_id": "call_2",
+            "tool": "write",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          },
+          {
+            "tool_call_id": "call_3",
+            "tool": "write",
+            "skill": null,
+            "finished": true,
+            "succeeded": true,
+            "verified_skill_lines": 0
+          }
+        ],
+        "oracle": {
+          "passed": 17,
+          "failed": 0,
+          "failures": []
+        },
+        "deliverables": {
+          "deliverables/sample-handoff.md": "7f2019fdc5676206b75a82d86642339ea33edfde3cebb83b4f8b9e22f0e9ac9c",
+          "deliverables/trial-handoff/SKILL.md": "d32054e5a6d9074ce62e80f7b501006234ca2f299e7fffc02ec10678d00d84ae"
+        }
+      }
+    ],
+    "body_read_check": "Native skill:// reads for the legacy and adapted packages. Source-bound verbatim file ranges for the larger upstream package."
+  },
+  "cloud_omp_live": {
+    "requested_route": "openai-codex/gpt-6.2-sol at medium",
+    "completed_arms": 0,
+    "blocker": "OMP subscription credential store (agent.db) is unavailable",
+    "chatgpt_backend_proxy_connect_status": 403,
+    "observed_quota": null,
+    "private_report_sha256": "923d02d631f71020d4b07ba2d46c7d0f36664793c13243c929bf31d230980acd"
+  },
+  "user_reported_local_live": {
+    "runtime": "OMP 18.22.1",
+    "route": "openai-codex/gpt-6.2-sol at medium",
+    "fixture": "exact public create-handoff fixture",
+    "arms": [
+      "without-skill",
+      "legacy",
+      "anthropic"
+    ],
+    "observed": "Each completed with native read/write calls, preserved the input packet and passed the structural oracle. Candidate arms respectively read skill://skill-writing and skill://skill-creator.",
+    "limits": "User-provided local evidence for the fixture and route. No adapted Skill Creator arm, quality ranking or execution through the finished Cloud integration was reported."
+  },
+  "skill_creator": {
+    "upstream": "anthropics/skills@e4bb5d960d87126ff3b3a8af1a104b7db67560ba, Apache-2.0",
+    "legacy_contribution": "Use repository requirements, observe behavior under current guidance, change only the decision or step causing the gap, and check actual use before refining or removing the change.",
+    "local_port": "Task supplies intent. Native matched trials, source-bound verification, staged rollout, nested viewer output and correct use of timing.json tokens.",
+    "offline_revision_check": "Packager and archive verification passed. The bundled grading schema, aggregation and static viewer distinguished a missing deliverable from a corrected successor and retained nested outputs and fixture timing records."
+  },
+  "nvidia": {
+    "revision": "NVIDIA/SkillEvaluator@35af6d9ba8b0f5c1fb975d6d8bee7459b73619a7",
+    "mode": "Tier 1, no LLM, same scanner versions for each package",
+    "results": {
+      "anthropic": "10/11, SkillSpector partial analysis",
+      "agent-sync": "10/11, SkillSpector partial analysis",
+      "legacy": "8/9, missing top-level heading"
+    },
+    "isolated_trials": "Tier 3 has no OMP adapter or compatible existing subscription route in Cloud."
+  },
+  "release": {
+    "comparison_name": "Skill Evaluation",
+    "admission": false,
+    "candidate_state": "staged",
+    "retirement": "Pending verified replacements and required rollout evidence",
+    "checks": {
+      "focused_tests": "32 passed and 28 subtests passed",
+      "instruction_render_check": "passed for Codex, Hermes and OMP",
+      "fleet": "Disposable snapshot excluded both staged packages",
+      "baseline_limitations": "The separate legacy release-gate suite retained the same 20 failing cases on pristine main. The structural audit returned the same existing host-deltas failure on main and the candidate."
+    }
+  }
+}

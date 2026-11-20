@@ -1,4 +1,39 @@
-# Routed artifact pilots
+# Skill Evaluation
+
+Compare actual files produced with and without a skill under the same model, tools, fixture and limits. Verify that the actor used the tools and read the candidate entrypoint. Run the independent oracle on each final file set, then review the outputs against the frozen task criteria. A tooling check or a successful oracle run alone cannot establish that a skill improves the work.
+
+## OMP file trials
+
+The staged `omp-artifact-study` runs two to four arms on stock OMP via stdio RPC. The control has no optional skill. Each treatment has one frozen package in a fresh project catalog. All arms use `read`, `write`, `edit`, and `bash` and the identical user prompt. The worker checks the native model/provider/effort, catalog, tool schema, tool start and completion, complete skill-entry reads, ephemeral session completion and file changes. Numbered reads or verbatim ranges are checked against the frozen entry. The controller records per-arm file hashes, oracle evidence, wall time and observed token records. Review the model-visible output files for semantic quality. The runner covers local text artifacts and a leaf task. It does not measure delegated authoring workflows or whole-job provider attempt counts.
+
+### Reproduce the handoff comparison
+
+Use an Agent Sync environment with its Python dependencies and OMP 18.22.1 on `PATH`. The case uses a supplied customer-trial packet and asks for a reusable skill plus a worked handoff. The three candidates are the current `skill-writing`, Anthropic's unmodified Skill Creator, and Agent Sync's adapted Skill Creator. The historical blind A and B artifacts are the positive oracle controls. The input-only tree is the negative control.
+
+```sh
+git clone https://github.com/anthropics/skills .staging/anthropic-skills
+git -C .staging/anthropic-skills checkout e4bb5d960d87126ff3b3a8af1a104b7db67560ba
+python evals/fixtures/native-skill-study/skill_creator_suite.py \
+  --run .staging/handoff-study \
+  --upstream .staging/anthropic-skills/skills/skill-creator/SKILL.md \
+  --model gpt-6.2-sol
+python tools/run.py eval artifact-pilot prepare \
+  --suite .staging/handoff-study/suite.json --out .staging/handoff-study/results
+```
+
+For an offline check, run `python evals/fixtures/native-skill-study/omp_loopback_check.py .staging/handoff-study`. Its deterministic replies exercise stock OMP tools and write known reference files. They provide no model-quality comparison. Use a separate fresh run directory for a live study and supply `--observed-quota` with the current subscription quota percentage when generating its suite. The live runner requires the selected provider's native OMP OAuth login and never switches providers or uses API keys.
+
+```sh
+python tools/run.py eval artifact-pilot run --out .staging/handoff-live/results
+```
+
+To exercise the bundled grading, benchmark and revision viewer offline, run `python evals/fixtures/native-skill-study/skill_creator_review_check.py .staging/handoff-review-check`. It checks a deliberately missing file and its corrected successor. Review outputs are written as static HTML.
+
+Use NVIDIA SkillEvaluator's `validate PATH --tiers 1 --no-llm` on each package. Use its Tier 3 isolated trials when it supports the selected harness and the existing authorized subscription route. Its package checks and compatibility advisories do not measure the handoff output. The pinned evaluator used in Cloud is NVIDIA SkillEvaluator 1.0.1 at `35af6d9ba8b0f5c1fb975d6d8bee7459b73619a7`.
+
+Fleet Admission (`tools/eval_gate.py --suite SUITE --candidate SKILL.md --required-host HOST ...`) revalidates the exact candidate and reports for all required rollout hosts using the existing release-evidence schema. The staged artifact report is exploratory and carries `admission: false`. Fleet Sync acts on approved registry entries.
+
+## Earlier routed artifact pilots
 
 Status: experimental, supervised native-Windows lane. This extends `tools/eval.py`; it is not a replacement evaluator, admission gate, sandbox, or production scheduler.
 

@@ -222,3 +222,11 @@ Support “any permutation of Hermes Codex or OMP” without writing a separate 
 The shared release evaluator must also accept OMP generation so the same qualification can cover all three agents.
 
 “T3 can use its own cross provider delegation and Paseo’s can be the fallback for other agents.” Dynamic Workflows should work with both native and shared dispatch. Start the configured local dispatcher on demand when standalone work needs it. Keep the same workflow and approval contract through either dispatcher.
+
+## Skill Creation and Skill Evaluation
+
+Use the task as the source of user intent. Use one Skill Creator workflow based on Anthropic Skill Creator, including its bundled output grading and revision loop. Keep local differences that address observed needs. Compare the previous authoring guidance, the upstream package and the Agent Sync adaptation under matched conditions where supported.
+
+Skill Evaluation compares real file outputs with and without the skill using the same model, tools and fixture. Verify tool use and final files, reuse comparable evidence and prefer an authorized OMP subscription route. Use NVIDIA SkillEvaluator for package checks and supported isolated trials. Missing live access leaves the behavior claim unassessed.
+
+Fleet Admission checks evidence for the exact revision and required rollout hosts. Fleet Sync installs approved revisions. Retire the older capability-curator name after verifying its replacements.

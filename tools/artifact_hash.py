@@ -79,7 +79,7 @@ def candidate_files(candidate: Path) -> list[Path]:
     return [candidate.resolve(), *linked_files(candidate)]
 
 
-def freeze_candidate(candidate: Path) -> dict:
+def freeze_candidate(candidate: Path, *, projection: str = "inline-linked-text-only") -> dict:
     """Capture source bytes once and derive both identity and prompt from them.
 
     SKILL.md package identity follows fleet.directory_record exactly. The
@@ -90,6 +90,10 @@ def freeze_candidate(candidate: Path) -> dict:
     root = candidate.parent.resolve()
     captured: dict[Path, bytes] = {}
     package = candidate.name == "SKILL.md"
+    if projection not in {"inline-linked-text-only", "native-catalog"}:
+        raise ValueError("Unknown candidate projection")
+    if projection == "native-catalog" and not package:
+        raise ValueError("Native catalog entries require a SKILL.md package")
     package_order: list[Path] = []
     if package:
         try:
@@ -113,6 +117,17 @@ def freeze_candidate(candidate: Path) -> dict:
         captured[candidate] = candidate.read_bytes()
 
     candidate = candidate.resolve()
+    if projection == "native-catalog":
+        files = {path.relative_to(root).as_posix(): hashlib.sha256(data).hexdigest()
+                 for path, data in captured.items()}
+        return {
+            "projection": projection,
+            "identity_format": "fleet-package-v1",
+            "package_sha256": package_hash_from_files(files),
+            "entry_sha256": files["SKILL.md"],
+            "files": files,
+            "file_sizes": {path.relative_to(root).as_posix(): len(data) for path, data in captured.items()},
+        }
     queue = [candidate]
     seen = {candidate}
     linked: list[Path] = []
