@@ -189,6 +189,12 @@
       "license": "MIT",
       "source": "https://github.com/ChrisTitusTech/titstack/tree/b9b7fb03bd347e4b514c5a6ccff397dbc909b65c/.agents/skills/photocraft",
       "eval": "evals/results/photocraft-import-20261031.json"
+    },
+    {
+      "name": "archive-t3-codex-threads",
+      "status": "staged",
+      "license": "UNLICENSED",
+      "source": "original"
     }
   ]
 }

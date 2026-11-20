@@ -352,6 +352,19 @@
         "added_value": "Source-authored guidance covers stateful document selection, command discovery, non-atomic batches, previews and layered save/export. Added value over current native models and tools is unmeasured; the MCP server is a separate unavailable dependency.",
         "retirement_test": "Compare representative layered editing and interrupted export tasks with current native tools and no skill. Retire if document identity, recovery, original pixels and verified saved/exported artifacts remain adequate at acceptable total cost."
       }
+    },
+    {
+      "id": "archive-t3-codex-threads",
+      "owner": "skills/archive-t3-codex-threads",
+      "status": "staged",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "The local Windows cleanup verified T3 and Codex archive state and retained Codex rollouts. Agent Sync admission and cross-host discovery remain unverified.",
+      "purpose": {
+        "objective": "Archive requested settled T3 threads and their linked Codex conversations.",
+        "added_value": "Uses saved native conversation IDs, independent archive actions, and final readback because T3 Archive alone leaves the Codex archive state unchanged.",
+        "retirement_test": "Retire when native T3 bulk Archive covers the requested settled scope and archives linked Codex conversations with recoverable history and verifiable results."
+      }
     }
   ],
   "retired_artifacts": [

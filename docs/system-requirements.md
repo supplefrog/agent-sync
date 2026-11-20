@@ -23,6 +23,10 @@ Agent Sync assembles independently owned governance, authoring, reconciliation, 
 
 Keep human-authored requirements here. Use the three writing skills independently.
 
+## T3 and Codex thread archives
+
+The user asked to “archive all the settled threads and their codex ones, and create a skill for reuse.” A requested cleanup archives the settled T3 threads in scope and the matching Codex conversations, preserving history in both apps. The reusable skill belongs in Agent Sync.
+
 ## Owner map
 
 Every expected behavior has one accountable owner. Supporting owners exchange evidence and artifacts rather than maintain competing policies. These roles should be apparent from the project entry point and implementation boundaries; the project may be reorganized for clarity. A rename is optional, not a prerequisite.
