@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "instruction_changes": [
+    {
+      "owner": "skills/cross-agent-surface-engineering",
+      "change_kind": "requested-edit",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "Publication could stop at a review branch after a sync request. The user clarified that sync includes installation and publication under the same authorization.",
+      "evidence": "The previous canonical run published the guidance while the requested archive capability remained on its review branch.",
+      "why_instruction": "Completion and authorization belong in the existing fleet publication procedure.",
+      "alternative": "Requesting a second approval for the already selected scope adds a separate prompt before the same authorized operation.",
+      "artifacts": {
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "4d344fa8de08c9a58ee27e5dea7a30cd9b1fbabd01bf2d5450a443ee21210956",
+          "after_sha256": "69b95df5c7585530b390ea9508f76c85d06e863cee5e9a6de3ef347aed3c9c30"
+        }
+      },
+      "requested_edit_acceptance": {
+        "classification": "requested-existing-instruction-edit",
+        "baseline_commit": "147c1fb7a4e32fbf0e9b0dff1bfdccdd378b6154",
+        "license": "UNLICENSED",
+        "before_package_sha256": "a067d11c9e8eb064942b93e492089a83f284966d1cc43bba55b402912ddf94b0",
+        "after_package_sha256": "750ce8fe0c588a2642da5302c35694fc211b538992e73a24a9191d386c203578",
+        "files": {
+          "SKILL.md": {
+            "before_sha256": "4d344fa8de08c9a58ee27e5dea7a30cd9b1fbabd01bf2d5450a443ee21210956",
+            "after_sha256": "69b95df5c7585530b390ea9508f76c85d06e863cee5e9a6de3ef347aed3c9c30"
+          }
+        },
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "dcfe6b7ac70dd9d8619ac67ffc863362e1f65eba727b9572d4b72316eb3249e9",
+          "after_sha256": "dd9c7a2276e6d3fb275eb8cb25da1de567145351bd9a112e5950e367983aab39"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "7fe38a620647ac48548feb89ebebf996b4ba33340f615b704c5b792e80dde94f",
+          "after_sha256": "da51df6bc4e44c14637a7b89e0097dcee59ee036e51892f98098c307d24fa846"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "6b8f2b777d21a58142103e08321b3d13a9b0c04640a0d6ecfafee64b8ae8a232",
+          "after_sha256": "4b040db4c2101a98ccd42aba1451880aac5eb24522ce2b8b0acfe8a2c1842621"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "4d344fa8de08c9a58ee27e5dea7a30cd9b1fbabd01bf2d5450a443ee21210956",
+          "after_sha256": "69b95df5c7585530b390ea9508f76c85d06e863cee5e9a6de3ef347aed3c9c30"
+        },
+        "tests/test_requested_import.py": {
+          "before_sha256": "0a09ce489abdd7bf416624de07d90815df500ba17ab6a0835a97c3bf40664424",
+          "after_sha256": "8fcc61002ba2cd29521fac78ebea94b23b6755ffacfe284a83dbf92434e1e3b7"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "2ce408989061dd25e0c93d1c4b21453f4ce119ec898f2319fb970f25555de96d",
+          "after_sha256": "3c3070aabbd13e4af7ee86d72e3f91dafe601aedd892c4c8b6b520bec6b68094"
+        }
+      },
+      "requirement_change": true,
+      "requirement_reason": "Carry the user's authorized sync through verified publication and configured fleet installation without a separate confirmation.",
+      "authority": "The user explicitly selected the archive skill for installation and requested revised sync guidance.",
+      "checks": "Exact pinned package bytes, skill validation, scoped integration regressions and repeatable archive readback.",
+      "outcome_review": {
+        "expected": "The checked first-party package can be installed through ordinary scoped sync. Its helper stays on demand.",
+        "observed": "The reviewed package matches the published pin. The live Windows archive batch and repeat readback succeeded at that pin.",
+        "evidence": "The requested-import regression exercises the real ready sync path and rejects a modified helper before publication or installation.",
+        "limitations": "Host discovery is verified by the release receipt. No comparative model-performance claim."
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance and safeguards continue to apply."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Existing dependent guidance and safeguards continue to apply."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Selected publication change."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Selected publication change."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Selected publication change."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Selected publication change."
+        },
+        {
+          "path": "tests/test_requested_import.py",
+          "disposition": "updated",
+          "reason": "Selected publication change."
+        }
+      ]
+    }
+  ]
+}

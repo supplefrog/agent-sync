@@ -20,7 +20,9 @@ Agent Sync assembles independently owned governance, authoring, reconciliation, 
 - **System instructions.** “write base behaviors that are to be followed with every response based on user_requirements doc”.
 - **Skills.** “write the minimum instructions that help the model achieve the desired outcome based on user_requirements doc”.
 - **Capture intent.** “whenever a user explains grievances/regressions/discusses requirements, clarify their intention if unclear or more detail would help and note them in the doc”.
-- **Publishing.** “stop asking me when there are blockers for publishing, fix em yourself”. Use the authorization already given to resolve recoverable failures, retry with current evidence, and publish by a supported route. Bring back only decisions and permissions that require the user.
+- **Sync and publishing.** “sync means syncing across the fleet and the repo” and “don't require seperate permissions”. Explicit sync authorizes the selected repository publication and configured fleet deployment together. Resolve recoverable failures and complete the applicable checks under that authorization. Bring back only decisions and permissions that require the user.
+
+For the T3 and Codex archive skill, the user asked to “archive all the settled threads and their codex ones, and create a skill for reuse,” then requested installation through Agent Sync. The skill archives the selected settled T3 threads and their linked Codex conversations while preserving recoverable history.
 
 Keep human-authored requirements here. Use the three writing skills independently.
 

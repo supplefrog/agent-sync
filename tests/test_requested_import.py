@@ -194,6 +194,61 @@ class RequestedImportTests(unittest.TestCase):
             self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
             self.assertEqual(before_live, fixtures.digest(live))
 
+    def test_requested_authored_helper_is_installed_only_from_the_reviewed_pin(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            repo, live, remote, worker, row = self.prepare(root)
+            upstream = root / 'upstream'
+            origin = 'https://github.com/example/source'
+            self.git(repo, 'remote', 'set-url', 'origin', origin + '.git')
+            self.git(repo, 'config', 'url.' + remote.as_uri() + '.insteadOf', origin + '.git')
+            package = worker / 'skills/requested'
+            script = 'scripts/cleanup.py'
+            for target in (upstream, worker):
+                script_path = target / 'skills/requested' / script
+                script_path.parent.mkdir()
+                script_path.write_bytes(b'if __name__ == "__main__":\n    print("on demand")\n')
+            (upstream / 'skills/requested/LICENSE').write_bytes((package / 'LICENSE').read_bytes())
+            self.git(upstream, 'add', '.')
+            self.git(upstream, 'commit', '-m', 'Review first-party helper')
+            pin = self.git(upstream, 'rev-parse', 'HEAD')
+            self.git(repo, 'fetch', str(upstream), pin)
+            acceptance = row['requested_import_acceptance']
+            acceptance['files']['LICENSE']['upstream_path'] = 'skills/requested/LICENSE'
+            record = self.fleet.directory_record(package)
+            acceptance.update(source_commit=pin, package_sha256=record['sha256'])
+            acceptance['files'][script] = {'upstream_path': 'skills/requested/' + script,
+                                           'upstream_sha256': record['files'][script],
+                                           'installed_sha256': record['files'][script],
+                                           'transformation': 'identity'}
+            registry = worker / 'registry.json'
+            rows = json.loads(registry.read_bytes())
+            rows['skills'][-1]['source'] = origin + '/tree/' + pin + '/skills/requested'
+            registry.write_text(json.dumps(rows), encoding='utf-8')
+            base = self.git(remote, 'rev-parse', 'main')
+            blocked = self.run_import(worker, self.ready(worker, row), live)
+            self.assertIn('only bound Markdown and LICENSE', blocked['reason'])
+            self.assertEqual(base, self.git(remote, 'rev-parse', 'main'))
+            self.assertFalse((live / 'requested').exists())
+
+            acceptance['classification'] = 'requested-authored-skill-package'
+            (package / script).write_bytes(b'print("different from reviewed source")\n')
+            altered = self.fleet.directory_record(package)
+            acceptance['package_sha256'] = altered['sha256']
+            acceptance['files'][script]['installed_sha256'] = altered['files'][script]
+            blocked = self.run_import(worker, self.ready(worker, row), live)
+            self.assertIn('differs from the pinned upstream bytes', blocked['reason'])
+            self.assertEqual(base, self.git(remote, 'rev-parse', 'main'))
+            self.assertFalse((live / 'requested').exists())
+
+            (package / script).write_bytes((upstream / 'skills/requested' / script).read_bytes())
+            acceptance['package_sha256'] = record['sha256']
+            acceptance['files'][script]['installed_sha256'] = record['files'][script]
+            outcome = self.run_import(worker, self.ready(worker, row), live)
+            self.assertEqual('synced', outcome['result'], outcome)
+            self.assertEqual((package / script).read_bytes(), (live / 'requested' / script).read_bytes())
+            self.assertEqual(outcome['commit'], self.git(remote, 'rev-parse', 'main'))
+
     def test_source_contract_matrix_and_sole_license_transformation(self):
         import instruction_changes as changes
         import sync_git

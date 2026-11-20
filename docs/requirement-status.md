@@ -10,7 +10,7 @@ Source review, 2026-09-27. The [agreed contract](system-requirements.md) remains
 
 The user-authorized [claim-based testing and retirement contract](system-requirements.md#claim-based-testing-and-retirement) now governs future R02/R07/R13/R14 comparisons. Source contract/schema guidance is updated; this does not mark implementation complete. Existing suite/decision/retirement validators check structure, numerical noninferiority and bound receipts, not semantic claim fit or oracle sensitivity. Claim-level coverage, complete overall-cost comparability and safe retirement application still require the recorded evidence review. Native diagnostic admission remains false; prior narrow repair pairs are not full-claim proof. No skill is retired by this contract update.
 
-The [publication procedure](../skills/cross-agent-surface-engineering/SKILL.md#6-promote-and-clean-up) now directs recovery and retry under existing publication authorization. A checked candidate that still needs admission can be published on a review branch. The archive skill was published that way and remains staged.
+The [publication procedure](../skills/cross-agent-surface-engineering/SKILL.md#6-promote-and-clean-up) treats a sync request as authorization for both repository publication and configured fleet rollout. The [checked installation path](worktree-publication.md) accepts an explicitly requested first-party skill at its published Git pin, including reviewed on-demand Python helpers. Installation and discovery are verified through the sync receipt.
 
 | Requirement | Accountable role | Current owner and supporting interface | Evidence and current limit | Status |
 | --- | --- | --- | --- | --- |

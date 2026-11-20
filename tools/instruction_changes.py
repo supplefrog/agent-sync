@@ -183,20 +183,22 @@ def _approved_reference_transport(candidate, source, name, owner, row, base, pat
 
 
 def _approved_requested_import(candidate, source, name, owner, row, base, paths):
-    """Bind an initial instruction-only installation to locally available Git blobs.
+    """Bind an initial on-demand skill installation to locally available Git blobs.
 
-    Source authenticity and human authorization remain the caller's responsibility.
-    No upstream code is executed and no runtime activation is authorized here.
+    The caller verifies publication and records the user's installation request.
+    Admission copies reviewed files without executing them.
     """
     import fleet
     acceptance = row.get('requested_import_acceptance', {})
     if not isinstance(owner, str) or not isinstance(name, str):
         raise sync_git.SyncBlocked('requested import requires a canonical owner')
     package = owner.removeprefix('skills/')
+    classification = acceptance.get('classification') if isinstance(acceptance, dict) else None
+    authored = classification == 'requested-authored-skill-package'
     if (not re.fullmatch(r'skills/[a-z0-9]+(?:-[a-z0-9]+)*', owner)
             or row.get('basis') != 'user-correction'
             or not name.startswith(owner + '/') or not isinstance(acceptance, dict)
-            or acceptance.get('classification') != 'requested-instruction-package'
+            or classification not in ('requested-instruction-package', 'requested-authored-skill-package')
             or acceptance.get('runtime_activation') is not False
             or acceptance.get('model_benefit_claim') is not False
             or set(acceptance) != {'classification', 'source_repository', 'source_commit', 'source_path',
@@ -212,6 +214,12 @@ def _approved_requested_import(candidate, source, name, owner, row, base, paths)
         raise sync_git.SyncBlocked('requested import requires an immutable source pin, path and license')
     if sync_git.git(source, 'cat-file', '-t', pin) != 'commit':
         raise sync_git.SyncBlocked('requested import source pin must be a commit object')
+    if authored:
+        primary = sync_git.common_dir(source).parent
+        remote = sync_git.destination(primary)['remote']
+        urls = sync_git.git(primary, 'config', '--get-all', f'remote.{remote}.url').splitlines()
+        if upstream != owner or len(urls) != 1 or urls[0].rstrip('/').removesuffix('.git') != repo:
+            raise sync_git.SyncBlocked('requested authored package must come from its canonical repository path')
     if acceptance.get('deployment_checks_required') != ['native-hermes-codex-omp-catalogue-body', 'repeat-sync-preserves-source']:
         raise sync_git.SyncBlocked('requested import must retain native loading and repeat-sync checks')
     files = acceptance.get('files')
@@ -220,8 +228,9 @@ def _approved_requested_import(candidate, source, name, owner, row, base, paths)
                   for p in (candidate / owner).rglob('*') if p.is_file()}
     if disk_files != set(actual['files']):
         raise sync_git.SyncBlocked('requested import cannot contain ignored or transient extra files')
+    required_files = {'SKILL.md'} if authored and license == 'UNLICENSED' else {'SKILL.md', 'LICENSE'}
     if (not isinstance(files, dict) or set(files) != set(actual['files'])
-            or not {'SKILL.md', 'LICENSE'} <= set(files)
+            or not required_files <= set(files)
             or actual['sha256'] != acceptance.get('package_sha256')
             or not {owner + '/' + f for f in files} <= set(paths)):
         raise sync_git.SyncBlocked('requested import requires the complete selected package')
@@ -233,14 +242,16 @@ def _approved_requested_import(candidate, source, name, owner, row, base, paths)
     bound = set()
     for relative, binding in files.items():
         target = owner + '/' + relative
+        helper = authored and relative.startswith('scripts/') and Path(relative).suffix == '.py'
         if (sync_git.safe_path(candidate, target) != target
-                or (Path(relative).suffix.lower() != '.md' and relative != 'LICENSE')
+                or (Path(relative).suffix.lower() != '.md' and relative != 'LICENSE' and not helper)
                 or not isinstance(binding, dict)
                 or set(binding) != {'upstream_path', 'upstream_sha256', 'installed_sha256', 'transformation'}):
-            raise sync_git.SyncBlocked('requested import permits only bound Markdown and LICENSE files')
+            detail = ', LICENSE, and on-demand scripts/*.py' if authored else ' and LICENSE'
+            raise sync_git.SyncBlocked('requested import permits only bound Markdown' + detail + ' files')
         origin = binding['upstream_path']
         if (not isinstance(origin, str) or sync_git.safe_path(candidate, origin) != origin
-                or (relative != 'LICENSE' and origin != upstream + '/' + relative)
+                or ((authored or relative != 'LICENSE') and origin != upstream + '/' + relative)
                 or origin in bound):
             raise sync_git.SyncBlocked('requested import has invalid upstream file mapping')
         bound.add(origin)
@@ -251,7 +262,7 @@ def _approved_requested_import(candidate, source, name, owner, row, base, paths)
         installed = (candidate / target).read_bytes()
         expected = original
         transformation = binding['transformation']
-        if transformation == 'license-frontmatter' and relative == 'SKILL.md' and original is not None:
+        if not authored and transformation == 'license-frontmatter' and relative == 'SKILL.md' and original is not None:
             if not original.startswith(b'---\n') or b'\n---\n' not in original[4:]:
                 raise sync_git.SyncBlocked('requested import requires LF YAML frontmatter for license insertion')
             front, rest = original[4:].split(b'\n---\n', 1)
@@ -263,6 +274,11 @@ def _approved_requested_import(candidate, source, name, owner, row, base, paths)
         if (original is None or _hash(original) != binding['upstream_sha256']
                 or _hash(installed) != binding['installed_sha256'] or installed != expected):
             raise sync_git.SyncBlocked('requested import differs from the pinned upstream bytes')
+        if helper:
+            try:
+                compile(installed, target, 'exec')
+            except (SyntaxError, ValueError) as error:
+                raise sync_git.SyncBlocked('requested authored Python helper does not compile: ' + target) from error
     if not upstream_names or upstream_names - bound:
         raise sync_git.SyncBlocked('requested import omits upstream package files')
     registered = fleet.registry(candidate).get(package, {})
@@ -279,7 +295,8 @@ def _approved_requested_import(candidate, source, name, owner, row, base, paths)
         raise sync_git.SyncBlocked('requested import requires one canonical capability owner')
     if validate.validate_skill(candidate / owner / 'SKILL.md'):
         raise sync_git.SyncBlocked('requested import package validation failed')
-    return 'explicitly requested pinned instruction package'
+    return ('explicitly requested pinned first-party skill package' if authored
+            else 'explicitly requested pinned instruction package')
 
 
 def _approved_requested_edit(candidate, source, name, owner, row, base, paths):
