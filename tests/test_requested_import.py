@@ -194,7 +194,7 @@ class RequestedImportTests(unittest.TestCase):
             self.assertEqual(head, self.git(remote, 'rev-parse', 'main'))
             self.assertEqual(before_live, fixtures.digest(live))
 
-    def test_requested_authored_helper_is_installed_only_from_the_reviewed_pin(self):
+    def test_requested_authored_helper_and_html_are_installed_only_from_the_reviewed_pin(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             repo, live, remote, worker, row = self.prepare(root)
@@ -204,10 +204,14 @@ class RequestedImportTests(unittest.TestCase):
             self.git(repo, 'config', 'url.' + remote.as_uri() + '.insteadOf', origin + '.git')
             package = worker / 'skills/requested'
             script = 'scripts/cleanup.py'
+            asset = 'assets/review.html'
             for target in (upstream, worker):
                 script_path = target / 'skills/requested' / script
                 script_path.parent.mkdir()
                 script_path.write_bytes(b'if __name__ == "__main__":\n    print("on demand")\n')
+                asset_path = target / 'skills/requested' / asset
+                asset_path.parent.mkdir()
+                asset_path.write_bytes(b'<!doctype html><title>Review</title>\n')
             (upstream / 'skills/requested/LICENSE').write_bytes((package / 'LICENSE').read_bytes())
             self.git(upstream, 'add', '.')
             self.git(upstream, 'commit', '-m', 'Review first-party helper')
@@ -217,10 +221,11 @@ class RequestedImportTests(unittest.TestCase):
             acceptance['files']['LICENSE']['upstream_path'] = 'skills/requested/LICENSE'
             record = self.fleet.directory_record(package)
             acceptance.update(source_commit=pin, package_sha256=record['sha256'])
-            acceptance['files'][script] = {'upstream_path': 'skills/requested/' + script,
-                                           'upstream_sha256': record['files'][script],
-                                           'installed_sha256': record['files'][script],
-                                           'transformation': 'identity'}
+            for relative in (script, asset):
+                acceptance['files'][relative] = {'upstream_path': 'skills/requested/' + relative,
+                                                 'upstream_sha256': record['files'][relative],
+                                                 'installed_sha256': record['files'][relative],
+                                                 'transformation': 'identity'}
             registry = worker / 'registry.json'
             rows = json.loads(registry.read_bytes())
             rows['skills'][-1]['source'] = origin + '/tree/' + pin + '/skills/requested'
@@ -244,9 +249,22 @@ class RequestedImportTests(unittest.TestCase):
             (package / script).write_bytes((upstream / 'skills/requested' / script).read_bytes())
             acceptance['package_sha256'] = record['sha256']
             acceptance['files'][script]['installed_sha256'] = record['files'][script]
+            (package / asset).write_bytes(b'<!doctype html><title>Other review</title>\n')
+            altered = self.fleet.directory_record(package)
+            acceptance['package_sha256'] = altered['sha256']
+            acceptance['files'][asset]['installed_sha256'] = altered['files'][asset]
+            blocked = self.run_import(worker, self.ready(worker, row), live)
+            self.assertIn('differs from the pinned upstream bytes', blocked['reason'])
+            self.assertEqual(base, self.git(remote, 'rev-parse', 'main'))
+            self.assertFalse((live / 'requested').exists())
+
+            (package / asset).write_bytes((upstream / 'skills/requested' / asset).read_bytes())
+            acceptance['package_sha256'] = record['sha256']
+            acceptance['files'][asset]['installed_sha256'] = record['files'][asset]
             outcome = self.run_import(worker, self.ready(worker, row), live)
             self.assertEqual('synced', outcome['result'], outcome)
             self.assertEqual((package / script).read_bytes(), (live / 'requested' / script).read_bytes())
+            self.assertEqual((package / asset).read_bytes(), (live / 'requested' / asset).read_bytes())
             self.assertEqual(outcome['commit'], self.git(remote, 'rev-parse', 'main'))
 
     def test_source_contract_matrix_and_sole_license_transformation(self):

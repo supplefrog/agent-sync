@@ -1,0 +1,485 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-20",
+  "package_qc": {
+    "tool": "NVIDIA SkillEvaluator 1.0.1",
+    "package_pin": "0c7af240475cf783dd6e4d2854db45f115b815d2",
+    "package_sha256": "555647837b7ce9eb8d96899ff30d3ec44099f73d6204e8a6b768bf3a218e8f07",
+    "policy_sha256": "2a9169b52eaf938b421aef32304a23d77ff017de2648a51054324d303606f320",
+    "report_sha256": "b78dd613e4bcc3ab8a7c595edadefa760f9c53d80560a8ad1966ebfe4cede34b",
+    "checks": {
+      "Schema & Repository Governance": "passed",
+      "License Compliance": "passed",
+      "Unicode Smuggling Detection": "passed",
+      "QUALITY": "passed",
+      "SCRIPT_LINT": "passed",
+      "Harness Compatibility": "passed"
+    },
+    "warnings": 33,
+    "advisory_quality_score": 81.5,
+    "scope": "Six keyless Tier 1 package checks. No NVIDIA live model comparison."
+  },
+  "instruction_changes": [
+    {
+      "owner": "skills/skill-authoring",
+      "change_kind": "requested-import",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The user asked to publish the complete Anthropic-based Skill Creator. The prior import did not accept its HTML templates.",
+      "evidence": "The prior four-arm OMP handoff trial tied. The exact release package passed its QC and output review controls.",
+      "why_instruction": "Drafting, test design, grading and revision form one reusable on-demand skill.",
+      "alternative": "An instruction-only copy omits the output viewer and review tools.",
+      "artifacts": {
+        "skills/skill-authoring/NOTICE.md": {
+          "before_sha256": "absent",
+          "after_sha256": "c8e854a1e1671377123ef2b8351005d470a6c9e3be4cadb3a27b6d3dce8fd5cd"
+        },
+        "skills/skill-authoring/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "badf856ff05dc2993780cf38e55097e8cca4423223c41fc023809bd55e0c9af6"
+        },
+        "skills/skill-authoring/agents/analyzer.md": {
+          "before_sha256": "absent",
+          "after_sha256": "bf68f4cac5a56c673a928c2e6d619586c5b93ea364026ab37547772cb45a663a"
+        },
+        "skills/skill-authoring/agents/comparator.md": {
+          "before_sha256": "absent",
+          "after_sha256": "fe1fc9787c495d864c5d6eada47396478572325fde1b33a96d78bf4b849b7a3e"
+        },
+        "skills/skill-authoring/agents/grader.md": {
+          "before_sha256": "absent",
+          "after_sha256": "57134da0c1a4eea33fbd74a1c9c44aa814f07d6bc64de303edb586f941e5d21a"
+        },
+        "skills/skill-authoring/references/schemas.md": {
+          "before_sha256": "absent",
+          "after_sha256": "8e8876180a8989b406a4d3edddf875b04cdfd5805cc8616686d552b11ce4455f"
+        }
+      },
+      "requested_import_acceptance": {
+        "classification": "requested-authored-skill-package",
+        "source_repository": "https://github.com/supplefrog/agent-sync",
+        "source_commit": "0c7af240475cf783dd6e4d2854db45f115b815d2",
+        "source_path": "skills/skill-authoring",
+        "license": "Apache-2.0",
+        "package_sha256": "555647837b7ce9eb8d96899ff30d3ec44099f73d6204e8a6b768bf3a218e8f07",
+        "files": {
+          "agents/analyzer.md": {
+            "upstream_path": "skills/skill-authoring/agents/analyzer.md",
+            "upstream_sha256": "bf68f4cac5a56c673a928c2e6d619586c5b93ea364026ab37547772cb45a663a",
+            "installed_sha256": "bf68f4cac5a56c673a928c2e6d619586c5b93ea364026ab37547772cb45a663a",
+            "transformation": "identity"
+          },
+          "agents/comparator.md": {
+            "upstream_path": "skills/skill-authoring/agents/comparator.md",
+            "upstream_sha256": "fe1fc9787c495d864c5d6eada47396478572325fde1b33a96d78bf4b849b7a3e",
+            "installed_sha256": "fe1fc9787c495d864c5d6eada47396478572325fde1b33a96d78bf4b849b7a3e",
+            "transformation": "identity"
+          },
+          "agents/grader.md": {
+            "upstream_path": "skills/skill-authoring/agents/grader.md",
+            "upstream_sha256": "57134da0c1a4eea33fbd74a1c9c44aa814f07d6bc64de303edb586f941e5d21a",
+            "installed_sha256": "57134da0c1a4eea33fbd74a1c9c44aa814f07d6bc64de303edb586f941e5d21a",
+            "transformation": "identity"
+          },
+          "assets/eval_review.html": {
+            "upstream_path": "skills/skill-authoring/assets/eval_review.html",
+            "upstream_sha256": "ce477dcc74dc1c0d1d3352646a79167b5a63634e936b1019160025065974e452",
+            "installed_sha256": "ce477dcc74dc1c0d1d3352646a79167b5a63634e936b1019160025065974e452",
+            "transformation": "identity"
+          },
+          "assets/iteration_review.html": {
+            "upstream_path": "skills/skill-authoring/assets/iteration_review.html",
+            "upstream_sha256": "8fe02ef7437f21731c2d2848bfaad67178b6e50ee9ec7c4ddfb46604b91587a9",
+            "installed_sha256": "8fe02ef7437f21731c2d2848bfaad67178b6e50ee9ec7c4ddfb46604b91587a9",
+            "transformation": "identity"
+          },
+          "LICENSE": {
+            "upstream_path": "skills/skill-authoring/LICENSE",
+            "upstream_sha256": "bc6b3af2f331cbc7fb0da1344efb2cbe5877a31498b4d70dbc7000f3405a1362",
+            "installed_sha256": "bc6b3af2f331cbc7fb0da1344efb2cbe5877a31498b4d70dbc7000f3405a1362",
+            "transformation": "identity"
+          },
+          "NOTICE.md": {
+            "upstream_path": "skills/skill-authoring/NOTICE.md",
+            "upstream_sha256": "c8e854a1e1671377123ef2b8351005d470a6c9e3be4cadb3a27b6d3dce8fd5cd",
+            "installed_sha256": "c8e854a1e1671377123ef2b8351005d470a6c9e3be4cadb3a27b6d3dce8fd5cd",
+            "transformation": "identity"
+          },
+          "references/schemas.md": {
+            "upstream_path": "skills/skill-authoring/references/schemas.md",
+            "upstream_sha256": "8e8876180a8989b406a4d3edddf875b04cdfd5805cc8616686d552b11ce4455f",
+            "installed_sha256": "8e8876180a8989b406a4d3edddf875b04cdfd5805cc8616686d552b11ce4455f",
+            "transformation": "identity"
+          },
+          "scripts/__init__.py": {
+            "upstream_path": "skills/skill-authoring/scripts/__init__.py",
+            "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "installed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "transformation": "identity"
+          },
+          "scripts/aggregate_benchmark.py": {
+            "upstream_path": "skills/skill-authoring/scripts/aggregate_benchmark.py",
+            "upstream_sha256": "da519cf92b39586572c7783a03e51300b699deaa01b555daf7356731bb81853a",
+            "installed_sha256": "da519cf92b39586572c7783a03e51300b699deaa01b555daf7356731bb81853a",
+            "transformation": "identity"
+          },
+          "scripts/generate_report.py": {
+            "upstream_path": "skills/skill-authoring/scripts/generate_report.py",
+            "upstream_sha256": "13df7118a3c50c83c4c3250a606d5f2b20b25a3d44cbc392b3d669ec75281453",
+            "installed_sha256": "13df7118a3c50c83c4c3250a606d5f2b20b25a3d44cbc392b3d669ec75281453",
+            "transformation": "identity"
+          },
+          "scripts/generate_review.py": {
+            "upstream_path": "skills/skill-authoring/scripts/generate_review.py",
+            "upstream_sha256": "e894609df386fe20e08bc6e23e72c9b0d942aa96c1bd28561f367b00f0c88a15",
+            "installed_sha256": "e894609df386fe20e08bc6e23e72c9b0d942aa96c1bd28561f367b00f0c88a15",
+            "transformation": "identity"
+          },
+          "scripts/improve_description.py": {
+            "upstream_path": "skills/skill-authoring/scripts/improve_description.py",
+            "upstream_sha256": "87d864570220b699fac52da309d2d6efdb060647bfebc74f768128e646accf80",
+            "installed_sha256": "87d864570220b699fac52da309d2d6efdb060647bfebc74f768128e646accf80",
+            "transformation": "identity"
+          },
+          "scripts/package_skill.py": {
+            "upstream_path": "skills/skill-authoring/scripts/package_skill.py",
+            "upstream_sha256": "1a33059b0db1ef73375d46d513e5ea81369d2e8838c970597b0d52ddef8d1c0f",
+            "installed_sha256": "1a33059b0db1ef73375d46d513e5ea81369d2e8838c970597b0d52ddef8d1c0f",
+            "transformation": "identity"
+          },
+          "scripts/quick_validate.py": {
+            "upstream_path": "skills/skill-authoring/scripts/quick_validate.py",
+            "upstream_sha256": "67cf5703402013936c8fb75ad6a1afecd8841d45cc5e606b634eb05825fde365",
+            "installed_sha256": "67cf5703402013936c8fb75ad6a1afecd8841d45cc5e606b634eb05825fde365",
+            "transformation": "identity"
+          },
+          "scripts/run_eval.py": {
+            "upstream_path": "skills/skill-authoring/scripts/run_eval.py",
+            "upstream_sha256": "43e3b8f80dbf69c343967ba77e268fae991d9fa3ed68b32a0ff02532cd48657f",
+            "installed_sha256": "43e3b8f80dbf69c343967ba77e268fae991d9fa3ed68b32a0ff02532cd48657f",
+            "transformation": "identity"
+          },
+          "scripts/run_loop.py": {
+            "upstream_path": "skills/skill-authoring/scripts/run_loop.py",
+            "upstream_sha256": "7bd6f674203168520517eec94c55f493c0d154339b061b4d7c0f0dad187d0f21",
+            "installed_sha256": "7bd6f674203168520517eec94c55f493c0d154339b061b4d7c0f0dad187d0f21",
+            "transformation": "identity"
+          },
+          "scripts/utils.py": {
+            "upstream_path": "skills/skill-authoring/scripts/utils.py",
+            "upstream_sha256": "3af8ae62c40c73ab712207436a0d9a981e845f25c5a7040229eb189cc8e45bb1",
+            "installed_sha256": "3af8ae62c40c73ab712207436a0d9a981e845f25c5a7040229eb189cc8e45bb1",
+            "transformation": "identity"
+          },
+          "SKILL.md": {
+            "upstream_path": "skills/skill-authoring/SKILL.md",
+            "upstream_sha256": "badf856ff05dc2993780cf38e55097e8cca4423223c41fc023809bd55e0c9af6",
+            "installed_sha256": "badf856ff05dc2993780cf38e55097e8cca4423223c41fc023809bd55e0c9af6",
+            "transformation": "identity"
+          }
+        },
+        "runtime_activation": false,
+        "model_benefit_claim": false,
+        "deployment_checks_required": [
+          "native-hermes-codex-omp-catalogue-body",
+          "repeat-sync-preserves-source"
+        ]
+      },
+      "loading_review": {
+        "entrypoint_reason": "Keep the authoring loop in the entrypoint and link specialized support from its use.",
+        "checks": "Review the reachable references and run the packaged benchmark and output reviewer on the missing-file control and correction.",
+        "obligations": [
+          {
+            "obligation": "Create, test and revise a skill",
+            "applies_when": "Skill authoring request",
+            "load_when": "At the skill entry",
+            "reason": "Supports the selected authoring loop.",
+            "required": true,
+            "disposition": "added",
+            "before": [],
+            "after": [
+              "skills/skill-authoring/SKILL.md"
+            ]
+          },
+          {
+            "obligation": "Track provenance and changes",
+            "applies_when": "License or provenance check",
+            "load_when": "From the provenance link",
+            "reason": "Supports the selected authoring loop.",
+            "required": true,
+            "disposition": "added",
+            "before": [],
+            "after": [
+              "skills/skill-authoring/NOTICE.md"
+            ]
+          },
+          {
+            "obligation": "Explain the results and failures",
+            "applies_when": "Consequential or ambiguous comparison",
+            "load_when": "From the grading step",
+            "reason": "Supports the selected authoring loop.",
+            "required": true,
+            "disposition": "added",
+            "before": [],
+            "after": [
+              "skills/skill-authoring/agents/analyzer.md"
+            ]
+          },
+          {
+            "obligation": "Compare actual outputs blind",
+            "applies_when": "An ambiguous quality difference",
+            "load_when": "From the grading step",
+            "reason": "Supports the selected authoring loop.",
+            "required": true,
+            "disposition": "added",
+            "before": [],
+            "after": [
+              "skills/skill-authoring/agents/comparator.md"
+            ]
+          },
+          {
+            "obligation": "Grade observable output requirements",
+            "applies_when": "Completed matched trials",
+            "load_when": "From the grading step",
+            "reason": "Supports the selected authoring loop.",
+            "required": true,
+            "disposition": "added",
+            "before": [],
+            "after": [
+              "skills/skill-authoring/agents/grader.md"
+            ]
+          },
+          {
+            "obligation": "Record compatible tasks, trials and grades",
+            "applies_when": "Setting up fixtures or saving evidence",
+            "load_when": "From the test and recording steps",
+            "reason": "Supports the selected authoring loop.",
+            "required": true,
+            "disposition": "added",
+            "before": [],
+            "after": [
+              "skills/skill-authoring/references/schemas.md"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "artifacts": {
+        "README.md": {
+          "before_sha256": "68581380963fa522fc57f88686c9b21b17739eced39c9238a766fdbe6980ecca",
+          "after_sha256": "50b0745ae596ba2fc98df4f0b6f4086cc5d1bc1b59a6ff6a8b425d1a849ecaae"
+        },
+        "contracts/ownership.json": {
+          "before_sha256": "05902cc37d0e72c0d9ad9475d48786c2d27501a5c638a407f5ef19bf81585f33",
+          "after_sha256": "f514fb0d07c20c0df1fb80918295d2285e4633ee634168d91835da2583665e19"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf"
+        },
+        "docs/artifact-pilot.md": {
+          "before_sha256": "af11a4955418c59187d50b9501a66e3f3458bb981ef24caf34dc5c8365fb7ba2",
+          "after_sha256": "111a4052fea61f24d542c5c4404976f14bfc9389cfc4a57166948e4ef912ab48"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "c4b28943439e6005ff8f18a86d4292b834e6ed6eede09d7657f864342fa2e307",
+          "after_sha256": "f2352aa620107bd7c5152a635dfb48fe612dc873c8721aede6639858bda24005"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "7171ee75d620e2c3bc229d2fd70d91b0e0c63f1fd82b00ec245337946cd0e632",
+          "after_sha256": "177490bbd9ca6eb7727766ded003c347085aa7469a25a555f241261fb7ce2b2f"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "4b040db4c2101a98ccd42aba1451880aac5eb24522ce2b8b0acfe8a2c1842621",
+          "after_sha256": "dbbbd528e891fa8970c2fe89b7dc91e6fdcdaba6452961b5c9fed6a183ddd9a3"
+        },
+        "registry.json": {
+          "before_sha256": "2a5a67e58a05c04ba23114ac5486f7b87eeef9c546269f1da7987d9eca7a570c",
+          "after_sha256": "359a844989ae1837a071ef244f9c4002b69cddba7b530321204b0b66f4a98e8b"
+        },
+        "skills/skill-authoring/NOTICE.md": {
+          "before_sha256": "absent",
+          "after_sha256": "c8e854a1e1671377123ef2b8351005d470a6c9e3be4cadb3a27b6d3dce8fd5cd"
+        },
+        "skills/skill-authoring/SKILL.md": {
+          "before_sha256": "absent",
+          "after_sha256": "badf856ff05dc2993780cf38e55097e8cca4423223c41fc023809bd55e0c9af6"
+        },
+        "skills/skill-authoring/agents/analyzer.md": {
+          "before_sha256": "absent",
+          "after_sha256": "bf68f4cac5a56c673a928c2e6d619586c5b93ea364026ab37547772cb45a663a"
+        },
+        "skills/skill-authoring/agents/comparator.md": {
+          "before_sha256": "absent",
+          "after_sha256": "fe1fc9787c495d864c5d6eada47396478572325fde1b33a96d78bf4b849b7a3e"
+        },
+        "skills/skill-authoring/agents/grader.md": {
+          "before_sha256": "absent",
+          "after_sha256": "57134da0c1a4eea33fbd74a1c9c44aa814f07d6bc64de303edb586f941e5d21a"
+        },
+        "skills/skill-authoring/assets/eval_review.html": {
+          "before_sha256": "absent",
+          "after_sha256": "ce477dcc74dc1c0d1d3352646a79167b5a63634e936b1019160025065974e452"
+        },
+        "skills/skill-authoring/assets/iteration_review.html": {
+          "before_sha256": "absent",
+          "after_sha256": "8fe02ef7437f21731c2d2848bfaad67178b6e50ee9ec7c4ddfb46604b91587a9"
+        },
+        "skills/skill-authoring/references/schemas.md": {
+          "before_sha256": "absent",
+          "after_sha256": "8e8876180a8989b406a4d3edddf875b04cdfd5805cc8616686d552b11ce4455f"
+        },
+        "skills/skill-authoring/scripts/__init__.py": {
+          "before_sha256": "absent",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "skills/skill-authoring/scripts/aggregate_benchmark.py": {
+          "before_sha256": "absent",
+          "after_sha256": "da519cf92b39586572c7783a03e51300b699deaa01b555daf7356731bb81853a"
+        },
+        "skills/skill-authoring/scripts/generate_report.py": {
+          "before_sha256": "absent",
+          "after_sha256": "13df7118a3c50c83c4c3250a606d5f2b20b25a3d44cbc392b3d669ec75281453"
+        },
+        "skills/skill-authoring/scripts/generate_review.py": {
+          "before_sha256": "absent",
+          "after_sha256": "e894609df386fe20e08bc6e23e72c9b0d942aa96c1bd28561f367b00f0c88a15"
+        },
+        "skills/skill-authoring/scripts/improve_description.py": {
+          "before_sha256": "absent",
+          "after_sha256": "87d864570220b699fac52da309d2d6efdb060647bfebc74f768128e646accf80"
+        },
+        "skills/skill-authoring/scripts/package_skill.py": {
+          "before_sha256": "absent",
+          "after_sha256": "1a33059b0db1ef73375d46d513e5ea81369d2e8838c970597b0d52ddef8d1c0f"
+        },
+        "skills/skill-authoring/scripts/quick_validate.py": {
+          "before_sha256": "absent",
+          "after_sha256": "67cf5703402013936c8fb75ad6a1afecd8841d45cc5e606b634eb05825fde365"
+        },
+        "skills/skill-authoring/scripts/run_eval.py": {
+          "before_sha256": "absent",
+          "after_sha256": "43e3b8f80dbf69c343967ba77e268fae991d9fa3ed68b32a0ff02532cd48657f"
+        },
+        "skills/skill-authoring/scripts/run_loop.py": {
+          "before_sha256": "absent",
+          "after_sha256": "7bd6f674203168520517eec94c55f493c0d154339b061b4d7c0f0dad187d0f21"
+        },
+        "skills/skill-authoring/scripts/utils.py": {
+          "before_sha256": "absent",
+          "after_sha256": "3af8ae62c40c73ab712207436a0d9a981e845f25c5a7040229eb189cc8e45bb1"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "3c3070aabbd13e4af7ee86d72e3f91dafe601aedd892c4c8b6b520bec6b68094",
+          "after_sha256": "673bff069419a84f8084244d42c570416d7d1f13ffcb4dda784aa661ba10e727"
+        }
+      },
+      "obligations": [
+        {
+          "path": "README.md",
+          "disposition": "updated",
+          "reason": "Explain the four roles and link the authoring package."
+        },
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Record the resource-backed authoring owner."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "The existing fleet lifecycle checks cover the whole pinned package."
+        },
+        {
+          "path": "docs/artifact-pilot.md",
+          "disposition": "updated",
+          "reason": "Connect the package workflow to the prior OMP output trial and exact QC."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "Keep the existing independent output and efficiency evidence requirements."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Record the selected package and retain the scope of the tied prior comparison."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Record the requirement to publish the complete reviewed package."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Document the pinned HTML template layout."
+        },
+        {
+          "path": "registry.json",
+          "disposition": "updated",
+          "reason": "Bind the admitted revision to its reviewed canonical package pin."
+        },
+        {
+          "path": "skills/skill-authoring/NOTICE.md",
+          "disposition": "updated",
+          "reason": "Track provenance and changes"
+        },
+        {
+          "path": "skills/skill-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Create, test and revise a skill"
+        },
+        {
+          "path": "skills/skill-authoring/agents/analyzer.md",
+          "disposition": "updated",
+          "reason": "Explain the results and failures"
+        },
+        {
+          "path": "skills/skill-authoring/agents/comparator.md",
+          "disposition": "updated",
+          "reason": "Compare actual outputs blind"
+        },
+        {
+          "path": "skills/skill-authoring/agents/grader.md",
+          "disposition": "updated",
+          "reason": "Grade observable output requirements"
+        },
+        {
+          "path": "skills/skill-authoring/assets/eval_review.html",
+          "disposition": "updated",
+          "reason": "Include the pinned on-demand viewer template."
+        },
+        {
+          "path": "skills/skill-authoring/assets/iteration_review.html",
+          "disposition": "updated",
+          "reason": "Include the pinned on-demand viewer template."
+        },
+        {
+          "path": "skills/skill-authoring/references/schemas.md",
+          "disposition": "updated",
+          "reason": "Record compatible tasks, trials and grades"
+        }
+      ],
+      "requirement_change": true,
+      "requirement_reason": "Publish the reviewed complete Skill Creator, including the viewer, with immutable file verification.",
+      "authority": "The user explicitly requested fixing the file import and publishing Skill Creator.",
+      "checks": "Fifteen focused tests and 32 subtests passed, including real fixture Git publication and fleet installation and rejection of changed pinned assets. The exact package passed six NVIDIA checks and the two-iteration local viewer control. Separate controls checked grade rendering and excluded a Windows junction from reviewed outputs.",
+      "outcome_review": {
+        "expected": "On-demand HTML assets can be installed when part of a complete reviewed first-party package. Changed bytes stop installation.",
+        "observed": "The ready-sync fixture installed the pinned package and rejected changed HTML. The real package passed all six selected NVIDIA checks. The viewer detected a missing file and displayed its correction.",
+        "evidence": "Package Git pin, raw file hashes, reproducible viewer fixture and NVIDIA report hash. Live OMP output evidence is pinned at 1a271d6ceb64a65064c067b51ca8a7dd8049602e.",
+        "limitations": "The single earlier OMP case tied. Local package checks do not establish model improvement. Fleet host readback is separate."
+      }
+    }
+  ],
+  "capability": "skill-authoring",
+  "status": "source-checked-requested-installation"
+}

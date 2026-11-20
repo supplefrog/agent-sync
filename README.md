@@ -82,7 +82,7 @@ The current managed setup covers Hermes, Codex, and OMP on the configured Window
 
 Runtime-specific support, limitations, and evidence are recorded in the [surface matrix](contracts/surface-matrix.json) and [instruction profiles](docs/instruction-profiles.md). This is a maintained setup, not a claim that every capability has been proven on every agent or machine.
 
-[Skill Evaluation](docs/artifact-pilot.md) compares produced files in matched trials. The staged [Skill Creator](skills/skill-creator/SKILL.md) uses Anthropic's grading and revision loop for authoring. Fleet Admission checks the selected revision against evidence from the required rollout hosts. [Fleet Sync](skills/fleet-sync/SKILL.md) applies approved revisions.
+[Skill Creator](skills/skill-authoring/SKILL.md) uses Anthropic's grading and revision loop for authoring. [Skill Evaluation](docs/artifact-pilot.md) runs NVIDIA package checks and compares produced files in matched OMP trials. Fleet Admission checks release evidence for the selected revision and required rollout hosts. [Fleet Sync](skills/fleet-sync/SKILL.md) installs approved revisions.
 
 ## Set up or recover
 

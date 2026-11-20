@@ -242,12 +242,14 @@ def _approved_requested_import(candidate, source, name, owner, row, base, paths)
     bound = set()
     for relative, binding in files.items():
         target = owner + '/' + relative
-        helper = authored and relative.startswith('scripts/') and Path(relative).suffix == '.py'
+        suffix = Path(relative).suffix
+        helper = authored and relative.startswith('scripts/') and suffix == '.py'
+        html_asset = authored and relative.startswith('assets/') and suffix == '.html'
         if (sync_git.safe_path(candidate, target) != target
-                or (Path(relative).suffix.lower() != '.md' and relative != 'LICENSE' and not helper)
+                or (suffix.lower() != '.md' and relative != 'LICENSE' and not helper and not html_asset)
                 or not isinstance(binding, dict)
                 or set(binding) != {'upstream_path', 'upstream_sha256', 'installed_sha256', 'transformation'}):
-            detail = ', LICENSE, and on-demand scripts/*.py' if authored else ' and LICENSE'
+            detail = ', LICENSE, on-demand scripts/*.py, and assets/*.html' if authored else ' and LICENSE'
             raise sync_git.SyncBlocked('requested import permits only bound Markdown' + detail + ' files')
         origin = binding['upstream_path']
         if (not isinstance(origin, str) or sync_git.safe_path(candidate, origin) != origin

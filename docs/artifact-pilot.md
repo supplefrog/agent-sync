@@ -15,7 +15,7 @@ python tools/run.py eval artifact-pilot prepare --suite "$suite" --out "$run_dir
 python tools/run.py eval artifact-pilot run --out "$run_dir"
 ```
 
-The [pinned Skill Creator candidate](https://github.com/supplefrog/agent-sync/tree/1a271d6ceb64a65064c067b51ca8a7dd8049602e) carries the four-arm handoff suite, its scripted tool check and the grading loop. [Recorded evidence](https://github.com/supplefrog/agent-sync/blob/1a271d6ceb64a65064c067b51ca8a7dd8049602e/evals/results/skill-evaluation-cloud-20261120.json) includes four live OMP trials on Windows and their output review.
+The [four-arm Skill Creator study](https://github.com/supplefrog/agent-sync/tree/1a271d6ceb64a65064c067b51ca8a7dd8049602e) includes matched Windows OMP trials and their [output review](https://github.com/supplefrog/agent-sync/blob/1a271d6ceb64a65064c067b51ca8a7dd8049602e/evals/results/skill-evaluation-cloud-20261120.json). The [Skill Creator package](../skills/skill-authoring/SKILL.md) includes Anthropic's grader, benchmark and output reviewer. The [installation record](../evals/results/skill-authoring-installation-20261120.json) records the package checks and the local review control.
 
 ## Package QC
 

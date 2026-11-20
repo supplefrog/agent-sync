@@ -367,6 +367,21 @@
         "added_value": "Uses saved native conversation IDs, independent archive actions, and final readback because T3 Archive alone leaves the Codex archive state unchanged.",
         "retirement_test": "Retire when native T3 bulk Archive covers the requested settled scope and archives linked Codex conversations with recoverable history and verifiable results."
       }
+    },
+    {
+      "id": "skill-authoring",
+      "owner": "skills/skill-authoring",
+      "status": "admitted",
+      "selection_state": "selected",
+      "selection_evidence": [
+        "evals/results/skill-authoring-installation-20261120.json"
+      ],
+      "selection_reason": "The user selected Anthropic Skill Creator as the shared base. The adapted package includes the bundled grader and review tools. NVIDIA package checks and a file-review correction control passed. The matched authoring case tied with the legacy and no-skill arms.",
+      "purpose": {
+        "objective": "Create or revise reliable agent skills by testing representative task outputs, reviewing results and fixing demonstrated gaps.",
+        "added_value": "Anthropic’s grading and revision workflow, bundled local reviewer and benchmarks, with host-native matched trials and Agent Sync ownership guidance.",
+        "retirement_test": "Retire when native authoring can reliably produce, grade and revise usable skill packages with comparable artifact evidence."
+      }
     }
   ],
   "retired_artifacts": [
