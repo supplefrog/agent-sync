@@ -43,7 +43,11 @@ def test_load_evidence_requires_exact_successful_native_read():
     assert skill_study_events(no_usage, [])['tokens']['input'] is None
 
 
-def native_spec(tmp_path):
+@pytest.fixture
+def native_spec(tmp_path, monkeypatch):
+    # These tests exercise staging and source drift. The real handoff study
+    # separately executes and checks its bound oracle controls.
+    monkeypatch.setattr(pilot, 'artifact_control_preflight', lambda spec, out: {'ready': True})
     fixture = tmp_path / 'source'
     fixture.mkdir()
     (fixture / 'data.txt').write_text('data')
@@ -55,13 +59,19 @@ def native_spec(tmp_path):
     oracle.write_text('pass')
     spec = {'purpose': 'native-skill-study', 'agent': 'codex', 'provider': 'openai-codex', 'model': 'gpt-6-sol', 'reasoning': 'medium',
             'arms': [{'id': 'baseline', 'instructions': None}, {'id': 'candidate', 'instructions': str(skill / 'SKILL.md')}],
-            'cases': [{'id': 'real', 'prompt': 'Fix the artifact', 'fixture': str(fixture)}], 'workspace_root': str(tmp_path / 'jobs'),
+            'cases': [{'id': 'real', 'prompt': 'Fix the artifact', 'fixture': str(fixture),
+                       'workflow_budget': {'claim': 'Matched fixture staging',
+                                           'required_quality': 'Preserve inputs and staged packages',
+                                           'verification_and_revision': 'Recheck frozen trees',
+                                           'adequacy_rationale': 'One local file per fixture',
+                                           'reviewer': 'Test fixture'}}],
+            'workspace_root': str(tmp_path / 'jobs'),
             'oracle': str(oracle), 'max_workers': 1, 'max_iterations': 10, 'timeout': 60, 'quota_remaining': 90}
     return spec
 
 
-def test_native_prepare_stages_package_without_prompt_injection(tmp_path):
-    spec = native_spec(tmp_path)
+def test_native_prepare_stages_package_without_prompt_injection(tmp_path, native_spec):
+    spec = native_spec
     plan = prepare(spec, tmp_path / 'out')
     validate_jobs(plan)
     assert plan['resource_limits'] == {'timeout_seconds': 60, 'max_iterations': None, 'iteration_limit_enforced': False}
@@ -75,8 +85,8 @@ def test_native_prepare_stages_package_without_prompt_injection(tmp_path):
         validate_jobs(plan)
 
 
-def test_native_prepare_rejects_fixture_edit_between_arms(tmp_path):
-    spec = native_spec(tmp_path)
+def test_native_prepare_rejects_fixture_edit_between_arms(tmp_path, native_spec):
+    spec = native_spec
     source = Path(spec['cases'][0]['fixture'])
     copytree = pilot.shutil.copytree
     copies = []
@@ -94,8 +104,8 @@ def test_native_prepare_rejects_fixture_edit_between_arms(tmp_path):
 
 
 @pytest.mark.parametrize('changed_package', ['common', 'target'])
-def test_native_prepare_reuses_frozen_catalog_before_each_arm(tmp_path, changed_package):
-    spec = native_spec(tmp_path)
+def test_native_prepare_reuses_frozen_catalog_before_each_arm(tmp_path, changed_package, native_spec):
+    spec = native_spec
     common = tmp_path / 'common'
     common.mkdir()
     (common / 'SKILL.md').write_text('---\nname: common\ndescription: A common tool\n---\nOriginal')
@@ -117,8 +127,8 @@ def test_native_prepare_reuses_frozen_catalog_before_each_arm(tmp_path, changed_
 
 
 @pytest.mark.parametrize('changed_input', ['fixture', 'catalog'])
-def test_native_validation_rejects_arm_specific_refreezing(tmp_path, changed_input):
-    spec = native_spec(tmp_path)
+def test_native_validation_rejects_arm_specific_refreezing(tmp_path, changed_input, native_spec):
+    spec = native_spec
     common = tmp_path / 'common'
     common.mkdir()
     (common / 'SKILL.md').write_text('---\nname: common\ndescription: A common tool\n---\nOriginal')

@@ -1,4 +1,48 @@
-# Routed artifact pilots
+# Skill Evaluation
+
+Compare actual files produced with and without a skill under the same model, tools, fixture and limits. Verify that the actor used the tools and read the candidate entrypoint. Run the independent oracle on each final file set, then review the outputs against the frozen task criteria. A tooling check or a successful oracle run alone cannot establish that a skill improves the work.
+
+## OMP file trials
+
+The `omp-artifact-study` runs two to four arms on stock OMP via stdio RPC. The control has no optional skill. Each treatment has one frozen package explicitly selected for discovery in a fresh project catalog. All arms use `read`, `write`, `edit`, and `bash` and the identical user prompt. The worker checks the native model/provider/effort, catalog, tool schema, tool start and completion, complete skill-entry reads, ephemeral session completion and file changes. Numbered reads or verbatim ranges are checked against the frozen entry. The controller records per-arm file hashes, oracle evidence, wall time and observed token records. Review the model-visible output files for semantic quality. The runner covers local text artifacts and a leaf task. Use reviewed packages and fixtures with no external side effects. Run untrusted packages in a supported OS sandbox.
+
+### Reproduce the handoff comparison
+
+Use an Agent Sync environment with its Python dependencies and OMP 18.22.1 on `PATH`. The case uses a supplied customer-trial packet and asks for a reusable skill plus a worked handoff. The three candidates are the current `skill-writing`, Anthropic's unmodified Skill Creator, and Agent Sync's adapted Skill Creator. The historical blind A and B artifacts are the positive oracle controls. The input-only tree is the negative control.
+
+```sh
+git clone https://github.com/anthropics/skills .staging/anthropic-skills
+git -C .staging/anthropic-skills checkout e4bb5d960d87126ff3b3a8af1a104b7db67560ba
+python evals/fixtures/native-skill-study/skill_creator_suite.py \
+  --run .staging/handoff-study \
+  --upstream .staging/anthropic-skills/skills/skill-creator/SKILL.md \
+  --model gpt-6.2-sol
+python tools/run.py eval artifact-pilot prepare \
+  --suite .staging/handoff-study/suite.json --out .staging/handoff-study/results
+```
+
+For an offline check, run `python evals/fixtures/native-skill-study/omp_loopback_check.py .staging/handoff-study`. Its deterministic replies exercise stock OMP tools and write known reference files. They provide no model-quality comparison. Use a separate fresh run directory for a live study and supply `--observed-quota` with the current subscription quota percentage when generating its suite. The live runner requires the selected provider's native OMP OAuth login and never switches providers or uses API keys.
+
+```sh
+python tools/run.py eval artifact-pilot run --out .staging/handoff-live/results
+```
+
+To exercise the bundled grading, benchmark and revision viewer offline, run `python evals/fixtures/native-skill-study/skill_creator_review_check.py .staging/handoff-review-check`. It checks a deliberately missing file and its corrected successor. Review outputs are written as static HTML.
+
+## Package QC
+
+Run NVIDIA SkillEvaluator 1.0.1 on each candidate package before live trials. Create the report directory, then run these keyless checks:
+
+```sh
+skillevaluator tier1 "$skill_dir" --no-llm --checks schema,license,unicode,quality,lint,harness \
+  --policy evals/nvidia-tier1-policy.yaml -r json -o "$report_dir"
+```
+
+Use structural failures to catch invalid packages and review the weighted quality score and harness findings as advice. The policy keeps the optional Markdown title advisory. OMP loaded the legacy heading-free package, and the policy still failed a control package with its required description removed. The selected checks cover package structure, licensing, Unicode, quality, script lint and versioned harness profiles. Use the applicable security, PII and dependency checks for those claims. Check OMP discovery and tool use in the live trial. Use NVIDIA's isolated Tier 3 trials when they support the chosen harness and authorized model route.
+
+Fleet Admission (`tools/eval_gate.py --suite SUITE --candidate SKILL.md --required-host HOST ...`) revalidates the exact candidate and reports for all required rollout hosts using the existing release-evidence schema. The staged artifact report is exploratory and carries `admission: false`. Fleet Sync acts on approved registry entries.
+
+## Earlier routed artifact pilots
 
 Status: experimental, supervised native-Windows lane. This extends `tools/eval.py`; it is not a replacement evaluator, admission gate, sandbox, or production scheduler.
 

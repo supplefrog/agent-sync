@@ -137,6 +137,12 @@
       "eval": "evals/results/skill-writing-source-acceptance-20261112.json"
     },
     {
+      "name": "skill-creator",
+      "status": "staged",
+      "license": "Apache-2.0",
+      "source": "https://github.com/anthropics/skills/tree/e4bb5d960d87126ff3b3a8af1a104b7db67560ba/skills/skill-creator"
+    },
+    {
       "name": "humanizer",
       "status": "admitted",
       "license": "MIT",

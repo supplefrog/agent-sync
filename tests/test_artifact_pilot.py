@@ -39,7 +39,9 @@ class ArtifactPilot(unittest.TestCase):
                             'routing':{'decision':{'outcome':'selected_model'}}}))
                         return subprocess.CompletedProcess(command,0,'','')
                     return subprocess.CompletedProcess(command,0,output,'')
-                with patch.object(pilot,'native_hermes_runtime',return_value=(Path(sys.executable),root)), \
+                # Isolate the legacy oracle consumer after the dispatch gate.
+                with patch.object(pilot, 'require_intervention_qualification'), \
+                     patch.object(pilot,'native_hermes_runtime',return_value=(Path(sys.executable),root)), \
                      patch.object(pilot,'native_executable',return_value='synthetic'), \
                      patch.object(pilot.subprocess,'run',side_effect=boundary):
                     result=pilot.run(plan,out)

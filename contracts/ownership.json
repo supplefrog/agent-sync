@@ -256,6 +256,19 @@
       }
     },
     {
+      "id": "skill-creator",
+      "owner": "skills/skill-creator",
+      "status": "staged",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "User-selected Anthropic base for a single authoring workflow. The Cloud mechanism check is offline. Candidate behavior and required-host rollout remain unqualified.",
+      "purpose": {
+        "objective": "Turn user tasks into reusable agent skills and revise those skills using verified task outputs.",
+        "added_value": "Provides the bundled output grader, review and revision workflow plus verified Agent Sync file-trial integration. Incremental task-quality benefit remains unmeasured.",
+        "retirement_test": "Compare matched held-out authoring and revision tasks using the current native workflow and this package. Retire the package if the simpler route preserves output quality, evidence and the revision loop."
+      }
+    },
+    {
       "id": "humanizer",
       "owner": "skills/humanizer",
       "status": "admitted",
@@ -394,11 +407,6 @@
       "path": "recovery/current/hosts/omp/RULES.md",
       "replacement": "recovery/current/hosts/codex/AGENTS.md",
       "reason": "The retired delta duplicated an earlier assumed Codex inheritance route. Current observed OMP discovery does not load that inheritance or a managed user-global overlay; retirement does not claim otherwise."
-    },
-    {
-      "path": "skills/skill-creator",
-      "replacement": "skills/skill-writing",
-      "reason": "The user selected a dedicated skill-writing owner. Codex retains native scaffolding."
     },
     {
       "path": "skills/reverse-engineer-anything/references",

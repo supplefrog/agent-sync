@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Aggregate host evaluation reports into one no-regression gate decision."""
+"""Fleet Admission for a candidate revision across the required rollout hosts."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ TOOLS = Path(__file__).resolve().parent
 if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))
 from evaluation_evidence import ARTIFACT_KEYS, STACK_KEYS, validate_report
+from artifact_hash import freeze_candidate
 
 
 def evidence_errors(report: dict[str, Any], mode: str, suite: dict[str, Any] | None = None) -> list[str]:
@@ -35,6 +36,7 @@ def aggregate(
     *,
     suite: dict[str, Any] | None = None,
     suite_sha256: str | None = None,
+    candidate: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if not reports:
         raise ValueError("at least one report is required")
@@ -57,6 +59,15 @@ def aggregate(
     for report in reports:
         if suite_sha256 is not None and report.get("artifacts", {}).get("suite_sha256") != suite_sha256:
             invalid.setdefault(str(report.get("agent")), []).append("suite hash mismatch")
+        if candidate is not None:
+            artifacts = report.get("artifacts", {})
+            for key, expected in (
+                ("candidate_sha256", candidate["package_sha256"]),
+                ("candidate_prompt_sha256", candidate["prompt_sha256"]),
+                ("candidate_identity_format", candidate["identity_format"]),
+            ):
+                if artifacts.get(key) != expected:
+                    invalid.setdefault(str(report.get("agent")), []).append(f"selected revision mismatch: {key}")
     for report in reports[1:]:
         if report.get("judge_agent") != anchor.get("judge_agent"):
             mismatches.append(f"{report.get('agent')}:judge_agent")
@@ -134,6 +145,7 @@ def aggregate(
             for host, validation in validations.items()
         },
         "artifacts": anchor_artifacts,
+        "selected_candidate_sha256": candidate["package_sha256"] if candidate is not None else None,
         "report_hash_inputs": {host: report_hashes.get(host) for host in sorted(hosts)},
         "rollback": rollback,
         "decision": decision,
@@ -144,6 +156,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("reports", nargs="+", type=Path)
     parser.add_argument("--suite", type=Path, required=True)
+    parser.add_argument("--candidate", type=Path, required=True, help="Exact package entrypoint or instruction file")
     parser.add_argument("--required-host", action="append", dest="required_hosts", required=True)
     parser.add_argument("--mode", choices=("admission", "retirement"), default="admission")
     parser.add_argument("--rollback", required=True)
@@ -159,7 +172,8 @@ def main() -> int:
     suite_raw = args.suite.read_bytes()
     suite = json.loads(suite_raw.decode("utf-8"))
     result = aggregate(reports, args.required_hosts, args.mode, args.rollback, report_hashes,
-                       suite=suite, suite_sha256=hashlib.sha256(suite_raw).hexdigest())
+                       suite=suite, suite_sha256=hashlib.sha256(suite_raw).hexdigest(),
+                       candidate=freeze_candidate(args.candidate))
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({"decision": result["decision"], "out": str(args.out.resolve())}, indent=2))

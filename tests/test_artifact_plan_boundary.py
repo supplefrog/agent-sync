@@ -49,13 +49,13 @@ class PlanBoundary(unittest.TestCase):
                         pilot.main(['run', '--out', str(out)])
                     native.assert_not_called()
 
-    def test_valid_prepared_plan_reaches_runtime_boundary(self):
+    def test_valid_legacy_plan_still_requires_dispatch_qualification(self):
         with tempfile.TemporaryDirectory() as directory:
             out, _ = self.prepare(Path(directory))
             with patch.object(pilot, 'native_executable', side_effect=RuntimeError('offline boundary')) as native:
-                with self.assertRaisesRegex(RuntimeError, 'offline boundary'):
+                with self.assertRaisesRegex(ValueError, 'Unqualified routed artifact dispatch'):
                     pilot.main(['run', '--out', str(out)])
-                native.assert_called_once()
+                native.assert_not_called()
 
 
 if __name__ == '__main__':
