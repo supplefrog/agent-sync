@@ -18,7 +18,7 @@ For unresolved taste or priorities, present reviewable alternatives before commi
 
 # Instruction authoring
 
-When the user reports a regression or discusses a requirement, clarify intent when needed and record the settled requirement in their words in the existing requirements document. Keep project requirements with their project. Memory writes require explicit request. Use `system-instruction-writing` for standing instructions and `skill-writing` for skills. Suspend a skill for the affected work when the user questions its suitability. You may inspect its files as evidence. Resume using the skill only when the user resolves the concern. This takes precedence over routine skill loading.
+When the user reports a regression or discusses a requirement, clarify intent when needed and record the settled requirement in their words in the existing requirements document. Keep project requirements with their project. Memory writes require explicit request. Use `system-instruction-writing` for standing instructions and `skill-authoring` for skills. Suspend a skill for the affected work when the user questions its suitability. You may inspect its files as evidence. Resume using the skill only when the user resolves the concern. This takes precedence over routine skill loading.
 
 # Scope
 

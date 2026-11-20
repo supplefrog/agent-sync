@@ -24,7 +24,7 @@
   "hosts": {
     "codex": {
       "artifact_sha256": [
-        "b689e11c082aa762a21c722e916937547b4c15371f98d79bca08bf56caa6f33d"
+        "f62c16826a45a7e9145be7848e3a11c0745a3adc0a677f304c01a369ba39e7fa"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -58,7 +58,7 @@
     },
     "hermes": {
       "artifact_sha256": [
-        "c87954f42407075b8d277b14c4183a34e568ae7dd2459de8b72261ecaae6f303"
+        "2cbab437cafe9505bc3903f5117ff3f0fb336abdeb2e06bba664f31373c90b64"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -95,7 +95,7 @@
     },
     "omp": {
       "artifact_sha256": [
-        "408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12"
+        "805cf3c98b71bcb583546035a3e0c439ec33881a16d94e11e7d16e81e0169dac"
       ],
       "effective_surfaces": [
         "provider.native-system",
@@ -159,7 +159,7 @@
     },
     "skill-instructions": {
       "loading": "on-demand",
-      "owner": "skills/skill-writing",
+      "owner": "skills/skill-authoring",
       "scope": "Writing or editing skills."
     },
     "public-prose": {

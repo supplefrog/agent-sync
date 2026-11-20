@@ -1,5 +1,7 @@
 # Worktree publication
 
+When an explicit replacement uses an already admitted successor, bind that owner in the request and keep its package bytes fixed. The ready check verifies the installed successor before publication. Rollout removes the superseded owner and checks both the successor's native discovery and the retired entry's absence. Apply any selected native text changes through the owning recovery route with exact baseline hashes.
+
 Independent changes develop in separate Git worktrees based on the published commit. Only committed ready changes enter publication; development branches, indexes, and unfinished files remain untouched. Worktrees use the existing repository, remote, permissions, and reconciler rather than a separate scheduling service.
 
 Selected native text artifacts use the existing recovery owner's read-only,

@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [hermes, self-engineering, prompt, config, skills, routing]
-    related_skills: [hermes-agent, system-instruction-writing, skill-writing, cross-agent-surface-engineering]
+    related_skills: [hermes-agent, system-instruction-writing, skill-authoring, cross-agent-surface-engineering]
 ---
 
 # Hermes surface placement
@@ -20,7 +20,7 @@ Load `hermes-agent` for supported operations. Inspect the active home/profile, r
 
 - **Provider request setting:** generation mechanics such as verbosity, reasoning, service tier, JSON mode, or token limits. Display verbosity, reasoning visibility, reasoning effort, and answer length are different controls; backend acceptance does not prove the desired behavior.
 - **Task-specific auxiliary/delegation config:** routing for a defined side task. A catalog entry is not proof of account availability or usable rate limits.
-- **Skill:** a reusable task procedure, local trap, script, template, or conditional reference. Use `skill-writing` for skill edits.
+- **Skill:** a reusable task procedure, local trap, script, template, or conditional reference. Use `skill-authoring` for skill edits.
 - **SOUL.md:** instance-wide communication and judgment defaults. Author Agent Sync-managed shared rules in `surfaces/core.md`, then render. Keep useful short rules inline; do not move them solely to reduce word count.
 - **agent.system_prompt / API override:** deployment-specific or experimental text when no named personality is selected; not a second baseline communication owner.
 - **/personality / agent.personalities:** temporary or named persona overlays.

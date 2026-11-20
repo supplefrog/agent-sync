@@ -8,7 +8,7 @@ This file owns shared standing rules, model preferences, and reviewer dispatch. 
 | Host formatting, artifact links, and necessary native differences | `adapters/codex.json`, `adapters/hermes.json` |
 | Model preferences and fresh reviewer dispatch | `surfaces/core.md`; host overlays load this owner before dispatch |
 | User intent | `docs/system-requirements.md` |
-| Agent handoffs, standing rules, and skills | `prompting`, `system-instruction-writing`, and `skill-writing` |
+| Agent handoffs, standing rules, and skills | `prompting`, `system-instruction-writing`, and `skill-authoring` |
 | Unresolved Hermes placement | `skills/hermes-self-engineering` |
 | Cross-host placement, parity, deployment, and recovery | `skills/cross-agent-surface-engineering` |
 | Starting, redirecting, or reviewing a project's architecture | `skills/project-prior-art` |
@@ -91,7 +91,7 @@ Only this delimited section is projected into host overlays. Keep shared behavio
 Use plain language. In final replies, keep a sentence only if the user needs it to understand, judge, or act. Preserve material evidence, uncertainty, and blockers.
 
 ## Authoring
-When the user reports a regression or discusses a requirement, clarify intent when needed and record the settled requirement in their words in the existing requirements document. Keep project requirements with their project. Memory writes require explicit request. Use `system-instruction-writing` for standing instructions and `skill-writing` for skills.
+When the user reports a regression or discusses a requirement, clarify intent when needed and record the settled requirement in their words in the existing requirements document. Keep project requirements with their project. Memory writes require explicit request. Use `system-instruction-writing` for standing instructions and `skill-authoring` for skills.
 
 Suspend a skill for the affected work when the user questions its suitability. You may inspect its files as evidence. Resume using the skill only when the user resolves the concern. This takes precedence over routine skill loading.
 

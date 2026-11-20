@@ -105,8 +105,8 @@ def _qualify(repo, ready, options):
             raise sync_git.SyncBlocked('ready owners must already be admitted')
         import instruction_changes
         final_admission = dict(admission(exact))
-        replacements, replaced = instruction_changes.requested_replacement(candidate, repo, base, paths)
-        if replacements:
+        replacements, replaced, successor = instruction_changes.requested_replacement(candidate, repo, base, paths)
+        if replaced:
             if (owners or retirement_publication is not None
                     or any(dict(admission(commit)) not in (dict(public_admission), final_admission) for commit in commits)):
                 raise sync_git.SyncBlocked('requested replacement requires one exact include-only registry transition')
@@ -180,11 +180,21 @@ def _qualify(repo, ready, options):
         if (candidate / 'registry.json').is_file():
             reconcile.fleet.render_snapshot(candidate, reconcile._snapshot(candidate))
         checks = reconcile._run_candidate_checks(candidate, reconcile._candidate_commands(candidate, owners, selected_paths), tree)
-        if imports or replacements:
+        successor_identity = None
+        if successor:
+            successor_identity = {
+                'name': successor,
+                'retired': next(iter(replaced)),
+                'tree': sync_git.git(repo, 'rev-parse', tree + ':skills/' + successor),
+                'sha256': reconcile.fleet.directory_record(candidate / 'skills' / successor)['sha256'],
+            }
+        if imports or replaced:
             roots = {path for _, path in reconcile._destinations(candidate, options['machine'], options['skill_roots'])}
             for spec in reconcile.fleet.load_fleet(candidate)['machines'].values():
                 roots.update(reconcile.fleet.resolve_template(p) for p in spec['skill_roots'])
             for root in roots:
+                if successor and reconcile.fleet.verify_snapshot(reconcile._snapshot(candidate), root, names=[successor]):
+                    raise sync_git.SyncBlocked('requested replacement successor is not installed as reviewed: ' + successor)
                 for owner in imports | replacements:
                     if ((root / owner).exists() or (root / owner).is_symlink()
                             or owner in reconcile.fleet.load_state(root).get('skills', {})):
@@ -194,6 +204,7 @@ def _qualify(repo, ready, options):
                     raise sync_git.SyncBlocked('requested retirement has a managed destination conflict')
     return {'ready': exact, 'source_base': base, 'source_commits': commits,
             'paths': selected_paths, 'requested_imports': sorted(imports), 'omit_metadata': omit_metadata, 'target': target,
+            **({'replacement_successor': successor_identity} if successor_identity else {}),
             'source_repo': str(repo), 'common_repo': str(common), 'options': options,
             'published_repo': str(common / 'agent-signal-published'),
             'integration_repo': str(common / 'agent-signal-integration-worktree'), 'completed_checks': checks}
@@ -639,6 +650,12 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
             if configured['unavailable_transport']:
                 raise sync_git.SyncBlocked('native execution transport unavailable for configured machine: ' + ', '.join(configured['unavailable_transport']))
             with fleet._path_locks([snapshot, root]):
+                successor = journal.get('receipt', {}).get('replacement_successor')
+                if successor:
+                    name = successor['name']
+                    if (manifest['skills'].get(name, {}).get('sha256') != successor['sha256']
+                            or fleet.verify_snapshot(snapshot, root, names=[name])):
+                        raise sync_git.SyncBlocked('requested replacement successor changed before removal: ' + name)
                 actions = fleet.plan_snapshot(snapshot, root)
                 protected = _unpublished_owner_updates(actions, fleet.load_state(root), snapshot,
                     journal.get('receipt', {}).get('options', {}).get('adopt', ()))
@@ -648,6 +665,8 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
                 if conflicts:
                     raise sync_git.SyncBlocked('managed drift/unmanaged collision: ' + ', '.join(conflicts))
                 selected = set(journal.get('receipt', {}).get('options', {}).get('adopt', ()))
+                if successor:
+                    selected.add(successor['name'])
                 paths = journal.get('receipt', {}).get('paths', ())
                 selected.update(name for name in manifest['skills']
                                 if any(path.startswith('skills/' + name + '/') for path in paths))
@@ -669,6 +688,10 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
                 # exact bytes. That cannot remove their named native-body check.
                 state['required'] = sorted(set(state['required']) | selected)
                 mutations = [a for a in actions if a['action'] != 'unchanged']
+                if successor and any(a['name'] == successor['retired'] and a['action'] == 'remove' for a in mutations):
+                    observed = {host: verify_native(host, root, [successor['name']], []) for host in state['hosts']}
+                    if not all(check.get('verified') is True for check in observed.values()):
+                        raise sync_git.SyncBlocked('requested replacement successor was not discovered before removal')
                 installed_state = fleet.load_state(root)
                 metadata_stale = (installed_state.get('manifest_sha256') != digest or
                                   installed_state.get('source_snapshot') != str(snapshot.resolve()))
@@ -684,7 +707,14 @@ def _rollout_targets(published, journal, save, *, verify_native=None):
                         state.update(backup=str(backup), before_state=fleet.state_identity(root), planned=actions)
                         save()
                     state['phase'] = 'applying'; journal['deployment_started'] = True; save()
-                    fleet.apply_snapshot(snapshot, root, expected_state=fleet.state_identity(root))
+                    apply_options = {}
+                    if successor:
+                        name = successor['name']
+                        identity = fleet.path_identity(root / name)
+                        if fleet.verify_snapshot(snapshot, root, names=[name]):
+                            raise sync_git.SyncBlocked('requested replacement successor changed during native verification')
+                        apply_options['unchanged_owner'] = (name, identity)
+                    fleet.apply_snapshot(snapshot, root, expected_state=fleet.state_identity(root), **apply_options)
                     # Keep successful installation independent of a later
                     # readback/native failure changing the reporting phase.
                     state['installation_complete'] = True; save()
@@ -1603,12 +1633,16 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
         journal_path = common / 'agent-signal-integration.json'
         observed = _read(journal_path)
         receipt = _ready_receipt(repo, exact, options, observed, continue_published)
+        if source_only and receipt.get('replacement_successor'):
+            raise sync_git.SyncBlocked('requested replacement of an installed skill requires configured rollout')
         with sync_git.lock(repo, timeout=120):
             target = sync_git.destination(primary)
             journal = _read(journal_path)
             if journal and journal.get('phase') in {'releasing', 'released'}:
                 raise sync_git.SyncBlocked('integration release is pending; resume its exact attempt first')
             if continue_published is not None:
+                if journal and journal.get('receipt', {}).get('replacement_successor'):
+                    raise sync_git.SyncBlocked('resume the exact installed-skill replacement before publishing other changes')
                 if journal and journal.get('continuation_request_sha256') == _canonical_hash(continue_published):
                     if journal['receipt'] != receipt:
                         raise sync_git.SyncBlocked('resumed successor qualification changed')
@@ -1664,6 +1698,9 @@ def ready_sync(repo, ready, *, adopt=(), include=(), machine='local-windows',
                     raw_receipt = dict(receipt, ready=ready)
                     composed = _stage_raw_composition(lane, base, raw_receipt, journal,
                         lambda: _atomic(journal_path, journal))
+                    successor = receipt.get('replacement_successor')
+                    if successor and sync_git.git(lane, 'rev-parse', composed + ':skills/' + successor['name']) != successor['tree']:
+                        raise sync_git.SyncBlocked('requested replacement successor changed upstream: ' + successor['name'])
                     files = sync_git.identities(lane, sync_git.changed(lane))
                     if files != journal['composition_files']:
                         raise sync_git.SyncBlocked('raw composition contains unexpected source changes')

@@ -243,12 +243,10 @@
     {
       "id": "skill-writing",
       "owner": "skills/skill-writing",
-      "status": "admitted",
-      "selection_state": "selected",
-      "selection_evidence": [
-        "evals/results/skill-writing-source-acceptance-20261112.json"
-      ],
-      "selection_reason": "User-directed replacement, with a separate trigger and a single focused instruction.",
+      "status": "retired",
+      "selection_state": "unresolved",
+      "selection_evidence": [],
+      "selection_reason": "User-directed consolidation into skill-authoring. The installed successor already contains the same project requirements, observed-gap and verification guidance.",
       "purpose": {
         "objective": "Write the shortest skill that carries the requested outcome.",
         "added_value": "Carries a user requirement into the shared host catalog.",
@@ -442,7 +440,7 @@
     },
     {
       "path": "skills/skill-creator",
-      "replacement": "skills/skill-writing",
+      "replacement": "skills/skill-authoring",
       "reason": "The user selected a dedicated skill-writing owner. Codex retains native scaffolding."
     },
     {

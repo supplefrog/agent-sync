@@ -38,6 +38,7 @@ class RequestedImportTests(unittest.TestCase):
                 path = repo / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(json.dumps(value), encoding='utf-8')
+            (repo / 'AGENTS.md').write_bytes(b'Use `first` for writing.\n')
             self.git(repo, 'add', '.')
             self.git(repo, 'commit', '-m', 'baseline intent')
             self.git(repo, 'push', 'origin', 'main')
@@ -104,6 +105,71 @@ class RequestedImportTests(unittest.TestCase):
             for name in ('first', 'second'):
                 self.assertEqual((worker / 'skills' / name / 'SKILL.md').read_bytes(),
                                  (live / name / 'SKILL.md').read_bytes())
+
+            baseline_commit = result['commit']
+            self.git(worker, 'reset', '--hard', baseline_commit)
+            registry = json.loads((worker / 'registry.json').read_bytes())
+            next(item for item in registry['skills'] if item['name'] == 'first')['status'] = 'retired'
+            (worker / 'registry.json').write_text(json.dumps(registry), encoding='utf-8')
+            owners = worker / 'contracts/ownership.json'
+            data = json.loads(owners.read_bytes())
+            next(item for item in data['capabilities'] if item['id'] == 'first')['status'] = 'retired'
+            owners.write_text(json.dumps(data), encoding='utf-8')
+            (worker / 'skills/first/SKILL.md').unlink()
+            (worker / 'AGENTS.md').write_bytes(b'Use `second` for writing.\n')
+            self.assertFalse(changes._replacement_instruction(
+                'AGENTS.md', b'Choose first result.', b'Choose second result.', set(), {'first'}, 'second'))
+            for name in changes.CONTRACTS:
+                (worker / name).write_text('Use the existing second skill.', encoding='utf-8')
+            self.git(worker, 'add', '.')
+            paths = self.git(worker, 'diff', '--cached', '--name-only').splitlines()
+            row['requested_replacement'] = {'retire': ['first'], 'admit': [], 'use_existing': 'second'}
+            row['artifacts'] = {
+                name: {'before_sha256': changes._hash(changes._before(worker, baseline_commit, name)),
+                       'after_sha256': changes._hash((worker / name).read_bytes() if (worker / name).is_file() else None)}
+                for name in paths}
+            row['obligations'] = [
+                {'path': name, 'disposition': 'removed' if data['after_sha256'] == 'absent' else 'updated',
+                 'reason': 'Selected consolidation'} for name, data in row['artifacts'].items()]
+            (worker / receipt).write_text(json.dumps({'change_reconciliation': [row]}), encoding='utf-8')
+            self.git(worker, 'add', '--', receipt)
+            self.git(worker, 'commit', '-m', 'Replace first with already admitted second')
+            installed = live / 'second/SKILL.md'
+            reviewed = installed.read_bytes()
+            installed.write_bytes(reviewed + b'\nLocal drift\n')
+            failed = self.run_ready(adapter, worker, 'HEAD', live, include=[*paths, receipt])
+            self.assertIn('successor is not installed as reviewed: second', failed['reason'])
+            self.assertTrue((live / 'first/SKILL.md').is_file())
+            self.assertEqual(baseline_commit, self.git(remote, 'rev-parse', 'main'))
+            installed.write_bytes(reviewed)
+            source_only = self.run_ready(adapter, worker, 'HEAD', live, include=[*paths, receipt], source_only=True)
+            self.assertIn('requires configured rollout', source_only['reason'])
+            self.assertEqual(baseline_commit, self.git(remote, 'rev-parse', 'main'))
+            with patch('install.verify_fleet_discovery', return_value={'verified': False}):
+                blocked_native = self.run_ready(adapter, worker, 'HEAD', live, include=[*paths, receipt])
+            self.assertEqual('configured-rollout', blocked_native['failed_step'], blocked_native)
+            self.assertTrue((live / 'first/SKILL.md').is_file())
+            fleet_api = adapter.reconcile.fleet
+            apply_snapshot = fleet_api.apply_snapshot
+            moved = live.parent / 'moved-second'
+
+            def move_successor(*args, **kwargs):
+                installed.parent.rename(moved)
+                return apply_snapshot(*args, **kwargs)
+
+            with patch.object(fleet_api, 'apply_snapshot', side_effect=move_successor):
+                blocked_race = self.run_ready(adapter, worker, 'HEAD', live, include=[*paths, receipt])
+            self.assertIn('required installed successor changed before apply: second',
+                          blocked_race['targets'][str(live)]['reason'])
+            self.assertTrue((live / 'first/SKILL.md').is_file())
+            moved.rename(installed.parent)
+            result = self.run_ready(adapter, worker, 'HEAD', live, include=[*paths, receipt])
+            self.assertEqual('synced', result['result'], result)
+            self.assertFalse((live / 'first').exists())
+            self.assertEqual(reviewed, installed.read_bytes())
+            target = result['targets'][str(live)]
+            self.assertIn('second', target['required'])
+            self.assertIn('first', target['retired'])
 
     def prepare(self, root, insert_license=False):
         repo, live, remote = self.setup_git(root)

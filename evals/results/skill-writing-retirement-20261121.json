@@ -1,0 +1,335 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-21",
+  "capability": "skill-writing",
+  "status": "source-checked-requested-consolidation",
+  "retained_skill": "skill-authoring",
+  "retained_entry_sha256": "badf856ff05dc2993780cf38e55097e8cca4423223c41fc023809bd55e0c9af6",
+  "recovery_commit": "395d074aa8d227c9cf00814702e14aac469f21ce",
+  "change_reconciliation": [
+    {
+      "requested_replacement": {
+        "retire": [
+          "skill-writing"
+        ],
+        "admit": [],
+        "use_existing": "skill-authoring"
+      },
+      "requirement_change": true,
+      "requirement_reason": "Remove the duplicate authoring skill and route its existing consumers to Skill Creator.",
+      "authority": "The user explicitly requested removing skill-writing and fixing the pointers.",
+      "checks": "The ready-sync regression blocks a changed installed successor and succeeds with its reviewed bytes. It also preserves the old skill on a failed native check or a missing successor at transaction entry. The three generated pointers and complete recovery manifest verified. The scoped restore preview selected exactly the old native instructions and reported no conflicts.",
+      "outcome_review": {
+        "expected": "Skill Creator continues to cover the old instructions. Fresh hosts offer the existing successor and omit the retired skill.",
+        "observed": "The existing installed entrypoint matches source and covers the project requirements, observed gap, minimal correction and verification rules. The fixture also verified retirement and successor discovery scope.",
+        "evidence": "The file hashes bind the pointer updates and exact prior recovery. The ready-sync fixture and native restore preview checked the applicable mechanisms.",
+        "limitations": "This is a user-directed removal of overlapping guidance. The previous matched trial tied and supplies no general quality advantage claim."
+      },
+      "framework_review": {
+        "selection_reason": "The retired instruction-authoring entry's authoring pointer changes to the admitted successor.",
+        "unaffected_reason": "Prompt handoffs, standing instructions and the Skill Creator workflow keep their current owners and content.",
+        "affected": [
+          "skills/prompting/SKILL.md",
+          "skills/skill-authoring/SKILL.md",
+          "skills/system-instruction-writing/SKILL.md"
+        ],
+        "checks": "Inspected the three named owners and verified the native pointer projections."
+      },
+      "artifacts": {
+        "AGENTS.md": {
+          "before_sha256": "43b69dec8150fc73f7fcec99aa45036e556e586943af7368d054ba964959f1ed",
+          "after_sha256": "50dba7c4a7f63d90dd959c46d3197635851f2d0a5a0d84d00cf0f0f9acfd8ea4"
+        },
+        "contracts/ownership.json": {
+          "before_sha256": "b52ebf3cc8639e430d3900cf99d177f1abaabb982ff246cdbe715458c9453294",
+          "after_sha256": "e88f2f8ec0909711058c1d128528834f2b8e959c33793f7fdbd0de1ab827d01f"
+        },
+        "contracts/surface-matrix.json": {
+          "before_sha256": "819c6857a7277a07094fe3ce3d9ab467e4ed28141260fc6d5cf7adcee3da58cf",
+          "after_sha256": "7f0c3bca433084287a27d2dc199324f5f9c5eb5936f7a55c58dbfe5b9e62b774"
+        },
+        "docs/architecture.md": {
+          "before_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53",
+          "after_sha256": "712a5917eac85da3886e846b93f1d1f107dcf15eb476c608fbba1947cb9d9d53"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/fleet.md": {
+          "before_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518",
+          "after_sha256": "6ed2db4ea260364c371a4d8ba86502d2559483776db7cbf1e7dafec65791b518"
+        },
+        "docs/learning-and-taste-update.md": {
+          "before_sha256": "56fa9c8e775a074772f9abeaf0c378c45015fdff99f2206c3a0c014ef2d5892e",
+          "after_sha256": "96a8a05af7cde49ad7db7681d2a4a9e69bb010c385586b98da7d99b404a66ee9"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "12290f71746d3aae6f11c3a10a43c607888d7a0c4e0995bb21a51057972a9081",
+          "after_sha256": "b2b64d47c30fd695a60426365e45878440b0d8bbfe570b45ab6fc0f9fa5deb65"
+        },
+        "docs/routing-decision-interface.md": {
+          "before_sha256": "2ecd7f7ce357ca4b8fc0e5c4b2e5b815639d6973cf6bd444b2b9fa218a9fa811",
+          "after_sha256": "2ecd7f7ce357ca4b8fc0e5c4b2e5b815639d6973cf6bd444b2b9fa218a9fa811"
+        },
+        "docs/shared-memory-decision.md": {
+          "before_sha256": "eae6406fb5b465afe5eacdde6d211b96727fc4942c59a77e0db0bc5ada2650e4",
+          "after_sha256": "eae6406fb5b465afe5eacdde6d211b96727fc4942c59a77e0db0bc5ada2650e4"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "c35a853609795b2121a5a1adf6ddb19640fcbc5b9e3b42553314e71eaa526bef",
+          "after_sha256": "08cf80bb15c1e462d9a2e34cfbe5ede9d13a175e60e9052ec58610e57a355b15"
+        },
+        "docs/worktree-publication.md": {
+          "before_sha256": "dbbbd528e891fa8970c2fe89b7dc91e6fdcdaba6452961b5c9fed6a183ddd9a3",
+          "after_sha256": "2d137a4a480718373ce43731bf43eefeec8ce36d30e6b58c308fc194fb56bf30"
+        },
+        "host-deltas.json": {
+          "before_sha256": "c07c7018a291396f97448c21f6d8d20245bb6eb0bda02434a05cb7b240c5b5dd",
+          "after_sha256": "8ecb8b882b24bfbd63f0447fc26280ec0fd307464d71b45d313da080d63869ef"
+        },
+        "profiles/current-observed-defaults.json": {
+          "before_sha256": "e673f4122d864175cc28ae76c2365e7456f24b339dbba1d9c2062132f0761321",
+          "after_sha256": "dfef48f144757c4441433ad75fcc6937a336a64765fa4a9090dcf00406606004"
+        },
+        "recovery.json": {
+          "before_sha256": "94975f25a1e5d60a0a97c94c6fa7b47272c98f225386c7eb790e9c264246f0a2",
+          "after_sha256": "7f8e7b47d14bc40d1cdd4a8ec4e924e52d1a48b70bb54805f64b78a60e16f2ee"
+        },
+        "recovery/current/hosts/codex/AGENTS.md": {
+          "before_sha256": "b689e11c082aa762a21c722e916937547b4c15371f98d79bca08bf56caa6f33d",
+          "after_sha256": "f62c16826a45a7e9145be7848e3a11c0745a3adc0a677f304c01a369ba39e7fa"
+        },
+        "recovery/current/hosts/hermes/SOUL.md": {
+          "before_sha256": "c87954f42407075b8d277b14c4183a34e568ae7dd2459de8b72261ecaae6f303",
+          "after_sha256": "2cbab437cafe9505bc3903f5117ff3f0fb336abdeb2e06bba664f31373c90b64"
+        },
+        "recovery/current/hosts/omp/AGENTS.md": {
+          "before_sha256": "408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12",
+          "after_sha256": "805cf3c98b71bcb583546035a3e0c439ec33881a16d94e11e7d16e81e0169dac"
+        },
+        "recovery/current/manifest.json": {
+          "before_sha256": "d17f3ff850aa00eb89b2463f69a0e08bffffc46f8734f12eb2cde502593c3c81",
+          "after_sha256": "e364869a6c7a8a1de12c2fbeac2e08f64f3035115a15ddec80de89cf0726aa28"
+        },
+        "registry.json": {
+          "before_sha256": "63604d04ab5a142a9d763a6309fbf60195a5ccc02bf6bdab915a0bca86b82f07",
+          "after_sha256": "9c146f84a52bd3f4ab9d8d0849e5c4b737b0136350c70c46939a94a3750d2341"
+        },
+        "skills/cross-agent-surface-engineering/SKILL.md": {
+          "before_sha256": "69b95df5c7585530b390ea9508f76c85d06e863cee5e9a6de3ef347aed3c9c30",
+          "after_sha256": "69b95df5c7585530b390ea9508f76c85d06e863cee5e9a6de3ef347aed3c9c30"
+        },
+        "skills/fleet-sync/SKILL.md": {
+          "before_sha256": "bc7a7ad0ea46ecac937925763a524494c1a989645aaf7e360f24b37584e7a620",
+          "after_sha256": "bc7a7ad0ea46ecac937925763a524494c1a989645aaf7e360f24b37584e7a620"
+        },
+        "skills/global-learning-intake/SKILL.md": {
+          "before_sha256": "1f1fde48bee9ae82d64d8e7ac43c44b46cca5798768eef580730895ed3619c47",
+          "after_sha256": "4230cade6ae106895418c3f50e50329979d42924036d13a4c4e28828854f8e4c"
+        },
+        "skills/hermes-self-engineering/SKILL.md": {
+          "before_sha256": "eefe4822e3ae2efb5c68f2d2829309f27461801f78ffb80ea5c9fe06214e34de",
+          "after_sha256": "724fae3ccf38b518798637f5498447cfc9bb01f355d9aad0af7d90eb11f38ad7"
+        },
+        "skills/instruction-authoring/SKILL.md": {
+          "before_sha256": "37d957962c5bc100ea961db6fa906a9c4bc91c5b430b766728dddc7f661ef56d",
+          "after_sha256": "1b7cbb3b5fef77dc8a2d01d72cd00f8f00448532f2ff26dd533bfa75e8d4d973"
+        },
+        "skills/prompting/SKILL.md": {
+          "before_sha256": "1ac7f4319268a07f763d252909f28717614284558897b5161cd7dabb59f2d8ee",
+          "after_sha256": "1ac7f4319268a07f763d252909f28717614284558897b5161cd7dabb59f2d8ee"
+        },
+        "skills/skill-authoring/SKILL.md": {
+          "before_sha256": "badf856ff05dc2993780cf38e55097e8cca4423223c41fc023809bd55e0c9af6",
+          "after_sha256": "badf856ff05dc2993780cf38e55097e8cca4423223c41fc023809bd55e0c9af6"
+        },
+        "skills/skill-writing/SKILL.md": {
+          "before_sha256": "ff219f9f2bce9710a5a4d9078dd5260e58b417b40550145b321f483785492c28",
+          "after_sha256": "absent"
+        },
+        "skills/system-instruction-writing/SKILL.md": {
+          "before_sha256": "818c9f2303c864f280a245b81e2890fc2163f98a412be357d59d92572dbed857",
+          "after_sha256": "818c9f2303c864f280a245b81e2890fc2163f98a412be357d59d92572dbed857"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "2206c13551d53bbe22f2ea118a7953683f84e0f380b339e7e0d7a9ecda7270dc",
+          "after_sha256": "fef3c7be64cc86b6596e3daa3628b50f65852edeb407bfe3b5efc3590b3f597f"
+        },
+        "tests/test_requested_import.py": {
+          "before_sha256": "df8660287385762d6b93e1eb4b070fb91f766754dbd679f64e289922ba6a4d2c",
+          "after_sha256": "fe749882e76e4b2b99b111a150206866a865630acae456ce0b21a3528e3d8796"
+        },
+        "tools/fleet.py": {
+          "before_sha256": "a07a2e2d2c40bc044159c29d6bfa433633fc79ccb6de8aa1c706e152ef351d00",
+          "after_sha256": "579261c1db4b0352c8cc2642628865851aa68ebd269c022340feb29c2e8ea9d2"
+        },
+        "tools/instruction_changes.py": {
+          "before_sha256": "673bff069419a84f8084244d42c570416d7d1f13ffcb4dda784aa661ba10e727",
+          "after_sha256": "abef99de5df1b0fe22338f03ae369d983e37b6470e9e051523d7bb8bfb9bfcc9"
+        },
+        "tools/worktree_sync.py": {
+          "before_sha256": "89e27e3a87570c3995e3087147d2a1b976b7c02201dc08cf913a7ddd09bf1084",
+          "after_sha256": "42408a30bba85faccb7f5d679008cd31162eda6955c013d801ec0a4cd9e3513b"
+        }
+      },
+      "obligations": [
+        {
+          "path": "AGENTS.md",
+          "disposition": "updated",
+          "reason": "Route repository skill edits to Skill Creator."
+        },
+        {
+          "path": "contracts/ownership.json",
+          "disposition": "updated",
+          "reason": "Record the retired duplicate and the existing authoring owner."
+        },
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "updated",
+          "reason": "Replace the former authoring owner in the capability maps."
+        },
+        {
+          "path": "docs/architecture.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "docs/fleet.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "docs/learning-and-taste-update.md",
+          "disposition": "updated",
+          "reason": "Point the existing writing guidance to Skill Creator."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Record the transferred guidance and the evidence boundary."
+        },
+        {
+          "path": "docs/routing-decision-interface.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "docs/shared-memory-decision.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Record the request to remove the duplicate and switch its pointers."
+        },
+        {
+          "path": "docs/worktree-publication.md",
+          "disposition": "updated",
+          "reason": "Document the reviewed replacement with an installed successor."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Refresh the native instruction and admitted fleet catalog hashes."
+        },
+        {
+          "path": "profiles/current-observed-defaults.json",
+          "disposition": "updated",
+          "reason": "Point the skill-writing task class to Skill Creator."
+        },
+        {
+          "path": "recovery.json",
+          "disposition": "updated",
+          "reason": "Allow exactly the three prior native text byte identities for scoped restore."
+        },
+        {
+          "path": "recovery/current/hosts/codex/AGENTS.md",
+          "disposition": "updated",
+          "reason": "Render the changed authoring route for Codex."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/SOUL.md",
+          "disposition": "updated",
+          "reason": "Render the changed authoring route for Hermes."
+        },
+        {
+          "path": "recovery/current/hosts/omp/AGENTS.md",
+          "disposition": "updated",
+          "reason": "Render the changed authoring route for OMP."
+        },
+        {
+          "path": "recovery/current/manifest.json",
+          "disposition": "updated",
+          "reason": "Bind the three native text files and selected recovery-policy hashes."
+        },
+        {
+          "path": "registry.json",
+          "disposition": "updated",
+          "reason": "Retire only skill-writing."
+        },
+        {
+          "path": "skills/cross-agent-surface-engineering/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "skills/fleet-sync/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "skills/global-learning-intake/SKILL.md",
+          "disposition": "updated",
+          "reason": "Replace the related authoring skill pointer."
+        },
+        {
+          "path": "skills/hermes-self-engineering/SKILL.md",
+          "disposition": "updated",
+          "reason": "Route skill changes to the existing authoring workflow."
+        },
+        {
+          "path": "skills/instruction-authoring/SKILL.md",
+          "disposition": "updated",
+          "reason": "Fix the replacement pointer in the retired predecessor."
+        },
+        {
+          "path": "skills/prompting/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "skills/skill-authoring/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "skills/skill-writing/SKILL.md",
+          "disposition": "removed",
+          "reason": "Remove the duplicate instruction source. Git retains the exact prior bytes."
+        },
+        {
+          "path": "skills/system-instruction-writing/SKILL.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent owner supports the same workflow and requires no content change."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Switch the authoring owner and shared standing rule."
+        },
+        {
+          "path": "tests/test_requested_import.py",
+          "disposition": "updated",
+          "reason": "Exercise the real ready path and installed successor drift rejection."
+        }
+      ]
+    }
+  ]
+}

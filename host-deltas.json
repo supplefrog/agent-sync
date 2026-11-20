@@ -172,7 +172,7 @@
         "reference": "hermes:standing-instructions"
       },
       "source_identity": "recovery-artifact:hermes:standing-instructions",
-      "version_or_hash": "sha256:c87954f42407075b8d277b14c4183a34e568ae7dd2459de8b72261ecaae6f303"
+      "version_or_hash": "sha256:2cbab437cafe9505bc3903f5117ff3f0fb336abdeb2e06bba664f31373c90b64"
     },
     {
       "category": "instructions",
@@ -195,7 +195,7 @@
         "reference": "codex:global-instructions"
       },
       "source_identity": "recovery-artifact:codex:global-instructions",
-      "version_or_hash": "sha256:b689e11c082aa762a21c722e916937547b4c15371f98d79bca08bf56caa6f33d"
+      "version_or_hash": "sha256:f62c16826a45a7e9145be7848e3a11c0745a3adc0a677f304c01a369ba39e7fa"
     },
     {
       "category": "instructions",
@@ -218,7 +218,7 @@
         "reference": "omp:global-instructions"
       },
       "source_identity": "recovery-artifact:omp:global-instructions",
-      "version_or_hash": "sha256:408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12"
+      "version_or_hash": "sha256:805cf3c98b71bcb583546035a3e0c439ec33881a16d94e11e7d16e81e0169dac"
     },
     {
       "category": "hook",
@@ -484,7 +484,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:518f6a8a64adfc4b315b2fc2ce2a3c4d76c9b56ba7faea94a8badf05fecb6677"
+      "version_or_hash": "sha256:544383701bfb115bde5c9a4d9e952ae3e6d2b37d773c0b77266067c67cfe9e1f"
     },
     {
       "category": "native-skill",
@@ -507,7 +507,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:518f6a8a64adfc4b315b2fc2ce2a3c4d76c9b56ba7faea94a8badf05fecb6677"
+      "version_or_hash": "sha256:544383701bfb115bde5c9a4d9e952ae3e6d2b37d773c0b77266067c67cfe9e1f"
     },
     {
       "category": "native-skill",
@@ -530,7 +530,7 @@
         "reference": "rendered admitted fleet"
       },
       "source_identity": "fleet:rendered admitted fleet",
-      "version_or_hash": "sha256:518f6a8a64adfc4b315b2fc2ce2a3c4d76c9b56ba7faea94a8badf05fecb6677"
+      "version_or_hash": "sha256:544383701bfb115bde5c9a4d9e952ae3e6d2b37d773c0b77266067c67cfe9e1f"
     },
     {
       "category": "curator",

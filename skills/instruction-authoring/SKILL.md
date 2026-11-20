@@ -4,4 +4,4 @@ description: Retired.
 license: MIT
 ---
 
-Replaced by prompting, system-instruction-writing, and skill-writing.
+Replaced by prompting, system-instruction-writing, and skill-authoring.

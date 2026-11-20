@@ -210,9 +210,11 @@ def render_snapshot(repo: Path, output: Path, *, names: Collection[str] | None =
 
 
 def apply_snapshot(snapshot: Path, destination: Path, *, names: Collection[str] | None = None,
-                   expected_state: tuple[Any, ...] | None = None) -> list[dict[str, str]]:
+                   expected_state: tuple[Any, ...] | None = None,
+                   unchanged_owner: tuple[str, tuple[Any, ...]] | None = None) -> list[dict[str, str]]:
     with _path_locks([snapshot, destination]):
-        return _apply_snapshot_unlocked(snapshot, destination, names=names, expected_state=expected_state)
+        return _apply_snapshot_unlocked(snapshot, destination, names=names, expected_state=expected_state,
+                                        unchanged_owner=unchanged_owner)
 
 
 def _source_origin_repository(snapshot: Path) -> tuple[Path, Path]:
@@ -477,7 +479,8 @@ def plan_snapshot(snapshot: Path, destination: Path, *, manifest: dict[str, Any]
 
 
 def _apply_snapshot_unlocked(snapshot: Path, destination: Path, *, names: Collection[str] | None = None,
-                   expected_state: tuple[Any, ...] | None = None) -> list[dict[str, str]]:
+                   expected_state: tuple[Any, ...] | None = None,
+                   unchanged_owner: tuple[str, tuple[Any, ...]] | None = None) -> list[dict[str, str]]:
     """Apply selected owners; guard planned identities and preserve concurrent edits."""
     manifest_raw = (snapshot / MANIFEST_FILE).read_bytes()
     manifest = load_manifest(snapshot, captured=manifest_raw)
@@ -494,6 +497,11 @@ def _apply_snapshot_unlocked(snapshot: Path, destination: Path, *, names: Collec
     planned_names = scope if scope is not None else set(manifest["skills"]) | set(initial_state["skills"])
     guards = {name: path_identity(destination / name) for name in planned_names}
     actions = plan_snapshot(snapshot, destination, manifest=manifest, names=scope)
+    if unchanged_owner is not None:
+        name, identity = unchanged_owner
+        if guards.get(name) != identity or not any(
+                item["name"] == name and item["action"] == "unchanged" for item in actions):
+            raise RuntimeError("required installed successor changed before apply: " + name)
     conflicts = [item["name"] for item in actions if item["action"] == "conflict"]
     if conflicts:
         raise RuntimeError("managed skill drift or unmanaged collision: " + ", ".join(conflicts))

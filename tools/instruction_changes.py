@@ -1423,9 +1423,9 @@ def _loading_review(candidate, source, base, owner, row, changed):
 
 
 def requested_replacement(candidate, source, base, paths):
-    """Read the existing reconciliation record for an exact operator-directed split."""
+    """Read the reconciliation record for an exact operator-directed replacement."""
     if 'registry.json' not in paths:
-        return set(), set()
+        return set(), set(), None
     rows = []
     for name in sorted(paths):
         if name.startswith('evals/results/') and name.endswith('.json') and (candidate / name).is_file():
@@ -1434,7 +1434,7 @@ def requested_replacement(candidate, source, base, paths):
                 rows.extend((name, row) for row in document.get('change_reconciliation', [])
                             if isinstance(row, dict) and 'requested_replacement' in row)
     if not rows:
-        return set(), set()
+        return set(), set(), None
     if len(rows) != 1:
         raise sync_git.SyncBlocked('requested replacement requires one reconciliation record')
     receipt, row = rows[0]
@@ -1447,14 +1447,27 @@ def requested_replacement(candidate, source, base, paths):
     added = after.keys() - before.keys()
     retired = {name for name, entry in before.items()
                if entry.get('status') == 'admitted' and after.get(name) == {**entry, 'status': 'retired'}}
-    if (row.get('requirement_change') is not True or old != new or len(retired) != 1 or not added
+    expected_selection = {'retire': sorted(retired), 'admit': sorted(added)}
+    successor = selection.get('use_existing') if isinstance(selection, dict) else None
+    if successor is not None:
+        if (not isinstance(successor, str) or not re.fullmatch(r'[a-z0-9][a-z0-9-]*', successor)
+                or added or successor in retired or before.get(successor, {}).get('status') != 'admitted'
+                or any(name.startswith('skills/' + successor + '/') for name in paths)
+                or validate.validate_skill(candidate / 'skills' / successor / 'SKILL.md', expected_name=successor)):
+            raise sync_git.SyncBlocked('requested replacement requires an unchanged admitted successor')
+        expected_selection['use_existing'] = successor
+    if (row.get('requirement_change') is not True or old != new or len(retired) != 1 or not (added or successor)
             or len(before) != len(old_entries) or len(after) != len(new_entries)
-            or selection != {'retire': sorted(retired), 'admit': sorted(added)}
+            or selection != expected_selection
             or any(after.get(name) != entry for name, entry in before.items() if name not in retired)
             or any(after[name].get('status') != 'admitted' for name in added)):
         raise sync_git.SyncBlocked('requested replacement changes an unselected registry owner or lifecycle')
     for name in added | retired:
         package = candidate / 'skills' / name
+        if successor and name in retired:
+            if package.exists() or package.is_symlink():
+                raise sync_git.SyncBlocked('requested replacement must remove the superseded package: ' + name)
+            continue
         if (not re.fullmatch(r'[a-z0-9][a-z0-9-]*', name)
                 or {path.relative_to(package).as_posix() for path in package.rglob('*') if not path.is_dir()} != {'SKILL.md'}
                 or validate.validate_skill(package / 'SKILL.md', expected_name=name)):
@@ -1476,14 +1489,24 @@ def requested_replacement(candidate, source, base, paths):
     if (bound != changed or not (CONTRACTS | {'registry.json', 'contracts/ownership.json'}) <= changed.keys()
             or any('skills/' + name + '/SKILL.md' not in changed for name in added | retired)):
         raise sync_git.SyncBlocked('requested replacement must bind the complete changed selection and intent')
-    return set(added), retired
+    return set(added), retired, successor
 
 
-def _replacement_instruction(name, old, new, added, retired):
+def _replacement_instruction(name, old, new, added, retired, successor):
     if name.startswith('skills/') and name.split('/')[1] in added | retired:
         return True
     if old is None or new is None:
         return False
+    if successor:
+        # Preserve prose and policy outside the explicitly named skill routes.
+        token = re.escape(next(iter(retired)).encode())
+        route = rb'(?<=`)' + token + rb'(?=`)|(?<=skills/)' + token + rb'(?=/)'
+        related = rb'(?<![\w-])' + token + rb'(?![\w-])'
+        projected = b'\n'.join(
+            re.sub(related if re.match(rb'\s*related_skills:\s*\[|Replaced by ', line) else route,
+                   successor.encode(), line)
+            for line in old.replace(b'\r\n', b'\n').split(b'\n'))
+        return projected == new.replace(b'\r\n', b'\n')
     if name in ADAPTERS:
         before, after = json.loads(old), json.loads(new)
         before['instructions']['projection'] = after['instructions']['projection']
@@ -1506,7 +1529,7 @@ def _replacement_instruction(name, old, new, added, retired):
 def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, retirement_publication=None,
           ready=False):
     paths = set(paths)
-    added, retired = requested_replacement(candidate, source, base, paths) if ready else (set(), set())
+    added, retired, successor = requested_replacement(candidate, source, base, paths) if ready else (set(), set(), None)
     old_index = _before(source, base, INDEX)
     current = candidate / INDEX
     before = json.loads(old_index) if old_index is not None else {}
@@ -1568,7 +1591,7 @@ def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, r
                 raise sync_git.SyncBlocked('unowned standing instruction source: ' + name)
         elif path.name.upper() in {'AGENTS.MD', 'SOUL.MD', 'RULES.MD', 'SKILL.MD'}:
             owner = native_owners.get(name, owners.get(name))
-            if added and name == 'AGENTS.md':
+            if retired and name == 'AGENTS.md':
                 owner = name  # Repository-local routing for the replaced skill.
             if not owner:
                 raise sync_git.SyncBlocked('unowned instruction source: ' + name)
@@ -1583,11 +1606,11 @@ def check(candidate: Path, source: Path, base: str, paths, retirement=None, *, r
                     continue
                 required[name] = (owner, _hash(old), _hash(new))
     dependencies = _dependency_review(candidate, source, base, paths, required)
-    if added:
+    if retired:
         required = {name: item for name, item in required.items()
                     if not _replacement_instruction(name, _before(source, base, name),
                         (candidate / name).read_bytes() if (candidate / name).is_file() else None,
-                        added, retired)}
+                        added, retired, successor)}
     if not required:
         return dependencies
     records = []
