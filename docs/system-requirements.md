@@ -224,7 +224,7 @@ Support “any permutation of Hermes Codex or OMP” without writing a separate 
 
 The shared release evaluator must also accept OMP generation so the same qualification can cover all three agents.
 
-“T3 can use its own cross provider delegation and Paseo’s can be the fallback for other agents.” Dynamic Workflows should work with both native and shared dispatch. Start the configured local dispatcher on demand when standalone work needs it. Keep the same workflow and approval contract through either dispatcher.
+“Let’s use Paseo’s adapter as default on T3 too.” Prefer the configured local Paseo OMP worker for eligible Dynamic Workflows in T3 when its workspace matches and its approval mode meets the task's requirements. Use native T3 delegation if Paseo is unavailable or ineligible, before binding the worker. Dynamic Workflows support both routes. Start the configured local dispatcher on demand when standalone work needs it. Keep T3’s standard ACP connection for direct OMP chats.
 
 ## Skill Creation and Skill Evaluation
 

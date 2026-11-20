@@ -253,6 +253,25 @@ def fail_probe(path, attempt, reason, state):
         return {"kind": "failed", "attempt": attempt}
 
 
+def paseo_t3_workspace(selected, context):
+    if (not isinstance(context, dict) or not isinstance(context.get("t3_parent_thread_id"), str)
+            or not context["t3_parent_thread_id"].strip()
+            or context.get("t3_runtime_mode") not in {"auto", "auto-accept-edits"}
+            or context.get("t3_interaction_mode") != "default"
+            or (selected["instance"], selected["mode"]) != ("omp", "ask")):
+        raise ValueError("Read the active T3 parent and use a Paseo profile that matches its approval requirements")
+    workspace = Path(context.get("t3_workspace", ""))
+    if not workspace.is_absolute():
+        raise ValueError("Read the absolute workspace of the active T3 parent")
+    return workspace.resolve()
+
+
+def verify_paseo_workspace(workspace, cwd):
+    worker_workspace = Path(cwd)
+    if not worker_workspace.is_absolute() or worker_workspace.resolve() != workspace:
+        raise ValueError("Paseo must use the same workspace as the active T3 parent")
+
+
 def overlay(catalog, task, surface, descriptor, as_of):
     context = descriptor.get("execution_context")
     if surface not in SURFACES:
@@ -261,8 +280,8 @@ def overlay(catalog, task, surface, descriptor, as_of):
         raise ValueError("Dispatcher runs require an explicit controller context")
     dispatcher = SURFACES[surface]
     active_t3 = context.get("active_t3")
-    if type(active_t3) is not bool or active_t3 != (dispatcher == "t3"):
-        raise ValueError("Use the native dispatcher inside T3 and Paseo for standalone fallback")
+    if type(active_t3) is not bool or (dispatcher == "t3" and not active_t3):
+        raise ValueError("Native T3 dispatch requires an active T3 controller")
     observation = context.get("dispatcher_observation")
     if observation is None:
         raise ValueError("Refresh dispatcher availability before freezing this task")
@@ -270,6 +289,8 @@ def overlay(catalog, task, surface, descriptor, as_of):
     if selected["dispatcher"] != dispatcher or selected["scope"] != context.get("dispatcher_scope"):
         raise ValueError("Dispatcher evidence belongs to another native context")
     verify_observation(observation, selected, stamp(as_of))
+    if active_t3 and dispatcher == "paseo":
+        verify_paseo_workspace(paseo_t3_workspace(selected, context), observation["result"]["workspace"]["cwd"])
     request = task["route_request"]
     requirements = request["requirements"]
     route_name = route_id(dispatcher)
@@ -310,7 +331,32 @@ def task_assignment(prompt, token):
     return f"{prompt}\n\nWorkflow attempt {attempt}. Return the requested text without tools or side effects."
 
 
-def paseo_call(home, *args):
+class PaseoCliError(ValueError):
+    def __init__(self, operation, stdout, stderr):
+        self.report = None
+        for stream in (stdout, stderr):
+            try:
+                error = json.loads(stream).get("error")
+            except (ValueError, AttributeError):
+                continue
+            if isinstance(error, dict):
+                self.report = error
+                break
+        super().__init__(f"Paseo {operation} failed: {stderr.strip() or stdout.strip()}")
+
+
+def paseo_connection_flags(connection):
+    if isinstance(connection, Path):
+        return ["--home", str(connection.resolve())]
+    if not isinstance(connection, str):
+        raise ValueError("Select a configured Paseo home or a local listener")
+    match = re.fullmatch(r"(?:127\.0\.0\.1|\[::1\]):([0-9]{1,5})", connection)
+    if not match or not 0 < int(match[1]) <= 65535:
+        raise ValueError("Paseo workflow dispatch accepts only an explicit loopback listener")
+    return ["--host", connection]
+
+
+def paseo_call(connection, *args):
     env = os.environ.copy()
     for name in ("PASEO_AGENT_ID", "PASEO_WORKSPACE_ID", "PASEO_HOST"):
         env.pop(name, None)
@@ -326,31 +372,44 @@ def paseo_call(home, *args):
         if not executable:
             raise ValueError("No installed Paseo CLI was found")
         command = [executable]
-    result = subprocess.run([*command, "--home", str(home.resolve()), *args], env=env,
+    result = subprocess.run([*command, *paseo_connection_flags(connection), *args], env=env,
                             check=False, capture_output=True, encoding="utf-8", timeout=45)
     if result.returncode:
-        raise ValueError(f"Paseo {args[0]} failed: {result.stderr.strip() or result.stdout.strip()}")
+        raise PaseoCliError(args[0], result.stdout, result.stderr)
     return result.stdout
 
 
-def paseo_daemon(home, server, *, start=False):
-    if not (home / "config.json").is_file():
-        raise ValueError("Select the already configured local Paseo dispatcher home")
-    status = json.loads(paseo_call(home, "status", "--json"))
-    if not str(status.get("configuredListen", "")).startswith(("127.0.0.1:", "[::1]:")):
-        raise ValueError("Shared workflow dispatch requires the configured local Paseo listener")
-    if status.get("serverId") not in (server, None):
-        raise ValueError("Paseo home belongs to a different daemon")
-    if start and status.get("localDaemon") == "stopped":
-        paseo_call(home, "start")
-        status = json.loads(paseo_call(home, "status", "--json"))
+def paseo_daemon(connection, server, *, start=False):
+    if isinstance(connection, Path):
+        if not (connection / "config.json").is_file():
+            raise ValueError("Select the already configured local Paseo dispatcher home")
+        status = json.loads(paseo_call(connection, "status", "--json"))
+        paseo_connection_flags(status.get("configuredListen"))
+        if status.get("serverId") not in (server, None):
+            raise ValueError("Paseo home belongs to a different daemon")
+        if start and status.get("localDaemon") == "stopped":
+            paseo_call(connection, "start")
+            status = json.loads(paseo_call(connection, "status", "--json"))
+    else:
+        paseo_connection_flags(connection)
+        try:
+            status = json.loads(paseo_call(connection, "status", "--json"))
+        except PaseoCliError as exc:
+            report = exc.report or {}
+            # Paseo reports handshake details even if its separate
+            # status request times out. Launch and readback still require native calls.
+            if report.get("code") != "DAEMON_REQUEST_TIMEOUT" or not report.get("details"):
+                raise
+            status = report["details"]
+        if status.get("host") != connection:
+            raise ValueError("Paseo status did not identify the selected loopback listener")
     if status.get("connectedDaemon") != "reachable" or status.get("serverId") != server:
         raise ValueError("The pinned Paseo daemon is unavailable")
     return status
 
 
 @contextmanager
-def paseo_send_slot(document, request, request_path, state):
+def paseo_send_slot(document, request, request_path, state, t3_context=None):
     if document.get("kind") == "probe":
         cache = Path(document["cache"]).resolve()
         attempt = document["attempt"]
@@ -360,6 +419,8 @@ def paseo_send_slot(document, request, request_path, state):
             if (cache.name != digest(selected) + ".json" or stored.get("pending", {}).get("attempt") != attempt
                     or launch(selected, probe_assignment(attempt), attempt) != request):
                 raise ValueError("Paseo probe does not match its active cache claim")
+            if t3_context is not None:
+                paseo_t3_workspace(selected, t3_context)
             yield cache.with_name(f"{cache.stem}.{attempt}.paseo-sent")
     else:
         path = request_path.resolve()
@@ -377,15 +438,24 @@ def paseo_send_slot(document, request, request_path, state):
                     or claim_path.read_text(encoding="ascii").strip() != token
                     or document.get("claim_sha256") != digest(token) or state.load_json(path) != document):
                 raise ValueError("Paseo task has no active launch claim")
-            selected = current["dispatch"]["input"]["execution_context"]["dispatcher_observation"]["target"]
-            state._current_worker_observation(run, selected)
+            frozen = current["dispatch"]["input"]["execution_context"]
+            selected = frozen["dispatcher_observation"]["target"]
+            observation = state._current_worker_observation(run, selected)
+            if frozen["active_t3"]:
+                workspace = paseo_t3_workspace(selected, t3_context)
+                if (workspace != paseo_t3_workspace(selected, frozen)
+                        or any(t3_context[key] != frozen[key] for key in ("t3_parent_thread_id", "t3_runtime_mode"))):
+                    raise ValueError("The T3 parent, approval mode or workspace changed after binding")
+                verify_paseo_workspace(workspace, observation["result"]["workspace"]["cwd"])
+            elif t3_context is not None:
+                raise ValueError("Resume the existing standalone Paseo launch outside T3")
             if launch(selected, task_assignment(current["dispatch"]["input"]["prompt"], token),
                       digest(token)[:32]) != request:
                 raise ValueError("Paseo launch request drifted from the pinned workflow decision")
             yield path.with_name(path.name + ".paseo-sent")
 
 
-def paseo_launch(home, document, request_path, state):
+def paseo_launch(connection, document, request_path, state, t3_context=None):
     request = ({key: document[key] for key in ("server", "argv")} if document.get("kind") == "probe"
                else document["request"])
     argv = request["argv"]
@@ -394,22 +464,30 @@ def paseo_launch(home, document, request_path, state):
             or argv[13:16] != ["--no-wait", "--json", "--"]
             or not re.fullmatch(r"Dynamic workflow [a-f0-9]{32}", argv[12])):
         raise ValueError("Expected the workflow's issued Paseo worker arguments")
-    paseo_daemon(home, request["server"], start=True)
-    with paseo_send_slot(document, request, request_path, state) as marker:
+    if not isinstance(connection, Path) and t3_context is None:
+        raise ValueError("A T3 loopback launch requires the current T3 context")
+    with paseo_send_slot(document, request, request_path, state, t3_context) as marker:
+        paseo_daemon(connection, request["server"], start=t3_context is None)
+        if t3_context is not None:
+            workspaces = json.loads(paseo_call(connection, "workspace", "ls", "--json"))
+            workspace = next((item for item in workspaces if item["workspaceId"] == argv[2]), None)
+            if workspace is None:
+                raise ValueError("The pinned Paseo workspace is unavailable")
+            verify_paseo_workspace(Path(t3_context["t3_workspace"]).resolve(), workspace["cwd"])
         try:
             with marker.open("x", encoding="ascii") as file:
                 file.write(digest(request))
         except FileExistsError as exc:
             raise ValueError("This Paseo launch was already issued. Recover the original worker by exact title") from exc
-        return json.loads(paseo_call(home, *argv))
+        return json.loads(paseo_call(connection, *argv))
 
 
-def paseo_readback(home, selected, handle, request, request_path, state):
+def paseo_readback(connection, selected, handle, request, request_path, state):
     server, workspace_id = selected["scope"].split(":")
-    daemon = paseo_daemon(home, server)
-    workspaces = json.loads(paseo_call(home, "workspace", "ls", "--json"))
+    daemon = paseo_daemon(connection, server)
+    workspaces = json.loads(paseo_call(connection, "workspace", "ls", "--json"))
     workspace = next((item for item in workspaces if item["workspaceId"] == workspace_id), None)
-    agent = json.loads(paseo_call(home, "inspect", handle, "--json"))
+    agent = json.loads(paseo_call(connection, "inspect", handle, "--json"))
     expected = launch(selected, request["argv"][-1], request["argv"][12].removeprefix("Dynamic workflow "))
     if (any(request.get(key) != value for key, value in expected.items()) or agent["Name"] != request["argv"][12]
             or agent["Id"] != handle or workspace is None or workspace["cwd"] != agent["Cwd"]
@@ -421,13 +499,13 @@ def paseo_readback(home, selected, handle, request, request_path, state):
         if activity["agentId"] != handle:
             raise ValueError("Saved Paseo activity belongs to another worker")
     else:
-        activity = {"agentId": handle, "logs": paseo_call(home, "logs", handle)}
+        activity = {"agentId": handle, "logs": paseo_call(connection, "logs", handle)}
         for kind in ("tools", "errors", "permissions"):
-            activity[kind] = paseo_call(home, "logs", handle, "--filter", kind)
+            activity[kind] = paseo_call(connection, "logs", handle, "--filter", kind)
         # Archive adds an activity event. Save the actual worker timeline first.
         state.atomic_json(before_close, activity)
-        paseo_call(home, "archive", handle)
-        agent = json.loads(paseo_call(home, "inspect", handle, "--json"))
+        paseo_call(connection, "archive", handle)
+        agent = json.loads(paseo_call(connection, "inspect", handle, "--json"))
     return {**activity, "daemon": daemon, "workspace": workspace, "inspect": agent}
 
 
@@ -450,12 +528,15 @@ def main():
     failed.add_argument("--reason", required=True)
     send = commands.add_parser("paseo-launch")
     send.add_argument("request", type=Path)
-    send.add_argument("--home", type=Path, required=True)
+    send.add_argument("--t3-context", type=Path)
     read = commands.add_parser("paseo-read")
     read.add_argument("target", type=Path)
     read.add_argument("handle")
     read.add_argument("request", type=Path)
-    read.add_argument("--home", type=Path, required=True)
+    for command in (send, read):
+        connection = command.add_mutually_exclusive_group(required=True)
+        connection.add_argument("--home", type=Path)
+        connection.add_argument("--host")
     args = parser.parse_args()
     when = datetime.now(timezone.utc)
     try:
@@ -467,13 +548,14 @@ def main():
         elif args.operation == "probe-failed":
             result = fail_probe(args.cache, args.attempt, args.reason, state)
         elif args.operation == "paseo-launch":
-            result = paseo_launch(args.home, state.load_json(args.request), args.request, state)
+            context = state.load_json(args.t3_context) if args.t3_context else None
+            result = paseo_launch(args.home or args.host, state.load_json(args.request), args.request, state, context)
         else:
             selected = target(state.load_json(args.target))
             if selected["dispatcher"] != "paseo":
                 raise ValueError("Paseo readback requires a Paseo target")
             request = state.load_json(args.request)
-            result = paseo_readback(args.home, selected, args.handle, request.get("request", request),
+            result = paseo_readback(args.home or args.host, selected, args.handle, request.get("request", request),
                                      args.request, state)
     except (OSError, ValueError, KeyError, IndexError, TypeError, AttributeError, subprocess.TimeoutExpired) as exc:
         parser.error(str(exc))

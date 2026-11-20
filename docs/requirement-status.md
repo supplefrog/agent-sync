@@ -213,7 +213,9 @@ The [caller and failure-boundary workflow update](system-requirements.md#native-
 
 R02/R14: the release evaluator can run stock OMP in its isolated single-turn comparison, with native model, reasoning, prompt, tool and terminal result readback. The comparison is limited to the explicit text shown to the model. Shared runtime routing requires a native workflow check.
 
-The Dynamic Workflows dispatcher candidate reuses stock T3 dispatch from an active T3 thread and local Paseo dispatch outside T3. Both share V3 decisions, launch claims and resume. The first supported task class is small, tool-free text work with independent acceptance. Local tests cover renewal without rewriting a saved decision. A live stock T3 run delegated to Codex, and a live Paseo run delegated to OMP. Both fed the verified output into a dependent task. This T3 installation reported its OMP ACP instance unavailable for a child when checked. Shared release qualification remains separate from these runtime checks.
+Dynamic Workflows can use stock T3 delegation or the configured local Paseo daemon. Both use the same V3 decisions, launch claims and resume. The shared route handles small, tool-free text tasks with independent acceptance. The T3 case requires a matching workspace and a verified OMP profile in Always Ask mode.
+
+A stock T3 Codex turn used the local Paseo daemon to launch OMP in Always Ask mode. The first task's verified output appeared in the dependent task's prompt. Native T3 also completed a separate OMP child after switching its Local ACP command to the standard OMP executable. The route regression tests cover expired availability, renewal without rebinding a committed decision, and keeping a single launch claim.
 
 ## Skill Evaluation
 
