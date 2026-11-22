@@ -67,7 +67,6 @@ class EvalGateTests(unittest.TestCase):
 
     def test_current_schema_v2_admission_lanes_can_admit_perfect_scores(self):
         lanes = (
-            ("evals/capability-curator-current.json", ".evals/run-capability-curator-hermes.sh"),
             ("evals/surface-convergence-current.json", ".evals/run-surface-convergence-hermes.sh"),
         )
         for suite_name, script_name in lanes:

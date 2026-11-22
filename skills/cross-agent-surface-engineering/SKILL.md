@@ -62,7 +62,7 @@ The canonical result may merge compatible winning behaviors from several variant
 
 ### 4. Assign one owner per concern
 
-Use the narrowest source owner: portable procedures in an Agent Skill, standing preferences in the applicable instruction surface, and runtime mechanics in a supported config or native adapter/source. Registry state records deployment eligibility; it does not grant authorization or prove model quality. Staged comparison guides are optional evidence, not required approval hops or promotion authorities. Engineering receives fleet-retirement findings and classifies the affected unit; obtain curator evidence for model-sensitive generic-steering retirement. Task procedures retain owner-specific review; safety/governance guarantees require an equivalent enforced owner and explicit approval. Routing is not retirement approval.
+Use the narrowest source owner: portable procedures in an Agent Skill, standing preferences in the applicable instruction surface, and runtime mechanics in a supported config or native adapter/source. Registry state records deployment eligibility; it does not grant authorization or prove model quality. Staged comparison guides are optional evidence, not required approval hops or promotion authorities. Engineering receives fleet-retirement findings and classifies the affected unit; use the claim-based retirement contract and `skill-evaluation` for model-sensitive generic-steering evidence. Task procedures retain owner-specific review; safety/governance guarantees require an equivalent enforced owner and explicit approval. Routing is not retirement approval.
 
 ### 5. Stage and evaluate
 

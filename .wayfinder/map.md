@@ -1,5 +1,7 @@
 # Wayfinder Map: Global Agent Adaptive Control Plane
 
+Historical design record. Use the current requirements and registry for active routes and owners.
+
 ## Destination
 Turn Agent Signal into a bounded global learning and retirement controller for the upgraded `gpt-5.6-sol` session at `ultra` reasoning. The system must measure whether generic standing instructions still help, retain only evidence-backed steering, admit the existing governance owners only on current evidence, and accept privacy-safe learning signals from any workflow into a shadow queue that cannot mutate live agent surfaces.
 

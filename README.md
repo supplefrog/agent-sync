@@ -78,7 +78,7 @@ For approved configured defaults, use `python tools/run.py reconcile plan --reco
 
 The current managed setup covers Hermes, Codex, and OMP on the configured Windows machine. Admitted skills are rendered into managed copies in a shared discovery root; agents do **not** load every candidate directly from this working tree.
 
-[The registry](registry.json) records which skills are admitted or staged. The deterministic reconciliation tools and the admitted [cross-agent workflow](skills/cross-agent-surface-engineering/SKILL.md) govern changes. `capability-curator` and `surface-convergence` remain staged, not running services or promotion authorities. Hermes automatic curation is disabled in the current setup; age or usage alone does not authorize deleting knowledge.
+[The registry](registry.json) records which skills are admitted or staged. The deterministic reconciliation tools and the admitted [cross-agent workflow](skills/cross-agent-surface-engineering/SKILL.md) govern changes. `surface-convergence` remains staged. Hermes automatic curation is disabled in the current setup; age or usage alone does not authorize deleting knowledge.
 
 Runtime-specific support, limitations, and evidence are recorded in the [surface matrix](contracts/surface-matrix.json) and [instruction profiles](docs/instruction-profiles.md). This is a maintained setup, not a claim that every capability has been proven on every agent or machine.
 

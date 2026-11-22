@@ -10,7 +10,7 @@
     },
     {
       "name": "capability-curator",
-      "status": "staged",
+      "status": "retired",
       "license": "MIT",
       "source": "original"
     },

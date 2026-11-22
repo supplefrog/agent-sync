@@ -31,7 +31,7 @@ For an accumulated system audit, recover existing evidence and infer behavior cl
 | Sync | `tools/fleet.py`, `tools/recovery.py`, `tools/sync_git.py` | Apply and verify the selected change, preserve concurrent work and recoverable rollback, and verify publication |
 | Host-native delta | `host-deltas.json`, `contracts/host-deltas.schema.json`, `tools/host_deltas.py` | Typed public-safe native state, restore prerequisites, source identity, version/hash, enablement, and readback |
 | Cross-host routing | `skills/cross-agent-surface-engineering/` | Admitted judgment owner that routes persistent changes into the deterministic coordinator |
-| Admission and retirement candidate | `skills/capability-curator/` | Staged evaluation artifact; not a live authority until separately admitted |
+| Skill evaluation | `skills/skill-evaluation/` | Package checks, native compatibility, and matched output comparisons |
 | Convergence candidate | `skills/surface-convergence/` | Staged evaluation artifact; not a live authority until separately admitted |
 | Evaluation | `evals/`, `tools/eval.py`, `tools/eval_gate.py`, `tools/grounded_gate.py`, `tools/instruction_retirement.py` | Reproducible admission, independent grounded verdict contracts, and leave-one-unit-out comparison with artifact hashes and exact-stack receipt caching |
 | Evidence memory | `evidence/findings.json`, `evals/results/` | Public-safe findings, contradictions, decisions, and compact summaries |
@@ -104,7 +104,7 @@ On failure, rollback covers only this attempt's writes that still match its inst
 
 This provides a common sync operation, not universal interception. Manual editors and processes can still change files while no agent is running; an explicit host request or direct command performs the inventory and reconciliation. Project-local and ephemeral work is intentionally outside this system.
 
-The effective governance authority is the deterministic contracts/coordinator plus admitted `cross-agent-surface-engineering`. The canonical `capability-curator` and `surface-convergence` designs remain staged until their own admission evidence is conclusive. The legacy Codex-only governance guard was retired after the common route and coordinator were installed.
+The effective governance authority is the deterministic contracts/coordinator plus admitted `cross-agent-surface-engineering`. Skill Evaluation gathers evidence for Fleet Admission. The surface-convergence design remains staged. The legacy Codex-only governance guard was retired after the common route and coordinator were installed.
 
 ### Scoped semantic curation
 
@@ -117,7 +117,7 @@ Keep useful knowledge discoverable, preserve meaningful triggers and procedures,
 
 On the current Hermes installation, `curator.enabled: false` and `curator.consolidate: false` stop unattended lifecycle transitions and LLM rewriting. Native usage telemetry, inspection, pinning, and archive/restore facilities remain available; archiving is an explicit reviewed action, not a consequence of inactivity. The configured auxiliary curator model remains dormant while disabled. Do not run a whole-library consolidation pass as a substitute for semantic review.
 
-The original `capability-curator` was included in Agent Sync's founding design. Its [cross-host admission report](../evals/results/capability-curator-cross-host-sol-ultra.json) is inconclusive with harness failures on both hosts; it is neither an admitted service nor evidence of general uselessness. Borrow its useful evidence principles through the existing owners, without activating the full staged procedure.
+The original `capability-curator` was included in Agent Sync's founding design. Its [cross-host admission report](../evals/results/capability-curator-cross-host-sol-ultra.json) is inconclusive with harness failures on both hosts; these reports record the historical result. The staged package was retired after Skill Evaluation, Fleet Admission, and the existing retirement contract covered its roles.
 
 ## Staged context-integrity validation
 
@@ -198,3 +198,5 @@ Partial support is a valid staged result. It must remain explicit and cannot be 
 - Hermes skills docs: <https://hermes-agent.nousresearch.com/docs/user-guide/features/skills>
 
 These anchors establish what was inspected, not permanent truth. Relevant host or artifact changes stale only the affected evidence rows.
+
+Older learning receipts may use the historical curator label. Use Skill Evaluation for current assessment and Fleet Admission for a rollout decision.

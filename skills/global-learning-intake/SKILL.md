@@ -8,7 +8,7 @@ compatibility: Python 3.11+; one shared private state root accessible to the sup
 metadata:
   hermes:
     tags: [learning, evidence, admission, self-improvement, shadow]
-    related_skills: [capability-curator, skill-authoring, github-follow-up, surface-convergence]
+    related_skills: [skill-evaluation, skill-authoring, github-follow-up, surface-convergence]
 ---
 
 # Global Learning Intake
@@ -108,7 +108,7 @@ Delete the temporary event file after successful staging unless it is itself an 
 
 After staging, stop. Report the candidate ID, owner, evidence count, and disposition.
 
-A global candidate may advance only through `capability-curator` with:
+Evaluate a global candidate with `skill-evaluation` and send it to Fleet Admission with:
 
 1. the existing owner inspected first;
 2. an explicit baseline and narrow candidate;
@@ -117,7 +117,7 @@ A global candidate may advance only through `capability-curator` with:
 5. no critical regression;
 6. privacy, license, rollback, and fresh discovery checks.
 
-Every `shadow-global` receipt must make the `capability-curator` gate and unrelated held-out proof explicit in its rationale. Recurrence alone never satisfies either requirement.
+Every `shadow-global` receipt must make the `skill-evaluation` evidence and the Fleet Admission gate and unrelated held-out proof explicit in its rationale. Recurrence alone never satisfies either requirement.
 
 No evidence, duplicate ownership, a tie, a loss, a harness failure, or missing-host proof means **no live edit**. Subjective taste changes require repeated user preference evidence or explicit review. Safety/governance candidates always require manual approval and an equivalent protected owner.
 
@@ -129,7 +129,7 @@ Model/runtime changes should normally open an inverse-admission retirement plan.
 
 ## Completion
 
-Write the rationale as an audit explanation, using the fewest causal sentences that establish the evidence, boundary, and next gate. Name the exact destination surface (for example, the repository's project instructions or user memory) instead of substituting a generic owner label. Do not repeat receipt fields as rationale padding or add global-admission boilerplate to a local, memory, rejected, or manual-review route. A `shadow-global` route still must name the `capability-curator` gate and unrelated held-out proof.
+Write the rationale as an audit explanation, using the fewest causal sentences that establish the evidence, boundary, and next gate. Name the exact destination surface (for example, the repository's project instructions or user memory) instead of substituting a generic owner label. Do not repeat receipt fields as rationale padding or add global-admission boilerplate to a local, memory, rejected, or manual-review route. A `shadow-global` route still must name the `skill-evaluation` evidence and the Fleet Admission gate and unrelated held-out proof.
 
 Return one short line per staged or rejected event. Distinguish:
 

@@ -507,7 +507,7 @@ def main() -> int:
         adapter["instructions"]["strategy"] == "link-or-copy"
         for host, adapter in adapters.items()
     ):
-        required_surface_skills = {"capability-curator", "surface-convergence"}
+        required_surface_skills = {"cross-agent-surface-engineering", "surface-convergence"}
         missing_surface_skills = required_surface_skills - admitted
         if missing_surface_skills:
             missing = ", ".join(sorted(missing_surface_skills))

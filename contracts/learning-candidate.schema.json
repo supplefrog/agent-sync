@@ -16,7 +16,7 @@
     "lesson": {"$ref": "#/$defs/lesson"},
     "promotion_allowed": {"const": false},
     "promotion_blocked": {"const": true},
-    "promotion_gate": {"enum": ["capability-curator", "explicit-owner-review"]},
+    "promotion_gate": {"enum": ["skill-evaluation", "explicit-owner-review", "capability-curator"]},
     "created_at": {"type": "string", "format": "date-time"},
     "updated_at": {"type": "string", "format": "date-time"},
     "recurrence_count": {"type": "integer", "minimum": 1},

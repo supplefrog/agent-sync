@@ -712,35 +712,6 @@ def _approved_item_review_maintenance(candidate, source, name, owner, row, base,
     return "exact reviewed item-review operational maintenance"
 
 
-def _approved_curator_scope_maintenance(candidate, source, name, owner, row, base, paths, reconciliations):
-    """Closed source-scope maintenance; no model benefit or lifecycle adoption."""
-    products = {'skills/capability-curator/SKILL.md', 'skills/cross-agent-surface-engineering/SKILL.md', 'skills/capability-curator/references/instruction-retirement.md'}
-    if (name not in products or owner != 'skills/' + name.split('/')[1]
-            or row.get('basis') != 'user-correction'
-            or row.get('acceptance_classification') != 'curator-scope-maintenance'):
-        return None
-    pins = {'skills/capability-curator/SKILL.md': ('d6caa0472e4c29e3295d12a28e4b165c5b55af43b7df5ee4009d7aaa71176ae0', '59ba241f89c096bbbf89be7b102033c87a8eef0b6ecd29d578902789f5833bc5'), 'skills/capability-curator/references/instruction-retirement.md': ('ad16e0493f8ac6a8581d24ff404d8ad818f07b6b06c8792ac6356dad8d3eecaa', 'a3bbe9ee22fbfbb7a1496fc01b9b895dda486f995b7300e7c8350215130bcda4'), 'skills/cross-agent-surface-engineering/SKILL.md': ('c50e56494d5a1b42896ce175acdc6255d32f0643c7138d35170d7d23a2104121', '9031131e8be66964c739fbdcc6701485b64d8c00f8d1bc6d36b2c16f605265da'), 'docs/system-requirements.md': ('e93d09bc37280a07f91369d8c1d5c8377b75483328f3dad7e567c784b762b036', 'c0f6c9b8f0491328358fbf9c4bc0127180b1ff5f4c6d8e89b73f5b5423f79424'), 'docs/requirement-status.md': ('89d7d2275e13eba8d05fb1ae58042c1edcf329f7f134b6d37ac372724e4cbd5c', '6ca8918106373db901efa02926227d974ecaff358a3526326aa1a3fe1f4c3967')}
-    if not set(pins) <= set(paths):
-        raise sync_git.SyncBlocked('curator maintenance requires the exact products and changed intent/status')
-    for target, (before, after) in pins.items():
-        path = candidate / target
-        if (_hash(_before(source, base, target)) != before
-                or _hash(path.read_bytes() if path.is_file() else None) != after):
-            raise sync_git.SyncBlocked('curator maintenance differs from reviewed source byte pairs')
-    fixed = {'registry.json': '2a56f0366330b79db8cadcb439141f4ff4a4c1b0d700d533a46e22737027711e', 'contracts/ownership.json': 'ce5755cecd713686c77bf6927e646c6a61f9cb9c10e566c5ef1384894adde9f7', 'contracts/instruction-surfaces.json': '5622e7debb2e435f34fa63593995edce5bdf393dbdd9a951933dc73c67165032'}
-    for target, identity in fixed.items():
-        path = candidate / target
-        if (_hash(_before(source, base, target)) != identity
-                or not path.is_file() or _hash(path.read_bytes()) != identity):
-            raise sync_git.SyncBlocked('curator maintenance cannot change owner, staging or instruction lifecycle')
-    matching = [record for record in reconciliations if record.get('requirement_change') is True
-                and set(pins) <= set(record.get('artifacts', {}))]
-    if len(matching) != 1 or any(matching[0]['artifacts'][target] !=
-            {'before_sha256': before, 'after_sha256': after} for target, (before, after) in pins.items()):
-        raise sync_git.SyncBlocked('curator maintenance requires one exact changed-intent reconciliation')
-    return 'exact reviewed curator scope maintenance; staging, ownership and retirement safeguards retained'
-
-
 def _approved_retirement_maintenance(candidate, source, name, owner, row, base, paths, retirement):
     """One exact user-directed retirement; no generic measurement waiver.
 
@@ -979,7 +950,7 @@ def completed_retirement_publication(candidate, source, base, paths, proof, *, r
             'completion_sha256': _COMPLETED_RETIREMENT_SHA256, 'publication_authorized': False}
 
 
-def _approved_user_preference(candidate, source, name, owner, row, base):
+def _approved_user_preference(candidate, source, name, owner, row, base, paths):
     """Check declared preference scope; human authority and meaning need owner review."""
     preference = row.get('user_preference')
     if (row.get('basis') != 'user-correction' or owner != name
@@ -1006,6 +977,11 @@ def _approved_user_preference(candidate, source, name, owner, row, base):
             return prefix, suffix
         old_prefix, old_suffix = outside(old)
         new_prefix, new_suffix = outside(new)
+        if old_prefix != new_prefix and 'registry.json' in paths:
+            _, retired, successor = requested_replacement(candidate, source, base, paths)
+            for retired_owner in retired if successor else ():
+                notice = b'The staged `' + retired_owner.encode() + b'` is not a promotion authority. '
+                old_prefix = old_prefix.replace(notice, b'', 1)
         if (old_prefix, old_suffix) != (new_prefix, new_suffix):
             from runtime_defaults import DefaultsError, _parse_preferences
 
@@ -1070,7 +1046,7 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
             and row.get('basis') == 'user-correction' and _preference_data_only(old, new, row)):
         reason = 'explicit user model-selector data; standing instructions unchanged'
     elif kind == 'user-preference':
-        reason = _approved_user_preference(candidate, source, name, owner, row, base)
+        reason = _approved_user_preference(candidate, source, name, owner, row, base, paths)
     elif kind == 'requested-native-learning':
         reason = _approved_native_learning_source(candidate, source, name, owner, row, base, paths, reconciliations)
     elif kind == 'requested-import':
@@ -1083,9 +1059,6 @@ def correction_eligibility(candidate, source, name, owner, row, base, paths, rec
         reason = _approved_reference_transport(candidate, source, name, owner, row, base, paths)
     elif kind == 'public-audience-correction':
         reason = _approved_public_audience(candidate, source, name, owner, row, base, paths, reconciliations)
-    elif (kind == 'contract-correction'
-            and row.get('acceptance_classification') == 'curator-scope-maintenance'):
-        reason = _approved_curator_scope_maintenance(candidate, source, name, owner, row, base, paths, reconciliations)
     elif (kind == 'contract-correction'
             and name == 'skills/instruction-authoring/references/item-review-loop.md'):
         reason = _approved_item_review_maintenance(candidate, source, name, owner, row, base, paths, reconciliations)
@@ -1445,10 +1418,11 @@ def requested_replacement(candidate, source, base, paths):
     before = {entry['name']: entry for entry in old_entries}
     after = {entry['name']: entry for entry in new_entries}
     added = after.keys() - before.keys()
-    retired = {name for name, entry in before.items()
-               if entry.get('status') == 'admitted' and after.get(name) == {**entry, 'status': 'retired'}}
-    expected_selection = {'retire': sorted(retired), 'admit': sorted(added)}
     successor = selection.get('use_existing') if isinstance(selection, dict) else None
+    eligible = {'admitted', 'staged'} if successor is not None else {'admitted'}
+    retired = {name for name, entry in before.items()
+               if entry.get('status') in eligible and after.get(name) == {**entry, 'status': 'retired'}}
+    expected_selection = {'retire': sorted(retired), 'admit': sorted(added)}
     if successor is not None:
         if (not isinstance(successor, str) or not re.fullmatch(r'[a-z0-9][a-z0-9-]*', successor)
                 or added or successor in retired or before.get(successor, {}).get('status') != 'admitted'
@@ -1479,7 +1453,14 @@ def requested_replacement(candidate, source, base, paths):
         new_hash = _hash(path.read_bytes() if path.is_file() else None)
         if old_hash != new_hash:
             if name.startswith('skills/') and path.suffix != '.md' and new_hash != 'absent':
-                raise sync_git.SyncBlocked('requested replacement cannot write non-Markdown skill files: ' + name)
+                staged = {n for n in retired if before[n]['status'] == 'staged'}
+                old_source = _before(source, base, name)
+                new_source = path.read_bytes()
+                gate = b'"promotion_gate": "'
+                if (not successor or len(staged) != 1 or path.suffix != '.py' or old_source is None
+                        or old_source.replace(gate + next(iter(staged)).encode() + b'"',
+                                              gate + successor.encode() + b'"') != new_source):
+                    raise sync_git.SyncBlocked('requested replacement cannot write non-Markdown skill files: ' + name)
             changed[name] = {'before_sha256': old_hash, 'after_sha256': new_hash}
     artifacts = row.get('artifacts')
     if not isinstance(artifacts, dict) or any(not isinstance(hashes, dict) for hashes in artifacts.values()):
@@ -1499,12 +1480,25 @@ def _replacement_instruction(name, old, new, added, retired, successor):
         return False
     if successor:
         # Preserve prose and policy outside the explicitly named skill routes.
-        token = re.escape(next(iter(retired)).encode())
+        retiring = next(iter(retired)).encode()
+        replacement = successor.encode()
+        prior, current = b'`' + retiring + b'`', b'`' + replacement + b'`'
+        if name == 'skills/cross-agent-surface-engineering/SKILL.md':
+            old = old.replace(b'obtain ' + retiring.split(b'-')[-1] + b' evidence for model-sensitive generic-steering retirement',
+                              b'use the claim-based retirement contract and ' + current + b' for model-sensitive generic-steering evidence')
+        elif name == 'skills/surface-convergence/SKILL.md':
+            old = old.replace(b'Use ' + prior + b' to decide whether a new or changed capability deserves admission.',
+                              b'Use ' + current + b' to gather evidence for Fleet Admission.')
+        elif name == 'skills/global-learning-intake/SKILL.md':
+            old = old.replace(b'A global candidate may advance only through ' + prior + b' with:',
+                              b'Evaluate a global candidate with ' + current + b' and send it to Fleet Admission with:')
+            old = old.replace(prior + b' gate', current + b' evidence and the Fleet Admission gate')
+        token = re.escape(retiring)
         route = rb'(?<=`)' + token + rb'(?=`)|(?<=skills/)' + token + rb'(?=/)'
         related = rb'(?<![\w-])' + token + rb'(?![\w-])'
         projected = b'\n'.join(
             re.sub(related if re.match(rb'\s*related_skills:\s*\[|Replaced by ', line) else route,
-                   successor.encode(), line)
+                   replacement, line)
             for line in old.replace(b'\r\n', b'\n').split(b'\n'))
         return projected == new.replace(b'\r\n', b'\n')
     if name in ADAPTERS:

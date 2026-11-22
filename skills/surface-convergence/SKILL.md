@@ -10,7 +10,7 @@ metadata:
 
 # Surface Convergence
 
-Use when the user asks for a persistent behavior across agents, when adding a supported host, or when host updates may have changed an existing mapping. This skill owns cross-agent parity, adapter boundaries, evidence drift, and explicit host-native exceptions. Use `capability-curator` to decide whether a new or changed capability deserves admission.
+Use when the user asks for a persistent behavior across agents, when adding a supported host, or when host updates may have changed an existing mapping. This skill owns cross-agent parity, adapter boundaries, evidence drift, and explicit host-native exceptions. Use `skill-evaluation` to gather evidence for Fleet Admission.
 
 ## Contract
 

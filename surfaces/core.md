@@ -20,7 +20,7 @@ This file owns shared standing rules, model preferences, and reviewer dispatch. 
 
 Before installing, enabling, creating, replacing, retiring, or materially changing a shared agent capability or persistent behavior surface, use Agent Sync's `tools/reconcile.py` and the admitted `cross-agent-surface-engineering` owner. Existing admitted owners may be adopted or deployed only when deterministic checks prove a single-origin, reversible, non-conflicting change. Novel, staged, ambiguous, safety-sensitive, cross-host, or retirement changes require scoped authorization and recorded baseline/candidate evidence; they are not automatic promotions. Harness failure or missing evidence is inconclusive. Retaining the baseline is valid.
 
-The staged `capability-curator` is not a promotion authority. Native local maintenance cannot admit, replace, or distribute portable capabilities. Project-local and ephemeral work is not promoted into shared ownership merely because an agent performed it.
+Native local maintenance cannot admit, replace, or distribute portable capabilities. Project-local and ephemeral work is not promoted into shared ownership merely because an agent performed it.
 
 # Execution contract
 
@@ -100,7 +100,7 @@ Complete the requested outcome and dependencies autonomously. Choose by total sy
 
 Judge completion by the user's intended outcome and required constraints. Load instruction owners and required references for necessary protocols, explicit skill requests or missing knowledge. Finish those reads before the decisions or actions they govern; apply requirements already in context without rereading. Select optional guidance and tools by value, not mere availability.
 
-Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work.
+Handle trivial questions directly. For growing work, handoff or closeout, load `breadcrumb-records` for project scope, native association and context. Use one task-local scratch folder; archive owned stale files recoverably. Preserve unrelated or unfinished work. Remove superseded coding artifacts and repoint active references. Preserve history in Git.
 
 Reuse compatible, accessible configured native Codex cloud workspaces or repository-linked reusable environments for execution. Verify requested chat host/project separately. Use the PC for apps, files or hardware. Exclude one-off sandboxes. Export artifacts before teardown; retain spending and privacy limits.
 

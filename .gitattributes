@@ -37,8 +37,6 @@ skills/openai-delegation-route-research/references/schema-history/* -text
 /integrations/hermes-native-learning/REFERENCE-SOURCES.json -text !eol
 /integrations/hermes-native-learning/docs/INSTALL.md -text !eol
 /integrations/hermes-native-learning/docs/MATERIALS-JOBS.md -text !eol
-/skills/capability-curator/SKILL.md -text !eol
-/skills/capability-curator/references/instruction-retirement.md -text !eol
 /tests/test_completed_retirement_publication.py -text !eol
 /tests/test_preference_data_classification.py -text !eol
 /tests/test_requested_reader_installation.py -text !eol

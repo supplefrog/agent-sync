@@ -44,7 +44,8 @@
             "6507b29e78fba35fd6c3409ee713acf684e29de8a4a90d918f3cb455c093313d",
             "b508c274306b06ed8ec4201623f11e555d8d072dcce2615f82ae44607dcbb42f",
             "bdb843d02a4b07f2acd5dae7e2f55ed0b6407ad81469ba6cd5b4b54323860b40",
-            "b689e11c082aa762a21c722e916937547b4c15371f98d79bca08bf56caa6f33d"
+            "b689e11c082aa762a21c722e916937547b4c15371f98d79bca08bf56caa6f33d",
+            "f62c16826a45a7e9145be7848e3a11c0745a3adc0a677f304c01a369ba39e7fa"
           ],
           "snapshot": "hosts/codex/AGENTS.md",
           "source": "AGENTS.md",
@@ -347,7 +348,8 @@
             "a2081994a39813ed8c70ec974335f9ebcce4978d6575a664aa49382d098dce43",
             "5ef00d578c64c6a4891ce080a60da47d735266fdc706ba4bb34d2c69b79a7753",
             "7d00f86605f8c21e2ef5751a85db67a719e52f700a65b7a74ed7c62f8c549364",
-            "c87954f42407075b8d277b14c4183a34e568ae7dd2459de8b72261ecaae6f303"
+            "c87954f42407075b8d277b14c4183a34e568ae7dd2459de8b72261ecaae6f303",
+            "2cbab437cafe9505bc3903f5117ff3f0fb336abdeb2e06bba664f31373c90b64"
           ],
           "snapshot": "hosts/hermes/SOUL.md",
           "source": "SOUL.md",
@@ -9753,7 +9755,8 @@
           "replace_sha256": [
             "656e341b1a9f2456cab664fe1acfac9e9888a60f41139e8b2d4669e522608e03",
             "b0c8ebea12f1f3aecdb1c45e5bc3c58ddc9243bcdbeca6fea97750d3b9718fc8",
-            "408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12"
+            "408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12",
+            "805cf3c98b71bcb583546035a3e0c439ec33881a16d94e11e7d16e81e0169dac"
           ]
         },
         {

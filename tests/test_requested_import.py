@@ -171,6 +171,37 @@ class RequestedImportTests(unittest.TestCase):
             self.assertIn('second', target['required'])
             self.assertIn('first', target['retired'])
 
+            # A never-installed staged duplicate can also be retired explicitly.
+            baseline_commit = result['commit']
+            self.git(worker, 'reset', '--hard', baseline_commit)
+            registry = json.loads((worker / 'registry.json').read_bytes())
+            next(item for item in registry['skills'] if item['name'] == 'unrelated')['status'] = 'retired'
+            (worker / 'registry.json').write_text(json.dumps(registry), encoding='utf-8')
+            data = json.loads(owners.read_bytes())
+            next(item for item in data['capabilities'] if item['id'] == 'unrelated')['status'] = 'retired'
+            owners.write_text(json.dumps(data), encoding='utf-8')
+            (worker / 'skills/unrelated/SKILL.md').unlink()
+            for name in changes.CONTRACTS:
+                (worker / name).write_text('Retire the staged duplicate.', encoding='utf-8')
+            self.git(worker, 'add', '.')
+            paths = self.git(worker, 'diff', '--cached', '--name-only').splitlines()
+            row['requested_replacement'] = {'retire': ['unrelated'], 'admit': [], 'use_existing': 'second'}
+            row['artifacts'] = {
+                name: {'before_sha256': changes._hash(changes._before(worker, baseline_commit, name)),
+                       'after_sha256': changes._hash((worker / name).read_bytes() if (worker / name).is_file() else None)}
+                for name in paths}
+            row['obligations'] = [
+                {'path': name, 'disposition': 'removed' if value['after_sha256'] == 'absent' else 'updated',
+                 'reason': 'Retire the staged duplicate'} for name, value in row['artifacts'].items()]
+            (worker / receipt).write_text(json.dumps({'change_reconciliation': [row]}), encoding='utf-8')
+            self.git(worker, 'add', '--', receipt)
+            self.git(worker, 'commit', '-m', 'Retire never-installed predecessor')
+            result = self.run_ready(adapter, worker, 'HEAD', live, include=[*paths, receipt])
+            self.assertEqual('synced', result['result'], result)
+            self.assertEqual(reviewed, installed.read_bytes())
+            self.assertFalse((live / 'unrelated').exists())
+            self.assertIn('unrelated', result['targets'][str(live)]['retired'])
+
     def prepare(self, root, insert_license=False):
         repo, live, remote = self.setup_git(root)
         index = repo / 'contracts/instruction-surfaces.json'

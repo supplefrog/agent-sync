@@ -44,7 +44,7 @@ These are responsibility boundaries, not requirements for four services, separat
 | ID | Accountable owner | Requirement |
 | --- | --- | --- |
 | R01 | Authoring | Each capability records the user's intention, distinguishes explicit intent from inference, and expresses desired and undesired outcomes, relevant contraindications and scope. Do not invent exclusions. For the requested interaction work, task correctness and progress remain primary while terminology and missing context adapt to observed topic-specific understanding and follow-up questions; evaluate reduced friction and learning across turns, not answer length or a global novice/expert score. This records the outcome, not authority to create a user-profile service or new prompt rules. |
-| R02 | Governance | Check user-directed instruction changes against the requested outcome, exact source, affected hosts, and protected boundaries. An explicitly requested instruction-only replacement can retire the named owner and admit the named replacements in one reviewed release. Claims of improved model behavior require relevant measured evidence. The [publication checks](../tools/instruction_changes.py) and existing receipts retain the exact eligibility and scope of previously accepted changes. |
+| R02 | Governance | Check user-directed instruction changes against the requested outcome, exact source, affected hosts, and protected boundaries. An explicitly requested instruction-only replacement can retire the named owner and admit the named replacements in one reviewed release. Claims of improved model behavior require relevant measured evidence. The [publication checks](../tools/instruction_changes.py) apply to current changes. Earlier receipts retain their scope and can be replayed at their matching Git revisions. |
 | R03 | Governance | Detect overlapping or conflicting capabilities and choose the correct owner. Preserve unique useful behaviors and necessary native differences rather than merging whole skills indiscriminately. |
 | R04 | Authoring | Identify and repair scope creep, overly broad or missing triggers, and unnecessary skill/tool invocation within the owning capability. Check intended cases and nearby cases where it should stay inactive. “not let the agent use a skill that is in question by the user” applies to the affected work while the concern is unresolved. |
 | R05 | Authoring | Condense bodies and schemas by removing duplication, generic advice, stale rules, unnecessary fields, and excessive steering. Optimize useful loaded context and behavior, not word count alone. |
@@ -238,4 +238,8 @@ Skill Evaluation compares real file outputs with and without the skill using the
 
 Use Skill Evaluation for requests to check an existing skill. Report package findings, target-host discovery and tool support, and observed task results at the scope the user requested. Use Skill Creator for authoring and revision.
 
-Fleet Admission checks evidence for the exact revision and required rollout hosts. Fleet Sync installs approved revisions. Retire the older capability-curator name after verifying its replacements.
+Fleet Admission checks evidence for the exact revision and required rollout hosts. Fleet Sync installs approved revisions. Skill Evaluation gathers evidence for Fleet Admission. The superseded curator is retired.
+
+## Cleanup across coding projects
+
+Remove old or stale coding artifacts so new agents do not get confused. This applies in any coding project. Remove superseded coding artifacts and repoint active references. Preserve history in Git.

@@ -274,7 +274,7 @@ def ingest(raw_event: dict[str, Any], store: Path) -> dict[str, Any]:
             "lesson": event["lesson"],
             "promotion_allowed": False,
             "promotion_blocked": True,
-            "promotion_gate": "capability-curator" if bucket == "global" else "explicit-owner-review",
+            "promotion_gate": "skill-evaluation" if bucket == "global" else "explicit-owner-review",
             "created_at": event["observed_at"],
             "updated_at": event["observed_at"],
             "recurrence_count": 0,

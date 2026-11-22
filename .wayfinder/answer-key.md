@@ -1,5 +1,7 @@
 # Answer Key: Global Agent Adaptive Control Plane
 
+Historical design record. Use the current requirements and registry for active routes and owners.
+
 Source map: [map.md](map.md)
 Frozen before implementation: 2026-09-02T04:57:38+05:30 at `b7c82202bc4fe87584589a27cbccb8fea342b3cc`
 

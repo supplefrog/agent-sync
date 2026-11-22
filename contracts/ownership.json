@@ -27,10 +27,10 @@
     {
       "id": "capability-curator",
       "owner": "skills/capability-curator",
-      "status": "staged",
+      "status": "retired",
       "selection_state": "unresolved",
       "selection_evidence": [],
-      "selection_reason": "Current Hermes and Codex lanes both ended in independently verified harness failures. Their sealed 90-attempt budgets cannot contain another complete 72-attempt run, and the aggregate is inconclusive, so the owner remains staged and undeployed."
+      "selection_reason": "Retired by request. Skill Evaluation covers the evaluation workflow, and existing owners cover admission, sync, research and retirement."
     },
     {
       "id": "primary-source-research",
