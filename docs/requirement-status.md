@@ -226,3 +226,7 @@ The [Skill Evaluation skill](../skills/skill-evaluation/SKILL.md) gives existing
 The Skill Creator consolidation replaces the legacy writing workflow with the existing `skill-authoring` package. Its entrypoint already carries the project requirements, observed-gap, and verification guidance. The source and native pointer checks cover this transfer. The earlier task tie does not establish a quality advantage.
 
 The curator package and its old runnable evaluation suite were removed. Skill Evaluation, Fleet Admission, and the existing retirement contract cover the corresponding workflow. The old results remain as evidence. The shared coding guidance applies the cleanup rule across projects.
+
+## Maintainability across coding projects
+
+The shared coding guidance covers stale comments, documented workarounds, and where to record consequential decisions. The Codex, Hermes, and OMP projections and their profile bindings passed source checks. This records the approved preference.

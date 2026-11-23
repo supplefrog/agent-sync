@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-23",
+  "capability": "shared-instructions",
+  "status": "source-checked-user-preference",
+  "recovery_commit": "3f78c0997d1897b3c2cd4ed04e82755ea32cad3c",
+  "instruction_changes": [
+    {
+      "owner": "surfaces/core.md",
+      "change_kind": "user-preference",
+      "basis": "user-correction",
+      "baseline_sufficient": false,
+      "deviation": "The shared cleanup rule covered artifacts and references but did not address comment maintenance.",
+      "evidence": "The previous shared Scope rule names superseded artifacts, active references and Git history.",
+      "why_instruction": "The user approved applying the selected practices across coding projects.",
+      "alternative": "The existing Scope section carries the practices without a separate tool or workflow.",
+      "artifacts": {
+        "surfaces/core.md": {
+          "before_sha256": "eceba241b92ee1251921f79a85505fffedeab25729c0938bd5a4553bfca17a63",
+          "after_sha256": "1d81c89d564c6a4704cfabeb7eb9c5b1f7aa03a4806aae646a0d70c55062e906"
+        }
+      },
+      "user_preference": {
+        "request": "In code you touch, remove stale or redundant comments. Fix documented workarounds in scope or track follow-up. Keep comments for non-obvious constraints. Use decision records for project-wide choices.",
+        "scope": "Code being edited across projects and project-wide decision records.",
+        "authority": "explicit-user-request",
+        "protected_guarantees_unchanged": true
+      }
+    }
+  ],
+  "change_reconciliation": [
+    {
+      "requirement_change": true,
+      "requirement_reason": "Extend the existing cross-project cleanup guidance with the selected maintainability practices.",
+      "authority": "The user approved the three recommended practices.",
+      "checks": "Generated overlays matched the shared source and passed the artifact-only standing profiles.",
+      "outcome_review": {
+        "expected": "The existing rule covers stale comments, workarounds and how to record decisions across coding projects.",
+        "observed": "The guidance is in the existing scope and requirements sections and projects to all three checked files.",
+        "evidence": "Generated overlays matched the shared source and passed the artifact-only standing profiles.",
+        "limitations": "Source and projection checks do not establish an improvement in model behavior."
+      },
+      "artifacts": {
+        "contracts/surface-matrix.json": {
+          "before_sha256": "7f0c3bca433084287a27d2dc199324f5f9c5eb5936f7a55c58dbfe5b9e62b774",
+          "after_sha256": "7f0c3bca433084287a27d2dc199324f5f9c5eb5936f7a55c58dbfe5b9e62b774"
+        },
+        "docs/evaluations/outcome-efficiency.md": {
+          "before_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6",
+          "after_sha256": "f3b05f0c9da4b2e44b9978245e13b32b8e354fdbb6d64d88cbbe11e91d8602f6"
+        },
+        "docs/requirement-status.md": {
+          "before_sha256": "7d3218e1d953376b091f7427be415d045c07fef83299ab31a4b0370acee9ba65",
+          "after_sha256": "774540b176da4da935b9dcab7ad5a56e7fcfdb8bfc0eac866fdfbfdb6e154d7c"
+        },
+        "docs/system-requirements.md": {
+          "before_sha256": "3331ae6edd8ad75e41d856b7605a8d29a0d9dd7d4fd36726005de291dfc28509",
+          "after_sha256": "3bb1e75528264caf3bfc0e0e30514cdadc72025ecb72977efe22aee97ede3fa9"
+        },
+        "host-deltas.json": {
+          "before_sha256": "4c6ba7ca96c1e172ae708606376be0c6cd7e8477d17fd8e9457f873b97370fa7",
+          "after_sha256": "c8f7885af583d1e5d5dd9f336fa792faeab917b86427d5bb184ad5f93fbffdf8"
+        },
+        "profiles/current-observed-defaults.json": {
+          "before_sha256": "caa63789e065191332e57a232e9fe0a728d2b814cdf623422827833d5518ca85",
+          "after_sha256": "c303bb9ee477a28b9deadb9ea7eaef18dc7f7a9eea5fd44bf9899dab7343d943"
+        },
+        "recovery.json": {
+          "before_sha256": "bac79bdb365dd4d7a803811e3e9fb104534c14e0a68bdca203535ab9ce8e7f02",
+          "after_sha256": "d42b4dc66331267829652ffd3ef09633e3be0fbaffdbfea7ae513dbe76c34f1c"
+        },
+        "recovery/current/hosts/codex/AGENTS.md": {
+          "before_sha256": "48797317e9789c6e798540526af060c3bc4dab245d89ce65e8bdf480e4bdd850",
+          "after_sha256": "1552c68bd7c5e365744baa4bcdc8ac80760f0dd622d8b1f317a680da2c4f9d7c"
+        },
+        "recovery/current/hosts/hermes/SOUL.md": {
+          "before_sha256": "fec424adf9d0a2bde708f5353bbc1189993498a104131d61cd9c4c150395e23d",
+          "after_sha256": "a21e8a564d38d936dd6a709c3f7d52e051378ce89375d33a556cf5233aeb950d"
+        },
+        "recovery/current/hosts/omp/AGENTS.md": {
+          "before_sha256": "fdf1ef6d01a58b13daea20b347d5d970db9b766e2981932b39eb63caceaa569a",
+          "after_sha256": "278eea0bda222d0f711b7d18c8cc23d228d1fd135b3b7738674ec96ec961174e"
+        },
+        "recovery/current/manifest.json": {
+          "before_sha256": "09129a3251921621d2c4b6a0806de0d5709c2a18b2a00b52af2cec7c41b3b8ec",
+          "after_sha256": "0d1bae714cdab7575bc5df5d8857228a317f140c36dd5c7e2c8dad238e16a244"
+        },
+        "surfaces/core.md": {
+          "before_sha256": "eceba241b92ee1251921f79a85505fffedeab25729c0938bd5a4553bfca17a63",
+          "after_sha256": "1d81c89d564c6a4704cfabeb7eb9c5b1f7aa03a4806aae646a0d70c55062e906"
+        }
+      },
+      "obligations": [
+        {
+          "path": "contracts/surface-matrix.json",
+          "disposition": "unchanged",
+          "reason": "The existing dependent guidance remains applicable."
+        },
+        {
+          "path": "docs/evaluations/outcome-efficiency.md",
+          "disposition": "unchanged",
+          "reason": "The existing dependent guidance remains applicable."
+        },
+        {
+          "path": "docs/requirement-status.md",
+          "disposition": "updated",
+          "reason": "Record the source checks and scope of the requirements change."
+        },
+        {
+          "path": "docs/system-requirements.md",
+          "disposition": "updated",
+          "reason": "Record the approved practices alongside the existing cleanup requirement."
+        },
+        {
+          "path": "host-deltas.json",
+          "disposition": "updated",
+          "reason": "Refresh the three changed standing instruction bindings."
+        },
+        {
+          "path": "profiles/current-observed-defaults.json",
+          "disposition": "updated",
+          "reason": "Bind the checked generated instructions to the current profile."
+        },
+        {
+          "path": "recovery.json",
+          "disposition": "updated",
+          "reason": "Allow replacement of the exact prior versions of the three generated overlays."
+        },
+        {
+          "path": "recovery/current/hosts/codex/AGENTS.md",
+          "disposition": "updated",
+          "reason": "Render the shared guidance for Codex."
+        },
+        {
+          "path": "recovery/current/hosts/hermes/SOUL.md",
+          "disposition": "updated",
+          "reason": "Render the shared guidance for Hermes."
+        },
+        {
+          "path": "recovery/current/hosts/omp/AGENTS.md",
+          "disposition": "updated",
+          "reason": "Render the shared guidance for OMP."
+        },
+        {
+          "path": "recovery/current/manifest.json",
+          "disposition": "updated",
+          "reason": "Bind the generated bytes and updated recovery policy."
+        },
+        {
+          "path": "surfaces/core.md",
+          "disposition": "updated",
+          "reason": "Include the approved comment and decision practices in the existing shared coding guidance."
+        }
+      ]
+    }
+  ]
+}

@@ -240,6 +240,8 @@ Use Skill Evaluation for requests to check an existing skill. Report package fin
 
 Fleet Admission checks evidence for the exact revision and required rollout hosts. Fleet Sync installs approved revisions. Skill Evaluation gathers evidence for Fleet Admission. The superseded curator is retired.
 
-## Cleanup across coding projects
+## Maintainability across coding projects
 
 Remove old or stale coding artifacts so new agents do not get confused. This applies in any coding project. Remove superseded coding artifacts and repoint active references. Preserve history in Git.
+
+In code you touch, remove stale or redundant comments. Fix documented workarounds in scope or track follow-up. Keep comments for non-obvious constraints. Use decision records for project-wide choices.

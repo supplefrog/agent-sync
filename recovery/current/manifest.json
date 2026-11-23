@@ -33,7 +33,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 6541,
+      "bytes": 6544,
       "format": "text",
       "host": "codex",
       "id": "global-instructions",
@@ -51,9 +51,10 @@
         "b508c274306b06ed8ec4201623f11e555d8d072dcce2615f82ae44607dcbb42f",
         "bdb843d02a4b07f2acd5dae7e2f55ed0b6407ad81469ba6cd5b4b54323860b40",
         "b689e11c082aa762a21c722e916937547b4c15371f98d79bca08bf56caa6f33d",
-        "f62c16826a45a7e9145be7848e3a11c0745a3adc0a677f304c01a369ba39e7fa"
+        "f62c16826a45a7e9145be7848e3a11c0745a3adc0a677f304c01a369ba39e7fa",
+        "48797317e9789c6e798540526af060c3bc4dab245d89ce65e8bdf480e4bdd850"
       ],
-      "sha256": "48797317e9789c6e798540526af060c3bc4dab245d89ce65e8bdf480e4bdd850",
+      "sha256": "1552c68bd7c5e365744baa4bcdc8ac80760f0dd622d8b1f317a680da2c4f9d7c",
       "snapshot": "hosts/codex/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -305,7 +306,7 @@
       "strategy": "merge"
     },
     {
-      "bytes": 6610,
+      "bytes": 6613,
       "format": "text",
       "host": "hermes",
       "id": "standing-instructions",
@@ -321,9 +322,10 @@
         "5ef00d578c64c6a4891ce080a60da47d735266fdc706ba4bb34d2c69b79a7753",
         "7d00f86605f8c21e2ef5751a85db67a719e52f700a65b7a74ed7c62f8c549364",
         "c87954f42407075b8d277b14c4183a34e568ae7dd2459de8b72261ecaae6f303",
-        "2cbab437cafe9505bc3903f5117ff3f0fb336abdeb2e06bba664f31373c90b64"
+        "2cbab437cafe9505bc3903f5117ff3f0fb336abdeb2e06bba664f31373c90b64",
+        "fec424adf9d0a2bde708f5353bbc1189993498a104131d61cd9c4c150395e23d"
       ],
-      "sha256": "fec424adf9d0a2bde708f5353bbc1189993498a104131d61cd9c4c150395e23d",
+      "sha256": "a21e8a564d38d936dd6a709c3f7d52e051378ce89375d33a556cf5233aeb950d",
       "snapshot": "hosts/hermes/SOUL.md",
       "source": "SOUL.md",
       "strategy": "replace-if-absent"
@@ -13527,7 +13529,7 @@
       "strategy": "replace-if-absent"
     },
     {
-      "bytes": 5539,
+      "bytes": 5542,
       "format": "text",
       "host": "omp",
       "id": "global-instructions",
@@ -13538,9 +13540,10 @@
         "656e341b1a9f2456cab664fe1acfac9e9888a60f41139e8b2d4669e522608e03",
         "b0c8ebea12f1f3aecdb1c45e5bc3c58ddc9243bcdbeca6fea97750d3b9718fc8",
         "408c79d25295a091156bf10fd4cdb180a2906e5afe773ff17e5ebe626dd69c12",
-        "805cf3c98b71bcb583546035a3e0c439ec33881a16d94e11e7d16e81e0169dac"
+        "805cf3c98b71bcb583546035a3e0c439ec33881a16d94e11e7d16e81e0169dac",
+        "fdf1ef6d01a58b13daea20b347d5d970db9b766e2981932b39eb63caceaa569a"
       ],
-      "sha256": "fdf1ef6d01a58b13daea20b347d5d970db9b766e2981932b39eb63caceaa569a",
+      "sha256": "278eea0bda222d0f711b7d18c8cc23d228d1fd135b3b7738674ec96ec961174e",
       "snapshot": "hosts/omp/AGENTS.md",
       "source": "AGENTS.md",
       "strategy": "replace-if-absent"
@@ -13638,7 +13641,7 @@
     }
   ],
   "machine": "local-windows",
-  "policy_sha256": "352d5e6ac12d178d570bcf9babc4dfa46d3b009e9d436f39cd6c3fa5addff105",
+  "policy_sha256": "348ae8f3168433af2202f52afdc914e5e3184282219c3086167452df825b0802",
   "public_safe": true,
   "schema_version": 1
 }
