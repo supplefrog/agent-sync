@@ -1,11 +1,6 @@
 # Shared Agent Rules
 
-Universal behavioral rules for coding, research, and repo maintenance across hosts. Put workflow procedures in `skills/<name>/SKILL.md` and model-specific quirks in `overrides/<model>.md`.
-
-## Verification & Rigor
-- Verify every claim, fix, and build with actual command or test output before reporting completion; never guess or fill in unprinted results.
-- Cite only observed file paths, symbols, and outputs. Flag any untested path or remaining gap explicitly.
-- Optimize for total system cost rather than local patches. Challenge assumed constraints, outdated scaffolding, and redundant ceremony before adding new machinery.
+Universal preferences across hosts. Put workflow procedures in `skills/<name>/SKILL.md` and harness/model-specific rules in `overrides/<model>.md`.
 
 ## Git-First Workflow
 - Rely on Git for version history. Never create `.bak` files or pre-edit backup directories.
