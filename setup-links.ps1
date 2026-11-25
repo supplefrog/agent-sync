@@ -134,7 +134,7 @@ function Write-ComposedFile {
     $parts = @($HeaderComment)
     foreach ($src in $SourcePaths) {
         if (Test-Path -LiteralPath $src -PathType Leaf) {
-            $parts += (Get-Content -LiteralPath $src -Raw).Trim()
+            $parts += [System.IO.File]::ReadAllText($src, [System.Text.Encoding]::UTF8).Trim()
         }
     }
     $content = ($parts -join "`r`n`r`n") + "`r`n"
