@@ -19,3 +19,9 @@ Universal behavioral rules for coding, research, and repo maintenance across hos
 ## Skills & Overrides Layout
 - Keep `skills/` lean: each skill lives in `skills/<name>/SKILL.md` with only the supporting scripts or references it actively needs.
 - Keep model- or harness-specific guidance isolated under `overrides/<model>.md` so universal instructions stay small and portable.
+
+<!-- temp-pref:t3code-pr-16532 -->
+## Temporary Delegation Preference (until `pingdotgg/t3code#16532` merges)
+- When running under Antigravity/Neon in T3 Code and a task requires controlling the user's already-open local Chrome (signed-in browser tabs) or desktop computer use, delegate that step via `delegate_task` to `providerInstanceId: "codex"`, model `gpt-6.2-sol` (current Codex Sol model; `gpt-6.1-sol` is no longer in the Codex catalog), with `options: { serviceTier: "priority" }` (fast mode). Use T3 Preview (`preview_*`) for ordinary browser work that does not need local Chrome or desktop CUA.
+- Auto-remove this block once `https://github.com/pingdotgg/t3code/pull/16532` is merged.
+<!-- /temp-pref:t3code-pr-16532 -->
