@@ -1,12 +1,16 @@
 #Requires -Version 5.1
 [CmdletBinding()]
-param()
+param(
+    [switch]$IncludeCodex
+)
 
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = $PSScriptRoot
 $skillsTarget = Join-Path $repoRoot 'skills'
 $agentsMdTarget = Join-Path $repoRoot 'AGENTS.md'
+$neonOverride = Join-Path $repoRoot 'overrides\neon.md'
+$codexOverride = Join-Path $repoRoot 'overrides\codex.md'
 
 if (-not (Test-Path -LiteralPath $skillsTarget -PathType Container)) {
     throw "Missing skills directory at $skillsTarget"
@@ -115,14 +119,73 @@ function Ensure-FileHardlink {
     Write-Host "Created hardlink: $normalizedLink -> $normalizedTarget"
 }
 
+function Write-ComposedFile {
+    param(
+        [Parameter(Mandatory = $true)][string]$TargetPath,
+        [Parameter(Mandatory = $true)][string[]]$SourcePaths,
+        [Parameter(Mandatory = $true)][string]$HeaderComment
+    )
+
+    $parentDir = Split-Path -Path $TargetPath -Parent
+    if (-not (Test-Path -LiteralPath $parentDir -PathType Container)) {
+        New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
+    }
+
+    $parts = @($HeaderComment)
+    foreach ($src in $SourcePaths) {
+        if (Test-Path -LiteralPath $src -PathType Leaf) {
+            $parts += (Get-Content -LiteralPath $src -Raw).Trim()
+        }
+    }
+    $content = ($parts -join "`r`n`r`n") + "`r`n"
+
+    # Always remove an existing file/hardlink before writing so source hardlinks are never overwritten.
+    if (Test-Path -LiteralPath $TargetPath) {
+        Remove-Item -LiteralPath $TargetPath -Force
+    }
+    [System.IO.File]::WriteAllText($TargetPath, $content, (New-Object System.Text.UTF8Encoding($false)))
+    Write-Host "Composed: $TargetPath"
+}
+
 Ensure-DirectoryJunction -LinkPath (Join-Path $HOME '.agents\skills') -TargetPath $skillsTarget
 Ensure-DirectoryJunction -LinkPath (Join-Path $HOME '.gemini\config\skills') -TargetPath $skillsTarget
-Ensure-FileHardlink -LinkPath (Join-Path $HOME '.gemini\config\AGENTS.md') -TargetPath $agentsMdTarget
+
+$neonHeader = '<!-- Composed by agent-sync/setup-links.ps1 from AGENTS.md + overrides/neon.md; edit source files in agent-sync. -->'
+$neonSources = @($agentsMdTarget, $neonOverride)
+$writtenRuleFiles = @()
+
+$geminiAgentsMd = Join-Path $HOME '.gemini\config\AGENTS.md'
+Write-ComposedFile -TargetPath $geminiAgentsMd -SourcePaths $neonSources -HeaderComment $neonHeader
+$writtenRuleFiles += $geminiAgentsMd
+
+$t3AgyRoot = Join-Path $HOME '.t3\userdata\providers\antigravity'
+if (Test-Path -LiteralPath $t3AgyRoot -PathType Container) {
+    Get-ChildItem -LiteralPath $t3AgyRoot -Directory | ForEach-Object {
+        $cfgDir = Join-Path $_.FullName 'config'
+        if (Test-Path -LiteralPath $cfgDir -PathType Container) {
+            $t3AgentsMd = Join-Path $cfgDir 'AGENTS.md'
+            Write-ComposedFile -TargetPath $t3AgentsMd -SourcePaths $neonSources -HeaderComment $neonHeader
+            $writtenRuleFiles += $t3AgentsMd
+        }
+    }
+}
+
+if ($IncludeCodex) {
+    $codexHeader = '<!-- Composed by agent-sync/setup-links.ps1 from AGENTS.md + overrides/codex.md; edit source files in agent-sync. -->'
+    $codexAgentsMd = Join-Path $HOME '.codex\AGENTS.md'
+    Write-ComposedFile -TargetPath $codexAgentsMd -SourcePaths @($agentsMdTarget, $codexOverride) -HeaderComment $codexHeader
+    $writtenRuleFiles += $codexAgentsMd
+}
 
 Write-Host ""
 Write-Host "Verified links:"
-Get-Item -LiteralPath (Join-Path $HOME '.agents\skills'), (Join-Path $HOME '.gemini\config\skills'), (Join-Path $HOME '.gemini\config\AGENTS.md') |
+Get-Item -LiteralPath (Join-Path $HOME '.agents\skills'), (Join-Path $HOME '.gemini\config\skills') |
     Select-Object FullName, LinkType, Target |
+    Format-Table -AutoSize
+
+Write-Host "Composed instruction files:"
+Get-Item -LiteralPath $writtenRuleFiles |
+    Select-Object FullName, Length, LastWriteTime |
     Format-Table -AutoSize
 
 Write-Host "Discovered skills:"
