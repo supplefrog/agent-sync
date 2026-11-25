@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "skills": {
-    "leanrea": {
-      "requires": "open-weights",
-      "hosts": ["hermes", "omp"]
-    }
-  }
-}

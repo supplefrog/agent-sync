@@ -1,17 +1,21 @@
-# Repository rules
+# Shared Agent Rules
 
-Use the [user requirements](docs/system-requirements.md) when editing [standing instructions](skills/system-instruction-writing/SKILL.md) or [skills](skills/skill-authoring/SKILL.md). Edit shared standing rules in `surfaces/core.md` and render the host overlays with `python tools/run.py render_instructions render`.
+Universal behavioral rules for coding, research, and repo maintenance across hosts. Put workflow procedures in `skills/<name>/SKILL.md` and model-specific quirks in `overrides/<model>.md`.
 
-Use [cross-agent-surface-engineering](skills/cross-agent-surface-engineering/SKILL.md) for cross-host placement or parity, and [hermes-self-engineering](skills/hermes-self-engineering/SKILL.md) for unresolved Hermes placement. Preserve native capabilities and explicit unsupported mappings; existing procedures remain reviewable within the user's authorization.
+## Verification & Rigor
+- Verify every claim, fix, and build with actual command or test output before reporting completion; never guess or fill in unprinted results.
+- Cite only observed file paths, symbols, and outputs. Flag any untested path or remaining gap explicitly.
+- Optimize for total system cost rather than local patches. Challenge assumed constraints, outdated scaffolding, and redundant ceremony before adding new machinery.
 
-Keep `skills/` compatible with the Agent Skills standard. Put host-specific behavior in adapters, not portable skill instructions.
+## Git-First Workflow
+- Rely on Git for version history. Never create `.bak` files or pre-edit backup directories.
+- On `agent-sync` and the user's personal repositories when asked to make changes, commit cleanly and push directly to `main` (or the active working branch) without asking for repeated confirmation or running custom wrapper sync scripts.
+- Respect upstream contribution rules (`CONTRIBUTING.md`) on external repos; check for existing PRs/issues before opening new ones.
 
-Match evidence to the claim: reproduce and verify a mechanism correction, check source/discovery for structural changes, and compare current-model behavior for quality claims. Carry existing authorization forward, preserve rollback, and state missing or inconclusive evidence.
+## Workspace Hygiene
+- Clean up temporary scratch files, build leftovers, and auto-created helper/scratch threads once their work completes.
+- Never leave orphaned worktrees, temp clones, or untracked artifacts inside checked-out repositories.
 
-Treat `contracts/surface-matrix.json` as the cross-host behavior contract and `evidence/findings.json` as the public-safe findings and contradiction ledger. Never erase contradictory evidence merely to present a unified result.
-
-Keep the repository small: extend or replace an existing capability when its scope substantially overlaps; do not add aliases or speculative skills.
-
-Choose supported worker routes from task requirements and available evidence. Fixed model tiers or reasoning labels are not fitness tests. Keep persisted runs pinned unless changing their route is part of the authorized task.
-
-Never commit generated run transcripts, credentials, private paths, or third-party content without a compatible license.
+## Skills & Overrides Layout
+- Keep `skills/` lean: each skill lives in `skills/<name>/SKILL.md` with only the supporting scripts or references it actively needs.
+- Keep model- or harness-specific guidance isolated under `overrides/<model>.md` so universal instructions stay small and portable.

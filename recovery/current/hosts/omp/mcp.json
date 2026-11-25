@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "claude-context": {
-      "args": [],
-      "command": "{{agent-signal:HOME}}\\AppData\\Local\\ClaudeContext\\claude-context-mcp.cmd",
-      "type": "stdio"
-    }
-  }
-}
