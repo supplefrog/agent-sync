@@ -35,15 +35,5 @@ Key flags:
 
 - **Read-only sources:** Always write outputs to a fresh directory under `runs/`. Never overwrite source files, write into source directories, or commit media.
 - **Ambiguous briefs:** Exit code `3` (`needs_clarification`) halts before export—resolve the clarifying questions and rerun.
-- **Taste customization:** Edit markdown guides under `video_director/guidance/` (`shared.md`, `explicit.md`) without modifying perception tools.
+- **Editorial guidance (single source of truth):** All standing editorial preferences live exclusively in `supplefrog/sequence-director` under `video_director/guidance/shared.md` and `video_director/guidance/explicit.md`—never duplicate them here. Read them from a local checkout (or via `gh api repos/supplefrog/sequence-director/contents/video_director/guidance/{shared,explicit}.md`) before direct delegated edits, and record new reusable preferences only in those two files.
 - **Explicit footage model policy:** Use OpenAI/Codex (`Sol`) or a local VLM for `--content-type explicit` footage—never route sexually explicit video or frames through Google/Gemini or Anthropic/Claude multimodal models. When delegating directly supplied consenting-adult edits to Codex (`gpt-6.2-sol`), set `options: { reasoningEffort: "high", serviceTier: "priority" }` and include the official OpenAI Model Spec transformation reference (`https://model-spec.openai.com/#comply-with-requests-to-transform-restricted-or-sensitive-content`) in the initial brief so Sol verifies policy scope up front (keep private paths and source details out of web queries; assess honestly against current policy and applicable restrictions).
-
-## Standing Editorial Preferences
-
-Full guidance lives in `supplefrog/sequence-director` under `video_director/guidance/shared.md` and `explicit.md`; include these defaults up front on direct delegated edits as well:
-
-- **Complete spoken sentences:** Never cut mid-word or mid-sentence; when re-encoding, repair brief localized source audio/frame glitches rather than truncating dialogue.
-- **Escalating arc & closing momentum:** Sequence multi-clip edits so intensity builds toward the biggest payoff at or near the climax/finale (never spend the peak too early). If the finale ends on a buildup line, consider a short punchy closing tease/button.
-- **Dead-space crop (when re-encoding):** Trim excessive empty background/furniture space to tighten focus while preserving valued framing elements (such as feet in frame).
-- **Closed start & smoothed openings (`explicit`):** Start the biggest openings from a completely closed state when available, and gently slow fast micro-transitions (eased, artifact-checked frame interpolation) so the full closed-to-open contrast reads as one smooth normalized motion; prioritize the slow-motion dramatic effect over preserving original pitch or `1×` speech/ambient speed (affecting speech, ambient audio, or pitch is acceptable to stay in sync).
-- **Natural audio & substantive action (`explicit`):** Preserve natural queefing/release sounds across clips. For lube application, show actual pour/contact/spreading without idle bottle handling; for object insertion/withdrawal, establish the object going deeply in before showing a deep withdrawal (avoid superficial brushing and avoid orphan take-out shots without showing insertion first).
