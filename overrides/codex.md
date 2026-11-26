@@ -7,3 +7,4 @@ Guardrails for OpenAI Codex models (`codex` / `Sol`):
 - **Delete scratch threads:** Close/clean up auto-created helper or subagent threads and temporary worktrees once their task is done.
 - **Visual verification:** Never assume UI/UX or HTML output looks right from code alone—preview rendered output in the browser when building interfaces.
 - **Public repo privacy:** Scrub all private local paths, usernames, account data, tokens, and unrelated thread notes before posting comments, issues, or PRs on public GitHub repositories.
+- **Single-connection Chrome CDP:** When attaching to the user's signed-in local Chrome via `DevToolsActivePort` (avoid `/json/*` HTTP endpoints, which 404 on Chrome 136+), reuse a single persistent WebSocket connection (batching inspect, edit, verify, and cleanup in one script or a persistent MCP/relay) so Chrome's "Allow remote debugging?" prompt fires only once per task.
