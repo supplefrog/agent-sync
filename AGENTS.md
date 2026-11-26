@@ -14,3 +14,6 @@ Universal preferences across hosts.
 ## Skills & Overrides (`C:\Users\E\Documents\Projects\agent-sync`)
 - Put reusable skills in `skills/<name>/SKILL.md` (lean, with only the supporting scripts or references they actively need) rather than per-project folders unless project-specific.
 - Put universal rules in `AGENTS.md` and model- or harness-specific guidance in `overrides/<model>.md`, then re-run `.\setup-links.ps1`.
+
+## Model & Delegation Preferences
+- **Codex fast mode:** Whenever delegating to or configuring OpenAI Codex (`codex` / `gpt-6.2-sol`) in T3 Code, default to fast mode (`options: { serviceTier: "priority" }`) unless explicitly asked for standard/default speed.
