@@ -29,6 +29,7 @@ Key flags:
 - `--content-type explicit`: Enable explicit/adult-content editorial guidance under `video_director/guidance/explicit.md` (default: `general`).
 - `--reencode`: Re-encode video/audio for arbitrary exact cut timestamps (default is lossless keyframe stream copy).
 - `--videoseek-url http://127.0.0.1:8765`: Override default `http://127.0.0.1:18765`, or pass `--without-videoseek` to skip indexed search.
+  - Standard Windows install: `%LOCALAPPDATA%\Programs\VideoSeek\VideoSeek.exe` (runtime/config in `%LOCALAPPDATA%\VideoSeek`). Launch on `sequence-director`'s default port `18765` via `Start-Process "$env:LOCALAPPDATA\Programs\VideoSeek\VideoSeek.exe" -Environment @{VIDEOSEEK_AGENT_API_HOST='127.0.0.1'; VIDEOSEEK_AGENT_API_PORT='18765'}` (or pass `--videoseek-url http://127.0.0.1:8765` if VideoSeek was opened normally from Start Menu).
 - `--codex-bin <path>`: Specify the Codex executable if auto-discovery fails.
 
 ## Guardrails & Behavior
