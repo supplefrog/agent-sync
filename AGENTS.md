@@ -17,3 +17,6 @@ Universal preferences across hosts.
 
 ## Model & Delegation Preferences
 - **Codex fast mode:** Whenever delegating to or configuring OpenAI Codex (`codex` / `gpt-6.2-sol`) in T3 Code, default to fast mode (`options: { serviceTier: "priority" }`) unless explicitly asked for standard/default speed.
+
+## Interactive Visual Controls
+- **Give interactive elements for subjective visual tuning:** Across visual design and grading work—videos, frames, images, and webpage/UI dev views—when a visual choice is unresolved or repeated tweaks aren't landing, provide a compact interactive preview (inline HTML/Canvas or dev-view panel) with live labelled controls rather than guessing blindly across slow renders. Match pro Photoshop/video-editing ergonomics: include **interactive curves** (RGB/luma tone curves, hue-vs-sat/lum curves) alongside sliders, toggles, before/after split wipe, magnification, reset, and copyable exact parameters wired 1:1 to the render pipeline. Support fluidly moving between broad sweeping adjustments and minute tweaks wherever attention goes without forcing a rigid sequence.
